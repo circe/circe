@@ -35,7 +35,7 @@ lazy val baseSettings = Seq(
     }
   ),
   libraryDependencies ++= Seq(
-    compilerPlugin("org.spire-math" %% "kind-projector" % "0.5.4"),
+    compilerPlugin("org.spire-math" %% "kind-projector" % "0.6.3"),
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ) ++ testDependencies.map(_ % "test"),
   resolvers += Resolver.sonatypeRepo("snapshots")
