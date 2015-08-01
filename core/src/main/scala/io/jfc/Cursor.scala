@@ -9,7 +9,7 @@ import io.jfc.cursor.{ CArray, CJson, CObject, CursorOperations }
 /**
  * A zipper that represents a position in a JSON value and supports navigation
  * around the JSON value.
- * 
+ *
  * The `focus` represents the current position of the cursor; it may be updated
  * with `withFocus` or changed using the navigation methods `left`, `right`,
  * etc.
@@ -33,7 +33,7 @@ object Cursor {
    * Create a new cursor with no context.
    */
   def apply(j: Json): Cursor = CJson(j)
-  
+
   implicit val showCursor: Show[Cursor] = Show.show(c =>
     s"${ Show[Context].show(c.context) } ==> ${ Show[Json].show(c.focus) }"
   )

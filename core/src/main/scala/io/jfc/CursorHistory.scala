@@ -40,7 +40,7 @@ case class CursorHistory(toList: List[CursorOp]) {
 }
 
 object CursorHistory {
-  def start(e: CursorOp) = CursorHistory(List(e))
+  def start(e: CursorOp): CursorHistory = CursorHistory(List(e))
 
   implicit val eqCursorHistory: Eq[CursorHistory] = Eq.by(_.toList)
   implicit val showCursorHistory: Show[CursorHistory] = {

@@ -142,8 +142,12 @@ private[jfc] final case class JsonObjectInstance(
 
   def fieldSet: Set[String] = orderedFields.toSet
 
-  def map(f: Json => Json): JsonObject = copy(fieldsMap = fieldsMap.foldLeft(Map.empty[String, Json]){case (acc, (key, value)) => acc.updated(key, f(value))})
-  
+  def map(f: Json => Json): JsonObject = copy(
+    fieldsMap = fieldsMap.foldLeft(Map.empty[String, Json]) {
+      case (acc, (key, value)) => acc.updated(key, f(value))
+    }
+  )
+
   def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
     orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
       case (acc, k) => F.ap(acc)(F.map(f(fieldsMap(k)))(j => _.updated(k, j)))
@@ -151,7 +155,7 @@ private[jfc] final case class JsonObjectInstance(
   )(mappedFields => copy(fieldsMap = mappedFields))
 
   def size: Int = fields.size
-  
+
   // TODO: clean up
   override def toString: String =
     "object[%s]".format(

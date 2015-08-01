@@ -27,5 +27,5 @@ class StreamingParser {
 }
 
 object StreamingParser {
-  def fromReader(reader: Reader): Spool[Json] = ???
+  // def fromReader(reader: Reader): Spool[Json] = ???
 }

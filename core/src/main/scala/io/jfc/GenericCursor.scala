@@ -5,14 +5,14 @@ import cats.data.Xor
 /**
  * A zipper that represents a position in a JSON document and supports
  * navigation and modification.
- * 
+ *
  * The `focus` represents the current position of the cursor; it may be updated
  * with `withFocus` or changed using navigation methods like `left` and `right`.
  *
  * jfc includes three kinds of cursors. [[Cursor]] is the simplest: it doesn't
  * keep track of its history. [[HCursor]] is a cursor that does keep track of
  * its history, but does not represent the possibility that an navigation or
- * modification operation has failed. [[ACursor]] is the richest cursor, since 
+ * modification operation has failed. [[ACursor]] is the richest cursor, since
  * it both tracks history through an underlying [[HCursor]] and can represent
  * failed operations.
  *

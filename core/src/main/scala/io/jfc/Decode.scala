@@ -56,7 +56,7 @@ trait Decode[A] { self =>
   /**
    * Build a new instance that fails if the condition does not hold.
    */
-  def validate(pred: HCursor => Boolean, message: => String) = Decode.instance(c =>
+  def validate(pred: HCursor => Boolean, message: => String): Decode[A] = Decode.instance(c =>
     if (pred(c)) apply(c) else Xor.left(DecodeFailure(message, c.history))
   )
 
@@ -122,7 +122,7 @@ object Decode {
   private[this] def partialDecoder[A](message: String)(f: PartialFunction[Json, A]): Decode[A] =
     instance(c =>
       f.andThen(Xor.right[DecodeFailure, A]).applyOrElse(
-        c.focus, 
+        c.focus,
         (_: Json) => Xor.left(DecodeFailure(message, c.history))
       )
     )
@@ -200,7 +200,7 @@ object Decode {
       case _ => Xor.left(DecodeFailure("Int", c.history))
     }
   }
-  
+
   implicit val decodeLong: Decode[Long] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToLong)

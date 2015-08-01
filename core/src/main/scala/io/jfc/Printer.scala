@@ -71,7 +71,7 @@ final case class Printer(
   }
 
   private[this] final val pieces = new Printer.MemoizedPieces {
-    def compute(i: Int) = Printer.Pieces(
+    def compute(i: Int): Printer.Pieces = Printer.Pieces(
       "%s%s%s".format(
         addIndentation(lbraceLeft)(i),
         openBraceText,
@@ -79,7 +79,7 @@ final case class Printer(
       ),
       "%s%s%s".format(
         addIndentation(rbraceLeft)(i),
-        closeBraceText, 
+        closeBraceText,
         addIndentation(rbraceRight)(i + 1)
       ),
       "%s%s%s".format(
@@ -191,7 +191,7 @@ final case class Printer(
       import Json._
 
       k match {
-        case JObject(o) => 
+        case JObject(o) =>
           builder.append(p.lBraces)
           val items = if (preserveOrder) o.toList else o.toMap
           var first = true

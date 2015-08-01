@@ -42,11 +42,7 @@ object Insert extends LowPriorityInsert {
       def insert(e: H, out: T): H :: T = e :: out
     }
 
-  implicit def insertUnlabeledHead[
-    H,
-    K,
-    T <: HList
-  ]: Aux[FieldType[K, H] :: T, H, T] =
+  implicit def insertUnlabeledHead[H, K, T <: HList]: Aux[FieldType[K, H] :: T, H, T] =
     new Insert[FieldType[K, H] :: T, H] {
       type Out = T
 

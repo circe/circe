@@ -70,6 +70,6 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
 }
 
 object ACursor {
-  def ok(cursor: HCursor) = ACursor(Xor.right(cursor))
-  def fail(cursor: HCursor) = ACursor(Xor.left(cursor))
+  def ok(cursor: HCursor): ACursor = ACursor(Xor.right(cursor))
+  def fail(cursor: HCursor): ACursor = ACursor(Xor.left(cursor))
 }

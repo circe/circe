@@ -252,9 +252,9 @@ final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
 final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
   override def toString(): String = value.toString
 
-  def toBigDecimal = value
+  def toBigDecimal: BigDecimal = value
 
-  def toDouble = value.toDouble
+  def toDouble: Double = value.toDouble
 
   def toLong: Option[Long] = {
     if (value.isValidLong) Some(value.toLong)
@@ -270,8 +270,8 @@ final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
 final case class JsonLong(value: Long) extends JsonNumber {
   override def toString(): String = value.toString
 
-  def toBigDecimal = BigDecimal(value)
-  def toDouble = value.toDouble
+  def toBigDecimal: BigDecimal = BigDecimal(value)
+  def toDouble: Double = value.toDouble
   def toLong: Option[Long] = Some(value)
   def truncateToLong: Long = value
 }
@@ -279,8 +279,8 @@ final case class JsonLong(value: Long) extends JsonNumber {
 final case class JsonDouble(value: Double) extends JsonNumber {
   override def toString(): String = value.toString
 
-  def toBigDecimal = BigDecimal(value)
-  def toDouble = value
+  def toBigDecimal: BigDecimal = BigDecimal(value)
+  def toDouble: Double = value
   def toLong: Option[Long] = {
     val n = value.toLong
     if (n.toDouble == value) Some(n)
@@ -420,6 +420,6 @@ object JsonNumber {
    * The negative sign, fractional part and exponent part are optional matches
    * and may be `null`.
    */
-  val JsonNumberRegex = 
+  val JsonNumberRegex =
     """(-)?((?:[1-9][0-9]*|0))(?:\.([0-9]+))?(?:[eE]([-+]?[0-9]+))?""".r
 }

@@ -13,7 +13,7 @@ object JfcSupportParser extends SupportParser[Json] {
     def jint(s: String): Json = Json.long(java.lang.Long.parseLong(s))
     def jstring(s: String): Json = Json.string(s)
 
-    def singleContext() = new FContext[Json] {
+    def singleContext(): FContext[Json] = new FContext[Json] {
       private[this] var value: Json = null
       def add(s: String): Unit = { value = jstring(s) }
       def add(v: Json): Unit =  { value = v }

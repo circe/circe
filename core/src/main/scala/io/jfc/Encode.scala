@@ -12,7 +12,7 @@ import cats.std.list._
  */
 trait Encode[A] {
   /**
-   * Converts a value 
+   * Converts a value to JSON.
    */
   def apply(a: A): Json
 
