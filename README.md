@@ -110,31 +110,31 @@ make jfc faster (the public API does not and will never expose any of this, thou
 My initial benchmarks suggest this is at least kind of working:
 
 ```
-[info] Benchmark                       Mode  Cnt      Score       Error  Units
+[info] Benchmark                       Mode  Cnt      Score      Error  Units
 
-[info] DecodingBenchmark.decodeFoosA  thrpt    5   1195.155 ±    47.269  ops/s
-[info] DecodingBenchmark.decodeFoosJ  thrpt    5   1198.734 ±    97.462  ops/s
+[info] DecodingBenchmark.decodeFoosA  thrpt   20   1160.429 ±   32.997  ops/s
+[info] DecodingBenchmark.decodeFoosJ  thrpt   20   1327.090 ±  111.272  ops/s
 
-[info] DecodingBenchmark.decodeIntsA  thrpt    5   7088.932 ±   132.972  ops/s
-[info] DecodingBenchmark.decodeIntsJ  thrpt    5   7349.813 ±   144.718  ops/s
+[info] DecodingBenchmark.decodeIntsA  thrpt   20   7442.144 ±  280.426  ops/s
+[info] DecodingBenchmark.decodeIntsJ  thrpt   20   7527.970 ±  294.254  ops/s
 
-[info] EncodingBenchmark.encodeFoosA  thrpt    5   6165.355 ±   226.384  ops/s
-[info] EncodingBenchmark.encodeFoosJ  thrpt    5   6363.009 ±    64.727  ops/s
+[info] EncodingBenchmark.encodeFoosA  thrpt   20   5726.027 ±  207.383  ops/s
+[info] EncodingBenchmark.encodeFoosJ  thrpt   20   5984.419 ±  278.220  ops/s
 
-[info] EncodingBenchmark.encodeIntsA  thrpt    5  37495.908 ± 20361.396  ops/s
-[info] EncodingBenchmark.encodeIntsJ  thrpt    5  89746.353 ±  5344.870  ops/s
+[info] EncodingBenchmark.encodeIntsA  thrpt   20  42615.934 ± 3123.112  ops/s
+[info] EncodingBenchmark.encodeIntsJ  thrpt   20  87456.776 ± 4621.955  ops/s
 
-[info] ParsingBenchmark.parseFoosA    thrpt    5   2058.439 ±   133.218  ops/s
-[info] ParsingBenchmark.parseFoosJ    thrpt    5   2600.436 ±    86.446  ops/s
+[info] ParsingBenchmark.parseFoosA    thrpt   20   2210.772 ±  218.932  ops/s
+[info] ParsingBenchmark.parseFoosJ    thrpt   20   2714.505 ±  112.194  ops/s
 
-[info] ParsingBenchmark.parseIntsA    thrpt    5  10400.996 ±   244.002  ops/s
-[info] ParsingBenchmark.parseIntsJ    thrpt    5  26151.079 ±  1635.339  ops/s
+[info] ParsingBenchmark.parseIntsA    thrpt   20  10618.503 ±  488.321  ops/s
+[info] ParsingBenchmark.parseIntsJ    thrpt   20  26482.227 ±  211.512  ops/s
 
-[info] PrintingBenchmark.printFoosA   thrpt    5   2846.282 ±   142.397  ops/s
-[info] PrintingBenchmark.printFoosJ   thrpt    5   3419.415 ±   134.553  ops/s
+[info] PrintingBenchmark.printFoosA   thrpt   20   2755.286 ±   54.639  ops/s
+[info] PrintingBenchmark.printFoosJ   thrpt   20   3460.610 ±   64.472  ops/s
 
-[info] PrintingBenchmark.printIntsA   thrpt    5  14604.935 ±   851.003  ops/s
-[info] PrintingBenchmark.printIntsJ   thrpt    5  21632.071 ±   344.853  ops/s
+[info] PrintingBenchmark.printIntsA   thrpt   20  15260.408 ± 1589.961  ops/s
+[info] PrintingBenchmark.printIntsJ   thrpt   20  20766.068 ±  362.873  ops/s
 ```
 
 The `Foos` benchmarks work with a map containing case class values, and the `Ints` ones are an array
