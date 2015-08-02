@@ -2,12 +2,13 @@ package io.jfc.cursor
 
 import cats.{ Id, Functor }
 import cats.data.Xor
-import io.jfc._
+import io.jfc.{ ACursor, CursorOpElement, Decode, DecodeFailure, GenericCursor, HCursor, Json }
+import io.jfc.CursorOpElement._
 
 /**
  * A helper trait that implements cursor operations for [[io.jfc.HCursor]].
  */
-trait HCursorOperations extends GenericCursor[HCursor] { this: HCursor =>
+private[jfc] trait HCursorOperations extends GenericCursor[HCursor] { this: HCursor =>
   type Focus[x] = Id[x]
   type Result = ACursor
   type M[x[_]] = Functor[x]

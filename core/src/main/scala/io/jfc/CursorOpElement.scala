@@ -5,31 +5,31 @@ import cats.Show
 
 sealed abstract class CursorOpElement extends Product with Serializable
 
-case object CursorOpLeft extends CursorOpElement
-case object CursorOpRight extends CursorOpElement
-case object CursorOpFirst extends CursorOpElement
-case object CursorOpLast extends CursorOpElement
-case object CursorOpUp extends CursorOpElement
-case class CursorOpLeftN(n: Int) extends CursorOpElement
-case class CursorOpRightN(n: Int) extends CursorOpElement
-case class CursorOpLeftAt(p: Json => Boolean) extends CursorOpElement
-case class CursorOpRightAt(p: Json => Boolean) extends CursorOpElement
-case class CursorOpFind(p: Json => Boolean) extends CursorOpElement
-case class CursorOpField(f: String) extends CursorOpElement
-case class CursorOpDownField(f: String) extends CursorOpElement
-case object CursorOpDownArray extends CursorOpElement
-case class CursorOpDownAt(p: Json => Boolean) extends CursorOpElement
-case class CursorOpDownN(n: Int) extends CursorOpElement
-case object CursorOpDeleteGoParent extends CursorOpElement
-case object CursorOpDeleteGoLeft extends CursorOpElement
-case object CursorOpDeleteGoRight extends CursorOpElement
-case object CursorOpDeleteGoFirst extends CursorOpElement
-case object CursorOpDeleteGoLast extends CursorOpElement
-case class CursorOpDeleteGoField(f: String) extends CursorOpElement
-case object CursorOpDeleteLefts extends CursorOpElement
-case object CursorOpDeleteRights extends CursorOpElement
-
 object CursorOpElement {
+  case object CursorOpLeft extends CursorOpElement
+  case object CursorOpRight extends CursorOpElement
+  case object CursorOpFirst extends CursorOpElement
+  case object CursorOpLast extends CursorOpElement
+  case object CursorOpUp extends CursorOpElement
+  case class CursorOpLeftN(n: Int) extends CursorOpElement
+  case class CursorOpRightN(n: Int) extends CursorOpElement
+  case class CursorOpLeftAt(p: Json => Boolean) extends CursorOpElement
+  case class CursorOpRightAt(p: Json => Boolean) extends CursorOpElement
+  case class CursorOpFind(p: Json => Boolean) extends CursorOpElement
+  case class CursorOpField(f: String) extends CursorOpElement
+  case class CursorOpDownField(f: String) extends CursorOpElement
+  case object CursorOpDownArray extends CursorOpElement
+  case class CursorOpDownAt(p: Json => Boolean) extends CursorOpElement
+  case class CursorOpDownN(n: Int) extends CursorOpElement
+  case object CursorOpDeleteGoParent extends CursorOpElement
+  case object CursorOpDeleteGoLeft extends CursorOpElement
+  case object CursorOpDeleteGoRight extends CursorOpElement
+  case object CursorOpDeleteGoFirst extends CursorOpElement
+  case object CursorOpDeleteGoLast extends CursorOpElement
+  case class CursorOpDeleteGoField(f: String) extends CursorOpElement
+  case object CursorOpDeleteLefts extends CursorOpElement
+  case object CursorOpDeleteRights extends CursorOpElement
+
   implicit val showCursorOpElement: Show[CursorOpElement] = Show.show {
     case CursorOpLeft => "<-"
     case CursorOpRight => "->"

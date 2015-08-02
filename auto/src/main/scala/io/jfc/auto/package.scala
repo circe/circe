@@ -2,14 +2,6 @@ package io.jfc
 
 import shapeless._, shapeless.ops.function.FnFromProduct
 
-trait LowPriorityAutoInstances {
-  implicit def caseClassCodec[A, R <: HList](implicit
-    gen: LabelledGeneric.Aux[A, R],
-    d: Lazy[Decode[R]],
-    e: Lazy[Encode[R]]
-  ): Codec[A] = Codec.combined(d.value, e.value).imap(gen.from)(gen.to)
-}
-
 package object auto extends GenericDecode with GenericEncode with LowPriorityAutoInstances {
   implicit def incompleteDecode[F, P <: HList, A, T <: HList, R <: HList](implicit
     ffp: FnFromProduct.Aux[P => A, F],
@@ -30,4 +22,14 @@ package object auto extends GenericDecode with GenericEncode with LowPriorityAut
     d: Lazy[Decode[R]],
     e: Lazy[Encode[R]]
   ): Codec[A] = Codec.combined(d.value, e.value).imap(gen.from)(gen.to)
+}
+
+package auto {
+  trait LowPriorityAutoInstances {
+    implicit def caseClassCodec[A, R <: HList](implicit
+      gen: LabelledGeneric.Aux[A, R],
+      d: Lazy[Decode[R]],
+      e: Lazy[Encode[R]]
+    ): Codec[A] = Codec.combined(d.value, e.value).imap(gen.from)(gen.to)
+  }
 }

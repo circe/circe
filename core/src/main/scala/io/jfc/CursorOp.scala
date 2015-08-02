@@ -10,23 +10,23 @@ sealed abstract class CursorOp extends Product with Serializable {
   def failed: Boolean
 }
 
-case object Reattempt extends CursorOp {
-  def isReattempt: Boolean = true
-  def isNotReattempt: Boolean = false
-  def succeeded: Boolean = false
-  def failed: Boolean = false
-}
-
-case class El(o: CursorOpElement, succeeded: Boolean) extends CursorOp {
-  def isReattempt: Boolean = false
-  def isNotReattempt: Boolean = true
-  def failed: Boolean = !succeeded
-}
-
 object CursorOp {
   def apply(o: CursorOpElement): CursorOp = El(o, succeeded = true)
   def reattemptOp: CursorOp = Reattempt
   def failedOp(o: CursorOpElement): CursorOp = El(o, succeeded = false)
+
+  case object Reattempt extends CursorOp {
+    def isReattempt: Boolean = true
+    def isNotReattempt: Boolean = false
+    def succeeded: Boolean = false
+    def failed: Boolean = false
+  }
+
+  case class El(o: CursorOpElement, succeeded: Boolean) extends CursorOp {
+    def isReattempt: Boolean = false
+    def isNotReattempt: Boolean = true
+    def failed: Boolean = !succeeded
+  }
 
   implicit val eqCursorOp: Eq[CursorOp] = Eq.instance {
     case (Reattempt, Reattempt) => true

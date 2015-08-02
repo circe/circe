@@ -186,7 +186,7 @@ sealed abstract class JsonNumber {
  * a number can still be round tripped (parser to printer). We lazily parse the
  * string to a `BigDecimal` or a `Double` on demand.
  */
-final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
+private[jfc] final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
   lazy val toBigDecimal: BigDecimal = BigDecimal(value, MathContext.UNLIMITED)
   lazy val toDouble: Double = value.toDouble
 
@@ -249,7 +249,7 @@ final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
   }
 }
 
-final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
+private[jfc] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
   override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = value
@@ -267,7 +267,7 @@ final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
     else value.toLong
 }
 
-final case class JsonLong(value: Long) extends JsonNumber {
+private[jfc] final case class JsonLong(value: Long) extends JsonNumber {
   override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = BigDecimal(value)
@@ -276,7 +276,7 @@ final case class JsonLong(value: Long) extends JsonNumber {
   def truncateToLong: Long = value
 }
 
-final case class JsonDouble(value: Double) extends JsonNumber {
+private[jfc] final case class JsonDouble(value: Double) extends JsonNumber {
   override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = BigDecimal(value)
