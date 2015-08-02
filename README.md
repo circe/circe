@@ -2,6 +2,8 @@
 
 [![Build status](https://img.shields.io/travis/travisbrown/jfc/master.svg)](https://travis-ci.org/travisbrown/jfc)
 [![Coverage status](https://img.shields.io/codecov/c/github/travisbrown/jfc/master.svg)](https://codecov.io/github/travisbrown/jfc)
+[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/jfc)
+
 
 jfc is a JSON library for Scala. The name stands for "JSON for [cats][cats]". The rest of this page
 tries to give some justification for its existence. There are also [API docs][api].
