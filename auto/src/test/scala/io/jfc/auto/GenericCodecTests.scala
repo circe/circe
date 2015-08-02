@@ -37,7 +37,7 @@ class GenericCodecTests extends JfcSuite {
           i <- Arbitrary.arbitrary[Int]
           s <- Arbitrary.arbitrary[String]
         } yield Bar(i, s),
-        Gen.listOf(Arbitrary.arbitrary[String]).map(Baz(_))
+        Gen.listOf(Arbitrary.arbitrary[String]).map(Baz.apply)
        )
     )
   }

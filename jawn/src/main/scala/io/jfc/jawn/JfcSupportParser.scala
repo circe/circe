@@ -23,7 +23,7 @@ object JfcSupportParser extends SupportParser[Json] {
 
     def arrayContext(): FContext[Json] = new FContext[Json] {
       private[this] val vs = ArrayBuffer.empty[Json]
-      def add(s: String): Unit = { vs += (jstring(s)) }
+      def add(s: String): Unit = { vs += jstring(s) }
       def add(v: Json): Unit = { vs += v }
       def finish: Json = Json.fromValues(vs)
       def isObj: Boolean = false

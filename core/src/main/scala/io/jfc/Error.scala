@@ -5,11 +5,11 @@ import algebra.Eq
 trait Error extends Exception
 
 case class ParseFailure(message: String, underlying: Throwable) extends Error {
-  override def getMessage(): String = message
+  override def getMessage: String = message
 }
 
 case class DecodeFailure(message: String, history: CursorHistory) extends Error {
-  override def getMessage(): String = message
+  override def getMessage: String = message
 
   def withMessage(message: String): DecodeFailure = copy(message = message)
 }

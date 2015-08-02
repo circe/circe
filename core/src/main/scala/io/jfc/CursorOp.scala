@@ -24,9 +24,9 @@ case class El(o: CursorOpElement, succeeded: Boolean) extends CursorOp {
 }
 
 object CursorOp {
-  def apply(o: CursorOpElement): CursorOp = El(o, true)
+  def apply(o: CursorOpElement): CursorOp = El(o, succeeded = true)
   def reattemptOp: CursorOp = Reattempt
-  def failedOp(o: CursorOpElement): CursorOp = El(o, false)
+  def failedOp(o: CursorOpElement): CursorOp = El(o, succeeded = false)
 
   implicit val eqCursorOp: Eq[CursorOp] = Eq.instance {
     case (Reattempt, Reattempt) => true

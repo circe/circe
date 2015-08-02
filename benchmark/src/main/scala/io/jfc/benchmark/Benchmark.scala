@@ -1,14 +1,12 @@
 package io.jfc.benchmark
 
 import argonaut.{ Json => JsonA, _ }, Argonaut._
-import cats.data.Xor
-import io.jfc.{ Encode, Decode, Json => JsonJ }
+import io.jfc.{ Json => JsonJ }
 import io.jfc.auto._
 import io.jfc.jawn._
 import io.jfc.syntax._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
-import scalaz.\/
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 
@@ -20,7 +18,7 @@ class ExampleData {
   val ints: List[Int] = (0 to 1000).toList
 
   val foos: Map[String, Foo] = List.tabulate(100) { i =>
-    ("b" * i) -> Foo("a" * i, (i + 1.0 / i), i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
+    ("b" * i) -> Foo("a" * i, i + 1.0 / i, i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
   }.toMap
 
   val intsJ: JsonJ = ints.toJson

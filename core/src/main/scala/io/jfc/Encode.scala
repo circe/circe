@@ -52,7 +52,7 @@ object Encode {
     val items = collection.mutable.ArrayBuffer.empty[Json]
 
     is.conversion(list).foreach { a =>
-      items += (e(a))
+      items += e(a)
     }
 
     Json.fromValues(items)

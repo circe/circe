@@ -2,7 +2,6 @@ package io.jfc
 
 import algebra.{ Eq, Monoid }
 import cats.Show
-import cats.functor.Contravariant
 import cats.std.list._
 
 /**
@@ -35,7 +34,7 @@ case class CursorHistory(toList: List[CursorOp]) {
     ) { q => +:(CursorOp(e)).acursor(q) }
   }
 
-  override def toString(): String =
+  override def toString: String =
     "CursorHistory(%s)".format(CursorHistory.showCursorHistory.show(this))
 }
 

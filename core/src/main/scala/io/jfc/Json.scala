@@ -106,11 +106,11 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Compute a `String` representation for this JSON value.
    */
-  override def toString(): String = spaces2
+  override def toString: String = spaces2
 }
 
 object Json {
-  private[jfc] final case object JNull extends Json {
+  private[jfc] case object JNull extends Json {
     override def isNull: Boolean = true
   }
   private[jfc] final case class JBool(b: Boolean) extends Json
