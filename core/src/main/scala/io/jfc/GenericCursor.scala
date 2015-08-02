@@ -26,8 +26,7 @@ import cats.data.Xor
  *
  * @author Travis Brown
  */
-trait GenericCursor {
-  type Self
+trait GenericCursor[C <: GenericCursor[C]] {
   type Focus[_]
   type Result
   type M[_[_]]
@@ -55,17 +54,17 @@ trait GenericCursor {
   /**
    * Modify the focus using the given function.
    */
-  def withFocus(f: Json => Json): Self
+  def withFocus(f: Json => Json): C
 
   /**
    * Modify the focus in a context using the given function.
    */
-  def withFocusM[F[_]: M](f: Json => F[Json]): F[Self]
+  def withFocusM[F[_]: M](f: Json => F[Json]): F[C]
 
   /**
    * Replace the focus.
    */
-  def set(j: Json): Self = withFocus(_ => j)
+  def set(j: Json): C = withFocus(_ => j)
 
   /**
    * If the focus is a JSON array, return the elements to the left.

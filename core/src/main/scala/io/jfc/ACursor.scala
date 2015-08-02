@@ -1,5 +1,6 @@
 package io.jfc
 
+import algebra.Eq
 import cats.Applicative
 import cats.data.{ Validated, Xor }
 import io.jfc.cursor.ACursorOperations
@@ -72,4 +73,6 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
 object ACursor {
   def ok(cursor: HCursor): ACursor = ACursor(Xor.right(cursor))
   def fail(cursor: HCursor): ACursor = ACursor(Xor.left(cursor))
+
+  implicit val eqACursor: Eq[ACursor] = Eq.by(_.either)
 }
