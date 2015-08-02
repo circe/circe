@@ -190,7 +190,7 @@ final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
   lazy val toBigDecimal: BigDecimal = BigDecimal(value, MathContext.UNLIMITED)
   lazy val toDouble: Double = value.toDouble
 
-  override def toString(): String = value
+  override def toString: String = value
 
   def toLong: Option[Long] = {
     val n = toBigDecimal
@@ -250,7 +250,7 @@ final case class JsonDecimal private[jfc] (value: String) extends JsonNumber {
 }
 
 final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
-  override def toString(): String = value.toString
+  override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = value
 
@@ -268,7 +268,7 @@ final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
 }
 
 final case class JsonLong(value: Long) extends JsonNumber {
-  override def toString(): String = value.toString
+  override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = BigDecimal(value)
   def toDouble: Double = value.toDouble
@@ -277,7 +277,7 @@ final case class JsonLong(value: Long) extends JsonNumber {
 }
 
 final case class JsonDouble(value: Double) extends JsonNumber {
-  override def toString(): String = value.toString
+  override def toString: String = value.toString
 
   def toBigDecimal: BigDecimal = BigDecimal(value)
   def toDouble: Double = value

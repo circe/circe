@@ -1,7 +1,6 @@
 package io.jfc
 
 import algebra.Eq
-import cats.Applicative
 import cats.data.{ Validated, Xor }
 import io.jfc.cursor.ACursorOperations
 

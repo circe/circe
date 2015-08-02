@@ -47,16 +47,16 @@ final case class Printer(
   colonLeft: String = "",
   colonRight: String = ""
 ) {
-  private[this] final val openBraceText = "{"
-  private[this] final val closeBraceText = "}"
-  private[this] final val openArrayText = "["
-  private[this] final val closeArrayText = "]"
-  private[this] final val commaText = ","
-  private[this] final val colonText = ":"
-  private[this] final val nullText = "null"
-  private[this] final val trueText = "true"
-  private[this] final val falseText = "false"
-  private[this] final val stringEnclosureText = "\""
+  private[this] val openBraceText = "{"
+  private[this] val closeBraceText = "}"
+  private[this] val openArrayText = "["
+  private[this] val closeArrayText = "]"
+  private[this] val commaText = ","
+  private[this] val colonText = ":"
+  private[this] val nullText = "null"
+  private[this] val trueText = "true"
+  private[this] val falseText = "false"
+  private[this] val stringEnclosureText = "\""
 
   private[this] def addIndentation(s: String): Int => String = {
     val lastNewLineIndex = s.lastIndexOf("\n")
@@ -70,7 +70,7 @@ final case class Printer(
     }
   }
 
-  private[this] final val pieces = new Printer.MemoizedPieces {
+  private[this] val pieces = new Printer.MemoizedPieces {
     def compute(i: Int): Printer.Pieces = Printer.Pieces(
       "%s%s%s".format(
         addIndentation(lbraceLeft)(i),
@@ -118,7 +118,7 @@ final case class Printer(
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
-  final def pretty(j: Json): String = {
+  def pretty(j: Json): String = {
     val builder = new StringBuilder()
 
     @tailrec
@@ -129,13 +129,13 @@ final case class Printer(
       jsonString.span(Printer.isNormalChar) match {
         case (prefix, suffix) =>
           builder.append(prefix)
-          if (suffix.nonEmpty) appendJsonString(suffix, false)
+          if (suffix.nonEmpty) appendJsonString(suffix, normalChars = false)
       }
     } else {
       jsonString.span(c => !Printer.isNormalChar(c)) match {
         case (prefix, suffix) => {
           prefix.foreach { c => builder.append(Printer.escape(c)) }
-          if (suffix.nonEmpty) appendJsonString(suffix, true)
+          if (suffix.nonEmpty) appendJsonString(suffix, normalChars = true)
         }
       }
     }

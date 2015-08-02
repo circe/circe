@@ -1,7 +1,7 @@
 package io.jfc.cursor
 
 import cats.Applicative
-import cats.data.{ Validated, Xor }
+import cats.data.Xor
 import io.jfc.{ ACursor, Decode, DecodeFailure, GenericCursor, HCursor, Json }
 
 /**
@@ -27,7 +27,7 @@ private[jfc] trait ACursorOperations extends GenericCursor[ACursor] { this: ACur
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
     either.fold(
       _ => F.pure(this),
-      valid => F.map(valid.withFocusM(f))(ACursor.ok(_))
+      valid => F.map(valid.withFocusM(f))(ACursor.ok)
     )
   def left: ACursor = withHCursor(_.left)
   def right: ACursor = withHCursor(_.right)

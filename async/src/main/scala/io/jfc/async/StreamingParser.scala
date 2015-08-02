@@ -1,11 +1,11 @@
 package io.jfc.async
 
 import com.twitter.concurrent.{ Spool, SpoolSource }
-import com.twitter.io.{ Buf, Reader }
+import com.twitter.io.Buf
 import com.twitter.util.Future
 import io.jfc.Json
 import io.jfc.jawn.JfcSupportParser
-import jawn.{ AsyncParser, Facade, Parser }
+import jawn.AsyncParser
 
 /**
  * A rough sketch that needs a lot of fleshing out.

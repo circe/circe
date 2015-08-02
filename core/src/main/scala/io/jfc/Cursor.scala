@@ -1,8 +1,7 @@
 package io.jfc
 
 import algebra.{ Eq, Monoid }
-import cats.{ Functor, Id, Show }
-import cats.data.{ Kleisli, Xor }
+import cats.Show
 import cats.std.list._
 import io.jfc.cursor.{ CArray, CJson, CObject, CursorOperations }
 
