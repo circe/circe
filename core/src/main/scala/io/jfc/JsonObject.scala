@@ -174,7 +174,7 @@ private[jfc] final case class JsonObjectInstance(
     fieldsMap.hashCode
 }
 
-object JsonObject extends JsonObjects {
+object JsonObject {
   def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
     F.foldLeft(f, empty) { case (acc, (k, v)) => acc + (k, v) }
 
@@ -200,9 +200,6 @@ object JsonObject extends JsonObjects {
    * Construct an empty association.
    */
   def empty: JsonObject = JsonObjectInstance()
-}
-
-trait JsonObjects {
 
   /**
    * Construct with a single association.
