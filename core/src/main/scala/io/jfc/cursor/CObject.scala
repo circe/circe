@@ -11,12 +11,15 @@ private[jfc] case class CObject(
   o: JsonObject
 ) extends Cursor {
   def context: Context = ContextElement.objectContext(focus, key) +: p.context
-  def withFocus(f: Json => Json): Cursor = copy(focus = f(focus), u = true)
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Functor[F]): F[Cursor] =
-    F.map(f(focus))(j => copy(focus = j, u = true))
 
-  override def field(k: String): Option[Cursor] = o(k).map { j =>
-    copy(focus = j, key = k)
+  def up: Option[Cursor] = Some {
+    val j = Json.fromJsonObject(if (u) o + (key, focus) else o)
+
+    p match {
+      case CJson(_) => CJson(j)
+      case CArray(_, pp, v, pls, prs) => CArray(j, pp, u || v, pls, prs)
+      case CObject(_, pk, pp, v, po) => CObject(j, pk, pp, u || v, po)
+    }
   }
 
   def delete: Option[Cursor] = Some {
@@ -29,17 +32,15 @@ private[jfc] case class CObject(
     }
   }
 
-  override def deleteGoField(k: String): Option[Cursor] = o(k).map { j =>
-    copy(focus = j, key = k, o = o - k)
+  def withFocus(f: Json => Json): Cursor = copy(focus = f(focus), u = true)
+  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Functor[F]): F[Cursor] =
+    F.map(f(focus))(j => copy(focus = j, u = true))
+
+  override def field(k: String): Option[Cursor] = o(k).map { j =>
+    copy(focus = j, key = k)
   }
 
-  def up: Option[Cursor] = Some {
-    val j = Json.fromJsonObject(if (u) o + (key, focus) else o)
-
-    p match {
-      case CJson(_) => CJson(j)
-      case CArray(_, pp, v, pls, prs) => CArray(j, pp, u || v, pls, prs)
-      case CObject(_, pk, pp, v, po) => CObject(j, pk, pp, u || v, po)
-    }
+  override def deleteGoField(k: String): Option[Cursor] = o(k).map { j =>
+    copy(focus = j, key = k, o = o - k)
   }
 }
