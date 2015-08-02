@@ -51,7 +51,8 @@ lazy val baseSettings = Seq(
 lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
-  git.remoteRepo := s"git@github.com:travisbrown/jfc.git",
+  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
+  git.remoteRepo := "git@github.com:travisbrown/jfc.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
 )
 
