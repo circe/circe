@@ -5,8 +5,11 @@
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/jfc)
 
 
-jfc is a JSON library for Scala. The name stands for "JSON for [cats][cats]". The rest of this page
-tries to give some justification for its existence. There are also [API docs][api].
+jfc is a JSON library for Scala. The rest of this page tries to give some justification for its
+existence. There are also [API docs][api].
+
+The name stands for "JSON for [cats][cats]" and is a working title that
+[might be changed](https://github.com/travisbrown/jfc/issues/11).
 
 ## Showing off
 
