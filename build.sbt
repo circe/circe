@@ -48,7 +48,7 @@ lazy val baseSettings = Seq(
   */
 )
 
-lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings
+lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publishSettings
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
