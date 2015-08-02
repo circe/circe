@@ -8,8 +8,7 @@ import scala.annotation.tailrec
 /**
  * A helper trait that implements cursor operations for [[io.jfc.Cursor]].
  */
-private[jfc] trait CursorOperations extends GenericCursor { this: Cursor =>
-  type Self = Cursor
+private[jfc] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor =>
   type Focus[x] = Id[x]
   type Result = Option[Cursor]
   type M[x[_]] = Functor[x]

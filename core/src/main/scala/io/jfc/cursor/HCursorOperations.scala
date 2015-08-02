@@ -7,8 +7,7 @@ import io.jfc._
 /**
  * A helper trait that implements cursor operations for [[io.jfc.HCursor]].
  */
-trait HCursorOperations extends GenericCursor { this: HCursor =>
-  type Self = HCursor
+trait HCursorOperations extends GenericCursor[HCursor] { this: HCursor =>
   type Focus[x] = Id[x]
   type Result = ACursor
   type M[x[_]] = Functor[x]

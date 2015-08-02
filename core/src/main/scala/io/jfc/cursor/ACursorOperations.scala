@@ -7,8 +7,7 @@ import io.jfc.{ ACursor, Decode, DecodeFailure, GenericCursor, HCursor, Json }
 /**
  * A helper trait that implements cursor operations for [[io.jfc.ACursor]].
  */
-private[jfc] trait ACursorOperations extends GenericCursor { this: ACursor =>
-  type Self = ACursor
+private[jfc] trait ACursorOperations extends GenericCursor[ACursor] { this: ACursor =>
   type Focus[x] = Option[x]
   type Result = ACursor
   type M[x[_]] = Applicative[x]

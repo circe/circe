@@ -1,5 +1,6 @@
 package io.jfc
 
+import algebra.Eq
 import cats.data.Xor
 import io.jfc.cursor.HCursorOperations
 
@@ -40,4 +41,11 @@ case class HCursor(cursor: Cursor, history: CursorHistory) extends HCursorOperat
     f: A => Xor[Xor[DecodeFailure, B], Xor[DecodeFailure, A]]
   ): Xor[DecodeFailure, B] =
     r1.flatMap(a => f(a).swap.valueOr(r2 => loop[A, B](r2, f)))
+}
+
+object HCursor {
+  implicit val eqHCursor: Eq[HCursor] = Eq.instance {
+    case (HCursor(c1, h1), HCursor(c2, h2)) =>
+      Eq[Cursor].eqv(c1, c2) && Eq[CursorHistory].eqv(h1, h2)
+  }
 }
