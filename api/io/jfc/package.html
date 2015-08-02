@@ -1,0 +1,1439 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>jfc - io.jfc</title>
+          <meta name="description" content="jfc - io.jfc" />
+          <meta name="keywords" content="jfc io.jfc" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'io.jfc.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="io">io</a></p>
+        <h1>jfc</h1><span class="permalink">
+      <a href="../../index.html#io.jfc.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jfc</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="io.jfc"><span>jfc</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="io.jfc.ACursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ACursorextendsACursorOperationswithProductwithSerializable"></a>
+      <a id="ACursor:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ACursor.html"><span class="name">ACursor</span></a><span class="params">(<span name="either">either: <span class="extype" name="cats.data.Xor">Xor</span>[<a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a>, <a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a>]</span>)</span><span class="result"> extends <span class="extype" name="io.jfc.cursor.ACursorOperations">ACursorOperations</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ACursorextendsACursorOperationswithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A cursor that tracks history and represents the possibility of failure.</p>
+    </li><li name="io.jfc.Codec" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Codec[A]extendsAnyRef"></a>
+      <a id="Codec[A]:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Codec.html"><span class="name">Codec</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Codec[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A helper class that bundles together a <a href="Decode.html" class="extype" name="io.jfc.Decode">Decode</a> and <a href="Encode.html" class="extype" name="io.jfc.Encode">Encode</a>.</p><div class="fullcomment"><div class="comment cmt"><p>A helper class that bundles together a <a href="Decode.html" class="extype" name="io.jfc.Decode">Decode</a> and <a href="Encode.html" class="extype" name="io.jfc.Encode">Encode</a>.</p><p>In jfc this type plays a slightly different role than it does in Argonaut:
+it's used primarily to facilitate generic derivation. In general you should
+not require <a href="Codec.html" class="extype" name="io.jfc.Codec">Codec</a> instances, but instead use <a href="Decode.html" class="extype" name="io.jfc.Decode">Decode</a> or <a href="Encode.html" class="extype" name="io.jfc.Encode">Encode</a> or
+both as appropriate.
+</p></div></div>
+    </li><li name="io.jfc.Context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContextextendsAnyRef"></a>
+      <a id="Context:Context"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Context.html"><span class="name">Context</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ContextextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.ContextElement" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ContextElementextendsSerializable"></a>
+      <a id="ContextElement:ContextElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ContextElement.html"><span class="name">ContextElement</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ContextElementextendsSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Cursor" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="CursorextendsCursorOperations"></a>
+      <a id="Cursor:Cursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Cursor.html"><span class="name">Cursor</span></a><span class="result"> extends <span class="extype" name="io.jfc.cursor.CursorOperations">CursorOperations</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorextendsCursorOperations" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A zipper that represents a position in a JSON value and supports navigation
+around the JSON value.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON value and supports navigation
+around the JSON value.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated
+with <code>withFocus</code> or changed using the navigation methods <code>left</code>, <code>right</code>,
+etc.
+</p></div></div>
+    </li><li name="io.jfc.CursorHistory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CursorHistoryextendsProductwithSerializable"></a>
+      <a id="CursorHistory:CursorHistory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorHistory.html"><span class="name">CursorHistory</span></a><span class="params">(<span name="toList">toList: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.jfc.CursorOp">CursorOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorHistoryextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A list of elements denoting the history of a cursor.</p><div class="fullcomment"><div class="comment cmt"><p>A list of elements denoting the history of a cursor.</p><p>Note: Most recent operation appears at head of list.
+</p></div></div>
+    </li><li name="io.jfc.CursorOp" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CursorOpextendsProductwithSerializable"></a>
+      <a id="CursorOp:CursorOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOp.html"><span class="name">CursorOp</span></a><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoField" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoFieldextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpDeleteGoField:CursorOpDeleteGoField"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoField.html"><span class="name">CursorOpDeleteGoField</span></a><span class="params">(<span name="f">f: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoFieldextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDownAt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDownAtextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpDownAt:CursorOpDownAt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDownAt.html"><span class="name">CursorOpDownAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.jfc.Json">Json</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDownAtextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDownField" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDownFieldextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpDownField:CursorOpDownField"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDownField.html"><span class="name">CursorOpDownField</span></a><span class="params">(<span name="f">f: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDownFieldextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDownN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDownNextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpDownN:CursorOpDownN"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDownN.html"><span class="name">CursorOpDownN</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDownNextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpElement" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CursorOpElementextendsProductwithSerializable"></a>
+      <a id="CursorOpElement:CursorOpElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpElement.html"><span class="name">CursorOpElement</span></a><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpElementextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpField" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpFieldextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpField:CursorOpField"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpField.html"><span class="name">CursorOpField</span></a><span class="params">(<span name="f">f: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpFieldextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpFind" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpFindextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpFind:CursorOpFind"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpFind.html"><span class="name">CursorOpFind</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.jfc.Json">Json</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpFindextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpLeftAt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpLeftAtextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpLeftAt:CursorOpLeftAt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpLeftAt.html"><span class="name">CursorOpLeftAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.jfc.Json">Json</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpLeftAtextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpLeftN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpLeftNextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpLeftN:CursorOpLeftN"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpLeftN.html"><span class="name">CursorOpLeftN</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpLeftNextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpRightAt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpRightAtextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpRightAt:CursorOpRightAt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpRightAt.html"><span class="name">CursorOpRightAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.jfc.Json">Json</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpRightAtextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpRightN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpRightNextendsCursorOpElementwithProductwithSerializable"></a>
+      <a id="CursorOpRightN:CursorOpRightN"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpRightN.html"><span class="name">CursorOpRightN</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpRightNextendsCursorOpElementwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Decode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Decode[A]extendsAnyRef"></a>
+      <a id="Decode[A]:Decode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Decode.html"><span class="name">Decode</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Decode[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.DecodeFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DecodeFailureextendsExceptionwithErrorwithProductwithSerializable"></a>
+      <a id="DecodeFailure:DecodeFailure"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DecodeFailure.html"><span class="name">DecodeFailure</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="history">history: <a href="CursorHistory.html" class="extype" name="io.jfc.CursorHistory">CursorHistory</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="Error.html" class="extype" name="io.jfc.Error">Error</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@DecodeFailureextendsExceptionwithErrorwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.El" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ElextendsCursorOpwithProductwithSerializable"></a>
+      <a id="El:El"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="El.html"><span class="name">El</span></a><span class="params">(<span name="o">o: <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a></span>, <span name="succeeded">succeeded: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="CursorOp.html" class="extype" name="io.jfc.CursorOp">CursorOp</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ElextendsCursorOpwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Encode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Encode[A]extendsAnyRef"></a>
+      <a id="Encode[A]:Encode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Encode.html"><span class="name">Encode</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Encode[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a <a href="Json.html" class="extype" name="io.jfc.Json">Json</a>.</p>
+    </li><li name="io.jfc.Error" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ErrorextendsException"></a>
+      <a id="Error:Error"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Error.html"><span class="name">Error</span></a><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ErrorextendsException" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.GenericCursor" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="GenericCursor[C&lt;:io.jfc.GenericCursor[C]]extendsAnyRef"></a>
+      <a id="GenericCursor[C&lt;:GenericCursor[C]]:GenericCursor[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GenericCursor.html"><span class="name">GenericCursor</span></a><span class="tparams">[<span name="C">C &lt;: <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@GenericCursor[C&lt;:io.jfc.GenericCursor[C]]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A zipper that represents a position in a JSON document and supports
+navigation and modification.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON document and supports
+navigation and modification.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated
+with <code>withFocus</code> or changed using navigation methods like <code>left</code> and <code>right</code>.</p><p>jfc includes three kinds of cursors. <a href="Cursor.html" class="extype" name="io.jfc.Cursor">Cursor</a> is the simplest: it doesn't
+keep track of its history. <a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a> is a cursor that does keep track of
+its history, but does not represent the possibility that an navigation or
+modification operation has failed. <a href="ACursor.html" class="extype" name="io.jfc.ACursor">ACursor</a> is the richest cursor, since
+it both tracks history through an underlying <a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a> and can represent
+failed operations.</p><p><a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a> is an abstraction over these three types, and it has
+several abstract type members that are required in order to represent the
+different roles of the three cursor types. <code>Self</code> is simply the specific type
+of the cursor, <code>Focus</code> is a type constructor that represents the context in
+which the focus is available, <code>Result</code> is the type that is returned by all
+navigation and modification operations, and <code>M</code> is a type class that includes
+the operations that we need for <code>withFocusM</code>.
+</p></div></div>
+    </li><li name="io.jfc.HCursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HCursorextendsHCursorOperationswithProductwithSerializable"></a>
+      <a id="HCursor:HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="HCursor.html"><span class="name">HCursor</span></a><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.jfc.Cursor">Cursor</a></span>, <span name="history">history: <a href="CursorHistory.html" class="extype" name="io.jfc.CursorHistory">CursorHistory</a></span>)</span><span class="result"> extends <a href="cursor/HCursorOperations.html" class="extype" name="io.jfc.cursor.HCursorOperations">HCursorOperations</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@HCursorextendsHCursorOperationswithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Json" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="JsonextendsProductwithSerializable"></a>
+      <a id="Json:Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Json.html"><span class="name">Json</span></a><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A data type representing possible JSON values.</p>
+    </li><li name="io.jfc.JsonBigDecimal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonBigDecimalextendsJsonNumberwithProductwithSerializable"></a>
+      <a id="JsonBigDecimal:JsonBigDecimal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonBigDecimal.html"><span class="name">JsonBigDecimal</span></a><span class="params">(<span name="value">value: <span class="extype" name="scala.BigDecimal">BigDecimal</span></span>)</span><span class="result"> extends <a href="JsonNumber.html" class="extype" name="io.jfc.JsonNumber">JsonNumber</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonBigDecimalextendsJsonNumberwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.JsonDecimal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="JsonDecimalextendsJsonNumberwithProductwithSerializable"></a>
+      <a id="JsonDecimal:JsonDecimal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonDecimal.html"><span class="name">JsonDecimal</span></a><span class="result"> extends <a href="JsonNumber.html" class="extype" name="io.jfc.JsonNumber">JsonNumber</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonDecimalextendsJsonNumberwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A JsonDecimal represents and valid JSON number as a String.</p><div class="fullcomment"><div class="comment cmt"><p>A JsonDecimal represents and valid JSON number as a String. Unfortunately,
+there is no type in the Scala standard library which can represent all valid
+JSON decimal numbers, since the exponent may be larger than an <code>Int</code>. Such
+a number can still be round tripped (parser to printer). We lazily parse the
+string to a <code>BigDecimal</code> or a <code>Double</code> on demand.
+</p></div></div>
+    </li><li name="io.jfc.JsonDouble" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonDoubleextendsJsonNumberwithProductwithSerializable"></a>
+      <a id="JsonDouble:JsonDouble"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonDouble.html"><span class="name">JsonDouble</span></a><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <a href="JsonNumber.html" class="extype" name="io.jfc.JsonNumber">JsonNumber</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonDoubleextendsJsonNumberwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.JsonLong" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonLongextendsJsonNumberwithProductwithSerializable"></a>
+      <a id="JsonLong:JsonLong"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonLong.html"><span class="name">JsonLong</span></a><span class="params">(<span name="value">value: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="JsonNumber.html" class="extype" name="io.jfc.JsonNumber">JsonNumber</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonLongextendsJsonNumberwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.JsonNumber" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="JsonNumberextendsAnyRef"></a>
+      <a id="JsonNumber:JsonNumber"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonNumber.html"><span class="name">JsonNumber</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonNumberextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">JSON numbers with optimization by cases.</p><div class="fullcomment"><div class="comment cmt"><p>JSON numbers with optimization by cases.
+Note: Javascript numbers are 64-bit decimals.
+</p></div></div>
+    </li><li name="io.jfc.JsonObject" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="JsonObjectextendsAnyRef"></a>
+      <a id="JsonObject:JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonObject.html"><span class="name">JsonObject</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonObjectextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A mapping from field to JSON value that maintains insertion order.</p>
+    </li><li name="io.jfc.JsonObjects" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="JsonObjectsextendsAnyRef"></a>
+      <a id="JsonObjects:JsonObjects"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonObjects.html"><span class="name">JsonObjects</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonObjectsextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.LowPriorityAutoInstances" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityAutoInstancesextendsAnyRef"></a>
+      <a id="LowPriorityAutoInstances:LowPriorityAutoInstances"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityAutoInstances.html"><span class="name">LowPriorityAutoInstances</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@LowPriorityAutoInstancesextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.ParseFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParseFailureextendsExceptionwithErrorwithProductwithSerializable"></a>
+      <a id="ParseFailure:ParseFailure"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParseFailure.html"><span class="name">ParseFailure</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="underlying">underlying: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="Error.html" class="extype" name="io.jfc.Error">Error</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ParseFailureextendsExceptionwithErrorwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Parser" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ParserextendsAnyRef"></a>
+      <a id="Parser:Parser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Parser.html"><span class="name">Parser</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ParserextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Printer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PrinterextendsProductwithSerializable"></a>
+      <a id="Printer:Printer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Printer.html"><span class="name">Printer</span></a><span class="params">(<span name="preserveOrder">preserveOrder: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="dropNullKeys">dropNullKeys: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="indent">indent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lbraceLeft">lbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbraceRight">lbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceLeft">rbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceRight">rbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketLeft">lbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketRight">lbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketLeft">rbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketRight">rbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lrbracketsEmpty">lrbracketsEmpty: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaLeft">arrayCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaRight">arrayCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaLeft">objectCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaRight">objectCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonLeft">colonLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonRight">colonRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@PrinterextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A pretty-printer for JSON values.</p><div class="fullcomment"><div class="comment cmt"><p>A pretty-printer for JSON values.
+</p></div><dl class="paramcmts block"><dt class="param">preserveOrder</dt><dd class="cmt"><p>Determines if field ordering should be preserved.</p></dd><dt class="param">dropNullKeys</dt><dd class="cmt"><p>Determines if object fields with values of null are dropped from the output.</p></dd><dt class="param">indent</dt><dd class="cmt"><p>The indentation to use if any format strings contain a new line.</p></dd><dt class="param">lbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left brace.</p></dd><dt class="param">lbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a left brace.</p></dd><dt class="param">rbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right brace.</p></dd><dt class="param">rbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a right brace.</p></dd><dt class="param">lbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left bracket.</p></dd><dt class="param">lbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a left bracket.</p></dd><dt class="param">rbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right bracket.</p></dd><dt class="param">rbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a right bracket.</p></dd><dt class="param">lrbracketsEmpty</dt><dd class="cmt"><p>Spaces to insert for an empty array.</p></dd><dt class="param">arrayCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an array.</p></dd><dt class="param">arrayCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an array.</p></dd><dt class="param">objectCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an object.</p></dd><dt class="param">objectCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an object.</p></dd><dt class="param">colonLeft</dt><dd class="cmt"><p>Spaces to insert to left of a colon.</p></dd><dt class="param">colonRight</dt><dd class="cmt"><p>Spaces to insert to right of a colon.</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="io.jfc.ACursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ACursor"></a>
+      <a id="ACursor:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ACursor$.html"><span class="name">ACursor</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Codec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Codec"></a>
+      <a id="Codec:Codec"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Codec$.html"><span class="name">Codec</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Codec" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Context"></a>
+      <a id="Context:Context"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Context$.html"><span class="name">Context</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Context" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.ContextElement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContextElement"></a>
+      <a id="ContextElement:ContextElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ContextElement$.html"><span class="name">ContextElement</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ContextElement" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Cursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Cursor"></a>
+      <a id="Cursor:Cursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Cursor$.html"><span class="name">Cursor</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Cursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorHistory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorHistory"></a>
+      <a id="CursorHistory:CursorHistory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorHistory$.html"><span class="name">CursorHistory</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorHistory" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOp"></a>
+      <a id="CursorOp:CursorOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOp$.html"><span class="name">CursorOp</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOp" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoFirst" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoFirst"></a>
+      <a id="CursorOpDeleteGoFirst:CursorOpDeleteGoFirst"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoFirst$.html"><span class="name">CursorOpDeleteGoFirst</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoFirst" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoLast" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoLast"></a>
+      <a id="CursorOpDeleteGoLast:CursorOpDeleteGoLast"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoLast$.html"><span class="name">CursorOpDeleteGoLast</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoLast" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoLeft" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoLeft"></a>
+      <a id="CursorOpDeleteGoLeft:CursorOpDeleteGoLeft"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoLeft$.html"><span class="name">CursorOpDeleteGoLeft</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoLeft" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoParent" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoParent"></a>
+      <a id="CursorOpDeleteGoParent:CursorOpDeleteGoParent"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoParent$.html"><span class="name">CursorOpDeleteGoParent</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoParent" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteGoRight" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteGoRight"></a>
+      <a id="CursorOpDeleteGoRight:CursorOpDeleteGoRight"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteGoRight$.html"><span class="name">CursorOpDeleteGoRight</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteGoRight" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteLefts" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteLefts"></a>
+      <a id="CursorOpDeleteLefts:CursorOpDeleteLefts"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteLefts$.html"><span class="name">CursorOpDeleteLefts</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteLefts" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDeleteRights" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDeleteRights"></a>
+      <a id="CursorOpDeleteRights:CursorOpDeleteRights"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDeleteRights$.html"><span class="name">CursorOpDeleteRights</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDeleteRights" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpDownArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpDownArray"></a>
+      <a id="CursorOpDownArray:CursorOpDownArray"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpDownArray$.html"><span class="name">CursorOpDownArray</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpDownArray" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpElement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpElement"></a>
+      <a id="CursorOpElement:CursorOpElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpElement$.html"><span class="name">CursorOpElement</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpElement" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpFirst" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpFirst"></a>
+      <a id="CursorOpFirst:CursorOpFirst"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpFirst$.html"><span class="name">CursorOpFirst</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpFirst" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpLast" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpLast"></a>
+      <a id="CursorOpLast:CursorOpLast"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpLast$.html"><span class="name">CursorOpLast</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpLast" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpLeft" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpLeft"></a>
+      <a id="CursorOpLeft:CursorOpLeft"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpLeft$.html"><span class="name">CursorOpLeft</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpLeft" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpRight" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpRight"></a>
+      <a id="CursorOpRight:CursorOpRight"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpRight$.html"><span class="name">CursorOpRight</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpRight" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.CursorOpUp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CursorOpUp"></a>
+      <a id="CursorOpUp:CursorOpUp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorOpUp$.html"><span class="name">CursorOpUp</span></a><span class="result"> extends <a href="CursorOpElement.html" class="extype" name="io.jfc.CursorOpElement">CursorOpElement</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@CursorOpUp" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Decode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Decode"></a>
+      <a id="Decode:Decode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Decode$.html"><span class="name">Decode</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Decode" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.DecodeFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DecodeFailure"></a>
+      <a id="DecodeFailure:DecodeFailure"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DecodeFailure$.html"><span class="name">DecodeFailure</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@DecodeFailure" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Encode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Encode"></a>
+      <a id="Encode:Encode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Encode$.html"><span class="name">Encode</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Encode" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Utilities and instances for <a href="Encode.html" class="extype" name="io.jfc.Encode">Encode</a>.</p>
+    </li><li name="io.jfc.Error" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Error"></a>
+      <a id="Error:Error"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Error$.html"><span class="name">Error</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Error" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.HCursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HCursor"></a>
+      <a id="HCursor:HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HCursor$.html"><span class="name">HCursor</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Json"></a>
+      <a id="Json:Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Json$.html"><span class="name">Json</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.JsonNumber" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonNumber"></a>
+      <a id="JsonNumber:JsonNumber"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonNumber$.html"><span class="name">JsonNumber</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonNumber" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.JsonObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonObject"></a>
+      <a id="JsonObject:JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonObject$.html"><span class="name">JsonObject</span></a><span class="result"> extends <a href="JsonObjects.html" class="extype" name="io.jfc.JsonObjects">JsonObjects</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@JsonObject" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.ParseFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParseFailure"></a>
+      <a id="ParseFailure:ParseFailure"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ParseFailure$.html"><span class="name">ParseFailure</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@ParseFailure" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Printer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Printer"></a>
+      <a id="Printer:Printer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Printer$.html"><span class="name">Printer</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Printer" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.Reattempt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Reattempt"></a>
+      <a id="Reattempt:Reattempt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Reattempt$.html"><span class="name">Reattempt</span></a><span class="result"> extends <a href="CursorOp.html" class="extype" name="io.jfc.CursorOp">CursorOp</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@Reattempt" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.async" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="async"></a>
+      <a id="async:async"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="async/package.html"><span class="name">async</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@async" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.auto" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="auto"></a>
+      <a id="auto:auto"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="auto/package.html"><span class="name">auto</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@auto" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.cursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="cursor"></a>
+      <a id="cursor:cursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="cursor/package.html"><span class="name">cursor</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@cursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.disjunctionCodecs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="disjunctionCodecs"></a>
+      <a id="disjunctionCodecs:disjunctionCodecs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="disjunctionCodecs$.html"><span class="name">disjunctionCodecs</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@disjunctionCodecs" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides <a href="Decode.html" class="extype" name="io.jfc.Decode">Decode</a> and <a href="Encode.html" class="extype" name="io.jfc.Encode">Encode</a> instances for disjunction types with reasonable names for the
+sides.</p>
+    </li><li name="io.jfc.jawn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="jawn"></a>
+      <a id="jawn:jawn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="jawn/package.html"><span class="name">jawn</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@jawn" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.jfc.syntax" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="syntax"></a>
+      <a id="syntax:syntax"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="syntax/package.html"><span class="name">syntax</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.package@syntax" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides syntax via enrichment classes.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
