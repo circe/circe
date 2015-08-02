@@ -74,6 +74,11 @@
                   <li class="in" name="io.jfc.Decode"><span>Decode</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
+                <span class="filtertype">Implicitly<br />
+                </span>
+                <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
+                </ol>
+              </div><div id="ancestors">
             <span class="filtertype"></span>
             <ol>
               <li class="hideall out"><span>Hide All</span></li>
@@ -167,6 +172,51 @@
       </a>
     </span>
       <p class="shortcomment cmt">Combine two decoders.</p>
+    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(other:String):String"></a>
+      <a id="+(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@+(other:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method any2stringadd in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-&gt;[B](y:B):(A,B)"></a>
+      <a id="-&gt;[B](B):(Decode[A],B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -241,6 +291,90 @@
       </a>
     </span>
       <p class="shortcomment cmt">Decode the given json.</p>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring((Decode[A])⇒Boolean,⇒Any):Decode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a>
+      <a id="ensuring((Decode[A])⇒Boolean):Decode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring(Boolean,⇒Any):Decode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean):A"></a>
+      <a id="ensuring(Boolean):Decode[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -315,6 +449,30 @@
       </a>
     </span>
       <p class="shortcomment cmt">Monadic bind.</p>
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="formatted(fmtstr:String):String"></a>
+      <a id="formatted(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@formatted(fmtstr:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method StringFormat in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -367,18 +525,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.jfc.Decode#kleisli" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="kleisli:cats.data.Kleisli[[β]cats.data.Xor[io.jfc.DecodeFailure,β],io.jfc.HCursor,A]"></a>
-      <a id="kleisli:Kleisli[[β]Xor[DecodeFailure,β],HCursor,A]"></a>
+      <a id="kleisli:cats.data.Kleisli[[x]cats.data.Xor[io.jfc.DecodeFailure,x],io.jfc.HCursor,A]"></a>
+      <a id="kleisli:Kleisli[[x]Xor[DecodeFailure,x],HCursor,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">kleisli</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[[β]<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodeFailure.html" class="extype" name="io.jfc.DecodeFailure">DecodeFailure</a>, <span class="extype" name="io.jfc.Decode.&lt;refinement&gt;.Λ$.β">β</span>], <a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a>, <span class="extype" name="io.jfc.Decode.A">A</span>]</span>
+        <span class="name">kleisli</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[[x]<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodeFailure.html" class="extype" name="io.jfc.DecodeFailure">DecodeFailure</a>, <span class="extype" name="io.jfc.Decode.&lt;refinement&gt;.L.x">x</span>], <a href="HCursor.html" class="extype" name="io.jfc.HCursor">HCursor</a>, <span class="extype" name="io.jfc.Decode.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.jfc.Decode@kleisli:cats.data.Kleisli[[β]cats.data.Xor[io.jfc.DecodeFailure,β],io.jfc.HCursor,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.jfc.Decode@kleisli:cats.data.Kleisli[[x]cats.data.Xor[io.jfc.DecodeFailure,x],io.jfc.HCursor,A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -656,6 +814,27 @@
       </a>
     </span>
       <p class="shortcomment cmt">Choose the first succeeding decoder.</p>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(Decode[A],B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.Decode@→[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
             </div>
 
@@ -670,7 +849,23 @@
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
-        
+        <div class="conversion" name="scala.Predef.any2stringadd">
+              <h3>Inherited by implicit conversion any2stringadd from
+                <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.StringFormat">
+              <h3>Inherited by implicit conversion StringFormat from
+                <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.Ensuring">
+              <h3>Inherited by implicit conversion Ensuring from
+                <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.ArrowAssoc">
+              <h3>Inherited by implicit conversion ArrowAssoc from
+                <a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.Decode">Decode</a>[<span class="extype" name="io.jfc.Decode.A">A</span>]]
+              </h3>
+            </div>
         </div>
 
         <div id="groupedMembers">

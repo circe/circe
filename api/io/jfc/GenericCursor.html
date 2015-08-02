@@ -74,7 +74,7 @@ the operations that we need for <code>withFocusM</code>.
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -84,6 +84,11 @@ the operations that we need for <code>withFocusM</code>.
                 </span>
                 <ol id="linearization">
                   <li class="in" name="io.jfc.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+                <span class="filtertype">Implicitly<br />
+                </span>
+                <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -454,7 +459,7 @@ order.</p>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, find the first element at or to
 its right that matches the given predicate.</p>
-    </li><li name="io.jfc.GenericCursor#first" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="io.jfc.GenericCursor#first" visbl="pub" data-isabs="true" fullComment="no" group="ArrayNavigation">
       <a id="first:GenericCursor.this.Result"></a>
       <a id="first:Result"></a>
       <h4 class="signature">
@@ -522,7 +527,7 @@ its right that matches the given predicate.</p>
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the last element.</p>
-    </li><li name="io.jfc.GenericCursor#left" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="io.jfc.GenericCursor#left" visbl="pub" data-isabs="true" fullComment="no" group="ArrayNavigation">
       <a id="left:GenericCursor.this.Result"></a>
       <a id="left:Result"></a>
       <h4 class="signature">
@@ -594,7 +599,7 @@ of times. A negative value will move the cursor right.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the left.</p>
-    </li><li name="io.jfc.GenericCursor#right" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="io.jfc.GenericCursor#right" visbl="pub" data-isabs="true" fullComment="no" group="ArrayNavigation">
       <a id="right:GenericCursor.this.Result"></a>
       <a id="right:Result"></a>
       <h4 class="signature">
@@ -807,6 +812,51 @@ number of times. A negative value will move the cursor left.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(other:String):String"></a>
+      <a id="+(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@+(other:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method any2stringadd in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-&gt;[B](y:B):(A,B)"></a>
+      <a id="-&gt;[B](B):(GenericCursor[C],B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -864,6 +914,90 @@ number of times. A negative value will move the cursor left.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring((GenericCursor[C])⇒Boolean,⇒Any):GenericCursor[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a>
+      <a id="ensuring((GenericCursor[C])⇒Boolean):GenericCursor[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring(Boolean,⇒Any):GenericCursor[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean):A"></a>
+      <a id="ensuring(Boolean):GenericCursor[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -919,6 +1053,30 @@ number of times. A negative value will move the cursor left.
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="formatted(fmtstr:String):String"></a>
+      <a id="formatted(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@formatted(fmtstr:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method StringFormat in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1143,6 +1301,27 @@ number of times. A negative value will move the cursor left.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(GenericCursor[C],B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.jfc.GenericCursor@→[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
             </div>
 
@@ -1157,11 +1336,30 @@ number of times. A negative value will move the cursor left.
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
-        
+        <div class="conversion" name="scala.Predef.any2stringadd">
+              <h3>Inherited by implicit conversion any2stringadd from
+                <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.StringFormat">
+              <h3>Inherited by implicit conversion StringFormat from
+                <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.Ensuring">
+              <h3>Inherited by implicit conversion Ensuring from
+                <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.ArrowAssoc">
+              <h3>Inherited by implicit conversion ArrowAssoc from
+                <a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<span class="extype" name="io.jfc.GenericCursor.C">C</span>]]
+              </h3>
+            </div>
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="ArrayNavigation">
+              <h3>Array navigation</h3>
+              <div class="comment cmt"><p>Operations for moving around an array.</p></div>
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>
