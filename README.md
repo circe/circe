@@ -3,7 +3,8 @@
 [![Build status](https://img.shields.io/travis/travisbrown/jfc/master.svg)](https://travis-ci.org/travisbrown/jfc)
 [![Coverage status](https://img.shields.io/codecov/c/github/travisbrown/jfc/master.svg)](https://codecov.io/github/travisbrown/jfc)
 
-jfc is a JSON library for Scala.
+jfc is a JSON library for Scala. The name stands for "JSON for [cats][cats]". The rest of this page
+tries to give some justification for its existence. There are also [API docs][api].
 
 ## Showing off
 
@@ -49,8 +50,8 @@ jfc is a fork of Argonaut with a few important differences.
 jfc depends on [cats][cats] instead of [Scalaz][scalaz], and cats is the only dependency of the
 `core` project.
 
-Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the `jawn`
-subproject), [Shapeless][shapeless] (for automatic codec derivation in `auto`), and
+Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][jfc-jawn]
+subproject), [Shapeless][shapeless] (for automatic codec derivation in [`auto`][jfc-auto]), and
 [Twitter Util][util] (for tools for asynchronous parsing in `async`), but it would be possible to
 replace the functionality provided by these subprojects with alternative implementations that use
 other libraries.
@@ -58,9 +59,9 @@ other libraries.
 ### Parsing
 
 jfc doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
-and codecs. The `jawn` subproject provides support for parsing JSON via a [Jawn][jawn] facade. Jawn
-is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the fussiest code
-in Argonaut.
+and codecs. The [`jawn`][jfc-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
+facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
+fussiest code in Argonaut.
 
 ### Lenses
 
@@ -76,10 +77,9 @@ of Argonaut's limited macro-based derivation (which  does not support sealed tra
 example), jfc includes a subproject (`auto`) that provides generic codec derivation using
 [Shapeless][shapeless].
 
-This subproject is currently a simplified port of [argonaut-shapeless][argonaut-shapeless] that
-provides fully-automatic derivation of instances for tuples, case classes, and sealed trait
-hierarchies. It also includes derivation of "incomplete" case classes (see my recent
-[blog post][incompletes] for details).
+[This subproject][jfc-auto] is currently a simplified port of
+[argonaut-shapeless][argonaut-shapeless] that provides fully-automatic derivation of instances for
+tuples, case classes, and sealed trait hierarchies. It also includes derivation of "incomplete" case classes (see my recent [blog post][incompletes] for details).
 
 We may eventually include an additional subproject with less automatic, more
 customizable codec derivation.
@@ -94,7 +94,7 @@ personal taste, and may change in the future.
 The Argonaut documentation is good, but it could be better: to take just one example, it can be hard
 to tell at a glance why there are three different `Cursor`, `HCursor`, and `ACursor` types. In this
 particular case, jfc introduces an abstraction over cursors that makes the relationship clearer and
-allows these three types to share API documentation.
+allows these three types to [share API documentation][generic-cursor].
 
 ### Testing
 
@@ -107,7 +107,7 @@ jfc aims to be more focused on performance. I'm still experimenting with the rig
 open to using mutability, inheritance, and all kinds of other horrible things under the hood if they
 make jfc faster (the public API does not and will never expose any of this, though).
 
-My initial benchmarks suggest this is at least kind of working:
+[My initial benchmarks][benchmarks] suggest this is at least kind of working:
 
 ```
 [info] Benchmark                       Mode  Cnt      Score      Error  Units
@@ -161,14 +161,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
+[api]: https://travisbrown.github.io/jfc/api/#io.jfc.package
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
+[benchmarks]: https://github.com/travisbrown/jfc/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [discipline]: https://github.com/typelevel/discipline
 [finch]: https://github.com/finagle/finch
+[generic-cursor]: https://travisbrown.github.io/jfc/api/#io.jfc.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
+[jfc-auto]: https://travisbrown.github.io/jfc/api/#io.jfc.auto.package
+[jfc-jawn]: https://travisbrown.github.io/jfc/api/#io.jfc.jawn.package
 [markhibberd]: https://github.com/markhibberd
 [monocle]: https://github.com/julien-truffaut/Monocle
 [scalaz]: https://github.com/scalaz/scalaz
