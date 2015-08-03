@@ -13,7 +13,7 @@ private[jfc] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor
   type Result = Option[Cursor]
   type M[x[_]] = Functor[x]
 
-  def undo: Json = {
+  def top: Json = {
     @tailrec
     def go(c: Cursor): Json = c match {
       case CJson(j) => j
@@ -46,8 +46,8 @@ private[jfc] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor
   def lefts: Option[List[Json]] = None
   def rights: Option[List[Json]] = None
 
-  def fieldSet: Option[Set[String]] = focus.asObj.map(_.fieldSet)
-  def fields: Option[List[String]] = focus.asObj.map(_.fields)
+  def fieldSet: Option[Set[String]] = focus.asObject.map(_.fieldSet)
+  def fields: Option[List[String]] = focus.asObject.map(_.fields)
 
   def left: Option[Cursor] = None
   def right: Option[Cursor] = None
@@ -105,7 +105,7 @@ private[jfc] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor
   def field(k: String): Option[Cursor] = None
 
   def downField(k: String): Option[Cursor] =
-    focus.asObj.flatMap(o => o(k).map(j => CObject(j, k, this, false, o)))
+    focus.asObject.flatMap(o => o(k).map(j => CObject(j, k, this, false, o)))
 
   def deleteGoLeft: Option[Cursor] = None
   def deleteGoRight: Option[Cursor] = None

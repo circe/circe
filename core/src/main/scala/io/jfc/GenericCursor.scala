@@ -81,7 +81,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
    *
    * @group Access
    */
-  def undo: Focus[Json]
+  def top: Focus[Json]
 
   /**
    * Move the focus to the parent.

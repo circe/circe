@@ -20,7 +20,7 @@ trait GenericEncode extends LowPriorityGenericEncode {
     Encode.instance {
       case h :: t =>
         val tailJson = encodeTail.value(t)
-        tailJson.asObj.fold(tailJson) { obj =>
+        tailJson.asObject.fold(tailJson) { obj =>
           Json.fromJsonObject((key.value.name -> encodeHead.value(h)) +: obj)
         }
     }

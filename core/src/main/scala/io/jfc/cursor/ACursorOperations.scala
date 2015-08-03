@@ -20,7 +20,7 @@ private[jfc] trait ACursorOperations extends GenericCursor[ACursor] { this: ACur
     ACursor(either.flatMap(c => f(c).either))
 
   def focus: Option[Json] = success.map(_.focus)
-  def undo: Option[Json] = success.map(_.undo)
+  def top: Option[Json] = success.map(_.top)
   def up: ACursor = withHCursor(_.up)
 
   def delete: ACursor = withHCursor(_.delete)

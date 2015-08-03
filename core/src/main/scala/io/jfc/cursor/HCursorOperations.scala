@@ -14,7 +14,7 @@ private[jfc] trait HCursorOperations extends GenericCursor[HCursor] { this: HCur
   type M[x[_]] = Functor[x]
 
   def focus: Json = cursor.focus
-  def undo: Json = cursor.undo
+  def top: Json = cursor.top
   def up: ACursor = history.acursorElement(cursor, _.up, CursorOpUp)
 
   def delete: ACursor = history.acursorElement(cursor, _.delete, CursorOpDeleteGoParent)

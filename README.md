@@ -146,6 +146,66 @@ The `Foos` benchmarks work with a map containing case class values, and the `Int
 of integers. `J` suffixes indicate jfc's throughput and `A` is for Argonaut. Higher numbers are
 better.
 
+## Usage
+
+This section needs a lot of expanding.
+
+### Encoding and decoding
+
+jfc uses `Encode` and `Decode` type classes for encoding and decoding. An `Encode[A]` instance
+provides a function that will convert any `A` to a `JSON`, and a `Decode[A]` takes a `Json` value to
+either an exception or an `A`. jfc provides implicit instances of these type classes for many types
+from the Scala standard library, including `Int`, `String`, and [others][encode]. It also provides
+instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an `Encode`
+instance.
+
+### Transforming JSON
+
+Suppose we have the following JSON document:
+
+```scala
+import io.jfc._, io.jfc.auto._, io.jfc.jawn._, io.jfc.syntax._
+import cats.data.Xor
+
+val json: String = """
+  {
+    "id": "c730433b-082c-4984-9d66-855c243266f0",
+    "name": "Foo",
+    "counts": [1, 2, 3],
+    "values": {
+      "bar": true,
+      "baz": 100.001,
+      "qux": ["a", "b"]
+    }
+  }
+"""
+
+val doc: Json = parse(json).getOrElse(Json.empty)
+```
+
+In order to transform this document we need to create an `HCursor` with the focus at the document's
+root:
+
+```scala
+val cursor: HCursor = doc.hcursor
+```
+
+We can then use [various operations][generic-cursor] to move the focus of the cursor around the
+document and to "modify" the current focus:
+
+```scala
+val reversedNameCursor: ACursor =
+  cursor.downField("name").withFocus(_.mapString(_.reverse))
+```
+
+We can then return to the root of the document and return its value with `top`:
+
+```scala
+val reversedName: Option[Json] = reversedNameCursor.top
+```
+
+The result will contain the original document with the `"name"` field reversed.
+
 ## Contributors
 
 jfc is a fork of Argonaut, and if you find it at all useful, you should thank
@@ -173,6 +233,7 @@ limitations under the License.
 [benchmarks]: https://github.com/travisbrown/jfc/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [discipline]: https://github.com/typelevel/discipline
+[encode]: https://travisbrown.github.io/jfc/api/#io.jfc.Encode$
 [finch]: https://github.com/finagle/finch
 [generic-cursor]: https://travisbrown.github.io/jfc/api/#io.jfc.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
