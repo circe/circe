@@ -61,6 +61,16 @@ lazy val root = project.in(file("."))
   .settings(docSettings)
   .settings(noPublish)
   .settings(scalacOptions in (Compile, console) := compilerOptions)
+  .settings(
+    initialCommands in console :=
+      """
+        |import io.jfc._
+        |import io.jfc.auto._
+        |import io.jfc.jawn._
+        |import io.jfc.syntax._
+        |import cats.data.Xor
+      """.stripMargin
+  )
   .aggregate(core, auto, jawn, async, benchmark)
   .dependsOn(core, auto, jawn, async)
 
