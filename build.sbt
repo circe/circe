@@ -35,7 +35,6 @@ lazy val baseSettings = Seq(
     }
   ),
   libraryDependencies ++= Seq(
-    compilerPlugin("org.spire-math" %% "kind-projector" % "0.6.3"),
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ) ++ testDependencies.map(_ % "test"),
   resolvers += Resolver.sonatypeRepo("snapshots")
@@ -52,6 +51,7 @@ lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publis
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
+  scalacOptions in (ScalaUnidoc, unidoc) := Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/jfc.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
 )

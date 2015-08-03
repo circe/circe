@@ -13,6 +13,10 @@ import io.jfc.cursor.{ CArray, CJson, CObject, CursorOperations }
  * with `withFocus` or changed using the navigation methods `left`, `right`,
  * etc.
  *
+ * @groupname Ungrouped Cursor fields and operations
+ * @groupprio Ungrouped 1
+ *
+ * @see [[GenericCursor]]
  * @author Travis Brown
  */
 abstract class Cursor extends CursorOperations {

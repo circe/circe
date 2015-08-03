@@ -6,6 +6,12 @@ import io.jfc.cursor.ACursorOperations
 
 /**
  * A cursor that tracks history and represents the possibility of failure.
+ *
+ * @groupname Ungrouped ACursor fields and operations
+ * @groupprio Ungrouped 1
+ *
+ * @see [[GenericCursor]]
+ * @author Travis Brown
  */
 case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
@@ -31,41 +37,41 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   def failed: Boolean = !succeeded
 
   /**
-   * Return the underlying cursor.
+   * Return the underlying cursor if successful.
    */
   def cursor: Option[Cursor] = success.map(_.cursor)
+
+  /**
+   * Return the underlying cursor.
+   */
   def any: HCursor = either.merge
+
+  /**
+   * Return the underlying cursor's history.
+   */
   def history: CursorHistory = any.history
 
+  /**
+   * If the last operation was not successful, reattempt it.
+   */
   def reattempt: ACursor = either.fold(
-    invalid => ACursor.ok(new HCursor(invalid.cursor, CursorOp.reattemptOp +: invalid.history)),
+    invalid => ACursor.ok(HCursor(invalid.cursor, CursorOp.reattemptOp +: invalid.history)),
     _ => this
   )
 
-  /** Return the current focus, iff we are succeeded */
-
-  /** Return the previous focus, iff we are !succeeded. */
+  /**
+   * Return the previous focus, if and only if we didn't succeed.
+   */
   def failureFocus: Option[Json] = failure.map(_.focus)
 
-  /** Update the focus with the given function (alias for `>->`). */
-
-  /** Update the focus with the given function in a applicative (alias for `>-->`). */
-
   /**
-   * Return the values left of focus in a JSON array.
+   * Return the current cursor or the given one if this one isn't successful.
    */
-  def lefts: Option[List[Json]] = success.flatMap(_.lefts)
-
-  /**
-   * Return the values right of focus in a JSON array.
-   */
-  def rights: Option[List[Json]] = success.flatMap(_.rights)
-
-  def fieldSet: Option[Set[String]] = success.flatMap(_.fieldSet)
-  def fields: Option[List[String]] = success.flatMap(_.fields)
-
   def |||(c: => ACursor): ACursor = if (succeeded) this else c
 
+  /**
+   * Return a [[cats.data.Validated]] of the underlying cursor.
+   */
   def validation: Validated[HCursor, HCursor] = either.toValidated
 }
 

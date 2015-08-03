@@ -63,8 +63,8 @@ trait Decode[A] { self =>
   /**
    * Convert to a kleisli arrow.
    */
-  def kleisli: Kleisli[Xor[DecodeFailure, ?], HCursor, A] =
-    Kleisli[Xor[DecodeFailure, ?], HCursor, A](apply(_))
+  def kleisli: Kleisli[({ type L[x] = Xor[DecodeFailure, x] })#L, HCursor, A] =
+    Kleisli[({ type L[x] = Xor[DecodeFailure, x] })#L, HCursor, A](apply(_))
 
   /**
    * Combine two decoders.
@@ -102,21 +102,63 @@ trait Decode[A] { self =>
     } yield (a, b)
 }
 
+/**
+ * Utilities and instances for [[Decode]].
+ *
+ * @groupname Utilities Miscellaneous utilities
+ * @groupprio Utilities 0
+ *
+ * @groupname Decode Decode instances
+ * @groupprio Decode 2
+ *
+ * @groupname Disjunction Disjunction instances
+ * @groupdesc Disjunction Instance creation methods for disjunction-like types.
+ * Note that these are implicit, since they require non-obvious decisions about
+ * the names of the discriminators. If you want instances for these types you
+ * can include the following import in your program:
+ * {{{
+ *    import io.jfc.disjunctionCodecs._
+ * }}}
+ * @groupprio Disjunction 8
+ *
+ * @groupname Instances Type class instances
+ * @groupprio Instances 10
+ *
+ * @author Travis Brown
+ */
 object Decode {
   import Json._
 
+  /**
+   * Return an instance for a given type.
+   *
+   * @group Utilities
+   */
   def apply[A](implicit d: Decode[A]): Decode[A] = d
 
+  /**
+   * Construct an instance from a function.
+   *
+   * @group Utilities
+   */
   def instance[A](f: HCursor => Xor[DecodeFailure, A]): Decode[A] = new Decode[A] {
     def apply(c: HCursor): Xor[DecodeFailure, A] = f(c)
   }
 
+  /**
+   * Construct an instance from a function that will reattempt on failure.
+   *
+   * @group Utilities
+   */
   def withReattempt[A](f: ACursor => Xor[DecodeFailure, A]): Decode[A] = new Decode[A] {
     def apply(c: HCursor): Xor[DecodeFailure, A] = tryDecode(c.acursor)
 
     override def tryDecode(c: ACursor) = f(c)
   }
 
+  /**
+   * @group Decode
+   */
   implicit def fromCodec[A](implicit c: Codec[A]): Decode[A] = c.decoder
 
   private[this] def partialDecoder[A](message: String)(f: PartialFunction[Json, A]): Decode[A] =
@@ -127,10 +169,19 @@ object Decode {
       )
     )
 
+  /**
+   * @group Decode
+   */
   implicit val decodeHCursor: Decode[HCursor] = instance(Xor.right)
 
+  /**
+   * @group Decode
+   */
   implicit val decodeJson: Decode[Json] = instance(c => Xor.right(c.focus))
 
+  /**
+   * @group Decode
+   */
   implicit val decodeString: Decode[String] = instance { c =>
     c.focus match {
       case JString(string) => Xor.right(string)
@@ -138,16 +189,25 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeUnit: Decode[Unit] = partialDecoder("Unit") {
     case JNull => Xor.right(())
     case JObject(obj) if obj.isEmpty => Xor.right(())
     case JArray(arr) if arr.length == 0 => Xor.right(())
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeBoolean: Decode[Boolean] = partialDecoder("Boolean") {
     case JBool(boolean) => boolean
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeChar: Decode[Char] = instance { c =>
     c.focus match {
       case JString(string) if string.length == 1 => Xor.right(string.charAt(0))
@@ -155,16 +215,25 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeFloat: Decode[Float] = partialDecoder("String") {
     case JNull => Float.NaN
     case JNumber(number) => number.toDouble.toFloat
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeDouble: Decode[Double] = partialDecoder("String") {
     case JNull => Double.NaN
     case JNumber(number) => number.toDouble
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeByte: Decode[Byte] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToByte)
@@ -177,6 +246,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeShort: Decode[Short] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToShort)
@@ -189,6 +261,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeInt: Decode[Int] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToInt)
@@ -201,6 +276,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeLong: Decode[Long] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToLong)
@@ -213,6 +291,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeBigInt: Decode[BigInt] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.truncateToBigInt)
@@ -225,6 +306,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit val decodeBigDecimal: Decode[BigDecimal] = instance { c =>
     c.focus match {
       case JNumber(number) => Xor.right(number.toBigDecimal)
@@ -237,6 +321,9 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit def decodeCanBuildFrom[A, C[_]](implicit
     d: Decode[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
@@ -254,6 +341,9 @@ object Decode {
     )
   }
 
+  /**
+   * @group Decode
+   */
   implicit def decodeOption[A](implicit d: Decode[A]): Decode[Option[A]] =
     withReattempt { a =>
       a.success.fold[Xor[DecodeFailure, Option[A]]](Xor.right(None)) { valid =>
@@ -265,35 +355,9 @@ object Decode {
       }
     }
 
-  def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
-    da: Decode[A],
-    db: Decode[B]
-  ): Decode[Xor[A, B]] = instance { c =>
-    val l = (c.downField(leftKey)).success
-    val r = (c.downField(rightKey)).success
-
-    (l, r) match {
-      case (Some(hcursor), None) => da(hcursor).map(Xor.left(_))
-      case (None, Some(hcursor)) => db(hcursor).map(Xor.right(_))
-      case _ => Xor.left(DecodeFailure("[A, B]Xor[A, B]", c.history))
-    }
-  }
-
-  def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
-    da: Decode[A],
-    db: Decode[B]
-  ): Decode[Either[A, B]] =
-    decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
-
-  def decodeValidated[E, A](failureKey: String, successKey: String)(implicit
-    de: Decode[E],
-    da: Decode[A]
-  ): Decode[Validated[E, A]] =
-    decodeXor[E, A](
-      failureKey,
-      successKey
-    ).map(_.toValidated).withErrorMessage("[E, A]Validated[E, A]")
-
+  /**
+   * @group Decode
+   */
   implicit def decodeMap[M[K, +V] <: Map[K, V], V](implicit
     d: Decode[V],
     cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
@@ -324,9 +388,15 @@ object Decode {
     }
   }
 
+  /**
+   * @group Decode
+   */
   implicit def decodeSet[A: Decode]: Decode[Set[A]] =
     decodeCanBuildFrom[A, List].map(_.toSet).withErrorMessage("[A]Set[A]")
 
+  /**
+   * @group Decode
+   */
   implicit def decodeNonEmptyList[A: Decode]: Decode[NonEmptyList[A]] =
     decodeCanBuildFrom[A, List].flatMap { l =>
       instance { c =>
@@ -337,6 +407,47 @@ object Decode {
       }
     }.withErrorMessage("[A]NonEmptyList[A]")
 
+  /**
+   * @group Disjunction
+   */
+  def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
+    da: Decode[A],
+    db: Decode[B]
+  ): Decode[Xor[A, B]] = instance { c =>
+    val l = (c.downField(leftKey)).success
+    val r = (c.downField(rightKey)).success
+
+    (l, r) match {
+      case (Some(hcursor), None) => da(hcursor).map(Xor.left(_))
+      case (None, Some(hcursor)) => db(hcursor).map(Xor.right(_))
+      case _ => Xor.left(DecodeFailure("[A, B]Xor[A, B]", c.history))
+    }
+  }
+
+  /**
+   * @group Disjunction
+   */
+  def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
+    da: Decode[A],
+    db: Decode[B]
+  ): Decode[Either[A, B]] =
+    decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
+
+  /**
+   * @group Disjunction
+   */
+  def decodeValidated[E, A](failureKey: String, successKey: String)(implicit
+    de: Decode[E],
+    da: Decode[A]
+  ): Decode[Validated[E, A]] =
+    decodeXor[E, A](
+      failureKey,
+      successKey
+    ).map(_.toValidated).withErrorMessage("[E, A]Validated[E, A]")
+
+  /**
+   * @group Instances
+   */
   implicit val monadDecode: Monad[Decode] = new Monad[Decode] {
     def pure[A](a: A): Decode[A] = instance(_ => Xor.right(a))
     def flatMap[A, B](fa: Decode[A])(f: A => Decode[B]): Decode[B] = fa.flatMap(f)

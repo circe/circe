@@ -4,6 +4,15 @@ import algebra.Eq
 import cats.data.Xor
 import io.jfc.cursor.HCursorOperations
 
+/**
+ * A cursor that tracks the history of operations performed with it.
+ *
+ * @groupname Ungrouped HCursor fields and operations
+ * @groupprio Ungrouped 1
+ *
+ * @see [[GenericCursor]]
+ * @author Travis Brown
+ */
 case class HCursor(cursor: Cursor, history: CursorHistory) extends HCursorOperations {
   /**
    * Create an [[ACursor]] for this cursor.
