@@ -51,7 +51,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <span class="extype" name="io.jfc.cursor.HCursorOperations">HCursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.jfc.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -117,7 +118,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.jfc.cursor.HCursorOperations.Focus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="io.jfc.cursor.HCursorOperations.Focus" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="Focus[x]=cats.Id[x]"></a>
       <a id="Focus[x]:Focus[x]"></a>
       <h4 class="signature">
@@ -133,8 +134,9 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations.M" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">The context that the cursor is available in.</p><div class="fullcomment"><div class="comment cmt"><p>The context that the cursor is available in.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.jfc.cursor.HCursorOperations.M" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="M[x[_]]=cats.Functor[x]"></a>
       <a id="M[x[_]]:M[x]"></a>
       <h4 class="signature">
@@ -150,8 +152,9 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations.Result" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">The type class including the operations needed for <code>withFocusM</code>.</p><div class="fullcomment"><div class="comment cmt"><p>The type class including the operations needed for <code>withFocusM</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.jfc.cursor.HCursorOperations.Result" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="Result=io.jfc.ACursor"></a>
       <a id="Result:Result"></a>
       <h4 class="signature">
@@ -167,7 +170,8 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
+      <p class="shortcomment cmt">The type returned by navigation and modifications operations.</p><div class="fullcomment"><div class="comment cmt"><p>The type returned by navigation and modifications operations.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -288,7 +292,7 @@
       </a>
     </span>
       <p class="shortcomment cmt">Create an <a href="ACursor.html" class="extype" name="io.jfc.ACursor">ACursor</a> for this cursor.</p>
-    </li><li name="io.jfc.cursor.HCursorOperations#as" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#as" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="as[A](implicitdecode:io.jfc.Decode[A]):cats.data.Xor[io.jfc.DecodeFailure,A]"></a>
       <a id="as[A](Decode[A]):Xor[DecodeFailure,A]"></a>
       <h4 class="signature">
@@ -363,7 +367,7 @@
       </a>
     </span>
       
-    </li><li name="io.jfc.cursor.HCursorOperations#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="delete:io.jfc.ACursor"></a>
       <a id="delete:ACursor"></a>
       <h4 class="signature">
@@ -381,7 +385,7 @@
     </span>
       <p class="shortcomment cmt">Delete the focus and move to its parent.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to its parent.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoField" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectModification">
       <a id="deleteGoField(k:String):io.jfc.ACursor"></a>
       <a id="deleteGoField(String):ACursor"></a>
       <h4 class="signature">
@@ -401,7 +405,7 @@
 object.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the sibling with the given key in a JSON
 object.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoFirst" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoFirst" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoFirst:io.jfc.ACursor"></a>
       <a id="deleteGoFirst:ACursor"></a>
       <h4 class="signature">
@@ -419,7 +423,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the first element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the first element in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoLast" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoLast" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoLast:io.jfc.ACursor"></a>
       <a id="deleteGoLast:ACursor"></a>
       <h4 class="signature">
@@ -437,7 +441,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the last element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the last element in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoLeft" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoLeft:io.jfc.ACursor"></a>
       <a id="deleteGoLeft:ACursor"></a>
       <h4 class="signature">
@@ -455,7 +459,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the left in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the left in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteGoRight" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoRight:io.jfc.ACursor"></a>
       <a id="deleteGoRight:ACursor"></a>
       <h4 class="signature">
@@ -473,7 +477,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the right in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the right in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteLefts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteLefts:io.jfc.ACursor"></a>
       <a id="deleteLefts:ACursor"></a>
       <h4 class="signature">
@@ -491,7 +495,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the left of the focus in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#deleteRights" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#deleteRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteRights:io.jfc.ACursor"></a>
       <a id="deleteRights:ACursor"></a>
       <h4 class="signature">
@@ -509,7 +513,7 @@ object.
     </span>
       <p class="shortcomment cmt">Delete all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the right of the focus in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#downArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#downArray" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downArray:io.jfc.ACursor"></a>
       <a id="downArray:ACursor"></a>
       <h4 class="signature">
@@ -527,7 +531,7 @@ object.
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, move to its first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to its first element.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#downAt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#downAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downAt(p:io.jfc.Json=&gt;Boolean):io.jfc.ACursor"></a>
       <a id="downAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
@@ -547,7 +551,7 @@ object.
 given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the first element that satisfies the
 given predicate.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#downField" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#downField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
       <a id="downField(k:String):io.jfc.ACursor"></a>
       <a id="downField(String):ACursor"></a>
       <h4 class="signature">
@@ -565,7 +569,7 @@ given predicate.
     </span>
       <p class="shortcomment cmt">If the focus is a JSON object, move to the value of the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, move to the value of the given key.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#downN" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#downN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downN(n:Int):io.jfc.ACursor"></a>
       <a id="downN(Int):ACursor"></a>
       <h4 class="signature">
@@ -701,7 +705,7 @@ given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">Create a failed <a href="ACursor.html" class="extype" name="io.jfc.ACursor">ACursor</a> for this cursor.</p>
-    </li><li name="io.jfc.cursor.HCursorOperations#field" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#field" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
       <a id="field(k:String):io.jfc.ACursor"></a>
       <a id="field(String):ACursor"></a>
       <h4 class="signature">
@@ -721,7 +725,7 @@ given predicate.
 key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a value in a JSON object, move to a sibling with the given
 key.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#fieldSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#fieldSet" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
       <a id="fieldSet:Option[Set[String]]"></a>
       <a id="fieldSet:Option[Set[String]]"></a>
       <h4 class="signature">
@@ -739,7 +743,7 @@ key.
     </span>
       <p class="shortcomment cmt">If the focus is a JSON object, return its field names in a set.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in a set.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#fields" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#fields" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
       <a id="fields:Option[List[String]]"></a>
       <a id="fields:Option[List[String]]"></a>
       <h4 class="signature">
@@ -782,7 +786,7 @@ order.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#find" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#find" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="find(p:io.jfc.Json=&gt;Boolean):io.jfc.ACursor"></a>
       <a id="find((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
@@ -820,7 +824,7 @@ its right that matches the given predicate.
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the first element.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#focus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#focus" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="focus:io.jfc.Json"></a>
       <a id="focus:Json"></a>
       <h4 class="signature">
@@ -862,7 +866,7 @@ its right that matches the given predicate.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#get" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#get" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="get[A](k:String)(implicitdecode:io.jfc.Decode[A]):cats.data.Xor[io.jfc.DecodeFailure,A]"></a>
       <a id="get[A](String)(Decode[A]):Xor[DecodeFailure,A]"></a>
       <h4 class="signature">
@@ -931,7 +935,7 @@ its right that matches the given predicate.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#last" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#last" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="last:io.jfc.ACursor"></a>
       <a id="last:ACursor"></a>
       <h4 class="signature">
@@ -967,7 +971,7 @@ its right that matches the given predicate.
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#leftAt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#leftAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="leftAt(p:io.jfc.Json=&gt;Boolean):io.jfc.ACursor"></a>
       <a id="leftAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
@@ -987,7 +991,7 @@ its right that matches the given predicate.
 given predicate matches the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left until the
 given predicate matches the new focus.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#leftN" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#leftN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="leftN(n:Int):io.jfc.ACursor"></a>
       <a id="leftN(Int):ACursor"></a>
       <h4 class="signature">
@@ -1007,7 +1011,7 @@ given predicate matches the new focus.
 of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the left the given number
 of times. A negative value will move the cursor right.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#lefts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#lefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
       <a id="lefts:Option[List[io.jfc.Json]]"></a>
       <a id="lefts:Option[List[Json]]"></a>
       <h4 class="signature">
@@ -1094,7 +1098,7 @@ of times. A negative value will move the cursor right.
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#rightAt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#rightAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="rightAt(p:io.jfc.Json=&gt;Boolean):io.jfc.ACursor"></a>
       <a id="rightAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
@@ -1114,7 +1118,7 @@ of times. A negative value will move the cursor right.
 given predicate matches the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right until the
 given predicate matches the new focus.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#rightN" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#rightN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="rightN(n:Int):io.jfc.ACursor"></a>
       <a id="rightN(Int):ACursor"></a>
       <h4 class="signature">
@@ -1134,7 +1138,7 @@ given predicate matches the new focus.
 number of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the right the given
 number of times. A negative value will move the cursor left.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#rights" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#rights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
       <a id="rights:Option[List[io.jfc.Json]]"></a>
       <a id="rights:Option[List[Json]]"></a>
       <h4 class="signature">
@@ -1152,7 +1156,7 @@ number of times. A negative value will move the cursor left.
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the right.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.GenericCursor#set" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.GenericCursor#set" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="set(j:io.jfc.Json):C"></a>
       <a id="set(Json):HCursor"></a>
       <h4 class="signature">
@@ -1170,7 +1174,7 @@ number of times. A negative value will move the cursor left.
     </span>
       <p class="shortcomment cmt">Replace the focus.</p><div class="fullcomment"><div class="comment cmt"><p>Replace the focus.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#setLefts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#setLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="setLefts(js:List[io.jfc.Json]):io.jfc.ACursor"></a>
       <a id="setLefts(List[Json]):ACursor"></a>
       <h4 class="signature">
@@ -1188,7 +1192,7 @@ number of times. A negative value will move the cursor left.
     </span>
       <p class="shortcomment cmt">Replace all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the left of the focus in a JSON array.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#setRights" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#setRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="setRights(js:List[io.jfc.Json]):io.jfc.ACursor"></a>
       <a id="setRights(List[Json]):ACursor"></a>
       <h4 class="signature">
@@ -1244,7 +1248,7 @@ accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt
 accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
 large structures (in contrast with recursively binding).
 </p></div></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#undo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#undo" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="undo:io.jfc.Json"></a>
       <a id="undo:Json"></a>
       <h4 class="signature">
@@ -1262,7 +1266,7 @@ large structures (in contrast with recursively binding).
     </span>
       <p class="shortcomment cmt">Return to the root of the document.</p><div class="fullcomment"><div class="comment cmt"><p>Return to the root of the document.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#up" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="up:io.jfc.ACursor"></a>
       <a id="up:ACursor"></a>
       <h4 class="signature">
@@ -1278,7 +1282,8 @@ large structures (in contrast with recursively binding).
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Move the focus to the parent.</p><div class="fullcomment"><div class="comment cmt"><p>Move the focus to the parent.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
+      <p class="shortcomment cmt">Move the focus to the parent.</p><div class="fullcomment"><div class="comment cmt"><p>Move the focus to the parent.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -1348,7 +1353,7 @@ large structures (in contrast with recursively binding).
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#withFocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#withFocus" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="withFocus(f:io.jfc.Json=&gt;io.jfc.Json):io.jfc.HCursor"></a>
       <a id="withFocus((Json)⇒Json):HCursor"></a>
       <h4 class="signature">
@@ -1366,7 +1371,7 @@ large structures (in contrast with recursively binding).
     </span>
       <p class="shortcomment cmt">Modify the focus using the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Modify the focus using the given function.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.jfc.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.jfc.cursor.HCursorOperations#withFocusM" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.jfc.cursor.HCursorOperations#withFocusM" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="withFocusM[F[_]](f:io.jfc.Json=&gt;F[io.jfc.Json])(implicitevidence$1:cats.Functor[F]):F[io.jfc.HCursor]"></a>
       <a id="withFocusM[F[_]]((Json)⇒F[Json])(Functor[F]):F[HCursor]"></a>
       <h4 class="signature">
@@ -1451,11 +1456,38 @@ large structures (in contrast with recursively binding).
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="ArrayNavigation">
-              <h3>Array navigation</h3>
-              <div class="comment cmt"><p>Operations for moving around an array.</p></div>
+        <div class="group" name="TypeMembers">
+              <h3>Type members</h3>
+              
             </div><div class="group" name="Ungrouped">
-              <h3>Ungrouped</h3>
+              <h3>HCursor fields and operations</h3>
+              
+            </div><div class="group" name="Access">
+              <h3>Access and navigation</h3>
+              
+            </div><div class="group" name="Modification">
+              <h3>Modification</h3>
+              
+            </div><div class="group" name="ArrayAccess">
+              <h3>Array access</h3>
+              
+            </div><div class="group" name="ObjectAccess">
+              <h3>Object access</h3>
+              
+            </div><div class="group" name="ArrayNavigation">
+              <h3>Array navigation</h3>
+              
+            </div><div class="group" name="ObjectNavigation">
+              <h3>Object navigation</h3>
+              
+            </div><div class="group" name="ArrayModification">
+              <h3>Array modification</h3>
+              
+            </div><div class="group" name="ObjectModification">
+              <h3>Object modification</h3>
+              
+            </div><div class="group" name="Decoding">
+              <h3>Decoding</h3>
               
             </div>
         </div>
