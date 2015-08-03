@@ -164,6 +164,7 @@ object Json {
   def int(n: Int): Json = JNumber(JsonLong(n.toLong))
   def long(n: Long): Json = JNumber(JsonLong(n))
   def number(n: Double): Option[Json] = JsonDouble(n).asJson
+  def bigDecimal(n: BigDecimal): Json = JNumber(JsonBigDecimal(n))
   def numberOrNull(n: Double): Json = JsonDouble(n).asJsonOrNull
   def numberOrString(n: Double): Json = JsonDouble(n).asJsonOrString
   def string(s: String): Json = JString(s)
