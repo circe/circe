@@ -5,6 +5,6 @@ package io.jfc
  */
 package object syntax {
   implicit class EncodeOps[A](val a: A) extends AnyVal {
-    def toJson(implicit e: Encode[A]): Json = e(a)
+    def asJson(implicit e: Encode[A]): Json = e(a)
   }
 }

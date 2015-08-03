@@ -12,26 +12,26 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
   def fromResult(result: C#Result): Option[C]
 
   val j1: Json = Json.obj(
-    "a" -> (1 to 5).toList.toJson,
-    "b" -> Map("d" -> List(true, false, true)).toJson,
-    "c" -> Map("e" -> 100.1, "f" -> 200.2).toJson
+    "a" -> (1 to 5).toList.asJson,
+    "b" -> Map("d" -> List(true, false, true)).asJson,
+    "c" -> Map("e" -> 100.1, "f" -> 200.2).asJson
   )
 
   val j2: Json = Json.obj(
-    "a" -> (0 to 5).toList.toJson,
-    "b" -> Map("d" -> List(true, false, true)).toJson,
-    "c" -> Map("e" -> 100.1, "f" -> 200.2).toJson
+    "a" -> (0 to 5).toList.asJson,
+    "b" -> Map("d" -> List(true, false, true)).asJson,
+    "c" -> Map("e" -> 100.1, "f" -> 200.2).asJson
   )
 
   val j3: Json = Json.obj(
-    "a" -> (1 to 5).toList.toJson,
-    "b" -> 10.toJson,
-    "c" -> Map("e" -> 100.1, "f" -> 200.2).toJson
+    "a" -> (1 to 5).toList.asJson,
+    "b" -> 10.asJson,
+    "c" -> Map("e" -> 100.1, "f" -> 200.2).asJson
   )
 
   val j4: Json = Json.obj(
-    "a" -> (1 to 5).toList.toJson,
-    "c" -> Map("e" -> 100.1, "f" -> 200.2).toJson
+    "a" -> (1 to 5).toList.asJson,
+    "c" -> Map("e" -> 100.1, "f" -> 200.2).asJson
   )
 
   val cursor: C = fromJson(j1)
@@ -39,7 +39,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
   test("withFocus") {
     val result = fromResult(cursor.downField("a")).map(
     	_.withFocus(j =>
-    		j.asArray.fold(j)(a => Json.fromValues(0.toJson :: a))
+    		j.asArray.fold(j)(a => Json.fromValues(0.asJson :: a))
     	)
     )
     
@@ -47,7 +47,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
   }
 
   test("set") {
-    val result = fromResult(cursor.downField("b")).map(_.set(10.toJson))
+    val result = fromResult(cursor.downField("b")).map(_.set(10.asJson))
 
     assert(result.flatMap(top) === Some(j3))
   }
@@ -59,7 +59,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
       l <- a.lefts
     } yield l
 
-    assert(result === Some(List(3.toJson, 2.toJson, 1.toJson)))
+    assert(result === Some(List(3.asJson, 2.asJson, 1.asJson)))
   }
 
   test("rights") {
@@ -69,7 +69,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
       l <- a.rights
     } yield l
 
-    assert(result === Some(List(5.toJson)))
+    assert(result === Some(List(5.asJson)))
   }
 
   test("fieldSet") {
@@ -87,7 +87,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
       l <- fromResult(a.left)
     } yield l
 
-    assert(result.flatMap(focus) === Some(3.toJson))
+    assert(result.flatMap(focus) === Some(3.asJson))
   }
 
   test("invalid left") {
@@ -106,7 +106,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends Jf
       l <- fromResult(a.right)
     } yield l
 
-    assert(result.flatMap(focus) === Some(5.toJson))
+    assert(result.flatMap(focus) === Some(5.asJson))
   }
 
   test("invalid right") {

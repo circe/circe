@@ -6,10 +6,10 @@ import io.jfc.test.{ CodecTests, JfcSuite }
 import org.scalacheck.Prop.forAll
 
 class SyntaxTests extends JfcSuite {
-  test("EncodeOps.toJson") {
+  test("EncodeOps.asJson") {
     check {
       forAll { (s: String) =>
-        s.toJson === Json.string(s)
+        s.asJson === Json.string(s)
       }
     }
   }
