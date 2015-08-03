@@ -4,7 +4,6 @@ import argonaut.{ Json => JsonA, _ }, Argonaut._
 import io.jfc.{ Json => JsonJ }
 import io.jfc.auto._
 import io.jfc.jawn._
-import io.jfc.syntax._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
@@ -21,11 +20,14 @@ class ExampleData {
     ("b" * i) -> Foo("a" * i, i + 1.0 / i, i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
   }.toMap
 
-  val intsJ: JsonJ = ints.toJson
-  val intsA: JsonA = ints.asJson
+  @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
+  @inline def encodeJ[A](a: A)(implicit encode: Encode[A]): JsonJ = encode(a)
 
-  val foosJ: JsonJ = foos.toJson
-  val foosA: JsonA = foos.asJson
+  val intsJ: JsonJ = encodeJ(ints)
+  val intsA: JsonA = encodeA(ints)
+
+  val foosJ: JsonJ = encodeJ(foos)
+  val foosA: JsonA = encodeA(foos)
 
   val intsJson: String = intsJ.noSpaces
   val foosJson: String = foosJ.noSpaces
@@ -42,17 +44,18 @@ class ExampleData {
 @BenchmarkMode(Array(Mode.Throughput))
 @OutputTimeUnit(TimeUnit.SECONDS)
 class EncodingBenchmark extends ExampleData {
-  @Benchmark
-  def encodeIntsJ: JsonJ = ints.toJson
 
   @Benchmark
-  def encodeIntsA: JsonA = ints.asJson
+  def encodeIntsJ: JsonJ = encodeJ(ints)
 
   @Benchmark
-  def encodeFoosJ: JsonJ = foos.toJson
+  def encodeIntsA: JsonA = encodeA(ints)
 
   @Benchmark
-  def encodeFoosA: JsonA = foos.asJson
+  def encodeFoosJ: JsonJ = encodeJ(foos)
+
+  @Benchmark
+  def encodeFoosA: JsonA = encodeA(foos)
 }
 
 /**

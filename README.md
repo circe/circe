@@ -34,10 +34,10 @@ defined class Qux
 scala> val foo: Foo = Qux(13, Some(14.0))
 foo: Foo = Qux(13,Some(14.0))
 
-scala> foo.toJson.noSpaces
+scala> foo.asJson.noSpaces
 res0: String = {"Qux":{"d":14.0,"i":13}}
 
-scala> decode[Foo](foo.toJson.spaces4)
+scala> decode[Foo](foo.asJson.spaces4)
 res1: cats.data.Xor[io.jfc.Error,Foo] = Right(Qux(13,Some(14.0)))
 ```
 
