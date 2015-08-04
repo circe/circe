@@ -23,12 +23,12 @@ abstract class Cursor extends CursorOperations {
   /**
    * Return the current context of the focus.
    */
-  def context: Context
+  def context: List[Context]
 
   /**
    * Create an [[HCursor]] for this cursor in order to track history.
    */
-  def hcursor: HCursor = HCursor(this, Monoid[CursorHistory].empty)
+  def hcursor: HCursor = HCursor(this, Nil)
 }
 
 object Cursor {
@@ -37,9 +37,10 @@ object Cursor {
    */
   def apply(j: Json): Cursor = CJson(j)
 
-  implicit val showCursor: Show[Cursor] = Show.show(c =>
-    s"${ Show[Context].show(c.context) } ==> ${ Show[Json].show(c.focus) }"
-  )
+  implicit val showCursor: Show[Cursor] = Show.show { c =>
+    val sc = Show[Context]
+    s"${ c.context.map(e => sc.show(e)).mkString(", ") } ==> ${ Show[Json].show(c.focus) }"
+  }
 
   implicit val eqCursor: Eq[Cursor] = Eq.instance {
     case (CJson(j1), CJson(j2)) => Eq[Json].eqv(j1, j2)

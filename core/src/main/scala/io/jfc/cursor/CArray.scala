@@ -1,7 +1,7 @@
 package io.jfc.cursor
 
 import cats.Functor
-import io.jfc.{ Context, ContextElement, Cursor, Json }
+import io.jfc.{ Context, Cursor, Json }
 
 private[jfc] case class CArray(
   focus: Json,
@@ -10,7 +10,7 @@ private[jfc] case class CArray(
   ls: List[Json],
   rs: List[Json]
 ) extends Cursor {
-  def context: Context = ContextElement.arrayContext(focus, ls.length) +: p.context
+  def context: List[Context] = Context.inArray(focus, ls.length) :: p.context
 
   def up: Option[Cursor] = Some {
     val j = Json.fromValues(ls.reverse_:::(focus :: rs))

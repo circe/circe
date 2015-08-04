@@ -1,7 +1,7 @@
 package io.jfc.auto
 
 import cats.data.Xor
-import io.jfc.{ CursorHistory, Decode, DecodeFailure, HCursor, Json }
+import io.jfc.{ Decode, DecodeFailure, HCursor, Json }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
 trait LowPriorityGenericDecode {
