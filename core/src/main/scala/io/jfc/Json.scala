@@ -124,9 +124,47 @@ sealed abstract class Json extends Product with Serializable {
   def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
+   * Typesafe equality method.
+   */
+  def ===(that: Json): Boolean = {
+    def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
+      val it0 = x.iterator
+      val it1 = y.iterator
+      while (it0.hasNext && it1.hasNext) {
+        if (it0.next =!= it1.next) return false
+      }
+      it0.hasNext == it1.hasNext
+    }
+
+    (this, that) match {
+      case (JObject(a), JObject(b)) => a === b
+      case (JString(a), JString(b)) => a == b
+      case (JNumber(a), JNumber(b)) => a === b
+      case (  JBool(a),   JBool(b)) => a == b
+      case ( JArray(a),  JArray(b)) => arrayEq(a, b)
+      case (         x,          y) => x.isNull && y.isNull
+    }
+  }
+
+  def =!=(that: Json): Boolean =
+    !(this === that)
+
+  /**
    * Compute a `String` representation for this JSON value.
    */
   override def toString: String = spaces2
+
+  /**
+   * Universal equality test.
+   */
+  override def equals(that: Any): Boolean =
+    that match {
+      case j: Json => this === j
+      case _ => false
+    }
+
+  override def hashCode: Int =
+    super.hashCode
 }
 
 object Json {
@@ -159,7 +197,12 @@ object Json {
     override def mapObject(f: JsonObject => JsonObject): Json = JObject(f(o))
   }
 
-  val empty: Json = JNull
+  def empty: Json = Empty
+
+  val Empty: Json = JNull
+  val True: Json = JBool(true)
+  val False: Json = JBool(false)
+
   def bool(b: Boolean): Json = JBool(b)
   def int(n: Int): Json = JNumber(JsonLong(n.toLong))
   def long(n: Long): Json = JNumber(JsonLong(n))
@@ -175,15 +218,9 @@ object Json {
   def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
   def fromValues(values: Seq[Json]): Json = JArray(values)
 
-  implicit val eqJson: Eq[Json] = Eq.instance {
-    case (JObject(a), JObject(b)) => Eq[JsonObject].eqv(a, b)
-    case (JString(a), JString(b)) => a == b
-    case (JNumber(a), JNumber(b)) => Eq[JsonNumber].eqv(a, b)
-    case (  JBool(a),   JBool(b)) => a == b
-    case ( JArray(a),  JArray(b)) => Eq[List[Json]].eqv(a.toList, b.toList)
-    case (     JNull,      JNull) => true
-    case (         _,          _) => false
-  }
+  implicit val eqJson: Eq[Json] =
+    Eq.instance(_ === _)
 
-  implicit val showJson: Show[Json] = Show.fromToString[Json]
+  implicit val showJson: Show[Json] =
+    Show.fromToString[Json]
 }

@@ -1,17 +1,17 @@
 package io.jfc.jawn
 
-import io.jfc.Json
+import io.jfc.{ Json, JsonDecimal }
 import jawn.{ FContext, Facade, SupportParser }
 import scala.collection.mutable.ArrayBuffer
 
 object JfcSupportParser extends SupportParser[Json] {
   implicit val facade: Facade[Json] = new Facade[Json] {
-    def jnull(): Json = Json.empty
-    def jfalse(): Json = Json.bool(false)
-    def jtrue(): Json = Json.bool(true)
-    def jnum(s: String): Json = Json.numberOrNull(java.lang.Double.parseDouble(s))
-    def jint(s: String): Json = Json.long(java.lang.Long.parseLong(s))
-    def jstring(s: String): Json = Json.string(s)
+    def jnull(): Json = Json.Empty
+    def jfalse(): Json = Json.False
+    def jtrue(): Json = Json.True
+    def jnum(s: String): Json = Json.JNumber(JsonDecimal(s))
+    def jint(s: String): Json = Json.JNumber(JsonDecimal(s))
+    def jstring(s: String): Json = Json.JString(s)
 
     def singleContext(): FContext[Json] = new FContext[Json] {
       private[this] var value: Json = null
