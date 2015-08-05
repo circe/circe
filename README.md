@@ -112,39 +112,69 @@ jfc aims to be more focused on performance. I'm still experimenting with the rig
 open to using mutability, inheritance, and all kinds of other horrible things under the hood if they
 make jfc faster (the public API does not and will never expose any of this, though).
 
-[My initial benchmarks][benchmarks] suggest this is at least kind of working:
+[My initial benchmarks][benchmarks] suggest this is at least kind of working (higher numbers are
+better):
 
 ```
-[info] Benchmark                       Mode  Cnt      Score      Error  Units
+Benchmark                       Mode  Cnt      Score     Error  Units
 
-[info] DecodingBenchmark.decodeFoosA  thrpt   20   1160.429 ±   32.997  ops/s
-[info] DecodingBenchmark.decodeFoosJ  thrpt   20   1327.090 ±  111.272  ops/s
+DecodingBenchmark.decodeFoosA  thrpt   40   1244.431 ±   2.902  ops/s
+DecodingBenchmark.decodeFoosJ  thrpt   40   1452.909 ±  66.909  ops/s
 
-[info] DecodingBenchmark.decodeIntsA  thrpt   20   7442.144 ±  280.426  ops/s
-[info] DecodingBenchmark.decodeIntsJ  thrpt   20   7527.970 ±  294.254  ops/s
+DecodingBenchmark.decodeIntsA  thrpt   40   7276.600 ±  17.828  ops/s
+DecodingBenchmark.decodeIntsJ  thrpt   40   7731.774 ± 151.947  ops/s
 
-[info] EncodingBenchmark.encodeFoosA  thrpt   20   5726.027 ±  207.383  ops/s
-[info] EncodingBenchmark.encodeFoosJ  thrpt   20   5984.419 ±  278.220  ops/s
+EncodingBenchmark.encodeFoosA  thrpt   40   6162.503 ±  28.440  ops/s
+EncodingBenchmark.encodeFoosJ  thrpt   40   6274.457 ±  27.368  ops/s
 
-[info] EncodingBenchmark.encodeIntsA  thrpt   20  42615.934 ± 3123.112  ops/s
-[info] EncodingBenchmark.encodeIntsJ  thrpt   20  87456.776 ± 4621.955  ops/s
+EncodingBenchmark.encodeIntsA  thrpt   40  47304.729 ± 105.165  ops/s
+EncodingBenchmark.encodeIntsJ  thrpt   40  92950.094 ± 660.824  ops/s
 
-[info] ParsingBenchmark.parseFoosA    thrpt   20   2210.772 ±  218.932  ops/s
-[info] ParsingBenchmark.parseFoosJ    thrpt   20   2714.505 ±  112.194  ops/s
+ParsingBenchmark.parseFoosA    thrpt   40   2130.100 ±   6.644  ops/s
+ParsingBenchmark.parseFoosJ    thrpt   40   3122.276 ±  13.634  ops/s
 
-[info] ParsingBenchmark.parseIntsA    thrpt   20  10618.503 ±  488.321  ops/s
-[info] ParsingBenchmark.parseIntsJ    thrpt   20  26482.227 ±  211.512  ops/s
+ParsingBenchmark.parseIntsA    thrpt   40  11009.453 ±  68.750  ops/s
+ParsingBenchmark.parseIntsJ    thrpt   40  33286.378 ± 115.074  ops/s
 
-[info] PrintingBenchmark.printFoosA   thrpt   20   2755.286 ±   54.639  ops/s
-[info] PrintingBenchmark.printFoosJ   thrpt   20   3460.610 ±   64.472  ops/s
+PrintingBenchmark.printFoosA   thrpt   40   2786.543 ±  32.151  ops/s
+PrintingBenchmark.printFoosJ   thrpt   40   3557.423 ±  24.165  ops/s
 
-[info] PrintingBenchmark.printIntsA   thrpt   20  15260.408 ± 1589.961  ops/s
-[info] PrintingBenchmark.printIntsJ   thrpt   20  20766.068 ±  362.873  ops/s
+PrintingBenchmark.printIntsA   thrpt   40  18515.516 ± 103.776  ops/s
+PrintingBenchmark.printIntsJ   thrpt   40  22080.397 ±  66.809  ops/s
+```
+
+And allocation rates (lower is better):
+
+```
+Benchmark                                        Cnt        Score        Error   Units
+
+DecodingBenchmark.decodeFoosA:gc.alloc.rate.norm  20  3371681.259 ± 215957.731    B/op
+DecodingBenchmark.decodeFoosJ:gc.alloc.rate.norm  20  2822037.234 ± 173510.947    B/op
+
+DecodingBenchmark.decodeIntsA:gc.alloc.rate.norm  20   575375.270 ±      6.607    B/op
+DecodingBenchmark.decodeIntsJ:gc.alloc.rate.norm  20   522856.721 ±  10698.337    B/op
+
+EncodingBenchmark.encodeFoosA:gc.alloc.rate.norm  20   526700.855 ±   1425.539    B/op
+EncodingBenchmark.encodeFoosJ:gc.alloc.rate.norm  20   430757.361 ±     39.293    B/op
+
+EncodingBenchmark.encodeIntsA:gc.alloc.rate.norm  20    96152.036 ±      0.069    B/op
+EncodingBenchmark.encodeIntsJ:gc.alloc.rate.norm  20    48360.018 ±      0.035    B/op
+
+ParsingBenchmark.parseFoosA:gc.alloc.rate.norm    20  1464616.768 ±   2138.193    B/op
+ParsingBenchmark.parseFoosJ:gc.alloc.rate.norm    20   737673.775 ±      3.396    B/op
+
+ParsingBenchmark.parseIntsA:gc.alloc.rate.norm    20   326296.529 ±      1.106    B/op
+ParsingBenchmark.parseIntsJ:gc.alloc.rate.norm    20   105224.050 ±      7.128    B/op
+
+PrintingBenchmark.printFoosA:gc.alloc.rate.norm   20   599472.594 ±   7611.973    B/op
+PrintingBenchmark.printFoosJ:gc.alloc.rate.norm   20   386712.472 ±   4190.871    B/op
+
+PrintingBenchmark.printIntsA:gc.alloc.rate.norm   20   179652.102 ±  53508.329    B/op
+PrintingBenchmark.printIntsJ:gc.alloc.rate.norm   20    95408.077 ±      0.149    B/op
 ```
 
 The `Foos` benchmarks work with a map containing case class values, and the `Ints` ones are an array
-of integers. `J` suffixes indicate jfc's throughput and `A` is for Argonaut. Higher numbers are
-better.
+of integers. `J` suffixes indicate jfc's throughput and `A` is for Argonaut.
 
 ## Usage
 
