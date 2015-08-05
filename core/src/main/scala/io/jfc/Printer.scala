@@ -216,7 +216,7 @@ final case class Printer(
           case JsonDecimal(x) => builder.append(x)
           case JsonBigDecimal(x) => builder.append(x.toString)
         }
-        case JBool(b)   => builder.append(if (b) trueText else falseText)
+        case JBoolean(b)   => builder.append(if (b) trueText else falseText)
         case JArray(arr) =>
           if (arr.length == 0) builder.append(p.lrEmptyBrackets) else {
           builder.append(p.lBrackets)

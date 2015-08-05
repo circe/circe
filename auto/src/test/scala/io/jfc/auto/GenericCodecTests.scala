@@ -4,7 +4,7 @@ import algebra.Eq
 import org.scalacheck.{ Arbitrary, Gen }
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.eq._
-import io.jfc.{ Decode, Encode, Json }
+import io.jfc.{ Decoder, Encoder, Json }
 import io.jfc.test.{ CodecTests, JfcSuite }
 import org.scalacheck.Prop.forAll
 import shapeless._
@@ -48,7 +48,7 @@ class GenericCodecTests extends JfcSuite {
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
 
-  test("Decode[Int => Qux[String]]") {
+  test("Decoder[Int => Qux[String]]") {
     check {
       forAll { (i: Int, s: String) =>
         Json.obj("a" -> Json.string(s)).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s))
@@ -72,11 +72,11 @@ class GenericCodecTests extends JfcSuite {
     }
   }
 
-  test("Decoding with Decode[CNil] should fail") {
+  test("Decoding with Decoder[CNil] should fail") {
     assert(Json.empty.as[CNil].isLeft)
   }
 
-  test("Encoding with Encode[CNil] should throw an exception") {
-    intercept[RuntimeException](Encode[CNil].apply(null: CNil))
+  test("Encoding with Encoder[CNil] should throw an exception") {
+    intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
   }
 }

@@ -6,12 +6,11 @@ import cats.std.list._
 import io.jfc.cursor.{ CArray, CJson, CObject, CursorOperations }
 
 /**
- * A zipper that represents a position in a JSON value and supports navigation
- * around the JSON value.
+ * A zipper that represents a position in a JSON value and supports navigation around the JSON
+ * value.
  *
- * The `focus` represents the current position of the cursor; it may be updated
- * with `withFocus` or changed using the navigation methods `left`, `right`,
- * etc.
+ * The `focus` represents the current position of the cursor; it may be updated with `withFocus` or
+ * changed using the navigation methods `left`, `right`, etc.
  *
  * @groupname Ungrouped Cursor fields and operations
  * @groupprio Ungrouped 1

@@ -1,7 +1,7 @@
 package io.jfc.benchmark
 
 import argonaut.{ Json => JsonA, _ }, Argonaut._
-import io.jfc.{ Json => JsonJ, Encode }
+import io.jfc.{ Json => JsonJ, Encoder }
 import io.jfc.auto._
 import io.jfc.jawn._
 import java.util.concurrent.TimeUnit
@@ -21,7 +21,7 @@ class ExampleData {
   }.toMap
 
   @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
-  @inline def encodeJ[A](a: A)(implicit encode: Encode[A]): JsonJ = encode(a)
+  @inline def encodeJ[A](a: A)(implicit encode: Encoder[A]): JsonJ = encode(a)
 
   val intsJ: JsonJ = encodeJ(ints)
   val intsA: JsonA = encodeA(ints)

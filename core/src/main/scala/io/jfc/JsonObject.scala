@@ -4,13 +4,15 @@ import algebra.Eq
 import cats.{ Applicative, Foldable, Show }
 import cats.data.Kleisli
 import cats.std.map._
+import scala.collection.breakOut
 
 /**
- * A mapping from field to JSON value that maintains insertion order.
+ * A mapping from keys to JSON values that maintains insertion order.
  *
  * @author Tony Morris
+ * @author Travis Brown
  */
-sealed abstract class JsonObject {
+sealed abstract class JsonObject extends Serializable {
   /**
    * Convert to a map.
    */
@@ -19,172 +21,102 @@ sealed abstract class JsonObject {
   /**
    * Insert the given association.
    */
-  def +(f: String, j: Json): JsonObject
+  def +(k: String, j: Json): JsonObject
 
   /**
    * Prepend the given association.
    */
-  def +:(fj: (String, Json)): JsonObject
+  def +:(f: (String, Json)): JsonObject
 
   /**
    * Remove the given field association.
    */
-  def -(f: String): JsonObject
+  def -(k: String): JsonObject
 
   /**
    * Return the JSON value associated with the given field.
    */
-  def apply(f: String): Option[Json]
+  def apply(k: String): Option[Json]
 
   /**
    * Transform all associated JSON values.
    */
-  def withJsons(k: Json => Json): JsonObject
+  def withJsons(f: Json => Json): JsonObject
 
   /**
-   * Returns true if there are no associations.
+   * Return `true` if there are no associations.
    */
   def isEmpty: Boolean
 
   /**
-   * Returns true if there is at least one association.
+   * Return `true` if there is at least one association.
    */
-  def isNotEmpty: Boolean
+  def nonEmpty: Boolean = !isEmpty
 
   /**
-   * Returns true if there is an association with the given field.
+   * Return `true` if there is an association with the given field.
    */
-  def ??(f: String): Boolean
+  def contains(f: String): Boolean
 
   /**
-   * Returns the list of associations in insertion order.
+   * Return the list of associations in insertion order.
    */
   def toList: List[(String, Json)]
 
   /**
-   * Returns all associated values in insertion order.
+   * Return all associated values in insertion order.
    */
   def values: List[Json]
 
   /**
-   * Returns a kleisli function that gets the JSON value associated with the given field.
+   * Return a Kleisli arrow that gets the JSON value associated with the given field.
    */
   def kleisli: Kleisli[Option, String, Json]
 
   /**
-   * Returns all association keys in insertion order.
+   * Return all association keys in insertion order.
    */
   def fields: List[String]
 
   /**
-   * Returns all association keys in arbitrary order.
+   * Return all association keys in an undefined order.
    */
   def fieldSet: Set[String]
 
   /**
-   * Map Json values.
+   * Traverse [[Json]] values.
    */
-  def map(f: Json => Json): JsonObject
+  def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject]
 
   /**
-   * Traverse Json values.
-   */
-  def traverse[F[_]](f: Json => F[Json])(implicit FF: Applicative[F]): F[JsonObject]
-
-  /**
-   * Returns the number of associations.
+   * Return the number of associations.
    */
   def size: Int
 
-  def ===(that: JsonObject): Boolean =
-    this.toMap == that.toMap
+  /**
+   * Type-safe equality for [[JsonObject]].
+   */
+  def ===(that: JsonObject): Boolean = this.toMap == that.toMap
 
-  def =!=(that: JsonObject): Boolean =
-    this.toMap != that.toMap
-
+  /**
+   * Type-safe inequality for [[JsonObject]].
+   */
+  def =!=(that: JsonObject): Boolean = !(this === that)
 }
 
-private[jfc] final case class JsonObjectInstance(
-  fieldsMap: Map[String, Json] = Map.empty,
-  orderedFields: Vector[String] = Vector.empty
-) extends JsonObject {
-
-  def toMap: Map[String, Json] = fieldsMap
-
-  def +(f: String, j: Json): JsonObject =
-    if (fieldsMap.contains(f)) {
-      copy(fieldsMap = fieldsMap.updated(f, j))
-    } else {
-      copy(fieldsMap = fieldsMap.updated(f, j), orderedFields = orderedFields :+ f)
-    }
-
-  def +:(fj: (String, Json)): JsonObject = {
-    val (f, j) = fj
-    if (fieldsMap.contains(f))
-      copy(fieldsMap = fieldsMap.updated(f, j))
-    else
-      copy(fieldsMap = fieldsMap.updated(f, j), orderedFields = f +: orderedFields)
-  }
-
-  def -(f: String): JsonObject =
-    copy(fieldsMap = fieldsMap - f, orderedFields = orderedFields.filterNot(_ == f))
-
-  def apply(f: String): Option[Json] = fieldsMap.get(f)
-
-  def withJsons(k: Json => Json): JsonObject = map(k)
-
-  def isEmpty: Boolean = fieldsMap.isEmpty
-
-  def isNotEmpty: Boolean = !isEmpty
-
-  def ??(f: String): Boolean = fieldsMap.contains(f)
-
-  def toList: List[(String, Json)] = orderedFields.map(field => (field, fieldsMap(field))).toList
-
-  def values: List[Json] = orderedFields.map(field => fieldsMap(field)).toList
-
-  def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldsMap get _)
-
-  def fields: List[String] = orderedFields.toList
-
-  def fieldSet: Set[String] = orderedFields.toSet
-
-  def map(f: Json => Json): JsonObject = copy(
-    fieldsMap = fieldsMap.foldLeft(Map.empty[String, Json]) {
-      case (acc, (key, value)) => acc.updated(key, f(value))
-    }
-  )
-
-  def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
-    orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
-      case (acc, k) => F.ap(acc)(F.map(f(fieldsMap(k)))(j => _.updated(k, j)))
-    }
-  )(mappedFields => copy(fieldsMap = mappedFields))
-
-  def size: Int = fields.size
-
-  // TODO: clean up
-  override def toString: String =
-    "object[%s]".format(
-      fieldsMap.map {
-        case (k, v) => s"$k -> ${ Show[Json].show(v) }"
-      }.mkString(",")
-    )
-
-  override def equals(o: Any) =
-    o match {
-      case j: JsonObject => this === j
-      case _ => false
-    }
-
-  override def hashCode =
-    fieldsMap.hashCode
-}
-
+/**
+ * Constructors, type class instances, and other utilities for [[JsonObject]].
+ */
 object JsonObject {
+  /**
+   * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
+   */
   def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
     F.foldLeft(f, empty) { case (acc, (k, v)) => acc + (k, v) }
 
+  /**
+   * Construct a [[JsonObject]] from an [[IndexedSeq]] (provided for optimization).
+   */
   def fromIndexedSeq(f: IndexedSeq[(String, Json)]): JsonObject = {
     var i = 0
     val m = scala.collection.mutable.Map.empty[String, Json]
@@ -199,21 +131,85 @@ object JsonObject {
       i += 1
     }
 
-    JsonObjectInstance(m.toMap, fs.result())
+    MapAndVectorJsonObject(m.toMap, fs.result())
   }
 
 
   /**
-   * Construct an empty association.
+   * Construct an empty [[JsonObject]].
    */
-  def empty: JsonObject = JsonObjectInstance()
+  val empty: JsonObject = MapAndVectorJsonObject(Map.empty, Vector.empty)
 
   /**
-   * Construct with a single association.
+   * Construct a [[JsonObject]] with a single field.
    */
-  def single(f: String, j: Json): JsonObject =
-    JsonObject.empty + (f, j)
+  def singleton(k: String, j: Json): JsonObject = MapAndVectorJsonObject(Map(k -> j), Vector(k))
 
   implicit val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
+
+  /**
+   * A straightforward implementation of [[JsonObject]] with immutable collections.
+   */
+  private[this] final case class MapAndVectorJsonObject(
+    fieldMap: Map[String, Json],
+    orderedFields: Vector[String]
+  ) extends JsonObject {
+    def toMap: Map[String, Json] = fieldMap
+
+    def +(k: String, j: Json): JsonObject =
+      if (fieldMap.contains(k)) {
+        copy(fieldMap = fieldMap.updated(k, j))
+      } else {
+        copy(fieldMap = fieldMap.updated(k, j), orderedFields = orderedFields :+ k)
+      }
+
+    def +:(f: (String, Json)): JsonObject = {
+      val (k, j) = f
+      if (fieldMap.contains(k)) {
+        copy(fieldMap = fieldMap.updated(k, j))
+      } else {
+        copy(fieldMap = fieldMap.updated(k, j), orderedFields = k +: orderedFields)
+      }
+    }
+
+    def -(k: String): JsonObject =
+      copy(fieldMap = fieldMap - k, orderedFields = orderedFields.filterNot(_ == k))
+
+    def apply(k: String): Option[Json] = fieldMap.get(k)
+    def withJsons(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
+    def isEmpty: Boolean = fieldMap.isEmpty
+    def contains(k: String): Boolean = fieldMap.contains(k)
+    def toList: List[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
+    def values: List[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
+    def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldMap.get)
+    def fields: List[String] = orderedFields.toList
+    def fieldSet: Set[String] = orderedFields.toSet
+
+    def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
+      orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
+        case (acc, k) => F.ap(acc)(F.map(f(fieldMap(k)))(j => _.updated(k, j)))
+      }
+    )(mappedFields => copy(fieldMap = mappedFields))
+
+    def size: Int = fieldMap.size
+
+    override def toString: String =
+      "object[%s]".format(
+        fieldMap.map {
+          case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
+        }.mkString(",")
+      )
+
+    /**
+     * Universal equality derived from our type-safe equality.
+     */
+    override def equals(o: Any) =
+      o match {
+        case j: JsonObject => this === j
+        case _ => false
+      }
+
+    override def hashCode = fieldMap.hashCode
+  }
 }

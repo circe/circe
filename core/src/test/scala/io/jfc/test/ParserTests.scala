@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.jfc.{ Json, ParseFailure, Parser }
+import io.jfc.{ Json, ParsingFailure, Parser }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
@@ -13,10 +13,10 @@ import org.typelevel.discipline.Laws
  * 
  */
 case class ParserLaws(parser: Parser) {
-  def parsingRoundTripNoSpaces(json: Json): IsEq[Xor[ParseFailure, Json]] =
+  def parsingRoundTripNoSpaces(json: Json): IsEq[Xor[ParsingFailure, Json]] =
     parser.parse(json.noSpaces) <-> Xor.right(json)
 
-  def parsingRoundTripSpaces(json: Json): IsEq[Xor[ParseFailure, Json]] =
+  def parsingRoundTripSpaces(json: Json): IsEq[Xor[ParsingFailure, Json]] =
     parser.parse(json.spaces2) <-> Xor.right(json)
 }
 

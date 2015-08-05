@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.jfc.{ Decode, DecodeFailure, Encode }
+import io.jfc.{ Decoder, DecodingFailure, Encoder }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
@@ -13,17 +13,17 @@ import org.typelevel.discipline.Laws
  * 
  */
 trait CodecLaws[A] {
-  def decode: Decode[A]
-  def encode: Encode[A]
+  def decode: Decoder[A]
+  def encode: Encoder[A]
 
-  def codecRoundTrip(a: A): IsEq[Xor[DecodeFailure, A]] =
+  def codecRoundTrip(a: A): IsEq[Xor[DecodingFailure, A]] =
     encode(a).as(decode) <-> Xor.right(a)
 }
 
 object CodecLaws {
-  def apply[A](implicit d: Decode[A], e: Encode[A]): CodecLaws[A] = new CodecLaws[A] {
-    val decode: Decode[A] = d
-    val encode: Encode[A] = e
+  def apply[A](implicit d: Decoder[A], e: Encoder[A]): CodecLaws[A] = new CodecLaws[A] {
+    val decode: Decoder[A] = d
+    val encode: Encoder[A] = e
   }
 }
 
@@ -40,7 +40,7 @@ trait CodecTests[A] extends Laws {
 }
 
 object CodecTests {
-  def apply[A: Decode: Encode]: CodecTests[A] = new CodecTests[A] {
+  def apply[A: Decoder: Encoder]: CodecTests[A] = new CodecTests[A] {
     val laws: CodecLaws[A] = CodecLaws[A]
   }
 }

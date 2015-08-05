@@ -2,7 +2,7 @@ package io.jfc.cursor
 
 import cats.Applicative
 import cats.data.Xor
-import io.jfc.{ ACursor, Decode, DecodeFailure, GenericCursor, HCursor, Json }
+import io.jfc.{ ACursor, Decoder, DecodingFailure, GenericCursor, HCursor, Json }
 
 /**
  * A helper trait that implements cursor operations for [[io.jfc.ACursor]].
@@ -13,8 +13,7 @@ private[jfc] trait ACursorOperations extends GenericCursor[ACursor] { this: ACur
   type M[x[_]] = Applicative[x]
 
   /**
-   * A helper method to simplify performing operations on the underlying
-   * [[HCursor]].
+   * A helper method to simplify performing operations on the underlying [[HCursor]].
    */
   private[this] def withHCursor(f: HCursor => ACursor): ACursor =
     ACursor(either.flatMap(c => f(c).either))
@@ -61,6 +60,6 @@ private[jfc] trait ACursorOperations extends GenericCursor[ACursor] { this: ACur
   def setRights(x: List[Json]): ACursor    = withHCursor(_.setRights(x))
   def deleteGoField(k: String): ACursor    = withHCursor(_.deleteGoField(k))
 
-  def as[A](implicit decode: Decode[A]): Xor[DecodeFailure, A] = decode.tryDecode(this)
-  def get[A](k: String)(implicit decode: Decode[A]): Xor[DecodeFailure, A] = downField(k).as[A]
+  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d.tryDecode(this)
+  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = downField(k).as[A]
 }
