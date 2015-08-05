@@ -95,6 +95,13 @@ sealed abstract class JsonObject {
    * Returns the number of associations.
    */
   def size: Int
+
+  def ===(that: JsonObject): Boolean =
+    this.toMap == that.toMap
+
+  def =!=(that: JsonObject): Boolean =
+    this.toMap != that.toMap
+
 }
 
 private[jfc] final case class JsonObjectInstance(
@@ -166,7 +173,7 @@ private[jfc] final case class JsonObjectInstance(
 
   override def equals(o: Any) =
     o match {
-      case JsonObjectInstance(otherMap, _) => fieldsMap == otherMap
+      case j: JsonObject => this === j
       case _ => false
     }
 

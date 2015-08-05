@@ -33,7 +33,11 @@ trait CodecTests[A] extends Laws {
   def codec(implicit A: Arbitrary[A], eq: Eq[A]): RuleSet = new DefaultRuleSet(
     name = "codec",
     parent = None,
-    "roundTrip" -> Prop.forAll((a: A) => isEqToProp(laws.codecRoundTrip(a)))
+    "roundTrip" -> Prop.forAll { (a: A) =>
+      val result: IsEq[Xor[DecodeFailure, A]] = laws.codecRoundTrip(a)
+      if (result.lhs != result.rhs) println(result)
+      result
+    }
   )
 }
 

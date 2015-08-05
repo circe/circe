@@ -155,28 +155,32 @@ sealed abstract class JsonNumber {
     case JsonDouble(n) => JsonDecimal(n.toString)
   }
 
-  override def hashCode: Int =
-    if (isReal) toJsonDecimal.normalized.hashCode
-    else toDouble.hashCode
-
-  override def equals(that: Any): Boolean = that match {
-    case (that: JsonNumber) =>
-      if (this.isReal && that.isReal) {
-        (this, that) match {
-          case (a @ JsonDecimal(_), b) => a.normalized == b.toJsonDecimal.normalized
-          case (a, b @ JsonDecimal(_)) => a.toJsonDecimal.normalized == b.normalized
-          case (JsonLong(x), JsonLong(y)) => x == y
-          case (JsonDouble(x), JsonLong(y)) => x == y
-          case (JsonLong(x), JsonDouble(y)) => y == x
-          case (JsonDouble(x), JsonDouble(y)) => x == y
-          case (a, b) => a.toBigDecimal == b.toBigDecimal
-        }
-      } else {
-        this.toDouble == that.toDouble
+  def ===(that: JsonNumber): Boolean =
+    if (this.isReal && that.isReal) {
+      (this, that) match {
+        case (a @ JsonDecimal(_), b) => a.normalized == b.toJsonDecimal.normalized
+        case (a, b @ JsonDecimal(_)) => a.toJsonDecimal.normalized == b.normalized
+        case (JsonLong(x), JsonLong(y)) => x == y
+        case (JsonDouble(x), JsonLong(y)) => x == y
+        case (JsonLong(x), JsonDouble(y)) => y == x
+        case (JsonDouble(x), JsonDouble(y)) => x == y
+        case (a, b) => a.toBigDecimal == b.toBigDecimal
       }
+    } else {
+      this.toDouble == that.toDouble
+    }
 
-    case _ => false
-  }
+  def =!=(that: JsonNumber): Boolean =
+    !(this === that)
+
+  override def hashCode: Int =
+    if (isReal) toJsonDecimal.normalized.hashCode else toDouble.hashCode
+
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: JsonNumber => this === that
+      case _ => false
+    }
 }
 
 /**
