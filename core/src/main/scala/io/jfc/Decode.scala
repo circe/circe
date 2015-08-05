@@ -349,7 +349,9 @@ object Decode {
       a.success.fold[Xor[DecodeFailure, Option[A]]](Xor.right(None)) { valid =>
         if (valid.focus.isNull) Xor.right(None) else d(valid).fold[Xor[DecodeFailure, Option[A]]](
           df =>
-            df.history.head.fold[Xor[DecodeFailure, Option[A]]](Xor.right(None))(_ => Xor.left(df)),
+            df.history.headOption.fold[Xor[DecodeFailure, Option[A]]](
+              Xor.right(None)
+            )(_ => Xor.left(df)),
           a => Xor.right(Some(a))
         )
       }

@@ -29,6 +29,8 @@ object CursorOpElement {
   case class CursorOpDeleteGoField(f: String) extends CursorOpElement
   case object CursorOpDeleteLefts extends CursorOpElement
   case object CursorOpDeleteRights extends CursorOpElement
+  case class CursorOpSetLefts(js: List[Json]) extends CursorOpElement
+  case class CursorOpSetRights(js: List[Json]) extends CursorOpElement
 
   implicit val showCursorOpElement: Show[CursorOpElement] = Show.show {
     case CursorOpLeft => "<-"
@@ -54,6 +56,8 @@ object CursorOpElement {
     case CursorOpDeleteGoField(f) => "!--(" + f + ")"
     case CursorOpDeleteLefts => "!<"
     case CursorOpDeleteRights => ">!"
+    case CursorOpSetLefts(_) => "!<.."
+    case CursorOpSetRights(_) => "..>!"
   }
 
   implicit val eqCursorOpElement: Eq[CursorOpElement] = Eq.fromUniversalEquals

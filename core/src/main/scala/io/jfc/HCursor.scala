@@ -13,7 +13,7 @@ import io.jfc.cursor.HCursorOperations
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-case class HCursor(cursor: Cursor, history: CursorHistory) extends HCursorOperations {
+case class HCursor(cursor: Cursor, history: List[CursorOp]) extends HCursorOperations {
   /**
    * Create an [[ACursor]] for this cursor.
    */
@@ -55,6 +55,6 @@ case class HCursor(cursor: Cursor, history: CursorHistory) extends HCursorOperat
 object HCursor {
   implicit val eqHCursor: Eq[HCursor] = Eq.instance {
     case (HCursor(c1, h1), HCursor(c2, h2)) =>
-      Eq[Cursor].eqv(c1, c2) && Eq[CursorHistory].eqv(h1, h2)
+      Eq[Cursor].eqv(c1, c2) && h1 == h2
   }
 }

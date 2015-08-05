@@ -1,7 +1,7 @@
 package io.jfc.cursor
 
 import cats.Functor
-import io.jfc.{ Context, ContextElement, Cursor, Json, JsonObject }
+import io.jfc.{ Context, Cursor, Json, JsonObject }
 
 private[jfc] case class CObject(
   focus: Json,
@@ -10,7 +10,7 @@ private[jfc] case class CObject(
   u: Boolean,
   o: JsonObject
 ) extends Cursor {
-  def context: Context = ContextElement.objectContext(focus, key) +: p.context
+  def context: List[Context] = Context.inObject(focus, key) :: p.context
 
   def up: Option[Cursor] = Some {
     val j = Json.fromJsonObject(if (u) o + (key, focus) else o)

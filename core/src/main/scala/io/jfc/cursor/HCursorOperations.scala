@@ -2,7 +2,7 @@ package io.jfc.cursor
 
 import cats.{ Id, Functor }
 import cats.data.Xor
-import io.jfc.{ ACursor, CursorOpElement, Decode, DecodeFailure, GenericCursor, HCursor, Json }
+import io.jfc._
 import io.jfc.CursorOpElement._
 
 /**
@@ -13,55 +13,49 @@ private[jfc] trait HCursorOperations extends GenericCursor[HCursor] { this: HCur
   type Result = ACursor
   type M[x[_]] = Functor[x]
 
+  private[this] def toACursor(c: Option[Cursor], e: CursorOpElement) =
+    c.fold(
+      ACursor.fail(copy(history = CursorOp.fail(e) :: history))
+    )(c => ACursor.ok(HCursor(c, CursorOp.ok(e) :: history)))
+
   def focus: Json = cursor.focus
   def top: Json = cursor.top
-  def up: ACursor = history.acursorElement(cursor, _.up, CursorOpUp)
-
-  def delete: ACursor = history.acursorElement(cursor, _.delete, CursorOpDeleteGoParent)
+  def delete: ACursor = toACursor(cursor.delete, CursorOpDeleteGoParent)
   def withFocus(f: Json => Json): HCursor = HCursor(cursor.withFocus(f), history)
   def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
     Functor[F].map(cursor.withFocusM(f))(c => HCursor(c, history))
 
-  def left: ACursor = history.acursorElement(cursor, _.left, CursorOpLeft)
-  def right: ACursor = history.acursorElement(cursor, _.right, CursorOpRight)
-  def first: ACursor = history.acursorElement(cursor, _.left, CursorOpFirst)
-  def last: ACursor = history.acursorElement(cursor, _.left, CursorOpLast)
-  def lefts: Option[List[Json]] = cursor.lefts
-  def rights: Option[List[Json]] = cursor.rights
+
+  def lefts: Option[List[Json]]     = cursor.lefts
+  def rights: Option[List[Json]]    = cursor.rights
   def fieldSet: Option[Set[String]] = cursor.fieldSet
-  def fields: Option[List[String]] = cursor.fields
-  def leftN(n: Int): ACursor = history.acursorElement(cursor, _.leftN(n), CursorOpLeftN(n))
-  def rightN(n: Int): ACursor = history.acursorElement(cursor, _.rightN(n), CursorOpRightN(n))
-  def leftAt(p: Json => Boolean): ACursor =
-    history.acursorElement(cursor, _.leftAt(p), CursorOpLeftAt(p))
-  def rightAt(p: Json => Boolean): ACursor =
-    history.acursorElement(cursor, _.rightAt(p), CursorOpRightAt(p))
-  def find(p: Json => Boolean): ACursor =
-    history.acursorElement(cursor, _.find(p), CursorOpRightAt(p))
-  def downArray: ACursor = history.acursorElement(cursor, _.downArray, CursorOpDownArray)
-  def downAt(p: Json => Boolean): ACursor =
-    history.acursorElement(cursor, _.downAt(p), CursorOpDownAt(p))
-  def downN(n: Int): ACursor = history.acursorElement(cursor, _.downN(n), CursorOpDownN(n))
+  def fields: Option[List[String]]  = cursor.fields
 
-  def field(k: String): ACursor = history.acursorElement(cursor, _.field(k), CursorOpField(k))
-  def downField(k: String): ACursor =
-    history.acursorElement(cursor, _.downField(k), CursorOpDownField(k))
-  def deleteGoLeft: ACursor = history.acursorElement(cursor, _.deleteGoLeft, CursorOpDeleteGoLeft)
-  def deleteGoRight: ACursor =
-    history.acursorElement(cursor, _.deleteGoRight, CursorOpDeleteGoRight)
-  def deleteGoFirst: ACursor =
-    history.acursorElement(cursor, _.deleteGoFirst, CursorOpDeleteGoFirst)
-  def deleteGoLast: ACursor =
-    history.acursorElement(cursor, _.deleteGoLast, CursorOpDeleteGoLast)
-  def deleteLefts: ACursor = history.acursorElement(cursor, _.deleteLefts, CursorOpDeleteLefts)
-  def deleteRights: ACursor = history.acursorElement(cursor, _.deleteRights, CursorOpDeleteRights)
-  def setLefts(js: List[Json]): ACursor =
-    history.acursorElement(cursor, _.setLefts(js), CursorOpDeleteRights)
-  def setRights(js: List[Json]): ACursor =
-    history.acursorElement(cursor, _.setRights(js), CursorOpDeleteRights)
-
-  def deleteGoField(k: String): ACursor =
-    history.acursorElement(cursor, _.deleteGoField(k), CursorOpDeleteGoField(k))
+  def up: ACursor                          = toACursor(cursor.up, CursorOpUp)
+  def left: ACursor                        = toACursor(cursor.left, CursorOpLeft)
+  def right: ACursor                       = toACursor(cursor.right, CursorOpRight)
+  def first: ACursor                       = toACursor(cursor.first, CursorOpFirst)
+  def last: ACursor                        = toACursor(cursor.last, CursorOpLast)
+  def leftN(n: Int): ACursor               = toACursor(cursor.leftN(n), CursorOpLeftN(n))
+  def rightN(n: Int): ACursor              = toACursor(cursor.rightN(n), CursorOpRightN(n))
+  def leftAt(p: Json => Boolean): ACursor  = toACursor(cursor.leftAt(p), CursorOpLeftAt(p))
+  def rightAt(p: Json => Boolean): ACursor = toACursor(cursor.rightAt(p), CursorOpRightAt(p))
+  def find(p: Json => Boolean): ACursor    = toACursor(cursor.find(p), CursorOpFind(p))
+  def downArray: ACursor                   = toACursor(cursor.downArray, CursorOpDownArray)
+  def downAt(p: Json => Boolean): ACursor  = toACursor(cursor.downAt(p), CursorOpDownAt(p))
+  def downN(n: Int): ACursor               = toACursor(cursor.downN(n), CursorOpDownN(n))
+  def field(k: String): ACursor            = toACursor(cursor.field(k), CursorOpField(k))
+  def downField(k: String): ACursor        = toACursor(cursor.downField(k), CursorOpDownField(k))
+  def deleteGoLeft: ACursor                = toACursor(cursor.deleteGoLeft, CursorOpDeleteGoLeft)
+  def deleteGoRight: ACursor               = toACursor(cursor.deleteGoRight, CursorOpDeleteGoRight)
+  def deleteGoFirst: ACursor               = toACursor(cursor.deleteGoFirst, CursorOpDeleteGoFirst)
+  def deleteGoLast: ACursor                = toACursor(cursor.deleteGoLast, CursorOpDeleteGoLast)
+  def deleteLefts: ACursor                 = toACursor(cursor.deleteLefts, CursorOpDeleteLefts)
+  def deleteRights: ACursor                = toACursor(cursor.deleteRights, CursorOpDeleteRights)
+  def setLefts(js: List[Json]): ACursor    = toACursor(cursor.setLefts(js), CursorOpSetLefts(js))
+  def setRights(js: List[Json]): ACursor   = toACursor(cursor.setRights(js), CursorOpSetRights(js))
+  def deleteGoField(k: String): ACursor
+    = toACursor(cursor.deleteGoField(k), CursorOpDeleteGoField(k))
 
   def as[A](implicit decode: Decode[A]): Xor[DecodeFailure, A] = decode(this)
   def get[A](k: String)(implicit decode: Decode[A]): Xor[DecodeFailure, A] = downField(k).as[A]

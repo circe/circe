@@ -15,7 +15,7 @@ import io.jfc.cursor.ACursorOperations
  */
 case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
-   * Return the current [[HCursor]] if we are in a sucsess state.
+   * Return the current [[HCursor]] if we are in a success state.
    */
   def success: Option[HCursor] = either.toOption
 
@@ -49,13 +49,13 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
    * Return the underlying cursor's history.
    */
-  def history: CursorHistory = any.history
+  def history: List[CursorOp] = any.history
 
   /**
    * If the last operation was not successful, reattempt it.
    */
   def reattempt: ACursor = either.fold(
-    invalid => ACursor.ok(HCursor(invalid.cursor, CursorOp.reattemptOp +: invalid.history)),
+    invalid => ACursor.ok(HCursor(invalid.cursor, CursorOp.reattempt +: invalid.history)),
     _ => this
   )
 
