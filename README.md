@@ -9,7 +9,7 @@ jfc is a JSON library for Scala. The rest of this page tries to give some justif
 existence. There are also [API docs][api].
 
 The name stands for "JSON for [cats][cats]" and is a working title that
-[might be changed](https://github.com/travisbrown/jfc/issues/11).
+[is being changed](https://github.com/travisbrown/jfc/issues/11).
 
 ## Showing off
 
@@ -256,20 +256,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
-[api]: https://travisbrown.github.io/jfc/api/#io.jfc.package
+[api]: https://travisbrown.github.io/circe/api/#io.jfc.package
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
-[benchmarks]: https://github.com/travisbrown/jfc/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
+[benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [discipline]: https://github.com/typelevel/discipline
-[encode]: https://travisbrown.github.io/jfc/api/#io.jfc.Encode$
+[encode]: https://travisbrown.github.io/circe/api/#io.jfc.Encode$
 [finch]: https://github.com/finagle/finch
-[generic-cursor]: https://travisbrown.github.io/jfc/api/#io.jfc.GenericCursor
+[generic-cursor]: https://travisbrown.github.io/circe/api/#io.jfc.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
-[jfc-auto]: https://travisbrown.github.io/jfc/api/#io.jfc.auto.package
-[jfc-jawn]: https://travisbrown.github.io/jfc/api/#io.jfc.jawn.package
+[jfc-auto]: https://travisbrown.github.io/circe/api/#io.jfc.auto.package
+[jfc-jawn]: https://travisbrown.github.io/circe/api/#io.jfc.jawn.package
 [markhibberd]: https://github.com/markhibberd
 [monocle]: https://github.com/julien-truffaut/Monocle
 [scalaz]: https://github.com/scalaz/scalaz
