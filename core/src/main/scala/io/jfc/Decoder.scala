@@ -127,7 +127,10 @@ trait Decoder[A] { self =>
  * @author Travis Brown
  */
 object Decoder {
+  class Secondary[A](val value: Decoder[A]) extends AnyVal
+
   implicit def fromCodec[A](implicit c: Codec[A]): Decoder[A] = c.decoder
+  implicit def fromSecondaryDecoder[A](implicit d: Secondary[A]): Decoder[A] = d.value
 
   import Json._
 

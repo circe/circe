@@ -49,7 +49,10 @@ trait Encoder[A] {
  * @author Travis Brown
  */
 object Encoder {
+  class Secondary[A](val value: Encoder[A]) extends AnyVal
+
   implicit def fromCodec[A](implicit c: Codec[A]): Encoder[A] = c.encoder
+  implicit def fromSecondary[A](implicit e: Secondary[A]): Encoder[A] = e.value
 
   /**
    * Return an instance for a given type `A`.

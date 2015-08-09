@@ -31,16 +31,29 @@ trait GenericDecoding extends LowPriorityGenericDecoding {
       } yield field[K](head) :: tail
     }
 
-  implicit def decodeCoproduct[K <: Symbol, H, T <: Coproduct](implicit
+  implicit def decodeCoproduct[K <: Symbol, H <: HList, T <: Coproduct](implicit
     key: Witness.Aux[K],
     decodeHead: Lazy[Decoder[H]],
-    decodeTail: Lazy[Decoder[T]]
+    decodeTail: Decoder[T]
   ): Decoder[FieldType[K, H] :+: T] =
     Decoder.instance { c =>
       c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
-        decodeTail.value(c).map(Inr(_))
+        decodeTail(c).map(Inr(_))
       ) { headJson =>
         headJson.as(decodeHead.value).map(h => Inl(field(h)))
       }
     }
+
+  /*implicit def decodeCoproductx[K <: Symbol, H <: HList, T <: Coproduct](implicit
+    key: Witness.Aux[K],
+    decodeHead: Lazy[Decoder[H]],
+    decodeTail: Decoder[T]
+  ): Decoder[FieldType[K, H] :+: T] =
+    Decoder.instance { c =>
+      c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
+        decodeTail(c).map(Inr(_))
+      ) { headJson =>
+        headJson.as(decodeHead.value).map(h => Inl(field(h)))
+      }
+    }*/
 }

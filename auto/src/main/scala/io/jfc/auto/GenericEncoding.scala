@@ -9,7 +9,7 @@ trait LowPriorityGenericEncoding {
   ): Encoder[L] = Encoder.instance(l => Json.fromValues(productEncode(l)))
 }
 
-trait GenericEncoding extends LowPriorityGenericEncoding {
+trait GenericEncoding extends LowPriorityGenericEncoding with GenericDecoding {
   implicit val encodeHNil: ObjectEncoder[HNil] = ObjectEncoder.instance(_ => JsonObject.empty)
 
   implicit def encodeLabelledHList[K <: Symbol, H, T <: HList](implicit

@@ -265,7 +265,7 @@ private[jfc] final case class JsonDecimal(value: String) extends JsonNumber {
 
     if (intStr != "0") {
       val shift = intStr.length + 1
-      (unscaledExponent + shift, scaledValue(shift))
+      (unscaledExponent + BigInt(shift), scaledValue(shift))
     } else if (decStr != null) {
       var i = 0
       while (i < decStr.length && decStr.charAt(i) == '0') i += 1

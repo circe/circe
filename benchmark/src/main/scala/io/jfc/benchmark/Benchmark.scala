@@ -2,7 +2,7 @@ package io.jfc.benchmark
 
 import argonaut.{ Json => JsonA, _ }, Argonaut._
 import io.jfc.{ Json => JsonJ, Encoder }
-import io.jfc.auto._
+import io.jfc.generic.auto._
 import io.jfc.jawn._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._

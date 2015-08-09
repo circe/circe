@@ -17,7 +17,8 @@ lazy val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Xfuture"
+  "-Xfuture"//,
+  //"-Xlog-implicits"
 )
 
 lazy val testDependencies = Seq(
@@ -34,6 +35,7 @@ lazy val baseSettings = Seq(
       case _ => Nil
     }
   ),
+  scalacOptions in (Compile, console) := compilerOptions,
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ) ++ testDependencies.map(_ % "test"),
@@ -60,7 +62,6 @@ lazy val root = project.in(file("."))
   .settings(allSettings ++ noPublish)
   .settings(docSettings)
   .settings(noPublish)
-  .settings(scalacOptions in (Compile, console) := compilerOptions)
   .settings(
     initialCommands in console :=
       """
@@ -71,8 +72,8 @@ lazy val root = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, auto, jawn, async, benchmark)
-  .dependsOn(core, auto, jawn, async)
+  .aggregate(core, generic, auto, jawn, async, benchmark)
+  .dependsOn(core, generic, auto, jawn, async)
 
 lazy val core = project
   .settings(moduleName := "jfc-core")
@@ -84,13 +85,18 @@ lazy val core = project
     )
   )
 
-lazy val auto = project
-  .settings(moduleName := "jfc-auto")
+lazy val generic = project
+  .settings(moduleName := "jfc-generic")
   .settings(allSettings)
   .settings(
     libraryDependencies += "com.chuusai" %% "shapeless" % "2.2.5"
   )
   .dependsOn(core, core % "test->test")
+
+lazy val auto = project
+  .settings(moduleName := "jfc-auto")
+  .settings(allSettings)
+  .dependsOn(core, core % "test->test", generic)
 
 lazy val jawn = project
   .settings(moduleName := "jfc-jawn")
