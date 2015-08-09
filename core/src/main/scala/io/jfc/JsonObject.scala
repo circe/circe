@@ -115,7 +115,7 @@ object JsonObject {
     F.foldLeft(f, empty) { case (acc, (k, v)) => acc + (k, v) }
 
   /**
-   * Construct a [[JsonObject]] from an [[IndexedSeq]] (provided for optimization).
+   * Construct a [[JsonObject]] from an [[scala.collection.IndexedSeq]] (provided for optimization).
    */
   def fromIndexedSeq(f: IndexedSeq[(String, Json)]): JsonObject = {
     var i = 0

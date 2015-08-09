@@ -3,8 +3,7 @@ package io.jfc
 import cats.data.{ Validated, Xor }
 
 /**
- * Provides [[Decoder]] and [[Encoder]] instances for disjunction types with reasonable names for
- * the sides.
+ * [[Decoder]] and [[Encoder]] instances for disjunction types with reasonable names for the sides.
  */
 object disjunctionCodecs {
   private[this] val leftKey: String = "Left"

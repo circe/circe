@@ -23,6 +23,7 @@ class StdLibCodecTests extends JfcSuite {
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
+  checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
 }
 
 class CatsCodecTests extends JfcSuite {

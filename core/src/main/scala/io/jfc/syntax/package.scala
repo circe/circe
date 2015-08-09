@@ -1,7 +1,7 @@
 package io.jfc
 
 /**
- * Provide syntax via enrichment classes.
+ * This package provides syntax via enrichment classes.
  */
 package object syntax {
   implicit class EncoderOps[A](val a: A) extends AnyVal {

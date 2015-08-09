@@ -9,12 +9,12 @@ import scala.util.matching.Regex
  */
 sealed abstract class JsonNumber extends Serializable {
   /**
-   * Return this number as a [[BigDecimal]].
+   * Return this number as a [[scala.math.BigDecimal]].
    */
   def toBigDecimal: BigDecimal
 
   /**
-   * Convert this number to its best [[Double]] approximation.
+   * Convert this number to its best [[scala.Double]] approximation.
    *
    * Anything over `Double.MaxValue` will be rounded to `Double.PositiveInfinity` and anything below
    * `Double.MinValue` is rounded to `Double.NegativeInfinity`.
@@ -22,7 +22,7 @@ sealed abstract class JsonNumber extends Serializable {
   def toDouble: Double
 
   /**
-   * Return this number as a [[BigInt]] if it is an integer.
+   * Return this number as a [[scala.math.BigInt]] if it is an integer.
    */
   def toBigInt: Option[BigInt] = {
     val n = toBigDecimal
@@ -30,7 +30,7 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Return this number as a [[Byte]] if it's a valid [[Byte]].
+   * Return this number as a [[scala.Byte]] if it's a valid [[scala.Byte]].
    */
   def toByte: Option[Byte] = toLong.flatMap { n =>
     val asByte: Byte = n.toByte
@@ -38,7 +38,7 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Return this number as a [[Short]] if it's a valid [[Short]].
+   * Return this number as a [[scala.Short]] if it's a valid [[scala.Short]].
    */
   def toShort: Option[Short] = toLong.flatMap { n =>
     val asShort: Short = n.toShort
@@ -46,7 +46,7 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Return this number as an [[Int]] if it's a valid [[Int]].
+   * Return this number as an [[scala.Int]] if it's a valid [[scala.Int]].
    */
   def toInt: Option[Int] = toLong.flatMap { n =>
     val asInt: Int = n.toInt
@@ -54,22 +54,22 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Return this number as a [[Long]] if it's a valid [[Long]].
+   * Return this number as a [[scala.Long]] if it's a valid [[scala.Long]].
    */
   def toLong: Option[Long]
 
   /**
-   * Truncate the number to a [[BigInt]].
+   * Truncate the number to a [[scala.math.BigInt]].
    *
-   * Truncation means that we round toward zero to the closest [[BigInt]].
+   * Truncation means that we round toward zero to the closest [[scala.math.BigInt]].
    */
   def truncateToBigInt: BigInt =  toBigDecimal.toBigInt
 
   /**
-   * Truncate the number to a [[Byte]].
+   * Truncate the number to a [[scala.Byte]].
    *
-   * Truncation means that we round toward zero to the closest valid [[Byte]]. If the number is
-   * `1e99`, for example, this will return `Byte.MaxValue`.
+   * Truncation means that we round toward zero to the closest valid [[scala.Byte]]. If the number
+   * is `1e99`, for example, this will return `Byte.MaxValue`.
    */
   def truncateToByte: Byte = {
     val asInt: Int = truncateToInt
@@ -81,10 +81,10 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Truncate the number to a [[Short]].
+   * Truncate the number to a [[scala.Short]].
    *
-   * Truncation means that we round toward zero to the closest valid [[Short]]. If the number is
-   * `1e99`, for example, this will return `Short.MaxValue`.
+   * Truncation means that we round toward zero to the closest valid [[scala.Short]]. If the number
+   * is `1e99`, for example, this will return `Short.MaxValue`.
    */
   def truncateToShort: Short = {
     val asInt: Int = truncateToInt
@@ -96,28 +96,28 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Truncate the number to an [[Int]].
+   * Truncate the number to an [[scala.Int]].
    *
-   * Truncation means that we round toward zero to the closest valid [[Int]]. If the number is
+   * Truncation means that we round toward zero to the closest valid [[scala.Int]]. If the number is
    * `1e99`, for example, this will return `Int.MaxValue`.
    */
   def truncateToInt: Int = toDouble.toInt
 
   /**
-   * Truncate the number to a [[Long]].
+   * Truncate the number to a [[scala.Long]].
    *
-   * Truncation means that we round toward zero to the closest valid [[Long]]. If the number is
-   * `1e99`, for example, this will return `Long.MaxValue`.
+   * Truncation means that we round toward zero to the closest valid [[scala.Long]]. If the number
+   * is `1e99`, for example, this will return `Long.MaxValue`.
    */
   def truncateToLong: Long
 
   /**
-   * Return `true` if and only if this number wraps a [[Double]] and it is `Double.NaN`.
+   * Return `true` if and only if this number wraps a [[scala.Double]] and it is `Double.NaN`.
    */
   protected def isNaN: Boolean = false
 
   /**
-   * Return `true` if and only if this number wraps a [[Double]] and is either
+   * Return `true` if and only if this number wraps a [[scala.Double]] and is either
    * `Double.NegativeInfinity` or `Double.PositiveInfinity`.
    */
   protected def isInfinity: Boolean = false
@@ -143,8 +143,8 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Construct a JSON number if this is a valid JSON number and a JSON string otherwise.
    *
-   * This allows [[Double]] to be losslessly encoded, but it is likely to need custom handling for
-   * interoperability with other JSON systems.
+   * This allows a [[scala.Double]] to be losslessly encoded, but it is likely to need custom
+   * handling for interoperability with other JSON systems.
    */
   def asJsonOrString: Json = asJson.getOrElse(Json.string(toString))
 
@@ -200,12 +200,12 @@ sealed abstract class JsonNumber extends Serializable {
 }
 
 /**
- * Represent a valid JSON number as a [[String]].
+ * Represent a valid JSON number as a `String`.
  *
  * Unfortunately there is no type in the Scala standard library which can represent all valid JSON
- * decimal numbers, since the exponent may be larger than an [[Int]], but such a number can still be
- * round-tripped through a string representation. We lazily parse the string to a [[BigDecimal]] or
- * a [[Double]] on demand.
+ * decimal numbers, since the exponent may be larger than an [[scala.Int]], but such a number can
+ * still be round-tripped through a string representation. We lazily parse the string to a
+ * [[scala.math.BigDecimal]] or a [[scala.Double]] on demand.
  */
 private[jfc] final case class JsonDecimal(value: String) extends JsonNumber {
   lazy val toBigDecimal: BigDecimal = BigDecimal(value, MathContext.UNLIMITED)
@@ -229,14 +229,14 @@ private[jfc] final case class JsonDecimal(value: String) extends JsonNumber {
   /**
    * Return a *normalized* version of this decimal number.
    *
-   * Since [[BigDecimal]] cannot represent all valid JSON values exactly (due to the exponent being
-   * limited to an [[Int]]), this method provides a normalized number that can be used to compare
-   * for equality.
+   * Since [[scala.math.BigDecimal]] cannot represent all valid JSON values exactly (due to the
+   * exponent being limited to an [[scala.Int]]), this method provides a normalized number that can
+   * be used to compare for equality.
    *
    * The first part of the return value is the exponent used to scale the second part back to the
-   * original value represented by this number. The [[BigDecimal]] will always either be zero or a
-   * number with exactly one decimal digit to the right of the decimal point. If the [[BigDecimal]]
-   * value is zero, then the exponent will always be zero as well.
+   * original value represented by this number. The [[scala.math.BigDecimal]] will always either be
+   * zero or a number with exactly one decimal digit to the right of the decimal point. If the
+   * [[scala.math.BigDecimal]] value is zero, then the exponent will always be zero as well.
    */
   def normalized: (BigInt, BigDecimal) = {
     val JsonNumber.JsonNumberRegex(negative, intStr, decStr, expStr) = value
@@ -272,14 +272,14 @@ private[jfc] final case class JsonDecimal(value: String) extends JsonNumber {
 
       if (i < decStr.length) {
         val shift = -i - 1
-        (unscaledExponent + shift, scaledValue(shift))
+        (unscaledExponent + BigInt(shift), scaledValue(shift))
       } else (BigInt(0), BigDecimal(0))
     } else (BigInt(0), BigDecimal(0))
   }
 }
 
 /**
- * Represent a valid JSON number as a [[BigDecimal]].
+ * Represent a valid JSON number as a [[scala.math.BigDecimal]].
  */
 private[jfc] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
   def toBigDecimal: BigDecimal = value
@@ -296,7 +296,7 @@ private[jfc] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumb
 }
 
 /**
- * Represent a valid JSON number as a [[Long]].
+ * Represent a valid JSON number as a [[scala.Long]].
  */
 private[jfc] final case class JsonLong(value: Long) extends JsonNumber {
   def toBigDecimal: BigDecimal = BigDecimal(value)
@@ -307,7 +307,7 @@ private[jfc] final case class JsonLong(value: Long) extends JsonNumber {
 }
 
 /**
- * Represent a valid JSON number as a [[Double]].
+ * Represent a valid JSON number as a [[scala.Double]].
  */
 private[jfc] final case class JsonDouble(value: Double) extends JsonNumber {
   def toBigDecimal: BigDecimal = BigDecimal(value)
@@ -339,7 +339,7 @@ object JsonNumber {
   def unsafeDecimal(value: String): JsonNumber = JsonDecimal(value)
 
   /**
-   * Parse a JSON number from a [[String]].
+   * Parse a JSON number from a `String`.
    *
    * A string is valid if it conforms to the grammar in section 2.4 of the
    * [[http://www.ietf.org/rfc/rfc4627.txt JSON specification]]. If it is valid, then the number is

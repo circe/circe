@@ -117,7 +117,7 @@ trait Decoder[A] { self =>
  * discriminators. If you want instances for these types you can include the following import in
  * your program:
  * {{{
- *    import io.jfc.disjunctionCodecs._
+ *   import io.jfc.disjunctionCodecs._
  * }}}
  * @groupprio Disjunction 8
  *
@@ -127,12 +127,14 @@ trait Decoder[A] { self =>
  * @author Travis Brown
  */
 object Decoder {
-  class Secondary[A](val value: Decoder[A]) extends AnyVal
-
-  implicit def fromCodec[A](implicit c: Codec[A]): Decoder[A] = c.decoder
-  implicit def fromSecondaryDecoder[A](implicit d: Secondary[A]): Decoder[A] = d.value
-
   import Json._
+
+  /**
+   * A wrapper that supports proper prioritization of derived instances.
+   *
+   * @group Utilities
+   */
+  class Secondary[A](val value: Decoder[A]) extends AnyVal
 
   /**
    * Return an instance for a given type.
@@ -160,6 +162,13 @@ object Decoder {
 
     override def tryDecode(c: ACursor) = f(c)
   }
+
+  /**
+   * Unwrap a [[Secondary]] wrapper.
+   *
+   * @group Decoding
+   */
+  implicit def fromSecondaryDecoder[A](implicit d: Secondary[A]): Decoder[A] = d.value
 
   /**
    * @group Decoding
