@@ -57,6 +57,6 @@ private[jfc] trait HCursorOperations extends GenericCursor[HCursor] { this: HCur
   def deleteGoField(k: String): ACursor
     = toACursor(cursor.deleteGoField(k), CursorOpDeleteGoField(k))
 
-  def as[A](implicit decode: Decode[A]): Xor[DecodeFailure, A] = decode(this)
-  def get[A](k: String)(implicit decode: Decode[A]): Xor[DecodeFailure, A] = downField(k).as[A]
+  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d(this)
+  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = downField(k).as[A]
 }

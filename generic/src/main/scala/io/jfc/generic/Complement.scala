@@ -1,11 +1,10 @@
-package io.jfc.auto
+package io.jfc.generic
 
 import shapeless._
 import shapeless.labelled.{ FieldType, field }
 
 /**
- * Supports removal and insertion (possibly of unlabeled elements) into an
- * `HList`.
+ * Supports removal and insertion (possibly of unlabeled elements) into an `HList`.
  *
  * @author Travis Brown
  */
@@ -52,8 +51,7 @@ object Insert extends LowPriorityInsert {
 }
 
 /**
- * Supports removal and insertion of an `HList` of elements (possibly unlabeled)
- * into an `HList`.
+ * Supports removal and insertion of an `HList` of elements (possibly unlabeled) into an `HList`.
  *
  * @author Travis Brown
  */

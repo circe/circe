@@ -20,18 +20,18 @@ sealed abstract class Json extends Product with Serializable {
    */
   def fold[X](
     jsonNull: => X,
-    jsonBool: Boolean => X,
+    jsonBoolean: Boolean => X,
     jsonNumber: JsonNumber => X,
     jsonString: String => X,
     jsonArray: List[Json] => X,
     jsonObject: JsonObject => X
   ): X = this match {
-    case JNull      => jsonNull
-    case JBool(b)   => jsonBool(b)
-    case JNumber(n) => jsonNumber(n)
-    case JString(s) => jsonString(s)
-    case JArray(a)  => jsonArray(a.toList)
-    case JObject(o) => jsonObject(o)
+    case JNull       => jsonNull
+    case JBoolean(b) => jsonBoolean(b)
+    case JNumber(n)  => jsonNumber(n)
+    case JString(s)  => jsonString(s)
+    case JArray(a)   => jsonArray(a.toList)
+    case JObject(o)  => jsonObject(o)
   }
 
   /**
@@ -42,12 +42,12 @@ sealed abstract class Json extends Product with Serializable {
     jsonArray: List[Json] => X,
     jsonObject: JsonObject => X
   ): X = this match {
-    case JNull      => or
-    case JBool(_)   => or
-    case JNumber(_) => or
-    case JString(_) => or
-    case JArray(a)  => jsonArray(a.toList)
-    case JObject(o) => jsonObject(o)
+    case JNull       => or
+    case JBoolean(_) => or
+    case JNumber(_)  => or
+    case JString(_)  => or
+    case JArray(a)   => jsonArray(a.toList)
+    case JObject(o)  => jsonObject(o)
   }
 
   /**
@@ -90,21 +90,21 @@ sealed abstract class Json extends Product with Serializable {
    */
   def name: String =
     this match {
-      case JNull      => "Null"
-      case JBool(_)   => "Boolean"
-      case JNumber(_) => "Number"
-      case JString(_) => "String"
-      case JArray(_)  => "Array"
-      case JObject(_) => "Object"
+      case JNull       => "Null"
+      case JBoolean(_) => "Boolean"
+      case JNumber(_)  => "Number"
+      case JString(_)  => "String"
+      case JArray(_)   => "Array"
+      case JObject(_)  => "Object"
     }
 
   /**
    * Attempts to decode this JSON value to another data type.
    */
-  def as[A](implicit d: Decode[A]): Xor[DecodeFailure, A] = d(cursor.hcursor)
+  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d(cursor.hcursor)
 
   /**
-   * Pretty-print this JSON value to a string using the given pretty-printing parameters.
+   * Pretty-print this JSON value to a string using the given pretty-printer.
    */
   def pretty(p: Printer): String = p.pretty(this)
 
@@ -124,7 +124,7 @@ sealed abstract class Json extends Product with Serializable {
   def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
-   * Typesafe equality method.
+   * Type-safe equality method.
    */
   def ===(that: Json): Boolean = {
     def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
@@ -137,17 +137,19 @@ sealed abstract class Json extends Product with Serializable {
     }
 
     (this, that) match {
-      case (JObject(a), JObject(b)) => a === b
-      case (JString(a), JString(b)) => a == b
-      case (JNumber(a), JNumber(b)) => a === b
-      case (  JBool(a),   JBool(b)) => a == b
-      case ( JArray(a),  JArray(b)) => arrayEq(a, b)
-      case (         x,          y) => x.isNull && y.isNull
+      case ( JObject(a),  JObject(b)) => a === b
+      case ( JString(a),  JString(b)) => a == b
+      case ( JNumber(a),  JNumber(b)) => a === b
+      case (JBoolean(a), JBoolean(b)) => a == b
+      case (  JArray(a),   JArray(b)) => arrayEq(a, b)
+      case (          x,           y) => x.isNull && y.isNull
     }
   }
 
-  def =!=(that: Json): Boolean =
-    !(this === that)
+  /**
+   * Type-safe inequality.
+   */
+  def =!=(that: Json): Boolean = !(this === that)
 
   /**
    * Compute a `String` representation for this JSON value.
@@ -155,7 +157,7 @@ sealed abstract class Json extends Product with Serializable {
   override def toString: String = spaces2
 
   /**
-   * Universal equality test.
+   * Universal equality derived from our type-safe equality.
    */
   override def equals(that: Any): Boolean =
     that match {
@@ -163,18 +165,20 @@ sealed abstract class Json extends Product with Serializable {
       case _ => false
     }
 
-  override def hashCode: Int =
-    super.hashCode
+  /**
+   * Hashing that is consistent with our universal equality.
+   */
+  override def hashCode: Int = super.hashCode
 }
 
 object Json {
   private[jfc] case object JNull extends Json {
     override def isNull: Boolean = true
   }
-  private[jfc] final case class JBool(b: Boolean) extends Json {
+  private[jfc] final case class JBoolean(b: Boolean) extends Json {
     override def isBoolean: Boolean = true
     override def asBoolean: Option[Boolean] = Some(b)
-    override def mapBoolean(f: Boolean => Boolean): Json = JBool(f(b))
+    override def mapBoolean(f: Boolean => Boolean): Json = JBoolean(f(b))
   }
   private[jfc] final case class JNumber(n: JsonNumber) extends Json {
     override def isNumber: Boolean = true
@@ -200,10 +204,10 @@ object Json {
   def empty: Json = Empty
 
   val Empty: Json = JNull
-  val True: Json = JBool(true)
-  val False: Json = JBool(false)
+  val True: Json = JBoolean(true)
+  val False: Json = JBoolean(false)
 
-  def bool(b: Boolean): Json = JBool(b)
+  def bool(b: Boolean): Json = JBoolean(b)
   def int(n: Int): Json = JNumber(JsonLong(n.toLong))
   def long(n: Long): Json = JNumber(JsonLong(n))
   def number(n: Double): Option[Json] = JsonDouble(n).asJson
@@ -219,9 +223,6 @@ object Json {
   def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
   def fromValues(values: Seq[Json]): Json = JArray(values)
 
-  implicit val eqJson: Eq[Json] =
-    Eq.instance(_ === _)
-
-  implicit val showJson: Show[Json] =
-    Show.fromToString[Json]
+  implicit val eqJson: Eq[Json] = Eq.instance(_ === _)
+  implicit val showJson: Show[Json] = Show.fromToString[Json]
 }

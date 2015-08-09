@@ -1,4 +1,4 @@
-package io.jfc.auto
+package io.jfc.generic
 
 import io.jfc.test.JfcSuite
 import org.scalacheck.Prop.forAll

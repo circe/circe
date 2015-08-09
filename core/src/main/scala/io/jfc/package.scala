@@ -1,4 +1,3 @@
 package io
 
-package object jfc {
-}
+package object jfc

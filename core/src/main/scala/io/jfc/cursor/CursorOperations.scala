@@ -2,7 +2,7 @@ package io.jfc.cursor
 
 import cats.{ Id, Functor }
 import cats.data.Xor
-import io.jfc.{ Cursor, Decode, DecodeFailure, GenericCursor, Json }
+import io.jfc.{ Cursor, Decoder, DecodingFailure, GenericCursor, Json }
 import scala.annotation.tailrec
 
 /**
@@ -118,6 +118,6 @@ private[jfc] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor
 
   def deleteGoField(q: String): Option[Cursor] = None
 
-  def as[A](implicit decode: Decode[A]): Xor[DecodeFailure, A] = hcursor.as[A]
-  def get[A](k: String)(implicit decode: Decode[A]): Xor[DecodeFailure, A] = hcursor.get[A](k)
+  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = hcursor.as[A]
+  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = hcursor.get[A](k)
 }

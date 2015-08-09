@@ -16,7 +16,7 @@ The name stands for "JSON for [cats][cats]" and is a working title that
 Type `sbt console` to start a REPL in the root project, and then paste the following:
 
 ```scala
-scala> import io.jfc._, io.jfc.auto._, io.jfc.jawn._, io.jfc.syntax._
+scala> import io.jfc._, io.jfc.generic.auto._, io.jfc.jawn._, io.jfc.syntax._
 import io.jfc._
 import io.jfc.auto._
 import io.jfc.jawn._
@@ -56,9 +56,9 @@ jfc depends on [cats][cats] instead of [Scalaz][scalaz], and cats is the only de
 `core` project.
 
 Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][jfc-jawn]
-subproject), [Shapeless][shapeless] (for automatic codec derivation in [`auto`][jfc-auto]), and
-[Twitter Util][util] (for tools for asynchronous parsing in `async`), but it would be possible to
-replace the functionality provided by these subprojects with alternative implementations that use
+subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][jfc-generic]),
+and [Twitter Util][util] (for tools for asynchronous parsing in `async`), but it would be possible
+to replace the functionality provided by these subprojects with alternative implementations that use
 other libraries.
 
 ### Parsing
@@ -79,15 +79,13 @@ gets ported to cats.
 
 jfc does not use macros or provide any kind of automatic derivation in the `core` project. Instead
 of Argonaut's limited macro-based derivation (which  does not support sealed trait hierarchies, for
-example), jfc includes a subproject (`auto`) that provides generic codec derivation using
+example), jfc includes a subproject (`generic`) that provides generic codec derivation using
 [Shapeless][shapeless].
 
-[This subproject][jfc-auto] is currently a simplified port of
-[argonaut-shapeless][argonaut-shapeless] that provides fully-automatic derivation of instances for
-tuples, case classes, and sealed trait hierarchies. It also includes derivation of "incomplete" case classes (see my recent [blog post][incompletes] for details).
-
-We may eventually include an additional subproject with less automatic, more
-customizable codec derivation.
+[This subproject][jfc-generic] is currently a simplified port of
+[argonaut-shapeless][argonaut-shapeless] that provides fully automatic derivation of instances for
+tuples, case classes, and sealed trait hierarchies. It also includes derivation of "incomplete" case
+classes (see my recent [blog post][incompletes] for details).
 
 ### Aliases
 
@@ -182,19 +180,19 @@ This section needs a lot of expanding.
 
 ### Encoding and decoding
 
-jfc uses `Encode` and `Decode` type classes for encoding and decoding. An `Encode[A]` instance
-provides a function that will convert any `A` to a `JSON`, and a `Decode[A]` takes a `Json` value to
-either an exception or an `A`. jfc provides implicit instances of these type classes for many types
-from the Scala standard library, including `Int`, `String`, and [others][encode]. It also provides
-instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an `Encode`
-instance.
+jfc uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
+provides a function that will convert any `A` to a `JSON`, and a `Decoder[A]` takes a `Json` value
+to either an exception or an `A`. jfc provides implicit instances of these type classes for many
+types from the Scala standard library, including `Int`, `String`, and [others][encoder]. It also
+provides instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an
+`Encoder` instance.
 
 ### Transforming JSON
 
 Suppose we have the following JSON document:
 
 ```scala
-import io.jfc._, io.jfc.auto._, io.jfc.jawn._, io.jfc.syntax._
+import io.jfc._, io.jfc.generic.auto._, io.jfc.jawn._, io.jfc.syntax._
 import cats.data.Xor
 
 val json: String = """
@@ -263,12 +261,12 @@ limitations under the License.
 [benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [discipline]: https://github.com/typelevel/discipline
-[encode]: https://travisbrown.github.io/circe/api/#io.jfc.Encode$
+[encoder]: https://travisbrown.github.io/circe/api/#io.jfc.Encoder$
 [finch]: https://github.com/finagle/finch
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.jfc.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
-[jfc-auto]: https://travisbrown.github.io/circe/api/#io.jfc.auto.package
+[jfc-generic]: https://travisbrown.github.io/circe/api/#io.jfc.generic.auto$
 [jfc-jawn]: https://travisbrown.github.io/circe/api/#io.jfc.jawn.package
 [markhibberd]: https://github.com/markhibberd
 [monocle]: https://github.com/julien-truffaut/Monocle

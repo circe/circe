@@ -3,26 +3,23 @@ package io.jfc
 import cats.data.Xor
 
 /**
- * A zipper that represents a position in a JSON document and supports
- * navigation and modification.
+ * A zipper that represents a position in a JSON document and supports navigation and modification.
  *
- * The `focus` represents the current position of the cursor; it may be updated
- * with `withFocus` or changed using navigation methods like `left` and `right`.
+ * The `focus` represents the current position of the cursor; it may be updated with `withFocus` or
+ * changed using navigation methods like `left` and `right`.
  *
- * jfc includes three kinds of cursors. [[Cursor]] is the simplest: it doesn't
- * keep track of its history. [[HCursor]] is a cursor that does keep track of
- * its history, but does not represent the possibility that an navigation or
- * modification operation has failed. [[ACursor]] is the richest cursor, since
- * it both tracks history through an underlying [[HCursor]] and can represent
- * failed operations.
+ * jfc includes three kinds of cursors. [[Cursor]] is the simplest: it doesn't keep track of its
+ * history. [[HCursor]] is a cursor that does keep track of its history, but does not represent the
+ * possibility that a navigation or modification operation has failed. [[ACursor]] is the richest
+ * cursor, since it both tracks history through an underlying [[HCursor]] and can represent failed
+ * operations.
  *
- * [[GenericCursor]] is an abstraction over these three types, and it has
- * several abstract type members that are required in order to represent the
- * different roles of the three cursor types. `Self` is simply the specific type
- * of the cursor, `Focus` is a type constructor that represents the context in
- * which the focus is available, `Result` is the type that is returned by all
- * navigation and modification operations, and `M` is a type class that includes
- * the operations that we need for `withFocusM`.
+ * [[GenericCursor]] is an abstraction over these three types, and it has several abstract type
+ * members that are required in order to represent the different roles of the three cursor types.
+ * `Self` is simply the specific type of the cursor, `Focus` is a type constructor that represents
+ * the context in which the focus is available, `Result` is the type that is returned by all
+ * navigation and modification operations, and `M` is a type class that includes the operations that
+ * we need for `withFocusM`.
  *
  * @groupname TypeMembers Type members
  * @groupprio TypeMembers 0
@@ -140,8 +137,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
   def fieldSet: Option[Set[String]]
 
   /**
-   * If the focus is a JSON object, return its field names in their original
-   * order.
+   * If the focus is a JSON object, return its field names in their original order.
    *
    * @group ObjectAccess
    */
@@ -176,40 +172,42 @@ trait GenericCursor[C <: GenericCursor[C]] {
   def last: Result
 
   /**
-   * If the focus is an element in JSON array, move to the left the given number
-   * of times. A negative value will move the cursor right.
+   * If the focus is an element in JSON array, move to the left the given number of times.
+   *
+   * A negative value will move the cursor right.
    *
    * @group ArrayNavigation
    */
   def leftN(n: Int): Result
 
   /**
-   * If the focus is an element in JSON array, move to the right the given
-   * number of times. A negative value will move the cursor left.
+   * If the focus is an element in JSON array, move to the right the given number of times.
+   *
+   * A negative value will move the cursor left.
    *
    * @group ArrayNavigation
    */
   def rightN(n: Int): Result
 
   /**
-   * If the focus is an element in a JSON array, move to the left until the
-   * given predicate matches the new focus.
+   * If the focus is an element in a JSON array, move to the left until the given predicate matches
+   * the new focus.
    *
    * @group ArrayNavigation
    */
   def leftAt(p: Json => Boolean): Result
 
   /**
-   * If the focus is an element in a JSON array, move to the right until the
-   * given predicate matches the new focus.
+   * If the focus is an element in a JSON array, move to the right until the given predicate matches
+   * the new focus.
    *
    * @group ArrayNavigation
    */
   def rightAt(p: Json => Boolean): Result
 
   /**
-   * If the focus is an element in a JSON array, find the first element at or to
-   * its right that matches the given predicate.
+   * If the focus is an element in a JSON array, find the first element at or to its right that
+   * matches the given predicate.
    *
    * @group ArrayNavigation
    */
@@ -223,8 +221,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
   def downArray: Result
 
   /**
-   * If the focus is a JSON array, move to the first element that satisfies the
-   * given predicate.
+   * If the focus is a JSON array, move to the first element that satisfies the given predicate.
    *
    * @group ArrayNavigation
    */
@@ -238,8 +235,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
   def downN(n: Int): Result
 
   /**
-   * If the focus is a value in a JSON object, move to a sibling with the given
-   * key.
+   * If the focus is a value in a JSON object, move to a sibling with the given key.
    *
    * @group ObjectNavigation
    */
@@ -309,8 +305,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
   def setRights(x: List[Json]): Result
 
   /**
-   * Delete the focus and move to the sibling with the given key in a JSON
-   * object.
+   * Delete the focus and move to the sibling with the given key in a JSON object.
    *
    * @group ObjectModification
    */
@@ -321,12 +316,12 @@ trait GenericCursor[C <: GenericCursor[C]] {
    *
    * @group Decoding
    */
-  def as[A](implicit decode: Decode[A]): Xor[DecodeFailure, A]
+  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A]
 
   /**
    * Attempt to decode the value at the given key in a JSON object as an `A`.
    *
    * @group Decoding
    */
-  def get[A](k: String)(implicit decode: Decode[A]): Xor[DecodeFailure, A]
+  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A]
 }

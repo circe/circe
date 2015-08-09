@@ -5,35 +5,34 @@ import cats.std.list._
 
 trait Error extends Exception
 
-case class ParseFailure(message: String, underlying: Throwable) extends Error {
+case class ParsingFailure(message: String, underlying: Throwable) extends Error {
   override def getMessage: String = message
 }
 
-case class DecodeFailure(message: String, history: List[CursorOp]) extends Error {
-  override def getMessage: String = message
+case class DecodingFailure(message: String, history: List[CursorOp]) extends Error {
+  override def getMessage: String = message + history.mkString(",")
 
-  def withMessage(message: String): DecodeFailure = copy(message = message)
+  def withMessage(message: String): DecodingFailure = copy(message = message)
 }
 
-object ParseFailure {
-  implicit val eqParseFailure: Eq[ParseFailure] = Eq.instance {
-    case (ParseFailure(m1, t1), ParseFailure(m2, t2)) =>
-      m1 == m2 && t1 == t2
+object ParsingFailure {
+  implicit val eqParsingFailure: Eq[ParsingFailure] = Eq.instance {
+    case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
   }
 }
 
-object DecodeFailure {
-  implicit val eqDecodeFailure: Eq[DecodeFailure] = Eq.instance {
-    case (DecodeFailure(m1, h1), DecodeFailure(m2, h2)) =>
+object DecodingFailure {
+  implicit val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
       m1 == m2 && Eq[List[CursorOp]].eqv(h1, h2)
   }
 }
 
 object Error {
   implicit val eqError: Eq[Error] = Eq.instance {
-    case (ParseFailure(m1, u1), ParseFailure(m2, u2)) =>
+    case (ParsingFailure(m1, u1), ParsingFailure(m2, u2)) =>
       m1 == m2 && u1 == u2
-    case (DecodeFailure(m1, h1), DecodeFailure(m2, h2)) =>
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
       m1 == m2 && Eq[List[CursorOp]].eqv(h1, h2)
     case (_, _) => false
   }

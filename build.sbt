@@ -17,7 +17,8 @@ lazy val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Xfuture"
+  "-Xfuture"//,
+  //"-Xlog-implicits"
 )
 
 lazy val testDependencies = Seq(
@@ -34,24 +35,18 @@ lazy val baseSettings = Seq(
       case _ => Nil
     }
   ),
+  scalacOptions in (Compile, console) := compilerOptions,
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ) ++ testDependencies.map(_ % "test"),
   resolvers += Resolver.sonatypeRepo("snapshots")
-  /** Too much of a pain for now.
-  wartremoverWarnings in (Compile, compile) ++= Warts.allBut(
-    Wart.NoNeedForMonad
-  ),
-  wartremoverExcluded +=
-    baseDirectory.value / "src" / "main" / "scala" / "io" / "jfc" / "Printer.scala"
-  */
 )
 
 lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publishSettings
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
-  scalacOptions in (ScalaUnidoc, unidoc) := Seq("-groups", "-implicits"),
+  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/jfc.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
 )
@@ -60,19 +55,18 @@ lazy val root = project.in(file("."))
   .settings(allSettings ++ noPublish)
   .settings(docSettings)
   .settings(noPublish)
-  .settings(scalacOptions in (Compile, console) := compilerOptions)
   .settings(
     initialCommands in console :=
       """
         |import io.jfc._
-        |import io.jfc.auto._
+        |import io.jfc.generic.auto._
         |import io.jfc.jawn._
         |import io.jfc.syntax._
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, auto, jawn, async, benchmark)
-  .dependsOn(core, auto, jawn, async)
+  .aggregate(core, generic, jawn, async, benchmark)
+  .dependsOn(core, generic, jawn, async)
 
 lazy val core = project
   .settings(moduleName := "jfc-core")
@@ -84,8 +78,8 @@ lazy val core = project
     )
   )
 
-lazy val auto = project
-  .settings(moduleName := "jfc-auto")
+lazy val generic = project
+  .settings(moduleName := "jfc-generic")
   .settings(allSettings)
   .settings(
     libraryDependencies += "com.chuusai" %% "shapeless" % "2.2.5"
@@ -116,7 +110,7 @@ lazy val benchmark = project
     libraryDependencies += "io.argonaut" %% "argonaut" % "6.1"
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, auto, jawn)
+  .dependsOn(core, generic, jawn)
 
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
