@@ -46,7 +46,7 @@ lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publis
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
-  scalacOptions in (ScalaUnidoc, unidoc) := Seq("-groups", "-implicits"),
+  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/jfc.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
 )

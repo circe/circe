@@ -1,9 +1,9 @@
-package io.jfc.generic.semiauto
+package io.jfc.generic
 
 import cats.data.Xor
 import cats.laws.discipline.eq._
 import io.jfc.{ Decoder, Encoder, Json }
-import io.jfc.generic.Examples
+import io.jfc.generic.semiauto._
 import io.jfc.test.{ CodecTests, JfcSuite }
 import org.scalacheck.Prop.forAll
 import shapeless.CNil
