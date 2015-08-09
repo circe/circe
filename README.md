@@ -1,26 +1,26 @@
-# jfc
+# circe
 
-[![Build status](https://img.shields.io/travis/travisbrown/jfc/master.svg)](https://travis-ci.org/travisbrown/jfc)
-[![Coverage status](https://img.shields.io/codecov/c/github/travisbrown/jfc/master.svg)](https://codecov.io/github/travisbrown/jfc)
-[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/jfc)
+[![Build status](https://img.shields.io/travis/travisbrown/circe/master.svg)](https://travis-ci.org/travisbrown/circe)
+[![Coverage status](https://img.shields.io/codecov/c/github/travisbrown/circe/master.svg)](https://codecov.io/github/travisbrown/circe)
+[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/circe)
 
 
-jfc is a JSON library for Scala. The rest of this page tries to give some justification for its
+circe is a JSON library for Scala. The rest of this page tries to give some justification for its
 existence. There are also [API docs][api].
 
-The name stands for "JSON for [cats][cats]" and is a working title that
-[is being changed](https://github.com/travisbrown/jfc/issues/11).
+circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for [a
+number of reasons](https://github.com/travisbrown/circe/issues/11).
 
 ## Showing off
 
 Type `sbt console` to start a REPL in the root project, and then paste the following:
 
 ```scala
-scala> import io.jfc._, io.jfc.generic.auto._, io.jfc.jawn._, io.jfc.syntax._
-import io.jfc._
-import io.jfc.auto._
-import io.jfc.jawn._
-import io.jfc.syntax._
+scala> import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
+import io.circe._
+import io.circe.auto._
+import io.circe.jawn._
+import io.circe.syntax._
 
 scala> sealed trait Foo
 defined trait Foo
@@ -38,7 +38,7 @@ scala> foo.asJson.noSpaces
 res0: String = {"Qux":{"d":14.0,"i":13}}
 
 scala> decode[Foo](foo.asJson.spaces4)
-res1: cats.data.Xor[io.jfc.Error,Foo] = Right(Qux(13,Some(14.0)))
+res1: cats.data.Xor[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
 ```
 
 No boilerplate, no runtime reflection.
@@ -48,55 +48,55 @@ No boilerplate, no runtime reflection.
 [Argonaut][argonaut] is a great library. It's by far the best JSON library for Scala, and the best
 JSON library on the JVM. If you're doing anything with JSON in Scala, you should be using Argonaut.
 
-jfc is a fork of Argonaut with a few important differences.
+circe is a fork of Argonaut with a few important differences.
 
 ### Dependencies and modularity
 
-jfc depends on [cats][cats] instead of [Scalaz][scalaz], and cats is the only dependency of the
+circe depends on [cats][cats] instead of [Scalaz][scalaz], and cats is the only dependency of the
 `core` project.
 
-Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][jfc-jawn]
-subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][jfc-generic]),
+Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][circe-jawn]
+subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][circe-generic]),
 and [Twitter Util][util] (for tools for asynchronous parsing in `async`), but it would be possible
 to replace the functionality provided by these subprojects with alternative implementations that use
 other libraries.
 
 ### Parsing
 
-jfc doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
-and codecs. The [`jawn`][jfc-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
+circe doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
+and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
 facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
 fussiest code in Argonaut.
 
 ### Lenses
 
-jfc doesn't use or provide lenses in the `core` project (or at all, for now). This is related to
+circe doesn't use or provide lenses in the `core` project (or at all, for now). This is related to
 the first point above, since [Monocle][monocle] has a Scalaz dependency, but we also feel that it
 simplifies the API. We'd consider adding lenses in a subproject if Monocle (or something similar)
 gets ported to cats.
 
 ### Codec derivation
 
-jfc does not use macros or provide any kind of automatic derivation in the `core` project. Instead
+circe does not use macros or provide any kind of automatic derivation in the `core` project. Instead
 of Argonaut's limited macro-based derivation (which  does not support sealed trait hierarchies, for
-example), jfc includes a subproject (`generic`) that provides generic codec derivation using
+example), circe includes a subproject (`generic`) that provides generic codec derivation using
 [Shapeless][shapeless].
 
-[This subproject][jfc-generic] is currently a simplified port of
+[This subproject][circe-generic] is currently a simplified port of
 [argonaut-shapeless][argonaut-shapeless] that provides fully automatic derivation of instances for
 tuples, case classes, and sealed trait hierarchies. It also includes derivation of "incomplete" case
 classes (see my recent [blog post][incompletes] for details).
 
 ### Aliases
 
-jfc aims to simplify Argonaut's API by removing all operator aliases. This is largely a matter of
+circe aims to simplify Argonaut's API by removing all operator aliases. This is largely a matter of
 personal taste, and may change in the future.
 
 ### Documentation
 
 The Argonaut documentation is good, but it could be better: to take just one example, it can be hard
 to tell at a glance why there are three different `Cursor`, `HCursor`, and `ACursor` types. In this
-particular case, jfc introduces an abstraction over cursors that makes the relationship clearer and
+particular case, circe introduces an abstraction over cursors that makes the relationship clearer and
 allows these three types to [share API documentation][generic-cursor].
 
 ### Testing
@@ -106,9 +106,9 @@ early days for this.
 
 ### Performance
 
-jfc aims to be more focused on performance. I'm still experimenting with the right balance, but I'm
+circe aims to be more focused on performance. I'm still experimenting with the right balance, but I'm
 open to using mutability, inheritance, and all kinds of other horrible things under the hood if they
-make jfc faster (the public API does not and will never expose any of this, though).
+make circe faster (the public API does not and will never expose any of this, though).
 
 [My initial benchmarks][benchmarks] suggest this is at least kind of working (higher numbers are
 better):
@@ -172,7 +172,7 @@ PrintingBenchmark.printIntsJ:gc.alloc.rate.norm   20    95408.077 ±      0.149 
 ```
 
 The `Foos` benchmarks work with a map containing case class values, and the `Ints` ones are an array
-of integers. `J` suffixes indicate jfc's throughput and `A` is for Argonaut.
+of integers. `J` suffixes indicate circe's throughput and `A` is for Argonaut.
 
 ## Usage
 
@@ -180,9 +180,9 @@ This section needs a lot of expanding.
 
 ### Encoding and decoding
 
-jfc uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
+circe uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
 provides a function that will convert any `A` to a `JSON`, and a `Decoder[A]` takes a `Json` value
-to either an exception or an `A`. jfc provides implicit instances of these type classes for many
+to either an exception or an `A`. circe provides implicit instances of these type classes for many
 types from the Scala standard library, including `Int`, `String`, and [others][encoder]. It also
 provides instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an
 `Encoder` instance.
@@ -192,7 +192,7 @@ provides instances for `List[A]`, `Option[A]`, and other generic types, but only
 Suppose we have the following JSON document:
 
 ```scala
-import io.jfc._, io.jfc.generic.auto._, io.jfc.jawn._, io.jfc.syntax._
+import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
 import cats.data.Xor
 
 val json: String = """
@@ -236,15 +236,15 @@ The result will contain the original document with the `"name"` field reversed.
 
 ## Contributors
 
-jfc is a fork of Argonaut, and if you find it at all useful, you should thank
+circe is a fork of Argonaut, and if you find it at all useful, you should thank
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-jfc is currently developed and maintained by [Travis Brown][travisbrown].
+circe is currently developed and maintained by [Travis Brown][travisbrown].
 
 ## License
 
-jfc is licensed under the **[Apache License, Version 2.0][apache]** (the
+circe is licensed under the **[Apache License, Version 2.0][apache]** (the
 "License"); you may not use this software except in compliance with the License.
 
 Unless required by applicable law or agreed to in writing, software
@@ -254,20 +254,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
-[api]: https://travisbrown.github.io/circe/api/#io.jfc.package
+[api]: https://travisbrown.github.io/circe/api/#io.circe.package
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
-[benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/jfc/benchmark/Benchmark.scala
+[benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [discipline]: https://github.com/typelevel/discipline
-[encoder]: https://travisbrown.github.io/circe/api/#io.jfc.Encoder$
+[encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
 [finch]: https://github.com/finagle/finch
-[generic-cursor]: https://travisbrown.github.io/circe/api/#io.jfc.GenericCursor
+[generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
-[jfc-generic]: https://travisbrown.github.io/circe/api/#io.jfc.generic.auto$
-[jfc-jawn]: https://travisbrown.github.io/circe/api/#io.jfc.jawn.package
+[circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
+[circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
 [markhibberd]: https://github.com/markhibberd
 [monocle]: https://github.com/julien-truffaut/Monocle
 [scalaz]: https://github.com/scalaz/scalaz
