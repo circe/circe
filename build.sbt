@@ -1,8 +1,8 @@
 import sbtunidoc.Plugin.UnidocKeys._
+import ReleaseTransformations._
 
 lazy val buildSettings = Seq(
   organization := "io.circe",
-  version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.7",
   crossScalaVersions := Seq("2.10.5", "2.11.7")
 )
@@ -51,9 +51,9 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
 )
 
 lazy val root = project.in(file("."))
-  .settings(allSettings ++ noPublish)
+  .settings(allSettings)
   .settings(docSettings)
-  .settings(noPublish)
+  .settings(noPublishSettings)
   .settings(
     initialCommands in console :=
       """
@@ -96,6 +96,7 @@ lazy val jawn = project
 lazy val async = project
   .settings(moduleName := "circe-async")
   .settings(allSettings)
+  .settings(noPublishSettings)
   .settings(
     libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
   )
@@ -104,7 +105,7 @@ lazy val async = project
 lazy val benchmark = project
   .settings(moduleName := "circe-benchmark")
   .settings(allSettings)
-  .settings(noPublish)
+  .settings(noPublishSettings)
   .settings(
     libraryDependencies += "io.argonaut" %% "argonaut" % "6.1"
   )
@@ -112,8 +113,13 @@ lazy val benchmark = project
   .dependsOn(core, generic, jawn)
 
 lazy val publishSettings = Seq(
+  releaseCrossBuild := true,
+  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
+  homepage := Some(url("https://github.com/travisbrown/circe")),
+  licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
-  publishArtifact := true,
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ => false },
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
@@ -121,16 +127,15 @@ lazy val publishSettings = Seq(
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
-  publishArtifact in Test := false,
-  licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  homepage := Some(url("https://github.com/travisbrown/circe")),
   autoAPIMappings := true,
   apiURL := Some(url("https://travisbrown.github.io/circe/api/")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/travisbrown/circe"),
+      "scm:git:git@github.com:travisbrown/circe.git"
+    )
+  ),
   pomExtra := (
-    <scm>
-      <url>git://github.com/travisbrown/circe.git</url>
-      <connection>scm:git://github.com/travisbrown/circe.git</connection>
-    </scm>
     <developers>
       <developer>
         <id>travisbrown</id>
@@ -141,7 +146,37 @@ lazy val publishSettings = Seq(
   )
 )
 
-lazy val noPublish = Seq(
-  publish := {},
-  publishLocal := {}
+lazy val noPublishSettings = Seq(
+  publish := (),
+  publishLocal := (),
+  publishArtifact := false
 )
+
+lazy val sharedReleaseProcess = Seq(
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    publishArtifacts,
+    setNextVersion,
+    commitNextVersion,
+    ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+    pushChanges
+  )
+)
+
+credentials ++= (
+  for {
+    username <- Option(System.getenv().get("SONATYPE_USERNAME"))
+    password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
+  } yield Credentials(
+    "Sonatype Nexus Repository Manager",
+    "oss.sonatype.org",
+    username,
+    password
+  )
+).toSeq
