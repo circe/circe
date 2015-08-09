@@ -1,0 +1,1491 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>HCursor - io.circe.HCursor</title>
+          <meta name="description" content="HCursor - io.circe.HCursor" />
+          <meta name="keywords" content="HCursor io.circe.HCursor" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'io.circe.HCursor';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="HCursor$.html" title="See companion object"><img alt="Class/Object" src="../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../package.html" class="extype" name="io">io</a>.<a href="package.html" class="extype" name="io.circe">circe</a></p>
+        <h1><a href="HCursor$.html" title="See companion object">HCursor</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="HCursor$.html" title="See companion object">object HCursor</a>
+            | <a href="package.html" class="extype" name="io.circe">package circe</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HCursor</span><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                <li class="group out"><span>Grouped</span></li>
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="io.circe.HCursor"><span>HCursor</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="io.circe.cursor.HCursorOperations"><span>HCursorOperations</span></li><li class="in" name="io.circe.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+                <span class="filtertype">Implicitly<br />
+                </span>
+                <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="io.circe.HCursor#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(cursor:io.circe.Cursor,history:List[io.circe.CursorOp]):io.circe.HCursor"></a>
+      <a id="&lt;init&gt;:HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HCursor</span><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a>]</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@&lt;init&gt;(cursor:io.circe.Cursor,history:List[io.circe.CursorOp]):io.circe.HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="io.circe.cursor.HCursorOperations.Focus" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+      <a id="Focus[x]=cats.Id[x]"></a>
+      <a id="Focus[x]:Focus[x]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Focus</span><span class="tparams">[<span name="x">x</span>]</span><span class="result"> = <span class="extype" name="io.circe.cursor.HCursorOperations.Focus.x">x</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@Focus[x]=cats.Id[x]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The context that the cursor is available in.</p><div class="fullcomment"><div class="comment cmt"><p>The context that the cursor is available in.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations.M" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+      <a id="M[x[_]]=cats.Functor[x]"></a>
+      <a id="M[x[_]]:M[x]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.M.x">x</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The type class including the operations needed for <code>withFocusM</code>.</p><div class="fullcomment"><div class="comment cmt"><p>The type class including the operations needed for <code>withFocusM</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations.Result" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+      <a id="Result=io.circe.ACursor"></a>
+      <a id="Result:Result"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Result</span><span class="result"> = <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@Result=io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The type returned by navigation and modifications operations.</p><div class="fullcomment"><div class="comment cmt"><p>The type returned by navigation and modifications operations.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@##():Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(other:String):String"></a>
+      <a id="+(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@+(other:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method any2stringadd in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-&gt;[B](y:B):(A,B)"></a>
+      <a id="-&gt;[B](B):(HCursor,B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.HCursor#acursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="acursor:io.circe.ACursor"></a>
+      <a id="acursor:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">acursor</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@acursor:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create an <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> for this cursor.</p>
+    </li><li name="io.circe.cursor.HCursorOperations#as" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+      <a id="as[A](implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
+      <a id="as[A](Decoder[A]):Xor[DecodingFailure,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.as.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.cursor.HCursorOperations.as.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@as[A](implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Attempt to decode the focus as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the focus as an <code>A</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@clone():Object" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="io.circe.HCursor#cursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="cursor:io.circe.Cursor"></a>
+      <a id="cursor:Cursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cursor</span><span class="result">: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@cursor:io.circe.Cursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.cursor.HCursorOperations#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+      <a id="delete:io.circe.ACursor"></a>
+      <a id="delete:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">delete</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@delete:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to its parent.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to its parent.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteGoField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectModification">
+      <a id="deleteGoField(k:String):io.circe.ACursor"></a>
+      <a id="deleteGoField(String):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteGoField</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteGoField(k:String):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to the sibling with the given key in a JSON object.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the sibling with the given key in a JSON object.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteGoFirst" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteGoFirst:io.circe.ACursor"></a>
+      <a id="deleteGoFirst:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteGoFirst</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteGoFirst:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to the first element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the first element in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteGoLast" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteGoLast:io.circe.ACursor"></a>
+      <a id="deleteGoLast:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteGoLast</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteGoLast:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to the last element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the last element in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteGoLeft" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteGoLeft:io.circe.ACursor"></a>
+      <a id="deleteGoLeft:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteGoLeft</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteGoLeft:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to the left in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the left in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteGoRight" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteGoRight:io.circe.ACursor"></a>
+      <a id="deleteGoRight:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteGoRight</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteGoRight:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete the focus and move to the right in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the right in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteLefts:io.circe.ACursor"></a>
+      <a id="deleteLefts:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteLefts</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteLefts:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the left of the focus in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#deleteRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="deleteRights:io.circe.ACursor"></a>
+      <a id="deleteRights:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteRights</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@deleteRights:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Delete all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the right of the focus in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#downArray" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="downArray:io.circe.ACursor"></a>
+      <a id="downArray:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downArray</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@downArray:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON array, move to its first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to its first element.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#downAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
+      <a id="downAt((Json)⇒Boolean):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON array, move to the first element that satisfies the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the first element that satisfies the given predicate.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#downField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
+      <a id="downField(k:String):io.circe.ACursor"></a>
+      <a id="downField(String):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downField</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@downField(k:String):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON object, move to the value of the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, move to the value of the given key.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#downN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="downN(n:Int):io.circe.ACursor"></a>
+      <a id="downN(Int):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@downN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON array, move to the element at the given index.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the element at the given index.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring((HCursor)⇒Boolean,⇒Any):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a>
+      <a id="ensuring((HCursor)⇒Boolean):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring(Boolean,⇒Any):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean):A"></a>
+      <a id="ensuring(Boolean):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method Ensuring in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.HCursor#failedACursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="failedACursor:io.circe.ACursor"></a>
+      <a id="failedACursor:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">failedACursor</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@failedACursor:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create a failed <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> for this cursor.</p>
+    </li><li name="io.circe.cursor.HCursorOperations#field" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
+      <a id="field(k:String):io.circe.ACursor"></a>
+      <a id="field(String):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">field</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@field(k:String):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a value in a JSON object, move to a sibling with the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a value in a JSON object, move to a sibling with the given key.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#fieldSet" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
+      <a id="fieldSet:Option[Set[String]]"></a>
+      <a id="fieldSet:Option[Set[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fieldSet</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@fieldSet:Option[Set[String]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON object, return its field names in a set.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in a set.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#fields" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
+      <a id="fields:Option[List[String]]"></a>
+      <a id="fields:Option[List[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fields</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@fields:Option[List[String]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON object, return its field names in their original order.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in their original order.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#find" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
+      <a id="find((Json)⇒Boolean):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">find</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, find the first element at or to its right that
+matches the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, find the first element at or to its right that
+matches the given predicate.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#first" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="first:io.circe.ACursor"></a>
+      <a id="first:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">first</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@first:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the first element.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#focus" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+      <a id="focus:io.circe.Json"></a>
+      <a id="focus:Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">focus</span><span class="result">: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@focus:io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The current location in the document.</p><div class="fullcomment"><div class="comment cmt"><p>The current location in the document.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="formatted(fmtstr:String):String"></a>
+      <a id="formatted(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@formatted(fmtstr:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method StringFormat in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#get" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+      <a id="get[A](k:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
+      <a id="get[A](String)(Decoder[A]):Xor[DecodingFailure,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">get</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.get.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.cursor.HCursorOperations.get.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@get[A](k:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Attempt to decode the value at the given key in a JSON object as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the value at the given key in a JSON object as an <code>A</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.HCursor#history" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="history:List[io.circe.CursorOp]"></a>
+      <a id="history:List[CursorOp]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">history</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@history:List[io.circe.CursorOp]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#last" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="last:io.circe.ACursor"></a>
+      <a id="last:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">last</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@last:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the last element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the last element.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#left" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="left:io.circe.ACursor"></a>
+      <a id="left:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">left</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@left:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#leftAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
+      <a id="leftAt((Json)⇒Boolean):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leftAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left until the given predicate matches
+the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left until the given predicate matches
+the new focus.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#leftN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="leftN(n:Int):io.circe.ACursor"></a>
+      <a id="leftN(Int):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leftN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@leftN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in JSON array, move to the left the given number of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the left the given number of times.</p><p>A negative value will move the cursor right.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#lefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
+      <a id="lefts:Option[List[io.circe.Json]]"></a>
+      <a id="lefts:Option[List[Json]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lefts</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@lefts:Option[List[io.circe.Json]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the left.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@notify():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#right" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="right:io.circe.ACursor"></a>
+      <a id="right:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">right</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@right:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#rightAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
+      <a id="rightAt((Json)⇒Boolean):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rightAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right until the given predicate matches
+the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right until the given predicate matches
+the new focus.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#rightN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+      <a id="rightN(n:Int):io.circe.ACursor"></a>
+      <a id="rightN(Int):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rightN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@rightN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is an element in JSON array, move to the right the given number of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the right the given number of times.</p><p>A negative value will move the cursor left.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#rights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
+      <a id="rights:Option[List[io.circe.Json]]"></a>
+      <a id="rights:Option[List[Json]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rights</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@rights:Option[List[io.circe.Json]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the right.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.GenericCursor#set" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+      <a id="set(j:io.circe.Json):C"></a>
+      <a id="set(Json):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">set</span><span class="params">(<span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@set(j:io.circe.Json):C" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replace the focus.</p><div class="fullcomment"><div class="comment cmt"><p>Replace the focus.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#setLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="setLefts(js:List[io.circe.Json]):io.circe.ACursor"></a>
+      <a id="setLefts(List[Json]):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setLefts</span><span class="params">(<span name="js">js: <span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@setLefts(js:List[io.circe.Json]):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replace all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the left of the focus in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#setRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+      <a id="setRights(js:List[io.circe.Json]):io.circe.ACursor"></a>
+      <a id="setRights(List[Json]):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setRights</span><span class="params">(<span name="js">js: <span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@setRights(js:List[io.circe.Json]):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replace all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the right of the focus in a JSON array.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#top" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+      <a id="top:io.circe.Json"></a>
+      <a id="top:Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">top</span><span class="result">: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@top:io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return to the root of the document.</p><div class="fullcomment"><div class="comment cmt"><p>Return to the root of the document.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#traverseDecode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;cats.data.Xor[io.circe.DecodingFailure,A]):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
+      <a id="traverseDecode[A](A)((HCursor)⇒ACursor,(A,HCursor)⇒Xor[DecodingFailure,A]):Xor[DecodingFailure,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseDecode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span></span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>, <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;cats.data.Xor[io.circe.DecodingFailure,A]):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
+large structures (in contrast with recursively binding).
+</p></div></div>
+    </li><li name="io.circe.cursor.HCursorOperations#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+      <a id="up:io.circe.ACursor"></a>
+      <a id="up:ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">up</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@up:io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Move the focus to the parent.</p><div class="fullcomment"><div class="comment cmt"><p>Move the focus to the parent.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@wait():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#withFocus" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+      <a id="withFocus(f:io.circe.Json=&gt;io.circe.Json):io.circe.HCursor"></a>
+      <a id="withFocus((Json)⇒Json):HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withFocus</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@withFocus(f:io.circe.Json=&gt;io.circe.Json):io.circe.HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Modify the focus using the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Modify the focus using the given function.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#withFocusM" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+      <a id="withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]"></a>
+      <a id="withFocusM[F[_]]((Json)⇒F[Json])(Functor[F]):F[HCursor]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Modify the focus in a context using the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Modify the focus in a context using the given function.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(HCursor,B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@→[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>] performed by method ArrowAssoc in scala.Predef.
+            
+          </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
+            </div><div class="parent" name="io.circe.cursor.HCursorOperations">
+              <h3>Inherited from <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span></h3>
+            </div><div class="parent" name="io.circe.GenericCursor">
+              <h3>Inherited from <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+            </div>
+        <div class="conversion" name="scala.Predef.any2stringadd">
+              <h3>Inherited by implicit conversion any2stringadd from
+                <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.StringFormat">
+              <h3>Inherited by implicit conversion StringFormat from
+                <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.Ensuring">
+              <h3>Inherited by implicit conversion Ensuring from
+                <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.ArrowAssoc">
+              <h3>Inherited by implicit conversion ArrowAssoc from
+                <a href="" class="extype" name="io.circe.HCursor">HCursor</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]
+              </h3>
+            </div>
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="TypeMembers">
+              <h3>Type members</h3>
+              
+            </div><div class="group" name="Ungrouped">
+              <h3>HCursor fields and operations</h3>
+              
+            </div><div class="group" name="Access">
+              <h3>Access and navigation</h3>
+              
+            </div><div class="group" name="Modification">
+              <h3>Modification</h3>
+              
+            </div><div class="group" name="ArrayAccess">
+              <h3>Array access</h3>
+              
+            </div><div class="group" name="ObjectAccess">
+              <h3>Object access</h3>
+              
+            </div><div class="group" name="ArrayNavigation">
+              <h3>Array navigation</h3>
+              
+            </div><div class="group" name="ObjectNavigation">
+              <h3>Object navigation</h3>
+              
+            </div><div class="group" name="ArrayModification">
+              <h3>Array modification</h3>
+              
+            </div><div class="group" name="ObjectModification">
+              <h3>Object modification</h3>
+              
+            </div><div class="group" name="Decoding">
+              <h3>Decoding</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
