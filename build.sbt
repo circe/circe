@@ -1,7 +1,7 @@
 import sbtunidoc.Plugin.UnidocKeys._
 
 lazy val buildSettings = Seq(
-  organization := "io.jfc",
+  organization := "io.circe",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.7",
   crossScalaVersions := Seq("2.10.5", "2.11.7")
@@ -17,8 +17,7 @@ lazy val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Xfuture"//,
-  //"-Xlog-implicits"
+  "-Xfuture"
 )
 
 lazy val testDependencies = Seq(
@@ -47,7 +46,7 @@ lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publis
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
-  git.remoteRepo := "git@github.com:travisbrown/jfc.git",
+  git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
 )
 
@@ -58,10 +57,10 @@ lazy val root = project.in(file("."))
   .settings(
     initialCommands in console :=
       """
-        |import io.jfc._
-        |import io.jfc.generic.auto._
-        |import io.jfc.jawn._
-        |import io.jfc.syntax._
+        |import io.circe._
+        |import io.circe.generic.auto._
+        |import io.circe.jawn._
+        |import io.circe.syntax._
         |import cats.data.Xor
       """.stripMargin
   )
@@ -69,7 +68,7 @@ lazy val root = project.in(file("."))
   .dependsOn(core, generic, jawn, async)
 
 lazy val core = project
-  .settings(moduleName := "jfc-core")
+  .settings(moduleName := "circe-core")
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
@@ -79,7 +78,7 @@ lazy val core = project
   )
 
 lazy val generic = project
-  .settings(moduleName := "jfc-generic")
+  .settings(moduleName := "circe-generic")
   .settings(allSettings)
   .settings(
     libraryDependencies += "com.chuusai" %% "shapeless" % "2.2.5"
@@ -87,7 +86,7 @@ lazy val generic = project
   .dependsOn(core, core % "test->test")
 
 lazy val jawn = project
-  .settings(moduleName := "jfc-jawn")
+  .settings(moduleName := "circe-jawn")
   .settings(allSettings)
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
@@ -95,7 +94,7 @@ lazy val jawn = project
   .dependsOn(core, core % "test->test")
 
 lazy val async = project
-  .settings(moduleName := "jfc-async")
+  .settings(moduleName := "circe-async")
   .settings(allSettings)
   .settings(
     libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
@@ -103,7 +102,7 @@ lazy val async = project
   .dependsOn(core, jawn)
 
 lazy val benchmark = project
-  .settings(moduleName := "jfc-benchmark")
+  .settings(moduleName := "circe-benchmark")
   .settings(allSettings)
   .settings(noPublish)
   .settings(
@@ -124,13 +123,13 @@ lazy val publishSettings = Seq(
   },
   publishArtifact in Test := false,
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  homepage := Some(url("https://github.com/travisbrown/jfc")),
+  homepage := Some(url("https://github.com/travisbrown/circe")),
   autoAPIMappings := true,
-  apiURL := Some(url("https://travisbrown.github.io/jfc/api/")),
+  apiURL := Some(url("https://travisbrown.github.io/circe/api/")),
   pomExtra := (
     <scm>
-      <url>git://github.com/travisbrown/jfc.git</url>
-      <connection>scm:git://github.com/travisbrown/jfc.git</connection>
+      <url>git://github.com/travisbrown/circe.git</url>
+      <connection>scm:git://github.com/travisbrown/circe.git</connection>
     </scm>
     <developers>
       <developer>
