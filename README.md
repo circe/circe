@@ -11,9 +11,21 @@ existence. There are also [API docs][api].
 circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for [a
 number of reasons](https://github.com/travisbrown/circe/issues/11).
 
-## Showing off
+## Quick start
 
-Type `sbt console` to start a REPL in the root project, and then paste the following:
+circe is published to [Maven Central][maven-central] and cross-built for Scala 2.10 and 2.11, so
+you can just add the following to your build:
+
+```scala
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core" % "0.1.1",
+  "io.circe" %% "circe-generic" % "0.1.1",
+  "io.circe" %% "circe-jawn" % "0.1.1"
+)
+```
+
+Then type `sbt console` to start a REPL and then paste the following (this will also work from the
+root directory of this repository):
 
 ```scala
 scala> import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
@@ -269,6 +281,7 @@ limitations under the License.
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
 [markhibberd]: https://github.com/markhibberd
+[maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
 [scalaz]: https://github.com/scalaz/scalaz
 [shapeless]: https://github.com/milessabin/shapeless
