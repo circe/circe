@@ -4,11 +4,11 @@ import cats.data.Xor
 import cats.laws.discipline.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.semiauto._
-import io.circe.test.{ CodecTests, JfcSuite }
+import io.circe.test.{ CodecTests, CirceSuite }
 import org.scalacheck.Prop.forAll
 import shapeless.CNil
 
-class SemiautoCodecTests extends JfcSuite with Examples {
+class SemiautoCodecTests extends CirceSuite with Examples {
   import tuple._
   import incomplete._
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveFor[Qux[A]].decoder

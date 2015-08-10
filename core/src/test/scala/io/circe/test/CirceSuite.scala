@@ -9,7 +9,7 @@ import org.typelevel.discipline.scalatest.Discipline
  * An opinionated stack of traits to improve consistency and reduce
  * boilerplate in Cats tests.
  */
-trait JfcSuite extends FunSuite with Matchers with Discipline with AllInstances with AllSyntax
+trait CirceSuite extends FunSuite with Matchers with Discipline with AllInstances with AllSyntax
   with ArbitraryInstances with MissingInstances {
   override def convertToEqualizer[T](left: T): Equalizer[T] = ???
 }

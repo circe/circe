@@ -5,7 +5,7 @@ import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.{ Cursor, GenericCursor, Json }
 import io.circe.syntax._
 
-abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends JfcSuite {
+abstract class CursorSuite[C <: GenericCursor[C]](implicit eq: Eq[C]) extends CirceSuite {
   def fromJson(j: Json): C
   def top(c: C): Option[Json]
   def focus(c: C): Option[Json]

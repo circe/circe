@@ -2,9 +2,9 @@ package io.circe
 
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.arbitrary._
-import io.circe.test.{ CodecTests, JfcSuite }
+import io.circe.test.{ CodecTests, CirceSuite }
 
-class AnyValCodecTests extends JfcSuite {
+class AnyValCodecTests extends CirceSuite {
   checkAll("Codec[Unit]", CodecTests[Unit].codec)
   checkAll("Codec[Boolean]", CodecTests[Boolean].codec)
   checkAll("Codec[Char]", CodecTests[Char].codec)
@@ -16,7 +16,7 @@ class AnyValCodecTests extends JfcSuite {
   checkAll("Codec[Long]", CodecTests[Long].codec)
 }
 
-class StdLibCodecTests extends JfcSuite {
+class StdLibCodecTests extends CirceSuite {
   checkAll("Codec[String]", CodecTests[String].codec)
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
@@ -26,15 +26,15 @@ class StdLibCodecTests extends JfcSuite {
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
 }
 
-class CatsCodecTests extends JfcSuite {
+class CatsCodecTests extends CirceSuite {
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
 }
 
-class JfcCodecTests extends JfcSuite {
+class CirceCodecTests extends CirceSuite {
   checkAll("Codec[Json]", CodecTests[Json].codec)
 }
 
-class DisjunctionCodecTests extends JfcSuite {
+class DisjunctionCodecTests extends CirceSuite {
   import disjunctionCodecs._
 
   checkAll("Codec[Xor[Int, String]]", CodecTests[Xor[Int, String]].codec)

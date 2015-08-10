@@ -4,7 +4,7 @@ import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
-import io.circe.test.{ CodecTests, JfcSuite }
+import io.circe.test.{ CodecTests, CirceSuite }
 import org.scalacheck.Prop.forAll
 import shapeless.CNil
 
@@ -12,7 +12,7 @@ import shapeless.CNil
  * For some reason several of these tests fail if the test file is moved up a directory (which is
  * where it properly belongs after some recent refactoring). I'd love to know why.
  */
-class AutoCodecTests extends JfcSuite with Examples {
+class AutoCodecTests extends CirceSuite with Examples {
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int)]", CodecTests[(Int, Int)].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)

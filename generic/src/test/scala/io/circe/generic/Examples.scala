@@ -1,10 +1,10 @@
 package io.circe.generic
 
 import algebra.Eq
-import io.circe.test.JfcSuite
+import io.circe.test.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
-trait Examples { this: JfcSuite =>
+trait Examples { this: CirceSuite =>
   case class Qux[A](i: Int, a: A)
 
   object Qux {

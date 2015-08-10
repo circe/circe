@@ -1,10 +1,10 @@
 package io.circe
 
-import io.circe.test.JfcSuite
+import io.circe.test.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.math.{ min, max }
 
-class JsonNumberTests extends JfcSuite {
+class JsonNumberTests extends CirceSuite {
   case class JsonNumberString(s: String)
 
   object JsonNumberString {

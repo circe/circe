@@ -11,11 +11,11 @@ class JawnParser extends Parser {
     Xor.fromTry(t).leftMap(error => ParsingFailure(error.getMessage, error))
 
   def parse(input: String): Xor[ParsingFailure, Json] =
-    fromTry(JfcSupportParser.parseFromString(input))
+    fromTry(CirceSupportParser.parseFromString(input))
 
   def parseFile(file: File): Xor[ParsingFailure, Json] =
-    fromTry(JfcSupportParser.parseFromFile(file))
+    fromTry(CirceSupportParser.parseFromFile(file))
 
   def parseByteBuffer(buffer: ByteBuffer): Xor[ParsingFailure, Json] =
-    fromTry(JfcSupportParser.parseFromByteBuffer(buffer))
+    fromTry(CirceSupportParser.parseFromByteBuffer(buffer))
 }
