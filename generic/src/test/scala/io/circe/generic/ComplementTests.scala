@@ -1,10 +1,10 @@
 package io.circe.generic
 
-import io.circe.test.JfcSuite
+import io.circe.test.CirceSuite
 import org.scalacheck.Prop.forAll
 import shapeless.{ test => _, _ }, shapeless.record._, shapeless.syntax.singleton._
 
-class ComplementTests extends JfcSuite {
+class ComplementTests extends CirceSuite {
   type R = Record.`'i -> Int, 's -> String, 'c -> Char`.T
 
   test("Remove and reinsert labeled elements") {

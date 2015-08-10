@@ -2,13 +2,13 @@ package io.circe.jawn
 
 import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.Json
-import io.circe.test.{ JfcSuite, ParserTests }
+import io.circe.test.{ CirceSuite, ParserTests }
 import java.io.File
 import java.nio.ByteBuffer
 import org.scalacheck.Prop.forAll
 import scala.io.Source
 
-class JawnParserTests extends JfcSuite {
+class JawnParserTests extends CirceSuite {
   val glossary: Json = Json.obj(
     "glossary" -> Json.obj(
       "title" -> Json.string("example glossary"),

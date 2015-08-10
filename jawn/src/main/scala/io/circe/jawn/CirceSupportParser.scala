@@ -4,7 +4,7 @@ import io.circe.{ Json, JsonDecimal }
 import jawn.{ FContext, Facade, SupportParser }
 import scala.collection.mutable.ArrayBuffer
 
-object JfcSupportParser extends SupportParser[Json] {
+object CirceSupportParser extends SupportParser[Json] {
   implicit val facade: Facade[Json] = new Facade[Json] {
     def jnull(): Json = Json.Empty
     def jfalse(): Json = Json.False
