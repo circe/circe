@@ -9,11 +9,11 @@ trait LabelledInstances {
     key: Witness.Aux[K],
     gen: LabelledGeneric.Aux[H, HR],
     decodeHead: Lazy[Decoder[HR]],
-    decodeTail: Decoder[T]
+    decodeTail: Lazy[Decoder[T]]
   ): Decoder[FieldType[K, H] :+: T] =
     Decoder.instance { c =>
       c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
-        decodeTail(c).map(Inr(_))
+        decodeTail.value(c).map(Inr(_))
       ) { headJson =>
         headJson.as(decodeHead.value).map(h => Inl(field(gen.from(h))))
       }
@@ -21,13 +21,13 @@ trait LabelledInstances {
 
   implicit def decodeLabelledHList[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
-    decodeHead: Decoder[H],
-    decodeTail: Decoder[T]
+    decodeHead: Lazy[Decoder[H]],
+    decodeTail: Lazy[Decoder[T]]
   ): Decoder[FieldType[K, H] :: T] =
     Decoder.instance { c =>
       for {
-        head <- c.get(key.value.name)(decodeHead)
-        tail <- c.as(decodeTail)
+        head <- c.get(key.value.name)(decodeHead.value)
+        tail <- c.as(decodeTail.value)
       } yield field[K](head) :: tail
     }
 
@@ -35,20 +35,20 @@ trait LabelledInstances {
     key: Witness.Aux[K],
     gen: LabelledGeneric.Aux[H, HR],
     encodeHead: Lazy[Encoder[HR]],
-    encodeTail: ObjectEncoder[T]
+    encodeTail: Lazy[ObjectEncoder[T]]
   ): ObjectEncoder[FieldType[K, H] :+: T] =
     ObjectEncoder.instance {
       case Inl(h) => JsonObject.singleton(key.value.name, encodeHead.value(gen.to(h)))
-      case Inr(t) => encodeTail.encodeObject(t)
+      case Inr(t) => encodeTail.value.encodeObject(t)
     }
 
   implicit def encodeLabelledHList[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
-    encodeHead: Encoder[H],
-    encodeTail: ObjectEncoder[T]
+    encodeHead: Lazy[Encoder[H]],
+    encodeTail: Lazy[ObjectEncoder[T]]
   ): ObjectEncoder[FieldType[K, H] :: T] =
     ObjectEncoder.instance {
       case h :: t =>
-      (key.value.name -> encodeHead(h)) +: encodeTail.encodeObject(t)
+      (key.value.name -> encodeHead.value(h)) +: encodeTail.value.encodeObject(t)
     }
 }
