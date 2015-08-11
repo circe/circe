@@ -10,4 +10,10 @@ trait IncompleteInstances {
     complement: Complement.Aux[T, P, R],
     d: Decoder[R]
   ): Decoder[F] = d.map(r => ffp(p => gen.from(complement.insert(p, r))))
+
+  implicit def decodeCaseClassPatch[A, R <: HList, O <: HList](implicit
+    gen: LabelledGeneric.Aux[A, R],
+    patch: PatchWithOptions.Aux[R, O],
+    d: Decoder[O]
+  ): Decoder[A => A] = d.map(o => a => gen.from(patch(gen.to(a), o)))
 }

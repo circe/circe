@@ -32,6 +32,21 @@ class SemiautoCodecTests extends CirceSuite with Examples {
     }
   }
 
+  test("Decoder[Qux[String] => Qux[String]]") {
+    check {
+      forAll { (q: Qux[String], i: Option[Int], a: Option[String]) =>
+        val json = Json.obj(
+          "i" -> Encoder[Option[Int]].apply(i),
+          "a" -> Encoder[Option[String]].apply(a)
+        )
+
+        val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a))
+
+        json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
+      }
+    }
+  }
+
   test("Tuples should be encoded as JSON arrays") {
     check {
       forAll { (t: (Int, String, Char)) =>
