@@ -18,7 +18,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     def go(c: Cursor): Json = c match {
       case CJson(j) => j
       case CArray(j, p, u, ls, rs) =>
-        val q = Json.fromValues(ls.reverse_:::(j :: rs))
+        val q = Json.fromValues((j :: rs).reverse_:::(ls))
 
         go(
           p match {

@@ -9,9 +9,6 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
 
-/**
- * 
- */
 trait CodecLaws[A] {
   def decode: Decoder[A]
   def encode: Encoder[A]

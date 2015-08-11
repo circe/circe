@@ -9,9 +9,6 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
 
-/**
- * 
- */
 case class ParserLaws(parser: Parser) {
   def parsingRoundTripNoSpaces(json: Json): IsEq[Xor[ParsingFailure, Json]] =
     parser.parse(json.noSpaces) <-> Xor.right(json)

@@ -13,7 +13,7 @@ private[circe] case class CArray(
   def context: List[Context] = Context.inArray(focus, ls.length) :: p.context
 
   def up: Option[Cursor] = Some {
-    val j = Json.fromValues(ls.reverse_:::(focus :: rs))
+    val j = Json.fromValues((focus :: rs).reverse_:::(ls))
 
     p match {
       case CJson(_) => CJson(j)
@@ -23,7 +23,7 @@ private[circe] case class CArray(
   }
 
   def delete: Option[Cursor] = Some {
-    val j = Json.fromValues(ls.reverse_:::(rs))
+    val j = Json.fromValues(rs.reverse_:::(ls))
 
     p match {
       case CJson(_) => CJson(j)
@@ -49,12 +49,12 @@ private[circe] case class CArray(
     case Nil => None
   }
 
-  override def first: Option[Cursor] = ls.reverse_:::(focus :: rs) match {
+  override def first: Option[Cursor] = (focus :: rs).reverse_:::(ls) match {
     case h :: t => Some(CArray(h, p, u, Nil, t))
     case Nil => None
   }
 
-  override def last: Option[Cursor] = rs.reverse_:::(focus :: ls) match {
+  override def last: Option[Cursor] = (focus :: ls).reverse_:::(rs) match {
     case h :: t => Some(CArray(h, p, u, t, Nil))
     case Nil => None
   }
@@ -69,12 +69,12 @@ private[circe] case class CArray(
     case Nil => None
   }
 
-  override def deleteGoFirst: Option[Cursor] = ls.reverse_:::(rs) match {
+  override def deleteGoFirst: Option[Cursor] = rs.reverse_:::(ls) match {
     case h :: t => Some(CArray(h, p, true, Nil, t))
     case Nil => None
   }
 
-  override def deleteGoLast: Option[Cursor] = rs.reverse_:::(ls) match {
+  override def deleteGoLast: Option[Cursor] = ls.reverse_:::(rs) match {
     case h :: t => Some(CArray(h, p, true, t, Nil))
     case Nil => None
   }
