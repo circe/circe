@@ -41,3 +41,37 @@ class DisjunctionCodecTests extends CirceSuite {
   checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
   checkAll("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
 }
+
+class DecodingFailureTests extends CirceSuite {
+  val n = Json.int(10)
+  val b = Json.True
+  val s = Json.string("foo")
+  val l = Json.array(s)
+  val o = Json.obj("foo" -> n)
+
+  val nd = Decoder[Int]
+  val bd = Decoder[Boolean]
+  val sd = Decoder[String]
+  val ld = Decoder[List[String]]
+  val od = Decoder[Map[String, Int]]
+
+  test("Decoding a JSON number as anything else should fail") {
+    assert(List(bd, sd, ld, od).forall(d => d.decodeJson(n).isLeft))
+  }
+
+  test("Decoding a JSON boolean as anything else should fail") {
+    assert(List(nd, sd, ld, od).forall(d => d.decodeJson(b).isLeft))
+  }
+
+  test("Decoding a JSON string as anything else should fail") {
+    assert(List(nd, bd, ld, od).forall(d => d.decodeJson(s).isLeft))
+  }
+
+  test("Decoding a JSON array as anything else should fail") {
+    assert(List(nd, bd, sd, od).forall(d => d.decodeJson(l).isLeft))
+  }
+
+  test("Decoding a JSON object as anything else should fail") {
+    assert(List(nd, bd, sd, ld).forall(d => d.decodeJson(o).isLeft))
+  }
+}

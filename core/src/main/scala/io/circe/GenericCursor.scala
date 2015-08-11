@@ -1,5 +1,6 @@
 package io.circe
 
+import cats.Functor
 import cats.data.Xor
 
 /**
@@ -64,7 +65,7 @@ trait GenericCursor[C <: GenericCursor[C]] {
    *
    * @group TypeMembers
    */
-  type M[_[_]]
+  type M[F[_]] <: Functor[F]
 
   /**
    * The current location in the document.

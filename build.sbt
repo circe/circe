@@ -73,7 +73,8 @@ lazy val core = project
   .settings(
     libraryDependencies ++= Seq(
       "org.spire-math" %% "cats-core" % "0.1.2",
-      "org.spire-math" %% "cats-std" % "0.1.2"
+      "org.spire-math" %% "cats-std" % "0.1.2",
+      "io.argonaut" %% "argonaut" % "6.1" % "test"
     )
   )
 

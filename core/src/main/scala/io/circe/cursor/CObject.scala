@@ -41,6 +41,6 @@ private[circe] case class CObject(
   }
 
   override def deleteGoField(k: String): Option[Cursor] = o(k).map { j =>
-    copy(focus = j, key = k, o = o - k)
+    copy(focus = j, key = k, u = true, o = o - key)
   }
 }
