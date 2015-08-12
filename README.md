@@ -252,7 +252,9 @@ circe is a fork of Argonaut, and if you find it at all useful, you should thank
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently developed and maintained by [Travis Brown][travisbrown].
+circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archambault][archambault],
+and [Vladimir Kostyukov][vkostyukov]. After the 0.3.0 release, all pull requests will require two
+sign-offs by a maintainer to be merged.
 
 ## License
 
@@ -267,6 +269,7 @@ limitations under the License.
 
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
 [api]: https://travisbrown.github.io/circe/api/#io.circe.package
+[archambault]: https://twitter.com/alxarchambault
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
