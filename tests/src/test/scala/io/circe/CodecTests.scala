@@ -2,6 +2,7 @@ package io.circe
 
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.arbitrary._
+import io.circe.Cats._
 import io.circe.test.{ CodecTests, CirceSuite }
 
 class AnyValCodecTests extends CirceSuite {

@@ -1,10 +1,10 @@
 package io.circe.test
 
-import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Json, ParsingFailure, Parser }
+import io.circe.Cats._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws

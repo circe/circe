@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.laws.discipline.eq._
+import io.circe.Cats._
 import io.circe.test.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
 

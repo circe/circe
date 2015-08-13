@@ -1,6 +1,5 @@
 package io.circe
 
-import algebra.Eq
 import cats.data.Xor
 import io.circe.cursor.HCursorOperations
 
@@ -50,11 +49,4 @@ case class HCursor(cursor: Cursor, history: List[CursorOp]) extends HCursorOpera
     f: A => Xor[Xor[DecodingFailure, B], Xor[DecodingFailure, A]]
   ): Xor[DecodingFailure, B] =
     r1.flatMap(a => f(a).swap.valueOr(r2 => loop[A, B](r2, f)))
-}
-
-object HCursor {
-  implicit val eqHCursor: Eq[HCursor] = Eq.instance {
-    case (HCursor(c1, h1), HCursor(c2, h2)) =>
-      Eq[Cursor].eqv(c1, c2) && h1 == h2
-  }
 }

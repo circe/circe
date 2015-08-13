@@ -64,8 +64,8 @@ lazy val root = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, generic, jawn, async, benchmark)
-  .dependsOn(core, generic, jawn, async)
+  .aggregate(core, cats, tests, generic, jawn, async, benchmark)
+  .dependsOn(core, cats, generic, jawn, async)
 
 lazy val core = project
   .settings(moduleName := "circe-core")
@@ -78,13 +78,36 @@ lazy val core = project
     )
   )
 
+lazy val cats = project
+  .settings(moduleName := "circe-cats")
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.spire-math" %% "cats-core" % "0.1.2",
+      "org.spire-math" %% "cats-std" % "0.1.2",
+      "io.argonaut" %% "argonaut" % "6.1" % "test"
+    )
+  )
+  .dependsOn(core)
+
+lazy val tests = project
+  .settings(moduleName := "circe-tests")
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.argonaut" %% "argonaut" % "6.1" % "test"
+    )
+  )
+  .dependsOn(core, core % "test->test", cats)
+
 lazy val generic = project
   .settings(moduleName := "circe-generic")
   .settings(allSettings)
   .settings(
     libraryDependencies += "com.chuusai" %% "shapeless" % "2.2.5"
   )
-  .dependsOn(core, core % "test->test")
+  .dependsOn(core, tests % "test->test")
 
 lazy val jawn = project
   .settings(moduleName := "circe-jawn")
@@ -92,7 +115,7 @@ lazy val jawn = project
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
   )
-  .dependsOn(core, core % "test->test")
+  .dependsOn(core, tests % "test->test")
 
 lazy val async = project
   .settings(moduleName := "circe-async")

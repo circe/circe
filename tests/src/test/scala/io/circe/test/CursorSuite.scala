@@ -3,6 +3,7 @@ package io.circe.test
 import algebra.Eq
 import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.{ Cursor, GenericCursor, Json }
+import io.circe.Cats._
 import io.circe.syntax._
 
 abstract class CursorSuite[C <: GenericCursor[C]](implicit

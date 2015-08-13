@@ -1,9 +1,7 @@
 package io.circe
 
-import algebra.Eq
-import cats.{ Applicative, Foldable, Show }
+import cats.{ Applicative, Foldable }
 import cats.data.Kleisli
-import cats.std.map._
 import scala.collection.breakOut
 
 /**
@@ -145,9 +143,6 @@ object JsonObject {
    */
   def singleton(k: String, j: Json): JsonObject = MapAndVectorJsonObject(Map(k -> j), Vector(k))
 
-  implicit val showJsonObject: Show[JsonObject] = Show.fromToString
-  implicit val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
-
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
    */
@@ -197,7 +192,7 @@ object JsonObject {
     override def toString: String =
       "object[%s]".format(
         fieldMap.map {
-          case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
+          case (k, v) => s"$k -> $v"
         }.mkString(",")
       )
 

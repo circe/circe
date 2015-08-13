@@ -1,7 +1,6 @@
 package io.circe
 
-import cats.{ Applicative, Functor }
-import cats.data.{ NonEmptyList, Validated, Xor }
+import io.circe.Cats._
 import cats.std.list._
 import io.circe.test.CursorSuite
 

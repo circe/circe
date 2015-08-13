@@ -1,7 +1,5 @@
 package io.circe
 
-import algebra.Eq
-import cats.Show
 import cats.data.Xor
 import cats.std.list._
 
@@ -223,6 +221,4 @@ object Json {
   def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
   def fromValues(values: Seq[Json]): Json = JArray(values)
 
-  implicit val eqJson: Eq[Json] = Eq.instance(_ === _)
-  implicit val showJson: Show[Json] = Show.fromToString[Json]
 }

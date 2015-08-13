@@ -1,7 +1,8 @@
 package io.circe.jawn
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.Xor
 import io.circe.Json
+import io.circe.Cats._
 import io.circe.test.{ CirceSuite, ParserTests }
 import java.io.File
 import java.nio.ByteBuffer

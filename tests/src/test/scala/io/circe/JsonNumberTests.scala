@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.Cats._
 import io.circe.test.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.math.{ min, max }
