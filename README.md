@@ -246,7 +246,7 @@ val reversedName: Option[Json] = reversedNameCursor.top
 
 The result will contain the original document with the `"name"` field reversed.
 
-## Contributors
+## Contributors and participation
 
 circe is a fork of Argonaut, and if you find it at all useful, you should thank
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
@@ -255,6 +255,9 @@ the [Argonaut contributors][argonaut-contributors].
 circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archambault][archambault],
 and [Vladimir Kostyukov][vkostyukov]. After the 0.3.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
+
+The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
+all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
 ## License
 
@@ -275,6 +278,7 @@ limitations under the License.
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
+[code-of-conduct]: http://typelevel.org/conduct.html
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
 [finch]: https://github.com/finagle/finch
@@ -291,6 +295,7 @@ limitations under the License.
 [spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
+[typelevel]: http://typelevel.org/
 [util]: https://github.com/twitter/util
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
