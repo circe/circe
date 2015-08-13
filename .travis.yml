@@ -9,6 +9,6 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test scalastyle && sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+script: sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM && sbt ++$TRAVIS_SCALA_VERSION coverageAggregate && sbt ++$TRAVIS_SCALA_VERSION validateJS
 
 after_success: bash <(curl -s https://codecov.io/bash)
