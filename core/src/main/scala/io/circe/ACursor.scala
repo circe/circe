@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.data.Xor
 import io.circe.cursor.ACursorOperations
 
 /**
@@ -12,16 +11,16 @@ import io.circe.cursor.ACursorOperations
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
+case class ACursor(either: Either[HCursor, HCursor]) extends ACursorOperations {
   /**
    * Return the current [[HCursor]] if we are in a success state.
    */
-  def success: Option[HCursor] = either.toOption
+  def success: Option[HCursor] = either.right.toOption
 
   /**
    * Return the failed [[HCursor]] if we are in a failure state.
    */
-  def failure: Option[HCursor] = either.swap.toOption
+  def failure: Option[HCursor] = either.swap.right.toOption
 
   /**
    * Indicate whether this cursor represents the result of a successful
@@ -70,6 +69,6 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
 }
 
 object ACursor {
-  def ok(cursor: HCursor): ACursor = ACursor(Xor.right(cursor))
-  def fail(cursor: HCursor): ACursor = ACursor(Xor.left(cursor))
+  def ok(cursor: HCursor): ACursor = ACursor(Right(cursor))
+  def fail(cursor: HCursor): ACursor = ACursor(Left(cursor))
 }

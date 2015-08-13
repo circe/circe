@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.data.Xor
 import io.circe.{ ACursor, Decoder, DecodingFailure, GenericCursor, HCursor, Json }
 
 /**
@@ -14,13 +13,13 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
    * A helper method to simplify performing operations on the underlying [[HCursor]].
    */
   private[this] def withHCursor(f: HCursor => ACursor): ACursor =
-    ACursor(either.flatMap(c => f(c).either))
+    ACursor(either.right.flatMap(c => f(c).either))
 
   def focus: Option[Json] = success.map(_.focus)
   def top: Option[Json] = success.map(_.top)
 
   def delete: ACursor = withHCursor(_.delete)
-  def withFocus(f: Json => Json): ACursor = ACursor(either.map(_.withFocus(f)))
+  def withFocus(f: Json => Json): ACursor = ACursor(either.right.map(_.withFocus(f)))
 
   def lefts: Option[List[Json]]     = success.flatMap(_.lefts)
   def rights: Option[List[Json]]    = success.flatMap(_.rights)
@@ -53,6 +52,6 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
   def setRights(x: List[Json]): ACursor    = withHCursor(_.setRights(x))
   def deleteGoField(k: String): ACursor    = withHCursor(_.deleteGoField(k))
 
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d.tryDecode(this)
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = downField(k).as[A]
+  def as[A](implicit d: Decoder[A]): Either[DecodingFailure, A] = d.tryDecode(this)
+  def get[A](k: String)(implicit d: Decoder[A]): Either[DecodingFailure, A] = downField(k).as[A]
 }

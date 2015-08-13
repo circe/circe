@@ -8,6 +8,8 @@ class DecoderOps[A](val decoder: Decoder[A]) extends AnyVal {
    * Convert to a Kleisli arrow.
    */
   def kleisli: Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A] =
-    Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A](decoder(_))
+    Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A](t =>
+      Xor.fromEither(decoder(t))
+    )
 
 }

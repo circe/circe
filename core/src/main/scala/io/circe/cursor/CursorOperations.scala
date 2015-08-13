@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.data.Xor
 import io.circe.{ Cursor, Decoder, DecodingFailure, GenericCursor, Json }
 import scala.annotation.tailrec
 
@@ -116,6 +115,6 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
 
   def deleteGoField(q: String): Option[Cursor] = None
 
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = hcursor.as[A]
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = hcursor.get[A](k)
+  def as[A](implicit d: Decoder[A]): Either[DecodingFailure, A] = hcursor.as[A]
+  def get[A](k: String)(implicit d: Decoder[A]): Either[DecodingFailure, A] = hcursor.get[A](k)
 }

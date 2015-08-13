@@ -52,7 +52,7 @@ class ExtraACursorOperations(val cursor: ACursor) extends AnyVal with ExtraGener
   /**
    * Return a [[cats.data.Validated]] of the underlying cursor.
    */
-  def validation: Validated[HCursor, HCursor] = cursor.either.toValidated
+  def validation: Validated[HCursor, HCursor] = Validated.fromEither(cursor.either)
 
 }
 

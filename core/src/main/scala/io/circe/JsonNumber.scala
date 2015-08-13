@@ -1,6 +1,5 @@
 package io.circe
 
-import algebra.Eq
 import java.math.{ BigDecimal => JBigDecimal, MathContext }
 import scala.util.matching.Regex
 
@@ -436,8 +435,6 @@ object JsonNumber {
       Some(JsonDecimal(value))
     }
   }
-
-  implicit val eqJsonNumber: Eq[JsonNumber] = Eq.instance(_ === _)
 
   private[this] val MaxLongString: String = Long.MaxValue.toString
   private[this] val MinLongString: String = Long.MinValue.toString

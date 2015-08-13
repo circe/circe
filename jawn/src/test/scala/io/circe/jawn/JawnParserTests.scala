@@ -49,7 +49,7 @@ class JawnParserTests extends CirceSuite {
     val url = getClass.getResource("/io/circe/glossary.json")
     val file = new File(url.toURI)
 
-    assert(parseFile(file) === Xor.right(glossary))
+    assert(Xor.fromEither(parseFile(file)) === Xor.right(glossary))
   }
 
   test("parseByteBuffer") {
@@ -60,6 +60,6 @@ class JawnParserTests extends CirceSuite {
 
     val buffer = ByteBuffer.wrap(bytes)
 
-    assert(parseByteBuffer(buffer) === Xor.right(glossary))
+    assert(Xor.fromEither(parseByteBuffer(buffer)) === Xor.right(glossary))
   }
 }

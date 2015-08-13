@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.data.Xor
 import io.circe.cursor.HCursorOperations
 
 /**
@@ -32,21 +31,23 @@ case class HCursor(cursor: Cursor, history: List[CursorOp]) extends HCursorOpera
    */
   def traverseDecode[A](init: A)(
     op: HCursor => ACursor,
-    f: (A, HCursor) => Xor[DecodingFailure, A]
-  ): Xor[DecodingFailure, A] = loop[(HCursor, A), A](
-    f(init, this).map(a => (this, a)),
+    f: (A, HCursor) => Either[DecodingFailure, A]
+  ): Either[DecodingFailure, A] = loop[(HCursor, A), A](
+    f(init, this).right.map(a => (this, a)),
     { case (c, acc) =>
-        op(c).success.fold[Xor[Xor[DecodingFailure, A], Xor[DecodingFailure, (HCursor, A)]]](
-          Xor.left(Xor.right[DecodingFailure, A](acc))
-        )(hcursor =>
-          Xor.right(f(acc, hcursor).map(b => (hcursor, b)))
-        )
+        op(c)
+          .success
+          .fold[Either[Either[DecodingFailure, A], Either[DecodingFailure, (HCursor, A)]]](
+            Left(Right[DecodingFailure, A](acc))
+          )(hcursor =>
+            Right(f(acc, hcursor).right.map(b => (hcursor, b)))
+          )
     }
   )
 
   private[this] final def loop[A, B](
-    r1: Xor[DecodingFailure, A],
-    f: A => Xor[Xor[DecodingFailure, B], Xor[DecodingFailure, A]]
-  ): Xor[DecodingFailure, B] =
-    r1.flatMap(a => f(a).swap.valueOr(r2 => loop[A, B](r2, f)))
+    r1: Either[DecodingFailure, A],
+    f: A => Either[Either[DecodingFailure, B], Either[DecodingFailure, A]]
+  ): Either[DecodingFailure, B] =
+    r1.right.flatMap(a => f(a).swap.left.map(r2 => loop[A, B](r2, f)).merge)
 }

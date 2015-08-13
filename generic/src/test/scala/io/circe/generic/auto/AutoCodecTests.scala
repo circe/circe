@@ -23,7 +23,7 @@ class AutoCodecTests extends CirceSuite with Examples {
   test("Decoder[Int => Qux[String]]") {
     check {
       forAll { (i: Int, s: String) =>
-        Json.obj("a" -> Json.string(s)).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s))
+        Xor.fromEither(Json.obj("a" -> Json.string(s)).as[Int => Qux[String]].map(_(i))) === Xor.right(Qux(i, s))
       }
     }
   }
@@ -38,7 +38,7 @@ class AutoCodecTests extends CirceSuite with Examples {
 
         val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a))
 
-        json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
+        Xor.fromEither(json.as[Qux[String] => Qux[String]].map(_(q))) === Xor.right(expected)
       }
     }
   }
@@ -49,7 +49,7 @@ class AutoCodecTests extends CirceSuite with Examples {
         val json = Encoder[(Int, String, Char)].apply(t)
         val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
 
-        json === target && json.as[(Int, String, Char)] === Xor.right(t)
+        json === target && Xor.fromEither(json.as[(Int, String, Char)]) === Xor.right(t)
       }
     }
   }
@@ -59,7 +59,7 @@ class AutoCodecTests extends CirceSuite with Examples {
       forAll { (is: List[Int]) =>
         val json = Encoder[List[Int]].apply(is)
 
-        json === Json.fromValues(is.map(Json.int)) && json.as[List[Int]] === Xor.right(is)
+        json === Json.fromValues(is.map(Json.int)) && Xor.fromEither(json.as[List[Int]]) === Xor.right(is)
       }
     }
   }

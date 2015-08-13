@@ -1,6 +1,7 @@
 package io.circe
 
 import algebra.Eq
+import cats.std.either._
 import cats.std.list._
 import cats.std.map._
 
@@ -11,6 +12,8 @@ import io.circe.cursor.{CObject, CArray, CJson}
 trait Eqs {
   implicit val eqJson: Eq[Json] = Eq.instance(_ === _)
   implicit val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
+
+  implicit val eqJsonNumber: Eq[JsonNumber] = Eq.instance(_ === _)
 
   implicit val eqContext: Eq[Context] = Eq.instance {
     case (ArrayContext(j1, i1), ArrayContext(j2, i2)) => i1 == i2 && Eq[Json].eqv(j1, j2)

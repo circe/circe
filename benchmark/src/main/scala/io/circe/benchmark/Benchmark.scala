@@ -70,14 +70,14 @@ class EncodingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class DecodingBenchmark extends ExampleData {
   @Benchmark
-  def decodeIntsC: List[Int] = intsC.as[List[Int]].getOrElse(throw new Exception)
+  def decodeIntsC: List[Int] = intsC.as[List[Int]].right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeIntsA: List[Int] = intsA.as[List[Int]].result.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeFoosC: Map[String, Foo] =
-    foosC.as[Map[String, Foo]].getOrElse(throw new Exception)
+    foosC.as[Map[String, Foo]].right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeFoosA: Map[String, Foo] =
@@ -96,13 +96,13 @@ class DecodingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class ParsingBenchmark extends ExampleData {
   @Benchmark
-  def parseIntsC: JsonC = parse(intsJson).getOrElse(throw new Exception)
+  def parseIntsC: JsonC = parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
 
   @Benchmark
-  def parseFoosC: JsonC = parse(foosJson).getOrElse(throw new Exception)
+  def parseFoosC: JsonC = parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)

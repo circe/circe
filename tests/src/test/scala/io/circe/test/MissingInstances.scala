@@ -1,7 +1,7 @@
 package io.circe.test
 
 import algebra.Eq
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
 
 trait MissingInstances {
   implicit def eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals

@@ -1,7 +1,5 @@
 package io.circe
 
-import cats.data.Xor
-
 /**
  * A data type representing possible JSON values.
  *
@@ -98,7 +96,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Attempts to decode this JSON value to another data type.
    */
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d(cursor.hcursor)
+  def as[A](implicit d: Decoder[A]): Either[DecodingFailure, A] = d(cursor.hcursor)
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.

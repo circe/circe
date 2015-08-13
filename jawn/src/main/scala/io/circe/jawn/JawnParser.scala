@@ -1,21 +1,23 @@
 package io.circe.jawn
 
-import cats.data.Xor
 import io.circe.{ Json, ParsingFailure, Parser }
 import java.io.File
 import java.nio.ByteBuffer
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 class JawnParser extends Parser {
-  private[this] def fromTry(t: Try[Json]): Xor[ParsingFailure, Json] =
-    Xor.fromTry(t).leftMap(error => ParsingFailure(error.getMessage, error))
+  private[this] def fromTry(t: Try[Json]): Either[ParsingFailure, Json] =
+    t match {
+      case Success(s) => Right(s)
+      case Failure(error) => Left(ParsingFailure(error.getMessage, error))
+    }
 
-  def parse(input: String): Xor[ParsingFailure, Json] =
+  def parse(input: String): Either[ParsingFailure, Json] =
     fromTry(CirceSupportParser.parseFromString(input))
 
-  def parseFile(file: File): Xor[ParsingFailure, Json] =
+  def parseFile(file: File): Either[ParsingFailure, Json] =
     fromTry(CirceSupportParser.parseFromFile(file))
 
-  def parseByteBuffer(buffer: ByteBuffer): Xor[ParsingFailure, Json] =
+  def parseByteBuffer(buffer: ByteBuffer): Either[ParsingFailure, Json] =
     fromTry(CirceSupportParser.parseFromByteBuffer(buffer))
 }

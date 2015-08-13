@@ -1,47 +1,45 @@
 package io.circe
 
-import cats.data.Xor
-
 import scala.collection.generic.CanBuildFrom
 
 trait Decoder[A] { self =>
   /**
    * Decode the given hcursor.
    */
-  def apply(c: HCursor): Xor[DecodingFailure, A]
+  def apply(c: HCursor): Either[DecodingFailure, A]
 
   /**
    * Decode the given acursor.
    */
-  def tryDecode(c: ACursor): Xor[DecodingFailure, A] = c.either.fold(
+  def tryDecode(c: ACursor): Either[DecodingFailure, A] = c.either.fold(
     invalid =>
-      Xor.left(DecodingFailure("Attempt to decode value on failed cursor", invalid.history)),
+      Left(DecodingFailure("Attempt to decode value on failed cursor", invalid.history)),
     apply
   )
 
   /**
    * Decode the given [[Json]] value.
    */
-  def decodeJson(j: Json): Xor[DecodingFailure, A] = apply(j.cursor.hcursor)
+  def decodeJson(j: Json): Either[DecodingFailure, A] = apply(j.cursor.hcursor)
 
   /**
    * Map a function over this [[Decoder]].
    */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    def apply(c: HCursor): Xor[DecodingFailure, B] = self(c).map(f)
-    override def tryDecode(c: ACursor): Xor[DecodingFailure, B] = self.tryDecode(c).map(f)
+    def apply(c: HCursor): Either[DecodingFailure, B] = self(c).right.map(f)
+    override def tryDecode(c: ACursor): Either[DecodingFailure, B] = self.tryDecode(c).right.map(f)
   }
 
   /**
    * Monadically bind a function over this [[Decoder]].
    */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
-    def apply(c: HCursor): Xor[DecodingFailure, B] = {
-      self(c).flatMap(a => f(a)(c))
+    def apply(c: HCursor): Either[DecodingFailure, B] = {
+      self(c).right.flatMap(a => f(a)(c))
     }
 
-    override def tryDecode(c: ACursor): Xor[DecodingFailure, B] = {
-      self.tryDecode(c).flatMap(a => f(a).tryDecode(c))
+    override def tryDecode(c: ACursor): Either[DecodingFailure, B] = {
+      self.tryDecode(c).right.flatMap(a => f(a).tryDecode(c))
     }
   }
 
@@ -49,14 +47,14 @@ trait Decoder[A] { self =>
    * Build a new instance with the specified error message.
    */
   def withErrorMessage(message: String): Decoder[A] = Decoder.instance(c =>
-    apply(c).leftMap(_.withMessage(message))
+    apply(c).left.map(_.withMessage(message))
   )
 
   /**
    * Build a new instance that fails if the condition does not hold.
    */
   def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = Decoder.instance(c =>
-    if (pred(c)) apply(c) else Xor.left(DecodingFailure(message, c.history))
+    if (pred(c)) apply(c) else Left(DecodingFailure(message, c.history))
   )
 
   /**
@@ -64,8 +62,8 @@ trait Decoder[A] { self =>
    */
   def &&&[B](x: Decoder[B]): Decoder[(A, B)] = Decoder.instance(c =>
     for {
-      a <- this(c)
-      b <- x(c)
+      a <- this(c).right
+      b <- x(c).right
     } yield (a, b)
   )
 
@@ -73,25 +71,26 @@ trait Decoder[A] { self =>
    * Choose the first succeeding decoder.
    */
   def |||[AA >: A](d: => Decoder[AA]): Decoder[AA] = Decoder.instance[AA] { c =>
-    val res = apply(c).map(a => (a: AA))
+    val res = apply(c).right.map(a => (a: AA))
     res.fold(_ => d(c), _ => res)
   }
 
   /**
    * Run one or another decoder.
    */
-  def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Xor[DecodingFailure, Xor[A, B]] = _.fold(
-    c => this(c).map(Xor.left),
-    c => d(c).map(Xor.right)
-  )
+  def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Either[DecodingFailure, Either[A, B]] =
+    _.fold(
+      c => this(c).right.map(Left(_)),
+      c => d(c).right.map(Right(_))
+    )
 
   /**
    * Run two decoders.
    */
-  def product[B](x: Decoder[B]): (HCursor, HCursor) => Xor[DecodingFailure, (A, B)] = (a1, a2) =>
+  def product[B](x: Decoder[B]): (HCursor, HCursor) => Either[DecodingFailure, (A, B)] = (a1, a2) =>
     for {
-      a <- this(a1)
-      b <- x(a2)
+      a <- this(a1).right
+      b <- x(a2).right
     } yield (a, b)
 }
 
@@ -141,8 +140,8 @@ object Decoder {
    *
    * @group Utilities
    */
-  def instance[A](f: HCursor => Xor[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
-    def apply(c: HCursor): Xor[DecodingFailure, A] = f(c)
+  def instance[A](f: HCursor => Either[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Either[DecodingFailure, A] = f(c)
   }
 
   /**
@@ -150,8 +149,8 @@ object Decoder {
    *
    * @group Utilities
    */
-  def withReattempt[A](f: ACursor => Xor[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
-    def apply(c: HCursor): Xor[DecodingFailure, A] = tryDecode(c.acursor)
+  def withReattempt[A](f: ACursor => Either[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Either[DecodingFailure, A] = tryDecode(c.acursor)
 
     override def tryDecode(c: ACursor) = f(c)
   }
@@ -166,20 +165,20 @@ object Decoder {
   /**
    * @group Decoding
    */
-  implicit val decodeHCursor: Decoder[HCursor] = instance(Xor.right)
+  implicit val decodeHCursor: Decoder[HCursor] = instance(Right(_))
 
   /**
    * @group Decoding
    */
-  implicit val decodeJson: Decoder[Json] = instance(c => Xor.right(c.focus))
+  implicit val decodeJson: Decoder[Json] = instance(c => Right(c.focus))
 
   /**
    * @group Decoding
    */
   implicit val decodeString: Decoder[String] = instance { c =>
     c.focus match {
-      case JString(string) => Xor.right(string)
-      case _ => Xor.left(DecodingFailure("String", c.history))
+      case JString(string) => Right(string)
+      case _ => Left(DecodingFailure("String", c.history))
     }
   }
 
@@ -188,10 +187,10 @@ object Decoder {
    */
   implicit val decodeUnit: Decoder[Unit] = instance { c =>
     c.focus match {
-      case JNull => Xor.right(())
-      case JObject(obj) if obj.isEmpty => Xor.right(())
-      case JArray(arr) if arr.length == 0 => Xor.right(())
-      case _ => Xor.left(DecodingFailure("String", c.history))
+      case JNull => Right(())
+      case JObject(obj) if obj.isEmpty => Right(())
+      case JArray(arr) if arr.length == 0 => Right(())
+      case _ => Left(DecodingFailure("String", c.history))
     }
   }
 
@@ -200,8 +199,8 @@ object Decoder {
    */
   implicit val decodeBoolean: Decoder[Boolean] = instance { c =>
     c.focus match {
-      case JBoolean(b) => Xor.right(b)
-      case _ => Xor.left(DecodingFailure("Boolean", c.history))
+      case JBoolean(b) => Right(b)
+      case _ => Left(DecodingFailure("Boolean", c.history))
     }
   }
 
@@ -210,8 +209,8 @@ object Decoder {
    */
   implicit val decodeChar: Decoder[Char] = instance { c =>
     c.focus match {
-      case JString(string) if string.length == 1 => Xor.right(string.charAt(0))
-      case _ => Xor.left(DecodingFailure("Char", c.history))
+      case JString(string) if string.length == 1 => Right(string.charAt(0))
+      case _ => Left(DecodingFailure("Char", c.history))
     }
   }
 
@@ -220,9 +219,9 @@ object Decoder {
    */
   implicit val decodeFloat: Decoder[Float] = instance { c =>
     c.focus match {
-      case JNull => Xor.right(Float.NaN)
-      case JNumber(number) => Xor.right(number.toDouble.toFloat)
-      case _ => Xor.left(DecodingFailure("Float", c.history))
+      case JNull => Right(Float.NaN)
+      case JNumber(number) => Right(number.toDouble.toFloat)
+      case _ => Left(DecodingFailure("Float", c.history))
     }
   }
 
@@ -231,9 +230,9 @@ object Decoder {
    */
   implicit val decodeDouble: Decoder[Double] = instance { c =>
     c.focus match {
-      case JNull => Xor.right(Double.NaN)
-      case JNumber(number) => Xor.right(number.toDouble)
-      case _ => Xor.left(DecodingFailure("Float", c.history))
+      case JNull => Right(Double.NaN)
+      case JNumber(number) => Right(number.toDouble)
+      case _ => Left(DecodingFailure("Float", c.history))
     }
   }
 
@@ -242,13 +241,13 @@ object Decoder {
    */
   implicit val decodeByte: Decoder[Byte] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToByte)
+      case JNumber(number) => Right(number.truncateToByte)
       case JString(string) => try {
-        Xor.right(string.toByte)
+        Right(string.toByte)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Byte", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("Byte", c.history))
       }
-      case _ => Xor.left(DecodingFailure("Byte", c.history))
+      case _ => Left(DecodingFailure("Byte", c.history))
     }
   }
 
@@ -257,13 +256,13 @@ object Decoder {
    */
   implicit val decodeShort: Decoder[Short] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToShort)
+      case JNumber(number) => Right(number.truncateToShort)
       case JString(string) => try {
-        Xor.right(string.toShort)
+        Right(string.toShort)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Short", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("Short", c.history))
       }
-      case _ => Xor.left(DecodingFailure("Short", c.history))
+      case _ => Left(DecodingFailure("Short", c.history))
     }
   }
 
@@ -272,13 +271,13 @@ object Decoder {
    */
   implicit val decodeInt: Decoder[Int] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToInt)
+      case JNumber(number) => Right(number.truncateToInt)
       case JString(string) => try {
-        Xor.right(string.toInt)
+        Right(string.toInt)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Int", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("Int", c.history))
       }
-      case _ => Xor.left(DecodingFailure("Int", c.history))
+      case _ => Left(DecodingFailure("Int", c.history))
     }
   }
 
@@ -287,13 +286,13 @@ object Decoder {
    */
   implicit val decodeLong: Decoder[Long] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToLong)
+      case JNumber(number) => Right(number.truncateToLong)
       case JString(string) => try {
-        Xor.right(string.toLong)
+        Right(string.toLong)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Long", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("Long", c.history))
       }
-      case _ => Xor.left(DecodingFailure("Long", c.history))
+      case _ => Left(DecodingFailure("Long", c.history))
     }
   }
 
@@ -302,13 +301,13 @@ object Decoder {
    */
   implicit val decodeBigInt: Decoder[BigInt] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToBigInt)
+      case JNumber(number) => Right(number.truncateToBigInt)
       case JString(string) => try {
-        Xor.right(BigInt(string))
+        Right(BigInt(string))
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("BigInt", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("BigInt", c.history))
       }
-      case _ => Xor.left(DecodingFailure("BigInt", c.history))
+      case _ => Left(DecodingFailure("BigInt", c.history))
     }
   }
 
@@ -317,13 +316,13 @@ object Decoder {
    */
   implicit val decodeBigDecimal: Decoder[BigDecimal] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.toBigDecimal)
+      case JNumber(number) => Right(number.toBigDecimal)
       case JString(string) => try {
-        Xor.right(BigDecimal(string))
+        Right(BigDecimal(string))
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("BigDecimal", c.history))
+        case _: NumberFormatException => Left(DecodingFailure("BigDecimal", c.history))
       }
-      case _ => Xor.left(DecodingFailure("BigDecimal", c.history))
+      case _ => Left(DecodingFailure("BigDecimal", c.history))
     }
   }
 
@@ -336,14 +335,14 @@ object Decoder {
   ): Decoder[C[A]] = instance { c =>
     c.downArray.success.fold(
       if (c.focus.isArray)
-        Xor.right(cbf.apply.result)
+        Right(cbf.apply.result)
       else
-        Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
+        Left(DecodingFailure("CanBuildFrom for A", c.history))
     )(
       _.traverseDecode(cbf.apply)(
         _.right,
-        (acc, hcursor) => hcursor.as[A].map(acc += _)
-      ).map(_.result)
+        (acc, hcursor) => hcursor.as[A].right.map(acc += _)
+      ).right.map(_.result)
     )
   }
 
@@ -352,13 +351,13 @@ object Decoder {
    */
   implicit def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] =
     withReattempt { a =>
-      a.success.fold[Xor[DecodingFailure, Option[A]]](Xor.right(None)) { valid =>
-        if (valid.focus.isNull) Xor.right(None) else d(valid).fold[Xor[DecodingFailure, Option[A]]](
+      a.success.fold[Either[DecodingFailure, Option[A]]](Right(None)) { valid =>
+        if (valid.focus.isNull) Right(None) else d(valid).fold[Either[DecodingFailure, Option[A]]](
           df =>
-            df.history.headOption.fold[Xor[DecodingFailure, Option[A]]](
-              Xor.right(None)
-            )(_ => Xor.left(df)),
-          a => Xor.right(Some(a))
+            df.history.headOption.fold[Either[DecodingFailure, Option[A]]](
+              Right(None)
+            )(_ => Left(df)),
+          a => Right(Some(a))
         )
       }
     }
@@ -370,29 +369,29 @@ object Decoder {
     d: Decoder[V],
     cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
   ): Decoder[M[String, V]] = instance { c =>
-    c.fields.fold(
-      Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
+    c.fields.fold[Either[DecodingFailure, M[String, V]]](
+      Left(DecodingFailure("[V]Map[String, V]", c.history))
     ) { s =>
       @scala.annotation.tailrec
       def spin(
         x: List[String],
-        acc: Xor[DecodingFailure, Vector[(String, V)]]
-      ): Xor[DecodingFailure, M[String, V]] =
+        acc: Either[DecodingFailure, Vector[(String, V)]]
+      ): Either[DecodingFailure, M[String, V]] =
         x match {
           case Nil =>
-            acc.map { fields =>
+            acc.right.map { fields =>
               (cbf() ++= fields).result()
             }
           case h :: t =>
             val acc0 = for {
-              m <- acc
-              v <- c.get(h)(d)
+              m <- acc.right
+              v <- c.get(h)(d).right
             } yield m :+ (h -> v)
 
             if (acc0.isLeft) spin(Nil, acc0)
             else spin(t, acc0)
         }
-      spin(s, Xor.right(Vector.empty))
+      spin(s, Right(Vector.empty))
     }
   }
 
@@ -405,26 +404,17 @@ object Decoder {
   /**
    * @group Disjunction
    */
-  def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
+  def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
     da: Decoder[A],
     db: Decoder[B]
-  ): Decoder[Xor[A, B]] = instance { c =>
+  ): Decoder[Either[A, B]] = instance { c =>
     val l = (c.downField(leftKey)).success
     val r = (c.downField(rightKey)).success
 
     (l, r) match {
-      case (Some(hcursor), None) => da(hcursor).map(Xor.left(_))
-      case (None, Some(hcursor)) => db(hcursor).map(Xor.right(_))
-      case _ => Xor.left(DecodingFailure("[A, B]Xor[A, B]", c.history))
+      case (Some(hcursor), None) => da(hcursor).right.map(Left(_))
+      case (None, Some(hcursor)) => db(hcursor).right.map(Right(_))
+      case _ => Left(DecodingFailure("[A, B]Either[A, B]", c.history))
     }
   }
-
-  /**
-   * @group Disjunction
-   */
-  def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
-    da: Decoder[A],
-    db: Decoder[B]
-  ): Decoder[Either[A, B]] =
-    decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
 }

@@ -15,7 +15,7 @@ trait CodecLaws[A] {
   def encode: Encoder[A]
 
   def codecRoundTrip(a: A): IsEq[Xor[DecodingFailure, A]] =
-    encode(a).as(decode) <-> Xor.right(a)
+    Xor.fromEither(encode(a).as(decode)) <-> Xor.right(a)
 }
 
 object CodecLaws {

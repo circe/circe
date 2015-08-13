@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.data.Xor
 import scala.collection.generic.IsTraversableOnce
 import scala.collection.mutable.ArrayBuffer
 
@@ -175,19 +174,6 @@ object Encoder {
       m.toVector.map {
         case (k, v) => (k, e(v))
       }
-    )
-  )
-
-  /**
-   * @group Disjunction
-   */
-  def encodeXor[A, B](leftKey: String, rightKey: String)(implicit
-    ea: Encoder[A],
-    eb: Encoder[B]
-  ): ObjectEncoder[Xor[A, B]] = ObjectEncoder.instance(
-    _.fold(
-      a => JsonObject.singleton(leftKey, ea(a)),
-      b => JsonObject.singleton(rightKey, eb(b))
     )
   )
 

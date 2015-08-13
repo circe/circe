@@ -1,6 +1,5 @@
 package io.circe.generic
 
-import cats.data.Xor
 import io.circe.{ Decoder, DecodingFailure, Encoder, JsonObject, ObjectEncoder }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
@@ -12,10 +11,10 @@ trait LabelledInstances {
     decodeTail: Lazy[Decoder[T]]
   ): Decoder[FieldType[K, H] :+: T] =
     Decoder.instance { c =>
-      c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
-        decodeTail.value(c).map(Inr(_))
+      c.downField(key.value.name).focus.fold[Either[DecodingFailure, FieldType[K, H] :+: T]](
+        decodeTail.value(c).right.map(Inr(_))
       ) { headJson =>
-        headJson.as(decodeHead.value).map(h => Inl(field(gen.from(h))))
+        headJson.as(decodeHead.value).right.map(h => Inl(field(gen.from(h))))
       }
     }
 
@@ -26,8 +25,8 @@ trait LabelledInstances {
   ): Decoder[FieldType[K, H] :: T] =
     Decoder.instance { c =>
       for {
-        head <- c.get(key.value.name)(decodeHead.value)
-        tail <- c.as(decodeTail.value)
+        head <- c.get(key.value.name)(decodeHead.value).right
+        tail <- c.as(decodeTail.value).right
       } yield field[K](head) :: tail
     }
 

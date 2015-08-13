@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.data.Xor
 import io.circe._
 import io.circe.CursorOpElement._
 
@@ -53,6 +52,6 @@ private[circe] trait HCursorOperations extends GenericCursor[HCursor] { this: HC
   def deleteGoField(k: String): ACursor
     = toACursor(cursor.deleteGoField(k), CursorOpDeleteGoField(k))
 
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d(this)
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = downField(k).as[A]
+  def as[A](implicit d: Decoder[A]): Either[DecodingFailure, A] = d(this)
+  def get[A](k: String)(implicit d: Decoder[A]): Either[DecodingFailure, A] = downField(k).as[A]
 }

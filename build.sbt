@@ -70,13 +70,6 @@ lazy val root = project.in(file("."))
 lazy val core = project
   .settings(moduleName := "circe-core")
   .settings(allSettings)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.spire-math" %% "cats-core" % "0.1.2",
-      "org.spire-math" %% "cats-std" % "0.1.2",
-      "io.argonaut" %% "argonaut" % "6.1" % "test"
-    )
-  )
 
 lazy val cats = project
   .settings(moduleName := "circe-cats")
@@ -99,7 +92,7 @@ lazy val tests = project
       "io.argonaut" %% "argonaut" % "6.1" % "test"
     )
   )
-  .dependsOn(core, core % "test->test", cats)
+  .dependsOn(core, cats)
 
 lazy val generic = project
   .settings(moduleName := "circe-generic")

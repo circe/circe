@@ -14,6 +14,19 @@ trait Encoders {
   /**
    * @group Disjunction
    */
+  def encodeXor[A, B](leftKey: String, rightKey: String)(implicit
+    ea: Encoder[A],
+    eb: Encoder[B]
+  ): ObjectEncoder[Xor[A, B]] = ObjectEncoder.instance(
+    _.fold(
+      a => JsonObject.singleton(leftKey, ea(a)),
+      b => JsonObject.singleton(rightKey, eb(b))
+    )
+  )
+
+  /**
+   * @group Disjunction
+   */
   def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
     ee: Encoder[E],
     ea: Encoder[A]

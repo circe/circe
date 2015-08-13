@@ -1,7 +1,5 @@
 package io.circe
 
-import cats.data.Xor
-
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.
  *
@@ -302,12 +300,12 @@ trait GenericCursor[C <: GenericCursor[C]] {
    *
    * @group Decoding
    */
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A]
+  def as[A](implicit d: Decoder[A]): Either[DecodingFailure, A]
 
   /**
    * Attempt to decode the value at the given key in a JSON object as an `A`.
    *
    * @group Decoding
    */
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A]
+  def get[A](k: String)(implicit d: Decoder[A]): Either[DecodingFailure, A]
 }
