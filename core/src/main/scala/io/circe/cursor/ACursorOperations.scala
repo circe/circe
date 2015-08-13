@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.Applicative
 import cats.data.Xor
 import io.circe.{ ACursor, Decoder, DecodingFailure, GenericCursor, HCursor, Json }
 
@@ -10,7 +9,6 @@ import io.circe.{ ACursor, Decoder, DecodingFailure, GenericCursor, HCursor, Jso
 private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: ACursor =>
   type Focus[x] = Option[x]
   type Result = ACursor
-  type M[x[_]] = Applicative[x]
 
   /**
    * A helper method to simplify performing operations on the underlying [[HCursor]].
@@ -23,11 +21,6 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
 
   def delete: ACursor = withHCursor(_.delete)
   def withFocus(f: Json => Json): ACursor = ACursor(either.map(_.withFocus(f)))
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-    either.fold(
-      _ => F.pure(this),
-      valid => F.map(valid.withFocusM(f))(ACursor.ok)
-    )
 
   def lefts: Option[List[Json]]     = success.flatMap(_.lefts)
   def rights: Option[List[Json]]    = success.flatMap(_.rights)

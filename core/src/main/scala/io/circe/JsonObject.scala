@@ -1,8 +1,7 @@
 package io.circe
 
-import cats.{ Applicative, Foldable }
-import cats.data.Kleisli
 import scala.collection.breakOut
+import scala.collection.generic.IsTraversableOnce
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -67,11 +66,6 @@ sealed abstract class JsonObject extends Serializable {
   def values: List[Json]
 
   /**
-   * Return a Kleisli arrow that gets the JSON value associated with the given field.
-   */
-  def kleisli: Kleisli[Option, String, Json]
-
-  /**
    * Return all association keys in insertion order.
    */
   def fields: List[String]
@@ -80,11 +74,6 @@ sealed abstract class JsonObject extends Serializable {
    * Return all association keys in an undefined order.
    */
   def fieldSet: Set[String]
-
-  /**
-   * Traverse [[Json]] values.
-   */
-  def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject]
 
   /**
    * Return the number of associations.
@@ -109,8 +98,10 @@ object JsonObject {
   /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
-  def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
-    F.foldLeft(f, empty) { case (acc, (k, v)) => acc + (k, v) }
+  def from[Repr](f: Repr)(implicit
+    F: IsTraversableOnce[Repr] { type A = (String, Json) }
+  ): JsonObject =
+    F.conversion(f).foldLeft(empty) { case (acc, (k, v)) => acc + (k, v) }
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.IndexedSeq]] (provided for optimization).
@@ -146,7 +137,7 @@ object JsonObject {
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
    */
-  private[this] final case class MapAndVectorJsonObject(
+  private[circe] final case class MapAndVectorJsonObject(
     fieldMap: Map[String, Json],
     orderedFields: Vector[String]
   ) extends JsonObject {
@@ -177,15 +168,8 @@ object JsonObject {
     def contains(k: String): Boolean = fieldMap.contains(k)
     def toList: List[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
     def values: List[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
-    def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldMap.get)
     def fields: List[String] = orderedFields.toList
     def fieldSet: Set[String] = orderedFields.toSet
-
-    def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
-      orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
-        case (acc, k) => F.ap(acc)(F.map(f(fieldMap(k)))(j => _.updated(k, j)))
-      }
-    )(mappedFields => copy(fieldMap = mappedFields))
 
     def size: Int = fieldMap.size
 

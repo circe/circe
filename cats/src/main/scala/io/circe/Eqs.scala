@@ -5,6 +5,7 @@ import cats.std.list._
 import cats.std.map._
 
 import io.circe.Context.{ObjectContext, ArrayContext}
+import io.circe.CursorOp.{El, Reattempt}
 import io.circe.cursor.{CObject, CArray, CJson}
 
 trait Eqs {
@@ -27,10 +28,35 @@ trait Eqs {
     case (_, _) => false
   }
 
+  implicit val eqCursorOp: Eq[CursorOp] = Eq.instance {
+    case (Reattempt, Reattempt) => true
+    case (El(o1, s1), El(o2, s2)) => Eq[CursorOpElement].eqv(o1, o2) && s1 == s2
+    case (_, _) => false
+  }
+
   implicit val eqHCursor: Eq[HCursor] = Eq.instance {
     case (HCursor(c1, h1), HCursor(c2, h2)) =>
       Eq[Cursor].eqv(c1, c2) && h1 == h2
   }
 
   implicit val eqACursor: Eq[ACursor] = Eq.by(_.either)
+
+  implicit val eqCursorOpElement: Eq[CursorOpElement] = Eq.fromUniversalEquals
+
+  implicit val eqParsingFailure: Eq[ParsingFailure] = Eq.instance {
+    case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
+  }
+
+  implicit val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
+      m1 == m2 && Eq[List[CursorOp]].eqv(h1, h2)
+  }
+
+  implicit val eqError: Eq[Error] = Eq.instance {
+    case (ParsingFailure(m1, u1), ParsingFailure(m2, u2)) =>
+      m1 == m2 && u1 == u2
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
+      m1 == m2 && Eq[List[CursorOp]].eqv(h1, h2)
+    case (_, _) => false
+  }
 }

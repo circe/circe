@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.{ Id, Functor }
 import cats.data.Xor
 import io.circe.{ Cursor, Decoder, DecodingFailure, GenericCursor, Json }
 import scala.annotation.tailrec
@@ -9,9 +8,8 @@ import scala.annotation.tailrec
  * A helper trait that implements cursor operations for [[io.circe.Cursor]].
  */
 private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Cursor =>
-  type Focus[x] = Id[x]
+  type Focus[x] = x
   type Result = Option[Cursor]
-  type M[x[_]] = Functor[x]
 
   def top: Json = {
     @tailrec

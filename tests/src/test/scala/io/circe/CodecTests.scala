@@ -37,6 +37,7 @@ class CirceCodecTests extends CirceSuite {
 
 class DisjunctionCodecTests extends CirceSuite {
   import disjunctionCodecs._
+  import catsDisjunctionCodecs._
 
   checkAll("Codec[Xor[Int, String]]", CodecTests[Xor[Int, String]].codec)
   checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)

@@ -1,9 +1,6 @@
 package io.circe
 
-import cats.Foldable
-import cats.data.{ NonEmptyList, Validated, Xor }
-import cats.functor.Contravariant
-import cats.std.list._
+import cats.data.Xor
 import scala.collection.generic.IsTraversableOnce
 import scala.collection.mutable.ArrayBuffer
 
@@ -78,16 +75,6 @@ object Encoder {
    * @group Encoding
    */
   implicit def fromSecondaryEncoder[A](implicit e: Secondary[A]): Encoder[A] = e.value
-
-  /**
-   * Construct an instance for a given type with a [[cats.Foldable]] instance.
-   *
-   * @group Utilities
-   */
-  def fromFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): Encoder[F[A]] =
-    instance(fa =>
-      Json.fromValues(F.foldLeft(fa, List.empty[Json])((list, a) => e(a) :: list).reverse)
-    )
 
   /**
    * @group Encoding
@@ -181,12 +168,6 @@ object Encoder {
   /**
    * @group Encoding
    */
-  implicit def encodeNonEmptyList[A: Encoder]: Encoder[NonEmptyList[A]] =
-    fromFoldable[NonEmptyList, A]
-
-  /**
-   * @group Encoding
-   */
   implicit def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
     e: Encoder[V]
   ): ObjectEncoder[M[String, V]] = ObjectEncoder.instance(m =>
@@ -222,24 +203,4 @@ object Encoder {
       b => JsonObject.singleton(rightKey, eb(b))
     )
   )
-
-  /**
-   * @group Disjunction
-   */
-  def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
-    ee: Encoder[E],
-    ea: Encoder[A]
-  ): ObjectEncoder[Validated[E, A]] = ObjectEncoder.instance(
-    _.fold(
-      e => JsonObject.singleton(failureKey, ee(e)),
-      a => JsonObject.singleton(successKey, ea(a))
-    )
-  )
-
-  /**
-   * @group Instances
-   */
-  implicit val contravariantEncode: Contravariant[Encoder] = new Contravariant[Encoder] {
-    def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
-  }
 }

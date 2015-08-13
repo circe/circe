@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.Functor
 import cats.data.Xor
 
 /**
@@ -61,13 +60,6 @@ trait GenericCursor[C <: GenericCursor[C]] {
   type Result
 
   /**
-   * The type class including the operations needed for `withFocusM`.
-   *
-   * @group TypeMembers
-   */
-  type M[F[_]] <: Functor[F]
-
-  /**
    * The current location in the document.
    *
    * @group Access
@@ -101,13 +93,6 @@ trait GenericCursor[C <: GenericCursor[C]] {
    * @group Modification
    */
   def withFocus(f: Json => Json): C
-
-  /**
-   * Modify the focus in a context using the given function.
-   *
-   * @group Modification
-   */
-  def withFocusM[F[_]: M](f: Json => F[Json]): F[C]
 
   /**
    * Replace the focus.

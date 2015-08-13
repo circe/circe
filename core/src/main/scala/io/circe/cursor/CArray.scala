@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.Functor
 import io.circe.{ Context, Cursor, Json }
 
 private[circe] case class CArray(
@@ -33,8 +32,6 @@ private[circe] case class CArray(
   }
 
   def withFocus(f: Json => Json): Cursor = copy(focus = f(focus), u = true)
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Functor[F]): F[Cursor] =
-    F.map(f(focus))(j => copy(focus = j, u = true))
 
   override def lefts: Option[List[Json]] = Some(ls)
   override def rights: Option[List[Json]] = Some(rs)

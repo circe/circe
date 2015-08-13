@@ -1,6 +1,5 @@
 package io.circe.cursor
 
-import cats.{ Id, Functor }
 import cats.data.Xor
 import io.circe._
 import io.circe.CursorOpElement._
@@ -9,9 +8,8 @@ import io.circe.CursorOpElement._
  * A helper trait that implements cursor operations for [[io.circe.HCursor]].
  */
 private[circe] trait HCursorOperations extends GenericCursor[HCursor] { this: HCursor =>
-  type Focus[x] = Id[x]
+  type Focus[x] = x
   type Result = ACursor
-  type M[x[_]] = Functor[x]
 
   private[this] def toACursor(c: Option[Cursor], e: CursorOpElement) =
     c.fold(
@@ -22,8 +20,6 @@ private[circe] trait HCursorOperations extends GenericCursor[HCursor] { this: HC
   def top: Json = cursor.top
   def delete: ACursor = toACursor(cursor.delete, CursorOpDeleteGoParent)
   def withFocus(f: Json => Json): HCursor = HCursor(cursor.withFocus(f), history)
-  def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
-    Functor[F].map(cursor.withFocusM(f))(c => HCursor(c, history))
 
 
   def lefts: Option[List[Json]]     = cursor.lefts

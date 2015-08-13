@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ Validated, Xor }
+import cats.data.Xor
 import io.circe.cursor.ACursorOperations
 
 /**
@@ -67,11 +67,6 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
    * Return the current cursor or the given one if this one isn't successful.
    */
   def |||(c: => ACursor): ACursor = if (succeeded) this else c
-
-  /**
-   * Return a [[cats.data.Validated]] of the underlying cursor.
-   */
-  def validation: Validated[HCursor, HCursor] = either.toValidated
 }
 
 object ACursor {

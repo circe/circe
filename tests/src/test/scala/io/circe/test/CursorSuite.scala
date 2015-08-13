@@ -1,19 +1,20 @@
 package io.circe.test
 
 import algebra.Eq
-import cats.data.{ NonEmptyList, Validated, Xor }
-import io.circe.{ Cursor, GenericCursor, Json }
+import cats.Functor
+import io.circe.{ExtraGenericCursorOperations, GenericCursor, Json}
 import io.circe.Cats._
 import io.circe.syntax._
 
-abstract class CursorSuite[C <: GenericCursor[C]](implicit
-  eq: Eq[C],
-  M: C#M[List]
+abstract class CursorSuite[C0 <: GenericCursor[C0], M0[F[_]] <: Functor[F]](implicit
+  eq: Eq[C0],
+  conv: C0 => ExtraGenericCursorOperations { type C = C0; type M[F[_]] = M0[F] },
+  M: M0[List]
 ) extends CirceSuite {
-  def fromJson(j: Json): C { type M[x[_]] = C#M[x] }
-  def top(c: C): Option[Json]
-  def focus(c: C): Option[Json]
-  def fromResult(result: C#Result): Option[C]
+  def fromJson(j: Json): C0
+  def top(c: C0): Option[Json]
+  def focus(c: C0): Option[Json]
+  def fromResult(result: C0#Result): Option[C0]
 
   val j1: Json = Json.obj(
     "a" -> (1 to 5).toList.asJson,
@@ -38,7 +39,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     "c" -> Map("e" -> 100.1, "f" -> 200.2).asJson
   )
 
-  val cursor: C = fromJson(j1)
+  val cursor: C0 = fromJson(j1)
 
   test("focus") {
     check { (j: Json) =>

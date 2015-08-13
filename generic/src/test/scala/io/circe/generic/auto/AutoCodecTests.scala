@@ -1,8 +1,9 @@
 package io.circe.generic
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.Xor
 import cats.laws.discipline.eq._
 import io.circe.{ Decoder, Encoder, Json }
+import io.circe.Cats._
 import io.circe.generic.auto._
 import io.circe.test.{ CodecTests, CirceSuite }
 import org.scalacheck.Prop.forAll

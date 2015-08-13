@@ -4,6 +4,7 @@ import cats.data.Xor
 import cats.laws.discipline.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.semiauto._
+import io.circe.Cats._
 import io.circe.test.{ CodecTests, CirceSuite }
 import org.scalacheck.Prop.forAll
 import shapeless.CNil

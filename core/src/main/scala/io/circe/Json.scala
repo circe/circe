@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.data.Xor
-import cats.std.list._
 
 /**
  * A data type representing possible JSON values.

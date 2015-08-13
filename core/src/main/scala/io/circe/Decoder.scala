@@ -1,7 +1,6 @@
 package io.circe
 
-import cats.Monad
-import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
+import cats.data.Xor
 
 import scala.collection.generic.CanBuildFrom
 
@@ -59,12 +58,6 @@ trait Decoder[A] { self =>
   def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = Decoder.instance(c =>
     if (pred(c)) apply(c) else Xor.left(DecodingFailure(message, c.history))
   )
-
-  /**
-   * Convert to a Kleisli arrow.
-   */
-  def kleisli: Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A] =
-    Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A](apply(_))
 
   /**
    * Combine two decoders.
@@ -410,19 +403,6 @@ object Decoder {
     decodeCanBuildFrom[A, List].map(_.toSet).withErrorMessage("[A]Set[A]")
 
   /**
-   * @group Decoding
-   */
-  implicit def decodeNonEmptyList[A: Decoder]: Decoder[NonEmptyList[A]] =
-    decodeCanBuildFrom[A, List].flatMap { l =>
-      instance { c =>
-        l match {
-          case h :: t => Xor.right(NonEmptyList(h, t))
-          case Nil => Xor.left(DecodingFailure("[A]NonEmptyList[A]", c.history))
-        }
-      }
-    }.withErrorMessage("[A]NonEmptyList[A]")
-
-  /**
    * @group Disjunction
    */
   def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
@@ -447,24 +427,4 @@ object Decoder {
     db: Decoder[B]
   ): Decoder[Either[A, B]] =
     decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
-
-  /**
-   * @group Disjunction
-   */
-  def decodeValidated[E, A](failureKey: String, successKey: String)(implicit
-    de: Decoder[E],
-    da: Decoder[A]
-  ): Decoder[Validated[E, A]] =
-    decodeXor[E, A](
-      failureKey,
-      successKey
-    ).map(_.toValidated).withErrorMessage("[E, A]Validated[E, A]")
-
-  /**
-   * @group Instances
-   */
-  implicit val monadDecode: Monad[Decoder] = new Monad[Decoder] {
-    def pure[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
-    def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
-  }
 }

@@ -1,8 +1,5 @@
 package io.circe
 
-import algebra.Eq
-import cats.Show
-
 sealed abstract class CursorOpElement extends Product with Serializable
 
 object CursorOpElement {
@@ -31,34 +28,4 @@ object CursorOpElement {
   case object CursorOpDeleteRights extends CursorOpElement
   case class CursorOpSetLefts(js: List[Json]) extends CursorOpElement
   case class CursorOpSetRights(js: List[Json]) extends CursorOpElement
-
-  implicit val showCursorOpElement: Show[CursorOpElement] = Show.show {
-    case CursorOpLeft => "<-"
-    case CursorOpRight => "->"
-    case CursorOpFirst => "|<-"
-    case CursorOpLast => "->|"
-    case CursorOpUp => "_/"
-    case CursorOpLeftN(n) => "-<-:(" + n + ")"
-    case CursorOpRightN(n) => ":->-(" + n + ")"
-    case CursorOpLeftAt(_) => "?<-:"
-    case CursorOpRightAt(_) => ":->?"
-    case CursorOpFind(_) => "find"
-    case CursorOpField(f) => "--(" + f + ")"
-    case CursorOpDownField(f) => "--\\(" + f + ")"
-    case CursorOpDownArray => "\\\\"
-    case CursorOpDownAt(_) => "-\\"
-    case CursorOpDownN(n) => "=\\(" + n + ")"
-    case CursorOpDeleteGoParent => "!_/"
-    case CursorOpDeleteGoLeft => "<-!"
-    case CursorOpDeleteGoRight => "!->"
-    case CursorOpDeleteGoFirst => "|<-!"
-    case CursorOpDeleteGoLast => "!->|"
-    case CursorOpDeleteGoField(f) => "!--(" + f + ")"
-    case CursorOpDeleteLefts => "!<"
-    case CursorOpDeleteRights => ">!"
-    case CursorOpSetLefts(_) => "!<.."
-    case CursorOpSetRights(_) => "..>!"
-  }
-
-  implicit val eqCursorOpElement: Eq[CursorOpElement] = Eq.fromUniversalEquals
 }
