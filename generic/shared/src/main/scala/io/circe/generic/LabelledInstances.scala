@@ -12,7 +12,7 @@ trait LabelledInstances {
     decodeTail: Lazy[Decoder[T]]
   ): Decoder[FieldType[K, H] :+: T] =
     Decoder.instance { c =>
-      c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
+      c.downField(key.value.name).focus.fold[Decoder.Result[FieldType[K, H] :+: T]](
         decodeTail.value(c).map(Inr(_))
       ) { headJson =>
         headJson.as(decodeHead.value).map(h => Inl(field(gen.from(h))))

@@ -60,6 +60,6 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
   def setRights(x: List[Json]): ACursor    = withHCursor(_.setRights(x))
   def deleteGoField(k: String): ACursor    = withHCursor(_.deleteGoField(k))
 
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A] = d.tryDecode(this)
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A] = downField(k).as[A]
+  def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
+  def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
 }

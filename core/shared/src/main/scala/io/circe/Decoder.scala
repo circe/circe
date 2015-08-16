@@ -9,12 +9,12 @@ trait Decoder[A] { self =>
   /**
    * Decode the given hcursor.
    */
-  def apply(c: HCursor): Xor[DecodingFailure, A]
+  def apply(c: HCursor): Decoder.Result[A]
 
   /**
    * Decode the given acursor.
    */
-  def tryDecode(c: ACursor): Xor[DecodingFailure, A] = c.either.fold(
+  def tryDecode(c: ACursor): Decoder.Result[A] = c.either.fold(
     invalid =>
       Xor.left(DecodingFailure("Attempt to decode value on failed cursor", invalid.history)),
     apply
@@ -23,25 +23,25 @@ trait Decoder[A] { self =>
   /**
    * Decode the given [[Json]] value.
    */
-  def decodeJson(j: Json): Xor[DecodingFailure, A] = apply(j.cursor.hcursor)
+  def decodeJson(j: Json): Decoder.Result[A] = apply(j.cursor.hcursor)
 
   /**
    * Map a function over this [[Decoder]].
    */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    def apply(c: HCursor): Xor[DecodingFailure, B] = self(c).map(f)
-    override def tryDecode(c: ACursor): Xor[DecodingFailure, B] = self.tryDecode(c).map(f)
+    def apply(c: HCursor): Decoder.Result[B] = self(c).map(f)
+    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c).map(f)
   }
 
   /**
    * Monadically bind a function over this [[Decoder]].
    */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
-    def apply(c: HCursor): Xor[DecodingFailure, B] = {
+    def apply(c: HCursor): Decoder.Result[B] = {
       self(c).flatMap(a => f(a)(c))
     }
 
-    override def tryDecode(c: ACursor): Xor[DecodingFailure, B] = {
+    override def tryDecode(c: ACursor): Decoder.Result[B] = {
       self.tryDecode(c).flatMap(a => f(a).tryDecode(c))
     }
   }
@@ -63,8 +63,8 @@ trait Decoder[A] { self =>
   /**
    * Convert to a Kleisli arrow.
    */
-  def kleisli: Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A] =
-    Kleisli[({ type L[x] = Xor[DecodingFailure, x] })#L, HCursor, A](apply(_))
+  def kleisli: Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A] =
+    Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A](apply(_))
 
   /**
    * Combine two decoders.
@@ -87,7 +87,7 @@ trait Decoder[A] { self =>
   /**
    * Run one or another decoder.
    */
-  def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Xor[DecodingFailure, Xor[A, B]] = _.fold(
+  def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Decoder.Result[Xor[A, B]] = _.fold(
     c => this(c).map(Xor.left),
     c => d(c).map(Xor.right)
   )
@@ -95,7 +95,7 @@ trait Decoder[A] { self =>
   /**
    * Run two decoders.
    */
-  def product[B](x: Decoder[B]): (HCursor, HCursor) => Xor[DecodingFailure, (A, B)] = (a1, a2) =>
+  def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
     for {
       a <- this(a1)
       b <- x(a2)
@@ -129,6 +129,8 @@ trait Decoder[A] { self =>
 object Decoder {
   import Json._
 
+  type Result[A] = Xor[DecodingFailure, A]
+
   /**
    * A wrapper that supports proper prioritization of derived instances.
    *
@@ -148,8 +150,8 @@ object Decoder {
    *
    * @group Utilities
    */
-  def instance[A](f: HCursor => Xor[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
-    def apply(c: HCursor): Xor[DecodingFailure, A] = f(c)
+  def instance[A](f: HCursor => Result[A]): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Result[A] = f(c)
   }
 
   /**
@@ -157,8 +159,8 @@ object Decoder {
    *
    * @group Utilities
    */
-  def withReattempt[A](f: ACursor => Xor[DecodingFailure, A]): Decoder[A] = new Decoder[A] {
-    def apply(c: HCursor): Xor[DecodingFailure, A] = tryDecode(c.acursor)
+  def withReattempt[A](f: ACursor => Result[A]): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Result[A] = tryDecode(c.acursor)
 
     override def tryDecode(c: ACursor) = f(c)
   }
@@ -359,10 +361,10 @@ object Decoder {
    */
   implicit def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] =
     withReattempt { a =>
-      a.success.fold[Xor[DecodingFailure, Option[A]]](Xor.right(None)) { valid =>
-        if (valid.focus.isNull) Xor.right(None) else d(valid).fold[Xor[DecodingFailure, Option[A]]](
+      a.success.fold[Result[Option[A]]](Xor.right(None)) { valid =>
+        if (valid.focus.isNull) Xor.right(None) else d(valid).fold[Result[Option[A]]](
           df =>
-            df.history.headOption.fold[Xor[DecodingFailure, Option[A]]](
+            df.history.headOption.fold[Result[Option[A]]](
               Xor.right(None)
             )(_ => Xor.left(df)),
           a => Xor.right(Some(a))
@@ -383,8 +385,8 @@ object Decoder {
       @scala.annotation.tailrec
       def spin(
         x: List[String],
-        acc: Xor[DecodingFailure, Vector[(String, V)]]
-      ): Xor[DecodingFailure, M[String, V]] =
+        acc: Result[Vector[(String, V)]]
+      ): Result[M[String, V]] =
         x match {
           case Nil =>
             acc.map { fields =>
