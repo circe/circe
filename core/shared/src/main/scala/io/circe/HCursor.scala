@@ -13,7 +13,7 @@ import io.circe.cursor.HCursorOperations
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-case class HCursor(cursor: Cursor, history: List[CursorOp]) extends HCursorOperations {
+case class HCursor(cursor: Cursor, history: List[HistoryOp]) extends HCursorOperations {
   /**
    * Create an [[ACursor]] for this cursor.
    */
