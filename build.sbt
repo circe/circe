@@ -42,10 +42,13 @@ lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ),
-  resolvers += Resolver.sonatypeRepo("snapshots")
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots")
+  )
 )
 
-lazy val allSettings = buildSettings ++ baseSettings ++ testSettings ++ unidocSettings ++ publishSettings
+lazy val allSettings = buildSettings ++ baseSettings ++ testSettings ++ publishSettings
 
 lazy val commonJsSettings = Seq(
   postLinkJSEnv := NodeJSEnv().value,
@@ -81,8 +84,7 @@ lazy val core = crossProject
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.spire-math" %%% "cats-core" % catsVersion,
-      "org.spire-math" %%% "cats-std" % catsVersion
+      "org.spire-math" %%% "cats-core" % catsVersion
     )
   )
   .jvmSettings(
@@ -99,7 +101,7 @@ lazy val generic = crossProject
   .settings(moduleName := "circe-generic")
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % "2.2.5"
+    libraryDependencies += "com.chuusai" %%% "shapeless" % "2.3.0-SNAPSHOT"
   )
   .jsSettings(commonJsSettings: _*)
   .dependsOn(core, core % "test->test")
@@ -217,11 +219,7 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/test:compile").mkString)
-
 addCommandAlias("validateJVM", ";buildJVM" + jvmProjects.map(";" + _ + "/test").mkString + ";scalastyle")
-
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/test:compile").mkString)
-
 addCommandAlias("validateJS", ";buildJS" + jsProjects.map(";" + _ + "/test").mkString + ";scalastyle")
-
 addCommandAlias("validate", ";validateJVM;validateJS")
