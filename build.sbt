@@ -20,11 +20,15 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val testDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % "1.12.5-SNAPSHOT",
-  "org.scalatest" %% "scalatest" % "2.2.5",
-  "org.spire-math" %% "cats-laws" % "0.1.2",
-  "org.typelevel" %% "discipline" % "0.3"
+val catsVersion = "0.1.3-SNAPSHOT"
+
+lazy val testSettings = Seq(
+  libraryDependencies ++= Seq(
+    "org.scalacheck" %%% "scalacheck" % "1.12.5-SNAPSHOT" % "test",
+    "org.scalatest" %%% "scalatest" % "3.0.0-M7" % "test",
+    "org.spire-math" %%% "cats-laws" % catsVersion % "test",
+    "org.typelevel" %%% "discipline" % "0.4" % "test"
+  )
 )
 
 lazy val baseSettings = Seq(
@@ -37,17 +41,25 @@ lazy val baseSettings = Seq(
   scalacOptions in (Compile, console) := compilerOptions,
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
-  ) ++ testDependencies.map(_ % "test"),
-  resolvers += Resolver.sonatypeRepo("snapshots")
+  ),
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots")
+  )
 )
 
-lazy val allSettings = buildSettings ++ baseSettings ++ unidocSettings ++ publishSettings
+lazy val allSettings = buildSettings ++ baseSettings ++ testSettings ++ publishSettings
+
+lazy val commonJsSettings = Seq(
+  postLinkJSEnv := NodeJSEnv().value,
+  scalaJSStage in Global := FastOptStage
+)
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark)
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark, coreJS, genericJS)
 )
 
 lazy val root = project.in(file("."))
@@ -64,27 +76,38 @@ lazy val root = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, generic, jawn, async, benchmark)
-  .dependsOn(core, generic, jawn, async)
+  .aggregate(coreJVM, coreJS, genericJVM, genericJS, jawn, async, benchmark)
+  .dependsOn(coreJVM, genericJVM, jawn, async)
 
-lazy val core = project
+lazy val core = crossProject
   .settings(moduleName := "circe-core")
-  .settings(allSettings)
+  .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.spire-math" %% "cats-core" % "0.1.2",
-      "org.spire-math" %% "cats-std" % "0.1.2",
+      "org.spire-math" %%% "cats-core" % catsVersion
+    )
+  )
+  .jvmSettings(
+    libraryDependencies ++= Seq(
       "io.argonaut" %% "argonaut" % "6.1" % "test"
     )
   )
+  .jsSettings(commonJsSettings: _*)
 
-lazy val generic = project
+lazy val coreJVM = core.jvm
+lazy val coreJS = core.js
+
+lazy val generic = crossProject
   .settings(moduleName := "circe-generic")
-  .settings(allSettings)
+  .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %% "shapeless" % "2.2.5"
+    libraryDependencies += "com.chuusai" %%% "shapeless" % "2.3.0-SNAPSHOT"
   )
+  .jsSettings(commonJsSettings: _*)
   .dependsOn(core, core % "test->test")
+
+lazy val genericJVM = generic.jvm
+lazy val genericJS = generic.js
 
 lazy val jawn = project
   .settings(moduleName := "circe-jawn")
@@ -92,7 +115,7 @@ lazy val jawn = project
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
   )
-  .dependsOn(core, core % "test->test")
+  .dependsOn(coreJVM, coreJVM % "test->test")
 
 lazy val async = project
   .settings(moduleName := "circe-async")
@@ -101,7 +124,7 @@ lazy val async = project
   .settings(
     libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
   )
-  .dependsOn(core, jawn)
+  .dependsOn(coreJVM, jawn)
 
 lazy val benchmark = project
   .settings(moduleName := "circe-benchmark")
@@ -111,7 +134,7 @@ lazy val benchmark = project
     libraryDependencies += "io.argonaut" %% "argonaut" % "6.1"
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(coreJVM, genericJVM, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
@@ -181,3 +204,22 @@ credentials ++= (
     password
   )
 ).toSeq
+
+val jvmProjects = Seq(
+  "coreJVM",
+  "genericJVM",
+  "jawn",
+  "async",
+  "benchmark"
+)
+
+val jsProjects = Seq(
+  "coreJS",
+  "genericJS"
+)
+
+addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/test:compile").mkString)
+addCommandAlias("validateJVM", ";buildJVM" + jvmProjects.map(";" + _ + "/test").mkString + ";scalastyle")
+addCommandAlias("buildJS", jsProjects.map(";" + _ + "/test:compile").mkString)
+addCommandAlias("validateJS", ";buildJS" + jsProjects.map(";" + _ + "/test").mkString + ";scalastyle")
+addCommandAlias("validate", ";validateJVM;validateJS")

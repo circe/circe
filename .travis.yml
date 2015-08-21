@@ -9,6 +9,22 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test scalastyle && sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+
+script:
+  - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
+      then sbt ++$TRAVIS_SCALA_VERSION coreJS/test &&
+        sbt ++$TRAVIS_SCALA_VERSION genericJS/test;
+      else sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM &&
+        sbt ++$TRAVIS_SCALA_VERSION coverageAggregate;
+    fi
+
+  # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
+  # Tricks to avoid unnecessary cache updates
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
 after_success: bash <(curl -s https://codecov.io/bash)
