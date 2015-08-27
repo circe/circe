@@ -48,7 +48,7 @@ trait Encoder[A] {
  *
  * @author Travis Brown
  */
-object Encoder {
+object Encoder extends TupleEncoders {
   /**
    * A wrapper that supports proper prioritization of derived instances.
    *
