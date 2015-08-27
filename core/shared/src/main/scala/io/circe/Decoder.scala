@@ -126,17 +126,10 @@ trait Decoder[A] { self =>
  *
  * @author Travis Brown
  */
-object Decoder extends TupleDecoders {
+object Decoder extends TupleDecoders with LowPriorityDecoders {
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
-
-  /**
-   * A wrapper that supports proper prioritization of derived instances.
-   *
-   * @group Utilities
-   */
-  class Secondary[A](val value: Decoder[A]) extends AnyVal
 
   /**
    * Return an instance for a given type.
@@ -164,13 +157,6 @@ object Decoder extends TupleDecoders {
 
     override def tryDecode(c: ACursor) = f(c)
   }
-
-  /**
-   * Unwrap a [[Secondary]] wrapper.
-   *
-   * @group Decoding
-   */
-  implicit def fromSecondaryDecoder[A](implicit d: Secondary[A]): Decoder[A] = d.value
 
   /**
    * @group Decoding
@@ -470,3 +456,5 @@ object Decoder extends TupleDecoders {
     def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
   }
 }
+
+@export.exported[Decoder] trait LowPriorityDecoders

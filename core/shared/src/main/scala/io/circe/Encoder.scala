@@ -48,14 +48,7 @@ trait Encoder[A] {
  *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders {
-  /**
-   * A wrapper that supports proper prioritization of derived instances.
-   *
-   * @group Utilities
-   */
-  class Secondary[A](val value: Encoder[A]) extends AnyVal
-
+object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
@@ -71,13 +64,6 @@ object Encoder extends TupleEncoders {
   def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
     def apply(a: A): Json = f(a)
   }
-
-  /**
-   * Unwrap a [[Secondary]] wrapper.
-   *
-   * @group Encoding
-   */
-  implicit def fromSecondaryEncoder[A](implicit e: Secondary[A]): Encoder[A] = e.value
 
   /**
    * Construct an instance for a given type with a [[cats.Foldable]] instance.
@@ -243,3 +229,5 @@ object Encoder extends TupleEncoders {
     def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 }
+
+@export.exported[Encoder] trait LowPriorityEncoders

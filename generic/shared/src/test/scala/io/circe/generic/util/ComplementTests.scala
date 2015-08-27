@@ -1,4 +1,4 @@
-package io.circe.generic
+package io.circe.generic.util
 
 import io.circe.test.CirceSuite
 import org.scalacheck.Prop.forAll
