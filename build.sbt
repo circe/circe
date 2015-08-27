@@ -85,7 +85,8 @@ lazy val core = crossProject
   .settings(
     libraryDependencies ++= Seq(
       "org.spire-math" %%% "cats-core" % catsVersion
-    )
+    ),
+    sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
   .jvmSettings(
     libraryDependencies ++= Seq(

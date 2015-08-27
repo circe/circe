@@ -126,7 +126,7 @@ trait Decoder[A] { self =>
  *
  * @author Travis Brown
  */
-object Decoder {
+object Decoder extends TupleDecoders {
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
