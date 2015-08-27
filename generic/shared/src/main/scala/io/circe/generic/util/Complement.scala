@@ -1,4 +1,4 @@
-package io.circe.generic
+package io.circe.generic.util
 
 import shapeless._
 import shapeless.labelled.{ FieldType, field }

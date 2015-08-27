@@ -14,7 +14,7 @@ trait ObjectEncoder[A] extends Encoder[A] { self =>
   def encodeObject(a: A): JsonObject
 }
 
-object ObjectEncoder {
+object ObjectEncoder extends LowPriorityObjectEncoders {
   /**
    * Return an instance for a given type.
    *
@@ -32,3 +32,4 @@ object ObjectEncoder {
   }
 }
 
+@export.exported[ObjectEncoder] trait LowPriorityObjectEncoders

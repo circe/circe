@@ -1,7 +1,6 @@
 package io.circe.generic
 
 import cats.data.{ NonEmptyList, Validated, Xor }
-import cats.laws.discipline.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.test.{ CodecTests, CirceSuite }
@@ -14,7 +13,6 @@ import shapeless.CNil
  */
 class AutoCodecTests extends CirceSuite with Examples {
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkAll("Codec[(Int, Int)]", CodecTests[(Int, Int)].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
@@ -42,39 +40,12 @@ class AutoCodecTests extends CirceSuite with Examples {
     }
   }
 
-  test("Tuples should be encoded as JSON arrays") {
-    check {
-      forAll { (t: (Int, String, Char)) =>
-        val json = Encoder[(Int, String, Char)].apply(t)
-        val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
-
-        json === target && json.as[(Int, String, Char)] === Xor.right(t)
-      }
-    }
-  }
-
   test("Generic instances should not interfere with base instances") {
     check {
       forAll { (is: List[Int]) =>
         val json = Encoder[List[Int]].apply(is)
 
         json === Json.fromValues(is.map(Json.int)) && json.as[List[Int]] === Xor.right(is)
-      }
-    }
-  }
-
-  test("Decoding a JSON array without enough elements into a tuple should fail") {
-    check {
-      forAll { (i: Int, s: String) =>
-        Json.array(Json.int(i), Json.string(s)).as[(Int, String, Double)].isLeft
-      }
-    }
-  }
-
-  test("Decoding a JSON array with too many elements into a tuple should fail") {
-    check {
-      forAll { (i: Int, s: String, d: Double) =>
-        Json.array(Json.int(i), Json.string(s), Json.numberOrNull(d)).as[(Int, String)].isLeft
       }
     }
   }

@@ -64,8 +64,9 @@ circe is a fork of Argonaut with a few important differences.
 
 ### Dependencies and modularity
 
-circe depends on [cats][cats] instead of [Scalaz][scalaz], and cats is the only dependency of the
-`core` project.
+circe depends on [cats][cats] instead of [Scalaz][scalaz], and the `core` project has only two
+dependencies: cats-core and [export-hook][export-hook] (a lightweight mechanism for cleaner generic
+type class instance derivation).
 
 Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][circe-jawn]
 subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][circe-generic]),
@@ -96,8 +97,8 @@ example), circe includes a subproject (`generic`) that provides generic codec de
 
 [This subproject][circe-generic] is currently a simplified port of
 [argonaut-shapeless][argonaut-shapeless] that provides fully automatic derivation of instances for
-tuples, case classes, and sealed trait hierarchies. It also includes derivation of "incomplete" case
-classes (see my recent [blog post][incompletes] for details).
+case classes and sealed trait hierarchies. It also includes derivation of "incomplete" case class
+instances (see my recent [blog post][incompletes] for details).
 
 ### Aliases
 
@@ -281,6 +282,7 @@ limitations under the License.
 [code-of-conduct]: http://typelevel.org/conduct.html
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
+[export-hook]: https://github.com/milessabin/export-hook
 [finch]: https://github.com/finagle/finch
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/

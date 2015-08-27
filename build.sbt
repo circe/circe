@@ -40,11 +40,18 @@ lazy val baseSettings = Seq(
   ),
   scalacOptions in (Compile, console) := compilerOptions,
   libraryDependencies ++= Seq(
-    compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+    "org.typelevel" %% "export-hook" % "1.0.1-SNAPSHOT",
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
   ),
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
+  ),
+  ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => false
+      case _ => true
+    }
   )
 )
 
@@ -114,7 +121,7 @@ lazy val jawn = project
   .settings(moduleName := "circe-jawn")
   .settings(allSettings)
   .settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
+    libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
   )
   .dependsOn(coreJVM, coreJVM % "test->test")
 
