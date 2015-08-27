@@ -3,44 +3,62 @@ package io.circe
 import algebra.Eq
 import cats.Show
 
-sealed abstract class CursorOp extends Product with Serializable {
-  def isReattempt: Boolean
-  def isNotReattempt: Boolean
-  def succeeded: Boolean
-  def failed: Boolean
-  def op: Option[CursorOpElement]
-}
+sealed abstract class CursorOp extends Product with Serializable
 
 object CursorOp {
-  def ok(o: CursorOpElement): CursorOp = El(o, succeeded = true)
-  def fail(o: CursorOpElement): CursorOp = El(o, succeeded = false)
-  def reattempt: CursorOp = Reattempt
-
-  private[this] case object Reattempt extends CursorOp {
-    def isReattempt: Boolean = true
-    def isNotReattempt: Boolean = false
-    def succeeded: Boolean = false
-    def failed: Boolean = false
-    def op: Option[CursorOpElement] = None
-  }
-
-  private[this] case class El(o: CursorOpElement, succeeded: Boolean) extends CursorOp {
-    def isReattempt: Boolean = false
-    def isNotReattempt: Boolean = true
-    def failed: Boolean = !succeeded
-    def op: Option[CursorOpElement] = Some(o)
-  }
-
-  implicit val eqCursorOp: Eq[CursorOp] = Eq.instance {
-    case (Reattempt, Reattempt) => true
-    case (El(o1, s1), El(o2, s2)) => Eq[CursorOpElement].eqv(o1, o2) && s1 == s2
-    case (_, _) => false
-  }
+  case object MoveLeft extends CursorOp
+  case object MoveRight extends CursorOp
+  case object MoveFirst extends CursorOp
+  case object MoveLast extends CursorOp
+  case object MoveUp extends CursorOp
+  case class LeftN(n: Int) extends CursorOp
+  case class RightN(n: Int) extends CursorOp
+  case class LeftAt(p: Json => Boolean) extends CursorOp
+  case class RightAt(p: Json => Boolean) extends CursorOp
+  case class Find(p: Json => Boolean) extends CursorOp
+  case class Field(k: String) extends CursorOp
+  case class DownField(k: String) extends CursorOp
+  case object DownArray extends CursorOp
+  case class DownAt(p: Json => Boolean) extends CursorOp
+  case class DownN(n: Int) extends CursorOp
+  case object DeleteGoParent extends CursorOp
+  case object DeleteGoLeft extends CursorOp
+  case object DeleteGoRight extends CursorOp
+  case object DeleteGoFirst extends CursorOp
+  case object DeleteGoLast extends CursorOp
+  case class DeleteGoField(k: String) extends CursorOp
+  case object DeleteLefts extends CursorOp
+  case object DeleteRights extends CursorOp
+  case class SetLefts(js: List[Json]) extends CursorOp
+  case class SetRights(js: List[Json]) extends CursorOp
 
   implicit val showCursorOp: Show[CursorOp] = Show.show {
-    case Reattempt => ".?."
-    case El(o, s) =>
-      val shownOp = Show[CursorOpElement].show(o)
-      if (s) shownOp else s"*.$shownOp"
+    case MoveLeft => "<-"
+    case MoveRight => "->"
+    case MoveFirst => "|<-"
+    case MoveLast => "->|"
+    case MoveUp => "_/"
+    case LeftN(n) => "-<-:(" + n + ")"
+    case RightN(n) => ":->-(" + n + ")"
+    case LeftAt(_) => "?<-:"
+    case RightAt(_) => ":->?"
+    case Find(_) => "find"
+    case Field(f) => "--(" + f + ")"
+    case DownField(f) => "--\\(" + f + ")"
+    case DownArray => "\\\\"
+    case DownAt(_) => "-\\"
+    case DownN(n) => "=\\(" + n + ")"
+    case DeleteGoParent => "!_/"
+    case DeleteGoLeft => "<-!"
+    case DeleteGoRight => "!->"
+    case DeleteGoFirst => "|<-!"
+    case DeleteGoLast => "!->|"
+    case DeleteGoField(f) => "!--(" + f + ")"
+    case DeleteLefts => "!<"
+    case DeleteRights => ">!"
+    case SetLefts(_) => "!<.."
+    case SetRights(_) => "..>!"
   }
+
+  implicit val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
 }

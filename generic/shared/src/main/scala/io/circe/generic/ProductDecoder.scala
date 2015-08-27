@@ -1,16 +1,16 @@
 package io.circe.generic
 
 import cats.data.Xor
-import io.circe.{ CursorOp, Decoder, DecodingFailure, HCursor, Json }
+import io.circe.{ HistoryOp, Decoder, DecodingFailure, HCursor, Json }
 import shapeless._
 
 trait ProductDecoder[L <: HList] {
-  def apply(history: List[CursorOp], js: List[HCursor]): Xor[DecodingFailure, L]
+  def apply(history: List[HistoryOp], js: List[HCursor]): Decoder.Result[L]
 }
 
 object ProductDecoder {
   implicit val productDecodeHNil: ProductDecoder[HNil] = new ProductDecoder[HNil] {
-    def apply(history: List[CursorOp], js: List[HCursor]): Xor[DecodingFailure, HNil] =
+    def apply(history: List[HistoryOp], js: List[HCursor]): Decoder.Result[HNil] =
       if (js.isEmpty) Xor.right(HNil) else Xor.left(
         DecodingFailure("Unexpected element in tuple", history)
       )
@@ -20,7 +20,7 @@ object ProductDecoder {
     decodeHead: Decoder[H],
     productDecodeTail: ProductDecoder[T]
   ): ProductDecoder[H :: T] = new ProductDecoder[H :: T] {
-    def apply(history: List[CursorOp], js: List[HCursor]): Xor[DecodingFailure, H :: T] = js match {
+    def apply(history: List[HistoryOp], js: List[HCursor]): Decoder.Result[H :: T] = js match {
       case scala.collection.immutable.::(h, t) => for {
         head <- decodeHead(h)
         tail <- productDecodeTail(history, t)

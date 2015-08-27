@@ -49,13 +49,13 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
    * Return the underlying cursor's history.
    */
-  def history: List[CursorOp] = any.history
+  def history: List[HistoryOp] = any.history
 
   /**
    * If the last operation was not successful, reattempt it.
    */
   def reattempt: ACursor = either.fold(
-    invalid => ACursor.ok(HCursor(invalid.cursor, CursorOp.reattempt +: invalid.history)),
+    invalid => ACursor.ok(HCursor(invalid.cursor, HistoryOp.reattempt +: invalid.history)),
     _ => this
   )
 

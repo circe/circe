@@ -13,7 +13,7 @@ trait CodecLaws[A] {
   def decode: Decoder[A]
   def encode: Encoder[A]
 
-  def codecRoundTrip(a: A): IsEq[Xor[DecodingFailure, A]] =
+  def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
     encode(a).as(decode) <-> Xor.right(a)
 }
 

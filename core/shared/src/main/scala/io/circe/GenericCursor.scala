@@ -317,12 +317,12 @@ trait GenericCursor[C <: GenericCursor[C]] {
    *
    * @group Decoding
    */
-  def as[A](implicit d: Decoder[A]): Xor[DecodingFailure, A]
+  def as[A](implicit d: Decoder[A]): Decoder.Result[A]
 
   /**
    * Attempt to decode the value at the given key in a JSON object as an `A`.
    *
    * @group Decoding
    */
-  def get[A](k: String)(implicit d: Decoder[A]): Xor[DecodingFailure, A]
+  def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A]
 }
