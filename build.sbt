@@ -46,6 +46,12 @@ lazy val baseSettings = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
+  ),
+  ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => false
+      case _ => true
+    }
   )
 )
 
