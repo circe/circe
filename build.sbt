@@ -83,10 +83,10 @@ lazy val root = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(coreJVM, coreJS, genericJVM, genericJS, jawn, async, benchmark)
-  .dependsOn(coreJVM, genericJVM, jawn, async)
+  .aggregate(core, coreJS, generic, genericJS, jawn, async, benchmark)
+  .dependsOn(core, generic, jawn, async)
 
-lazy val core = crossProject
+lazy val coreBase = crossProject.in(file("core"))
   .settings(moduleName := "circe-core")
   .settings(allSettings: _*)
   .settings(
@@ -101,21 +101,25 @@ lazy val core = crossProject
     )
   )
   .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "core"))
+  .jsConfigure(_.copy(id = "coreJS"))
 
-lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
+lazy val core = coreBase.jvm
+lazy val coreJS = coreBase.js
 
-lazy val generic = crossProject
+lazy val genericBase = crossProject.in(file("generic"))
   .settings(moduleName := "circe-generic")
   .settings(allSettings: _*)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % "2.3.0-SNAPSHOT"
   )
   .jsSettings(commonJsSettings: _*)
-  .dependsOn(core, core % "test->test")
+  .jvmConfigure(_.copy(id = "generic"))
+  .jsConfigure(_.copy(id = "genericJS"))
+  .dependsOn(coreBase, coreBase % "test->test")
 
-lazy val genericJVM = generic.jvm
-lazy val genericJS = generic.js
+lazy val generic = genericBase.jvm
+lazy val genericJS = genericBase.js
 
 lazy val jawn = project
   .settings(moduleName := "circe-jawn")
@@ -123,7 +127,7 @@ lazy val jawn = project
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
   )
-  .dependsOn(coreJVM, coreJVM % "test->test")
+  .dependsOn(core, core % "test->test")
 
 lazy val async = project
   .settings(moduleName := "circe-async")
@@ -132,7 +136,7 @@ lazy val async = project
   .settings(
     libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
   )
-  .dependsOn(coreJVM, jawn)
+  .dependsOn(core, jawn)
 
 lazy val benchmark = project
   .settings(moduleName := "circe-benchmark")
@@ -142,7 +146,7 @@ lazy val benchmark = project
     libraryDependencies += "io.argonaut" %% "argonaut" % "6.1"
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(coreJVM, genericJVM, jawn)
+  .dependsOn(core, generic, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
@@ -214,8 +218,8 @@ credentials ++= (
 ).toSeq
 
 val jvmProjects = Seq(
-  "coreJVM",
-  "genericJVM",
+  "core",
+  "generic",
   "jawn",
   "async",
   "benchmark"
