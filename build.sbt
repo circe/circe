@@ -130,7 +130,7 @@ lazy val async = project
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
+    libraryDependencies += "com.twitter" %% "util-core" % "6.27.0"
   )
   .dependsOn(coreJVM, jawn)
 

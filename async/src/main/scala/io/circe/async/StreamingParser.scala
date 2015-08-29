@@ -1,31 +1,55 @@
 package io.circe.async
 
-import com.twitter.concurrent.{ Spool, SpoolSource }
-import com.twitter.io.Buf
+import com.twitter.concurrent.AsyncQueue
+import com.twitter.concurrent.exp.AsyncStream
+import com.twitter.io.{ Buf, InputStreamReader, Reader }
 import com.twitter.util.Future
 import io.circe.Json
 import io.circe.jawn.CirceSupportParser
+import java.io.File
 import jawn.AsyncParser
+import scala.annotation.tailrec
+
 
 /**
  * A rough sketch that needs a lot of fleshing out.
  */
-class StreamingParser {
+abstract class StreamingParser {
   private[this] val parser: AsyncParser[Json] =
     CirceSupportParser.async(mode = AsyncParser.UnwrapArray)
-  private[this] val source: SpoolSource[Json] = new SpoolSource[Json]()
 
-  def feedUtf8(s: String): Unit =
-    parser.absorb(s)(CirceSupportParser.facade).fold(source.raise, _.foreach(source.offer))
+  def close(): Future[Unit] = Future.Unit
+  def read(): Future[Option[Buf]]
 
-  def feed(buf: Buf): Unit = parser.absorb(
-    Buf.ByteBuffer.Owned.extract(buf)
-  )(CirceSupportParser.facade).fold(source.raise, _.foreach(source.offer))
-
-  def close(): Unit = source.close()
-  def results: Future[Spool[Json]] = source()
+  def results: AsyncStream[Json] = AsyncStream.fromFuture(
+    read().flatMap {
+      case Some(buf) => parser.absorb(
+        Buf.ByteBuffer.Owned.extract(buf)
+      )(CirceSupportParser.facade).fold(
+        pe => Future.exception(pe),
+        js => Future.value(AsyncStream.fromSeq(js) ++ results)
+      )
+      case None => close().map(_ => AsyncStream.empty)
+    }.rescue { case t => close().before(Future.exception(t)) }
+  ).flatten
 }
 
 object StreamingParser {
-  // def fromReader(reader: Reader): Spool[Json] = ???
+  def fromReader(reader: Reader): AsyncStream[Json] = {
+    val parser = new StreamingParser {
+      def read(): Future[Option[Buf]] = reader.read(4096 * 4)
+    }
+
+    parser.results
+  }
+
+  /*def fromFile(file: File): AsyncStream[Json] = {
+    val reader =
+    val parser = new StreamingParser {
+      def read(): Future[Option[Buf]] = reader.read(4096 * 4).onFailure()
+    }
+
+    parser.results
+
+  }*/
 }
