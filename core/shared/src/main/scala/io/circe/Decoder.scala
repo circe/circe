@@ -119,10 +119,13 @@ trait Decoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 8
+ * @groupprio Disjunction 3
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 10
+ * @groupprio Instances 4
+ *
+ * @groupname Tuple Tuple instances
+ * @groupprio Tuple 5
  *
  * @author Travis Brown
  */
