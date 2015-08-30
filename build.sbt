@@ -22,15 +22,6 @@ lazy val compilerOptions = Seq(
 
 val catsVersion = "0.1.3-SNAPSHOT"
 
-lazy val testSettings = Seq(
-  libraryDependencies ++= Seq(
-    "org.scalacheck" %%% "scalacheck" % "1.12.5-SNAPSHOT" % "test",
-    "org.scalatest" %%% "scalatest" % "3.0.0-M7" % "test",
-    "org.spire-math" %%% "cats-laws" % catsVersion % "test",
-    "org.typelevel" %%% "discipline" % "0.4" % "test"
-  )
-)
-
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -39,6 +30,7 @@ lazy val baseSettings = Seq(
     }
   ),
   scalacOptions in (Compile, console) := compilerOptions,
+  scalacOptions in (Compile, test) := compilerOptions,
   libraryDependencies ++= Seq(
     "org.typelevel" %% "export-hook" % "1.0.1-SNAPSHOT",
     compilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
@@ -55,7 +47,7 @@ lazy val baseSettings = Seq(
   )
 )
 
-lazy val allSettings = buildSettings ++ baseSettings ++ testSettings ++ publishSettings
+lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
 
 lazy val commonJsSettings = Seq(
   postLinkJSEnv := NodeJSEnv().value,
@@ -66,7 +58,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark, coreJS, genericJS)
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark, coreJS, genericJS, parseJS)
 )
 
 lazy val root = project.in(file("."))
@@ -78,13 +70,13 @@ lazy val root = project.in(file("."))
       """
         |import io.circe._
         |import io.circe.generic.auto._
-        |import io.circe.jawn._
+        |import io.circe.parse._
         |import io.circe.syntax._
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, coreJS, generic, genericJS, jawn, async, benchmark)
-  .dependsOn(core, generic, jawn, async)
+  .aggregate(core, coreJS, generic, genericJS, parse, parseJS, tests, testsJS, jawn, async, benchmark)
+  .dependsOn(core, generic, parse)
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(moduleName := "circe-core")
@@ -94,11 +86,6 @@ lazy val coreBase = crossProject.in(file("core"))
       "org.spire-math" %%% "cats-core" % catsVersion
     ),
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
-  )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      "io.argonaut" %% "argonaut" % "6.1" % "test"
-    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
@@ -116,10 +103,46 @@ lazy val genericBase = crossProject.in(file("generic"))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
   .jsConfigure(_.copy(id = "genericJS"))
-  .dependsOn(coreBase, coreBase % "test->test")
+  .dependsOn(coreBase)
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
+
+lazy val parseBase = crossProject.in(file("parse"))
+  .settings(moduleName := "circe-parse")
+  .settings(allSettings: _*)
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "parse").dependsOn(jawn))
+  .jsConfigure(_.copy(id = "parseJS"))
+  .dependsOn(coreBase)
+
+lazy val parse = parseBase.jvm
+lazy val parseJS = parseBase.js
+
+lazy val testsBase = crossProject.in(file("tests"))
+  .settings(moduleName := "circe-tests")
+  .settings(allSettings: _*)
+  .settings(noPublishSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % "1.12.5-SNAPSHOT",
+      "org.scalatest" %%% "scalatest" % "3.0.0-M7",
+      "org.spire-math" %%% "cats-laws" % catsVersion,
+      "org.typelevel" %%% "discipline" % "0.4"
+    ),
+    unmanagedResourceDirectories in Compile +=
+      file("tests") / "shared" / "src" / "main" / "resources"
+  )
+  .settings(
+    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.tests\\..*"
+  )
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, async))
+  .jsConfigure(_.copy(id = "testsJS"))
+  .dependsOn(coreBase, genericBase, parseBase)
+
+lazy val tests = testsBase.jvm
+lazy val testsJS = testsBase.js
 
 lazy val jawn = project
   .settings(moduleName := "circe-jawn")
@@ -127,7 +150,7 @@ lazy val jawn = project
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
   )
-  .dependsOn(core, core % "test->test")
+  .dependsOn(core)
 
 lazy val async = project
   .settings(moduleName := "circe-async")
@@ -220,6 +243,8 @@ credentials ++= (
 val jvmProjects = Seq(
   "core",
   "generic",
+  "parse",
+  "tests",
   "jawn",
   "async",
   "benchmark"
@@ -227,11 +252,13 @@ val jvmProjects = Seq(
 
 val jsProjects = Seq(
   "coreJS",
-  "genericJS"
+  "genericJS",
+  "parseJS",
+  "testsJS"
 )
 
-addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/test:compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM" + jvmProjects.map(";" + _ + "/test").mkString + ";scalastyle")
-addCommandAlias("buildJS", jsProjects.map(";" + _ + "/test:compile").mkString)
-addCommandAlias("validateJS", ";buildJS" + jsProjects.map(";" + _ + "/test").mkString + ";scalastyle")
+addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
+addCommandAlias("validateJVM", ";buildJVM;tests/test;scalastyle")
+addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
+addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
