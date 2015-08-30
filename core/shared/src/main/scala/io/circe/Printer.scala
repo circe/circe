@@ -46,7 +46,7 @@ final case class Printer(
   objectCommaRight: String = "",
   colonLeft: String = "",
   colonRight: String = ""
-) {
+) extends Serializable {
   private[this] val openBraceText = "{"
   private[this] val closeBraceText = "}"
   private[this] val openArrayText = "["
@@ -148,45 +148,6 @@ final case class Printer(
 
     def trav(depth: Int, k: Json): Unit = {
       val p = pieces(depth)
-
-      /*k.fold(
-        builder.append(nullText),
-        b => builder.append(if (b) trueText else falseText),
-        n => builder.append(n.toString),
-        s => encloseJsonString(s),
-        arr => if (arr.length == 0) builder.append(p.lrEmptyBrackets) else {
-          builder.append(p.lBrackets)
-          trav(depth + 1, arr(0))
-
-          var i = 1
-
-          while (i < arr.length) {
-            builder.append(p.arrayCommas)
-            trav(depth + 1, arr(i))
-            i += 1
-          }
-          builder.append(p.rBrackets)
-        },
-        obj => {
-          builder.append(p.lBraces)
-          val items = if (preserveOrder) obj.toList else obj.toMap
-          var first = true
-
-          items.foreach {
-            case (key, value) =>
-              if (!dropNullKeys || !value.isNull) {
-                if (!first) {
-                  builder.append(p.objectCommas)
-                }
-                encloseJsonString(key)
-                builder.append(p.colons)
-                trav(depth + 1, value)
-                first = false
-              }
-          }
-          builder.append(p.rBraces)
-        }
-      )*/
 
       import Json._
 
@@ -308,9 +269,9 @@ object Printer {
     arrayCommas: String,
     objectCommas: String,
     colons: String
-  )
+  ) extends Serializable
 
-  private[circe] abstract class MemoizedPieces {
+  private[circe] abstract class MemoizedPieces extends Serializable {
     def compute(i: Int): Pieces
 
     private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]

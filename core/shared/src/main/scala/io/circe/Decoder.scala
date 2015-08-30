@@ -5,7 +5,7 @@ import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
 
 import scala.collection.generic.CanBuildFrom
 
-trait Decoder[A] { self =>
+trait Decoder[A] extends Serializable { self =>
   /**
    * Decode the given hcursor.
    */
