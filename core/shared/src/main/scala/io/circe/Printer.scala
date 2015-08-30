@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.internal.PunctuationMemoizer
 import scala.annotation.{ switch, tailrec }
 
 /**
@@ -46,7 +47,7 @@ final case class Printer(
   objectCommaRight: String = "",
   colonLeft: String = "",
   colonRight: String = ""
-) {
+) extends PunctuationMemoizer {
   private[this] val openBraceText = "{"
   private[this] val closeBraceText = "}"
   private[this] val openArrayText = "["
@@ -70,50 +71,48 @@ final case class Printer(
     }
   }
 
-  private[this] val pieces = new Printer.MemoizedPieces {
-    def compute(i: Int): Printer.Pieces = Printer.Pieces(
-      "%s%s%s".format(
-        addIndentation(lbraceLeft)(i),
-        openBraceText,
-        addIndentation(lbraceRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        addIndentation(rbraceLeft)(i),
-        closeBraceText,
-        addIndentation(rbraceRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        addIndentation(lbracketLeft)(i),
-        openArrayText,
-        addIndentation(lbracketRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        addIndentation(rbracketLeft)(i),
-        closeArrayText,
-        addIndentation(rbracketRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        openArrayText,
-        addIndentation(lrbracketsEmpty)(i),
-        closeArrayText
-      ),
-      "%s%s%s".format(
-        addIndentation(arrayCommaLeft)(i + 1),
-        commaText,
-        addIndentation(arrayCommaRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        addIndentation(objectCommaLeft)(i + 1),
-        commaText,
-        addIndentation(objectCommaRight)(i + 1)
-      ),
-      "%s%s%s".format(
-        addIndentation(colonLeft)(i + 1),
-        colonText,
-        addIndentation(colonRight)(i + 1)
-      )
+  protected def compute(i: Int): Printer.Punctuation = Printer.Punctuation(
+    "%s%s%s".format(
+      addIndentation(lbraceLeft)(i),
+      openBraceText,
+      addIndentation(lbraceRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      addIndentation(rbraceLeft)(i),
+      closeBraceText,
+      addIndentation(rbraceRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      addIndentation(lbracketLeft)(i),
+      openArrayText,
+      addIndentation(lbracketRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      addIndentation(rbracketLeft)(i),
+      closeArrayText,
+      addIndentation(rbracketRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      openArrayText,
+      addIndentation(lrbracketsEmpty)(i),
+      closeArrayText
+    ),
+    "%s%s%s".format(
+      addIndentation(arrayCommaLeft)(i + 1),
+      commaText,
+      addIndentation(arrayCommaRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      addIndentation(objectCommaLeft)(i + 1),
+      commaText,
+      addIndentation(objectCommaRight)(i + 1)
+    ),
+    "%s%s%s".format(
+      addIndentation(colonLeft)(i + 1),
+      colonText,
+      addIndentation(colonRight)(i + 1)
     )
-  }
+  )
 
   /**
    * Returns a string representation of a pretty-printed JSON value.
@@ -147,46 +146,7 @@ final case class Printer(
     }
 
     def trav(depth: Int, k: Json): Unit = {
-      val p = pieces(depth)
-
-      /*k.fold(
-        builder.append(nullText),
-        b => builder.append(if (b) trueText else falseText),
-        n => builder.append(n.toString),
-        s => encloseJsonString(s),
-        arr => if (arr.length == 0) builder.append(p.lrEmptyBrackets) else {
-          builder.append(p.lBrackets)
-          trav(depth + 1, arr(0))
-
-          var i = 1
-
-          while (i < arr.length) {
-            builder.append(p.arrayCommas)
-            trav(depth + 1, arr(i))
-            i += 1
-          }
-          builder.append(p.rBrackets)
-        },
-        obj => {
-          builder.append(p.lBraces)
-          val items = if (preserveOrder) obj.toList else obj.toMap
-          var first = true
-
-          items.foreach {
-            case (key, value) =>
-              if (!dropNullKeys || !value.isNull) {
-                if (!first) {
-                  builder.append(p.objectCommas)
-                }
-                encloseJsonString(key)
-                builder.append(p.colons)
-                trav(depth + 1, value)
-                first = false
-              }
-          }
-          builder.append(p.rBraces)
-        }
-      )*/
+      val p = punctuation(depth)
 
       import Json._
 
@@ -299,7 +259,7 @@ object Printer {
     case possibleUnicode => !Character.isISOControl(possibleUnicode)
   }
 
-  private[circe] final case class Pieces(
+  private[circe] final case class Punctuation(
     lBraces: String,
     rBraces: String,
     lBrackets: String,
@@ -309,27 +269,4 @@ object Printer {
     objectCommas: String,
     colons: String
   )
-
-  private[circe] abstract class MemoizedPieces {
-    def compute(i: Int): Pieces
-
-    private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]
-
-    def apply(i: Int): Pieces = if (i < known.size) known.get(i) else if (i == known.size) {
-      val res = compute(i)
-      known.add(i, res)
-      res
-    } else {
-      var j = known.size
-      var res: Pieces = null
-
-      while (j <= i) {
-        res = compute(j)
-        known.add(j, res)
-        j += 1
-      }
-
-      res
-    }
-  }
 }
