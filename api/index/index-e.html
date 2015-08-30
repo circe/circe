@@ -29,8 +29,11 @@
       <div class="name">empty</div>
       <div class="occurrences"><a href="../io/circe/Json$.html" class="extype" name="io.circe.Json">Json</a> <a href="../io/circe/JsonObject$.html" class="extype" name="io.circe.JsonObject">JsonObject</a> </div>
     </div><div class="entry">
+      <div class="name">encode</div>
+      <div class="occurrences"><a href="../io/circe/tests/CodecLaws.html" class="extype" name="io.circe.tests.CodecLaws">CodecLaws</a> <a href="../io/circe/tests/PrinterLaws.html" class="extype" name="io.circe.tests.PrinterLaws">PrinterLaws</a> </div>
+    </div><div class="entry">
       <div class="name">encodeAdt</div>
-      <div class="occurrences"><a href="../io/circe/generic/GenericInstances.html" class="extype" name="io.circe.generic.GenericInstances">GenericInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/LowPriorityDerivedObjectEncoders.html" class="extype" name="io.circe.generic.encoding.LowPriorityDerivedObjectEncoders">LowPriorityDerivedObjectEncoders</a> </div>
     </div><div class="entry">
       <div class="name">encodeBigDecimal</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
@@ -45,16 +48,16 @@
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeCNil</div>
-      <div class="occurrences"><a href="../io/circe/generic/BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/DerivedObjectEncoder$.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeCaseClass</div>
-      <div class="occurrences"><a href="../io/circe/generic/GenericInstances.html" class="extype" name="io.circe.generic.GenericInstances">GenericInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/LowPriorityDerivedObjectEncoders.html" class="extype" name="io.circe.generic.encoding.LowPriorityDerivedObjectEncoders">LowPriorityDerivedObjectEncoders</a> </div>
     </div><div class="entry">
       <div class="name">encodeChar</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeCoproduct</div>
-      <div class="occurrences"><a href="../io/circe/generic/LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/DerivedObjectEncoder$.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeDouble</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
@@ -65,11 +68,8 @@
       <div class="name">encodeFloat</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
-      <div class="name">encodeHList</div>
-      <div class="occurrences"><a href="../io/circe/generic/HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a> </div>
-    </div><div class="entry">
       <div class="name">encodeHNil</div>
-      <div class="occurrences"><a href="../io/circe/generic/BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/DerivedObjectEncoder$.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeInt</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
@@ -78,7 +78,7 @@
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeLabelledHList</div>
-      <div class="occurrences"><a href="../io/circe/generic/LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/encoding/DerivedObjectEncoder$.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a> </div>
     </div><div class="entry">
       <div class="name">encodeLong</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
@@ -104,9 +104,6 @@
       <div class="name">encodeTraversableOnce</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
-      <div class="name">encodeTuple</div>
-      <div class="occurrences"><a href="../io/circe/generic/TupleInstances.html" class="extype" name="io.circe.generic.TupleInstances">TupleInstances</a> </div>
-    </div><div class="entry">
       <div class="name">encodeUnit</div>
       <div class="occurrences"><a href="../io/circe/Encoder$.html" class="extype" name="io.circe.Encoder">Encoder</a> </div>
     </div><div class="entry">
@@ -119,8 +116,14 @@
       <div class="name">encoder</div>
       <div class="occurrences"><a href="../io/circe/generic/semiauto$$DerivationHelper.html" class="extype" name="io.circe.generic.semiauto.DerivationHelper">DerivationHelper</a> </div>
     </div><div class="entry">
+      <div class="name">encoding</div>
+      <div class="occurrences"><a href="../io/circe/generic/package.html" class="extype" name="io.circe.generic">generic</a> </div>
+    </div><div class="entry">
       <div class="name">eqACursor</div>
       <div class="occurrences"><a href="../io/circe/ACursor$.html" class="extype" name="io.circe.ACursor">ACursor</a> </div>
+    </div><div class="entry">
+      <div class="name">eqBigDecimal</div>
+      <div class="occurrences"><a href="../io/circe/tests/MissingInstances.html" class="extype" name="io.circe.tests.MissingInstances">MissingInstances</a> </div>
     </div><div class="entry">
       <div class="name">eqContext</div>
       <div class="occurrences"><a href="../io/circe/Context$.html" class="extype" name="io.circe.Context">Context</a> </div>
@@ -129,16 +132,16 @@
       <div class="occurrences"><a href="../io/circe/Cursor$.html" class="extype" name="io.circe.Cursor">Cursor</a> </div>
     </div><div class="entry">
       <div class="name">eqCursorOp</div>
-      <div class="occurrences"><a href="../io/circe/CursorOp$.html" class="extype" name="io.circe.CursorOp">CursorOp</a> </div>
-    </div><div class="entry">
-      <div class="name">eqCursorOpElement</div>
-      <div class="occurrences"><a href="../io/circe/CursorOpElement$.html" class="extype" name="io.circe.CursorOpElement">CursorOpElement</a> </div>
+      <div class="occurrences"><a href="../io/circe/CursorOp$.html" class="extype" name="io.circe.CursorOp">CursorOp</a> <a href="../io/circe/HistoryOp$.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a> </div>
     </div><div class="entry">
       <div class="name">eqDecodingFailure</div>
       <div class="occurrences"><a href="../io/circe/DecodingFailure$.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> </div>
     </div><div class="entry">
       <div class="name">eqError</div>
       <div class="occurrences"><a href="../io/circe/Error$.html" class="extype" name="io.circe.Error">Error</a> </div>
+    </div><div class="entry">
+      <div class="name">eqFoo</div>
+      <div class="occurrences"><a href="../io/circe/tests/examples/Foo$.html" class="extype" name="io.circe.tests.examples.Foo">Foo</a> </div>
     </div><div class="entry">
       <div class="name">eqHCursor</div>
       <div class="occurrences"><a href="../io/circe/HCursor$.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
@@ -155,7 +158,22 @@
       <div class="name">eqParsingFailure</div>
       <div class="occurrences"><a href="../io/circe/ParsingFailure$.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a> </div>
     </div><div class="entry">
+      <div class="name">eqQux</div>
+      <div class="occurrences"><a href="../io/circe/tests/examples/Qux$.html" class="extype" name="io.circe.tests.examples.Qux">Qux</a> </div>
+    </div><div class="entry">
+      <div class="name">eqTuple1</div>
+      <div class="occurrences"><a href="../io/circe/tests/MissingInstances.html" class="extype" name="io.circe.tests.MissingInstances">MissingInstances</a> </div>
+    </div><div class="entry">
+      <div class="name">eqTuple3</div>
+      <div class="occurrences"><a href="../io/circe/tests/MissingInstances.html" class="extype" name="io.circe.tests.MissingInstances">MissingInstances</a> </div>
+    </div><div class="entry">
+      <div class="name">eqWub</div>
+      <div class="occurrences"><a href="../io/circe/tests/examples/Wub$.html" class="extype" name="io.circe.tests.examples.Wub">Wub</a> </div>
+    </div><div class="entry">
       <div class="name">equals</div>
       <div class="occurrences"><a href="../io/circe/Json.html" class="extype" name="io.circe.Json">Json</a> <a href="../io/circe/JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a> </div>
+    </div><div class="entry">
+      <div class="name">examples</div>
+      <div class="occurrences"><a href="../io/circe/tests/package.html" class="extype" name="io.circe.tests">tests</a> </div>
     </div></body>
       </html>

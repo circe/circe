@@ -124,18 +124,18 @@ we need for <code>withFocusM</code>.
     </span>
       <p class="shortcomment cmt">The context that the cursor is available in.</p>
     </li><li name="io.circe.GenericCursor.M" visbl="pub" data-isabs="true" fullComment="no" group="TypeMembers">
-      <a id="M[_[_]]"></a>
-      <a id="M[_[_]]:M[_]"></a>
+      <a id="M[F[_]]&lt;:cats.Functor[F]"></a>
+      <a id="M[F[_]]:M[F]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="_">_<span class="tparams">[<span name="_">_</span>]</span></span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> &lt;: <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.GenericCursor.M.F">F</span>[<span class="extype" name="io.circe.GenericCursor.M.F._">_</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.GenericCursor@M[_[_]]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.GenericCursor@M[F[_]]&lt;:cats.Functor[F]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -163,18 +163,18 @@ we need for <code>withFocusM</code>.
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="io.circe.GenericCursor#as" visbl="pub" data-isabs="true" fullComment="no" group="Decoding">
-      <a id="as[A](implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
-      <a id="as[A](Decoder[A]):Xor[DecodingFailure,A]"></a>
+      <a id="as[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
+      <a id="as[A](Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.as.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.GenericCursor.as.A">A</span>]</span>
+        <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.as.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.GenericCursor.as.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.GenericCursor@as[A](implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.GenericCursor@as[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -487,18 +487,18 @@ matches the given predicate.</p>
     </span>
       <p class="shortcomment cmt">The current location in the document.</p>
     </li><li name="io.circe.GenericCursor#get" visbl="pub" data-isabs="true" fullComment="no" group="Decoding">
-      <a id="get[A](k:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
-      <a id="get[A](String)(Decoder[A]):Xor[DecodingFailure,A]"></a>
+      <a id="get[A](k:String)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
+      <a id="get[A](String)(Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">get</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.get.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.GenericCursor.get.A">A</span>]</span>
+        <span class="name">get</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.get.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.GenericCursor.get.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.GenericCursor@get[A](k:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.GenericCursor@get[A](k:String)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -754,7 +754,7 @@ the new focus.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="#M[_[_]]" class="extmbr" name="io.circe.GenericCursor.M">M</a>[<span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>[<span class="extype" name="io.circe.GenericCursor.C">C</span>]</span>
+        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="#M[F[_]]&lt;:cats.Functor[F]" class="extmbr" name="io.circe.GenericCursor.M">M</a>[<span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.GenericCursor.withFocusM.F">F</span>[<span class="extype" name="io.circe.GenericCursor.C">C</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.GenericCursor@withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:GenericCursor.this.M[F]):F[C]" title="Permalink" target="_top">

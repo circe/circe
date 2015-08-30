@@ -45,12 +45,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">semiauto</span><span class="result"> extends <a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a> with <a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a> with <a href="HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a></span>
+        <span class="name">semiauto</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../Encoder.html" class="extype" name="io.circe.Encoder">io.circe.Encoder</a> instances
-for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._, io.circe.generic.semiauto.tuple._
+for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
 
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
@@ -59,7 +59,7 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
   <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
 }</pre></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a>, <a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a>, <a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -77,7 +77,7 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.generic.semiauto"><span>semiauto</span></li><li class="in" name="io.circe.generic.HListInstances"><span>HListInstances</span></li><li class="in" name="io.circe.generic.LabelledInstances"><span>LabelledInstances</span></li><li class="in" name="io.circe.generic.BaseInstances"><span>BaseInstances</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.generic.semiauto"><span>semiauto</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -213,91 +213,6 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.generic.BaseInstances#decodeCNil" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeCNil:io.circe.Decoder[shapeless.CNil]"></a>
-      <a id="decodeCNil:Decoder[CNil]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decodeCNil</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="shapeless.CNil">CNil</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@decodeCNil:io.circe.Decoder[shapeless.CNil]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.LabelledInstances#decodeCoproduct" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:shapeless.Coproduct](implicitkey:shapeless.Witness.Aux[K],implicitgen:shapeless.LabelledGeneric.Aux[H,HR],implicitdecodeHead:shapeless.Lazy[io.circe.Decoder[HR]],implicitdecodeTail:shapeless.Lazy[io.circe.Decoder[T]]):io.circe.Decoder[shapeless.:+:[shapeless.labelled.FieldType[K,H],T]]"></a>
-      <a id="decodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:Coproduct](Aux[K],Aux[H,HR],Lazy[Decoder[HR]],Lazy[Decoder[T]]):Decoder[:+:[FieldType[K,H],T]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decodeCoproduct</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="H">H</span>, <span name="HR">HR</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="key">key: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.K">K</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.H">H</span>, <span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.HR">HR</span>]</span>, <span name="decodeHead">decodeHead: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.HR">HR</span>]]</span>, <span name="decodeTail">decodeTail: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.T">T</span>]]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="shapeless.:+:">:+:</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.K">K</span>, <span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.H">H</span>], <span class="extype" name="io.circe.generic.LabelledInstances.decodeCoproduct.T">T</span>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@decodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:shapeless.Coproduct](implicitkey:shapeless.Witness.Aux[K],implicitgen:shapeless.LabelledGeneric.Aux[H,HR],implicitdecodeHead:shapeless.Lazy[io.circe.Decoder[HR]],implicitdecodeTail:shapeless.Lazy[io.circe.Decoder[T]]):io.circe.Decoder[shapeless.:+:[shapeless.labelled.FieldType[K,H],T]]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.HListInstances#decodeHList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeHList[L&lt;:shapeless.HList](implicitproductDecode:io.circe.generic.ProductDecoder[L]):io.circe.Decoder[L]"></a>
-      <a id="decodeHList[L&lt;:HList](ProductDecoder[L]):Decoder[L]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decodeHList</span><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="productDecode">productDecode: <a href="ProductDecoder.html" class="extype" name="io.circe.generic.ProductDecoder">ProductDecoder</a>[<span class="extype" name="io.circe.generic.HListInstances.decodeHList.L">L</span>]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.HListInstances.decodeHList.L">L</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@decodeHList[L&lt;:shapeless.HList](implicitproductDecode:io.circe.generic.ProductDecoder[L]):io.circe.Decoder[L]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.BaseInstances#decodeHNil" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeHNil:io.circe.Decoder[shapeless.HNil]"></a>
-      <a id="decodeHNil:Decoder[HNil]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decodeHNil</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@decodeHNil:io.circe.Decoder[shapeless.HNil]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.LabelledInstances#decodeLabelledHList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeLabelledHList[K&lt;:Symbol,H,T&lt;:shapeless.HList](implicitkey:shapeless.Witness.Aux[K],implicitdecodeHead:shapeless.Lazy[io.circe.Decoder[H]],implicitdecodeTail:shapeless.Lazy[io.circe.Decoder[T]]):io.circe.Decoder[shapeless.::[shapeless.labelled.FieldType[K,H],T]]"></a>
-      <a id="decodeLabelledHList[K&lt;:Symbol,H,T&lt;:HList](Aux[K],Lazy[Decoder[H]],Lazy[Decoder[T]]):Decoder[::[FieldType[K,H],T]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decodeLabelledHList</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="H">H</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="key">key: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.K">K</span>]</span>, <span name="decodeHead">decodeHead: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.H">H</span>]]</span>, <span name="decodeTail">decodeTail: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.T">T</span>]]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.K">K</span>, <span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.H">H</span>], <span class="extype" name="io.circe.generic.LabelledInstances.decodeLabelledHList.T">T</span>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@decodeLabelledHList[K&lt;:Symbol,H,T&lt;:shapeless.HList](implicitkey:shapeless.Witness.Aux[K],implicitdecodeHead:shapeless.Lazy[io.circe.Decoder[H]],implicitdecodeTail:shapeless.Lazy[io.circe.Decoder[T]]):io.circe.Decoder[shapeless.::[shapeless.labelled.FieldType[K,H],T]]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a></dd></dl></div>
     </li><li name="io.circe.generic.semiauto#deriveFor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="deriveFor[A]:io.circe.generic.semiauto.DerivationHelper[A]"></a>
       <a id="deriveFor[A]:DerivationHelper[A]"></a>
@@ -315,91 +230,6 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
       </a>
     </span>
       
-    </li><li name="io.circe.generic.BaseInstances#encodeCNil" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeCNil:io.circe.ObjectEncoder[shapeless.CNil]"></a>
-      <a id="encodeCNil:ObjectEncoder[CNil]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encodeCNil</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.CNil">CNil</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@encodeCNil:io.circe.ObjectEncoder[shapeless.CNil]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.LabelledInstances#encodeCoproduct" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:shapeless.Coproduct](implicitkey:shapeless.Witness.Aux[K],implicitgen:shapeless.LabelledGeneric.Aux[H,HR],implicitencodeHead:shapeless.Lazy[io.circe.Encoder[HR]],implicitencodeTail:shapeless.Lazy[io.circe.ObjectEncoder[T]]):io.circe.ObjectEncoder[shapeless.:+:[shapeless.labelled.FieldType[K,H],T]]"></a>
-      <a id="encodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:Coproduct](Aux[K],Aux[H,HR],Lazy[Encoder[HR]],Lazy[ObjectEncoder[T]]):ObjectEncoder[:+:[FieldType[K,H],T]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encodeCoproduct</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="H">H</span>, <span name="HR">HR</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="key">key: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.K">K</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.H">H</span>, <span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.HR">HR</span>]</span>, <span name="encodeHead">encodeHead: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.HR">HR</span>]]</span>, <span name="encodeTail">encodeTail: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.T">T</span>]]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.:+:">:+:</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.K">K</span>, <span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.H">H</span>], <span class="extype" name="io.circe.generic.LabelledInstances.encodeCoproduct.T">T</span>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@encodeCoproduct[K&lt;:Symbol,H,HR,T&lt;:shapeless.Coproduct](implicitkey:shapeless.Witness.Aux[K],implicitgen:shapeless.LabelledGeneric.Aux[H,HR],implicitencodeHead:shapeless.Lazy[io.circe.Encoder[HR]],implicitencodeTail:shapeless.Lazy[io.circe.ObjectEncoder[T]]):io.circe.ObjectEncoder[shapeless.:+:[shapeless.labelled.FieldType[K,H],T]]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.HListInstances#encodeHList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeHList[L&lt;:shapeless.HList](implicite:io.circe.generic.ProductEncoder[L]):io.circe.Encoder[L]"></a>
-      <a id="encodeHList[L&lt;:HList](ProductEncoder[L]):Encoder[L]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encodeHList</span><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="e">e: <a href="ProductEncoder.html" class="extype" name="io.circe.generic.ProductEncoder">ProductEncoder</a>[<span class="extype" name="io.circe.generic.HListInstances.encodeHList.L">L</span>]</span>)</span><span class="result">: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.HListInstances.encodeHList.L">L</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@encodeHList[L&lt;:shapeless.HList](implicite:io.circe.generic.ProductEncoder[L]):io.circe.Encoder[L]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.BaseInstances#encodeHNil" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeHNil:io.circe.ObjectEncoder[shapeless.HNil]"></a>
-      <a id="encodeHNil:ObjectEncoder[HNil]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encodeHNil</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@encodeHNil:io.circe.ObjectEncoder[shapeless.HNil]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a></dd></dl></div>
-    </li><li name="io.circe.generic.LabelledInstances#encodeLabelledHList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeLabelledHList[K&lt;:Symbol,H,T&lt;:shapeless.HList](implicitkey:shapeless.Witness.Aux[K],implicitencodeHead:shapeless.Lazy[io.circe.Encoder[H]],implicitencodeTail:shapeless.Lazy[io.circe.ObjectEncoder[T]]):io.circe.ObjectEncoder[shapeless.::[shapeless.labelled.FieldType[K,H],T]]"></a>
-      <a id="encodeLabelledHList[K&lt;:Symbol,H,T&lt;:HList](Aux[K],Lazy[Encoder[H]],Lazy[ObjectEncoder[T]]):ObjectEncoder[::[FieldType[K,H],T]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encodeLabelledHList</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="H">H</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="key">key: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.K">K</span>]</span>, <span name="encodeHead">encodeHead: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.H">H</span>]]</span>, <span name="encodeTail">encodeTail: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.T">T</span>]]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.K">K</span>, <span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.H">H</span>], <span class="extype" name="io.circe.generic.LabelledInstances.encodeLabelledHList.T">T</span>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@encodeLabelledHList[K&lt;:Symbol,H,T&lt;:shapeless.HList](implicitkey:shapeless.Witness.Aux[K],implicitencodeHead:shapeless.Lazy[io.circe.Encoder[H]],implicitencodeTail:shapeless.Lazy[io.circe.ObjectEncoder[T]]):io.circe.ObjectEncoder[shapeless.::[shapeless.labelled.FieldType[K,H],T]]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -491,23 +321,6 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.generic.semiauto.incomplete" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="incomplete"></a>
-      <a id="incomplete:incomplete"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="semiauto$$incomplete$.html"><span class="name">incomplete</span></a><span class="result"> extends <a href="IncompleteInstances.html" class="extype" name="io.circe.generic.IncompleteInstances">IncompleteInstances</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@incomplete" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -610,23 +423,6 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.generic.semiauto.tuple" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tuple"></a>
-      <a id="tuple:tuple"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="semiauto$$tuple$.html"><span class="name">tuple</span></a><span class="result"> extends <a href="TupleInstances.html" class="extype" name="io.circe.generic.TupleInstances">TupleInstances</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$@tuple" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -705,13 +501,7 @@ for tuples, case classes, &quot;incomplete&quot; case classes, sealed trait hier
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="io.circe.generic.HListInstances">
-              <h3>Inherited from <a href="HListInstances.html" class="extype" name="io.circe.generic.HListInstances">HListInstances</a></h3>
-            </div><div class="parent" name="io.circe.generic.LabelledInstances">
-              <h3>Inherited from <a href="LabelledInstances.html" class="extype" name="io.circe.generic.LabelledInstances">LabelledInstances</a></h3>
-            </div><div class="parent" name="io.circe.generic.BaseInstances">
-              <h3>Inherited from <a href="BaseInstances.html" class="extype" name="io.circe.generic.BaseInstances">BaseInstances</a></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></h3>

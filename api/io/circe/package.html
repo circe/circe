@@ -161,23 +161,6 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       </a>
     </span>
       
-    </li><li name="io.circe.CursorOpElement" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="CursorOpElementextendsProductwithSerializable"></a>
-      <a id="CursorOpElement:CursorOpElement"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="CursorOpElement.html"><span class="name">CursorOpElement</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.package@CursorOpElementextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="io.circe.Decoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="Decoder[A]extendsAnyRef"></a>
       <a id="Decoder[A]:Decoder[A]"></a>
@@ -204,7 +187,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DecodingFailure.html"><span class="name">DecodingFailure</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="Error.html" class="extype" name="io.circe.Error">Error</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <a href="DecodingFailure.html"><span class="name">DecodingFailure</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="Error.html" class="extype" name="io.circe.Error">Error</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@DecodingFailureextendsExceptionwithErrorwithProductwithSerializable" title="Permalink" target="_top">
@@ -283,7 +266,7 @@ we need for <code>withFocusM</code>.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="HCursor.html"><span class="name">HCursor</span></a><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <a href="HCursor.html"><span class="name">HCursor</span></a><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@HCursorextendsHCursorOperationswithProductwithSerializable" title="Permalink" target="_top">
@@ -292,6 +275,23 @@ we need for <code>withFocusM</code>.
     </span>
       <p class="shortcomment cmt">A cursor that tracks the history of operations performed with it.</p><div class="fullcomment"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
 </p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl></div>
+    </li><li name="io.circe.HistoryOp" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HistoryOpextendsProductwithSerializable"></a>
+      <a id="HistoryOp:HistoryOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="HistoryOp.html"><span class="name">HistoryOp</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@HistoryOpextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="io.circe.Json" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="JsonextendsProductwithSerializable"></a>
       <a id="Json:Json"></a>
@@ -343,6 +343,57 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       <p class="shortcomment cmt">A mapping from keys to JSON values that maintains insertion order.</p>
+    </li><li name="io.circe.LowPriorityDecoders" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityDecodersextendsLowPriorityDecoders.fresh$macro$1"></a>
+      <a id="LowPriorityDecoders:LowPriorityDecoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityDecoders.html"><span class="name">LowPriorityDecoders</span></a><span class="result"> extends <a href="LowPriorityDecoders$$fresh$macro$1.html" class="extype" name="io.circe.LowPriorityDecoders.fresh$macro$1">fresh$macro$1</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityDecodersextendsLowPriorityDecoders.fresh$macro$1" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.LowPriorityEncoders" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityEncodersextendsLowPriorityEncoders.fresh$macro$4"></a>
+      <a id="LowPriorityEncoders:LowPriorityEncoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityEncoders.html"><span class="name">LowPriorityEncoders</span></a><span class="result"> extends <a href="LowPriorityEncoders$$fresh$macro$4.html" class="extype" name="io.circe.LowPriorityEncoders.fresh$macro$4">fresh$macro$4</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityEncodersextendsLowPriorityEncoders.fresh$macro$4" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.LowPriorityObjectEncoders" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityObjectEncodersextendsLowPriorityObjectEncoders.fresh$macro$7"></a>
+      <a id="LowPriorityObjectEncoders:LowPriorityObjectEncoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityObjectEncoders.html"><span class="name">LowPriorityObjectEncoders</span></a><span class="result"> extends <a href="LowPriorityObjectEncoders$$fresh$macro$7.html" class="extype" name="io.circe.LowPriorityObjectEncoders.fresh$macro$7">fresh$macro$7</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityObjectEncodersextendsLowPriorityObjectEncoders.fresh$macro$7" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="io.circe.ObjectEncoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ObjectEncoder[A]extendsEncoder[A]"></a>
       <a id="ObjectEncoder[A]:ObjectEncoder[A]"></a>
@@ -487,23 +538,6 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       
-    </li><li name="io.circe.CursorOpElement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CursorOpElement"></a>
-      <a id="CursorOpElement:CursorOpElement"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="CursorOpElement$.html"><span class="name">CursorOpElement</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.package@CursorOpElement" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="io.circe.Decoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Decoder"></a>
       <a id="Decoder:Decoder"></a>
@@ -513,7 +547,7 @@ we need for <code>withFocusM</code>.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Decoder$.html"><span class="name">Decoder</span></a>
+        <a href="Decoder$.html"><span class="name">Decoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <a href="LowPriorityDecoders.html" class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@Decoder" title="Permalink" target="_top">
@@ -547,7 +581,7 @@ we need for <code>withFocusM</code>.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Encoder$.html"><span class="name">Encoder</span></a>
+        <a href="Encoder$.html"><span class="name">Encoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <a href="LowPriorityEncoders.html" class="extype" name="io.circe.LowPriorityEncoders">LowPriorityEncoders</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@Encoder" title="Permalink" target="_top">
@@ -585,6 +619,23 @@ we need for <code>withFocusM</code>.
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.HistoryOp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HistoryOp"></a>
+      <a id="HistoryOp:HistoryOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HistoryOp$.html"><span class="name">HistoryOp</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@HistoryOp" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -640,6 +691,57 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       <p class="shortcomment cmt">Constructors, type class instances, and other utilities for <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
+    </li><li name="io.circe.LowPriorityDecoders" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityDecoders"></a>
+      <a id="LowPriorityDecoders:LowPriorityDecoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityDecoders$.html"><span class="name">LowPriorityDecoders</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityDecoders" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.LowPriorityEncoders" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityEncoders"></a>
+      <a id="LowPriorityEncoders:LowPriorityEncoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityEncoders$.html"><span class="name">LowPriorityEncoders</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityEncoders" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.LowPriorityObjectEncoders" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LowPriorityObjectEncoders"></a>
+      <a id="LowPriorityObjectEncoders:LowPriorityObjectEncoders"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LowPriorityObjectEncoders$.html"><span class="name">LowPriorityObjectEncoders</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@LowPriorityObjectEncoders" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="io.circe.ObjectEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ObjectEncoder"></a>
       <a id="ObjectEncoder:ObjectEncoder"></a>
@@ -649,7 +751,7 @@ we need for <code>withFocusM</code>.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="ObjectEncoder$.html"><span class="name">ObjectEncoder</span></a>
+        <a href="ObjectEncoder$.html"><span class="name">ObjectEncoder</span></a><span class="result"> extends <a href="LowPriorityObjectEncoders.html" class="extype" name="io.circe.LowPriorityObjectEncoders">LowPriorityObjectEncoders</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@ObjectEncoder" title="Permalink" target="_top">
@@ -776,6 +878,23 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       <p class="shortcomment cmt">This package provides syntax via enrichment classes.</p>
+    </li><li name="io.circe.tests" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="tests"></a>
+      <a id="tests:tests"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="tests/package.html"><span class="name">tests</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@tests" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li></ol>
             </div>
 

@@ -54,7 +54,10 @@
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.A">A</span>]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="generic/decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -100,18 +103,18 @@
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="io.circe.Decoder#apply" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="apply(c:io.circe.HCursor):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
-      <a id="apply(HCursor):Xor[DecodingFailure,A]"></a>
+      <a id="apply(c:io.circe.HCursor):io.circe.Decoder.Result[A]"></a>
+      <a id="apply(HCursor):Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="c">c: <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.A">A</span>]</span>
+        <span class="name">apply</span><span class="params">(<span name="c">c: <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.Decoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@apply(c:io.circe.HCursor):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder@apply(c:io.circe.HCursor):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -275,18 +278,18 @@
               
         </dd></dl></div>
     </li><li name="io.circe.Decoder#decodeJson" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="decodeJson(j:io.circe.Json):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
-      <a id="decodeJson(Json):Xor[DecodingFailure,A]"></a>
+      <a id="decodeJson(j:io.circe.Json):io.circe.Decoder.Result[A]"></a>
+      <a id="decodeJson(Json):Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeJson</span><span class="params">(<span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.A">A</span>]</span>
+        <span class="name">decodeJson</span><span class="params">(<span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.Decoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@decodeJson(j:io.circe.Json):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder@decodeJson(j:io.circe.Json):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -610,35 +613,35 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="io.circe.Decoder#product" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;cats.data.Xor[io.circe.DecodingFailure,(A,B)]"></a>
-      <a id="product[B](Decoder[B]):(HCursor,HCursor)⇒Xor[DecodingFailure,(A,B)]"></a>
+      <a id="product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;io.circe.Decoder.Result[(A,B)]"></a>
+      <a id="product[B](Decoder[B]):(HCursor,HCursor)⇒Result[(A,B)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">product</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.product.B">B</span>]</span>)</span><span class="result">: (<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, (<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.product.B">B</span>)]</span>
+        <span class="name">product</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.product.B">B</span>]</span>)</span><span class="result">: (<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[(<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.product.B">B</span>)]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;cats.data.Xor[io.circe.DecodingFailure,(A,B)]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder@product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;io.circe.Decoder.Result[(A,B)]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Run two decoders.</p>
     </li><li name="io.circe.Decoder#split" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="split[B](d:io.circe.Decoder[B]):cats.data.Xor[io.circe.HCursor,io.circe.HCursor]=&gt;cats.data.Xor[io.circe.DecodingFailure,cats.data.Xor[A,B]]"></a>
-      <a id="split[B](Decoder[B]):(Xor[HCursor,HCursor])⇒Xor[DecodingFailure,Xor[A,B]]"></a>
+      <a id="split[B](d:io.circe.Decoder[B]):cats.data.Xor[io.circe.HCursor,io.circe.HCursor]=&gt;io.circe.Decoder.Result[cats.data.Xor[A,B]]"></a>
+      <a id="split[B](Decoder[B]):(Xor[HCursor,HCursor])⇒Result[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">split</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="d">d: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.split.B">B</span>]</span>)</span><span class="result">: (<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>]) ⇒ <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.split.B">B</span>]]</span>
+        <span class="name">split</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="d">d: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.split.B">B</span>]</span>)</span><span class="result">: (<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>]) ⇒ <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.split.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@split[B](d:io.circe.Decoder[B]):cats.data.Xor[io.circe.HCursor,io.circe.HCursor]=&gt;cats.data.Xor[io.circe.DecodingFailure,cats.data.Xor[A,B]]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder@split[B](d:io.circe.Decoder[B]):cats.data.Xor[io.circe.HCursor,io.circe.HCursor]=&gt;io.circe.Decoder.Result[cats.data.Xor[A,B]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -678,18 +681,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.Decoder#tryDecode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tryDecode(c:io.circe.ACursor):cats.data.Xor[io.circe.DecodingFailure,A]"></a>
-      <a id="tryDecode(ACursor):Xor[DecodingFailure,A]"></a>
+      <a id="tryDecode(c:io.circe.ACursor):io.circe.Decoder.Result[A]"></a>
+      <a id="tryDecode(ACursor):Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tryDecode</span><span class="params">(<span name="c">c: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.A">A</span>]</span>
+        <span class="name">tryDecode</span><span class="params">(<span name="c">c: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.Decoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@tryDecode(c:io.circe.ACursor):cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder@tryDecode(c:io.circe.ACursor):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

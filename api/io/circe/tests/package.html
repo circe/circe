@@ -1,0 +1,376 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>tests - io.circe.tests</title>
+          <meta name="description" content="tests - io.circe.tests" />
+          <meta name="keywords" content="tests io.circe.tests" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'io.circe.tests.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="io">io</a>.<a href="../package.html" class="extype" name="io.circe">circe</a></p>
+        <h1>tests</h1><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tests</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="io.circe.tests.ArbitraryInstances" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArbitraryInstancesextendsAnyRef"></a>
+      <a id="ArbitraryInstances:ArbitraryInstances"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ArbitraryInstances.html"><span class="name">ArbitraryInstances</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@ArbitraryInstancesextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.CirceSuite" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CirceSuiteextendsFunSuitewithMatcherswithDisciplinewithAllInstanceswithAllSyntaxwithArbitraryInstanceswithMissingInstances"></a>
+      <a id="CirceSuite:CirceSuite"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CirceSuite.html"><span class="name">CirceSuite</span></a><span class="result"> extends <span class="extype" name="org.scalatest.FunSuite">FunSuite</span> with <span class="extype" name="org.scalatest.Matchers">Matchers</span> with <span class="extype" name="org.typelevel.discipline.scalatest.Discipline">Discipline</span> with <a href="https://non.github.io/cats/api/index.html#cats.std.AllInstances" class="extype" target="_top">AllInstances</a> with <a href="https://non.github.io/cats/api/index.html#cats.syntax.AllSyntax" class="extype" target="_top">AllSyntax</a> with <a href="ArbitraryInstances.html" class="extype" name="io.circe.tests.ArbitraryInstances">ArbitraryInstances</a> with <a href="MissingInstances.html" class="extype" name="io.circe.tests.MissingInstances">MissingInstances</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CirceSuiteextendsFunSuitewithMatcherswithDisciplinewithAllInstanceswithAllSyntaxwithArbitraryInstanceswithMissingInstances" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">An opinionated stack of traits to improve consistency and reduce boilerplate in circe tests.</p>
+    </li><li name="io.circe.tests.CodecLaws" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CodecLaws[A]extendsAnyRef"></a>
+      <a id="CodecLaws[A]:CodecLaws[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CodecLaws.html"><span class="name">CodecLaws</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CodecLaws[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.CodecTests" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CodecTests[A]extendsLaws"></a>
+      <a id="CodecTests[A]:CodecTests[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CodecTests.html"><span class="name">CodecTests</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.typelevel.discipline.Laws">Laws</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CodecTests[A]extendsLaws" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.CursorSuite" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CursorSuite[C&lt;:io.circe.GenericCursor[C]]extendsFunSuitewithCirceSuite"></a>
+      <a id="CursorSuite[C&lt;:GenericCursor[C]]:CursorSuite[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CursorSuite.html"><span class="name">CursorSuite</span></a><span class="tparams">[<span name="C">C &lt;: <a href="../GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<span class="extype" name="io.circe.tests.CursorSuite.C">C</span>]</span>]</span><span class="result"> extends <span class="extype" name="org.scalatest.FunSuite">FunSuite</span> with <a href="CirceSuite.html" class="extype" name="io.circe.tests.CirceSuite">CirceSuite</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CursorSuite[C&lt;:io.circe.GenericCursor[C]]extendsFunSuitewithCirceSuite" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.MissingInstances" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="MissingInstancesextendsAnyRef"></a>
+      <a id="MissingInstances:MissingInstances"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MissingInstances.html"><span class="name">MissingInstances</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@MissingInstancesextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.ParserLaws" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParserLawsextendsProductwithSerializable"></a>
+      <a id="ParserLaws:ParserLaws"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParserLaws.html"><span class="name">ParserLaws</span></a><span class="params">(<span name="parser">parser: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@ParserLawsextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.ParserTests" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParserTestsextendsLawswithProductwithSerializable"></a>
+      <a id="ParserTests:ParserTests"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParserTests.html"><span class="name">ParserTests</span></a><span class="params">(<span name="p">p: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>)</span><span class="result"> extends <span class="extype" name="org.typelevel.discipline.Laws">Laws</span> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@ParserTestsextendsLawswithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.PrinterLaws" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PrinterLaws[A]extendsAnyRef"></a>
+      <a id="PrinterLaws[A]:PrinterLaws[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PrinterLaws.html"><span class="name">PrinterLaws</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@PrinterLaws[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.PrinterSuite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PrinterSuiteextendsFunSuitewithCirceSuite"></a>
+      <a id="PrinterSuite:PrinterSuite"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="PrinterSuite.html"><span class="name">PrinterSuite</span></a><span class="result"> extends <span class="extype" name="org.scalatest.FunSuite">FunSuite</span> with <a href="CirceSuite.html" class="extype" name="io.circe.tests.CirceSuite">CirceSuite</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@PrinterSuiteextendsFunSuitewithCirceSuite" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.PrinterTests" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PrinterTests[A]extendsLaws"></a>
+      <a id="PrinterTests[A]:PrinterTests[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PrinterTests.html"><span class="name">PrinterTests</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.typelevel.discipline.Laws">Laws</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@PrinterTests[A]extendsLaws" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="io.circe.tests.CodecLaws" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CodecLaws"></a>
+      <a id="CodecLaws:CodecLaws"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CodecLaws$.html"><span class="name">CodecLaws</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CodecLaws" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.CodecTests" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CodecTests"></a>
+      <a id="CodecTests:CodecTests"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CodecTests$.html"><span class="name">CodecTests</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@CodecTests" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.PrinterLaws" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PrinterLaws"></a>
+      <a id="PrinterLaws:PrinterLaws"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PrinterLaws$.html"><span class="name">PrinterLaws</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@PrinterLaws" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.PrinterTests" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PrinterTests"></a>
+      <a id="PrinterTests:PrinterTests"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PrinterTests$.html"><span class="name">PrinterTests</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@PrinterTests" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.tests.examples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="examples"></a>
+      <a id="examples:examples"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="examples/package.html"><span class="name">examples</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.tests.package@examples" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
