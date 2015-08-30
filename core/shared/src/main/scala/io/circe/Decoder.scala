@@ -368,26 +368,23 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     c.fields.fold(
       Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
     ) { s =>
-      @scala.annotation.tailrec
-      def spin(
-        x: List[String],
-        acc: Result[Vector[(String, V)]]
-      ): Result[M[String, V]] =
-        x match {
-          case Nil =>
-            acc.map { fields =>
-              (cbf() ++= fields).result()
-            }
-          case h :: t =>
-            val acc0 = for {
-              m <- acc
-              v <- c.get(h)(d)
-            } yield m :+ (h -> v)
+      val builder = cbf()
 
-            if (acc0.isLeft) spin(Nil, acc0)
-            else spin(t, acc0)
-        }
-      spin(s, Xor.right(Vector.empty))
+      @scala.annotation.tailrec
+      def spin(x: List[String]): Option[DecodingFailure] = x match {
+        case Nil => None
+        case h :: t =>
+          val res = c.get(h)(d)
+
+          if (res.isLeft) res.swap.toOption else {
+            res.foreach { v =>
+              builder += (h -> v)
+            }
+            spin(t)
+          }
+      }
+
+      spin(s).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
     }
   }
 
