@@ -78,13 +78,13 @@ lazy val root = project.in(file("."))
       """
         |import io.circe._
         |import io.circe.generic.auto._
-        |import io.circe.jawn._
+        |import io.circe.parse._
         |import io.circe.syntax._
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, coreJS, generic, genericJS, jawn, async, benchmark)
-  .dependsOn(core, generic, jawn, async)
+  .aggregate(core, coreJS, generic, genericJS, parse, parseJS, jawn, async, benchmark)
+  .dependsOn(core, generic, parse)
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(moduleName := "circe-core")
@@ -94,11 +94,6 @@ lazy val coreBase = crossProject.in(file("core"))
       "org.spire-math" %%% "cats-core" % catsVersion
     ),
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
-  )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      "io.argonaut" %% "argonaut" % "6.1" % "test"
-    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
@@ -120,6 +115,17 @@ lazy val genericBase = crossProject.in(file("generic"))
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
+
+lazy val parseBase = crossProject.in(file("parse"))
+  .settings(moduleName := "circe-parse")
+  .settings(allSettings: _*)
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "parse").dependsOn(jawn))
+  .jsConfigure(_.copy(id = "parseJS"))
+  .dependsOn(coreBase, coreBase % "test->test")
+
+lazy val parse = parseBase.jvm
+lazy val parseJS = parseBase.js
 
 lazy val jawn = project
   .settings(moduleName := "circe-jawn")
@@ -220,6 +226,7 @@ credentials ++= (
 val jvmProjects = Seq(
   "core",
   "generic",
+  "parse",
   "jawn",
   "async",
   "benchmark"
@@ -227,7 +234,8 @@ val jvmProjects = Seq(
 
 val jsProjects = Seq(
   "coreJS",
-  "genericJS"
+  "genericJS",
+  "parseJS"
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/test:compile").mkString)

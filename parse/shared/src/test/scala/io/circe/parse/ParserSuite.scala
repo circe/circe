@@ -1,4 +1,4 @@
-package io.circe.jawn
+package io.circe.parse
 
 import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.Json
@@ -8,7 +8,7 @@ import java.nio.ByteBuffer
 import org.scalacheck.Prop.forAll
 import scala.io.Source
 
-class JawnParserTests extends CirceSuite {
+class ParserSuite extends CirceSuite {
   val glossary: Json = Json.obj(
     "glossary" -> Json.obj(
       "title" -> Json.string("example glossary"),
@@ -42,23 +42,5 @@ class JawnParserTests extends CirceSuite {
         parse(s"Not JSON $s").isLeft
       }
     }
-  }
-
-  test("parseFile") {
-    val url = getClass.getResource("/io/circe/jawn/glossary.json")
-    val file = new File(url.toURI)
-
-    assert(parseFile(file) === Xor.right(glossary))
-  }
-
-  test("parseByteBuffer") {
-    val stream = getClass.getResourceAsStream("/io/circe/jawn/glossary.json")
-    val source = Source.fromInputStream(stream)
-    val bytes = source.map(_.toByte).toArray
-    source.close()
-
-    val buffer = ByteBuffer.wrap(bytes)
-
-    assert(parseByteBuffer(buffer) === Xor.right(glossary))
   }
 }

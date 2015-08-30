@@ -5,8 +5,8 @@
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/circe)
 [![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11)
 
-circe is a JSON library for Scala. The rest of this page tries to give some justification for its
-existence. There are also [API docs][api].
+circe is a JSON library for Scala (and [Scala.js][scala-js]). The rest of this page tries to give
+some justification for its existence. There are also [API docs][api].
 
 circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for [a
 number of reasons](https://github.com/travisbrown/circe/issues/11).
@@ -28,10 +28,10 @@ Then type `sbt console` to start a REPL and then paste the following (this will 
 root directory of this repository):
 
 ```scala
-scala> import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
+scala> import io.circe._, io.circe.generic.auto._, io.circe.parse._, io.circe.syntax._
 import io.circe._
 import io.circe.generic.auto._
-import io.circe.jawn._
+import io.circe.parse._
 import io.circe.syntax._
 
 scala> sealed trait Foo
@@ -80,6 +80,9 @@ circe doesn't include a JSON parser in the `core` project, which is focused on t
 and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
 facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
 fussiest code in Argonaut.
+
+circe also provides a [`parse`][circe-parse] subproject that provides parsing support for Scala.js,
+with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
 
 ### Lenses
 
@@ -279,6 +282,9 @@ limitations under the License.
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
+[circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
+[circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
+[circe-parse]: https://travisbrown.github.io/circe/api/#io.circe.parse.package
 [code-of-conduct]: http://typelevel.org/conduct.html
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
@@ -287,11 +293,10 @@ limitations under the License.
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
-[circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
-[circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
+[scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
 [shapeless]: https://github.com/milessabin/shapeless
 [spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
