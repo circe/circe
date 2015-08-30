@@ -134,6 +134,12 @@ object JsonObject {
     MapAndVectorJsonObject(m.toMap, fs.result())
   }
 
+  /**
+   * Construct a [[JsonObject]] from a map from keys to [[Json]] values.
+   *
+   * Note that the order of the fields is arbitrary.
+   */
+  def fromMap(m: Map[String, Json]): JsonObject = MapAndVectorJsonObject(m, m.keys.toVector)
 
   /**
    * Construct an empty [[JsonObject]].
