@@ -103,6 +103,9 @@ object Boilerplate {
         |private[circe] trait TupleDecoders {
         |  private[this] val resultApplicative: Applicative[Decoder.Result] = implicitly
         |
+        -  /**
+        -   * @group Tuple
+        -   */
         -  implicit def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
         -    Decoder.instance { c =>
         -      c.as[Vector[HCursor]].flatMap { js =>
@@ -133,6 +136,9 @@ object Boilerplate {
         |package io.circe
         |
         |private[circe] trait TupleEncoders {
+        -  /**
+        -   * @group Tuple
+        -   */
         -  implicit def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
         -    Encoder.instance(t => Json.array($applied))
         |}

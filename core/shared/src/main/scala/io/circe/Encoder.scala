@@ -46,6 +46,9 @@ trait Encoder[A] extends Serializable {
  * @groupname Instances Type class instances
  * @groupprio Instances 3
  *
+ * @groupname Tuple Tuple instances
+ * @groupprio Tuple 4
+ *
  * @author Travis Brown
  */
 object Encoder extends TupleEncoders with LowPriorityEncoders {
