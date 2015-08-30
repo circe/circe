@@ -30,7 +30,6 @@ root directory of this repository):
 ```scala
 scala> import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
 import io.circe._
-import io.circe.auto._
 import io.circe.jawn._
 import io.circe.syntax._
 
