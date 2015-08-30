@@ -137,6 +137,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
+  .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, async))
   .jsConfigure(_.copy(id = "testsJS"))

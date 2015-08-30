@@ -45,7 +45,7 @@ import cats.data.Xor
  *
  * @author Travis Brown
  */
-trait GenericCursor[C <: GenericCursor[C]] {
+trait GenericCursor[C <: GenericCursor[C]] extends Serializable {
   /**
    * The context that the cursor is available in.
    *

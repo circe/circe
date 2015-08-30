@@ -1,7 +1,8 @@
 package io.circe.tests
 
-import io.circe.Json
-import org.scalacheck.{ Arbitrary, Gen }
+import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.Json.{ JArray, JNumber, JObject, JString }
+import org.scalacheck.{ Arbitrary, Gen, Shrink }
 
 trait ArbitraryInstances {
   private[this] def maxDepth: Int = 5
@@ -42,4 +43,47 @@ trait ArbitraryInstances {
   }
 
   implicit def arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
+
+  private[this] val minNumberShrink = BigDecimal.valueOf(1L)
+  private[this] val zero = BigDecimal.valueOf(0L)
+  private[this] val two = BigDecimal.valueOf(2L)
+
+  /**
+   * Copied from ScalaCheck.
+   */
+  private[this] def interleave[T](xs: Stream[T], ys: Stream[T]): Stream[T] =
+    if (xs.isEmpty) ys
+    else if (ys.isEmpty) xs
+    else xs.head #:: ys.head #:: interleave(xs.tail, ys.tail)
+
+  implicit def shrinkJsonNumber: Shrink[JsonNumber] = Shrink { jn =>
+    val n = jn.toBigDecimal
+
+    def halfs(n: BigDecimal): Stream[BigDecimal] =
+      if (n < minNumberShrink) Stream.empty else n #:: halfs(n / two)
+
+    val ns = if (n == zero) Stream.empty else {
+      val hs = halfs(n / two).map(n - _)
+      zero #:: interleave(hs, hs.map(h => -h))
+    }
+
+    ns.map(JsonBigDecimal(_))
+  }
+
+  implicit def shrinkJsonObject: Shrink[JsonObject] = Shrink(o =>
+    Shrink.shrinkContainer[IndexedSeq, (String, Json)].shrink(
+      o.toList.toIndexedSeq
+    ).map(JsonObject.fromIndexedSeq)
+  )
+
+  implicit def shrinkJson: Shrink[Json] = Shrink(
+    _.fold(
+      Stream.empty,
+      _ => Stream.empty,
+      n => shrinkJsonNumber.shrink(n).map(JNumber(_)),
+      s => Shrink.shrinkString.shrink(s).map(JString(_)),
+      a => Shrink.shrinkContainer[List, Json].shrink(a).map(JArray(_)),
+      o => shrinkJsonObject.shrink(o).map(JObject(_))
+    )
+  )
 }

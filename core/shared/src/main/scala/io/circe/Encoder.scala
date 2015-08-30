@@ -12,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
  *
  * @author Travis Brown
  */
-trait Encoder[A] {
+trait Encoder[A] extends Serializable {
   /**
    * Converts a value to JSON.
    */
