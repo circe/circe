@@ -58,7 +58,8 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(benchmark, coreJS, genericJS, parseJS)
+  unidocProjectFilter in (ScalaUnidoc, unidoc) :=
+    inAnyProject -- inProjects(benchmark, coreJS, genericJS, parseJS, testsJS)
 )
 
 lazy val root = project.in(file("."))
@@ -258,7 +259,7 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM;tests/test;scalastyle")
+addCommandAlias("validateJVM", ";buildJVM;tests/test;scalastyle;unidoc")
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
