@@ -28,10 +28,10 @@ Then type `sbt console` to start a REPL and then paste the following (this will 
 root directory of this repository):
 
 ```scala
-scala> import io.circe._, io.circe.generic.auto._, io.circe.parse._, io.circe.syntax._
+scala> import io.circe._, io.circe.generic.auto._, io.circe.jawn._, io.circe.syntax._
 import io.circe._
 import io.circe.generic.auto._
-import io.circe.parse._
+import io.circe.jawn._
 import io.circe.syntax._
 
 scala> sealed trait Foo
