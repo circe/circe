@@ -179,7 +179,11 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   implicit def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
     e: Encoder[V]
   ): ObjectEncoder[M[String, V]] = ObjectEncoder.instance(m =>
-    JsonObject.fromMap(m.mapValues(e(_)))
+    JsonObject.fromMap(
+      m.map {
+        case (k, v) => (k, e(v))
+      }
+    )
   )
 
   /**
