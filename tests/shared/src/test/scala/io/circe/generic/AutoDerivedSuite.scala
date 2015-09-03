@@ -1,22 +1,66 @@
 package io.circe.generic
 
+import algebra.Eq
 import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import shapeless.CNil
 
-/**
- * For some reason several of these tests fail if the test file is moved up a directory (which is
- * where it properly belongs after some recent refactoring). I'd love to know why.
- */
 class AutoDerivedSuite extends CirceSuite {
+  final case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
+  final case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
+
+  object InnerCaseClassExample {
+    implicit val arbitraryInnerCaseClassExample: Arbitrary[InnerCaseClassExample] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[String]
+          b <- Arbitrary.arbitrary[String]
+          c <- Arbitrary.arbitrary[String]
+          d <- Arbitrary.arbitrary[String]
+        } yield InnerCaseClassExample(a, b, c, d)
+      )
+  }
+
+  object OuterCaseClassExample {
+    implicit val eqOuterCaseClassExample: Eq[OuterCaseClassExample] = Eq.fromUniversalEquals
+
+    implicit val arbitraryOuterCaseClassExample: Arbitrary[OuterCaseClassExample] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[String]
+          i <- Arbitrary.arbitrary[InnerCaseClassExample]
+        } yield OuterCaseClassExample(a, i)
+      )
+  }
+
+  sealed trait RecursiveAdtExample
+  case class BaseAdtExample(a: String) extends RecursiveAdtExample
+  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample
+
+  object RecursiveAdtExample {
+    implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
+
+    private def atDepth(depth: Int): Gen[RecursiveAdtExample] = if (depth < 3)
+      Gen.oneOf(
+        Arbitrary.arbitrary[String].map(BaseAdtExample(_)),
+        atDepth(depth + 1).map(NestedAdtExample(_))
+      ) else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
+
+    implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
+      Arbitrary(atDepth(0))
+  }
+
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
+  checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
 
   test("Decoder[Int => Qux[String]]") {
     check {

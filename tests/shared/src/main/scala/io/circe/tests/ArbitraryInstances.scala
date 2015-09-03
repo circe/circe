@@ -35,7 +35,7 @@ trait ArbitraryInstances {
   }
 
   private[this] def arbitraryJsonAtDepth(depth: Int): Arbitrary[Json] = {
-    val genJsons = List( genNumber, genString) ++ (
+    val genJsons = List(genNumber, genString) ++ (
       if (depth < maxDepth) List(genArray(depth), genObject(depth)) else Nil
     )
 
