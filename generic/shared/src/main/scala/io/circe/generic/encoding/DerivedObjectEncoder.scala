@@ -19,15 +19,17 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
         sys.error("No JSON representation of CNil (this shouldn't happen)")
     }
 
-  implicit def encodeCoproduct[K <: Symbol, H, HR, T <: Coproduct](implicit
+  implicit def encodeCoproduct[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
-    gen: LabelledGeneric.Aux[H, HR],
-    encodeHead: Lazy[DerivedObjectEncoder[HR]],
+    encodeHead: Strict[Priority[Encoder[H], DerivedObjectEncoder[H]]],
     encodeTail: Lazy[DerivedObjectEncoder[T]]
   ): DerivedObjectEncoder[FieldType[K, H] :+: T] =
     new DerivedObjectEncoder[FieldType[K, H] :+: T] {
       def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
-        case Inl(h) => JsonObject.singleton(key.value.name, encodeHead.value(gen.to(h)))
+        case Inl(h) => JsonObject.singleton(
+          key.value.name,
+          encodeHead.value.fold(identity)(identity)(h)
+        )
         case Inr(t) => encodeTail.value.encodeObject(t)
       }
     }
@@ -48,17 +50,17 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
 trait LowPriorityDerivedObjectEncoders {
   implicit def encodeAdt[A, R <: Coproduct](implicit
     gen: LabelledGeneric.Aux[A, R],
-    encode: DerivedObjectEncoder[R]
+    encode: Lazy[DerivedObjectEncoder[R]]
   ): DerivedObjectEncoder[A] =
     new DerivedObjectEncoder[A] {
-      def encodeObject(a: A): JsonObject = encode.encodeObject(gen.to(a))
+      def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
     }
 
   implicit def encodeCaseClass[A, R <: HList](implicit
     gen: LabelledGeneric.Aux[A, R],
-    encode: DerivedObjectEncoder[R]
+    encode: Lazy[DerivedObjectEncoder[R]]
   ): DerivedObjectEncoder[A] =
     new DerivedObjectEncoder[A] {
-      def encodeObject(a: A): JsonObject = encode.encodeObject(gen.to(a))
+      def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
     }
 }
