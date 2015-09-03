@@ -17,17 +17,16 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
       def apply(c: HCursor): Decoder.Result[CNil] = Xor.left(DecodingFailure("CNil", c.history))
     }
 
-  implicit def decodeCoproduct[K <: Symbol, H, HR, T <: Coproduct](implicit
+  implicit def decodeCoproduct[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
-    gen: LabelledGeneric.Aux[H, HR],
-    decodeHead: Lazy[DerivedDecoder[HR]],
+    decodeHead: Strict[Priority[Decoder[H], DerivedDecoder[H]]],
     decodeTail: Lazy[DerivedDecoder[T]]
   ): DerivedDecoder[FieldType[K, H] :+: T] = new DerivedDecoder[FieldType[K, H] :+: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :+: T] =
       c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
         decodeTail.value(c).map(Inr(_))
       ) { headJson =>
-        headJson.as(decodeHead.value).map(h => Inl(field(gen.from(h))))
+        headJson.as(decodeHead.value.fold(identity)(identity)).map(h => Inl(field(h)))
       }
   }
   
@@ -47,15 +46,15 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
 trait LowPriorityDerivedDecoders {
   implicit def decodeAdt[A, R <: Coproduct](implicit
     gen: LabelledGeneric.Aux[A, R],
-    decode: DerivedDecoder[R]
+    decode: Lazy[DerivedDecoder[R]]
   ): DerivedDecoder[A] = new DerivedDecoder[A] {
-    def apply(c: HCursor): Decoder.Result[A] = decode(c).map(gen.from)
+    def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
   }
 
   implicit def decodeCaseClass[A, R <: HList](implicit
     gen: LabelledGeneric.Aux[A, R],
-    decode: DerivedDecoder[R]
+    decode: Lazy[DerivedDecoder[R]]
   ): DerivedDecoder[A] = new DerivedDecoder[A] {
-    def apply(c: HCursor): Decoder.Result[A] = decode(c).map(gen.from)
+    def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
   }
 }
