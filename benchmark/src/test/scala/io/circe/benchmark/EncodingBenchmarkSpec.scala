@@ -1,0 +1,41 @@
+package io.circe.benchmark
+
+import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+import org.scalatest.FlatSpec
+import play.api.libs.json.{ Json => JsonP }
+
+class EncodingBenchmarkSpec extends FlatSpec {
+  val benchmark: EncodingBenchmark = new EncodingBenchmark
+
+  import benchmark._
+
+  private[this] def decodeInts(json: String): Option[List[Int]] =
+    Parse.decodeOption[List[Int]](json)
+
+  private[this] def decodeFoos(json: String): Option[Map[String, Foo]] =
+    Parse.decodeOption[Map[String, Foo]](json)
+
+  "The encoding benchmark" should "correctly encode integers using Circe" in {
+    assert(decodeInts(encodeIntsC.noSpaces) === Some(ints))
+  }
+
+  it should "correctly encode integers using Argonaut" in {
+    assert(decodeInts(encodeIntsA.nospaces) === Some(ints))
+  }
+
+  it should "correctly encode integers using Play JSON" in {
+    assert(decodeInts(JsonP.prettyPrint(encodeIntsP)) === Some(ints))
+  }
+
+  it should "correctly encode case classes using Circe" in {
+    assert(decodeFoos(encodeFoosC.noSpaces) === Some(foos))
+  }
+
+  it should "correctly encode case classes using Argonaut" in {
+    assert(decodeFoos(encodeFoosA.nospaces) === Some(foos))
+  }
+
+  it should "correctly encode case classes using Play JSON" in {
+    assert(decodeFoos(JsonP.prettyPrint(encodeFoosP)) === Some(foos))
+  }
+}

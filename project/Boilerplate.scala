@@ -40,6 +40,17 @@ object Boilerplate {
     tgtFile
   }
 
+  /**
+   * Return a sequence of the generated test files.
+   *
+   * As a side-effect, it actually generates them...
+   */
+  def genTests(dir: File): Seq[File] = {
+    val tgtFile = GenTupleTests.filename(dir)
+    IO.write(tgtFile, GenTupleTests.body)
+    Seq(tgtFile)
+  }
+
   class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity).map(n => s"A$n")
     val synVals  = (0 until arity).map(n => s"a$n")
@@ -141,6 +152,31 @@ object Boilerplate {
         -   */
         -  implicit def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
         -    Encoder.instance(t => Json.array($applied))
+        |}
+      """
+    }
+  }
+
+  object GenTupleTests extends Template {
+    override def range: IndexedSeq[Int] = 2 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "TupleCodecSuite.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val tupleTypeList = synTypes.map(_ => "Int").mkString(",")
+      val tupleType = s"($tupleTypeList)"
+
+      block"""
+        |package io.circe
+        |
+        |import cats.laws.discipline.eq._
+        |import io.circe.tests.{ CodecTests, CirceSuite }
+        |
+        |class TupleCodecSuite extends CirceSuite {
+        |  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+        -  checkAll("Codec[$tupleType]", CodecTests[$tupleType].codec)
         |}
       """
     }

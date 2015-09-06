@@ -20,7 +20,8 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-val catsVersion = "0.2.0"
+lazy val catsVersion = "0.2.0"
+lazy val shapelessVersion = "2.3.0-SNAPSHOT"
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -76,11 +77,23 @@ lazy val root = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(core, coreJS, generic, genericJS, parse, parseJS, tests, testsJS, jawn, async, benchmark)
+  .aggregate(
+    core, coreJS,
+    generic, genericJS,
+    parse, parseJS,
+    tests, testsJS,
+    jawn,
+    async,
+    benchmark
+  )
   .dependsOn(core, generic, parse)
 
 lazy val coreBase = crossProject.in(file("core"))
-  .settings(moduleName := "circe-core")
+  .settings(
+    description := "circe core",
+    moduleName := "circe-core",
+    name := "core"
+  )
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
@@ -96,10 +109,14 @@ lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
 lazy val genericBase = crossProject.in(file("generic"))
-  .settings(moduleName := "circe-generic")
+  .settings(
+    description := "circe generic",
+    moduleName := "circe-generic",
+    name := "generic"
+  )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % "2.3.0-SNAPSHOT"
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
@@ -110,7 +127,11 @@ lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val parseBase = crossProject.in(file("parse"))
-  .settings(moduleName := "circe-parse")
+  .settings(
+    description := "circe parse",
+    moduleName := "circe-parse",
+    name := "parse"
+  )
   .settings(allSettings: _*)
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "parse").dependsOn(jawn))
@@ -121,16 +142,22 @@ lazy val parse = parseBase.jvm
 lazy val parseJS = parseBase.js
 
 lazy val testsBase = crossProject.in(file("tests"))
-  .settings(moduleName := "circe-tests")
+  .settings(
+    description := "circe tests",
+    moduleName := "circe-tests",
+    name := "tests"
+  )
   .settings(allSettings: _*)
   .settings(noPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % "1.12.5-SNAPSHOT",
       "org.scalatest" %%% "scalatest" % "3.0.0-M7",
       "org.spire-math" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % "0.4"
     ),
+    sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
       file("tests") / "shared" / "src" / "main" / "resources"
   )
@@ -147,7 +174,10 @@ lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
 lazy val jawn = project
-  .settings(moduleName := "circe-jawn")
+  .settings(
+    description := "circe jawn",
+    moduleName := "circe-jawn"
+  )
   .settings(allSettings)
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
@@ -155,7 +185,10 @@ lazy val jawn = project
   .dependsOn(core)
 
 lazy val async = project
-  .settings(moduleName := "circe-async")
+  .settings(
+    description := "circe async",
+    moduleName := "circe-async"
+  )
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
@@ -164,11 +197,18 @@ lazy val async = project
   .dependsOn(core, jawn)
 
 lazy val benchmark = project
-  .settings(moduleName := "circe-benchmark")
+  .settings(
+    description := "circe benchmark",
+    moduleName := "circe-benchmark"
+  )
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "io.argonaut" %% "argonaut" % "6.1"
+    libraryDependencies ++= Seq(
+      "com.typesafe.play" %% "play-json" % "2.3.10",
+      "io.argonaut" %% "argonaut" % "6.1",
+      "org.scalatest" %% "scalatest" % "3.0.0-M7" % "test"
+    )
   )
   .enablePlugins(JmhPlugin)
   .dependsOn(core, generic, jawn)
@@ -260,7 +300,7 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM;tests/test;scalastyle;unidoc")
+addCommandAlias("validateJVM", ";buildJVM;benchmark/test;tests/test;scalastyle;unidoc")
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")

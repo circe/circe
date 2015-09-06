@@ -1,15 +1,24 @@
 package io.circe.tests
 
 import algebra.Eq
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
+import shapeless._
 
 trait MissingInstances {
   implicit def eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
-  implicit def eqTuple1[A: Eq]: Eq[Tuple1[A]] = Eq.by(_._1)
-  implicit def eqTuple3[A: Eq, B: Eq, C: Eq]: Eq[(A, B, C)] = Eq.instance {
-    case ((a1, b1, c1), (a2, b2, c2)) => Eq[A].eqv(a1, a2) && Eq[B].eqv(b1, b2) && Eq[C].eqv(c1, c2)
-  }
 
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
+
+  implicit lazy val eqHNil: Eq[HNil] = Eq.instance((_, _) => true)
+
+  implicit def eqTupleHCons[H, T <: HList](implicit eqH: Eq[H], eqT: Eq[T]): Eq[H :: T] =
+    Eq.instance[H :: T] {
+      case (h1 :: t1, h2 :: t2) => eqH.eqv(h1, h2) && eqT.eqv(t1, t2)
+    }
+
+  implicit def eqTuple[P: IsTuple, L <: HList](implicit
+    gen: Generic.Aux[P, L],
+    eqL: Eq[L]
+  ): Eq[P] = eqL.on(gen.to)
 }

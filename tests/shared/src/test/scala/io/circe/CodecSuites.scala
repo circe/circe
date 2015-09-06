@@ -2,7 +2,6 @@ package io.circe
 
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.eq._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import org.scalacheck.Prop.forAll
 
@@ -26,9 +25,6 @@ class StdLibCodecSuite extends CirceSuite {
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
-  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkAll("Codec[(Int, String)]", CodecTests[(Int, String)].codec)
-  checkAll("Codec[(Int, Int, String)]", CodecTests[(Int, Int, String)].codec)
 
   test("Tuples should be encoded as JSON arrays") {
     check {
