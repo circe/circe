@@ -1,8 +1,8 @@
 package io.circe.benchmark
 
 import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
-import io.circe.{ Json => JsonC, Encoder }
-import io.circe.generic.auto._
+import io.circe.{ Decoder, Encoder, Json => JsonC }
+import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
@@ -13,6 +13,8 @@ case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 object Foo {
   implicit val codecFoo: CodecJson[Foo] = CodecJson.derive[Foo]
   implicit val formatFoo: Format[Foo] = JsonP.format[Foo]
+  implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
+  implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
 }
 
 class ExampleData {
