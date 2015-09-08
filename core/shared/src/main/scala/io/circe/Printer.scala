@@ -201,7 +201,6 @@ final case class Printer(
   }
 }
 
-
 object Printer {
   /**
    * A pretty-printer configuration that inserts no spaces.
@@ -276,21 +275,25 @@ object Printer {
 
     private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]
 
-    def apply(i: Int): Pieces = if (i < known.size) known.get(i) else if (i == known.size) {
-      val res = compute(i)
-      known.add(i, res)
-      res
-    } else {
-      var j = known.size
-      var res: Pieces = null
+    def apply(i: Int): Pieces = {
+      val size = known.size
 
-      while (j <= i) {
-        res = compute(j)
-        known.add(j, res)
-        j += 1
+      if (i < size) known.get(i) else if (i == size) {
+        val res = compute(i)
+        known.add(i, res)
+        res
+      } else {
+        var j = size
+        var res: Pieces = null
+
+        while (j <= i) {
+          res = compute(j)
+          known.add(j, res)
+          j += 1
+        }
+
+        res
       }
-
-      res
     }
   }
 }
