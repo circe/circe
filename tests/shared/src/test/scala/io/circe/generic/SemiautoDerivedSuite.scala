@@ -16,10 +16,38 @@ class SemiautoDerivedSuite extends CirceSuite {
   implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
   implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
 
+  implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
+    deriveFor[Int => Qux[String]].incomplete
+
+  implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
+
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
+
+  test("Decoder[Int => Qux[String]]") {
+    check {
+      forAll { (i: Int, s: String) =>
+        Json.obj("a" -> Json.string(s)).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s))
+      }
+    }
+  }
+
+  test("Decoder[Qux[String] => Qux[String]]") {
+    check {
+      forAll { (q: Qux[String], i: Option[Int], a: Option[String]) =>
+        val json = Json.obj(
+          "i" -> Encoder[Option[Int]].apply(i),
+          "a" -> Encoder[Option[String]].apply(a)
+        )
+
+        val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a))
+
+        json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
+      }
+    }
+  }
 
   test("Generic instances should not interfere with base instances") {
     check {

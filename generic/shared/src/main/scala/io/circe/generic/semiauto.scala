@@ -3,7 +3,8 @@ package io.circe.generic
 import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
-import shapeless.LabelledGeneric
+import io.circe.generic.util.{ Complement, PatchWithOptions }
+import shapeless.{ HList, LabelledGeneric }, shapeless.ops.function.FnFromProduct
 
 /**
  * Semi-automatic codec derivation.
@@ -31,15 +32,28 @@ object semiauto {
     def decoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
       decode: DerivedDecoder[R]
-    ): Decoder[A] = new DerivedDecoder[A] {
+    ): Decoder[A] = new Decoder[A] {
       def apply(c: HCursor): Decoder.Result[A] = decode(c).map(gen.from)
     }
 
     def encoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
       encode: DerivedObjectEncoder[R]
-    ): ObjectEncoder[A] = new DerivedObjectEncoder[A] {
+    ): ObjectEncoder[A] = new ObjectEncoder[A] {
       def encodeObject(a: A): JsonObject = encode.encodeObject(gen.to(a))
     }
+
+    def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
+      ffp: FnFromProduct.Aux[P => C, A],
+      gen: LabelledGeneric.Aux[C, T],
+      complement: Complement.Aux[T, P, R],
+      decode: DerivedDecoder[R]
+    ): Decoder[A] = DerivedDecoder.decodeIncompleteCaseClass[A, P, C, T, R]
+
+    def patch[R <: HList, O <: HList](implicit
+      gen: LabelledGeneric.Aux[A, R],
+      patch: PatchWithOptions.Aux[R, O],
+      decode: DerivedDecoder[O]
+    ): DerivedDecoder[A => A] = DerivedDecoder.decodeCaseClassPatch[A, R, O]
   }
 }
