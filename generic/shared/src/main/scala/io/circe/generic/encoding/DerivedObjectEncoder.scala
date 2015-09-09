@@ -1,12 +1,11 @@
 package io.circe.generic.encoding
 
-import cats.data.Xor
-import export.Exporter0
-import io.circe.{ Encoder, Json, JsonObject, ObjectEncoder }
-import shapeless._, shapeless.labelled.{ FieldType, field }
+import io.circe.{ Encoder, JsonObject, ObjectEncoder }
+import shapeless._, shapeless.labelled.FieldType
 
 trait DerivedObjectEncoder[A] extends ObjectEncoder[A]
 
+@export.exports
 object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
   implicit val encodeHNil: DerivedObjectEncoder[HNil] =
     new DerivedObjectEncoder[HNil] {

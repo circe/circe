@@ -457,4 +457,4 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 }
 
-@export.exported[Decoder] trait LowPriorityDecoders
+@export.imports[Decoder] trait LowPriorityDecoders
