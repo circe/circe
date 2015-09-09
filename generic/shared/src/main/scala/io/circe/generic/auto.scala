@@ -1,6 +1,5 @@
 package io.circe.generic
 
-import cats.data.Xor
 import export.Export
 import io.circe.{ Decoder, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
@@ -15,9 +14,9 @@ import io.circe.generic.encoding.DerivedObjectEncoder
  */
 package object auto {
   implicit def decoderExports[T](implicit st: DerivedDecoder[T]): Export[Decoder[T]] =
-    decoding.exports[Decoder, T]
+    DerivedDecoder.exports[Decoder, T]
 
   implicit def objectEncoderExports[T](implicit
     st: DerivedObjectEncoder[T]
-  ): Export[ObjectEncoder[T]] = encoding.exports[ObjectEncoder, T]
+  ): Export[ObjectEncoder[T]] = DerivedObjectEncoder.exports[ObjectEncoder, T]
 }

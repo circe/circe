@@ -6,6 +6,7 @@ import shapeless._, shapeless.labelled.{ FieldType, field }
 
 trait DerivedDecoder[A] extends Decoder[A]
 
+@export.exports
 object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedDecoders {
   implicit val decodeHNil: DerivedDecoder[HNil] =
     new DerivedDecoder[HNil] {

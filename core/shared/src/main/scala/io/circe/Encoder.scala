@@ -233,4 +233,4 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   }
 }
 
-@export.exported[Encoder] trait LowPriorityEncoders
+@export.imports[Encoder] trait LowPriorityEncoders
