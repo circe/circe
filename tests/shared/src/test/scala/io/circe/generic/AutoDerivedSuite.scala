@@ -95,6 +95,26 @@ class AutoDerivedSuite extends CirceSuite {
     }
   }
 
+  test("Generic decoders should not interfere with defined decoders") {
+    check {
+      forAll { (xs: List[String]) =>
+        val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
+
+        Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo)
+      }
+    }
+  }
+
+  test("Generic encoders should not interfere with defined encoders") {
+    check {
+      forAll { (xs: List[String]) =>
+        val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
+
+        Encoder[Foo].apply(Baz(xs): Foo) === json
+      }
+    }
+  }
+
   test("Decoding with Decoder[CNil] should fail") {
     assert(Json.empty.as[CNil].isLeft)
   }
