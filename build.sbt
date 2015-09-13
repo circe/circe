@@ -152,7 +152,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scalacheck" %%% "scalacheck" % "1.12.5-SNAPSHOT",
+      "org.scalacheck" %%% "scalacheck" % "1.12.5",
       "org.scalatest" %%% "scalatest" % "3.0.0-M7",
       "org.spire-math" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % "0.4"
