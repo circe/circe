@@ -2,7 +2,7 @@ package io.circe.tests
 
 import algebra.Eq
 import cats.std.AllInstances
-import io.circe.Json
+import io.circe.{ Decoder, Encoder, Json }
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object examples extends AllInstances with ArbitraryInstances with MissingInstances {
@@ -60,6 +60,13 @@ package examples {
   case class Bar(i: Int, s: String) extends Foo
   case class Baz(xs: List[String]) extends Foo
   case class Bam(w: Wub, d: Double) extends Foo
+
+  object Baz {
+    implicit val decodeBaz: Decoder[Baz] = Decoder[List[String]].map(Baz(_))
+    implicit val encodeBaz: Encoder[Baz] = Encoder.instance {
+      case Baz(xs) => Json.fromValues(xs.map(Json.string))
+    }
+  }
 
   object Foo {
     implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals
