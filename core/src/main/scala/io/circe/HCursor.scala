@@ -4,6 +4,8 @@ import algebra.Eq
 import cats.data.Xor
 import io.circe.cursor.HCursorOperations
 
+import scala.annotation.tailrec
+
 /**
  * A cursor that tracks the history of operations performed with it.
  *
@@ -45,11 +47,17 @@ case class HCursor(cursor: Cursor, history: List[CursorOp]) extends HCursorOpera
     }
   )
 
-  private[this] final def loop[A, B](
+  @tailrec private[this] final def loop[A, B](
     r1: Xor[DecodingFailure, A],
     f: A => Xor[Xor[DecodingFailure, B], Xor[DecodingFailure, A]]
   ): Xor[DecodingFailure, B] =
-    r1.flatMap(a => f(a).swap.valueOr(r2 => loop[A, B](r2, f)))
+    r1 match {
+      case l @ Xor.Left(_) => l
+      case Xor.Right(a) => f(a) match {
+        case Xor.Left(b) => b
+        case Xor.Right(r2) => loop[A, B](r2, f)
+      }
+    }
 }
 
 object HCursor {

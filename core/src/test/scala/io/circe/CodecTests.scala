@@ -24,6 +24,18 @@ class StdLibCodecTests extends JfcSuite {
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
+
+  test("Decoding a JSON array with many elements into a sequence should not raise StackOverflowError") {
+    val size = 10000
+    val jsonArr = Json.array(Seq.fill(size)(Json.int(1)): _*)
+
+    val maybeList = jsonArr.as[List[Int]]
+    assert(maybeList.isRight)
+
+    val list = maybeList.getOrElse(???)
+    assert(list.length == size)
+    assert(list.forall(_ == 1))
+  }
 }
 
 class CatsCodecTests extends JfcSuite {
