@@ -52,6 +52,18 @@ class StdLibCodecSuite extends CirceSuite {
       }
     }
   }
+
+  test("Decoding a JSON array with many elements into a sequence should not raise StackOverflowError") {
+    val size = 10000
+    val jsonArr = Json.array(Seq.fill(size)(Json.int(1)): _*)
+
+    val maybeList = jsonArr.as[List[Int]]
+    assert(maybeList.isRight)
+
+    val list = maybeList.getOrElse(???)
+    assert(list.length == size)
+    assert(list.forall(_ == 1))
+  }
 }
 
 class CatsCodecSuite extends CirceSuite {
