@@ -132,63 +132,80 @@ better):
 ```
 Benchmark                       Mode  Cnt      Score     Error  Units
 
-DecodingBenchmark.decodeFoosA  thrpt   40   1219.959 ±  28.183  ops/s
-DecodingBenchmark.decodeFoosC  thrpt   40   1397.195 ±  15.402  ops/s
+DecodingBenchmark.decodeFoosA  thrpt   80   1185.694 ±   1.947  ops/s
+DecodingBenchmark.decodeFoosC  thrpt   80   1972.754 ±   6.829  ops/s
+DecodingBenchmark.decodeFoosP  thrpt   80   1592.846 ±   2.842  ops/s
 
-DecodingBenchmark.decodeIntsA  thrpt   40   7538.238 ± 158.823  ops/s
-DecodingBenchmark.decodeIntsC  thrpt   40   7775.231 ± 121.456  ops/s
+DecodingBenchmark.decodeIntsA  thrpt   80   7229.576 ±  11.329  ops/s
+DecodingBenchmark.decodeIntsC  thrpt   80  11136.719 ±  84.116  ops/s
+DecodingBenchmark.decodeIntsP  thrpt   80  12368.444 ±  17.704  ops/s
 
-EncodingBenchmark.encodeFoosA  thrpt   40   6186.539 ±  17.022  ops/s
-EncodingBenchmark.encodeFoosC  thrpt   40   6552.408 ± 127.446  ops/s
+EncodingBenchmark.encodeFoosA  thrpt   80   6206.449 ±  17.351  ops/s
+EncodingBenchmark.encodeFoosC  thrpt   80   6401.355 ±  30.861  ops/s
+EncodingBenchmark.encodeFoosP  thrpt   80   2475.053 ±   8.681  ops/s
 
-EncodingBenchmark.encodeIntsA  thrpt   40  47262.384 ± 118.791  ops/s
-EncodingBenchmark.encodeIntsC  thrpt   40  92476.811 ± 367.129  ops/s
+EncodingBenchmark.encodeIntsA  thrpt   80  59894.725 ±  99.221  ops/s
+EncodingBenchmark.encodeIntsC  thrpt   80  96090.720 ± 215.812  ops/s
+EncodingBenchmark.encodeIntsP  thrpt   80  56837.610 ± 126.424  ops/s
 
-ParsingBenchmark.parseFoosA    thrpt   40   2141.975 ±  13.181  ops/s
-ParsingBenchmark.parseFoosC    thrpt   40   3102.288 ±  19.494  ops/s
+ParsingBenchmark.parseFoosA    thrpt   80   2485.312 ± 120.205  ops/s
+ParsingBenchmark.parseFoosC    thrpt   80   3189.966 ±  27.194  ops/s
+ParsingBenchmark.parseFoosP    thrpt   80   1961.319 ±   8.772  ops/s
 
-ParsingBenchmark.parseIntsA    thrpt   40  10820.259 ±  38.952  ops/s
-ParsingBenchmark.parseIntsC    thrpt   40  33479.046 ±  94.416  ops/s
+ParsingBenchmark.parseIntsA    thrpt   80  11356.440 ±  51.679  ops/s
+ParsingBenchmark.parseIntsC    thrpt   80  34158.979 ± 119.792  ops/s
+ParsingBenchmark.parseIntsP    thrpt   80  14032.825 ±  51.602  ops/s
 
-PrintingBenchmark.printFoosA   thrpt   40   2873.823 ±  32.944  ops/s
-PrintingBenchmark.printFoosC   thrpt   40   3656.773 ±   9.829  ops/s
+PrintingBenchmark.printFoosA   thrpt   80   2867.108 ±   8.117  ops/s
+PrintingBenchmark.printFoosC   thrpt   80   3429.558 ±   7.957  ops/s
+PrintingBenchmark.printFoosP   thrpt   80   7156.045 ±  15.081  ops/s
 
-PrintingBenchmark.printIntsA   thrpt   40  18641.201 ± 165.950  ops/s
-PrintingBenchmark.printIntsC   thrpt   40  22031.479 ±  80.269  ops/s
+PrintingBenchmark.printIntsA   thrpt   80  14836.201 ±  90.667  ops/s
+PrintingBenchmark.printIntsC   thrpt   80  22402.903 ±  49.486  ops/s
+PrintingBenchmark.printIntsP   thrpt   80  71329.444 ± 473.565  ops/s
 ```
 
 And allocation rates (lower is better):
 
 ```
-Benchmark                                        Cnt        Score        Error   Units
+Benchmark                                         Mode  Cnt        Score        Error   Units
 
-DecodingBenchmark.decodeFoosA:gc.alloc.rate.norm  20  3129281.175 ±      2.273    B/op
-DecodingBenchmark.decodeFoosC:gc.alloc.rate.norm  20  2745809.199 ±  57210.951    B/op
+DecodingBenchmark.decodeFoosA:gc.alloc.rate.norm thrpt   40  3732264.935 ±  23018.108    B/op
+DecodingBenchmark.decodeFoosC:gc.alloc.rate.norm thrpt   40  1996228.623 ±  34534.041    B/op
+DecodingBenchmark.decodeFoosP:gc.alloc.rate.norm thrpt   40  2136256.692 ±   5469.639    B/op
 
-DecodingBenchmark.decodeIntsA:gc.alloc.rate.norm  20   599399.891 ±  21404.111    B/op
-DecodingBenchmark.decodeIntsC:gc.alloc.rate.norm  20   528852.711 ±   5356.383    B/op
+DecodingBenchmark.decodeIntsA:gc.alloc.rate.norm thrpt   40   599396.406 ±  13688.247    B/op
+DecodingBenchmark.decodeIntsC:gc.alloc.rate.norm thrpt   40   366632.531 ±      1.560    B/op
+DecodingBenchmark.decodeIntsP:gc.alloc.rate.norm thrpt   40   369120.092 ±      0.130    B/op
 
-EncodingBenchmark.encodeFoosA:gc.alloc.rate.norm  20   526700.440 ±   1425.759    B/op
-EncodingBenchmark.encodeFoosC:gc.alloc.rate.norm  20   429129.647 ±   1426.476    B/op
+EncodingBenchmark.encodeFoosA:gc.alloc.rate.norm thrpt   40   522119.886 ±    638.624    B/op
+EncodingBenchmark.encodeFoosC:gc.alloc.rate.norm thrpt   40   414886.029 ±      4.374    B/op
+EncodingBenchmark.encodeFoosP:gc.alloc.rate.norm thrpt   40  1346197.162 ±      4.083    B/op
 
-EncodingBenchmark.encodeIntsA:gc.alloc.rate.norm  20    88144.033 ±   7134.445    B/op
-EncodingBenchmark.encodeIntsC:gc.alloc.rate.norm  20    48360.018 ±      0.035    B/op
+EncodingBenchmark.encodeIntsA:gc.alloc.rate.norm thrpt   40    80136.019 ±      0.027    B/op
+EncodingBenchmark.encodeIntsC:gc.alloc.rate.norm thrpt   40    48360.012 ±      0.016    B/op
+EncodingBenchmark.encodeIntsP:gc.alloc.rate.norm thrpt   40    71352.020 ±      0.028    B/op
 
-ParsingBenchmark.parseFoosA:gc.alloc.rate.norm    20  1464616.780 ±   2138.191    B/op
-ParsingBenchmark.parseFoosC:gc.alloc.rate.norm    20   735249.500 ±      2.852    B/op
+ParsingBenchmark.parseFoosA:gc.alloc.rate.norm   thrpt   40  1455168.738 ±    453.037    B/op
+ParsingBenchmark.parseFoosC:gc.alloc.rate.norm   thrpt   40   735320.446 ±     13.339    B/op
+ParsingBenchmark.parseFoosP:gc.alloc.rate.norm   thrpt   40   982880.544 ±      0.764    B/op
 
-ParsingBenchmark.parseIntsA:gc.alloc.rate.norm    20   326296.548 ±      1.540    B/op
-ParsingBenchmark.parseIntsC:gc.alloc.rate.norm    20   105232.050 ±      0.096    B/op
+ParsingBenchmark.parseIntsA:gc.alloc.rate.norm   thrpt   40   310280.090 ±      0.126    B/op
+ParsingBenchmark.parseIntsC:gc.alloc.rate.norm   thrpt   40   105220.031 ±      6.837    B/op
+ParsingBenchmark.parseIntsP:gc.alloc.rate.norm   thrpt   40   200464.075 ±      0.105    B/op
 
-PrintingBenchmark.printFoosA:gc.alloc.rate.norm   20   595216.561 ±   9978.237    B/op
-PrintingBenchmark.printFoosC:gc.alloc.rate.norm   20   386712.468 ±   4190.873    B/op
+PrintingBenchmark.printFoosA:gc.alloc.rate.norm  thrpt   40   596120.397 ±   6837.064    B/op
+PrintingBenchmark.printFoosC:gc.alloc.rate.norm  thrpt   40   381989.540 ±     75.447    B/op
+PrintingBenchmark.printFoosP:gc.alloc.rate.norm  thrpt   40   349576.152 ±      0.212    B/op
 
-PrintingBenchmark.printIntsA:gc.alloc.rate.norm   20   119592.091 ±      0.175    B/op
-PrintingBenchmark.printIntsC:gc.alloc.rate.norm   20    95408.076 ±      0.147    B/op
+PrintingBenchmark.printIntsA:gc.alloc.rate.norm  thrpt   40   239712.070 ±      0.098    B/op
+PrintingBenchmark.printIntsC:gc.alloc.rate.norm  thrpt   40    95408.048 ±      0.069    B/op
+PrintingBenchmark.printIntsP:gc.alloc.rate.norm  thrpt   40    24328.015 ±      0.021    B/op
 ```
 
 The `Foos` benchmarks work with a map containing case class values, and the `Ints` ones are an array
-of integers. `C` suffixes indicate circe's throughput and `A` is for Argonaut.
+of integers. `C` suffixes indicate circe's throughput, `A` is for Argonaut, and `P` is for
+[play-json][play-json].
 
 ## Usage
 
@@ -296,6 +313,7 @@ limitations under the License.
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
+[play-json]: https://www.playframework.com/documentation/2.4.x/ScalaJson
 [scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
 [shapeless]: https://github.com/milessabin/shapeless
