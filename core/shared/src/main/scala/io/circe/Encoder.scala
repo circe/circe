@@ -1,5 +1,7 @@
 package io.circe
 
+import java.util.UUID
+
 import cats.Foldable
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.functor.Contravariant
@@ -160,6 +162,11 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
    * @group Encoding
    */
   implicit val encodeBigDecimal: Encoder[BigDecimal] = instance(a => JsonBigDecimal(a).asJsonOrNull)
+
+  /**
+   * @group Encoding
+   */
+  implicit val encodeUUID: Encoder[UUID] = instance(a => Json.string(a.toString))
 
   /**
    * @group Encoding

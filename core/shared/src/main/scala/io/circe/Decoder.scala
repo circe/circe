@@ -1,5 +1,7 @@
 package io.circe
 
+import java.util.UUID
+
 import cats.Monad
 import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
 
@@ -322,6 +324,20 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
         case _: NumberFormatException => Xor.left(DecodingFailure("BigDecimal", c.history))
       }
       case _ => Xor.left(DecodingFailure("BigDecimal", c.history))
+    }
+  }
+
+  /**
+   * @group Decoding
+   */
+  implicit val decodeUUID: Decoder[UUID] = instance { c =>
+    c.focus match {
+      case JString(string) if string.length == 36 => try {
+        Xor.right(UUID.fromString(string))
+      } catch {
+        case _: IllegalArgumentException => Xor.left(DecodingFailure("UUID", c.history))
+      }
+      case _ => Xor.left(DecodingFailure("UUID", c.history))
     }
   }
 

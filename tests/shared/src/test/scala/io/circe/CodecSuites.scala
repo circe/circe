@@ -1,5 +1,7 @@
 package io.circe
 
+import java.util.UUID
+
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
@@ -21,6 +23,7 @@ class StdLibCodecSuite extends CirceSuite {
   checkAll("Codec[String]", CodecTests[String].codec)
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
+  checkAll("Codec[UUID]", CodecTests[UUID].codec)
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)

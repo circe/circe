@@ -1,11 +1,15 @@
 package io.circe.tests
 
+import java.util.UUID
+
 import algebra.Eq
 import org.scalacheck.Arbitrary
 import shapeless._
 
 trait MissingInstances {
   implicit def eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
+
+  implicit def eqUUID: Eq[UUID] = Eq.fromUniversalEquals
 
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
