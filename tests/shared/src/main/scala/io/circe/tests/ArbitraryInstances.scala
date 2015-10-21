@@ -1,5 +1,7 @@
 package io.circe.tests
 
+import java.util.UUID
+
 import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
@@ -43,6 +45,8 @@ trait ArbitraryInstances {
   }
 
   implicit def arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
+
+  implicit def arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
   private[this] val minNumberShrink = BigDecimal.valueOf(1L)
   private[this] val zero = BigDecimal.valueOf(0L)
