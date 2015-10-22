@@ -4,7 +4,7 @@ import ReleaseTransformations._
 lazy val buildSettings = Seq(
   organization := "io.circe",
   scalaVersion := "2.11.7",
-  crossScalaVersions := Seq("2.10.5", "2.11.7")
+  crossScalaVersions := Seq("2.10.6", "2.11.7")
 )
 
 lazy val compilerOptions = Seq(
@@ -153,7 +153,7 @@ lazy val testsBase = crossProject.in(file("tests"))
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % "1.12.5",
-      "org.scalatest" %%% "scalatest" % "3.0.0-M7",
+      "org.scalatest" %%% "scalatest" % "3.0.0-M9",
       "org.spire-math" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % "0.4"
     ),
@@ -192,7 +192,7 @@ lazy val async = project
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "com.twitter" %% "util-core" % "6.26.0"
+    libraryDependencies += "com.twitter" %% "util-core" % "6.29.0"
   )
   .dependsOn(core, jawn)
 
@@ -207,7 +207,7 @@ lazy val benchmark = project
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
-      "org.scalatest" %% "scalatest" % "3.0.0-M7" % "test"
+      "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test"
     )
   )
   .enablePlugins(JmhPlugin)
