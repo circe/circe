@@ -4,11 +4,11 @@ import shapeless._
 import shapeless.labelled.{ FieldType, field }
 
 /**
- * Supports removal and insertion (possibly of unlabeled elements) into an `HList`.
+ * Supports removal and insertion of an element (possibly unlabeled) into an `HList`.
  *
  * @author Travis Brown
  */
-trait Insert[L, E] extends DepFn1[L] with Serializable {
+trait Insert[L <: HList, E] extends DepFn1[L] with Serializable {
   def insert(e: E, out: Out): L
 }
 
