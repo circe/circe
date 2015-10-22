@@ -6,7 +6,7 @@ import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
 import org.scalacheck.Prop.forAll
-import shapeless.CNil
+import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
 
 class SemiautoDerivedSuite extends CirceSuite {
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveFor[Qux[A]].decoder
@@ -19,6 +19,9 @@ class SemiautoDerivedSuite extends CirceSuite {
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
 
+  implicit val decodeJlessQux: Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] =
+    deriveFor[FieldType[Witness.`'j`.T, Int] => Qux[String]].incomplete
+
   implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
@@ -28,21 +31,38 @@ class SemiautoDerivedSuite extends CirceSuite {
 
   test("Decoder[Int => Qux[String]]") {
     check {
-      forAll { (i: Int, s: String) =>
-        Json.obj("a" -> Json.string(s)).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s))
+      forAll { (i: Int, s: String, j: Int) =>
+        Json.obj(
+          "a" -> Json.string(s),
+          "j" -> Json.int(j)
+        ).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s, j))
+      }
+    }
+  }
+
+  test("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]") {
+    check {
+      forAll { (i: Int, s: String, j: Int) =>
+        Json.obj(
+          "i" -> Json.int(i),
+          "a" -> Json.string(s)
+        ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
+          _(field(j))
+        ) === Xor.right(Qux(i, s, j))
       }
     }
   }
 
   test("Decoder[Qux[String] => Qux[String]]") {
     check {
-      forAll { (q: Qux[String], i: Option[Int], a: Option[String]) =>
+      forAll { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
         val json = Json.obj(
           "i" -> Encoder[Option[Int]].apply(i),
-          "a" -> Encoder[Option[String]].apply(a)
+          "a" -> Encoder[Option[String]].apply(a),
+          "j" -> Encoder[Option[Int]].apply(j)
         )
 
-        val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a))
+        val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
         json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
       }
