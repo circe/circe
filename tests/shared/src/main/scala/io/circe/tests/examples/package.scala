@@ -33,17 +33,18 @@ package object examples extends AllInstances with ArbitraryInstances with Missin
 }
 
 package examples {
-  case class Qux[A](i: Int, a: A)
+  case class Qux[A](i: Int, a: A, j: Int)
 
   object Qux {
-    implicit def eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(_.a)
+    implicit def eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(q => (q.i, q.a, q.j))
 
     implicit def arbitraryQux[A](implicit A: Arbitrary[A]): Arbitrary[Qux[A]] =
       Arbitrary(
         for {
           i <- Arbitrary.arbitrary[Int]
           a <- A.arbitrary
-        } yield Qux(i, a)
+          j <- Arbitrary.arbitrary[Int]
+        } yield Qux(i, a, j)
       )
   }
 
