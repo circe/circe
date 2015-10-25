@@ -13,7 +13,7 @@ class SemiautoDerivedSuite extends CirceSuite {
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveFor[Qux[A]].encoder
   implicit val decodeWub: Decoder[Wub] = deriveFor[Wub].decoder
   implicit val encodeWub: Encoder[Wub] = deriveFor[Wub].encoder
-  implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
+  implicit val decodeFoo: Decoder[Foo] = ??? //deriveFor[Foo].decoder
   implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =

@@ -33,7 +33,7 @@ lazy val baseSettings = Seq(
   scalacOptions in (Compile, console) := compilerOptions,
   scalacOptions in (Compile, test) := compilerOptions,
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "export-hook" % "1.0.1",
+    "org.typelevel" %% "export-hook" % "1.0.2-SNAPSHOT",
     compilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
   ),
   resolvers ++= Seq(

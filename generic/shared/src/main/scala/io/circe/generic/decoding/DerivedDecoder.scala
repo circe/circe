@@ -20,25 +20,25 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
 
   implicit def decodeCoproduct[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
-    decodeHead: Strict[Priority[Decoder[H], DerivedDecoder[H]]],
+    decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[DerivedDecoder[T]]
   ): DerivedDecoder[FieldType[K, H] :+: T] = new DerivedDecoder[FieldType[K, H] :+: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :+: T] =
       c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
         decodeTail.value(c).map(Inr(_))
       ) { headJson =>
-        headJson.as(decodeHead.value.fold(identity)(identity)).map(h => Inl(field(h)))
+        headJson.as(decodeHead.value).map(h => Inl(field(h)))
       }
   }
   
   implicit def decodeLabelledHList0[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
-    decodeHead: Strict[Priority[Decoder[H], DerivedDecoder[H]]],
+    decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[DerivedDecoder[T]]
   ): DerivedDecoder[FieldType[K, H] :: T] = new DerivedDecoder[FieldType[K, H] :: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] =
       for {
-        head <- c.get(key.value.name)(decodeHead.value.fold(identity)(identity))
+        head <- c.get(key.value.name)(decodeHead.value)
         tail <- c.as(decodeTail.value)
       } yield field[K](head) :: tail
   }
