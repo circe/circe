@@ -1,10 +1,12 @@
 package io.circe.generic
 
+import algebra.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
 
@@ -24,10 +26,56 @@ class SemiautoDerivedSuite extends CirceSuite {
 
   implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
 
+  sealed trait RecursiveAdtExample
+  case class BaseAdtExample(a: String) extends RecursiveAdtExample
+  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample
+
+  object RecursiveAdtExample {
+    implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
+
+    private def atDepth(depth: Int): Gen[RecursiveAdtExample] = if (depth < 3)
+      Gen.oneOf(
+        Arbitrary.arbitrary[String].map(BaseAdtExample(_)),
+        atDepth(depth + 1).map(NestedAdtExample(_))
+      ) else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
+
+    implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
+      Arbitrary(atDepth(0))
+
+    implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] =
+      deriveFor[RecursiveAdtExample].decoder
+
+    implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] =
+      deriveFor[RecursiveAdtExample].encoder
+  }
+
+  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
+
+  object RecursiveWithOptionExample {
+    implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
+      Eq.fromUniversalEquals
+
+    private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
+      Arbitrary.arbitrary[Option[RecursiveWithOptionExample]].map(
+        RecursiveWithOptionExample(_)
+      ) else Gen.const(RecursiveWithOptionExample(None))
+
+    implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
+      Arbitrary(atDepth(0))
+
+    implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
+      deriveFor[RecursiveWithOptionExample].decoder
+
+    implicit val encodeRecursiveWithOptionExample: Encoder[RecursiveWithOptionExample] =
+      deriveFor[RecursiveWithOptionExample].encoder
+  }
+
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
   test("Decoder[Int => Qux[String]]") {
     check {

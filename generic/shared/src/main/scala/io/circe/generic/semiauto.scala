@@ -4,7 +4,7 @@ import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.util.{ Complement, PatchWithOptions }
-import shapeless.{ HList, LabelledGeneric }, shapeless.ops.function.FnFromProduct
+import shapeless.{ HList, LabelledGeneric, Lazy }, shapeless.ops.function.FnFromProduct
 
 /**
  * Semi-automatic codec derivation.
@@ -31,16 +31,16 @@ object semiauto {
   class DerivationHelper[A] {
     def decoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
-      decode: DerivedDecoder[R]
+      decode: Lazy[DerivedDecoder[R]]
     ): Decoder[A] = new Decoder[A] {
-      def apply(c: HCursor): Decoder.Result[A] = decode(c).map(gen.from)
+      def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
     }
 
     def encoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
-      encode: DerivedObjectEncoder[R]
+      encode: Lazy[DerivedObjectEncoder[R]]
     ): ObjectEncoder[A] = new ObjectEncoder[A] {
-      def encodeObject(a: A): JsonObject = encode.encodeObject(gen.to(a))
+      def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
     }
 
     def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
