@@ -17,7 +17,7 @@ cache:
 script:
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
       then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
-      else sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM coverageReport;
+      else sbt ++$TRAVIS_SCALA_VERSION clean validateJVM;
     fi
 
   # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
