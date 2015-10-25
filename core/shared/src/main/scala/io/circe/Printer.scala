@@ -274,7 +274,9 @@ object Printer {
   private[circe] abstract class MemoizedPieces extends Serializable {
     def compute(i: Int): Pieces
 
-    private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]
+    def apply(i: Int): Pieces = compute(i)
+
+    /*private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]
 
     def apply(i: Int): Pieces = if (i < known.size) known.get(i) else if (i == known.size) {
       val res = compute(i)
@@ -291,6 +293,6 @@ object Printer {
       }
 
       res
-    }
+    }*/
   }
 }
