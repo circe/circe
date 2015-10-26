@@ -176,6 +176,18 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
+  implicit val decodeJsonObject: Decoder[JsonObject] =
+    instance(c => Xor.fromOption(c.focus.asObject, DecodingFailure("JsonObject", c.history)))
+
+  /**
+   * @group Decoding
+   */
+  implicit val decodeJsonNumber: Decoder[JsonNumber] =
+    instance(c => Xor.fromOption(c.focus.asNumber, DecodingFailure("JsonNumber", c.history)))
+
+  /**
+   * @group Decoding
+   */
   implicit val decodeString: Decoder[String] = instance { c =>
     c.focus match {
       case JString(string) => Xor.right(string)
