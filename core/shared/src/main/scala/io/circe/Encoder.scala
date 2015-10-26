@@ -105,6 +105,16 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
+  implicit val encodeJsonObject: Encoder[JsonObject] = instance(Json.fromJsonObject)
+
+  /**
+   * @group Encoding
+   */
+  implicit val encodeJsonNumber: Encoder[JsonNumber] = instance(Json.fromJsonNumber)
+
+  /**
+   * @group Encoding
+   */
   implicit val encodeString: Encoder[String] = instance(Json.string)
 
   /**

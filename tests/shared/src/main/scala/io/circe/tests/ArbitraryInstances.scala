@@ -46,6 +46,9 @@ trait ArbitraryInstances {
 
   implicit def arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
 
+  implicit def arbitraryJsonObject: Arbitrary[JsonObject] =
+    Arbitrary(genObject(0).map(_.asObject.get))
+
   implicit def arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
   private[this] val minNumberShrink = BigDecimal.valueOf(1L)
