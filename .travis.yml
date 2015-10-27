@@ -1,3 +1,4 @@
+sudo: true
 language: scala
 
 scala:
