@@ -86,6 +86,7 @@ lazy val circe = project.in(file("."))
     tests, testsJS,
     jawn,
     jackson,
+    optics,
     async,
     benchmark
   )
@@ -217,6 +218,18 @@ lazy val jackson = project
       "com.fasterxml.jackson.core" % "jackson-core" % "2.6.3",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.3"
     )
+  )
+  .dependsOn(core)
+
+lazy val optics = project
+  .settings(
+    description := "circe optics",
+    moduleName := "circe-optics"
+  )
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .settings(
+    libraryDependencies += "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M1"
   )
   .dependsOn(core)
 
