@@ -1,3 +1,9 @@
 package io.circe
 
-package object optics extends JsonOptics with JsonObjectOptics with JsonNumberOptics
+package object optics {
+  def `*`: JsonPath = JsonPath.root
+}
+
+package optics {
+  object all extends JsonNumberOptics with JsonObjectOptics with JsonOptics
+}

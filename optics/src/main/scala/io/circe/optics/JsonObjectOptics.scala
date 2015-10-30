@@ -14,7 +14,7 @@ import scalaz.std.ListInstances
  * @author Travis Brown
  */
 trait JsonObjectOptics extends CatsConversions with ListInstances {
-  implicit val objectEach: Each[JsonObject, Json] = new Each[JsonObject, Json] {
+  implicit lazy val objectEach: Each[JsonObject, Json] = new Each[JsonObject, Json] {
     def each: Traversal[JsonObject, Json] = new Traversal[JsonObject, Json] {
       def modifyF[F[_]](f: Json => F[Json])(from: JsonObject)(implicit
         F: Applicative[F]
@@ -22,14 +22,14 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit val objectAt: At[JsonObject, String, Json] = new At[JsonObject, String, Json]{
+  implicit lazy val objectAt: At[JsonObject, String, Json] = new At[JsonObject, String, Json]{
     def at(field: String): Lens[JsonObject, Option[Json]] =
       Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
         obj => optVal.fold(obj - field)(value => obj + (field, value))
       )
   }
 
-  implicit val objectFilterIndex: FilterIndex[JsonObject, String, Json] =
+  implicit lazy val objectFilterIndex: FilterIndex[JsonObject, String, Json] =
     new FilterIndex[JsonObject, String, Json] {
       def filterIndex(p: String => Boolean) = new Traversal[JsonObject, Json] {
         def modifyF[F[_]](f: Json => F[Json])(from: JsonObject)(implicit
@@ -44,5 +44,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit val objectIndex: Index[JsonObject, String, Json] = Index.atIndex
+  implicit lazy val objectIndex: Index[JsonObject, String, Json] = Index.atIndex
 }
+
+object JsonObjectOptics extends JsonObjectOptics
