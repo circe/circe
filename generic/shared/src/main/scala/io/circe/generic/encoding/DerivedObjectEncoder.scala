@@ -20,14 +20,14 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
 
   implicit def encodeCoproduct[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
-    encodeHead: Strict[Priority[Encoder[H], DerivedObjectEncoder[H]]],
+    encodeHead: Lazy[Encoder[H]],
     encodeTail: Lazy[DerivedObjectEncoder[T]]
   ): DerivedObjectEncoder[FieldType[K, H] :+: T] =
     new DerivedObjectEncoder[FieldType[K, H] :+: T] {
       def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
         case Inl(h) => JsonObject.singleton(
           key.value.name,
-          encodeHead.value.fold(identity)(identity)(h)
+          encodeHead.value(h)
         )
         case Inr(t) => encodeTail.value.encodeObject(t)
       }
@@ -35,18 +35,33 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
 
   implicit def encodeLabelledHList[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
-    encodeHead: Strict[Priority[Encoder[H], DerivedObjectEncoder[H]]],
+    encodeHead: Lazy[Encoder[H]],
     encodeTail: Lazy[DerivedObjectEncoder[T]]
   ): DerivedObjectEncoder[FieldType[K, H] :: T] =
     new DerivedObjectEncoder[FieldType[K, H] :: T] {
       def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
         case h :: t =>
-          (key.value.name -> encodeHead.value.fold(identity)(identity)(h)) +: encodeTail.value.encodeObject(t)
+          (key.value.name -> encodeHead.value(h)) +: encodeTail.value.encodeObject(t)
       }
     }
 }
 
 trait LowPriorityDerivedObjectEncoders {
+  implicit def encodeCoproductDerived[K <: Symbol, H, T <: Coproduct](implicit
+    key: Witness.Aux[K],
+    encodeHead: Lazy[DerivedObjectEncoder[H]],
+    encodeTail: Lazy[DerivedObjectEncoder[T]]
+  ): DerivedObjectEncoder[FieldType[K, H] :+: T] =
+    new DerivedObjectEncoder[FieldType[K, H] :+: T] {
+      def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
+        case Inl(h) => JsonObject.singleton(
+          key.value.name,
+          encodeHead.value(h)
+        )
+        case Inr(t) => encodeTail.value.encodeObject(t)
+      }
+    }
+
   implicit def encodeAdt[A, R <: Coproduct](implicit
     gen: LabelledGeneric.Aux[A, R],
     encode: Lazy[DerivedObjectEncoder[R]]

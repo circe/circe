@@ -55,12 +55,28 @@ class AutoDerivedSuite extends CirceSuite {
       Arbitrary(atDepth(0))
   }
 
+  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
+
+  object RecursiveWithOptionExample {
+    implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
+      Eq.fromUniversalEquals
+
+    private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
+      Gen.option(atDepth(depth + 1)).map(
+        RecursiveWithOptionExample(_)
+      ) else Gen.const(RecursiveWithOptionExample(None))
+
+    implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
+      Arbitrary(atDepth(0))
+  }
+
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
   test("Decoder[Int => Qux[String]]") {
     check {
