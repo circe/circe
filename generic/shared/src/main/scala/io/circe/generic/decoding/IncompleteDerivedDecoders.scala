@@ -1,18 +1,20 @@
 package io.circe.generic.decoding
 
 import io.circe.{ Decoder, HCursor }
-import io.circe.generic.util.{ Complement, PatchWithOptions }
-import shapeless.{ HList, LabelledGeneric }, shapeless.ops.function.FnFromProduct
+import io.circe.generic.util.PatchWithOptions
+import shapeless.{ HList, LabelledGeneric }
+import shapeless.ops.function.FnFromProduct
+import shapeless.ops.record.RemoveAll
 
 trait IncompleteDerivedDecoders {
   implicit def decodeIncompleteCaseClass[F, P <: HList, A, T <: HList, R <: HList](implicit
     ffp: FnFromProduct.Aux[P => A, F],
     gen: LabelledGeneric.Aux[A, T],
-    complement: Complement.Aux[T, P, R],
+    removeAll: RemoveAll.Aux[T, P, (P, R)],
     decode: DerivedDecoder[R]
   ): DerivedDecoder[F] = new DerivedDecoder[F] {
     def apply(c: HCursor): Decoder.Result[F] =
-      decode(c).map(r => ffp(p => gen.from(complement.insert(p, r))))
+      decode(c).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
   }
 
   implicit def decodeCaseClassPatch[A, R <: HList, O <: HList](implicit
