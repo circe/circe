@@ -1,13 +1,19 @@
 package io.circe.generic.decoding
 
 import cats.data.Xor
-import io.circe.{ Decoder, DecodingFailure, HCursor }
+import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, HCursor }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
 trait DerivedDecoder[A] extends Decoder[A]
 
 @export.exports
 object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedDecoders {
+  def fromDecoder[A](decode: Decoder[A]): DerivedDecoder[A] = new DerivedDecoder[A] {
+    def apply(c: HCursor): Decoder.Result[A] = decode(c)
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      decode.decodeAccumulating(c)
+  }
+
   implicit val decodeHNil: DerivedDecoder[HNil] =
     new DerivedDecoder[HNil] {
       def apply(c: HCursor): Decoder.Result[HNil] = Xor.right(HNil)
@@ -35,13 +41,11 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
     key: Witness.Aux[K],
     decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[DerivedDecoder[T]]
-  ): DerivedDecoder[FieldType[K, H] :: T] = new DerivedDecoder[FieldType[K, H] :: T] {
-    def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] =
-      for {
-        head <- c.get(key.value.name)(decodeHead.value)
-        tail <- c.as(decodeTail.value)
-      } yield field[K](head) :: tail
-  }
+  ): DerivedDecoder[FieldType[K, H] :: T] = fromDecoder(
+    decodeHead.value.prepare(_.downField(key.value.name)).ap(
+      decodeTail.value.map(tail => (head: H) => field[K](head) :: tail)
+    )
+  )
 }
 
 private[circe] trait LowPriorityDerivedDecoders {
@@ -70,5 +74,7 @@ private[circe] trait LowPriorityDerivedDecoders {
     decode: Lazy[DerivedDecoder[R]]
   ): DerivedDecoder[A] = new DerivedDecoder[A] {
     def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      decode.value.decodeAccumulating(c).map(gen.from)
   }
 }
