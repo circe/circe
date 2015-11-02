@@ -102,28 +102,48 @@ object Boilerplate {
         case (tpe, n) => s"decode$tpe(js($n))"
       }.mkString(", ")
 
+      val accumulatingApplied = synTypes.zipWithIndex.map {
+        case (tpe, n) => s"decode$tpe.decodeAccumulating(js($n))"
+      }.mkString(", ")
+
       val result =
         if (arity == 1) s"$applied.map(Tuple1(_))" else s"resultApplicative.tuple$arity($applied)"
+
+      val accumulatingResult =
+        if (arity == 1) s"$accumulatingApplied.map(Tuple1(_))"
+          else s"accumulatingResultApplicative.tuple$arity($accumulatingApplied)"
 
       block"""
         |package io.circe
         |
-        |import cats.Applicative
-        |import cats.data.Xor
+        |import cats.{ Applicative, Semigroup, SemigroupK }
+        |import cats.data.{ NonEmptyList, Validated, Xor }
+        |import cats.std.ListInstances
         |
-        |private[circe] trait TupleDecoders {
+        |private[circe] trait TupleDecoders extends ListInstances {
+        |  implicit val nelSemigroup: Semigroup[NonEmptyList[DecodingFailure]] =
+        |    SemigroupK[NonEmptyList].algebra[DecodingFailure]
         |  private[this] val resultApplicative: Applicative[Decoder.Result] = implicitly
+        |  private[this] val accumulatingResultApplicative: Applicative[AccumulatingDecoder.Result] = implicitly
         |
         -  /**
         -   * @group Tuple
         -   */
         -  implicit def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
-        -    Decoder.instance { c =>
-        -      c.as[Vector[HCursor]].flatMap { js =>
-        -        if (js.size == $arity) {
-        -          $result
-        -        } else Xor.left(DecodingFailure("${`(A..N)`}", c.history))
-        -      }
+        -    new Decoder[${`(A..N)`}] { self =>
+        -      def apply(c: HCursor): Decoder.Result[${`(A..N)`}] =
+        -        c.as[Vector[HCursor]].flatMap { js =>
+        -          if (js.size == $arity) {
+        -            $result
+        -          } else Xor.left(DecodingFailure("${`(A..N)`}", c.history))
+        -        }
+        -
+        -      override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
+        -        c.as[Vector[HCursor]].leftMap[NonEmptyList[DecodingFailure]](NonEmptyList(_)).flatMap { js =>
+        -          if (js.size == $arity) {
+        -            $accumulatingResult.toXor
+        -          } else Xor.left(NonEmptyList(DecodingFailure("${`(A..N)`}", c.history), Nil))
+        -        }.toValidated
         -    }
         |}
       """
