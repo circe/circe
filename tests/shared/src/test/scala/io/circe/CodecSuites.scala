@@ -76,6 +76,7 @@ class CatsCodecSuite extends CirceSuite {
 class CirceCodecSuite extends CirceSuite {
   checkAll("Codec[Json]", CodecTests[Json].codec)
   checkAll("Codec[JsonObject]", CodecTests[JsonObject].codec)
+  checkAll("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
 }
 
 class DisjunctionCodecSuite extends CirceSuite {

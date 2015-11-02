@@ -2,7 +2,7 @@ package io.circe.tests
 
 import java.util.UUID
 
-import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
 
@@ -91,6 +91,15 @@ trait ArbitraryInstances {
       s => Shrink.shrinkString.shrink(s).map(JString(_)),
       a => Shrink.shrinkContainer[List, Json].shrink(a).map(JArray(_)),
       o => shrinkJsonObject.shrink(o).map(JObject(_))
+    )
+  )
+
+  implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
+    Gen.oneOf(
+      Arbitrary.arbitrary[JsonNumberString].map(_.toJsonNumber),
+      Arbitrary.arbitrary[BigDecimal].map(JsonBigDecimal(_)),
+      Arbitrary.arbitrary[Long].map(JsonLong(_)),
+      Arbitrary.arbitrary[Double].map(JsonDouble(_))
     )
   )
 }
