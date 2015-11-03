@@ -207,6 +207,7 @@ lazy val benchmark = project
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
+      "io.spray" %% "spray-json" % "1.3.2",
       "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test"
     )
   )

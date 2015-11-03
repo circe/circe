@@ -19,6 +19,10 @@ class ParsingBenchmarkSpec extends FlatSpec {
     assert(parseIntsP === intsP)
   }
 
+  it should "correctly parse integers using Spray JSON" in {
+    assert(parseIntsS === intsS)
+  }
+
   it should "correctly parse case classes using Circe" in {
     assert(parseFoosC === foosC)
   }
@@ -29,5 +33,9 @@ class ParsingBenchmarkSpec extends FlatSpec {
 
   it should "correctly parse case classes using Play JSON" in {
     assert(parseFoosP === foosP)
+  }
+
+  it should "correctly parse case classes using Spray JSON" in {
+    assert(parseFoosS === foosS)
   }
 }

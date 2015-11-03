@@ -6,15 +6,18 @@ import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{ JsValue, Json => JsonP, Format, Writes }
+import play.api.libs.json.{ JsValue => JsValueP, Json => JsonP, Format, Writes }
+import spray.json.{ JsValue => JsValueS, JsonFormat, JsonWriter, JsonParser => JsonParserS }
+import spray.json.DefaultJsonProtocol._
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 
 object Foo {
   implicit val codecFoo: CodecJson[Foo] = CodecJson.derive[Foo]
-  implicit val formatFoo: Format[Foo] = JsonP.format[Foo]
+  implicit val playFormatFoo: Format[Foo] = JsonP.format[Foo]
   implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
   implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+  implicit val sprayFormatFoo: JsonFormat[Foo] = jsonFormat5(Foo.apply)
 }
 
 class ExampleData {
@@ -26,15 +29,18 @@ class ExampleData {
 
   @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
   @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): JsonC = encode(a)
-  @inline def encodeP[A](a: A)(implicit encode: Writes[A]): JsValue = encode.writes(a)
+  @inline def encodeP[A](a: A)(implicit encode: Writes[A]): JsValueP = encode.writes(a)
+  @inline def encodeS[A](a: A)(implicit encode: JsonWriter[A]): JsValueS = encode.write(a)
 
   val intsC: JsonC = encodeC(ints)
   val intsA: JsonA = encodeA(ints)
-  val intsP: JsValue = encodeP(ints)
+  val intsP: JsValueP = encodeP(ints)
+  val intsS: JsValueS = encodeS(ints)
 
   val foosC: JsonC = encodeC(foos)
   val foosA: JsonA = encodeA(foos)
-  val foosP: JsValue = encodeP(foos)
+  val foosP: JsValueP = encodeP(foos)
+  val foosS: JsValueS = encodeS(foos)
 
   val intsJson: String = intsC.noSpaces
   val foosJson: String = foosC.noSpaces
@@ -45,7 +51,7 @@ class ExampleData {
  *
  * The following command will run the benchmarks with reasonable settings:
  *
- * > sbt "benchmark/run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.EncodingBenchmark"
+ * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.EncodingBenchmark"
  */
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -58,7 +64,10 @@ class EncodingBenchmark extends ExampleData {
   def encodeIntsA: JsonA = encodeA(ints)
 
   @Benchmark
-  def encodeIntsP: JsValue = encodeP(ints)
+  def encodeIntsP: JsValueP = encodeP(ints)
+
+  @Benchmark
+  def encodeIntsS: JsValueS = encodeS(ints)
 
   @Benchmark
   def encodeFoosC: JsonC = encodeC(foos)
@@ -67,7 +76,10 @@ class EncodingBenchmark extends ExampleData {
   def encodeFoosA: JsonA = encodeA(foos)
 
   @Benchmark
-  def encodeFoosP: JsValue = encodeP(foos)
+  def encodeFoosP: JsValueP = encodeP(foos)
+
+  @Benchmark
+  def encodeFoosS: JsValueS = encodeS(foos)
 }
 
 /**
@@ -75,7 +87,7 @@ class EncodingBenchmark extends ExampleData {
  *
  * The following command will run the benchmarks with reasonable settings:
  *
- * > sbt "benchmark/run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.DecodingBenchmark"
+ * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.DecodingBenchmark"
  */
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -91,6 +103,9 @@ class DecodingBenchmark extends ExampleData {
   def decodeIntsP: List[Int] = intsP.as[List[Int]]
 
   @Benchmark
+  def decodeIntsS: List[Int] = intsS.convertTo[List[Int]]
+
+  @Benchmark
   def decodeFoosC: Map[String, Foo] =
     foosC.as[Map[String, Foo]].getOrElse(throw new Exception)
 
@@ -100,6 +115,9 @@ class DecodingBenchmark extends ExampleData {
 
   @Benchmark
   def decodeFoosP: Map[String, Foo] = foosP.as[Map[String, Foo]]
+
+  @Benchmark
+  def decodeFoosS: Map[String, Foo] = foosS.convertTo[Map[String, Foo]]
 }
 
 /**
@@ -107,7 +125,7 @@ class DecodingBenchmark extends ExampleData {
  *
  * The following command will run the benchmarks with reasonable settings:
  *
- * > sbt "benchmark/run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.ParsingBenchmark"
+ * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.ParsingBenchmark"
  */
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -120,7 +138,10 @@ class ParsingBenchmark extends ExampleData {
   def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
 
   @Benchmark
-  def parseIntsP: JsValue = JsonP.parse(intsJson)
+  def parseIntsP: JsValueP = JsonP.parse(intsJson)
+
+  @Benchmark
+  def parseIntsS: JsValueS = JsonParserS(intsJson)
 
   @Benchmark
   def parseFoosC: JsonC = parse(foosJson).getOrElse(throw new Exception)
@@ -129,7 +150,10 @@ class ParsingBenchmark extends ExampleData {
   def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)
 
   @Benchmark
-  def parseFoosP: JsValue = JsonP.parse(foosJson)
+  def parseFoosP: JsValueP = JsonP.parse(foosJson)
+
+  @Benchmark
+  def parseFoosS: JsValueS = JsonParserS(foosJson)
 }
 
 /**
@@ -137,7 +161,7 @@ class ParsingBenchmark extends ExampleData {
  *
  * The following command will run the benchmarks with reasonable settings:
  *
- * > sbt "benchmark/run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.PrintingBenchmark"
+ * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.PrintingBenchmark"
  */
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -153,6 +177,9 @@ class PrintingBenchmark extends ExampleData {
   def printIntsP: String = JsonP.stringify(intsP)
 
   @Benchmark
+  def printIntsS: String = intsS.compactPrint
+
+  @Benchmark
   def printFoosC: String = foosC.noSpaces
 
   @Benchmark
@@ -160,4 +187,7 @@ class PrintingBenchmark extends ExampleData {
 
   @Benchmark
   def printFoosP: String = JsonP.stringify(foosP)
+
+  @Benchmark
+  def printFoosS: String = foosS.compactPrint
 }
