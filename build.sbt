@@ -4,7 +4,7 @@ import ReleaseTransformations._
 lazy val buildSettings = Seq(
   organization := "io.circe",
   scalaVersion := "2.11.7",
-  crossScalaVersions := Seq("2.10.5", "2.11.7")
+  crossScalaVersions := Seq("2.10.6", "2.11.7")
 )
 
 lazy val compilerOptions = Seq(
@@ -21,7 +21,7 @@ lazy val compilerOptions = Seq(
 )
 
 lazy val testDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % "1.12.5-SNAPSHOT",
+  "org.scalacheck" %% "scalacheck" % "1.12.5",
   "org.scalatest" %% "scalatest" % "2.2.5",
   "org.spire-math" %% "cats-laws" % "0.1.2",
   "org.typelevel" %% "discipline" % "0.3"
