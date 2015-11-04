@@ -3,10 +3,8 @@ package io.circe.generic
 import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
-import io.circe.generic.util.PatchWithOptions
-import shapeless.{ HList, LabelledGeneric, Lazy }
-import shapeless.ops.function.FnFromProduct
-import shapeless.ops.record.RemoveAll
+import io.circe.generic.util.{ Complement, PatchWithOptions }
+import shapeless.{ HList, LabelledGeneric, Lazy }, shapeless.ops.function.FnFromProduct
 
 /**
  * Semi-automatic codec derivation.
@@ -48,7 +46,7 @@ object semiauto {
     def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
       ffp: FnFromProduct.Aux[P => C, A],
       gen: LabelledGeneric.Aux[C, T],
-      removeAll: RemoveAll.Aux[T, P, (P, R)],
+      complement: Complement.Aux[T, P, R],
       decode: DerivedDecoder[R]
     ): Decoder[A] = DerivedDecoder.decodeIncompleteCaseClass[A, P, C, T, R]
 
