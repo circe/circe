@@ -206,13 +206,17 @@ object Printer {
   /**
    * A pretty-printer configuration that inserts no spaces.
    */
-  final val noSpaces: Printer = Printer(false, false, "")
+  final val noSpaces: Printer = Printer(
+    preserveOrder = true,
+    dropNullKeys = false,
+    indent = ""
+  )
 
   /**
    * A pretty-printer configuration that indents by the given spaces.
    */
   final def indented(indent: String): Printer = Printer(
-    preserveOrder = false,
+    preserveOrder = true,
     dropNullKeys = false,
     indent = indent,
     lbraceRight = "\n",
