@@ -3,12 +3,15 @@ package io.circe.generic
 import algebra.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json }
+import io.circe.generic.decoding.DerivedDecoder
+import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
+import shapeless.test.illTyped
 
 class SemiautoDerivedSuite extends CirceSuite {
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveFor[Qux[A]].decoder
@@ -70,6 +73,10 @@ class SemiautoDerivedSuite extends CirceSuite {
       deriveFor[RecursiveWithOptionExample].encoder
   }
 
+  case class OvergenerationExampleInner(i: Int)
+  case class OvergenerationExampleOuter0(i: OvergenerationExampleInner)
+  case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
+
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
@@ -125,5 +132,25 @@ class SemiautoDerivedSuite extends CirceSuite {
         json === Json.fromValues(is.map(Json.int)) && json.as[List[Int]] === Xor.right(is)
       }
     }
+  }
+
+  test("Generic instances shouldn't come from nowhere") {
+    implicitly[DerivedDecoder[OvergenerationExampleInner]]
+    illTyped("Decoder[OvergenerationExampleInner]")
+
+    implicitly[DerivedObjectEncoder[OvergenerationExampleInner]]
+    illTyped("Encoder[OvergenerationExampleInner]")
+
+    illTyped("Decoder[OvergenerationExampleOuter0]")
+    illTyped("Encoder[OvergenerationExampleOuter0]")
+    illTyped("Decoder[OvergenerationExampleOuter1]")
+    illTyped("Encoder[OvergenerationExampleOuter1]")
+  }
+
+  test("Semi-automatic derivation should require explicit instances for all parts") {
+    illTyped("deriveDecoder[OvergenerationExampleInner0]")
+    illTyped("deriveDecoder[OvergenerationExampleInner1]")
+    illTyped("deriveEncoder[OvergenerationExampleInner0]")
+    illTyped("deriveEncoder[OvergenerationExampleInner1]")
   }
 }
