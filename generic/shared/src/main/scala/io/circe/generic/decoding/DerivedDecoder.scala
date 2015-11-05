@@ -44,7 +44,7 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
   }
 }
 
-trait LowPriorityDerivedDecoders {
+private[circe] trait LowPriorityDerivedDecoders {
   implicit def decodeCoproductDerived[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
     decodeHead: Lazy[DerivedDecoder[H]],

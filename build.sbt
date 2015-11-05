@@ -21,7 +21,7 @@ lazy val compilerOptions = Seq(
 )
 
 lazy val catsVersion = "0.2.0"
-lazy val shapelessVersion = "2.3.0-SNAPSHOT"
+lazy val shapelessVersion = "2.2.5"
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -60,7 +60,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(benchmark, coreJS, genericJS, parseJS, testsJS)
+    inAnyProject -- inProjects(async, benchmark, coreJS, genericJS, parseJS, tests, testsJS)
 )
 
 lazy val root = project.in(file("."))

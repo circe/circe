@@ -485,4 +485,4 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 }
 
-@export.imports[Decoder] trait LowPriorityDecoders
+@export.imports[Decoder] private[circe] trait LowPriorityDecoders

@@ -250,4 +250,4 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   }
 }
 
-@export.imports[Encoder] trait LowPriorityEncoders
+@export.imports[Encoder] private[circe] trait LowPriorityEncoders
