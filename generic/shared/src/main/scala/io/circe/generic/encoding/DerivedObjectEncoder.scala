@@ -46,7 +46,7 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
     }
 }
 
-trait LowPriorityDerivedObjectEncoders {
+private[circe] trait LowPriorityDerivedObjectEncoders {
   implicit def encodeCoproductDerived[K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
     encodeHead: Lazy[DerivedObjectEncoder[H]],

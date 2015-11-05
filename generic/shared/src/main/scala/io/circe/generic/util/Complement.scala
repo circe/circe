@@ -12,7 +12,7 @@ trait Insert[L <: HList, E] extends DepFn1[L] with Serializable {
   def insert(e: E, out: Out): L
 }
 
-trait LowPriorityInsert {
+private[circe] trait LowPriorityInsert {
   type Aux[L <: HList, E, Out0] = Insert[L, E] {
     type Out = Out0
   }

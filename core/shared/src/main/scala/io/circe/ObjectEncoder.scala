@@ -32,4 +32,4 @@ object ObjectEncoder extends LowPriorityObjectEncoders {
   }
 }
 
-@export.imports[ObjectEncoder] trait LowPriorityObjectEncoders
+@export.imports[ObjectEncoder] private[circe] trait LowPriorityObjectEncoders

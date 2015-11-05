@@ -4,7 +4,7 @@ import io.circe.{ Decoder, HCursor }
 import io.circe.generic.util.{ Complement, PatchWithOptions }
 import shapeless.{ HList, LabelledGeneric }, shapeless.ops.function.FnFromProduct
 
-trait IncompleteDerivedDecoders {
+private[circe] trait IncompleteDerivedDecoders {
   implicit def decodeIncompleteCaseClass[F, P <: HList, A, T <: HList, R <: HList](implicit
     ffp: FnFromProduct.Aux[P => A, F],
     gen: LabelledGeneric.Aux[A, T],
