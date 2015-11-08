@@ -24,6 +24,15 @@ libraryDependencies ++= Seq(
 )
 ```
 
+If you are using circe's generic derivation with Scala 2.10, you'll also need to include the [Macro
+Paradise][paradise] compiler plugin in your build:
+
+```scala
+addCompilerPlugin(
+  "org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full
+)
+```
+
 Then type `sbt console` to start a REPL and then paste the following (this will also work from the
 root directory of this repository):
 
@@ -313,6 +322,7 @@ limitations under the License.
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
+[paradise]: http://docs.scala-lang.org/overviews/macros/paradise.html
 [play-json]: https://www.playframework.com/documentation/2.4.x/ScalaJson
 [scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
