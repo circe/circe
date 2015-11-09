@@ -9,8 +9,8 @@ trait DerivedDecoder[A] extends Decoder[A]
 @export.exports
 object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedDecoders {
   implicit val decodeHNil: DerivedDecoder[HNil] =
-    new DerivedDecoder[HNil] {
-      def apply(c: HCursor): Decoder.Result[HNil] = Xor.right(HNil)
+    new DerivedDecoder[HNil] with Decoder.FromUnsafe[HNil] {
+      private[circe] override def decodeUnsafe(c: HCursor): HNil = HNil
     }
 
   implicit val decodeCNil: DerivedDecoder[CNil] =
