@@ -28,6 +28,14 @@ trait Decoder[A] extends Serializable { self =>
   def decodeJson(j: Json): Decoder.Result[A] = apply(j.cursor.hcursor)
 
   /**
+   * Attempt to decode the give hcursor and throw an exception on failure.
+   */
+  private[circe] def decodeUnsafe(c: HCursor): A = apply(c) match {
+    case Xor.Right(a) => a
+    case Xor.Left(err) => throw err
+  }
+
+  /**
    * Map a function over this [[Decoder]].
    */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
@@ -188,10 +196,10 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit val decodeString: Decoder[String] = instance { c =>
-    c.focus match {
-      case JString(string) => Xor.right(string)
-      case _ => Xor.left(DecodingFailure("String", c.history))
+  implicit val decodeString: Decoder[String] = new Decoder[String] with Decoder.FromUnsafe[String] {
+    private[circe] override def decodeUnsafe(c: HCursor): String = c.focus match {
+      case JString(string) => string
+      case _ => throw DecodingFailure("String", c.history)
     }
   }
 
@@ -210,12 +218,13 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit val decodeBoolean: Decoder[Boolean] = instance { c =>
-    c.focus match {
-      case JBoolean(b) => Xor.right(b)
-      case _ => Xor.left(DecodingFailure("Boolean", c.history))
+  implicit val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean]
+    with Decoder.FromUnsafe[Boolean] {
+      private[circe] override def decodeUnsafe(c: HCursor): Boolean = c.focus match {
+        case JBoolean(b) => b
+        case _ => throw DecodingFailure("Boolean", c.history)
+      }
     }
-  }
 
   /**
    * @group Decoding
@@ -241,11 +250,13 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit val decodeDouble: Decoder[Double] = instance { c =>
-    c.focus match {
-      case JNull => Xor.right(Double.NaN)
-      case JNumber(number) => Xor.right(number.toDouble)
-      case _ => Xor.left(DecodingFailure("Float", c.history))
+  implicit val decodeDouble: Decoder[Double] = new Decoder[Double] with Decoder.FromUnsafe[Double] {
+    private[circe] override def decodeUnsafe(c: HCursor): Double = c.focus match {
+      case JNull => Double.NaN
+      case JNumber(number) => try number.toDouble catch {
+        case _: NumberFormatException => throw DecodingFailure("Double", c.history)
+      }
+      case _ => throw DecodingFailure("Double", c.history)
     }
   }
 
@@ -282,30 +293,26 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit val decodeInt: Decoder[Int] = instance { c =>
-    c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToInt)
-      case JString(string) => try {
-        Xor.right(string.toInt)
-      } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Int", c.history))
+  implicit val decodeInt: Decoder[Int] = new Decoder[Int] with Decoder.FromUnsafe[Int] {
+    private[circe] override def decodeUnsafe(c: HCursor): Int = c.focus match {
+      case JNumber(number) => number.truncateToInt
+      case JString(string) => try string.toInt catch {
+        case _: NumberFormatException => throw DecodingFailure("Int", c.history)
       }
-      case _ => Xor.left(DecodingFailure("Int", c.history))
+      case _ => throw DecodingFailure("Int", c.history)
     }
   }
 
   /**
    * @group Decoding
    */
-  implicit val decodeLong: Decoder[Long] = instance { c =>
-    c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToLong)
-      case JString(string) => try {
-        Xor.right(string.toLong)
-      } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Long", c.history))
+  implicit val decodeLong: Decoder[Long] = new Decoder[Long] with Decoder.FromUnsafe[Long] {
+    private[circe] override def decodeUnsafe(c: HCursor): Long = c.focus match {
+      case JNumber(number) => number.truncateToLong
+      case JString(string) => try string.toLong catch {
+        case _: NumberFormatException => throw DecodingFailure("Long", c.history)
       }
-      case _ => Xor.left(DecodingFailure("Long", c.history))
+      case _ => throw DecodingFailure("Long", c.history)
     }
   }
 
@@ -395,7 +402,28 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   implicit def decodeMap[M[K, +V] <: Map[K, V], V](implicit
     d: Decoder[V],
     cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
-  ): Decoder[M[String, V]] = instance { c =>
+  ): Decoder[M[String, V]] = new Decoder[M[String, V]] with Decoder.FromUnsafe[M[String, V]] {
+    private[circe] override def decodeUnsafe(c: HCursor): M[String, V] = c.fields.fold(
+      throw DecodingFailure("[V]Map[String, V]", c.history)
+    ) { ks =>
+      val builder = cbf()
+
+      ks.foreach { k =>
+        val v = d.decodeUnsafe(
+          c.downField(k).success.getOrElse(
+            throw DecodingFailure("Attempt to decode value on failed cursor", c.history)
+          )
+        )
+
+        builder += (k -> v)
+      }
+
+      builder.result()
+    }
+  }
+
+  /*
+  instance { c =>
     c.fields.fold(
       Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
     ) { s =>
@@ -418,6 +446,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
       spin(s).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
     }
   }
+  */
 
   /**
    * @group Decoding
@@ -482,6 +511,14 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   implicit val monadDecode: Monad[Decoder] = new Monad[Decoder] {
     def pure[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
     def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
+  }
+
+
+  private[circe] trait FromUnsafe[A] { self: Decoder[A] =>
+    def apply(c: HCursor): Decoder.Result[A] =
+      try Xor.right(decodeUnsafe(c)) catch {
+        case df @ DecodingFailure(_, _) => Xor.left(df)
+      }
   }
 }
 
