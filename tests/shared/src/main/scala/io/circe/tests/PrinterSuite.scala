@@ -3,6 +3,7 @@ package io.circe.tests
 import io.circe.{ Parser, Printer }
 
 class PrinterSuite(printer: Printer, parser: Parser) extends CirceSuite {
+  checkAll("Printing String", PrinterTests[String].printer(printer, parser))
   checkAll("Printing Unit", PrinterTests[Unit].printer(printer, parser))
   checkAll("Printing Boolean", PrinterTests[Boolean].printer(printer, parser))
   checkAll("Printing Char", PrinterTests[Char].printer(printer, parser))
