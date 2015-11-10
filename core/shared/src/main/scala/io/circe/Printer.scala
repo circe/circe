@@ -170,7 +170,9 @@ final case class Printer(
               }
           }
           builder.append(p.rBraces)
-        case JString(s) => encloseJsonString(s)
+        case JString(s) =>
+          if (s == null) builder.append(nullText)
+          else encloseJsonString(s)
         case JNumber(n) => n match {
           case JsonLong(x) => builder.append(x.toString)
           case JsonDouble(x) => builder.append(x.toString)
