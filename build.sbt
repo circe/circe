@@ -63,7 +63,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
     inAnyProject -- inProjects(async, benchmark, coreJS, genericJS, parseJS, tests, testsJS)
 )
 
-lazy val root = project.in(file("."))
+lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(docSettings)
   .settings(noPublishSettings)
