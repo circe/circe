@@ -60,7 +60,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq("-groups", "-implicits"),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(async, benchmark, coreJS, genericJS, parseJS, tests, testsJS)
+    inAnyProject -- inProjects(async, benchmark, coreJS, genericJS, refinedJS, parseJS, tests, testsJS)
 )
 
 lazy val circe = project.in(file("."))
@@ -80,6 +80,7 @@ lazy val circe = project.in(file("."))
   .aggregate(
     core, coreJS,
     generic, genericJS,
+    refined, refinedJS,
     parse, parseJS,
     tests, testsJS,
     jawn,
@@ -126,6 +127,24 @@ lazy val genericBase = crossProject.in(file("generic"))
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
+lazy val refinedBase = crossProject.in(file("refined"))
+  .settings(
+    description := "circe refined",
+    moduleName := "circe-refined",
+    name := "refined"
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies += "eu.timepit" %%% "refined" % "0.3.1"
+  )
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "refined"))
+  .jsConfigure(_.copy(id = "refinedJS"))
+  .dependsOn(coreBase)
+
+lazy val refined = refinedBase.jvm
+lazy val refinedJS = refinedBase.js
+
 lazy val parseBase = crossProject.in(file("parse"))
   .settings(
     description := "circe parse",
@@ -155,7 +174,8 @@ lazy val testsBase = crossProject.in(file("tests"))
       "org.scalacheck" %%% "scalacheck" % "1.12.5",
       "org.scalatest" %%% "scalatest" % "3.0.0-M9",
       "org.spire-math" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % "0.4"
+      "org.typelevel" %%% "discipline" % "0.4",
+      "eu.timepit" %%% "refined-scalacheck" % "0.3.1"
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
@@ -168,7 +188,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, async))
   .jsConfigure(_.copy(id = "testsJS"))
-  .dependsOn(coreBase, genericBase, parseBase)
+  .dependsOn(coreBase, genericBase, refinedBase, parseBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -286,6 +306,7 @@ credentials ++= (
 val jvmProjects = Seq(
   "core",
   "generic",
+  "refined",
   "parse",
   "tests",
   "jawn",
@@ -296,6 +317,7 @@ val jvmProjects = Seq(
 val jsProjects = Seq(
   "coreJS",
   "genericJS",
+  "refinedJS",
   "parseJS",
   "testsJS"
 )
