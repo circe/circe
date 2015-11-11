@@ -11,6 +11,25 @@ some justification for its existence. There are also [API docs][api].
 circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for [a
 number of reasons](https://github.com/travisbrown/circe/issues/11).
 
+## Table of contents
+
+1. [Quick start](#quick-start)
+2. [Why?](#why)
+  1. [Dependencies and modularity](#dependencies-and-modularity)
+  2. [Parsing](#parsing)
+  3. [Lenses](#lenses)
+  4. [Codec derivation](#codec-derivation)
+  5. [Aliases](#aliases)
+  6. [Documentation](#documentation)
+  7. [Testing](#testing)
+  8. [Performance](#performance)
+3. [Usage](#usage)
+  1. [Encoding and decoding](#encoding-and-decoding)
+  2. [Transforming JSON](#transforming-json)
+4. [Contributors and participation](#contributors-and-participation)
+5. [Warnings and known issues](#warnings-and-known-issues)
+6. [License](#license)
+
 ## Quick start
 
 circe is published to [Maven Central][maven-central] and cross-built for Scala 2.10 and 2.11, so
@@ -97,8 +116,9 @@ with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalaj
 
 circe doesn't use or provide lenses in the `core` project (or at all, for now). This is related to
 the first point above, since [Monocle][monocle] has a Scalaz dependency, but we also feel that it
-simplifies the API. We'd consider adding lenses in a subproject if Monocle (or something similar)
-gets ported to cats.
+simplifies the API. We are likely to add [an experimental `optics` subproject][optics-pr] in 0.3.0
+that will provide Monocle lenses (note that this will require your project to depend on both Scalaz
+and cats).
 
 ### Codec derivation
 
@@ -289,6 +309,33 @@ sign-offs by a maintainer to be merged.
 The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
 all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
+## Warnings and known issues
+
+1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
+   Paradise][paradise] plugin to your build. See the [quick start section](#quick-start) above for
+   details.
+2. In the 0.3.0 snapshot, the `io.circe.generic` package depends on the Shapeless 2.3.0 snapshot,
+   which means that in principle it may stop working at any time. 0.3.0 will not be released until
+   Shapeless 2.3.0 is available, and of course we will never publish a stable version with snapshot
+   dependencies.
+3. The `refined` subproject (available only in the 0.3.0 snapshot) depends on refined 0.3.1, which
+   depends on Shapeless 2.2.5, which means that if you use it, you'll have to cross your fingers and
+   hope that you don't run into binary compatibility issues. This will be resolved before the 0.3.0
+   release, and the risk should be low in the meantime (because of how refined uses Shapeless), but
+   there is a chance you will run into problems.
+4. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
+   provided by the `generic` subproject may stack overflow during compilation, which will result in
+   the derived encoders or decoders simply not being found. Increasing the stack size available to
+   the compiler (e.g. with `sbt -J-Xss64m` if you're using SBT) will help in many cases, but we have
+   at least [one report][very-large-adt] of a case where it doesn't.
+5. More generally, the generic derivation provided by the `generic` subproject works for a wide
+   range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by
+   Shapeless) that rely on compiler functionality that is not always perfectly robust
+   ("[SI-7046][si-7046] is like [playing roulette][si-7046-roulette]"), and if you're running into
+   problems, it's likely that they're not your fault. Please file an issue here or ask a question on
+   the [Gitter channel][gitter], and we'll do our best to figure out whether the problem is
+   something we can fix.
+
 ## License
 
 circe is licensed under the **[Apache License, Version 2.0][apache]** (the
@@ -317,20 +364,25 @@ limitations under the License.
 [export-hook]: https://github.com/milessabin/export-hook
 [finch]: https://github.com/finagle/finch
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
+[gitter]: https://gitter.im/travisbrown/circe
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jawn]: https://github.com/non/jawn
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
+[optics-pr]: https://github.com/travisbrown/circe/pull/78
 [paradise]: http://docs.scala-lang.org/overviews/macros/paradise.html
 [play-json]: https://www.playframework.com/documentation/2.4.x/ScalaJson
 [scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
 [shapeless]: https://github.com/milessabin/shapeless
+[si-7046]: https://issues.scala-lang.org/browse/SI-7046
+[si-7046-roulette]: https://twitter.com/li_haoyi/status/637281580847878145
 [spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
 [util]: https://github.com/twitter/util
+[very-large-adt]: http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
