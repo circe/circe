@@ -21,7 +21,7 @@ private[circe] case class CArray(
       case o: CObject => o.copy(
         focus = newFocus,
         changed = self.changed || o.changed,
-        obj = if (self.changed) o.obj + (o.key, newFocus) else o.obj
+        obj = if (self.changed) o.obj.add(o.key, newFocus) else o.obj
       )
     }
   }

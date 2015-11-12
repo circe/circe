@@ -13,7 +13,7 @@ private[circe] case class CObject(
   def context: List[Context] = Context.inObject(focus, key) :: parent.context
 
   def up: Option[Cursor] = Some {
-    val newFocus = Json.fromJsonObject(if (changed) obj + (key, focus) else obj)
+    val newFocus = Json.fromJsonObject(if (changed) obj.add(key, focus) else obj)
 
     parent match {
       case _: CJson => CJson(newFocus)
@@ -23,7 +23,7 @@ private[circe] case class CObject(
   }
 
   def delete: Option[Cursor] = Some {
-    val newFocus = Json.fromJsonObject(obj - key)
+    val newFocus = Json.fromJsonObject(obj.remove(key))
 
     parent match {
       case _: CJson => CJson(newFocus)
@@ -41,6 +41,6 @@ private[circe] case class CObject(
   }
 
   override def deleteGoField(k: String): Option[Cursor] = obj(k).map { newFocus =>
-    copy(focus = newFocus, key = k, changed = true, obj = obj - key)
+    copy(focus = newFocus, key = k, changed = true, obj = obj.remove(key))
   }
 }

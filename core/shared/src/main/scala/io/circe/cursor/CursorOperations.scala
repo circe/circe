@@ -27,12 +27,12 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
             case o: CObject => o.copy(
               focus = newFocus,
               changed = changed || o.changed,
-              obj = if (changed) o.obj + (o.key, newFocus) else o.obj
+              obj = if (changed) o.obj.add(o.key, newFocus) else o.obj
             )
           }
         )
       case CObject(j, k, p, changed, obj) =>
-        val newFocus = Json.fromJsonObject(if (changed) obj + (k, j) else obj)
+        val newFocus = Json.fromJsonObject(if (changed) obj.add(k, j) else obj)
 
         go(
           p match {
