@@ -161,36 +161,12 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Type-safe equality for [[JsonNumber]].
-   */
-  def ===(that: JsonNumber): Boolean =
-    if (this.isReal && that.isReal) {
-      (this, that) match {
-        case (a @ JsonDecimal(_), b) => a.normalized == b.toJsonDecimal.normalized
-        case (a, b @ JsonDecimal(_)) => a.toJsonDecimal.normalized == b.normalized
-        case (JsonLong(x), JsonLong(y)) => x == y
-        case (JsonDouble(x), JsonLong(y)) => x == y
-        case (JsonLong(x), JsonDouble(y)) => y == x
-        case (JsonDouble(x), JsonDouble(y)) => x == y
-        case (a, b) => a.toBigDecimal == b.toBigDecimal
-      }
-    } else {
-      this.toDouble == that.toDouble
-    }
-
-  /**
-   * Type-safe inequality for [[JsonNumber]].
-   */
-  def =!=(that: JsonNumber): Boolean = !(this === that)
-
-  /**
    * Universal equality derived from our type-safe equality.
    */
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: JsonNumber => this === that
-      case _ => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: JsonNumber => JsonNumber.eqJsonNumber.eqv(this, that)
+    case _ => false
+  }
 
   /**
    * Hashing that is consistent with our universal equality.
@@ -437,7 +413,16 @@ object JsonNumber {
     }
   }
 
-  implicit val eqJsonNumber: Eq[JsonNumber] = Eq.instance(_ === _)
+  implicit val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
+    case (a, b) if !a.isReal || !b.isReal => a.toDouble == b.toDouble
+    case (a @ JsonDecimal(_), b) => a.normalized == b.toJsonDecimal.normalized
+    case (a, b @ JsonDecimal(_)) => a.toJsonDecimal.normalized == b.normalized
+    case (JsonLong(x), JsonLong(y)) => x == y
+    case (JsonDouble(x), JsonLong(y)) => x == y
+    case (JsonLong(x), JsonDouble(y)) => y == x
+    case (JsonDouble(x), JsonDouble(y)) => x == y
+    case (a, b) => a.toBigDecimal == b.toBigDecimal
+  }
 
   private[this] val MaxLongString: String = Long.MaxValue.toString
   private[this] val MinLongString: String = Long.MinValue.toString
