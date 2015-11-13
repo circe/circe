@@ -17,25 +17,28 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     @tailrec
     def go(c: Cursor): Json = c match {
       case CJson(j) => j
-      case CArray(j, p, u, ls, rs) =>
-        val q = Json.fromValues((j :: rs).reverse_:::(ls))
+      case CArray(j, p, changed, ls, rs) =>
+        val newFocus = Json.fromValues((j :: rs).reverse_:::(ls))
 
         go(
           p match {
-            case CJson(_) => CJson(q)
-            case arr @ CArray(_, _, v, _, _) => arr.copy(focus = q, u = u || v)
-            case obj @ CObject(_, pk, _, v, po) =>
-              obj.copy(focus = q, u = u || v, o = if (u) po + (pk, q) else po)
+            case _: CJson => CJson(newFocus)
+            case a: CArray => a.copy(focus = newFocus, changed = changed || a.changed)
+            case o: CObject => o.copy(
+              focus = newFocus,
+              changed = changed || o.changed,
+              obj = if (changed) o.obj + (o.key, newFocus) else o.obj
+            )
           }
         )
-      case CObject(j, k, p, u, o) =>
-        val q = Json.fromJsonObject(if (u) o + (k, j) else o)
+      case CObject(j, k, p, changed, obj) =>
+        val newFocus = Json.fromJsonObject(if (changed) obj + (k, j) else obj)
 
         go(
           p match {
-            case CJson(_) => CJson(q)
-            case arr @ CArray(_, _, v, _, _) => arr.copy(focus = q, u = u || v)
-            case obj @ CObject(_, pk, _, v, po) => obj.copy(focus = q, u = u || v)
+            case _: CJson => CJson(newFocus)
+            case a: CArray => a.copy(focus = newFocus, changed = changed || a.changed)
+            case o: CObject => o.copy(focus = newFocus, changed = changed || o.changed)
           }
         )
     }
