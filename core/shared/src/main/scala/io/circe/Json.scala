@@ -124,34 +124,6 @@ sealed abstract class Json extends Product with Serializable {
   def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
-   * Type-safe equality method.
-   */
-  def ===(that: Json): Boolean = {
-    def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
-      val it0 = x.iterator
-      val it1 = y.iterator
-      while (it0.hasNext && it1.hasNext) {
-        if (it0.next =!= it1.next) return false
-      }
-      it0.hasNext == it1.hasNext
-    }
-
-    (this, that) match {
-      case ( JObject(a),  JObject(b)) => a === b
-      case ( JString(a),  JString(b)) => a == b
-      case ( JNumber(a),  JNumber(b)) => a === b
-      case (JBoolean(a), JBoolean(b)) => a == b
-      case (  JArray(a),   JArray(b)) => arrayEq(a, b)
-      case (          x,           y) => x.isNull && y.isNull
-    }
-  }
-
-  /**
-   * Type-safe inequality.
-   */
-  def =!=(that: Json): Boolean = !(this === that)
-
-  /**
    * Compute a `String` representation for this JSON value.
    */
   override def toString: String = spaces2
@@ -159,11 +131,10 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Universal equality derived from our type-safe equality.
    */
-  override def equals(that: Any): Boolean =
-    that match {
-      case j: Json => this === j
-      case _ => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: Json => Json.eqJson.eqv(this, that)
+    case _ => false
+  }
 
   /**
    * Hashing that is consistent with our universal equality.
@@ -223,6 +194,23 @@ object Json {
   def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
   def fromValues(values: Seq[Json]): Json = JArray(values)
 
-  implicit val eqJson: Eq[Json] = Eq.instance(_ === _)
+  private[this] def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
+    val it0 = x.iterator
+    val it1 = y.iterator
+    while (it0.hasNext && it1.hasNext) {
+      if (Json.eqJson.neqv(it0.next, it1.next)) return false
+    }
+    it0.hasNext == it1.hasNext
+  }
+
+  implicit val eqJson: Eq[Json] = Eq.instance {
+    case ( JObject(a),  JObject(b)) => JsonObject.eqJsonObject.eqv(a, b)
+    case ( JString(a),  JString(b)) => a == b
+    case ( JNumber(a),  JNumber(b)) => JsonNumber.eqJsonNumber.eqv(a, b)
+    case (JBoolean(a), JBoolean(b)) => a == b
+    case (  JArray(a),   JArray(b)) => arrayEq(a, b)
+    case (          x,           y) => x.isNull && y.isNull
+  }
+
   implicit val showJson: Show[Json] = Show.fromToString[Json]
 }

@@ -92,16 +92,6 @@ sealed abstract class JsonObject extends Serializable {
    * Return the number of associations.
    */
   def size: Int
-
-  /**
-   * Type-safe equality for [[JsonObject]].
-   */
-  def ===(that: JsonObject): Boolean = this.toMap == that.toMap
-
-  /**
-   * Type-safe inequality for [[JsonObject]].
-   */
-  def =!=(that: JsonObject): Boolean = !(this === that)
 }
 
 /**
@@ -210,11 +200,10 @@ object JsonObject {
     /**
      * Universal equality derived from our type-safe equality.
      */
-    override def equals(o: Any) =
-      o match {
-        case j: JsonObject => this === j
-        case _ => false
-      }
+    override def equals(that: Any) = that match {
+      case that: JsonObject => JsonObject.eqJsonObject.eqv(this, that)
+      case _ => false
+    }
 
     override def hashCode = fieldMap.hashCode
   }
