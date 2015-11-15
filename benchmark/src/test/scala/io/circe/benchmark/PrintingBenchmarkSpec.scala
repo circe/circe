@@ -19,6 +19,10 @@ class PrintingBenchmarkSpec extends FlatSpec {
     assert(decodeInts(printIntsC) === Some(ints))
   }
 
+  it should "correctly print integers using Circe with Jackson" in {
+    assert(decodeInts(printIntsCJ) === Some(ints))
+  }
+
   it should "correctly print integers using Argonaut" in {
     assert(decodeInts(printIntsA) === Some(ints))
   }
@@ -33,6 +37,10 @@ class PrintingBenchmarkSpec extends FlatSpec {
 
   it should "correctly print case classes using Circe" in {
     assert(decodeFoos(printFoosC) === Some(foos))
+  }
+
+  it should "correctly print case classes using Circe with Jackson" in {
+    assert(decodeFoos(printFoosCJ) === Some(foos))
   }
 
   it should "correctly print case classes using Argonaut" in {

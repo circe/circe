@@ -138,6 +138,9 @@ class ParsingBenchmark extends ExampleData {
   def parseIntsC: JsonC = parse(intsJson).getOrElse(throw new Exception)
 
   @Benchmark
+  def parseIntsCJ: JsonC = io.circe.jackson.parse(intsJson).getOrElse(throw new Exception)
+
+  @Benchmark
   def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
 
   @Benchmark
@@ -148,6 +151,9 @@ class ParsingBenchmark extends ExampleData {
 
   @Benchmark
   def parseFoosC: JsonC = parse(foosJson).getOrElse(throw new Exception)
+
+  @Benchmark
+  def parseFoosCJ: JsonC = io.circe.jackson.parse(foosJson).getOrElse(throw new Exception)
 
   @Benchmark
   def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)
@@ -174,6 +180,9 @@ class PrintingBenchmark extends ExampleData {
   def printIntsC: String = intsC.noSpaces
 
   @Benchmark
+  def printIntsCJ: String = io.circe.jackson.jacksonPrint(intsC)
+
+  @Benchmark
   def printIntsA: String = intsA.nospaces
 
   @Benchmark
@@ -184,6 +193,9 @@ class PrintingBenchmark extends ExampleData {
 
   @Benchmark
   def printFoosC: String = foosC.noSpaces
+
+  @Benchmark
+  def printFoosCJ: String = io.circe.jackson.jacksonPrint(foosC)
 
   @Benchmark
   def printFoosA: String = foosA.nospaces
