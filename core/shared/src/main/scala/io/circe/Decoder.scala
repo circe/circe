@@ -71,7 +71,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Combine two decoders.
    */
-  def &&&[B](x: Decoder[B]): Decoder[(A, B)] = Decoder.instance(c =>
+  def and[B](x: Decoder[B]): Decoder[(A, B)] = Decoder.instance(c =>
     for {
       a <- this(c)
       b <- x(c)
@@ -79,12 +79,24 @@ trait Decoder[A] extends Serializable { self =>
   )
 
   /**
+   * Combine two decoders.
+   */
+  @deprecated("Use and", "0.3.0")
+  def &&&[B](x: Decoder[B]): Decoder[(A, B)] = and(x)
+
+  /**
    * Choose the first succeeding decoder.
    */
-  def |||[AA >: A](d: => Decoder[AA]): Decoder[AA] = Decoder.instance[AA] { c =>
+  def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = Decoder.instance[AA] { c =>
     val res = apply(c).map(a => (a: AA))
     res.fold(_ => d(c), _ => res)
   }
+
+  /**
+   * Choose the first succeeding decoder.
+   */
+  @deprecated("Use or", "0.3.0")
+  def |||[AA >: A](d: => Decoder[AA]): Decoder[AA] = or(d)
 
   /**
    * Run one or another decoder.

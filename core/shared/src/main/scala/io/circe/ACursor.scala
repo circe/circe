@@ -67,7 +67,13 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
    * Return the current cursor or the given one if this one isn't successful.
    */
-  def |||(c: => ACursor): ACursor = if (succeeded) this else c
+  def or(c: => ACursor): ACursor = if (succeeded) this else c
+
+  /**
+   * Return the current cursor or the given one if this one isn't successful.
+   */
+  @deprecated("Use or", "0.3.0")
+  def |||(c: => ACursor): ACursor = or(c)
 
   /**
    * Return a [[cats.data.Validated]] of the underlying cursor.

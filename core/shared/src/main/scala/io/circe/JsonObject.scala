@@ -19,19 +19,31 @@ sealed abstract class JsonObject extends Serializable {
   def toMap: Map[String, Json]
 
   /**
-   * Insert the given association.
+   * Insert the given key-value pair.
    */
-  def +(k: String, j: Json): JsonObject
+  def add(k: String, j: Json): JsonObject
 
   /**
-   * Prepend the given association.
+   * Insert the given key-value pair.
+   */
+  @deprecated("Use add", "0.3.0")
+  def +(k: String, j: Json): JsonObject  = add(k, j)
+
+  /**
+   * Prepend the given key-value pair.
    */
   def +:(f: (String, Json)): JsonObject
 
   /**
-   * Remove the given field association.
+   * Remove the field with the given key (if it exists).
    */
-  def -(k: String): JsonObject
+  def remove(k: String): JsonObject
+
+  /**
+   * Remove the field with the given key (if it exists).
+   */
+  @deprecated("Use remove", "0.3.0")
+  def -(k: String): JsonObject = remove(k)
 
   /**
    * Return the JSON value associated with the given field.
@@ -102,7 +114,7 @@ object JsonObject {
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
   def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
-    F.foldLeft(f, empty) { case (acc, (k, v)) => acc + (k, v) }
+    F.foldLeft(f, empty) { case (acc, (k, v)) => acc.add(k, v) }
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.IndexedSeq]] (provided for optimization).
@@ -153,7 +165,7 @@ object JsonObject {
   ) extends JsonObject {
     def toMap: Map[String, Json] = fieldMap
 
-    def +(k: String, j: Json): JsonObject =
+    def add(k: String, j: Json): JsonObject =
       if (fieldMap.contains(k)) {
         copy(fieldMap = fieldMap.updated(k, j))
       } else {
@@ -169,7 +181,7 @@ object JsonObject {
       }
     }
 
-    def -(k: String): JsonObject =
+    def remove(k: String): JsonObject =
       copy(fieldMap = fieldMap - k, orderedFields = orderedFields.filterNot(_ == k))
 
     def apply(k: String): Option[Json] = fieldMap.get(k)
