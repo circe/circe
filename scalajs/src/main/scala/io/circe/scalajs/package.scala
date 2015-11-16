@@ -11,8 +11,6 @@ package object scalajs {
 
   /**
    * Converts scalajs js.Any to circe Json
-   * @param input
-   * @return
    */
   def parseJS(input: js.Any): Xor[ParsingFailure, Json] = try {
     Xor.right(convertJSAnyToJson(input))
@@ -23,18 +21,12 @@ package object scalajs {
 
   /**
    * converts scalajs objects to scala classes
-   * @param input
-   * @param d
-   * @tparam A
-   * @return
    */
   def decodeJS[A](input: js.Any)(implicit d: Decoder[A]): Xor[Error, A] =
     parseJS(input).flatMap(d.decodeJson)
 
   /**
    * convert circe Json to scalajs js.Any
-   * @param input
-   * @return
    */
   def convertJsonToJSAny(input: Json): js.Any = {
     input match {
@@ -54,8 +46,6 @@ package object scalajs {
 
   /**
    * converts scalajs js.Any to circe Json
-   * @param j
-   * @return
    */
   def convertJSAnyToJson(j: Any): Json = j match {
     case s: String => Json.string(s)
