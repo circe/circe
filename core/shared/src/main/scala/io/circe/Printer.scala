@@ -275,26 +275,28 @@ object Printer {
     colons: String
   ) extends Serializable
 
+  private[this] final val maxMemoizationDepth = 128
+
   private[circe] abstract class MemoizedPieces extends Serializable {
     def compute(i: Int): Pieces
 
-    private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces]
-
-    def apply(i: Int): Pieces = if (i < known.size) known.get(i) else if (i == known.size) {
-      val res = compute(i)
-      known.add(i, res)
-      res
-    } else {
-      var j = known.size
-      var res: Pieces = null
-
-      while (j <= i) {
-        res = compute(j)
-        known.add(j, res)
-        j += 1
+    private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList(
+      {
+        // Temporary workaround for Scala.js #2023.
+        val tmp = new java.util.ArrayList[Pieces](maxMemoizationDepth)
+        List.fill[Pieces](maxMemoizationDepth)(null).foreach(tmp.add)
+        tmp
       }
+    )
 
-      res
+    def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i) else {
+      val res = known.get(i)
+
+      if (res != null) res else {
+        val tmp = compute(i)
+        known.set(i, tmp)
+        tmp
+      }
     }
   }
 }
