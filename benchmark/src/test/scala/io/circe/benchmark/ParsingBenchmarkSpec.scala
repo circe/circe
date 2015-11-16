@@ -11,6 +11,10 @@ class ParsingBenchmarkSpec extends FlatSpec {
     assert(parseIntsC === intsC)
   }
 
+  it should "correctly parse integers using Circe with Jackson" in {
+    assert(parseIntsCJ === intsC)
+  }
+
   it should "correctly parse integers using Argonaut" in {
     assert(parseIntsA === intsA)
   }
@@ -25,6 +29,10 @@ class ParsingBenchmarkSpec extends FlatSpec {
 
   it should "correctly parse case classes using Circe" in {
     assert(parseFoosC === foosC)
+  }
+
+  it should "correctly parse case classes using Circe with Jackson" in {
+    assert(parseFoosCJ === foosC)
   }
 
   it should "correctly parse case classes using Argonaut" in {

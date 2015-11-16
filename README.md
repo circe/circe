@@ -107,7 +107,8 @@ other libraries.
 circe doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
 and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
 facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
-fussiest code in Argonaut.
+fussiest code in Argonaut. The [`jackson`][circe-jackson] subproject supports using
+[Jackson][jackson] for both parsing and printing.
 
 circe also provides a [`parse`][circe-parse] subproject that provides parsing support for Scala.js,
 with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
@@ -356,6 +357,7 @@ limitations under the License.
 [benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/non/cats
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
+[circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
 [circe-parse]: https://travisbrown.github.io/circe/api/#io.circe.parse.package
 [code-of-conduct]: http://typelevel.org/conduct.html
@@ -366,6 +368,7 @@ limitations under the License.
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [gitter]: https://gitter.im/travisbrown/circe
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
+[jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/

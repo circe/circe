@@ -84,6 +84,7 @@ lazy val circe = project.in(file("."))
     parse, parseJS,
     tests, testsJS,
     jawn,
+    jackson,
     async,
     benchmark
   )
@@ -186,7 +187,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   )
   .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, async))
+  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, async))
   .jsConfigure(_.copy(id = "testsJS"))
   .dependsOn(coreBase, genericBase, refinedBase, parseBase)
 
@@ -201,6 +202,20 @@ lazy val jawn = project
   .settings(allSettings)
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
+  )
+  .dependsOn(core)
+
+lazy val jackson = project
+  .settings(
+    description := "circe jackson",
+    moduleName := "circe-jackson"
+  )
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.fasterxml.jackson.core" % "jackson-core" % "2.6.3",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.3"
+    )
   )
   .dependsOn(core)
 
@@ -232,7 +247,7 @@ lazy val benchmark = project
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(core, generic, jawn, jackson)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
