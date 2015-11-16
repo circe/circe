@@ -15,7 +15,7 @@ private[circe] case class CObject(
   def up: Option[Cursor] = Some {
     val newFocus = Json.fromJsonObject(if (changed) obj.add(key, focus) else obj)
 
-    parent match {
+    parent.normalize match {
       case _: CJson => CJson(newFocus)
       case a: CArray => a.copy(focus = newFocus, changed = self.changed || a.changed)
       case o: CObject => o.copy(focus = newFocus, changed = self.changed || o.changed)
@@ -25,7 +25,7 @@ private[circe] case class CObject(
   def delete: Option[Cursor] = Some {
     val newFocus = Json.fromJsonObject(obj.remove(key))
 
-    parent match {
+    parent.normalize match {
       case _: CJson => CJson(newFocus)
       case a: CArray => a.copy(focus = newFocus, changed = true)
       case o: CObject => o.copy(focus = newFocus, changed = true)

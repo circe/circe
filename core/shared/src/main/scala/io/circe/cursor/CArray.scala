@@ -15,7 +15,7 @@ private[circe] case class CArray(
   def up: Option[Cursor] = Some {
     val newFocus = Json.fromValues((focus :: rs).reverse_:::(ls))
 
-    parent match {
+    parent.normalize match {
       case _: CJson => CJson(newFocus)
       case a: CArray => a.copy(focus = newFocus, changed = self.changed || a.changed)
       case o: CObject => o.copy(
@@ -29,7 +29,7 @@ private[circe] case class CArray(
   def delete: Option[Cursor] = Some {
     val newFocus = Json.fromValues(rs.reverse_:::(ls))
 
-    parent match {
+    parent.normalize match {
       case _: CJson => CJson(newFocus)
       case a: CArray => a.copy(focus = newFocus, changed = true)
       case o: CObject => o.copy(focus = newFocus, changed = true)

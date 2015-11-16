@@ -15,13 +15,13 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
 
   def top: Json = {
     @tailrec
-    def go(c: Cursor): Json = c match {
+    def go(c: Cursor): Json = c.normalize match {
       case CJson(j) => j
       case CArray(j, p, changed, ls, rs) =>
         val newFocus = Json.fromValues((j :: rs).reverse_:::(ls))
 
         go(
-          p match {
+          p.normalize match {
             case _: CJson => CJson(newFocus)
             case a: CArray => a.copy(focus = newFocus, changed = changed || a.changed)
             case o: CObject => o.copy(
@@ -35,7 +35,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
         val newFocus = Json.fromJsonObject(if (changed) obj.add(k, j) else obj)
 
         go(
-          p match {
+          p.normalize match {
             case _: CJson => CJson(newFocus)
             case a: CArray => a.copy(focus = newFocus, changed = changed || a.changed)
             case o: CObject => o.copy(focus = newFocus, changed = changed || o.changed)
@@ -95,9 +95,8 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     go(Some(this))
   }
 
-  def downArray: Option[Cursor] = focus.asArray.flatMap {
-    case h :: t => Some(CArray(h, this, false, Nil, t))
-    case Nil => None
+  def downArray: Option[Cursor] = focus.asArray.flatMap { values =>
+    if (values.isEmpty) None else Some(CFastNavArray(values.toIndexedSeq, 0, this))
   }
 
   def downAt(p: Json => Boolean): Option[Cursor] =

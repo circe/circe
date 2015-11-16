@@ -24,7 +24,6 @@ private[circe] trait HCursorOperations extends GenericCursor[HCursor] { this: HC
   def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
     Functor[F].map(cursor.withFocusM(f))(c => HCursor(c, history))
 
-
   def lefts: Option[List[Json]]     = cursor.lefts
   def rights: Option[List[Json]]    = cursor.rights
   def fieldSet: Option[Set[String]] = cursor.fieldSet
