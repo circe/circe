@@ -725,6 +725,24 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       
+    </li><li name="io.circe.jackson" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="jackson"></a>
+      <a id="jackson:jackson"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="jackson/package.html"><span class="name">jackson</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@jackson" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Support for Jackson-powered parsing and printing for circe.</p><div class="fullcomment"><div class="comment cmt"><p>Support for Jackson-powered parsing and printing for circe.</p><p>The implementation is ported with minimal changes from Play JSON.
+</p></div></div>
     </li><li name="io.circe.jawn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="jawn"></a>
       <a id="jawn:jawn"></a>
@@ -742,6 +760,28 @@ we need for <code>withFocusM</code>.
       </a>
     </span>
       
+    </li><li name="io.circe.refined" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="refined"></a>
+      <a id="refined:refined"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="refined$.html"><span class="name">refined</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@refined" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides codecs for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</p><div class="fullcomment"><div class="comment cmt"><p>Provides codecs for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</p><p>A refined type <code>T Refined Predicate</code> is encoded as <code>T</code>. Decoding ensures that the
+decoded value satisfies <code>Predicate</code>.</p><p>E.g. with generic codecs</p><pre><span class="kw">case</span> <span class="kw">class</span> Obj(
+  i: <span class="std">Int</span> Refined Positive
+)
+
+Obj(refineV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div></div>
     </li><li name="io.circe.syntax" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="syntax"></a>
       <a id="syntax:syntax"></a>

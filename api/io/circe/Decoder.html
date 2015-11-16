@@ -158,23 +158,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.Decoder#&amp;&amp;&amp;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
-      <a id="&amp;&amp;&amp;[B](Decoder[B]):Decoder[(A,B)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $amp$amp$amp" class="name">&amp;&amp;&amp;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>)]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Combine two decoders.</p>
     </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="+(other:String):String"></a>
       <a id="+(String):String"></a>
@@ -237,6 +220,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.Decoder#and" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="and[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
+      <a id="and[B](Decoder[B]):Decoder[(A,B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.and.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.and.B">B</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder@and[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Combine two decoders.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -612,6 +612,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.Decoder#or" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="or[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]"></a>
+      <a id="or[AA&gt;:A](⇒Decoder[AA]):Decoder[AA]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">or</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="io.circe.Decoder.A">A</span></span>]</span><span class="params">(<span name="d">d: ⇒ <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.or.AA">AA</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.or.AA">AA</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder@or[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Choose the first succeeding decoder.</p>
     </li><li name="io.circe.Decoder#product" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;io.circe.Decoder.Result[(A,B)]"></a>
       <a id="product[B](Decoder[B]):(HCursor,HCursor)⇒Result[(A,B)]"></a>
@@ -800,23 +817,6 @@
       </a>
     </span>
       <p class="shortcomment cmt">Build a new instance with the specified error message.</p>
-    </li><li name="io.circe.Decoder#|||" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="|||[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]"></a>
-      <a id="|||[AA&gt;:A](⇒Decoder[AA]):Decoder[AA]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bar$bar$bar" class="name">|||</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="io.circe.Decoder.A">A</span></span>]</span><span class="params">(<span name="d">d: ⇒ <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.|||.AA">AA</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.|||.AA">AA</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@|||[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Choose the first succeeding decoder.</p>
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
       <a id="→[B](B):(Decoder[A],B)"></a>
@@ -843,7 +843,52 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.Decoder#&amp;&amp;&amp;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
+      <a id="&amp;&amp;&amp;[B](Decoder[B]):Decoder[(A,B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $amp$amp$amp. Deprecated: (Since version 0.3.0) Use and" class="name deprecated">&amp;&amp;&amp;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.Decoder.A">A</span>, <span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder@&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Combine two decoders.</p><div class="fullcomment"><div class="comment cmt"><p>Combine two decoders.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use and</p></dd></dl></div>
+    </li><li name="io.circe.Decoder#|||" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="|||[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]"></a>
+      <a id="|||[AA&gt;:A](⇒Decoder[AA]):Decoder[AA]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bar$bar$bar. Deprecated: (Since version 0.3.0) Use or" class="name deprecated">|||</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="io.circe.Decoder.A">A</span></span>]</span><span class="params">(<span name="d">d: ⇒ <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.|||.AA">AA</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.|||.AA">AA</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder@|||[AA&gt;:A](d:=&gt;io.circe.Decoder[AA]):io.circe.Decoder[AA]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Choose the first succeeding decoder.</p><div class="fullcomment"><div class="comment cmt"><p>Choose the first succeeding decoder.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use or</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

@@ -100,24 +100,7 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="io.circe.JsonObject#+" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="+(k:String,j:io.circe.Json):io.circe.JsonObject"></a>
-      <a id="+(String,Json):JsonObject"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $plus" class="name">+</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonObject@+(k:String,j:io.circe.Json):io.circe.JsonObject" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Insert the given association.</p>
-    </li><li name="io.circe.JsonObject#+:" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="io.circe.JsonObject#+:" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="+:(f:(String,io.circe.Json)):io.circe.JsonObject"></a>
       <a id="+:((String,Json)):JsonObject"></a>
       <h4 class="signature">
@@ -133,24 +116,24 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Prepend the given association.</p>
-    </li><li name="io.circe.JsonObject#-" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="-(k:String):io.circe.JsonObject"></a>
-      <a id="-(String):JsonObject"></a>
+      <p class="shortcomment cmt">Prepend the given key-value pair.</p>
+    </li><li name="io.circe.JsonObject#add" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="add(k:String,j:io.circe.Json):io.circe.JsonObject"></a>
+      <a id="add(String,Json):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus" class="name">-</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+        <span class="name">add</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonObject@-(k:String):io.circe.JsonObject" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.JsonObject@add(k:String,j:io.circe.Json):io.circe.JsonObject" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Remove the given field association.</p>
+      <p class="shortcomment cmt">Insert the given key-value pair.</p>
     </li><li name="io.circe.JsonObject#apply" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="apply(k:String):Option[io.circe.Json]"></a>
       <a id="apply(String):Option[Json]"></a>
@@ -253,6 +236,23 @@
       </a>
     </span>
       <p class="shortcomment cmt">Return a Kleisli arrow that gets the JSON value associated with the given field.</p>
+    </li><li name="io.circe.JsonObject#remove" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="remove(k:String):io.circe.JsonObject"></a>
+      <a id="remove(String):JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">remove</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonObject@remove(k:String):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Remove the field with the given key (if it exists).</p>
     </li><li name="io.circe.JsonObject#size" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="size:Int"></a>
       <a id="size:Int"></a>
@@ -418,23 +418,6 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.JsonObject#=!=" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="=!=(that:io.circe.JsonObject):Boolean"></a>
-      <a id="=!=(JsonObject):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$bang$eq" class="name">=!=</span><span class="params">(<span name="that">that: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonObject@=!=(that:io.circe.JsonObject):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Type-safe inequality for <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -452,23 +435,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.JsonObject#===" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="===(that:io.circe.JsonObject):Boolean"></a>
-      <a id="===(JsonObject):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq$eq" class="name">===</span><span class="params">(<span name="that">that: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonObject@===(that:io.circe.JsonObject):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Type-safe equality for <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -946,7 +912,52 @@
     </li></ol>
             </div>
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.JsonObject#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(k:String,j:io.circe.Json):io.circe.JsonObject"></a>
+      <a id="+(String,Json):JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus. Deprecated: (Since version 0.3.0) Use add" class="name deprecated">+</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="j">j: <a href="Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonObject@+(k:String,j:io.circe.Json):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Insert the given key-value pair.</p><div class="fullcomment"><div class="comment cmt"><p>Insert the given key-value pair.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use add</p></dd></dl></div>
+    </li><li name="io.circe.JsonObject#-" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-(k:String):io.circe.JsonObject"></a>
+      <a id="-(String):JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $minus. Deprecated: (Since version 0.3.0) Use remove" class="name deprecated">-</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonObject@-(k:String):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Remove the field with the given key (if it exists).</p><div class="fullcomment"><div class="comment cmt"><p>Remove the field with the given key (if it exists).
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use remove</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
