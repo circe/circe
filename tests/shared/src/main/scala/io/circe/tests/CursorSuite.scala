@@ -45,6 +45,53 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     }
   }
 
+  test("top from inside object") {
+    check { (j: Json) =>
+      val c = fromJson(j)
+
+      val intoObject = for {
+        fields  <- c.fields
+        first   <- fields.headOption
+        atFirst <- fromResult(c.downField(first))
+      } yield atFirst
+
+      intoObject.forall(atFirst =>
+        top(atFirst) === Some(j)
+      )
+    }
+  }
+
+  test("top from inside array") {
+    check { (j: Json) =>
+      fromResult(fromJson(j).downArray).forall(atFirst => top(atFirst) === Some(j))
+    }
+  }
+
+  test("up from inside object") {
+    check { (j: Json) =>
+      val c = fromJson(j)
+
+      val intoObject = for {
+        fields  <- c.fields
+        first   <- fields.headOption
+        atFirst <- fromResult(c.downField(first))
+      } yield atFirst
+
+      intoObject.forall(atFirst =>
+        fromResult(atFirst.up).flatMap(focus) === Some(j)
+      )
+    }
+  }
+
+  test("up from inside array") {
+    check { (j: Json) =>
+      fromResult(fromJson(j).downArray).forall(atFirst =>
+        fromResult(atFirst.up).flatMap(focus) === Some(j)
+      )
+    }
+  }
+
+
   test("withFocus(identity)") {
     check { (j: Json) =>
       focus(fromJson(j).withFocus(identity)) === Some(j)
@@ -141,8 +188,8 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      l <- fromResult(a.right)
-    } yield l
+      r <- fromResult(a.right)
+    } yield r
 
     assert(result.flatMap(focus) === Some(5.asJson))
   }
@@ -150,8 +197,8 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   test("invalid right") {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      l <- fromResult(c.right)
-    } yield l
+      r <- fromResult(c.right)
+    } yield r
 
     assert(result.flatMap(focus) === None)
   }
@@ -160,8 +207,8 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      l <- fromResult(a.first)
-    } yield l
+      f <- fromResult(a.first)
+    } yield f
 
     assert(result.flatMap(focus) === Some(1.asJson))
   }
@@ -169,8 +216,8 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   test("invalid first") {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      l <- fromResult(c.first)
-    } yield l
+      f <- fromResult(c.first)
+    } yield f
 
     assert(result.flatMap(focus) === None)
   }
@@ -190,6 +237,44 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
       c <- fromResult(cursor.downField("b"))
       l <- fromResult(c.last)
     } yield l
+
+    assert(result.flatMap(focus) === None)
+  }
+
+  test("valid leftAt") {
+    val result = for {
+      c <- fromResult(cursor.downField("a"))
+      a <- fromResult(c.downN(3))
+      l <- fromResult(a.leftAt(_.as[Int].exists(_ == 1)))
+    } yield l
+
+    assert(result.flatMap(focus) === Some(1.asJson))
+  }
+
+  test("invalid leftAt") {
+    val result = for {
+      c <- fromResult(cursor.downField("b"))
+      l <- fromResult(c.leftAt(_.as[Int].exists(_ == 1)))
+    } yield l
+
+    assert(result.flatMap(focus) === None)
+  }
+
+  test("valid rightAt") {
+    val result = for {
+      c <- fromResult(cursor.downField("a"))
+      a <- fromResult(c.downN(3))
+      r <- fromResult(a.rightAt(_.as[Int].exists(_ == 5)))
+    } yield r
+
+    assert(result.flatMap(focus) === Some(5.asJson))
+  }
+
+  test("invalid rightAt") {
+    val result = for {
+      c <- fromResult(cursor.downField("b"))
+      r <- fromResult(c.rightAt(_.as[Int].exists(_ == 5)))
+    } yield r
 
     assert(result.flatMap(focus) === None)
   }
