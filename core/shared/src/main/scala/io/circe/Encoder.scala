@@ -105,6 +105,21 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
+  implicit val encodeCursor: Encoder[Cursor] = instance(_.focus)
+
+  /**
+   * @group Encoding
+   */
+  implicit val encodeHCursor: Encoder[HCursor] = instance(_.cursor.focus)
+
+  /**
+   * @group Encoding
+   */
+  implicit val encodeACursor: Encoder[ACursor] = instance(_.any.cursor.focus)
+
+  /**
+   * @group Encoding
+   */
   implicit val encodeJsonObject: Encoder[JsonObject] = instance(Json.fromJsonObject)
 
   /**
