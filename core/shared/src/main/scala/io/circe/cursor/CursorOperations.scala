@@ -13,7 +13,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
   type Result = Option[Cursor]
   type M[x[_]] = Functor[x]
 
-  def top: Json = {
+  final def top: Json = {
     @tailrec
     def go(c: Cursor): Json = c match {
       case CJson(j) => j
@@ -57,7 +57,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
   def first: Option[Cursor] = None
   def last: Option[Cursor] = None
 
-  def leftN(n: Int): Option[Cursor] = if (n < 0) rightN(-n) else {
+  final def leftN(n: Int): Option[Cursor] = if (n < 0) rightN(-n) else {
     @tailrec
     def go(i: Int, c: Option[Cursor]): Option[Cursor] = if (i == 0) c else {
       go(i - 1, c.flatMap(_.left))
@@ -65,7 +65,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     go(n, Some(this))
   }
 
-  def rightN(n: Int): Option[Cursor] = if (n < 0) leftN(-n) else {
+  final def rightN(n: Int): Option[Cursor] = if (n < 0) leftN(-n) else {
     @tailrec
     def go(i: Int, c: Option[Cursor]): Option[Cursor] = if (i == 0) c else {
       go(i - 1, c.flatMap(_.right))
@@ -77,15 +77,15 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     @tailrec
     def go(c: Option[Cursor]): Option[Cursor] = c match {
       case None => None
-      case Some(z) => go(if (p(z.focus)) Some(z) else z.left)
+      case Some(z) => if (p(z.focus)) Some(z) else go(z.left)
     }
 
     go(left)
   }
 
-  def rightAt(p: Json => Boolean): Option[Cursor] = right.flatMap(_.find(p))
+  final def rightAt(p: Json => Boolean): Option[Cursor] = right.flatMap(_.find(p))
 
-  def find(p: Json => Boolean): Option[Cursor] = {
+  final def find(p: Json => Boolean): Option[Cursor] = {
     @annotation.tailrec
     def go(c: Option[Cursor]): Option[Cursor] = c match {
       case None => None
@@ -95,19 +95,18 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     go(Some(this))
   }
 
-  def downArray: Option[Cursor] = focus.asArray.flatMap {
+  final def downArray: Option[Cursor] = focus.asArray.flatMap {
     case h :: t => Some(CArray(h, this, false, Nil, t))
     case Nil => None
   }
 
-  def downAt(p: Json => Boolean): Option[Cursor] =
-    downArray.flatMap(_.find(p))
+  final def downAt(p: Json => Boolean): Option[Cursor] = downArray.flatMap(_.find(p))
 
-  def downN(n: Int): Option[Cursor] = downArray.flatMap(_.rightN(n))
+  final def downN(n: Int): Option[Cursor] = downArray.flatMap(_.rightN(n))
 
   def field(k: String): Option[Cursor] = None
 
-  def downField(k: String): Option[Cursor] =
+  final def downField(k: String): Option[Cursor] =
     focus.asObject.flatMap(o => o(k).map(j => CObject(j, k, this, false, o)))
 
   def deleteGoLeft: Option[Cursor] = None
@@ -121,6 +120,6 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
 
   def deleteGoField(q: String): Option[Cursor] = None
 
-  def as[A](implicit d: Decoder[A]): Decoder.Result[A] = hcursor.as[A]
-  def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = hcursor.get[A](k)
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = hcursor.as[A]
+  final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = hcursor.get[A](k)
 }
