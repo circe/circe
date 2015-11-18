@@ -22,6 +22,7 @@ lazy val compilerOptions = Seq(
 
 lazy val catsVersion = "0.3.0"
 lazy val shapelessVersion = "2.3.0-SNAPSHOT"
+lazy val refinedVersion = "0.3.2"
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -136,7 +137,7 @@ lazy val refinedBase = crossProject.in(file("refined"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "eu.timepit" %%% "refined" % "0.3.1"
+    libraryDependencies += "eu.timepit" %%% "refined" % refinedVersion
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "refined"))
@@ -176,7 +177,7 @@ lazy val testsBase = crossProject.in(file("tests"))
       "org.scalatest" %%% "scalatest" % "3.0.0-M9",
       "org.spire-math" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % "0.4",
-      "eu.timepit" %%% "refined-scalacheck" % "0.3.1"
+      "eu.timepit" %%% "refined-scalacheck" % refinedVersion
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
