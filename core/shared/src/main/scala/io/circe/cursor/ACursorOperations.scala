@@ -16,13 +16,15 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
    * A helper method to simplify performing operations on the underlying [[HCursor]].
    */
   private[this] def withHCursor(f: HCursor => ACursor): ACursor =
-    ACursor(either.flatMap(c => f(c).either))
+    if (this.succeeded) f(this.any) else this
 
   def focus: Option[Json] = success.map(_.focus)
   def top: Option[Json] = success.map(_.top)
 
   def delete: ACursor = withHCursor(_.delete)
-  def withFocus(f: Json => Json): ACursor = ACursor(either.map(_.withFocus(f)))
+  def withFocus(f: Json => Json): ACursor =
+    if (this.succeeded) ACursor.ok(this.any.withFocus(f)) else this
+
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
     either.fold(
       _ => F.pure(this),
