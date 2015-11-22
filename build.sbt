@@ -163,7 +163,8 @@ lazy val parseJS = parseBase.js
 lazy val scalajs = project
   .settings(
     description := "circe scalajs",
-    moduleName := "circe-scalajs"
+    moduleName := "circe-scalajs",
+    name := "scalajs"
   )
   .settings(allSettings)
   .enablePlugins(ScalaJSPlugin)
