@@ -7,22 +7,37 @@ import io.circe._
 /**
  * A helper trait that implements cursor operations for [[io.circe.HCursor]].
  */
-private[circe] trait HCursorOperations extends GenericCursor[HCursor] { this: HCursor =>
+private[circe] trait HCursorOperations extends GenericCursor[HCursor] { self: HCursor =>
   type Focus[x] = Id[x]
   type Result = ACursor
   type M[x[_]] = Functor[x]
 
   private[this] def toACursor(c: Option[Cursor], e: CursorOp) =
     c.fold(
-      ACursor.fail(copy(history = HistoryOp.fail(e) :: history))
-    )(c => ACursor.ok(HCursor(c, HistoryOp.ok(e) :: history)))
+      ACursor.fail(
+        new HCursor(this.cursor) {
+          def history: List[HistoryOp] = HistoryOp.fail(e) :: self.history
+        }
+      )
+    )(c => ACursor.ok(
+      new HCursor(c) {
+        def history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
+      }
+    ))
 
   def focus: Json = cursor.focus
   def top: Json = cursor.top
   def delete: ACursor = toACursor(cursor.delete, CursorOp.DeleteGoParent)
-  def withFocus(f: Json => Json): HCursor = HCursor(cursor.withFocus(f), history)
+  def withFocus(f: Json => Json): HCursor = new HCursor(cursor.withFocus(f)) {
+    def history: List[HistoryOp] = self.history
+  }
+
   def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
-    Functor[F].map(cursor.withFocusM(f))(c => HCursor(c, history))
+    Functor[F].map(cursor.withFocusM(f))(c =>
+      new HCursor(c) {
+        def history: List[HistoryOp] = self.history
+      }
+    )
 
 
   def lefts: Option[List[Json]]     = cursor.lefts

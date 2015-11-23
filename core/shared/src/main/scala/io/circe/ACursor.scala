@@ -13,22 +13,24 @@ import io.circe.cursor.ACursorOperations
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
+abstract class ACursor private[circe](val any: HCursor) extends ACursorOperations {
+  def either: Xor[HCursor, HCursor] = if (succeeded) Xor.right(any) else Xor.left(any)
+
   /**
    * Return the current [[HCursor]] if we are in a success state.
    */
-  def success: Option[HCursor] = either.toOption
+  def success: Option[HCursor] = if (succeeded) Some(any) else None
 
   /**
    * Return the failed [[HCursor]] if we are in a failure state.
    */
-  def failure: Option[HCursor] = either.swap.toOption
+  def failure: Option[HCursor] = if (succeeded) None else Some(any)
 
   /**
    * Indicate whether this cursor represents the result of a successful
    * operation.
    */
-  def succeeded: Boolean = success.isDefined
+  def succeeded: Boolean
 
   /**
    * Indicate whether this cursor represents the result of an unsuccessful
@@ -42,11 +44,6 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   def cursor: Option[Cursor] = success.map(_.cursor)
 
   /**
-   * Return the underlying cursor.
-   */
-  def any: HCursor = either.merge
-
-  /**
    * Return the underlying cursor's history.
    */
   def history: List[HistoryOp] = any.history
@@ -54,9 +51,10 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
   /**
    * If the last operation was not successful, reattempt it.
    */
-  def reattempt: ACursor = either.fold(
-    invalid => ACursor.ok(HCursor(invalid.cursor, HistoryOp.reattempt +: invalid.history)),
-    _ => this
+  def reattempt: ACursor = if (succeeded) this else ACursor.ok(
+    new HCursor(any.cursor) {
+      def history: List[HistoryOp] = HistoryOp.reattempt +: any.history
+    }
   )
 
   /**
@@ -82,8 +80,12 @@ case class ACursor(either: Xor[HCursor, HCursor]) extends ACursorOperations {
 }
 
 object ACursor {
-  def ok(cursor: HCursor): ACursor = ACursor(Xor.right(cursor))
-  def fail(cursor: HCursor): ACursor = ACursor(Xor.left(cursor))
+  def ok(cursor: HCursor): ACursor = new ACursor(cursor) {
+    def succeeded: Boolean = true
+  }
+  def fail(cursor: HCursor): ACursor = new ACursor(cursor) {
+    def succeeded: Boolean = false
+  }
 
   implicit val eqACursor: Eq[ACursor] = Eq.by(_.either)
 }

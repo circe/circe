@@ -27,7 +27,9 @@ abstract class Cursor extends CursorOperations {
   /**
    * Create an [[HCursor]] for this cursor in order to track history.
    */
-  def hcursor: HCursor = HCursor(this, Nil)
+  def hcursor: HCursor = new HCursor(this) {
+    def history: List[HistoryOp] = Nil
+  }
 }
 
 object Cursor {

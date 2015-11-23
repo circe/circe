@@ -15,7 +15,9 @@ import scala.annotation.tailrec
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-case class HCursor(cursor: Cursor, history: List[HistoryOp]) extends HCursorOperations {
+abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperations {
+  def history: List[HistoryOp]
+
   /**
    * Create an [[ACursor]] for this cursor.
    */
@@ -62,7 +64,6 @@ case class HCursor(cursor: Cursor, history: List[HistoryOp]) extends HCursorOper
 
 object HCursor {
   implicit val eqHCursor: Eq[HCursor] = Eq.instance {
-    case (HCursor(c1, h1), HCursor(c2, h2)) =>
-      Eq[Cursor].eqv(c1, c2) && h1 == h2
+    case (hc1, hc2) => Eq[Cursor].eqv(hc1.cursor, hc2.cursor) && (hc1.history == hc2.history)
   }
 }
