@@ -16,10 +16,8 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Decode the given acursor.
    */
-  def tryDecode(c: ACursor): Decoder.Result[A] = c.either.fold(
-    invalid =>
-      Xor.left(DecodingFailure("Attempt to decode value on failed cursor", invalid.history)),
-    apply
+  def tryDecode(c: ACursor): Decoder.Result[A] = if (c.succeeded) apply(c.any) else Xor.left(
+    DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
 
   /**
@@ -165,7 +163,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
-   * Construct an instance from a function that will reattempt on failure.
+   * Construct an instance from a function that may reattempt on failure.
    *
    * @group Utilities
    */
@@ -385,21 +383,21 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     )
   }
 
+  private[this] val rightNone: Xor[DecodingFailure, Option[Nothing]] = Xor.right(None)
+
   /**
    * @group Decoding
    */
   implicit def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] =
-    withReattempt { a =>
-      a.success.fold[Result[Option[A]]](Xor.right(None)) { valid =>
-        if (valid.focus.isNull) Xor.right(None) else d(valid).fold[Result[Option[A]]](
-          df =>
-            df.history.headOption.fold[Result[Option[A]]](
-              Xor.right(None)
-            )(_ => Xor.left(df)),
-          a => Xor.right(Some(a))
-        )
-      }
-    }
+    withReattempt(c =>
+      if (c.succeeded) {
+        if (c.any.focus.isNull) rightNone else d(c.any) match {
+          case Xor.Right(a) => Xor.right(Some(a))
+          case Xor.Left(df) if df.history.isEmpty => rightNone
+          case Xor.Left(df) => Xor.left(df)
+        }
+      } else rightNone
+    )
 
   /**
    * @group Decoding
