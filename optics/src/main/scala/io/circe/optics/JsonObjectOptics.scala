@@ -22,7 +22,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit lazy val objectAt: At[JsonObject, String, Json] = new At[JsonObject, String, Json]{
+  implicit lazy val objectAt: At[JsonObject, String, Option[Json]] = new At[JsonObject, String, Option[Json]]{
     def at(field: String): Lens[JsonObject, Option[Json]] =
       Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
         obj => optVal.fold(obj - field)(value => obj + (field, value))
