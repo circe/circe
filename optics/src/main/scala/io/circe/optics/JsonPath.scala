@@ -1,11 +1,11 @@
 package io.circe.optics
 
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.optics.JsonObjectOptics._
 import io.circe.optics.JsonOptics._
-import io.circe.{Decoder, Encoder, Json}
 import monocle.function.Index.index
 import monocle.std.list._
-import monocle.{Optional, Prism}
+import monocle.{ Optional, Prism }
 
 import scala.language.dynamics
 

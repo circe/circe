@@ -2,8 +2,8 @@ package io.circe.optics
 
 import cats.std.list.{ listInstance => catsListInstance }
 import io.circe.{ Json, JsonObject }
-import monocle.function.{ At, Each, FilterIndex, Index }
 import monocle.{ Lens, Traversal }
+import monocle.function.{ At, Each, FilterIndex, Index }
 import scalaz.{ Applicative, Traverse }
 import scalaz.std.ListInstances
 
@@ -22,12 +22,13 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit lazy val objectAt: At[JsonObject, String, Option[Json]] = new At[JsonObject, String, Option[Json]]{
-    def at(field: String): Lens[JsonObject, Option[Json]] =
-      Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
-        obj => optVal.fold(obj - field)(value => obj + (field, value))
-      )
-  }
+  implicit lazy val objectAt: At[JsonObject, String, Option[Json]] =
+    new At[JsonObject, String, Option[Json]] {
+      def at(field: String): Lens[JsonObject, Option[Json]] =
+        Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
+          obj => optVal.fold(obj - field)(value => obj + (field, value))
+        )
+    }
 
   implicit lazy val objectFilterIndex: FilterIndex[JsonObject, String, Json] =
     new FilterIndex[JsonObject, String, Json] {
