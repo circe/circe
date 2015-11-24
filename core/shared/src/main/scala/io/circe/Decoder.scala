@@ -112,6 +112,20 @@ trait Decoder[A] extends Serializable { self =>
       a <- this(a1)
       b <- x(a2)
     } yield (a, b)
+
+  /**
+   * Create a new decoder that performs some operation on the incoming JSON before decoding.
+   */
+  final def after(f: HCursor => ACursor): Decoder[A] = Decoder.instance(c => self.tryDecode(f(c)))
+
+  /**
+   * Create a new decoder that performs some operation on the result if this one succeeds.
+   *
+   * @param f a function returning either a value or an error message
+   */
+  final def emap[B](f: A => Xor[String, B]): Decoder[B] = Decoder.instance(c =>
+    self(c).flatMap(a => f(a).leftMap(message => DecodingFailure(message, c.history)))
+  )
 }
 
 /**
@@ -172,6 +186,15 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
 
     override def tryDecode(c: ACursor) = f(c)
   }
+
+  /**
+   * Construct an instance that always fails with the given error message.
+   *
+   * @group Utilities
+   */
+  final def failWith[A](message: String): Decoder[A] = instance(_ =>
+    Xor.left(DecodingFailure(message, Nil))
+  )
 
   /**
    * @group Decoding
