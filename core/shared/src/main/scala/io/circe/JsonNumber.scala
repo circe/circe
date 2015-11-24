@@ -188,9 +188,11 @@ private[circe] final case class JsonDecimal(value: String) extends JsonNumber {
   lazy val toDouble: Double = value.toDouble
   override def toString: String = value
 
-  def toLong: Option[Long] = {
+  def toLong: Option[Long] = try {
     val asBigDecimal: BigDecimal = toBigDecimal
     if (asBigDecimal.isValidLong) Some(asBigDecimal.toLong) else None
+  } catch {
+    case _: NumberFormatException => None
   }
 
   def truncateToLong: Long = {
