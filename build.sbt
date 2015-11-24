@@ -229,7 +229,7 @@ lazy val optics = project
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M1"
+    libraryDependencies += "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M2"
   )
   .dependsOn(core)
 
