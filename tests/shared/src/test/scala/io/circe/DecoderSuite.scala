@@ -5,15 +5,15 @@ import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class DecoderSuite extends CirceSuite {
-  test("after with identity") {
+  test("prepare with identity") {
     check { (i: Int) =>
-      Decoder[Int].after(ACursor.ok).decodeJson(i.asJson) === Xor.right(i)
+      Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Xor.right(i)
     }
   }
 
-  test("after with downField") {
+  test("prepare with downField") {
     check { (i: Int, k: String, m: Map[String, Int]) =>
-      Decoder[Int].after(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Xor.right(i)
+      Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Xor.right(i)
     }
   }
 

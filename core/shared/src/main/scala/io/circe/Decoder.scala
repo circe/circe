@@ -116,7 +116,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
    */
-  final def after(f: HCursor => ACursor): Decoder[A] = Decoder.instance(c => self.tryDecode(f(c)))
+  final def prepare(f: HCursor => ACursor): Decoder[A] = Decoder.instance(c => self.tryDecode(f(c)))
 
   /**
    * Create a new decoder that performs some operation on the result if this one succeeds.
