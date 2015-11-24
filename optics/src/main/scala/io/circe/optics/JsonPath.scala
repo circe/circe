@@ -9,19 +9,23 @@ import monocle.{ Optional, Prism }
 
 import scala.language.dynamics
 
-case class JsonPath(opt: Optional[Json, Json]) extends Dynamic {
+case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   def selectDynamic(field: String): JsonPath =
-    JsonPath(opt.composePrism(jsonObject).composeOptional(index(field)))
+    JsonPath(json.composePrism(jsonObject).composeOptional(index(field)))
 
   def at(i: Int): JsonPath =
-    JsonPath(opt.composePrism(jsonArray).composeOptional(index(i)))
+    JsonPath(json.composePrism(jsonArray).composeOptional(index(i)))
 
+  /**
+   * Decode a value at the current location.
+   *
+   * Note that this operation is not lawful, since decoding is not injective (as noted by Julien
+   * Truffaut). It is provided here for convenience, but may change in future versions.
+   */
   def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Optional[Json, A] =
-    opt.composePrism(
+    json.composePrism(
       Prism((j: Json) => decode.decodeJson(j).toOption)(encode(_))
     )
-
-  def `*`: Optional[Json, Json] = opt
 }
 
 object JsonPath {

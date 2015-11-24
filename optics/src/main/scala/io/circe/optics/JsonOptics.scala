@@ -17,13 +17,13 @@ import monocle.{ Prism, Traversal }
  */
 trait JsonOptics extends CatsConversions {
   lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.bool)
-  lazy val jsonBigDecimal: Prism[Json, BigDecimal] = jsonNumber.composeIso(jsonNumberToBigDecimal)
-  lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberToDouble)
-  lazy val jsonBigInt: Prism[Json, BigInt] = jsonNumber.composePrism(jsonNumberToBigInt)
-  lazy val jsonLong: Prism[Json, Long] = jsonNumber.composePrism(jsonNumberToLong)
-  lazy val jsonInt: Prism[Json, Int] = jsonNumber.composePrism(jsonNumberToInt)
-  lazy val jsonShort: Prism[Json, Short] = jsonNumber.composePrism(jsonNumberToShort)
-  lazy val jsonByte: Prism[Json, Byte] = jsonNumber.composePrism(jsonNumberToByte)
+  lazy val jsonBigDecimal: Prism[Json, BigDecimal] = jsonNumber.composeIso(jsonNumberBigDecimal)
+  lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberDouble)
+  lazy val jsonBigInt: Prism[Json, BigInt] = jsonNumber.composePrism(jsonNumberBigInt)
+  lazy val jsonLong: Prism[Json, Long] = jsonNumber.composePrism(jsonNumberLong)
+  lazy val jsonInt: Prism[Json, Int] = jsonNumber.composePrism(jsonNumberInt)
+  lazy val jsonShort: Prism[Json, Short] = jsonNumber.composePrism(jsonNumberShort)
+  lazy val jsonByte: Prism[Json, Byte] = jsonNumber.composePrism(jsonNumberByte)
   lazy val jsonString: Prism[Json, String] = Prism[Json, String](_.asString)(Json.string)
   lazy val jsonNumber: Prism[Json, JsonNumber] =
     Prism[Json, JsonNumber](_.asNumber)(Json.fromJsonNumber)

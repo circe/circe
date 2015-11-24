@@ -24,6 +24,10 @@ lazy val catsVersion = "0.3.0"
 lazy val shapelessVersion = "2.3.0-SNAPSHOT"
 lazy val refinedVersion = "0.3.2"
 
+lazy val scalaTestVersion = "3.0.0-M9"
+lazy val scalaCheckVersion = "1.12.5"
+lazy val disciplineVersion = "0.4"
+
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -174,10 +178,10 @@ lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scalacheck" %%% "scalacheck" % "1.12.5",
-      "org.scalatest" %%% "scalatest" % "3.0.0-M9",
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.spire-math" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % "0.4",
+      "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
@@ -227,11 +231,13 @@ lazy val optics = project
     moduleName := "circe-optics"
   )
   .settings(allSettings)
-  .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M2"
+    libraryDependencies ++= Seq(
+      "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M2",
+      "com.github.julien-truffaut" %% "monocle-law" % "1.2.0-M2" % "test"
+    )
   )
-  .dependsOn(core)
+  .dependsOn(core, tests % "test")
 
 lazy val async = project
   .settings(
@@ -257,7 +263,7 @@ lazy val benchmark = project
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
       "io.spray" %% "spray-json" % "1.3.2",
-      "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test"
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
     )
   )
   .enablePlugins(JmhPlugin)
@@ -352,7 +358,7 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM;benchmark/test;tests/test;scalastyle;unidoc")
+addCommandAlias("validateJVM", ";buildJVM;tests/test;optics/test;benchmark/test;scalastyle;unidoc")
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
