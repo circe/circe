@@ -255,7 +255,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     c.focus match {
       case JNull => Xor.right(Double.NaN)
       case JNumber(number) => Xor.right(number.toDouble)
-      case _ => Xor.left(DecodingFailure("Float", c.history))
+      case _ => Xor.left(DecodingFailure("Double", c.history))
     }
   }
 
