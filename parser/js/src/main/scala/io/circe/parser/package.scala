@@ -1,14 +1,12 @@
 package io.circe
 
 import cats.data.Xor
-import io.circe.scalajs._
-import scala.scalajs.js.{ JSON, SyntaxError, JavaScriptException }
+import io.circe.scalajs.convertJsToJson
+import scala.scalajs.js.JSON
 
 package object parser extends Parser {
-  def parse(input: String): Xor[ParsingFailure, Json] = try {
-    Xor.right(convertJSAnyToJson(JSON.parse(input)))
-  } catch {
-    case exception @ JavaScriptException(error: SyntaxError) =>
-      Xor.left(ParsingFailure(error.message, exception))
-  }
+  def parse(input: String): Xor[ParsingFailure, Json] =
+    Xor.catchNonFatal(JSON.parse(input)).flatMap(convertJsToJson).leftMap(exception =>
+      ParsingFailure(exception.getMessage, exception)
+    )
 }

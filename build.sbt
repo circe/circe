@@ -115,6 +115,7 @@ lazy val circe = project.in(file("."))
     jawn,
     jackson,
     optics,
+    scalajs,
     streaming,
     async,
     benchmark
