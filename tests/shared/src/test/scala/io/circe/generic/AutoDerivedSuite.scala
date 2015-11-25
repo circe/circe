@@ -9,6 +9,7 @@ import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
+import shapeless.test.illTyped
 
 class AutoDerivedSuite extends CirceSuite {
   final case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
@@ -154,5 +155,15 @@ class AutoDerivedSuite extends CirceSuite {
 
   test("Encoding with Encoder[CNil] should throw an exception") {
     intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
+  }
+
+  test("Generic instances should not be derived for Object") {
+    illTyped("Decoder[Object]")
+    illTyped("Encoder[Object]")
+  }
+
+  test("Generic instances should not be derived for AnyRef") {
+    illTyped("Decoder[AnyRef]")
+    illTyped("Encoder[AnyRef]")
   }
 }
