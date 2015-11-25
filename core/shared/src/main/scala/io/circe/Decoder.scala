@@ -393,17 +393,17 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     d: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
   ): Decoder[C[A]] = instance { c =>
-    c.downArray.success.fold(
-      if (c.focus.isArray)
-        Xor.right(cbf.apply.result)
-      else
-        Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
-    )(
-      _.traverseDecode(cbf.apply)(
+    val arrayCursor = c.downArray
+
+    if (arrayCursor.succeeded) {
+      arrayCursor.any.traverseDecode(cbf.apply)(
         _.right,
         (acc, hcursor) => hcursor.as[A].map(acc += _)
       ).map(_.result)
-    )
+    } else if (c.focus.isArray)
+        Xor.right(cbf.apply.result)
+      else
+        Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
   }
 
   private[this] val rightNone: Xor[DecodingFailure, Option[Nothing]] = Xor.right(None)
@@ -478,14 +478,14 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     da: Decoder[A],
     db: Decoder[B]
   ): Decoder[Xor[A, B]] = instance { c =>
-    val l = (c.downField(leftKey)).success
-    val r = (c.downField(rightKey)).success
+    val l = c.downField(leftKey)
+    val r = c.downField(rightKey)
 
-    (l, r) match {
-      case (Some(hcursor), None) => da(hcursor).map(Xor.left(_))
-      case (None, Some(hcursor)) => db(hcursor).map(Xor.right(_))
-      case _ => Xor.left(DecodingFailure("[A, B]Xor[A, B]", c.history))
-    }
+    if (l.succeeded && !r.succeeded) {
+      da(l.any).map(Xor.left(_))
+    } else if (!l.succeeded && r.succeeded) {
+      db(r.any).map(Xor.right(_))
+    } else Xor.left(DecodingFailure("[A, B]Xor[A, B]", c.history))
   }
 
   /**
