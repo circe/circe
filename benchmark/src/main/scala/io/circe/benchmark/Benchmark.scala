@@ -16,8 +16,8 @@ case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 object Foo {
   implicit val codecFoo: CodecJson[Foo] = CodecJson.derive[Foo]
   implicit val playFormatFoo: Format[Foo] = JsonP.format[Foo]
-  implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
-  implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+  implicit val decodeFoo: Decoder[Foo] = deriveDecoder
+  implicit val encodeFoo: Encoder[Foo] = deriveEncoder
   implicit val sprayFormatFoo: JsonFormat[Foo] = jsonFormat5(Foo.apply)
 
   implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals[Foo]
@@ -220,8 +220,8 @@ class PrintingBenchmark extends ExampleData {
 class CirceDerivationBenchmark {
   import io.circe._
 
-  private[this] val derivedDecoder: Decoder[Foo] = deriveFor[Foo].decoder
-  private[this] val derivedEncoder: Encoder[Foo] = deriveFor[Foo].encoder
+  private[this] val derivedDecoder: Decoder[Foo] = deriveDecoder
+  private[this] val derivedEncoder: Encoder[Foo] = deriveEncoder
 
   private[this] val nonDerivedDecoder: Decoder[Foo] = new Decoder[Foo] {
     def apply(c: HCursor): Decoder.Result[Foo] = for {

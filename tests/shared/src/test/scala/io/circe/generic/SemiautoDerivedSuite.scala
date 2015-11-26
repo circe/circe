@@ -14,12 +14,12 @@ import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
 class SemiautoDerivedSuite extends CirceSuite {
-  implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveFor[Qux[A]].decoder
-  implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveFor[Qux[A]].encoder
-  implicit val decodeWub: Decoder[Wub] = deriveFor[Wub].decoder
-  implicit val encodeWub: Encoder[Wub] = deriveFor[Wub].encoder
-  implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
-  implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+  implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
+  implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
+  implicit val decodeWub: Decoder[Wub] = deriveDecoder
+  implicit val encodeWub: Encoder[Wub] = deriveEncoder
+  implicit val decodeFoo: Decoder[Foo] = deriveDecoder
+  implicit val encodeFoo: Encoder[Foo] = deriveEncoder
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
@@ -45,11 +45,8 @@ class SemiautoDerivedSuite extends CirceSuite {
     implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
       Arbitrary(atDepth(0))
 
-    implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] =
-      deriveFor[RecursiveAdtExample].decoder
-
-    implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] =
-      deriveFor[RecursiveAdtExample].encoder
+    implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
+    implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] = deriveEncoder
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
@@ -67,10 +64,10 @@ class SemiautoDerivedSuite extends CirceSuite {
       Arbitrary(atDepth(0))
 
     implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
-      deriveFor[RecursiveWithOptionExample].decoder
+      deriveDecoder
 
     implicit val encodeRecursiveWithOptionExample: Encoder[RecursiveWithOptionExample] =
-      deriveFor[RecursiveWithOptionExample].encoder
+      deriveEncoder
   }
 
   case class OvergenerationExampleInner(i: Int)
