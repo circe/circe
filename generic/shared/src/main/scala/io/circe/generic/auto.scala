@@ -1,7 +1,6 @@
 package io.circe.generic
 
 import export.reexports
-import io.circe.{ Decoder, Encoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 
