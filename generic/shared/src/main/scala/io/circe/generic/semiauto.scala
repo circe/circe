@@ -26,8 +26,8 @@ import shapeless.ops.record.RemoveAll
  *   case class Foo(i: Int, p: (String, Double))
  *
  *   object Foo {
- *     implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
- *     implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+ *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder
+ *     implicit val encodeFoo: Encoder[Foo] = deriveEncoder
  *   }
  * }}}
  */
