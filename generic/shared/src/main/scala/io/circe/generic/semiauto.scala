@@ -1,10 +1,14 @@
 package io.circe.generic
 
 import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
-import io.circe.generic.decoding.DerivedDecoder
+import io.circe.generic.decoding.{
+  DerivedDecoder,
+  DerivedDecoderWithDefaults,
+  DerivedDecoderWithDefaultsBuilder
+}
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.util.PatchWithOptions
-import shapeless.{ HList, LabelledGeneric, Lazy }
+import shapeless.{ HList, Default, LabelledGeneric, Lazy }
 import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll
 
@@ -50,6 +54,12 @@ object semiauto {
     ): ObjectEncoder[A] = new ObjectEncoder[A] {
       def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
     }
+
+    def decoderWithDefaults[R <: HList, D <: HList](implicit
+      gen: LabelledGeneric.Aux[A, R],
+      defaults: Default.AsRecord.Aux[A, D],
+      builder: Lazy[DerivedDecoderWithDefaultsBuilder[R, D]]
+    ): Decoder[A] = builder.value(defaults()).map(gen.from)
 
     def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
       ffp: FnFromProduct.Aux[P => C, A],

@@ -1,33 +1,42 @@
 package io.circe.generic
 
 import algebra.Eq
-import cats.data.Xor
+import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.{ Decoder, Encoder, Json }
-import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
-import io.circe.generic.semiauto._
+import io.circe.generic.auto.defaults._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
-import shapeless.test.illTyped
 
-class SemiautoDerivedSuite extends CirceSuite {
-  implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
-  implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
-  implicit val decodeWub: Decoder[Wub] = deriveDecoder
-  implicit val encodeWub: Encoder[Wub] = deriveEncoder
-  implicit val decodeFoo: Decoder[Foo] = deriveDecoder
-  implicit val encodeFoo: Encoder[Foo] = deriveEncoder
+class AutoDerivedWithDefaultsSuite extends CirceSuite {
+  final case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
+  final case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
 
-  implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
-    deriveFor[Int => Qux[String]].incomplete
+  object InnerCaseClassExample {
+    implicit val arbitraryInnerCaseClassExample: Arbitrary[InnerCaseClassExample] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[String]
+          b <- Arbitrary.arbitrary[String]
+          c <- Arbitrary.arbitrary[String]
+          d <- Arbitrary.arbitrary[String]
+        } yield InnerCaseClassExample(a, b, c, d)
+      )
+  }
 
-  implicit val decodeJlessQux: Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] =
-    deriveFor[FieldType[Witness.`'j`.T, Int] => Qux[String]].incomplete
+  object OuterCaseClassExample {
+    implicit val eqOuterCaseClassExample: Eq[OuterCaseClassExample] = Eq.fromUniversalEquals
 
-  implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
+    implicit val arbitraryOuterCaseClassExample: Arbitrary[OuterCaseClassExample] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[String]
+          i <- Arbitrary.arbitrary[InnerCaseClassExample]
+        } yield OuterCaseClassExample(a, i)
+      )
+  }
 
   sealed trait RecursiveAdtExample
   case class BaseAdtExample(a: String) extends RecursiveAdtExample
@@ -44,9 +53,6 @@ class SemiautoDerivedSuite extends CirceSuite {
 
     implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
       Arbitrary(atDepth(0))
-
-    implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
-    implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] = deriveEncoder
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
@@ -56,18 +62,12 @@ class SemiautoDerivedSuite extends CirceSuite {
       Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
-      Arbitrary.arbitrary[Option[RecursiveWithOptionExample]].map(
+      Gen.option(atDepth(depth + 1)).map(
         RecursiveWithOptionExample(_)
       ) else Gen.const(RecursiveWithOptionExample(None))
 
     implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
       Arbitrary(atDepth(0))
-
-    implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
-      deriveDecoder
-
-    implicit val encodeRecursiveWithOptionExample: Encoder[RecursiveWithOptionExample] =
-      deriveEncoder
   }
 
   case class WithDefaultsExample(i: Int, d: Double = 1.0, s: String = "")
@@ -82,20 +82,16 @@ class SemiautoDerivedSuite extends CirceSuite {
           s <- Arbitrary.arbitrary[String]
         } yield WithDefaultsExample(i, d, s)
       )
-
-    implicit val encodeWithDefaultsExample: Encoder[WithDefaultsExample] = deriveEncoder
   }
-
-  case class OvergenerationExampleInner(i: Int)
-  case class OvergenerationExampleOuter0(i: OvergenerationExampleInner)
-  case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkAll("Codec[WithDefaultsExample]", CodecTests[WithDefaultsExample].codec)
 
   test("Decoder[Int => Qux[String]]") {
     check {
@@ -147,34 +143,35 @@ class SemiautoDerivedSuite extends CirceSuite {
     }
   }
 
-  test("Generic instances shouldn't come from nowhere") {
-    implicitly[DerivedDecoder[OvergenerationExampleInner]]
-    illTyped("Decoder[OvergenerationExampleInner]")
+  test("Generic decoders should not interfere with defined decoders") {
+    check {
+      forAll { (xs: List[String]) =>
+        val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
 
-    implicitly[DerivedObjectEncoder[OvergenerationExampleInner]]
-    illTyped("Encoder[OvergenerationExampleInner]")
-
-    illTyped("Decoder[OvergenerationExampleOuter0]")
-    illTyped("Encoder[OvergenerationExampleOuter0]")
-    illTyped("Decoder[OvergenerationExampleOuter1]")
-    illTyped("Encoder[OvergenerationExampleOuter1]")
+        Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo)
+      }
+    }
   }
 
-  test("Semi-automatic derivation should require explicit instances for all parts") {
-    illTyped("deriveDecoder[OvergenerationExampleInner0]")
-    illTyped("deriveDecoder[OvergenerationExampleInner1]")
-    illTyped("deriveEncoder[OvergenerationExampleInner0]")
-    illTyped("deriveEncoder[OvergenerationExampleInner1]")
+  test("Generic encoders should not interfere with defined encoders") {
+    check {
+      forAll { (xs: List[String]) =>
+        val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
+
+        Encoder[Foo].apply(Baz(xs): Foo) === json
+      }
+    }
+  }
+
+  test("Decoding with Decoder[CNil] should fail") {
+    assert(Json.empty.as[CNil].isLeft)
+  }
+
+  test("Encoding with Encoder[CNil] should throw an exception") {
+    intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
   }
 
   test("Decoders configured to use defaults should use defaults") {
-    /**
-     * TODO: The tests currently fail with a stack overflow when this is defined in the companion
-     * object, and I currently have no idea why.
-     */
-    implicit val decodeWithDefaultsExample: Decoder[WithDefaultsExample] =
-      deriveFor[WithDefaultsExample].decoderWithDefaults
-
     check {
       forAll { (i: Int, d: Option[Double], s: Option[String]) =>
         val json = Json.fromFields(
