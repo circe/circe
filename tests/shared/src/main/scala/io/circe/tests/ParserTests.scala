@@ -23,11 +23,11 @@ case class ParserTests(p: Parser) extends Laws {
   def parser(implicit arbitraryJson: Arbitrary[Json]): RuleSet = new DefaultRuleSet(
     name = "parser",
     parent = None,
-    "roundTripWithoutSpaces" -> Prop.forAll(
-      (json: Json) => isEqToProp(laws.parsingRoundTripNoSpaces(json))
-    ),
-    "roundTripWithSpaces" -> Prop.forAll(
-      (json: Json) => isEqToProp(laws.parsingRoundTripSpaces(json))
-    )
+    "roundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
+      isEqToProp(laws.parsingRoundTripNoSpaces(json))
+    },
+    "roundTripWithSpaces" -> Prop.forAll { (json: Json) =>
+      isEqToProp(laws.parsingRoundTripSpaces(json))
+    }
   )
 }
