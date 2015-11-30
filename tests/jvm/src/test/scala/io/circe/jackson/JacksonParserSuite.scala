@@ -4,17 +4,14 @@ import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.tests.{ CirceSuite, ParserTests }
 import io.circe.tests.examples.glossary
 import java.io.File
-import org.scalacheck.Prop.forAll
 import scala.io.Source
 
 class JacksonParserSuite extends CirceSuite {
   checkAll("Parser", ParserTests(`package`).parser)
 
   test("Parsing should fail on invalid input") {
-    check {
-      forAll { (s: String) =>
-        parse(s"Not JSON $s").isLeft
-      }
+    check { (s: String) =>
+      parse(s"Not JSON $s").isLeft
     }
   }
 

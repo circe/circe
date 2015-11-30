@@ -3,7 +3,6 @@ package io.circe
 import cats.laws.SerializableLaws
 import cats.laws.discipline.SerializableTests
 import io.circe.tests.CirceSuite
-import org.scalacheck.Prop.forAll
 
 class SerializableSuite extends CirceSuite {
   test("Json") {

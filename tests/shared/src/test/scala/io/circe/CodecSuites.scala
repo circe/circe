@@ -5,7 +5,6 @@ import java.util.UUID
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
-import org.scalacheck.Prop.forAll
 
 class AnyValCodecSuite extends CirceSuite {
   checkAll("Codec[Unit]", CodecTests[Unit].codec)
@@ -30,33 +29,27 @@ class StdLibCodecSuite extends CirceSuite {
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
 
   test("Tuples should be encoded as JSON arrays") {
-    check {
-      forAll { (t: (Int, String, Char)) =>
-        val json = Encoder[(Int, String, Char)].apply(t)
-        val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
+    check { (t: (Int, String, Char)) =>
+      val json = Encoder[(Int, String, Char)].apply(t)
+      val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
 
-        json === target && json.as[(Int, String, Char)] === Xor.right(t)
-      }
+      json === target && json.as[(Int, String, Char)] === Xor.right(t)
     }
   }
 
   test("Decoding a JSON array without enough elements into a tuple should fail") {
-    check {
-      forAll { (i: Int, s: String) =>
-        Json.array(Json.int(i), Json.string(s)).as[(Int, String, Double)].isLeft
-      }
+    check { (i: Int, s: String) =>
+      Json.array(Json.int(i), Json.string(s)).as[(Int, String, Double)].isLeft
     }
   }
 
   test("Decoding a JSON array with too many elements into a tuple should fail") {
-    check {
-      forAll { (i: Int, s: String, d: Double) =>
-        Json.array(Json.int(i), Json.string(s), Json.numberOrNull(d)).as[(Int, String)].isLeft
-      }
+    check { (i: Int, s: String, d: Double) =>
+      Json.array(Json.int(i), Json.string(s), Json.numberOrNull(d)).as[(Int, String)].isLeft
     }
   }
 
-  test("Decoding a JSON array with many elements into a sequence should not raise StackOverflowError") {
+  test("Decoding a JSON array with many elements into a sequence should not stack overflow") {
     val size = 10000
     val jsonArr = Json.array(Seq.fill(size)(Json.int(1)): _*)
 
