@@ -42,8 +42,10 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
     decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[DerivedDecoder[T]]
   ): DerivedDecoder[FieldType[K, H] :: T] = fromDecoder(
-    decodeHead.value.prepare(_.downField(key.value.name)).ap(
-      decodeTail.value.map(tail => (head: H) => field[K](head) :: tail)
+    decodeTail.value.ap(
+      decodeHead.value.prepare(
+        _.downField(key.value.name)
+      ).map(head => (tail: T) => field[K](head) :: tail)
     )
   )
 }
