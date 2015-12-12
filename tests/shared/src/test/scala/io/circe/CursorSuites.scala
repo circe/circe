@@ -17,6 +17,16 @@ class HCursorSuite extends CursorSuite[HCursor] {
   def top(c: HCursor): Option[Json] = Some(c.top)
   def focus(c: HCursor): Option[Json] = Some(c.focus)
   def fromResult(result: ACursor): Option[HCursor] = result.success
+
+  test("replay") {
+    val cursor = fromJson(j2)
+    val result = cursor.downField("b").downField("d").downN(2)
+
+    assert(
+      result.focus === Some(Json.True) &&
+      cursor.replay(result.history) === result
+    )
+  }
 }
 
 class ACursorSuite extends CursorSuite[ACursor] {

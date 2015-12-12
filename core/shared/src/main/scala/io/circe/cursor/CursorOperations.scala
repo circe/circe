@@ -2,7 +2,7 @@ package io.circe.cursor
 
 import cats.{ Id, Functor }
 import cats.data.Xor
-import io.circe.{ Cursor, Decoder, DecodingFailure, GenericCursor, Json }
+import io.circe.{ ACursor, Cursor, Decoder, DecodingFailure, GenericCursor, HistoryOp, Json }
 import scala.annotation.tailrec
 
 /**
@@ -122,4 +122,7 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
 
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = hcursor.as[A]
   final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = hcursor.get[A](k)
+
+  final def replay(history: List[HistoryOp]): Option[Cursor] =
+    ACursor.ok(this.hcursor).replay(history).success.map(_.cursor)
 }

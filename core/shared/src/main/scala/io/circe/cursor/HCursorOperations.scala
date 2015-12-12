@@ -73,4 +73,6 @@ private[circe] trait HCursorOperations extends GenericCursor[HCursor] { self: HC
 
   def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(this)
   def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
+
+  final def replay(history: List[HistoryOp]): ACursor = ACursor.ok(this).replay(history)
 }
