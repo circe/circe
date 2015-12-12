@@ -22,8 +22,10 @@ import cats.data.Xor
  * navigation and modification operations, and `M` is a type class that includes the operations that
  * we need for `withFocusM`.
  *
+ * @groupname Utilities Miscellaneous utilities
+ * @groupprio Utilities 0
  * @groupname TypeMembers Type members
- * @groupprio TypeMembers 0
+ * @groupprio TypeMembers 1
  * @groupname Access Access and navigation
  * @groupprio Access 2
  * @groupname Modification Modification
@@ -325,4 +327,11 @@ trait GenericCursor[C <: GenericCursor[C]] extends Serializable {
    * @group Decoding
    */
   def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A]
+
+  /**
+   * Replay history (a list of operations in reverse "chronological" order) against this cursor.
+   *
+   * @group Utilities
+   */
+  def replay(history: List[HistoryOp]): Result
 }
