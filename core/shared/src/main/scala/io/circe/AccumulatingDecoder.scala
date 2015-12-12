@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.Applicative
 import cats.data.ValidatedNel
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
