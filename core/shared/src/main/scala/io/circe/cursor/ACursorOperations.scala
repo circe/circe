@@ -2,7 +2,7 @@ package io.circe.cursor
 
 import cats.Applicative
 import cats.data.Xor
-import io.circe.{ ACursor, Decoder, DecodingFailure, GenericCursor, HCursor, Json }
+import io.circe._
 
 /**
  * A helper trait that implements cursor operations for [[io.circe.ACursor]].
@@ -64,4 +64,33 @@ private[circe] trait ACursorOperations extends GenericCursor[ACursor] { this: AC
 
   def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
   def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
+
+  final def replay(history: List[HistoryOp]): ACursor = history.map(_.op).foldRight(this) {
+    case (Some(CursorOp.MoveLeft), acc) => acc.left
+    case (Some(CursorOp.MoveRight), acc) => acc.right
+    case (Some(CursorOp.MoveFirst), acc) => acc.first
+    case (Some(CursorOp.MoveLast), acc) => acc.last
+    case (Some(CursorOp.MoveUp), acc) => acc.up
+    case (Some(CursorOp.LeftN(n)), acc) => acc.leftN(n)
+    case (Some(CursorOp.RightN(n)), acc) => acc.rightN(n)
+    case (Some(CursorOp.LeftAt(p)), acc) => acc.leftAt(p)
+    case (Some(CursorOp.RightAt(p)), acc) => acc.rightAt(p)
+    case (Some(CursorOp.Find(p)), acc) => acc.find(p)
+    case (Some(CursorOp.Field(k)), acc) => acc.field(k)
+    case (Some(CursorOp.DownField(k)), acc) => acc.downField(k)
+    case (Some(CursorOp.DownArray), acc) => acc.downArray
+    case (Some(CursorOp.DownAt(p)), acc) => acc.downAt(p)
+    case (Some(CursorOp.DownN(n)), acc) => acc.downN(n)
+    case (Some(CursorOp.DeleteGoParent), acc) => acc.delete
+    case (Some(CursorOp.DeleteGoLeft), acc) => acc.deleteGoLeft
+    case (Some(CursorOp.DeleteGoRight), acc) => acc.deleteGoRight
+    case (Some(CursorOp.DeleteGoFirst), acc) => acc.deleteGoFirst
+    case (Some(CursorOp.DeleteGoLast), acc) => acc.deleteGoLast
+    case (Some(CursorOp.DeleteGoField(k)), acc) => acc.deleteGoField(k)
+    case (Some(CursorOp.DeleteLefts), acc) => acc.deleteLefts
+    case (Some(CursorOp.DeleteRights), acc) => acc.deleteRights
+    case (Some(CursorOp.SetLefts(js)), acc) => acc.setLefts(js)
+    case (Some(CursorOp.SetRights(js)), acc) => acc.setRights(js)
+    case (None, acc) => acc
+  }
 }
