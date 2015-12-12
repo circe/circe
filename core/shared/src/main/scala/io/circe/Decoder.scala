@@ -1,10 +1,10 @@
 package io.circe
 
-import java.util.UUID
-
 import cats.Monad
 import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
-
+import cats.std.list._
+import cats.syntax.apply._
+import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 
 trait Decoder[A] extends Serializable { self =>
@@ -95,12 +95,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Combine two decoders.
    */
-  def and[B](x: Decoder[B]): Decoder[(A, B)] = Decoder.instance(c =>
-    for {
-      a <- this(c)
-      b <- x(c)
-    } yield (a, b)
-  )
+  def and[B](x: Decoder[B]): Decoder[(A, B)] = (this |@| x).tupled
 
   /**
    * Combine two decoders.
@@ -134,10 +129,11 @@ trait Decoder[A] extends Serializable { self =>
    * Run two decoders.
    */
   def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
-    for {
-      a <- this(a1)
-      b <- x(a2)
-    } yield (a, b)
+    (this(a1) |@| x(a2)).tupled
+
+  def productAccumulating[B](x: Decoder[B]): (HCursor, HCursor) =>
+    AccumulatingDecoder.Result[(A, B)] =
+      (a1, a2) => (this.decodeAccumulating(a1) |@| x.decodeAccumulating(a2)).tupled
 
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
