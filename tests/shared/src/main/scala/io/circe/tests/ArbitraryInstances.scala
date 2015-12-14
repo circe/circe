@@ -2,21 +2,26 @@ package io.circe.tests
 
 import java.util.UUID
 
-import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
-import io.circe.Json.{ JArray, JNumber, JObject, JString }
-import org.scalacheck.{ Arbitrary, Gen, Shrink }
+import cats.data._
+import cats.laws.discipline.arbitrary
+import io.circe.Json.{JArray, JNumber, JObject, JString}
+import io.circe.{Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject}
+import org.scalacheck.{Arbitrary, Gen, Shrink}
 
 trait ArbitraryInstances {
   private[this] def maxDepth: Int = 5
+
   private[this] def maxSize: Int = 20
 
   private[this] def genNull: Gen[Json] = Gen.const(Json.empty)
+
   private[this] def genBool: Gen[Json] = Arbitrary.arbBool.arbitrary.map(Json.bool)
 
   private[this] def genNumber: Gen[Json] = Gen.oneOf(
     Arbitrary.arbLong.arbitrary.map(Json.long),
     Arbitrary.arbDouble.arbitrary.map(Json.numberOrNull)
   )
+
   private[this] def genString: Gen[Json] = Arbitrary.arbString.arbitrary.map(Json.string)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
@@ -39,7 +44,7 @@ trait ArbitraryInstances {
   private[this] def arbitraryJsonAtDepth(depth: Int): Arbitrary[Json] = {
     val genJsons = List(genNumber, genString) ++ (
       if (depth < maxDepth) List(genArray(depth), genObject(depth)) else Nil
-    )
+      )
 
     Arbitrary(Gen.oneOf(genNull, genBool, genJsons: _*))
   }
@@ -56,8 +61,8 @@ trait ArbitraryInstances {
   private[this] val two = BigDecimal.valueOf(2L)
 
   /**
-   * Copied from ScalaCheck.
-   */
+    * Copied from ScalaCheck.
+    */
   private[this] def interleave[T](xs: Stream[T], ys: Stream[T]): Stream[T] =
     if (xs.isEmpty) ys
     else if (ys.isEmpty) xs
@@ -69,7 +74,8 @@ trait ArbitraryInstances {
     def halfs(n: BigDecimal): Stream[BigDecimal] =
       if (n < minNumberShrink) Stream.empty else n #:: halfs(n / two)
 
-    val ns = if (n == zero) Stream.empty else {
+    val ns = if (n == zero) Stream.empty
+    else {
       val hs = halfs(n / two).map(n - _)
       zero #:: interleave(hs, hs.map(h => -h))
     }
@@ -102,4 +108,11 @@ trait ArbitraryInstances {
       Arbitrary.arbitrary[Double].map(JsonDouble(_))
     )
   )
+
+  private[this] def genOneAnd[A](implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
+    Gen.nonEmptyListOf(a.arbitrary).map { case h :: t => NonEmptyList(h, t) }
+
+  implicit def oneAndArbitrary[A](implicit a: Arbitrary[A]): Arbitrary[NonEmptyList[A]] =
+    Arbitrary(genOneAnd(a))
+
 }
