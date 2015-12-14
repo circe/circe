@@ -4,26 +4,17 @@ import java.util.UUID
 
 import cats.Monad
 import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
+import io.circe.internal.{ AbstractDecoder, PerfectDecoder }
 
 import scala.collection.generic.CanBuildFrom
 
-trait Decoder[A] extends Serializable { self =>
-  /**
-   * Decode the given hcursor.
-   */
-  def apply(c: HCursor): Decoder.Result[A]
-
+trait Decoder[A] extends AbstractDecoder[Decoder.Result, A] { self =>
   /**
    * Decode the given acursor.
    */
   def tryDecode(c: ACursor): Decoder.Result[A] = if (c.succeeded) apply(c.any) else Xor.left(
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
-
-  /**
-   * Decode the given [[Json]] value.
-   */
-  def decodeJson(j: Json): Decoder.Result[A] = apply(j.cursor.hcursor)
 
   /**
    * Map a function over this [[Decoder]].
@@ -59,12 +50,6 @@ trait Decoder[A] extends Serializable { self =>
   def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = Decoder.instance(c =>
     if (pred(c)) apply(c) else Xor.left(DecodingFailure(message, c.history))
   )
-
-  /**
-   * Convert to a Kleisli arrow.
-   */
-  def kleisli: Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A] =
-    Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A](apply(_))
 
   /**
    * Combine two decoders.
@@ -199,12 +184,9 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit val decodeHCursor: Decoder[HCursor] = instance(Xor.right)
-
-  /**
-   * @group Decoding
-   */
-  implicit val decodeJson: Decoder[Json] = instance(c => Xor.right(c.focus))
+  implicit def fromPerfectDecoder[A](implicit d: PerfectDecoder[A]): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Result[A] = Xor.right(d(c))
+  }
 
   /**
    * @group Decoding
@@ -512,7 +494,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Instances
    */
-  implicit val monadDecode: Monad[Decoder] = new Monad[Decoder] {
+  implicit val monadDecoder: Monad[Decoder] = new Monad[Decoder] {
     def pure[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
     def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
   }
