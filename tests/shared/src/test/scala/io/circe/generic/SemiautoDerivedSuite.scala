@@ -69,6 +69,22 @@ class SemiautoDerivedSuite extends CirceSuite {
       deriveEncoder
   }
 
+  case class WithDefaultsExample(i: Int, d: Double = 1.0, s: String = "")
+
+  object WithDefaultsExample {
+    implicit val eqWithDefaultsExample: Eq[WithDefaultsExample] = Eq.fromUniversalEquals
+    implicit val arbitraryWithDefaultsExample: Arbitrary[WithDefaultsExample] =
+      Arbitrary(
+        for {
+          i <- Arbitrary.arbitrary[Int]
+          d <- Arbitrary.arbitrary[Double]
+          s <- Arbitrary.arbitrary[String]
+        } yield WithDefaultsExample(i, d, s)
+      )
+
+    implicit val encodeWithDefaultsExample: Encoder[WithDefaultsExample] = deriveEncoder
+  }
+
   case class OvergenerationExampleInner(i: Int)
   case class OvergenerationExampleOuter0(i: OvergenerationExampleInner)
   case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
@@ -140,5 +156,33 @@ class SemiautoDerivedSuite extends CirceSuite {
     illTyped("deriveDecoder[OvergenerationExampleInner1]")
     illTyped("deriveEncoder[OvergenerationExampleInner0]")
     illTyped("deriveEncoder[OvergenerationExampleInner1]")
+  }
+
+  test("Decoders configured to use defaults should use defaults") {
+    /**
+     * TODO: The tests currently fail with a stack overflow when this is defined in the companion
+     * object, and I currently have no idea why.
+     */
+    implicit val decodeWithDefaultsExample: Decoder[WithDefaultsExample] =
+      deriveFor[WithDefaultsExample].decoderWithDefaults
+
+    check {
+      forAll { (i: Int, d: Option[Double], s: Option[String]) =>
+        val json = Json.fromFields(
+          List("i" -> Json.int(i)) ++
+            d.map(dv => "d" -> Json.numberOrNull(dv)) ++
+            s.map(sv => "s" -> Json.string(sv))
+        )
+
+        val expected = (d, s) match {
+          case (Some(dv), Some(sv)) => WithDefaultsExample(i, dv, sv)
+          case (    None, Some(sv)) => WithDefaultsExample(i, s = sv)
+          case (Some(dv),     None) => WithDefaultsExample(i, d = dv)
+          case (    None,     None) => WithDefaultsExample(i)
+        }
+
+        json.as[WithDefaultsExample] === Xor.right(expected)
+      }
+    }
   }
 }

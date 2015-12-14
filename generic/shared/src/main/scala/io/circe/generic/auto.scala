@@ -1,7 +1,7 @@
 package io.circe.generic
 
 import export.reexports
-import io.circe.generic.decoding.DerivedDecoder
+import io.circe.generic.decoding.{ DerivedDecoder, DerivedDecoderWithDefaults }
 import io.circe.generic.encoding.DerivedObjectEncoder
 
 /**
@@ -12,4 +12,7 @@ import io.circe.generic.encoding.DerivedObjectEncoder
  * sealed trait hierarchies, etc.
  */
 @reexports[DerivedDecoder, DerivedObjectEncoder]
-object auto
+object auto {
+  @reexports[DerivedDecoderWithDefaults, DerivedObjectEncoder]
+  object defaults
+}
