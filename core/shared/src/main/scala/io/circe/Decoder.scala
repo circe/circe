@@ -4,10 +4,11 @@ import java.util.UUID
 
 import cats.Monad
 import cats.data.{Kleisli, NonEmptyList, Validated, Xor}
-import cats.syntax.apply._
 import cats.std.list._
-
+import cats.syntax.apply._
+import cats.syntax.functor._
 import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable
 
 trait Decoder[A] extends Serializable {
   self =>
@@ -77,14 +78,26 @@ trait Decoder[A] extends Serializable {
     override def tryDecode(c: ACursor): Decoder.Result[B] = {
       self.tryDecode(c).flatMap(a => f(a).tryDecode(c))
     }
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+      self.decodeAccumulating(c) match {
+        case Validated.Valid(result) => f(result).decodeAccumulating(c)
+        case Validated.Invalid(errors) => Validated.invalid(errors)
+      }
   }
 
   /**
     * Build a new instance with the specified error message.
     */
-  def withErrorMessage(message: String): Decoder[A] = Decoder.instance(c =>
-    apply(c).leftMap(_.withMessage(message))
-  )
+  def withErrorMessage(message: String): Decoder[A] = new Decoder[A] {
+    override def apply(c: HCursor): Decoder.Result[A] = self(c).leftMap(_.withMessage(message))
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      self.decodeAccumulating(c) match {
+        case Validated.Invalid(errors) => Validated.invalid(errors.map(_.withMessage(message)))
+        case Validated.Valid(result) => Validated.valid(result)
+      }
+  }
 
   /**
     * Build a new instance that fails if the condition does not hold.
@@ -133,18 +146,18 @@ trait Decoder[A] extends Serializable {
   )
 
   /**
-   * Run two decoders.
-   */
+    * Run two decoders.
+    */
   def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
-    (this(a1) |@| x(a2)).tupled
+    (this (a1) |@| x(a2)).tupled
 
   def productAcumulator[B](x: Decoder[B]):
   (HCursor, HCursor) => AccumulatingDecoder.Result[(A, B)] =
     (a1, a2) => (this.decodeAccumulating(a1) |@| x.decodeAccumulating(a2)).tupled
 
   /**
-   * Create a new decoder that performs some operation on the incoming JSON before decoding.
-   */
+    * Create a new decoder that performs some operation on the incoming JSON before decoding.
+    */
   final def prepare(f: HCursor => ACursor): Decoder[A] = Decoder.instance(c => self.tryDecode(f(c)))
 
   /**
@@ -172,7 +185,7 @@ trait Decoder[A] extends Serializable {
   *            discriminators. If you want instances for these types you can include the following import in
   *            your program:
   *            {{{
-  *               import io.circe.disjunctionCodecs._
+  *                                                                                                   import io.circe.disjunctionCodecs._
   *            }}}
   * @groupprio Disjunction 3
   *
@@ -265,7 +278,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
     c.focus match {
       case JNull => Xor.right(())
       case JObject(obj) if obj.isEmpty => Xor.right(())
-      case JArray(arr) if arr.length == 0 => Xor.right(())
+      case JArray(arr) if arr.isEmpty => Xor.right(())
       case _ => Xor.left(DecodingFailure("String", c.history))
     }
   }
@@ -476,30 +489,61 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   implicit def decodeMap[M[K, +V] <: Map[K, V], V](implicit
                                                    d: Decoder[V],
                                                    cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
-                                                  ): Decoder[M[String, V]] = instance { c =>
-    c.fields.fold(
-      Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
-    ) { s =>
-      val builder = cbf()
-
-      @scala.annotation.tailrec
-      def spin(x: List[String]): Option[DecodingFailure] = x match {
-        case Nil => None
-        case h :: t =>
-          val res = c.get(h)(d)
-
-          if (res.isLeft) res.swap.toOption
-          else {
-            res.foreach { v =>
-              builder += (h -> v)
-            }
-            spin(t)
-          }
+                                                  ): Decoder[M[String, V]] = new Decoder[M[String, V]] {
+    override def apply(c: HCursor): Decoder.Result[M[String, V]] = {
+      c.fields.fold(
+        Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
+      ) { s =>
+        val builder = cbf()
+        spinResult(s, c, builder).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
       }
+    }
 
-      spin(s).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[String, V]] = {
+      c.fields.fold[AccumulatingDecoder.Result[M[String, V]]](
+        Validated.invalid(DecodingFailure("[V]Map[String, V]", c.history)).toValidatedNel
+      ) { s =>
+        val builder = cbf()
+        spinResult(s, c, builder).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left).toValidated.toValidatedNel
+        //TODO: complete spinAcc
+        //spinAcc(s, c, builder)
+      }
     }
   }
+
+  @scala.annotation.tailrec
+  private def spinResult[M[K, +V] <: Map[K, V], V](x: List[String], c: HCursor,
+                                                   builder: mutable.Builder[(String, V), M[String, V]])
+                                                  (implicit d: Decoder[V]): Option[DecodingFailure] =
+    x match {
+      case Nil => None
+      case h :: t =>
+        val res = c.get(h)(d)
+
+        if (res.isLeft) res.swap.toOption
+        else {
+          res.foreach { v =>
+            builder += (h -> v)
+          }
+          spinResult(t, c, builder)
+        }
+    }
+
+  //  private def spinAcc[M[K, +V] <: Map[K, V], V](x: List[String], c: HCursor,
+  //                                                builder: mutable.Builder[(String, V), M[String, V]])
+  //                                               (implicit d: Decoder[V]): AccumulatingDecoder.Result[M[String, V]] =
+  //    x match {
+  //      case Nil => Validated.valid(builder.result()).toValidatedNel
+  //      case h :: t =>
+  //        val res = c.get(h)(d)
+  //
+  //        if (res.isRight) {
+  //          res.foreach { v => builder += (h -> v) }
+  //        }
+  //
+  //        res.toValidated.toValidatedNel
+  //          .ap(spinAcc(t, c, builder))(Decoder.nonEmptyListDecodingFailureSemigroup)
+  //    }
 
   /**
     * @group Decoding
