@@ -28,9 +28,10 @@ import shapeless.ops.record.RemoveAll
  * }}}
  */
 object semiauto {
-  def deriveDecoder[A](implicit decode: DerivedDecoder[A]): Decoder[A] = decode
+  def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
 
-  def deriveEncoder[A](implicit encode: DerivedObjectEncoder[A]): ObjectEncoder[A] = encode
+  def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
+    encode.value
 
   def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
