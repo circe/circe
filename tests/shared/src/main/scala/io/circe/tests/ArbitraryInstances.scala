@@ -1,9 +1,9 @@
 package io.circe.tests
 
-import java.util.UUID
-
-import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
+import cats.data.NonEmptyList
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
+import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
+import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
 
 trait ArbitraryInstances {
@@ -17,6 +17,7 @@ trait ArbitraryInstances {
     Arbitrary.arbLong.arbitrary.map(Json.long),
     Arbitrary.arbDouble.arbitrary.map(Json.numberOrNull)
   )
+
   private[this] def genString: Gen[Json] = Arbitrary.arbString.arbitrary.map(Json.string)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
@@ -102,4 +103,11 @@ trait ArbitraryInstances {
       Arbitrary.arbitrary[Double].map(JsonDouble(_))
     )
   )
+
+  private[this] def genOneAnd[A](implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
+    Gen.nonEmptyListOf(a.arbitrary).map { case h :: t => NonEmptyList(h, t) }
+
+  implicit def oneAndArbitrary[A](implicit a: Arbitrary[A]): Arbitrary[NonEmptyList[A]] =
+    Arbitrary(genOneAnd(a))
+
 }
