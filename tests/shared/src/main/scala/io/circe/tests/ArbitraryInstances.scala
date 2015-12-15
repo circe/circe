@@ -104,10 +104,10 @@ trait ArbitraryInstances {
     )
   )
 
-  private[this] def genOneAnd[A](implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
-    Gen.nonEmptyListOf(a.arbitrary).map { case h :: t => NonEmptyList(h, t) }
-
-  implicit def oneAndArbitrary[A](implicit a: Arbitrary[A]): Arbitrary[NonEmptyList[A]] =
-    Arbitrary(genOneAnd(a))
-
+  implicit def oneAndArbitrary[A](implicit A: Arbitrary[A]): Arbitrary[NonEmptyList[A]] = Arbitrary(
+    for {
+      h <- A.arbitrary
+      t <- Arbitrary.arbitrary[List[A]]
+    } yield NonEmptyList(h, t)
+  )
 }
