@@ -479,63 +479,65 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
    * @group Decoding
    */
   implicit def decodeMap[M[K, +V] <: Map[K, V], V](implicit
-                                                   d: Decoder[V],
-                                                   cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
-                                                  ): Decoder[M[String, V]] = new Decoder[M[String, V]] {
-    override def apply(c: HCursor): Decoder.Result[M[String, V]] = {
+    d: Decoder[V],
+    cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
+  ): Decoder[M[String, V]] = new Decoder[M[String, V]] {
+    def apply(c: HCursor): Decoder.Result[M[String, V]] =
       c.fields.fold(
         Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
       ) { s =>
         val builder = cbf()
         spinResult(s, c, builder).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
       }
-    }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[String, V]] = {
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[String, V]] =
       c.fields.fold[AccumulatingDecoder.Result[M[String, V]]](
         Validated.invalid(DecodingFailure("[V]Map[String, V]", c.history)).toValidatedNel
       ) { s =>
         val builder = cbf()
-        spinResult(s, c, builder).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left).toValidated.toValidatedNel
-        //TODO: complete spinAcc
-        //spinAcc(s, c, builder)
-      }
-    }
-  }
-
-  @scala.annotation.tailrec
-  private def spinResult[M[K, +V] <: Map[K, V], V](x: List[String], c: HCursor,
-                                                   builder: mutable.Builder[(String, V), M[String, V]])
-                                                  (implicit d: Decoder[V]): Option[DecodingFailure] =
-    x match {
-      case Nil => None
-      case h :: t =>
-        val res = c.get(h)(d)
-
-        if (res.isLeft) res.swap.toOption
-        else {
-          res.foreach { v =>
-            builder += (h -> v)
-          }
-          spinResult(t, c, builder)
+        spinAccumulating(s, c, builder, Nil) match {
+          case Nil => Validated.valid(builder.result())
+          case error :: errors => Validated.invalid(NonEmptyList(error, errors))
         }
-    }
+      }
 
-  //  private def spinAcc[M[K, +V] <: Map[K, V], V](x: List[String], c: HCursor,
-  //                                                builder: mutable.Builder[(String, V), M[String, V]])
-  //                                               (implicit d: Decoder[V]): AccumulatingDecoder.Result[M[String, V]] =
-  //    x match {
-  //      case Nil => Validated.valid(builder.result()).toValidatedNel
-  //      case h :: t =>
-  //        val res = c.get(h)(d)
-  //
-  //        if (res.isRight) {
-  //          res.foreach { v => builder += (h -> v) }
-  //        }
-  //
-  //        res.toValidated.toValidatedNel
-  //          .ap(spinAcc(t, c, builder))(Decoder.nonEmptyListDecodingFailureSemigroup)
-  //    }
+    @scala.annotation.tailrec
+    private[this] def spinResult(
+      x: List[String],
+      c: HCursor,
+      builder: mutable.Builder[(String, V), M[String, V]]
+    ): Option[DecodingFailure] =
+      x match {
+        case Nil => None
+        case h :: t =>
+          c.get(h)(d) match {
+            case Xor.Left(error) => Some(error)
+            case Xor.Right(value) =>
+              builder += (h -> value)
+              spinResult(t, c, builder)
+          }
+      }
+
+    @scala.annotation.tailrec
+    private[this] def spinAccumulating(
+      x: List[String],
+      c: HCursor,
+      builder: mutable.Builder[(String, V), M[String, V]],
+      errors: List[DecodingFailure]
+    ): List[DecodingFailure] =
+      x match {
+        case Nil => errors
+        case h :: t =>
+          c.get(h)(d) match {
+            case Xor.Left(error) => spinAccumulating(t, c, builder, error :: errors)
+            case Xor.Right(value) =>
+              if (errors.isEmpty) {
+                builder += (h -> value)
+              }
+              spinAccumulating(t, c, builder, errors)
+          }
+      }
+  }
 
   /**
    * @group Decoding
