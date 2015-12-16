@@ -22,15 +22,16 @@ import shapeless.ops.record.RemoveAll
  *   case class Foo(i: Int, p: (String, Double))
  *
  *   object Foo {
- *     implicit val decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
- *     implicit val encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+ *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
+ *     implicit val encodeFoo: Encoder[Foo] = deriveEncoder[Foo]
  *   }
  * }}}
  */
 object semiauto {
-  def deriveDecoder[A](implicit decode: DerivedDecoder[A]): Decoder[A] = decode
+  def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
 
-  def deriveEncoder[A](implicit encode: DerivedObjectEncoder[A]): ObjectEncoder[A] = encode
+  def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
+    encode.value
 
   def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
