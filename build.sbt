@@ -233,8 +233,8 @@ lazy val optics = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %% "monocle-core" % "1.2.0-M2",
-      "com.github.julien-truffaut" %% "monocle-law" % "1.2.0-M2" % "test"
+      "com.github.julien-truffaut" %% "monocle-core" % "1.2.0",
+      "com.github.julien-truffaut" %% "monocle-law" % "1.2.0" % "test"
     )
   )
   .dependsOn(core, tests % "test")
