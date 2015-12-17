@@ -219,8 +219,8 @@ lazy val jackson = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.fasterxml.jackson.core" % "jackson-core" % "2.6.3",
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.3"
+      "com.fasterxml.jackson.core" % "jackson-core" % "2.5.3",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.3"
     )
   )
   .dependsOn(core)
