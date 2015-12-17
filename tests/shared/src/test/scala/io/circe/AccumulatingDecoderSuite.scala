@@ -136,25 +136,24 @@ class AccumulatingDecoderSuite extends CirceSuite {
   private case class Sample(a: String, b: String, c: String)
 
   test("Accumulating decoder returns as many errors as invalid elements in a case class") {
-    check { (a: String, b: String, c: String) =>
-      val json = new Sample(a, b, c).asJson
-      val decoded = Decoder[BadSample].accumulating(json.hcursor)
+    check { (a: Int, b: Boolean, c: Int) =>
+      val json = BadSample(a, b, c).asJson
+      val decoded = Decoder[Sample].accumulating(json.hcursor)
 
       decoded.fold(_.tail.size + 1, _ => 0) === 3
     }
   }
 
   test("replaying accumulating decoder history returns expected failures in a case class") {
-    check { (a: String, b: String, c: String) =>
-      val json = new Sample(a, b, c).asJson
+    check { (a: Int, b: Boolean, c: Int) =>
+      val json = BadSample(a, b, c).asJson
       val cursor = Cursor(json).hcursor
 
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
 
-      Decoder[BadSample].accumulating(json.hcursor)
+      Decoder[Sample].accumulating(json.hcursor)
         .fold(error => error.toList, _ => List[DecodingFailure]())
         .map(df => cursor.replay(df.history).focus) === invalidElems
     }
   }
-
 }

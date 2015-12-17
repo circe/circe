@@ -83,7 +83,7 @@ trait Decoder[A] extends Serializable { self =>
    * Build a new instance with the specified error message.
    */
   def withErrorMessage(message: String): Decoder[A] = new Decoder[A] {
-    override def apply(c: HCursor): Decoder.Result[A] = self(c).leftMap(_.withMessage(message))
+    def apply(c: HCursor): Decoder.Result[A] = self(c).leftMap(_.withMessage(message))
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       self.decodeAccumulating(c) match {
@@ -151,7 +151,11 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
    */
-  final def prepare(f: HCursor => ACursor): Decoder[A] = Decoder.instance(c => self.tryDecode(f(c)))
+  final def prepare(f: HCursor => ACursor): Decoder[A] = new Decoder[A] {
+    def apply(c: HCursor): Decoder.Result[A] = self.tryDecode(f(c))
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      self.tryDecodeAccumulating(f(c))
+  }
 
   /**
    * Create a new decoder that performs some operation on the result if this one succeeds.
