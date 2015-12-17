@@ -1,7 +1,7 @@
 package io.circe
 
 import algebra.Eq
-import cats.data.Xor
+import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.cursor.HCursorOperations
 
 import scala.annotation.tailrec
@@ -59,6 +59,22 @@ abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperati
         case Xor.Left(b) => b
         case Xor.Right(r2) => loop[A, B](r2, f)
       }
+    }
+
+  /**
+   * Traverse taking `op` at each step, performing `f` on the current cursor and
+   * accumulating `A`.
+   *
+   * This operation does not consume stack at each step, so is safe to work with
+   * large structures (in contrast with recursively binding).
+   */
+  @tailrec final def traverseDecodeAccumulating[A](init: AccumulatingDecoder.Result[A])(
+    op: HCursor => ACursor,
+    f: (AccumulatingDecoder.Result[A], HCursor) => AccumulatingDecoder.Result[A]
+  ): AccumulatingDecoder.Result[A] =
+    op(this).success match {
+      case None => f(init, this)
+      case Some(next) => next.traverseDecodeAccumulating(f(init, this))(op, f)
     }
 }
 
