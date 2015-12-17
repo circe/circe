@@ -17,7 +17,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  test("replaying accumulating decoder history returns the expected failing element in a list") {
+  test("replaying accumulating decoder history returns expected failures in a list") {
     check { (xs: List[Either[Int, String]]) =>
       val json = xs.map(_.fold(Json.int, Json.string)).asJson
       val cursor = Cursor(json).hcursor
@@ -39,16 +39,16 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  //TODO: this test fails, even if lists are identical... why???
-  ignore("replaying accumulating decoder history returns the expected failing element in a map") {
+  test("replaying accumulating decoder history returns expected failures in a map") {
     check { (xs: Map[String, Either[Int, String]]) =>
       val json = xs.map { case (k, v) => (k, v.fold(Json.int, Json.string)) }.asJson
       val cursor = Cursor(json).hcursor
 
-      val invalidElems = xs.values.collect { case Left(e) => Option(e.asJson) }.toList
+      val invalidElems = xs.values.collect { case Left(e) => Option(e.asJson) }.toSet
+
       Decoder[Map[String, String]].accumulating(json.hcursor)
         .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
+        .map(df => cursor.replay(df.history).focus).toSet === invalidElems
     }
   }
 
@@ -62,16 +62,16 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  //TODO: this test fails, even if sets are identical... why???
-  ignore("replaying accumulating decoder history returns the expected failing element in a set") {
+  test("replaying accumulating decoder history returns expected failures in a set") {
     check { (xs: Set[Either[Int, String]]) =>
       val json = xs.map(_.fold(Json.int, Json.string)).asJson
       val cursor = Cursor(json).hcursor
 
-      val invalidElems = xs.toList.collect { case Left(e) => Option(e.asJson) }
+      val invalidElems = xs.collect { case Left(e) => Option(e.asJson) }
+
       Decoder[Set[String]].accumulating(json.hcursor)
         .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
+        .map(df => cursor.replay(df.history).focus).toSet === invalidElems
     }
   }
 
@@ -89,7 +89,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  test("replaying accumulating decoder history returns the expected failing element in a tuple") {
+  test("replaying accumulating decoder history returns expected failures in a tuple") {
     check { (xs: (Either[Int, String], Either[Int, String], Either[Int, String])) =>
       val json = (
         xs._1.fold(Json.int, Json.string),
@@ -119,7 +119,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  test("replaying accumulating decoder history returns the expected failing element in a non-empty list") {
+  test("replaying accumulating decoder history returns expected failures in a non-empty list") {
     check { (nel: NonEmptyList[Either[Int, String]]) =>
       val json = nel.map(_.fold(Json.int, Json.string)).asJson
       val cursor = Cursor(json).hcursor
@@ -144,12 +144,13 @@ class AccumulatingDecoderSuite extends CirceSuite {
     }
   }
 
-  test("replaying accumulating decoder history returns the expected failing element in a case class") {
+  test("replaying accumulating decoder history returns expected failures in a case class") {
     check { (a: String, b: String, c: String) =>
       val json = new Sample(a, b, c).asJson
       val cursor = Cursor(json).hcursor
 
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
+
       Decoder[BadSample].accumulating(json.hcursor)
         .fold(error => error.toList, _ => List[DecodingFailure]())
         .map(df => cursor.replay(df.history).focus) === invalidElems

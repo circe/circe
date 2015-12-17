@@ -9,11 +9,9 @@ import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalatest.Ignore
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
-@Ignore
 class SemiautoDerivedSuite extends CirceSuite {
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
