@@ -3,8 +3,8 @@ package io.circe
 import cats.Monad
 import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
 import cats.std.list._
-import cats.syntax.apply._
 import cats.syntax.functor._
+import cats.syntax.monoidal._
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
@@ -25,13 +25,9 @@ trait Decoder[A] extends Serializable { self =>
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
 
-  private[this] def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
-    c.either.fold(
-      invalid =>
-        Validated.invalidNel(
-          DecodingFailure("Attempt to decode value on failed cursor", invalid.history)
-        ),
-      decodeAccumulating
+  private[circe] def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+    if (c.succeeded) decodeAccumulating(c.any) else Validated.invalidNel(
+      DecodingFailure("Attempt to decode value on failed cursor", c.history)
     )
 
   /**
@@ -73,10 +69,7 @@ trait Decoder[A] extends Serializable { self =>
     }
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
-      self.decodeAccumulating(c) match {
-        case Validated.Valid(result) => f(result).decodeAccumulating(c)
-        case Validated.Invalid(errors) => Validated.invalid(errors)
-      }
+      self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
   }
 
   /**
@@ -86,10 +79,7 @@ trait Decoder[A] extends Serializable { self =>
     def apply(c: HCursor): Decoder.Result[A] = self(c).leftMap(_.withMessage(message))
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-      self.decodeAccumulating(c) match {
-        case Validated.Invalid(errors) => Validated.invalid(errors.map(_.withMessage(message)))
-        case Validated.Valid(result) => Validated.valid(result)
-      }
+      self.decodeAccumulating(c).leftMap(_.map(_.withMessage(message)))
   }
 
   /**
@@ -108,13 +98,17 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Combine two decoders.
    */
-  def and[B](x: Decoder[B]): Decoder[(A, B)] = (this |@| x).tupled
+  def and[B](fb: Decoder[B]): Decoder[(A, B)] = new Decoder[(A, B)] {
+    def apply(c: HCursor): Decoder.Result[(A, B)] = (self(c) |@| fb(c)).tupled
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
+      (self.decodeAccumulating(c) |@| fb.decodeAccumulating(c)).tupled
+  }
 
   /**
    * Combine two decoders.
    */
   @deprecated("Use and", "0.3.0")
-  def &&&[B](x: Decoder[B]): Decoder[(A, B)] = and(x)
+  def &&&[B](fb: Decoder[B]): Decoder[(A, B)] = and(fb)
 
   /**
    * Choose the first succeeding decoder.
@@ -143,10 +137,6 @@ trait Decoder[A] extends Serializable { self =>
    */
   def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
     (this(a1) |@| x(a2)).tupled
-
-  def productAccumulating[B](x: Decoder[B]): (HCursor, HCursor) =>
-    AccumulatingDecoder.Result[(A, B)] =
-      (a1, a2) => (this.decodeAccumulating(a1) |@| x.decodeAccumulating(a2)).tupled
 
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
@@ -223,7 +213,13 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   def withReattempt[A](f: ACursor => Result[A]): Decoder[A] = new Decoder[A] {
     def apply(c: HCursor): Result[A] = tryDecode(c.acursor)
 
-    override def tryDecode(c: ACursor) = f(c)
+    override def tryDecode(c: ACursor): Decoder.Result[A] = f(c)
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      tryDecodeAccumulating(c.acursor)
+
+    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+      f(c).toValidated.toValidatedNel
   }
 
   /**
@@ -498,7 +494,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
         Validated.invalid(DecodingFailure("[V]Map[String, V]", c.history)).toValidatedNel
       ) { s =>
         val builder = cbf()
-        spinAccumulating(s, c, builder, Nil) match {
+        spinAccumulating(s, c, builder, false, List.newBuilder[DecodingFailure]) match {
           case Nil => Validated.valid(builder.result())
           case error :: errors => Validated.invalid(NonEmptyList(error, errors))
         }
@@ -526,18 +522,19 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
       x: List[String],
       c: HCursor,
       builder: mutable.Builder[(String, V), M[String, V]],
-      errors: List[DecodingFailure]
+      failed: Boolean,
+      errors: mutable.Builder[DecodingFailure, List[DecodingFailure]]
     ): List[DecodingFailure] =
       x match {
-        case Nil => errors
+        case Nil => errors.result
         case h :: t =>
           c.get(h)(d) match {
-            case Xor.Left(error) => spinAccumulating(t, c, builder, error :: errors)
+            case Xor.Left(error) => spinAccumulating(t, c, builder, true, errors += error)
             case Xor.Right(value) =>
-              if (errors.isEmpty) {
+              if (failed) {
                 builder += (h -> value)
               }
-              spinAccumulating(t, c, builder, errors)
+              spinAccumulating(t, c, builder, failed, errors)
           }
       }
   }
@@ -602,10 +599,11 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Instances
    */
-  implicit val monadDecode: Monad[Decoder] = new Monad[Decoder] {
+  implicit final val monadDecode: Monad[Decoder] = new Monad[Decoder] {
     def pure[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
     override def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
     override def ap[A, B](fa: Decoder[A])(f: Decoder[A => B]): Decoder[B] = fa.ap(f)
+    override def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
     def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
   }
 }

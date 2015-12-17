@@ -22,11 +22,11 @@ class RefinedSuite extends CirceSuite {
     Eq.fromUniversalEquals
 
   checkAll(
-    """ Codec[Int Refined Greater[W.`2`.T]] """,
+    """Codec[Int Refined Greater[W.`2`.T]]""",
     CodecTests[Int Refined Greater[W.`2`.T]].codec
   )
   checkAll(
-    """ Codec[String Refined StartsWith[W.`"a"`.T]] """,
+    """Codec[String Refined StartsWith[W.`"a"`.T]]""",
     CodecTests[String Refined StartsWith[W.`"a"`.T]].codec
   )
 

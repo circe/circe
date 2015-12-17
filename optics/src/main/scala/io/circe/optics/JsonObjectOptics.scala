@@ -26,7 +26,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     new At[JsonObject, String, Option[Json]] {
       def at(field: String): Lens[JsonObject, Option[Json]] =
         Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
-          obj => optVal.fold(obj - field)(value => obj.add(field, value))
+          obj => optVal.fold(obj.remove(field))(value => obj.add(field, value))
         )
     }
 

@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, DecodingFailure, Encoder }
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
@@ -15,6 +15,9 @@ trait CodecLaws[A] {
 
   def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
     encode(a).as(decode) <-> Xor.right(a)
+
+  def codecAccumulatingConsistency(json: Json): IsEq[Decoder.Result[A]] =
+    decode(json.hcursor) <-> decode.accumulating(json.hcursor).leftMap(_.head).toXor
 }
 
 object CodecLaws {
@@ -24,7 +27,7 @@ object CodecLaws {
   }
 }
 
-trait CodecTests[A] extends Laws {
+trait CodecTests[A] extends Laws with ArbitraryInstances {
   def laws: CodecLaws[A]
 
   def codec(implicit A: Arbitrary[A], eq: Eq[A]): RuleSet = new DefaultRuleSet(
@@ -32,6 +35,9 @@ trait CodecTests[A] extends Laws {
     parent = None,
     "roundTrip" -> Prop.forAll { (a: A) =>
       laws.codecRoundTrip(a)
+    },
+    "consistency with accumulating" -> Prop.forAll { (json: Json) =>
+      laws.codecAccumulatingConsistency(json)
     }
   )
 }
