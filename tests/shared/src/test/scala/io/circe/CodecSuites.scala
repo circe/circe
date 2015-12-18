@@ -60,6 +60,22 @@ class StdLibCodecSuite extends CirceSuite {
     assert(list.length == size)
     assert(list.forall(_ == 1))
   }
+
+  test("Decoding a JSON array should stop after first failure") {
+    case class Bomb(i: Int)
+
+    object Bomb {
+      implicit val decodeBomb: Decoder[Bomb] = Decoder[Int].map {
+        case 0 => throw new Exception("You shouldn't have tried to decode this")
+        case i => Bomb(i)
+      }
+    }
+
+    val jsonArr = Json.array(Json.int(1), Json.string("foo"), Json.int(0))
+    val result = jsonArr.as[List[Bomb]]
+
+    assert(result.isLeft)
+  }
 }
 
 class CatsCodecSuite extends CirceSuite {

@@ -1,6 +1,7 @@
 package io.circe.generic.decoding
 
 import cats.data.Xor
+import cats.syntax.monoidal._
 import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, HCursor }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
@@ -42,10 +43,8 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
     decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[DerivedDecoder[T]]
   ): DerivedDecoder[FieldType[K, H] :: T] = fromDecoder(
-    decodeTail.value.ap(
-      decodeHead.value.prepare(
-        _.downField(key.value.name)
-      ).map(head => (tail: T) => field[K](head) :: tail)
+    (decodeHead.value.prepare(_.downField(key.value.name)) |@| decodeTail.value).map(
+      (head, tail) => field[K](head) :: tail
     )
   )
 }
