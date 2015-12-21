@@ -1,7 +1,7 @@
 package io.circe.jawn
 
 import io.circe.{ Json, JsonDecimal }
-import jawn.{ FContext, Facade, SupportParser }
+import jawn.{ Facade, FContext, SupportParser }
 import scala.collection.mutable.ArrayBuffer
 
 object CirceSupportParser extends SupportParser[Json] {

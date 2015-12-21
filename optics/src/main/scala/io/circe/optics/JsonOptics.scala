@@ -5,8 +5,8 @@ import cats.syntax.functor._
 import cats.syntax.traverse._
 import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.JsonNumberOptics._
-import monocle.function.Plated
 import monocle.{ Prism, Traversal }
+import monocle.function.Plated
 
 /**
  * Optics instances for [[io.circe.Json]].

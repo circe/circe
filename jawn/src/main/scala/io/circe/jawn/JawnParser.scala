@@ -1,7 +1,7 @@
 package io.circe.jawn
 
 import cats.data.Xor
-import io.circe.{ Json, ParsingFailure, Parser }
+import io.circe.{ Json, Parser, ParsingFailure }
 import java.io.File
 import java.nio.ByteBuffer
 import scala.util.Try
