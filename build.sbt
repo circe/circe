@@ -91,6 +91,7 @@ lazy val circe = project.in(file("."))
     jawn,
     jackson,
     optics,
+    streaming,
     async,
     benchmark
   )
@@ -210,6 +211,17 @@ lazy val jawn = project
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
   )
   .dependsOn(core)
+
+lazy val streaming = project
+  .settings(
+    description := "circe streaming",
+    moduleName := "circe-streaming"
+  )
+  .settings(allSettings)
+  .settings(
+    libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.0-SNAPSHOT"
+  )
+  .dependsOn(core, jawn)
 
 lazy val jackson = project
   .settings(
