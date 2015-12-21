@@ -531,7 +531,7 @@ object Decoder extends TupleDecoders with LowPriorityDecoders {
           c.get(h)(d) match {
             case Xor.Left(error) => spinAccumulating(t, c, builder, true, errors += error)
             case Xor.Right(value) =>
-              if (failed) {
+              if (!failed) {
                 builder += (h -> value)
               }
               spinAccumulating(t, c, builder, failed, errors)
