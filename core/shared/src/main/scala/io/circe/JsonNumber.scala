@@ -242,7 +242,7 @@ private[circe] final case class JsonDecimal(value: String) extends JsonNumber {
       }
 
     if (intStr != "0") {
-      val shift = intStr.length + 1
+      val shift = intStr.length - 1
       (unscaledExponent + BigInt(shift), scaledValue(shift))
     } else if (decStr != null) {
       var i = 0
