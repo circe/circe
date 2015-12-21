@@ -2,8 +2,8 @@ package io.circe.jackson
 
 import cats.data.Xor
 import com.fasterxml.jackson.core.{ JsonParser, JsonTokenId }
-import com.fasterxml.jackson.databind.`type`.TypeFactory
 import com.fasterxml.jackson.databind.{ DeserializationContext, JsonDeserializer }
+import com.fasterxml.jackson.databind.`type`.TypeFactory
 import io.circe.{ Json, JsonBigDecimal, JsonObject }
 import java.util.ArrayList
 import scala.annotation.{ switch, tailrec }

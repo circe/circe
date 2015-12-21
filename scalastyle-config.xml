@@ -1,5 +1,5 @@
 <scalastyle>
-    <name>Scalastyle standard configuration</name>
+    <name>Circe Configuration</name>
     <check level="error" class="org.scalastyle.scalariform.EnsureSingleSpaceAfterTokenChecker" enabled="true">
         <parameters>
             <parameter name="tokens">FOR</parameter>
@@ -74,6 +74,12 @@
     <check level="error" class="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" enabled="true">
         <parameters>
             <parameter name="ignoreOverride">true</parameter>
+        </parameters>
+    </check>
+    <check level="error" enabled="true" class="org.scalastyle.scalariform.ImportOrderChecker">
+        <parameters>
+            <parameter name="groups">all</parameter>
+            <parameter name="group.all">.+</parameter>
         </parameters>
     </check>
 </scalastyle>

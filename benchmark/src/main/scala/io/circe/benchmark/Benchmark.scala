@@ -7,8 +7,8 @@ import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{ JsValue => JsValueP, Json => JsonP, Format, Writes }
-import spray.json.{ JsValue => JsValueS, JsonFormat, JsonWriter, JsonParser => JsonParserS }
+import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
+import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
 import spray.json.DefaultJsonProtocol._
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])

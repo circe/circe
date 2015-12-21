@@ -1,7 +1,7 @@
 package io.circe.jackson
 
 import cats.data.Xor
-import io.circe.{ Json, ParsingFailure, Parser }
+import io.circe.{ Json, Parser, ParsingFailure }
 import java.io.File
 import scala.util.control.NonFatal
 

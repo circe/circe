@@ -4,8 +4,8 @@ import cats.data.Xor
 import scalajs.js.{
   Array => JsArray,
   Dictionary,
-  JSON,
   JavaScriptException,
+  JSON,
   Object => JsObject,
   SyntaxError
 }

@@ -2,8 +2,6 @@ package io.circe.jackson
 
 import cats.data.Xor
 import com.fasterxml.jackson.core.Version
-import com.fasterxml.jackson.databind.Module.SetupContext
-import com.fasterxml.jackson.databind.deser.Deserializers
 import com.fasterxml.jackson.databind.{
   BeanDescription,
   DeserializationConfig,
@@ -12,6 +10,8 @@ import com.fasterxml.jackson.databind.{
   JsonSerializer,
   SerializationConfig
 }
+import com.fasterxml.jackson.databind.Module.SetupContext
+import com.fasterxml.jackson.databind.deser.Deserializers
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.Serializers
 import io.circe.Json
