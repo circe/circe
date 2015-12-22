@@ -24,7 +24,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     same functionality should be available in both situations, with no more than a single extra
     import being required in the latter.
 
-    **What this means concretely.** [MetaRest][metarest] is a very interesting project, and many
+    What this means concretely: [MetaRest][metarest] is a very interesting project, and many
     features in circe are directly inspired by MetaRest, including [incomplete decoder
     derivation][incompletes]. circe is in a sense the opposite of MetaRest, though, and
     `circe-core` will never include e.g. annotations that are intended to be used on case class
@@ -38,7 +38,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     structures (i.e. you should be using a relatively nice API like `ACursor` or the facilities
     supported by [Monocle][monocle] in `circe-optics`).
 
-    **What this means concretely.** If something like SLIP-28 ever actually lands in the standard
+    What this means concretely: If something like SLIP-28 ever actually lands in the standard
     library, I'll probably adopt it (assuming it doesn't violate other design principles here—which
     is a huge assumption), but I hope most users won't even notice that change.
 
@@ -53,7 +53,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     projects (where they can be independently versioned), or just retired if they aren't being used
     or maintained.
 
-    **What this means concretely.** The root directory of the project is kind of a zoo, and complete
+    What this means concretely: The root directory of the project is kind of a zoo, and complete
     builds can take a while.
 
 4. **Implicit scope should not be used for configuration.**
@@ -68,7 +68,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     avoid it in circe until I am 100% convinced that there's no alternative way to provide this
     functionality.
 
-    **What this means concretely.** You'll probably never see an implicit argument that isn't a type
+    What this means concretely: You'll probably never see an implicit argument that isn't a type
     class instance—i.e. that isn't a type constructor applied to a type in your model—in circe, and
     configuration of generic codec derivation is going to be relatively limited (compared to e.g.
     argonaut-shapeless) until we find a nice way to do this kind of thing with type tags or
@@ -78,7 +78,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     In my experience implicit conversions are loans against your own (and your users') future
     understanding of your code.
 
-    **What this means concretely.** Any proposed changes including implicit conversions will need to
+    What this means concretely: Any proposed changes including implicit conversions will need to
     make a _very_ strong case for their necessity. There are two exceptions: conversions from one
     type class instance to another, and conversion to a syntax-enabling `Ops` class if for some
     reason it's not possible to use an implicit class (although see the following point).
@@ -86,7 +86,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
 6. **Syntactic extension via enrichment methods should be kept behind a `syntax` import.**
     This is line with the general principle that magic should be opt-in.
 
-    **What this means concretely.** If you want to be able to write things like
+    What this means concretely: If you want to be able to write things like
     `Map("foo" -> List(1, 2, 3)).asJson`, you'll need to import `io.circe.syntax._`.
 
 7. **Runtime reflection: not even once.**
@@ -94,14 +94,14 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     refactoring, therefore no reflection". See [this Stack Overflow answer][on-reflection] for more
     discussion, including a defense of _compile-time_ reflection.
 
-    **What this means concretely.** It's unlikely you'll ever see an `Any` in circe except in code
+    What this means concretely: It's unlikely you'll ever see an `Any` in circe except in code
     that's absolutely necessary for JVM or Scala.js compatibility.
 
 8. **The public API should not contain unnecessary methods.**
     I'm all for [TMTOWTDI][tmtowtdi] at certain levels of abstraction, but I think redundancy in
     library API design is a terrible way to treat users (especially new ones).
 
-    **What this means concretely.** If the standard way to create a successful `ACursor` from an
+    What this means concretely: If the standard way to create a successful `ACursor` from an
     `HCursor` is `ACursor.ok`, there should not be an equivalent `toACursor` method on `HCursor`.
     Don't even get me started on symbolic operator aliases.
 
@@ -113,16 +113,16 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     I personally find this confusing, and would prefer to keep convenience-oriented types like this
     out of the API.
 
-    **What this means concretely.** There's unlikely to be a `Codec` in circe until we come up with
+    What this means concretely: There's unlikely to be a `Codec` in circe until we come up with
     a [clean way][circe-codec] to make it useful as a type constraint (although if demand gets loud
     enough I would be willing to consider compromise here).
 
 10. **Avoid variance, but without burdening users.**
     This isn't a popular decision (even Argonaut's codec type classes are [co- and contravariant
-    now](argonaut-variance), but I'm not convinced it's worth it, especially given the way that
+    now](argonaut-variance)), but I'm not convinced it's worth it, especially given the way that
     generic derivation works for ADTs (i.e. `Decoder[Base]` and `Decoder[Leaf]` behave differently).
 
-    **What this means concretely.** You may occasionally need to upcast to get the right encoder to
+    What this means concretely: You may occasionally need to upcast to get the right encoder to
     kick in.
 
 11. **Not all ADTs should expose their constructors.**
@@ -131,7 +131,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     boolean or a string or a unit or a `Seq[Json]` or a `JsonNumber` or a `JsonObject`. Introducing
     types like `JString`, `JNumber`, etc. into the public API just confuses things.
 
-    **What this means concretely.** You can't deconstruct JSON values with pattern matching. Instead
+    What this means concretely: You can't deconstruct JSON values with pattern matching. Instead
     you'll need to use `fold`, the `asX` methods, etc.
 
 12. **The library implementation does not model usage.**
@@ -145,7 +145,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     we believe that for a Scala library at this level, letting our tests verify correctness instead
     of the compiler may be necessary in some cases to achieve the performance we want.
 
-    **What this means concretely.** "Idiomatic" usage needs to be modelled by example projects, not
+    What this means concretely: "Idiomatic" usage needs to be modelled by example projects, not
     the library implementation. Unfortunately right now these example projects don't really exist,
     but we're working on it.
 
