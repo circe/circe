@@ -218,6 +218,7 @@ lazy val streaming = project
     moduleName := "circe-streaming"
   )
   .settings(allSettings)
+  .settings(noPublishSettings)
   .settings(
     libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.0-SNAPSHOT"
   )
