@@ -1,3 +1,5 @@
+# Guide for contributors
+
 This project follows a standard [fork and pull][fork-and-pull] model for accepting contributions via
 GitHub pull requests:
 
