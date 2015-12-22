@@ -310,7 +310,7 @@ sign-offs by a maintainer to be merged.
 The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
 all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit a PR.
+Please see the [contributors' guide](CONTRIBUTING.md) for details on how to submit a pull request.
 
 ## Warnings and known issues
 
