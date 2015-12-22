@@ -1,48 +1,75 @@
-Generally, circe follows a standard [fork and pull][fork-and-pull] model for contributions via
-GitHub pull requests. Thus, the _contributing process_ looks as follows:
+This project follows a standard [fork and pull][fork-and-pull] model for accepting contributions via
+GitHub pull requests:
 
-0. [Pick an issue](#pick-an-issue)
+0. [Pick (or report) an issue](#pick-or-report-an-issue)
 1. [Write code](#write-code)
 2. [Write tests](#write-tests)
-3. [Submit a PR](#submit-a-pr)
+3. [Submit a pull request](#submit-a-pull-request)
 
-## Pick an issue
+## Pick or report an issue
 
-* On Github, leave a comment on the issue you picked to notify others that the issues is taken
-* On [Gitter][gitter] or Github, ask any question you may have while working on the issue
+Often [open issues][issues] are flagged with a [_help wanted_][help-wanted] label, and these issues
+are good places to get started by offering ideas or code. When you begin working on an issue, please
+leave a comment to notify others that the issue is taken, and join us in the
+[Gitter channel][gitter] if you have any questions along the way.
 
-## Write Code
-circe follows the code style that promotes pure functional programming. When in doubt, look
-around the codebase and see how it's done elsewhere.
+We always welcome bug reports and feature requests—please don't feel like you need to have time to
+contribute a fix or implementation for your issue to be appreciated.
 
-* Code and comments should be formatted to a width no greater than 100 columns
-* Files should be exempt of trailing spaces
-* Imports should be sorted alphabetically
+## Write code
 
-That said, the Scala style checker `sbt scalastyle` should pass on the code.
+The [design principles document](DESIGN.md) outlines some of the practices followed in the circe
+codebase. In general the public API should be purely functional, but the implementation is free to
+use non-functional constructions for the sake of performance—we want correctness, of course, but
+internally we're willing to have this correctness verified by tests rather than the compiler when
+necessary. That said, performance-motivated optimizations should be based on evidence, not
+speculation, and a functional style should be preferred whenever possible. When in doubt, get in
+touch on Gitter or look around the codebase to see how things are done.
 
-## Write Tests
-circe uses the variety of testing libraries: [ScalaTest][scalatest], [ScalaCheck][scalacheck]
-and [Discipline][discipline], which are used as follows:
+circe uses a fairly standard Scalastyle configuration to check formatting, and it may be useful to
+make your IDE aware of the following rules:
 
-* Most of the tests live in the `tests` sub-project
-* The very base suite class `io.circe.tests.CirceSuite` brings in commons settings shared
-  by most of the tests
-* It's preferred to write property-based rather than a behaviour-driven tests
-* An assertion in regular tests should be written with `assert(a === b)`
-* An assertion in properties (inside `check`) should be written with `===`
+* Code and comments should be formatted to a width no greater than 100 columns.
+* Files should not contain trailing spaces.
+* Imports should be sorted alphabetically.
 
-## Submit a PR
-* PR should be submitted from a separate branch (use `git checkout -b "username/fix-123"`)
-* PR should generally contain only one commit (use `git commit --amend` and `git --force push` or
-  [squash][squash] existing commits into one)
-* PR should not decrease the code coverage more than by 1%
-* PR's commit message should use present tense and be capitalized properly
-  (i.e., `Fix #123: Add tests for Encoder`)
+When in doubt, please run `sbt scalastyle` and let us know if you have any questions.
 
-[fork-and-pull]: https://help.github.com/articles/using-pull-requests/
-[scalatest]: http://www.scalatest.org/
-[scalacheck]: https://www.scalacheck.org/
+## Write tests
+
+circe uses three testing libraries: [Discipline][discipline], [ScalaCheck][scalacheck], and
+[ScalaTest][scalatest], and organizes tests according to the following guidelines:
+
+* In general tests live in the `tests` sub-project. This allows e.g. tests for codecs in the core
+  module to be able to use the Jawn parser without circular dependencies between sub-projects.
+* For experimental or stand-alone modules, it may be appropriate for tests to live in the project.
+* Most test suites should extend `io.circe.tests.CirceSuite`, which provides many useful type class
+  instances and other tools.
+* Write tests that verify laws using Discipline whenever you can, then property-based tests using
+  ScalaCheck, then behavior-driven tests.
+* An assertion in regular tests should be written with `assert` and `===` (which in the context of
+  `CirceSuite` is Cats's type-safe equality operator, not the operator provided by ScalaTest).
+* An assertion in properties (inside `check`) should be written with `===`.
+
+## Submit a pull request
+
+* Pull requests should be submitted from a separate branch (e.g. using
+  `git checkout -b "username/fix-123"`).
+* In general we discourage force pushing to an active pull-request branch that other people are
+  commenting on or contributing to, and suggest using `git merge master` during development. Once
+  development is complete, use `git rebase master` and force push to [clean up the history][squash].
+* The first line of a commit message should be no more than 72 characters long (to accomodate
+  formatting in various environments).
+* Commit messages should general use the present tense, normal sentence capitalization, and no final
+  punctuation.
+* If a pull request decreases code coverage more than by 2%, please file an issue to make sure that
+  tests get added.
+
 [discipline]: https://github.com/typelevel/discipline
-[squash]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
 [gitter]: https://gitter.im/travisbrown/circe
+[fork-and-pull]: https://help.github.com/articles/using-pull-requests/
+[help-wanted]: https://github.com/travisbrown/circe/labels/help%20wanted
+[issues]: https://github.com/travisbrown/circe/issues
+[scalacheck]: https://www.scalacheck.org/
+[scalatest]: http://www.scalatest.org/
+[squash]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
