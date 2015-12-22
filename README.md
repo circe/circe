@@ -310,6 +310,8 @@ sign-offs by a maintainer to be merged.
 The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
 all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit a PR.
+
 ## Warnings and known issues
 
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
