@@ -51,6 +51,11 @@ circe uses three testing libraries: [Discipline][discipline], [ScalaCheck][scala
   `CirceSuite` is Cats's type-safe equality operator, not the operator provided by ScalaTest).
 * An assertion in properties (inside `check`) should be written with `===`.
 
+You can run `sbt +validateJVM` to run Scalastyle checking and the JVM tests. `sbt +test` will run
+all tests, but requires _a lot_ of time and memory. Unless your contribution directly touches
+Scala.js-related code, it's generally not necessary to run the Scala.js tests—we'll verify
+compatibility before the next release.
+
 ## Submit a pull request
 
 * Pull requests should be submitted from a separate branch (e.g. using
