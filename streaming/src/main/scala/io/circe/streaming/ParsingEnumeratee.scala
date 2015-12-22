@@ -1,5 +1,6 @@
 package io.circe.streaming
 
+import _root_.jawn.{ AsyncParser, ParseException }
 import cats.MonadError
 import cats.std.either._
 import cats.std.vector._
@@ -7,7 +8,6 @@ import cats.syntax.traverse._
 import io.circe.{ Json, ParsingFailure }
 import io.circe.jawn.CirceSupportParser
 import io.iteratee.{ Enumeratee, Input, InputFolder, Iteratee, Step, StepFolder }
-import _root_.jawn.{ AsyncParser, ParseException }
 
 private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: MonadError[F, Throwable])
   extends Enumeratee[F, S, Json] {

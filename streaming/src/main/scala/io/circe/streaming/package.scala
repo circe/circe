@@ -1,10 +1,10 @@
 package io.circe
 
+import _root_.jawn.{ AsyncParser, ParseException }
 import cats.MonadError
 import cats.data.Xor
-import io.iteratee.{ Enumeratee, Enumerator }
 import io.circe.jawn.CirceSupportParser
-import _root_.jawn.{ AsyncParser, ParseException }
+import io.iteratee.{ Enumeratee, Enumerator }
 
 package object streaming {
   def stringParser[F[_]](implicit F: MonadError[F, Throwable]): Enumeratee[F, String, Json] =
