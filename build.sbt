@@ -22,7 +22,7 @@ lazy val compilerOptions = Seq(
 
 lazy val catsVersion = "0.4.0-SNAPSHOT"
 lazy val shapelessVersion = "2.3.0-SNAPSHOT"
-lazy val refinedVersion = "0.3.2"
+lazy val refinedVersion = "0.3.3"
 
 lazy val scalaTestVersion = "3.0.0-M9"
 lazy val scalaCheckVersion = "1.12.5"
