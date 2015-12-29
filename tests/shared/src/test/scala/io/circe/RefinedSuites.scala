@@ -10,7 +10,7 @@ import eu.timepit.refined.api.{ Refined, RefType }
 import eu.timepit.refined.string.StartsWith
 import eu.timepit.refined.numeric.{ Positive, Greater }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
-import eu.timepit.refined.scalacheck.numeric.greaterArbitrary
+import eu.timepit.refined.scalacheck.numeric.greaterArbitraryWit
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
 import shapeless.{ Nat, Witness => W }
 
