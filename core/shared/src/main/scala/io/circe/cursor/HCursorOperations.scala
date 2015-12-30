@@ -1,6 +1,6 @@
 package io.circe.cursor
 
-import cats.{ Id, Functor }
+import cats.{ Functor, Id }
 import cats.data.Xor
 import io.circe._
 

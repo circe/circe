@@ -1,6 +1,6 @@
 package io.circe.cursor
 
-import cats.{ Id, Functor }
+import cats.{ Functor, Id }
 import cats.data.Xor
 import io.circe.{ ACursor, Cursor, Decoder, DecodingFailure, GenericCursor, HistoryOp, Json }
 import scala.annotation.tailrec

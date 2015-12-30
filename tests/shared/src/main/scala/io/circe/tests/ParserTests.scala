@@ -4,9 +4,8 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Json, ParsingFailure, Parser }
-import org.scalacheck.Arbitrary
-import org.scalacheck.Prop
+import io.circe.{ Json, Parser, ParsingFailure }
+import org.scalacheck.{ Arbitrary, Prop }
 import org.typelevel.discipline.Laws
 
 case class ParserLaws(parser: Parser) {

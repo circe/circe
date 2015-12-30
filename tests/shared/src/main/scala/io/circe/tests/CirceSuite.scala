@@ -10,5 +10,6 @@ import org.typelevel.discipline.scalatest.Discipline
  */
 trait CirceSuite extends FunSuite with Matchers with Discipline with AllInstances with AllSyntax
   with ArbitraryInstances with MissingInstances {
-  override def convertToEqualizer[T](left: T): Equalizer[T] = ???
+  override def convertToEqualizer[T](left: T): Equalizer[T] =
+    sys.error("Intentionally ambiguous implicit for Equalizer")
 }

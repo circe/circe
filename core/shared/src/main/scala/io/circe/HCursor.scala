@@ -3,7 +3,6 @@ package io.circe
 import algebra.Eq
 import cats.data.{ NonEmptyList, Validated, Xor }
 import io.circe.cursor.HCursorOperations
-
 import scala.annotation.tailrec
 
 /**

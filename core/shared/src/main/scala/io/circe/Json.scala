@@ -135,6 +135,11 @@ sealed abstract class Json extends Product with Serializable {
     case that: Json => Json.eqJson.eqv(this, that)
     case _ => false
   }
+
+  /**
+   * Use implementations provided by case classes.
+   */
+  override def hashCode(): Int
 }
 
 object Json {

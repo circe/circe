@@ -127,7 +127,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
         j.asArray.fold(j)(a => Json.fromValues(0.asJson :: a))
       )
     )
-    
+
     assert(result.flatMap(top) === Some(j2))
   }
 

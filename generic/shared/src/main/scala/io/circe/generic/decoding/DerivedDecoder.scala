@@ -37,7 +37,7 @@ object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedD
         headJson.as(decodeHead.value).map(h => Inl(field(h)))
       }
   }
-  
+
   implicit def decodeLabelledHList[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     decodeHead: Lazy[Decoder[H]],
