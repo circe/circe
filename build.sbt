@@ -50,7 +50,8 @@ lazy val baseSettings = Seq(
       case Some((2, 10)) => false
       case _ => true
     }
-  )
+  ),
+  (scalastyleSources in Compile) <++= unmanagedSourceDirectories in Compile
 )
 
 lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings

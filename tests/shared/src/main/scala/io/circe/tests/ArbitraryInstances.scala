@@ -1,8 +1,8 @@
 package io.circe.tests
 
 import cats.data.NonEmptyList
-import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
+import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
 

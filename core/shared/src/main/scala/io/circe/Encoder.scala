@@ -1,11 +1,10 @@
 package io.circe
 
-import java.util.UUID
-
-import cats.Foldable
 import cats.data.{ NonEmptyList, Validated, Xor }
 import cats.functor.Contravariant
 import cats.std.list._
+import cats.Foldable
+import java.util.UUID
 import scala.collection.generic.IsTraversableOnce
 import scala.collection.mutable.ArrayBuffer
 

@@ -14,7 +14,7 @@ object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
 
   implicit val encodeCNil: DerivedObjectEncoder[CNil] =
     new DerivedObjectEncoder[CNil] {
-      def encodeObject(a: CNil): JsonObject = 
+      def encodeObject(a: CNil): JsonObject =
         sys.error("No JSON representation of CNil (this shouldn't happen)")
     }
 

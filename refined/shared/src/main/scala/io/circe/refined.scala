@@ -17,7 +17,7 @@ import eu.timepit.refined.api.{ RefType, Validate }
  *
  *  Obj(refineMV(4)).asJson.nospaces == """{"i":4}"""
  * }}}
- * 
+ *
  * @author Alexandre Archambault
  */
 object refined {

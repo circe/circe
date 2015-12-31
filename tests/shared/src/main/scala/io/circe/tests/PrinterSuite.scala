@@ -10,7 +10,7 @@ class PrinterSuite(printer: Printer, parser: Parser) extends CirceSuite {
   checkAll("Printing Double", PrinterTests[Double].printer(printer, parser))
   checkAll("Printing Short", PrinterTests[Short].printer(printer, parser))
   checkAll("Printing Int", PrinterTests[Int].printer(printer, parser))
-  // Temporarily disabling because of problems round-tripping in Scala.js. 
+  // Temporarily disabling because of problems round-tripping in Scala.js.
   //checkAll("Printing Long", PrinterTests[Long].printer(printer, parser))
   checkAll("Printing Map", PrinterTests[Map[String, List[Int]]].printer(printer, parser))
 }

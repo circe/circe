@@ -14,7 +14,7 @@ package object jackson extends WithJacksonMapper with JacksonParser {
     val gen = stringJsonGenerator(sw).setPrettyPrinter(
       new DefaultPrettyPrinter()
     )
-    val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+    val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter[ObjectWriter]()
     writer.writeValue(gen, json)
     sw.flush()
     sw.getBuffer.toString

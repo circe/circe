@@ -1,8 +1,7 @@
 package io.circe.tests
 
-import java.util.UUID
-
 import algebra.Eq
+import java.util.UUID
 import org.scalacheck.Arbitrary
 import shapeless._
 
