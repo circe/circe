@@ -7,7 +7,7 @@ import cats.std.vector._
 import cats.syntax.traverse._
 import io.circe.{ Json, ParsingFailure }
 import io.circe.jawn.CirceSupportParser
-import io.iteratee.internal.{ Input, Step }
+import io.iteratee.internal.Step
 import io.iteratee.{ Enumeratee, Iteratee }
 
 private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: MonadError[F, Throwable])
@@ -17,40 +17,36 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: MonadEr
   private[this] final def makeParser: AsyncParser[Json] =
     CirceSupportParser.async(mode = AsyncParser.UnwrapArray)
 
-  private[this] final def folder[A](parser: AsyncParser[Json])(
-    k: Input[Json] => F[Step[F, Json, A]],
-    in: Input[S]
-  ): Input.Folder[S, OuterF[A]] = new Input.Folder[S, OuterF[A]] {
-    def onEmpty: OuterF[A] = F.pure(Step.cont(in => in.foldWith(folder(parser)(k, in))))
-    def onEl(e: S): OuterF[A] = parseWith(parser)(e) match {
-      case Left(error) => F.raiseError(
-        ParsingFailure(error.getMessage, error)
-      )
-      case Right(jsons) => F.map(k(Input.chunk(jsons.toVector)))(doneOrLoop[A](parser))
+  private[this] final def feedStep[A](step: Step[F, Json, A], js: Seq[Json]): F[Step[F, Json, A]] =
+    js match {
+      case Seq() => F.pure(step)
+      case Seq(e) => step.feedEl(e)
+      case h1 +: h2 +: t => step.feedChunk(h1, h2, t.toVector)
     }
-    def onChunk(es: Vector[S]): OuterF[A] = es.toVector.traverseU(parseWith(parser)) match {
-      case Left(error) => F.raiseError(
-        ParsingFailure(error.getMessage, error)
-      )
-      case Right(jsons) => F.map(k(Input.chunk(jsons.flatten)))(doneOrLoop(parser))
-    }
-    def onEnd: OuterF[A] = parser.finish()(CirceSupportParser.facade) match {
-      case Left(error) => F.raiseError(
-        ParsingFailure(error.getMessage, error)
-      )
-      case Right(jsons) => F.map(k(Input.chunk(jsons.toVector)))(s => Step.done(s, Input.empty))
-    }
-  }
 
-  private[this] final def doneOrLoop[A](parser: AsyncParser[Json])(
-    s: Step[F, Json, A]
-  ): OuterS[A] = s.foldWith(
-    new Step.Folder[F, Json, A, OuterS[A]] {
-      def onCont(k: Input[Json] => F[Step[F, Json, A]]): OuterS[A] =
-       Step.cont(in => in.foldWith(folder(parser)(k, in)))
-      def onDone(value: A, remaining: Input[Json]): OuterS[A] = Step.done(s, Input.empty)
-    }
-  )
+  private[this] final def stepWith[A](parser: AsyncParser[Json])
+    (step: Step[F, Json, A]): Step[F, S, Step[F, Json, A]] =
+      new Step.Cont[F, S, Step[F, Json, A]] {
+        final def end: F[Step.Ended[F, S, Step[F, Json, A]]] =
+          parser.finish()(CirceSupportParser.facade) match {
+            case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
+            case Right(js) => F.map(feedStep(step, js))(Step.ended[F, S, Step[F, Json, A]])
+          }
+        final def onEl(e: S): F[Step[F, S, Step[F, Json, A]]] = parseWith(parser)(e) match {
+          case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
+          case Right(js) => F.map(feedStep(step, js))(doneOrLoop[A](parser))
+        }
+        final def onChunk(h1: S, h2: S, t: Vector[S]): F[Step[F, S, Step[F, Json, A]]] =
+          (h1 +: h2 +: t).traverseU(parseWith(parser)) match {
+            case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
+            case Right(js) => F.map(feedStep(step, js.flatten))(doneOrLoop[A](parser))
+          }
+      }
 
-  final def apply[A](s: Step[F, Json, A]): OuterF[A] = F.pure(doneOrLoop(makeParser)(s))
+  private[this] final def doneOrLoop[A](parser: AsyncParser[Json])
+    (step: Step[F, Json, A]): Step[F, S, Step[F, Json, A]] =
+      if (step.isDone) Step.done(step) else stepWith(parser)(step)
+
+  final def apply[A](step: Step[F, Json, A]): F[Step[F, S, Step[F, Json, A]]] =
+    F.pure(doneOrLoop(makeParser)(step))
 }
