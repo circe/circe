@@ -28,7 +28,7 @@ You'll also need to publish `circe-streaming` locally, since it's not yet in the
 can do this by typing the following command in the root project directory:
 
 ```bash
-sbt publishLocal
+sbt "project streaming" publishLocal
 ```
 
 (This second step will soon be unnecessary.)
@@ -141,6 +141,7 @@ file (at least until Cats [gets its own version][cats-32] of `Task`).
 ```scala
 import io.circe.streaming._
 import io.iteratee.task._
+import java.io.File
 import scalaz.concurrent.Task
 ```
 
@@ -148,7 +149,7 @@ And then we can define an `Enumerator` that will let us read lines from the file
 asynchronously with jawn, and decode them into `Task` values:
 
 ```scala
-val lots = lines("data.json").mapE(stringParser).mapE(decoder[Task, Lot])
+val lots = lines(new File("data.json")).mapE(stringParser).mapE(decoder[Task, Lot])
 ```
 
 This line doesn't do any real work—it doesn't even open the file. It just represents a source of
@@ -159,7 +160,7 @@ lots that we can process with an iteratee. For example, we can count the number 
 scala> val task = lots.run(length)
 task: scalaz.concurrent.Task[Int] = scalaz.concurrent.Task@5f04c487
 
-scala> task.unsafePerformSync
+scala> task.run
 res0: Int = 206560
 ```
 
@@ -176,14 +177,14 @@ scala> val task: Task[Map[String, Int]] = lots.collect {
      | }.run(sum)
 task: scalaz.concurrent.Task[Map[String,Int]] = scalaz.concurrent.Task@1f0a2582
 
-scala> val res: Map[String, Int] = task.unsafePerformSync
+scala> val res: Map[String, Int] = task.run
 res: Map[String,Int] = Map(Polygon -> 206434, MultiPolygon -> 120)
 ```
 
 Or simply gather the first few lots into a sequence:
 
 ```scala
-scala> val first3 = lots.run(take(3)).unsafePerformSync
+scala> val first3 = lots.run(take(3)).run
 first3: Vector[Lot] = Vector(Lot(Feature,Map(MAPBLKLOT -> 0001001, ...
 ```
 
