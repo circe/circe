@@ -27,11 +27,10 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: MonadEr
   private[this] final def stepWith[A](parser: AsyncParser[Json])
     (step: Step[F, Json, A]): Step[F, S, Step[F, Json, A]] =
       new Step.Cont[F, S, Step[F, Json, A]] {
-        final def end: F[Step.Ended[F, S, Step[F, Json, A]]] =
-          parser.finish()(CirceSupportParser.facade) match {
-            case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
-            case Right(js) => F.map(feedStep(step, js))(Step.ended[F, S, Step[F, Json, A]])
-          }
+        final def run: F[Step[F, Json, A]] = parser.finish()(CirceSupportParser.facade) match {
+          case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
+          case Right(js) => feedStep(step, js)
+        }
         final def onEl(e: S): F[Step[F, S, Step[F, Json, A]]] = parseWith(parser)(e) match {
           case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
           case Right(js) => F.map(feedStep(step, js))(doneOrLoop[A](parser))

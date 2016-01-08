@@ -149,7 +149,7 @@ And then we can define an `Enumerator` that will let us read lines from the file
 asynchronously with jawn, and decode them into `Task` values:
 
 ```scala
-val lots = lines(new File("data.json")).mapE(stringParser).mapE(decoder[Task, Lot])
+val lots = bytes(new File("data.json")).mapE(byteParser).mapE(decoder[Task, Lot])
 ```
 
 This line doesn't do any real work—it doesn't even open the file. It just represents a source of
@@ -171,11 +171,13 @@ scala> import cats.std.int._, cats.std.map._
 import cats.std.int._
 import cats.std.map._
 
-scala> val task: Task[Map[String, Int]] = lots.collect {
-     |   case Lot(_, _, Some(Polygon(_))) => Map("Polygon" -> 1)
-     |   case Lot(_, _, Some(MultiPolygon(_))) => Map("MultiPolygon" -> 1)
-     | }.run(sum)
-task: scalaz.concurrent.Task[Map[String,Int]] = scalaz.concurrent.Task@1f0a2582
+scala> val task: Task[Map[String, Int]] = lots.mapE(
+     |   collect {
+     |     case Lot(_, _, Some(Polygon(_))) => Map("Polygon" -> 1)
+     |     case Lot(_, _, Some(MultiPolygon(_))) => Map("MultiPolygon" -> 1)
+     |   }
+     | ).run(sum)
+task: scalaz.concurrent.Task[Map[String,Int]] = scalaz.concurrent.Task@1d3a58cb
 
 scala> val res: Map[String, Int] = task.run
 res: Map[String,Int] = Map(Polygon -> 206434, MultiPolygon -> 120)
@@ -202,4 +204,3 @@ few lines from the file, or if we run into decoding or I/O errors during the pro
 [iteratee-io]: https://github.com/travisbrown/iteratee
 [sf-opendata]: https://data.sfgov.org/
 [zemirco]: https://github.com/zemirco
-
