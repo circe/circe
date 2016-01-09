@@ -362,6 +362,7 @@ val jvmProjects = Seq(
   "parse",
   "tests",
   "jawn",
+  "jackson",
   "async",
   "benchmark"
 )

@@ -6,7 +6,7 @@ package io.circe
  * @author Travis Brown
  */
 trait ObjectEncoder[A] extends Encoder[A] { self =>
-  def apply(a: A): Json = Json.JObject(encodeObject(a))
+  final def apply(a: A): Json = Json.JObject(encodeObject(a))
 
   /**
    * Convert a value to a JSON object.
@@ -20,15 +20,15 @@ object ObjectEncoder extends LowPriorityObjectEncoders {
    *
    * @group Utilities
    */
-  def apply[A](implicit e: ObjectEncoder[A]): ObjectEncoder[A] = e
+  final def apply[A](implicit e: ObjectEncoder[A]): ObjectEncoder[A] = e
 
   /**
    * Construct an instance from a function.
    *
    * @group Utilities
    */
-  def instance[A](f: A => JsonObject): ObjectEncoder[A] = new ObjectEncoder[A] {
-    def encodeObject(a: A): JsonObject = f(a)
+  final def instance[A](f: A => JsonObject): ObjectEncoder[A] = new ObjectEncoder[A] {
+    final def encodeObject(a: A): JsonObject = f(a)
   }
 }
 

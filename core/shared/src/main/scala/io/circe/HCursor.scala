@@ -20,12 +20,12 @@ abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperati
   /**
    * Create an [[ACursor]] for this cursor.
    */
-  def acursor: ACursor = ACursor.ok(this)
+  final def acursor: ACursor = ACursor.ok(this)
 
   /**
    * Create a failed [[ACursor]] for this cursor.
    */
-  def failedACursor: ACursor = ACursor.fail(this)
+  final def failedACursor: ACursor = ACursor.fail(this)
 
   /**
    * Traverse taking `op` at each step, performing `f` on the current cursor and
@@ -34,7 +34,7 @@ abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperati
    * This operation does not consume stack at each step, so is safe to work with
    * large structures (in contrast with recursively binding).
    */
-  def traverseDecode[A](init: A)(
+  final def traverseDecode[A](init: A)(
     op: HCursor => ACursor,
     f: (A, HCursor) => Decoder.Result[A]
   ): Decoder.Result[A] = loop[(HCursor, A), A](
@@ -77,8 +77,8 @@ abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperati
     }
 }
 
-object HCursor {
-  implicit val eqHCursor: Eq[HCursor] = Eq.instance {
+final object HCursor {
+  implicit final val eqHCursor: Eq[HCursor] = Eq.instance {
     case (hc1, hc2) => Eq[Cursor].eqv(hc1.cursor, hc2.cursor) && (hc1.history == hc2.history)
   }
 }

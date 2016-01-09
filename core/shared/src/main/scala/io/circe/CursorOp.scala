@@ -5,34 +5,34 @@ import cats.Show
 
 sealed abstract class CursorOp extends Product with Serializable
 
-object CursorOp {
-  case object MoveLeft extends CursorOp
-  case object MoveRight extends CursorOp
-  case object MoveFirst extends CursorOp
-  case object MoveLast extends CursorOp
-  case object MoveUp extends CursorOp
-  case class LeftN(n: Int) extends CursorOp
-  case class RightN(n: Int) extends CursorOp
-  case class LeftAt(p: Json => Boolean) extends CursorOp
-  case class RightAt(p: Json => Boolean) extends CursorOp
-  case class Find(p: Json => Boolean) extends CursorOp
-  case class Field(k: String) extends CursorOp
-  case class DownField(k: String) extends CursorOp
-  case object DownArray extends CursorOp
-  case class DownAt(p: Json => Boolean) extends CursorOp
-  case class DownN(n: Int) extends CursorOp
-  case object DeleteGoParent extends CursorOp
-  case object DeleteGoLeft extends CursorOp
-  case object DeleteGoRight extends CursorOp
-  case object DeleteGoFirst extends CursorOp
-  case object DeleteGoLast extends CursorOp
-  case class DeleteGoField(k: String) extends CursorOp
-  case object DeleteLefts extends CursorOp
-  case object DeleteRights extends CursorOp
-  case class SetLefts(js: List[Json]) extends CursorOp
-  case class SetRights(js: List[Json]) extends CursorOp
+final object CursorOp {
+  final case object MoveLeft extends CursorOp
+  final case object MoveRight extends CursorOp
+  final case object MoveFirst extends CursorOp
+  final case object MoveLast extends CursorOp
+  final case object MoveUp extends CursorOp
+  final case class LeftN(n: Int) extends CursorOp
+  final case class RightN(n: Int) extends CursorOp
+  final case class LeftAt(p: Json => Boolean) extends CursorOp
+  final case class RightAt(p: Json => Boolean) extends CursorOp
+  final case class Find(p: Json => Boolean) extends CursorOp
+  final case class Field(k: String) extends CursorOp
+  final case class DownField(k: String) extends CursorOp
+  final case object DownArray extends CursorOp
+  final case class DownAt(p: Json => Boolean) extends CursorOp
+  final case class DownN(n: Int) extends CursorOp
+  final case object DeleteGoParent extends CursorOp
+  final case object DeleteGoLeft extends CursorOp
+  final case object DeleteGoRight extends CursorOp
+  final case object DeleteGoFirst extends CursorOp
+  final case object DeleteGoLast extends CursorOp
+  final case class DeleteGoField(k: String) extends CursorOp
+  final case object DeleteLefts extends CursorOp
+  final case object DeleteRights extends CursorOp
+  final case class SetLefts(js: List[Json]) extends CursorOp
+  final case class SetRights(js: List[Json]) extends CursorOp
 
-  implicit val showCursorOp: Show[CursorOp] = Show.show {
+  implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft => "<-"
     case MoveRight => "->"
     case MoveFirst => "|<-"
@@ -60,5 +60,5 @@ object CursorOp {
     case SetRights(_) => "..>!"
   }
 
-  implicit val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
+  implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
 }

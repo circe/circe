@@ -27,39 +27,39 @@ import shapeless.ops.record.RemoveAll
  *   }
  * }}}
  */
-object semiauto {
-  def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
+final object semiauto {
+  final def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
 
-  def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
+  final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
     encode.value
 
-  def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
+  final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
-  class DerivationHelper[A] {
+  final class DerivationHelper[A] {
     @deprecated("Use deriveDecoder", "0.3.0")
-    def decoder[R](implicit
+    final def decoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
       decode: Lazy[DerivedDecoder[R]]
     ): Decoder[A] = new Decoder[A] {
-      def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
+      final def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
     }
 
     @deprecated("Use deriveEncoder", "0.3.0")
-    def encoder[R](implicit
+    final def encoder[R](implicit
       gen: LabelledGeneric.Aux[A, R],
       encode: Lazy[DerivedObjectEncoder[R]]
     ): ObjectEncoder[A] = new ObjectEncoder[A] {
-      def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
+      final def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
     }
 
-    def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
+    final def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
       ffp: FnFromProduct.Aux[P => C, A],
       gen: LabelledGeneric.Aux[C, T],
       removeAll: RemoveAll.Aux[T, P, (P, R)],
       decode: DerivedDecoder[R]
     ): Decoder[A] = DerivedDecoder.decodeIncompleteCaseClass[A, P, C, T, R]
 
-    def patch[R <: HList, O <: HList](implicit
+    final def patch[R <: HList, O <: HList](implicit
       gen: LabelledGeneric.Aux[A, R],
       patch: PatchWithOptions.Aux[R, O],
       decode: DerivedDecoder[O]

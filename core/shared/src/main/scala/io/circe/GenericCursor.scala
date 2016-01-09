@@ -116,7 +116,7 @@ trait GenericCursor[C <: GenericCursor[C]] extends Serializable {
    *
    * @group Modification
    */
-  def set(j: Json): C = withFocus(_ => j)
+  final def set(j: Json): C = withFocus(_ => j)
 
   /**
    * If the focus is a JSON array, return the elements to the left.

@@ -16,22 +16,24 @@ import monocle.function.Plated
  * @author Julien Truffaut
  */
 trait JsonOptics extends CatsConversions {
-  lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.bool)
-  lazy val jsonBigDecimal: Prism[Json, BigDecimal] = jsonNumber.composeIso(jsonNumberBigDecimal)
-  lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberDouble)
-  lazy val jsonBigInt: Prism[Json, BigInt] = jsonNumber.composePrism(jsonNumberBigInt)
-  lazy val jsonLong: Prism[Json, Long] = jsonNumber.composePrism(jsonNumberLong)
-  lazy val jsonInt: Prism[Json, Int] = jsonNumber.composePrism(jsonNumberInt)
-  lazy val jsonShort: Prism[Json, Short] = jsonNumber.composePrism(jsonNumberShort)
-  lazy val jsonByte: Prism[Json, Byte] = jsonNumber.composePrism(jsonNumberByte)
-  lazy val jsonString: Prism[Json, String] = Prism[Json, String](_.asString)(Json.string)
-  lazy val jsonNumber: Prism[Json, JsonNumber] =
+  final lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.bool)
+  final lazy val jsonBigDecimal: Prism[Json, BigDecimal] =
+    jsonNumber.composeIso(jsonNumberBigDecimal)
+  final lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberDouble)
+  final lazy val jsonBigInt: Prism[Json, BigInt] = jsonNumber.composePrism(jsonNumberBigInt)
+  final lazy val jsonLong: Prism[Json, Long] = jsonNumber.composePrism(jsonNumberLong)
+  final lazy val jsonInt: Prism[Json, Int] = jsonNumber.composePrism(jsonNumberInt)
+  final lazy val jsonShort: Prism[Json, Short] = jsonNumber.composePrism(jsonNumberShort)
+  final lazy val jsonByte: Prism[Json, Byte] = jsonNumber.composePrism(jsonNumberByte)
+  final lazy val jsonString: Prism[Json, String] = Prism[Json, String](_.asString)(Json.string)
+  final lazy val jsonNumber: Prism[Json, JsonNumber] =
     Prism[Json, JsonNumber](_.asNumber)(Json.fromJsonNumber)
-  lazy val jsonObject: Prism[Json, JsonObject] =
+  final lazy val jsonObject: Prism[Json, JsonObject] =
     Prism[Json, JsonObject](_.asObject)(Json.fromJsonObject)
-  lazy val jsonArray: Prism[Json, List[Json]] = Prism[Json, List[Json]](_.asArray)(Json.fromValues)
+  final lazy val jsonArray: Prism[Json, List[Json]] =
+    Prism[Json, List[Json]](_.asArray)(Json.fromValues)
 
-  implicit lazy val jsonPlated: Plated[Json] = new Plated[Json] {
+  implicit final lazy val jsonPlated: Plated[Json] = new Plated[Json] {
     val plate: Traversal[Json, Json] = new Traversal[Json, Json] {
       def modifyF[F[_]](f: Json => F[Json])(a: Json)(implicit
         FZ: scalaz.Applicative[F]
@@ -50,4 +52,4 @@ trait JsonOptics extends CatsConversions {
   }
 }
 
-object JsonOptics extends JsonOptics
+final object JsonOptics extends JsonOptics

@@ -20,14 +20,12 @@ import eu.timepit.refined.api.{ RefType, Validate }
  *
  * @author Alexandre Archambault
  */
-object refined {
-
-  implicit def refinedDecoder[T, P, F[_, _]]
-   (implicit
-     underlying: Decoder[T],
-     validate: Validate[T, P],
-     refType: RefType[F]
-   ): Decoder[F[T, P]] =
+final object refined {
+  implicit final def refinedDecoder[T, P, F[_, _]](implicit
+    underlying: Decoder[T],
+    validate: Validate[T, P],
+    refType: RefType[F]
+  ): Decoder[F[T, P]] =
     Decoder.instance { c =>
       underlying(c).flatMap { t0 =>
         refType.refine(t0) match {
@@ -37,11 +35,9 @@ object refined {
       }
     }
 
-  implicit def refinedEncoder[T, P, F[_, _]]
-   (implicit
-     underlying: Encoder[T],
-     refType: RefType[F]
-   ): Encoder[F[T, P]] =
+  implicit final def refinedEncoder[T, P, F[_, _]](implicit
+    underlying: Encoder[T],
+    refType: RefType[F]
+  ): Encoder[F[T, P]] =
     underlying.contramap(refType.unwrap)
-
 }

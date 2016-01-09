@@ -1,5 +1,5 @@
 package io.circe
 
 package optics {
-  object all extends JsonNumberOptics with JsonObjectOptics with JsonOptics
+  final object all extends JsonNumberOptics with JsonObjectOptics with JsonOptics
 }

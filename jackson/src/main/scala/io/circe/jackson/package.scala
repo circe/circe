@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter
  * The implementation is ported with minimal changes from Play JSON.
  */
 package object jackson extends WithJacksonMapper with JacksonParser {
-  def jacksonPrint(json: Json): String = {
+  final def jacksonPrint(json: Json): String = {
     val sw = new java.io.StringWriter
     val gen = stringJsonGenerator(sw).setPrettyPrinter(
       new DefaultPrettyPrinter()

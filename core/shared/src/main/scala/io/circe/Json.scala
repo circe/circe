@@ -18,7 +18,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * The catamorphism for the JSON value data type.
    */
-  def fold[X](
+  final def fold[X](
     jsonNull: => X,
     jsonBoolean: Boolean => X,
     jsonNumber: JsonNumber => X,
@@ -37,7 +37,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Run on an array or object or return the given default.
    */
-  def arrayOrObject[X](
+  final def arrayOrObject[X](
     or: => X,
     jsonArray: List[Json] => X,
     jsonObject: JsonObject => X
@@ -53,42 +53,42 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Construct a cursor from this JSON value.
    */
-  def cursor: Cursor = Cursor(this)
+  final def cursor: Cursor = Cursor(this)
 
   /**
    * Construct a cursor with history from this JSON value.
    */
-  def hcursor: HCursor = Cursor(this).hcursor
+  final def hcursor: HCursor = Cursor(this).hcursor
 
-  def isNull: Boolean = false
-  def isBoolean: Boolean = false
-  def isNumber: Boolean = false
-  def isString: Boolean = false
-  def isArray: Boolean = false
-  def isObject: Boolean = false
+  def isNull: Boolean
+  def isBoolean: Boolean
+  def isNumber: Boolean
+  def isString: Boolean
+  def isArray: Boolean
+  def isObject: Boolean
 
-  def asBoolean: Option[Boolean] = None
-  def asNumber: Option[JsonNumber] = None
-  def asString: Option[String] = None
-  def asArray: Option[List[Json]] = None
-  def asObject: Option[JsonObject] = None
+  def asBoolean: Option[Boolean]
+  def asNumber: Option[JsonNumber]
+  def asString: Option[String]
+  def asArray: Option[List[Json]]
+  def asObject: Option[JsonObject]
 
-  def withBoolean(f: Boolean => Json): Json = asBoolean.fold(this)(f)
-  def withNumber(f: JsonNumber => Json): Json = asNumber.fold(this)(f)
-  def withString(f: String => Json): Json = asString.fold(this)(f)
-  def withArray(f: List[Json] => Json): Json = asArray.fold(this)(f)
-  def withObject(f: JsonObject => Json): Json = asObject.fold(this)(f)
+  final def withBoolean(f: Boolean => Json): Json = asBoolean.fold(this)(f)
+  final def withNumber(f: JsonNumber => Json): Json = asNumber.fold(this)(f)
+  final def withString(f: String => Json): Json = asString.fold(this)(f)
+  final def withArray(f: List[Json] => Json): Json = asArray.fold(this)(f)
+  final def withObject(f: JsonObject => Json): Json = asObject.fold(this)(f)
 
-  def mapBoolean(f: Boolean => Boolean): Json = this
-  def mapNumber(f: JsonNumber => JsonNumber): Json = this
-  def mapString(f: String => String): Json = this
-  def mapArray(f: List[Json] => List[Json]): Json = this
-  def mapObject(f: JsonObject => JsonObject): Json = this
+  def mapBoolean(f: Boolean => Boolean): Json
+  def mapNumber(f: JsonNumber => JsonNumber): Json
+  def mapString(f: String => String): Json
+  def mapArray(f: List[Json] => List[Json]): Json
+  def mapObject(f: JsonObject => JsonObject): Json
 
   /**
    * The name of the type of the JSON value.
    */
-  def name: String =
+  final def name: String =
     this match {
       case JNull       => "Null"
       case JBoolean(_) => "Boolean"
@@ -101,37 +101,37 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Attempts to decode this JSON value to another data type.
    */
-  def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(cursor.hcursor)
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(cursor.hcursor)
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
    */
-  def pretty(p: Printer): String = p.pretty(this)
+  final def pretty(p: Printer): String = p.pretty(this)
 
   /**
    * Pretty-print this JSON value to a string with no spaces.
    */
-  def noSpaces: String = Printer.noSpaces.pretty(this)
+  final def noSpaces: String = Printer.noSpaces.pretty(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of two spaces.
    */
-  def spaces2: String = Printer.spaces2.pretty(this)
+  final def spaces2: String = Printer.spaces2.pretty(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of four spaces.
    */
-  def spaces4: String = Printer.spaces4.pretty(this)
+  final def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
    * Compute a `String` representation for this JSON value.
    */
-  override def toString: String = spaces2
+  override final def toString: String = spaces2
 
   /**
    * Universal equality derived from our type-safe equality.
    */
-  override def equals(that: Any): Boolean = that match {
+  override final def equals(that: Any): Boolean = that match {
     case that: Json => Json.eqJson.eqv(this, that)
     case _ => false
   }
@@ -142,59 +142,156 @@ sealed abstract class Json extends Product with Serializable {
   override def hashCode(): Int
 }
 
-object Json {
-  private[circe] case object JNull extends Json {
-    override def isNull: Boolean = true
+final object Json {
+  private[circe] final case object JNull extends Json {
+    final def isNull: Boolean = true
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = false
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = None
+    final def asString: Option[String] = None
+    final def asArray: Option[List[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = this
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
   }
+
   private[circe] final case class JBoolean(b: Boolean) extends Json {
-    override def isBoolean: Boolean = true
-    override def asBoolean: Option[Boolean] = Some(b)
-    override def mapBoolean(f: Boolean => Boolean): Json = JBoolean(f(b))
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = true
+    final def isNumber: Boolean = false
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = Some(b)
+    final def asNumber: Option[JsonNumber] = None
+    final def asString: Option[String] = None
+    final def asArray: Option[List[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = JBoolean(f(b))
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = this
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
   }
+
   private[circe] final case class JNumber(n: JsonNumber) extends Json {
-    override def isNumber: Boolean = true
-    override def asNumber: Option[JsonNumber] = Some(n)
-    override def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(n))
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = true
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = Some(n)
+    final def asString: Option[String] = None
+    final def asArray: Option[List[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(n))
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
   }
+
   private[circe] final case class JString(s: String) extends Json {
-    override def isString: Boolean = true
-    override def asString: Option[String] = Some(s)
-    override def mapString(f: String => String): Json = JString(f(s))
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = false
+    final def isString: Boolean = true
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = None
+    final def asString: Option[String] = Some(s)
+    final def asArray: Option[List[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = this
+    final def mapString(f: String => String): Json = JString(f(s))
+    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
   }
+
   private[circe] final case class JArray(a: Seq[Json]) extends Json {
-    override def isArray: Boolean = true
-    override def asArray: Option[List[Json]] = Some(a.toList)
-    override def mapArray(f: List[Json] => List[Json]): Json = JArray(f(a.toList))
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = false
+    final def isString: Boolean = false
+    final def isArray: Boolean = true
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = None
+    final def asString: Option[String] = None
+    final def asArray: Option[List[Json]] = Some(a.toList)
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = this
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: List[Json] => List[Json]): Json = JArray(f(a.toList))
+    final def mapObject(f: JsonObject => JsonObject): Json = this
   }
+
   private[circe] final case class JObject(o: JsonObject) extends Json {
-    override def isObject: Boolean = true
-    override def asObject: Option[JsonObject] = Some(o)
-    override def mapObject(f: JsonObject => JsonObject): Json = JObject(f(o))
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = false
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = true
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = None
+    final def asString: Option[String] = None
+    final def asArray: Option[List[Json]] = None
+    final def asObject: Option[JsonObject] = Some(o)
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = this
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = JObject(f(o))
   }
 
-  def empty: Json = Empty
+  final def empty: Json = Empty
 
-  val Empty: Json = JNull
-  val True: Json = JBoolean(true)
-  val False: Json = JBoolean(false)
+  final val Empty: Json = JNull
+  final val True: Json = JBoolean(true)
+  final val False: Json = JBoolean(false)
 
-  def bool(b: Boolean): Json = JBoolean(b)
-  def int(n: Int): Json = JNumber(JsonLong(n.toLong))
-  def long(n: Long): Json = JNumber(JsonLong(n))
-  def number(n: Double): Option[Json] = JsonDouble(n).asJson
-  def bigDecimal(n: BigDecimal): Json = JNumber(JsonBigDecimal(n))
-  def numberOrNull(n: Double): Json = JsonDouble(n).asJsonOrNull
-  def numberOrString(n: Double): Json = JsonDouble(n).asJsonOrString
-  def string(s: String): Json = JString(s)
-  def array(elements: Json*): Json = JArray(elements)
-  def obj(fields: (String, Json)*): Json = JObject(JsonObject.from(fields.toList))
+  final def bool(b: Boolean): Json = JBoolean(b)
+  final def int(n: Int): Json = JNumber(JsonLong(n.toLong))
+  final def long(n: Long): Json = JNumber(JsonLong(n))
+  final def number(n: Double): Option[Json] = JsonDouble(n).asJson
+  final def bigDecimal(n: BigDecimal): Json = JNumber(JsonBigDecimal(n))
+  final def numberOrNull(n: Double): Json = JsonDouble(n).asJsonOrNull
+  final def numberOrString(n: Double): Json = JsonDouble(n).asJsonOrString
+  final def string(s: String): Json = JString(s)
+  final def array(elements: Json*): Json = JArray(elements)
+  final def obj(fields: (String, Json)*): Json = JObject(JsonObject.from(fields.toList))
 
-  def fromJsonNumber(num: JsonNumber): Json = JNumber(num)
-  def fromJsonObject(obj: JsonObject): Json = JObject(obj)
-  def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
-  def fromValues(values: Seq[Json]): Json = JArray(values)
+  final def fromJsonNumber(num: JsonNumber): Json = JNumber(num)
+  final def fromJsonObject(obj: JsonObject): Json = JObject(obj)
+  final def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
+  final def fromValues(values: Seq[Json]): Json = JArray(values)
 
-  private[this] def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
+  private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
     val it1 = y.iterator
     while (it0.hasNext && it1.hasNext) {
@@ -203,7 +300,7 @@ object Json {
     it0.hasNext == it1.hasNext
   }
 
-  implicit val eqJson: Eq[Json] = Eq.instance {
+  implicit final val eqJson: Eq[Json] = Eq.instance {
     case ( JObject(a),  JObject(b)) => JsonObject.eqJsonObject.eqv(a, b)
     case ( JString(a),  JString(b)) => a == b
     case ( JNumber(a),  JNumber(b)) => JsonNumber.eqJsonNumber.eqv(a, b)
@@ -212,5 +309,5 @@ object Json {
     case (          x,           y) => x.isNull && y.isNull
   }
 
-  implicit val showJson: Show[Json] = Show.fromToString[Json]
+  implicit final val showJson: Show[Json] = Show.fromToString[Json]
 }

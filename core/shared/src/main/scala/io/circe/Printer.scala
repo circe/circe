@@ -47,18 +47,18 @@ final case class Printer(
   colonLeft: String = "",
   colonRight: String = ""
 ) extends Serializable {
-  private[this] val openBraceText = "{"
-  private[this] val closeBraceText = "}"
-  private[this] val openArrayText = "["
-  private[this] val closeArrayText = "]"
-  private[this] val commaText = ","
-  private[this] val colonText = ":"
-  private[this] val nullText = "null"
-  private[this] val trueText = "true"
-  private[this] val falseText = "false"
-  private[this] val stringEnclosureText = "\""
+  private[this] final val openBraceText = "{"
+  private[this] final val closeBraceText = "}"
+  private[this] final val openArrayText = "["
+  private[this] final val closeArrayText = "]"
+  private[this] final val commaText = ","
+  private[this] final val colonText = ":"
+  private[this] final val nullText = "null"
+  private[this] final val trueText = "true"
+  private[this] final val falseText = "false"
+  private[this] final val stringEnclosureText = "\""
 
-  private[this] def addIndentation(s: String): Int => String = {
+  private[this] final def addIndentation(s: String): Int => String = {
     val lastNewLineIndex = s.lastIndexOf("\n")
     if (lastNewLineIndex < 0) {
       _ => s
@@ -70,8 +70,8 @@ final case class Printer(
     }
   }
 
-  private[this] val pieces = new Printer.MemoizedPieces {
-    def compute(i: Int): Printer.Pieces = Printer.Pieces(
+  private[this] final val pieces = new Printer.MemoizedPieces {
+    final def compute(i: Int): Printer.Pieces = Printer.Pieces(
       "%s%s%s".format(
         addIndentation(lbraceLeft)(i),
         openBraceText,
@@ -118,7 +118,7 @@ final case class Printer(
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
-  def pretty(j: Json): String = {
+  final def pretty(j: Json): String = {
     val builder = new StringBuilder()
 
     @tailrec
@@ -202,7 +202,7 @@ final case class Printer(
 }
 
 
-object Printer {
+final object Printer {
   /**
    * A pretty-printer configuration that inserts no spaces.
    */
@@ -289,7 +289,7 @@ object Printer {
       }
     )
 
-    def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i) else {
+    final def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i) else {
       val res = known.get(i)
 
       if (res != null) res else {

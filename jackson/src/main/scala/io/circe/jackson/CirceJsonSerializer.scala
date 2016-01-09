@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.{ JsonSerializer, SerializerProvider }
 import io.circe.{ Json, JsonBigDecimal, JsonDecimal, JsonDouble, JsonLong }
 
-private[jackson] object CirceJsonSerializer extends JsonSerializer[Json] {
+private[jackson] final object CirceJsonSerializer extends JsonSerializer[Json] {
   import java.math.{ BigDecimal => JBigDecimal, BigInteger }
   import com.fasterxml.jackson.databind.node.{ BigIntegerNode, DecimalNode }
 
-  override def serialize(
+  override final def serialize(
     value: Json,
     json: JsonGenerator,
     provider: SerializerProvider
