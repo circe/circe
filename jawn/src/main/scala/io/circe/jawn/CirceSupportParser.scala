@@ -4,39 +4,39 @@ import io.circe.{ Json, JsonDecimal }
 import jawn.{ Facade, FContext, SupportParser }
 import scala.collection.mutable.ArrayBuffer
 
-object CirceSupportParser extends SupportParser[Json] {
-  implicit val facade: Facade[Json] = new Facade[Json] {
-    def jnull(): Json = Json.Empty
-    def jfalse(): Json = Json.False
-    def jtrue(): Json = Json.True
-    def jnum(s: String): Json = Json.JNumber(JsonDecimal(s))
-    def jint(s: String): Json = Json.JNumber(JsonDecimal(s))
-    def jstring(s: String): Json = Json.JString(s)
+final object CirceSupportParser extends SupportParser[Json] {
+  implicit final val facade: Facade[Json] = new Facade[Json] {
+    final def jnull(): Json = Json.Empty
+    final def jfalse(): Json = Json.False
+    final def jtrue(): Json = Json.True
+    final def jnum(s: String): Json = Json.JNumber(JsonDecimal(s))
+    final def jint(s: String): Json = Json.JNumber(JsonDecimal(s))
+    final def jstring(s: String): Json = Json.JString(s)
 
-    def singleContext(): FContext[Json] = new FContext[Json] {
-      private[this] var value: Json = null
-      def add(s: String): Unit = { value = jstring(s) }
-      def add(v: Json): Unit =  { value = v }
-      def finish: Json = value
-      def isObj: Boolean = false
+    final def singleContext(): FContext[Json] = new FContext[Json] {
+      private[this] final var value: Json = null
+      final def add(s: String): Unit = { value = jstring(s) }
+      final def add(v: Json): Unit =  { value = v }
+      final def finish: Json = value
+      final def isObj: Boolean = false
     }
 
-    def arrayContext(): FContext[Json] = new FContext[Json] {
+    final def arrayContext(): FContext[Json] = new FContext[Json] {
       private[this] val vs = ArrayBuffer.empty[Json]
-      def add(s: String): Unit = { vs += jstring(s) }
-      def add(v: Json): Unit = { vs += v }
-      def finish: Json = Json.fromValues(vs)
-      def isObj: Boolean = false
+      final def add(s: String): Unit = { vs += jstring(s) }
+      final def add(v: Json): Unit = { vs += v }
+      final def finish: Json = Json.fromValues(vs)
+      final def isObj: Boolean = false
     }
 
     def objectContext(): FContext[Json] = new FContext[Json] {
-      private[this] var key: String = null
-      private[this] val vs = ArrayBuffer.empty[(String, Json)]
-      def add(s: String): Unit =
+      private[this] final var key: String = null
+      private[this] final val vs = ArrayBuffer.empty[(String, Json)]
+      final def add(s: String): Unit =
         if (key == null) { key = s } else { vs += (key -> jstring(s)); key = null }
-      def add(v: Json): Unit = { vs += (key -> v); key = null }
-      def finish: Json = Json.fromFields(vs)
-      def isObj: Boolean = true
+      final def add(v: Json): Unit = { vs += (key -> v); key = null }
+      final def finish: Json = Json.fromFields(vs)
+      final def isObj: Boolean = true
     }
   }
 }

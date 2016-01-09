@@ -12,4 +12,4 @@ import io.circe.generic.encoding.DerivedObjectEncoder
  * sealed trait hierarchies, etc.
  */
 @reexports[DerivedDecoder, DerivedObjectEncoder]
-object auto
+final object auto

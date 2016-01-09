@@ -7,21 +7,21 @@ import io.circe.jawn.CirceSupportParser
 import io.iteratee.{ Enumeratee, Enumerator }
 
 package object streaming {
-  def stringParser[F[_]](implicit F: MonadError[F, Throwable]): Enumeratee[F, String, Json] =
+  final def stringParser[F[_]](implicit F: MonadError[F, Throwable]): Enumeratee[F, String, Json] =
     new ParsingEnumeratee[F, String] {
-      protected[this] def parseWith(parser: AsyncParser[Json])(
+      protected[this] final def parseWith(parser: AsyncParser[Json])(
         in: String
       ): Either[ParseException, Seq[Json]] = parser.absorb(in)(CirceSupportParser.facade)
     }
 
   def byteParser[F[_]](implicit F: MonadError[F, Throwable]): Enumeratee[F, Array[Byte], Json] =
     new ParsingEnumeratee[F, Array[Byte]] {
-      protected[this] def parseWith(parser: AsyncParser[Json])(
+      protected[this] final def parseWith(parser: AsyncParser[Json])(
         in: Array[Byte]
       ): Either[ParseException, Seq[Json]] = parser.absorb(in)(CirceSupportParser.facade)
     }
 
-  def decoder[F[_], A](implicit
+  final def decoder[F[_], A](implicit
     F: MonadError[F, Throwable],
     decode: Decoder[A]
   ): Enumeratee[F, Json, A] =

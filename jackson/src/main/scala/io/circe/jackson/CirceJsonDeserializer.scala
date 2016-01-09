@@ -12,11 +12,12 @@ private[jackson] sealed trait DeserializerContext {
   def addValue(value: Json): DeserializerContext
 }
 
-private[jackson] case class ReadingList(content: ArrayList[Json]) extends DeserializerContext {
-  def addValue(value: Json): DeserializerContext = ReadingList { content.add(value); content }
+private[jackson] final case class ReadingList(content: ArrayList[Json])
+  extends DeserializerContext {
+  final def addValue(value: Json): DeserializerContext = ReadingList { content.add(value); content }
 }
 
-private[jackson] case class KeyRead(content: ArrayList[(String, Json)], fieldName: String)
+private[jackson] final case class KeyRead(content: ArrayList[(String, Json)], fieldName: String)
   extends DeserializerContext {
   def addValue(value: Json): DeserializerContext = ReadingMap {
     content.add(fieldName -> value)
@@ -24,18 +25,18 @@ private[jackson] case class KeyRead(content: ArrayList[(String, Json)], fieldNam
   }
 }
 
-private[jackson] case class ReadingMap(content: ArrayList[(String, Json)])
+private[jackson] final case class ReadingMap(content: ArrayList[(String, Json)])
   extends DeserializerContext {
-  def setField(fieldName: String): DeserializerContext = KeyRead(content, fieldName)
-  def addValue(value: Json): DeserializerContext =
+  final def setField(fieldName: String): DeserializerContext = KeyRead(content, fieldName)
+  final def addValue(value: Json): DeserializerContext =
     throw new Exception("Cannot add a value on an object without a key, malformed JSON object!")
 }
 
-private[jackson] class CirceJsonDeserializer(factory: TypeFactory, klass: Class[_])
+private[jackson] final class CirceJsonDeserializer(factory: TypeFactory, klass: Class[_])
   extends JsonDeserializer[Object] {
-  override def isCachable: Boolean = true
+  override final def isCachable: Boolean = true
 
-  override def deserialize(jp: JsonParser, ctxt: DeserializationContext): Json = {
+  override final def deserialize(jp: JsonParser, ctxt: DeserializationContext): Json = {
     val value = deserialize(jp, ctxt, List())
     if (!klass.isAssignableFrom(value.getClass)) throw ctxt.mappingException(klass)
 
@@ -106,5 +107,5 @@ private[jackson] class CirceJsonDeserializer(factory: TypeFactory, klass: Class[
     }
   }
 
-  override def getNullValue = Json.JNull
+  override final def getNullValue = Json.JNull
 }

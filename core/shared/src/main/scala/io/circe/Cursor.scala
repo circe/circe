@@ -27,23 +27,23 @@ abstract class Cursor extends CursorOperations {
   /**
    * Create an [[HCursor]] for this cursor in order to track history.
    */
-  def hcursor: HCursor = new HCursor(this) {
-    def history: List[HistoryOp] = Nil
+  final def hcursor: HCursor = new HCursor(this) {
+    final def history: List[HistoryOp] = Nil
   }
 }
 
-object Cursor {
+final object Cursor {
   /**
    * Create a new cursor with no context.
    */
   def apply(j: Json): Cursor = CJson(j)
 
-  implicit val showCursor: Show[Cursor] = Show.show { c =>
+  implicit final val showCursor: Show[Cursor] = Show.show { c =>
     val sc = Show[Context]
     s"${ c.context.map(e => sc.show(e)).mkString(", ") } ==> ${ Show[Json].show(c.focus) }"
   }
 
-  implicit val eqCursor: Eq[Cursor] = Eq.instance {
+  implicit final val eqCursor: Eq[Cursor] = Eq.instance {
     case (CJson(j1), CJson(j2)) => Eq[Json].eqv(j1, j2)
     case (CArray(f1, p1, _, l1, r1), CArray(f2, p2, _, l2, r2)) =>
       eqCursor.eqv(p1, p2) && Eq[List[Json]].eqv(l1, l2) &&

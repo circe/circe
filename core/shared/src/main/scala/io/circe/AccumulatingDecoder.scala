@@ -13,19 +13,19 @@ sealed trait AccumulatingDecoder[A] extends Serializable { self =>
    * Map a function over this [[AccumulatingDecoder]].
    */
   final def map[B](f: A => B): AccumulatingDecoder[B] = new AccumulatingDecoder[B] {
-    def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).map(f)
+    final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).map(f)
   }
 
   final def ap[B](f: AccumulatingDecoder[A => B]): AccumulatingDecoder[B] =
     new AccumulatingDecoder[B] {
-      def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
+      final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
         AccumulatingDecoder.failureNelInstance
       )
     }
 }
 
 final object AccumulatingDecoder {
-  type Result[A] = ValidatedNel[DecodingFailure, A]
+  final type Result[A] = ValidatedNel[DecodingFailure, A]
 
   final val failureNelInstance: Semigroup[NonEmptyList[DecodingFailure]] =
     OneAnd.oneAndSemigroup[List, DecodingFailure](cats.std.list.listInstance)
@@ -40,13 +40,13 @@ final object AccumulatingDecoder {
 
   implicit final def fromDecoder[A](implicit decode: Decoder[A]): AccumulatingDecoder[A] =
     new AccumulatingDecoder[A] {
-      def apply(c: HCursor): Result[A] = decode.decodeAccumulating(c)
+      final def apply(c: HCursor): Result[A] = decode.decodeAccumulating(c)
     }
 
   implicit final val accumulatingDecoderInstance: Applicative[AccumulatingDecoder] =
     new Applicative[AccumulatingDecoder] {
       final def pure[A](a: A): AccumulatingDecoder[A] = new AccumulatingDecoder[A] {
-        def apply(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
+        final def apply(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
       }
 
       override final def map[A, B](fa: AccumulatingDecoder[A])(f: A => B): AccumulatingDecoder[B] =
@@ -60,7 +60,7 @@ final object AccumulatingDecoder {
         fa: AccumulatingDecoder[A],
         fb: AccumulatingDecoder[B]
       ): AccumulatingDecoder[(A, B)] = new AccumulatingDecoder[(A, B)] {
-        def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
+        final def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
           fb(c).ap(fa(c).map(a => (b: B) => (a, b)))(failureNelInstance)
       }
     }

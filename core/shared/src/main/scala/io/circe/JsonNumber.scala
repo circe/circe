@@ -24,7 +24,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as a [[scala.math.BigInt]] if it is an integer.
    */
-  def toBigInt: Option[BigInt] = {
+  final def toBigInt: Option[BigInt] = {
     val n = toBigDecimal
     if (n.isWhole) Some(n.toBigInt) else None
   }
@@ -32,7 +32,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as a [[scala.Byte]] if it's a valid [[scala.Byte]].
    */
-  def toByte: Option[Byte] = toLong.flatMap { n =>
+  final def toByte: Option[Byte] = toLong.flatMap { n =>
     val asByte: Byte = n.toByte
     if (n == asByte) Some(asByte) else None
   }
@@ -40,7 +40,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as a [[scala.Short]] if it's a valid [[scala.Short]].
    */
-  def toShort: Option[Short] = toLong.flatMap { n =>
+  final def toShort: Option[Short] = toLong.flatMap { n =>
     val asShort: Short = n.toShort
     if (n == asShort) Some(asShort) else None
   }
@@ -48,7 +48,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as an [[scala.Int]] if it's a valid [[scala.Int]].
    */
-  def toInt: Option[Int] = toLong.flatMap { n =>
+  final def toInt: Option[Int] = toLong.flatMap { n =>
     val asInt: Int = n.toInt
     if (n == asInt) Some(asInt) else None
   }
@@ -63,7 +63,7 @@ sealed abstract class JsonNumber extends Serializable {
    *
    * Truncation means that we round toward zero to the closest [[scala.math.BigInt]].
    */
-  def truncateToBigInt: BigInt =  toBigDecimal.toBigInt
+  final def truncateToBigInt: BigInt = toBigDecimal.toBigInt
 
   /**
    * Truncate the number to a [[scala.Byte]].
@@ -71,7 +71,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Byte]]. If the number
    * is `1e99`, for example, this will return `Byte.MaxValue`.
    */
-  def truncateToByte: Byte = {
+  final def truncateToByte: Byte = {
     val asInt: Int = truncateToInt
     if (asInt > Byte.MaxValue) {
       Byte.MaxValue
@@ -86,7 +86,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Short]]. If the number
    * is `1e99`, for example, this will return `Short.MaxValue`.
    */
-  def truncateToShort: Short = {
+  final def truncateToShort: Short = {
     val asInt: Int = truncateToInt
     if (asInt > Short.MaxValue) {
       Short.MaxValue
@@ -101,7 +101,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Int]]. If the number is
    * `1e99`, for example, this will return `Int.MaxValue`.
    */
-  def truncateToInt: Int = toDouble.toInt
+  final def truncateToInt: Int = toDouble.toInt
 
   /**
    * Truncate the number to a [[scala.Long]].
@@ -114,23 +114,23 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return `true` if and only if this number wraps a [[scala.Double]] and it is `Double.NaN`.
    */
-  protected def isNaN: Boolean = false
+  protected def isNaN: Boolean
 
   /**
    * Return `true` if and only if this number wraps a [[scala.Double]] and is either
    * `Double.NegativeInfinity` or `Double.PositiveInfinity`.
    */
-  protected def isInfinity: Boolean = false
+  protected def isInfinity: Boolean
 
   /**
    * Return true if this is a valid real number (i.e. not infinity or `Double.NaN`).
    */
-  protected def isReal: Boolean = !(isNaN || isInfinity)
+  protected final def isReal: Boolean = !(isNaN || isInfinity)
 
   /**
    * Construct a JSON number if this is a valid JSON number.
    */
-  def asJson: Option[Json] = if (isReal) Some(Json.fromJsonNumber(this)) else None
+  final def asJson: Option[Json] = if (isReal) Some(Json.fromJsonNumber(this)) else None
 
   /**
    * Construct a JSON number if this is a valid JSON number and a JSON null otherwise.
@@ -138,7 +138,7 @@ sealed abstract class JsonNumber extends Serializable {
    * This matches the behaviour of most browsers, but it is a lossy operation as you can no longer
    * distinguish between `Double.NaN` and infinity.
    */
-  def asJsonOrNull: Json = asJson.getOrElse(Json.empty)
+  final def asJsonOrNull: Json = asJson.getOrElse(Json.empty)
 
   /**
    * Construct a JSON number if this is a valid JSON number and a JSON string otherwise.
@@ -146,14 +146,14 @@ sealed abstract class JsonNumber extends Serializable {
    * This allows a [[scala.Double]] to be losslessly encoded, but it is likely to need custom
    * handling for interoperability with other JSON systems.
    */
-  def asJsonOrString: Json = asJson.getOrElse(Json.string(toString))
+  final def asJsonOrString: Json = asJson.getOrElse(Json.string(toString))
 
   /**
    * Force this [[JsonNumber]] into a [[JsonDecimal]] by using the underlying `toString`.
    *
    * @note Unsafe if `isReal` is `false`.
    */
-  private def toJsonDecimal: JsonDecimal = this match {
+  private final def toJsonDecimal: JsonDecimal = this match {
     case n @ JsonDecimal(_) => n
     case JsonBigDecimal(n) => JsonDecimal(n.toString)
     case JsonLong(n) => JsonDecimal(n.toString)
@@ -163,7 +163,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Universal equality derived from our type-safe equality.
    */
-  override def equals(that: Any): Boolean = that match {
+  override final def equals(that: Any): Boolean = that match {
     case that: JsonNumber => JsonNumber.eqJsonNumber.eqv(this, that)
     case _ => false
   }
@@ -184,18 +184,18 @@ sealed abstract class JsonNumber extends Serializable {
  * [[scala.math.BigDecimal]] or a [[scala.Double]] on demand.
  */
 private[circe] final case class JsonDecimal(value: String) extends JsonNumber {
-  lazy val toBigDecimal: BigDecimal = BigDecimal(value, MathContext.UNLIMITED)
-  lazy val toDouble: Double = value.toDouble
-  override def toString: String = value
+  final lazy val toBigDecimal: BigDecimal = BigDecimal(value, MathContext.UNLIMITED)
+  final lazy val toDouble: Double = value.toDouble
+  override final def toString: String = value
 
-  def toLong: Option[Long] = try {
+  final def toLong: Option[Long] = try {
     val asBigDecimal: BigDecimal = toBigDecimal
     if (asBigDecimal.isValidLong) Some(asBigDecimal.toLong) else None
   } catch {
     case _: NumberFormatException => None
   }
 
-  def truncateToLong: Long = {
+  final def truncateToLong: Long = {
     val asBigDecimal: BigDecimal = toBigDecimal
     if (asBigDecimal >= Long.MaxValue) {
       Long.MaxValue
@@ -216,7 +216,7 @@ private[circe] final case class JsonDecimal(value: String) extends JsonNumber {
    * zero or a number with exactly one decimal digit to the right of the decimal point. If the
    * [[scala.math.BigDecimal]] value is zero, then the exponent will always be zero as well.
    */
-  def normalized: (BigInt, BigDecimal) = {
+  final def normalized: (BigInt, BigDecimal) = {
     val JsonNumber.JsonNumberRegex(negative, intStr, decStr, expStr) = value
 
     def scaledValue(shift: Int): BigDecimal = {
@@ -254,58 +254,66 @@ private[circe] final case class JsonDecimal(value: String) extends JsonNumber {
       } else (BigInt(0), BigDecimal(0))
     } else (BigInt(0), BigDecimal(0))
   }
+
+  final def isNaN: Boolean = false
+  final def isInfinity: Boolean = false
 }
 
 /**
  * Represent a valid JSON number as a [[scala.math.BigDecimal]].
  */
 private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
-  def toBigDecimal: BigDecimal = value
-  def toDouble: Double = value.toDouble
-  override def toString: String = value.toString
-  def toLong: Option[Long] = if (value.isValidLong) Some(value.toLong) else None
+  final def toBigDecimal: BigDecimal = value
+  final def toDouble: Double = value.toDouble
+  override final def toString: String = value.toString
+  final def toLong: Option[Long] = if (value.isValidLong) Some(value.toLong) else None
 
-  def truncateToLong: Long =
+  final def truncateToLong: Long =
     if (value > Long.MaxValue) {
       Long.MaxValue
     } else if (value < Long.MinValue) {
       Long.MinValue
     } else value.toLong
+
+  final def isNaN: Boolean = false
+  final def isInfinity: Boolean = false
 }
 
 /**
  * Represent a valid JSON number as a [[scala.Long]].
  */
 private[circe] final case class JsonLong(value: Long) extends JsonNumber {
-  def toBigDecimal: BigDecimal = BigDecimal(value)
-  def toDouble: Double = value.toDouble
-  override def toString: String = value.toString
-  def toLong: Option[Long] = Some(value)
-  def truncateToLong: Long = value
+  final def toBigDecimal: BigDecimal = BigDecimal(value)
+  final def toDouble: Double = value.toDouble
+  override final def toString: String = value.toString
+  final def toLong: Option[Long] = Some(value)
+  final def truncateToLong: Long = value
+  final def isNaN: Boolean = false
+  final def isInfinity: Boolean = false
 }
 
 /**
  * Represent a valid JSON number as a [[scala.Double]].
  */
 private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
-  def toBigDecimal: BigDecimal = BigDecimal(value)
-  def toDouble: Double = value
-  override def toString: String = value.toString
+  final def toBigDecimal: BigDecimal = BigDecimal(value)
+  final def toDouble: Double = value
+  override final def toString: String = value.toString
 
-  def toLong: Option[Long] = {
+  final def toLong: Option[Long] = {
     val asLong: Long = value.toLong
     if (asLong.toDouble == value) Some(asLong) else None
   }
 
-  def truncateToLong: Long = value.toLong
-  override def isNaN = value.isNaN
-  override def isInfinity = value.isInfinity
+  final def truncateToLong: Long = value.toLong
+  final def isNaN: Boolean = value.isNaN
+  final def isInfinity: Boolean = value.isInfinity
 }
 
 /**
  * Constructors, type class instances, and other utilities for [[JsonNumber]].
  */
-object JsonNumber {
+final object JsonNumber {
   /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *
@@ -314,7 +322,7 @@ object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  def unsafeDecimal(value: String): JsonNumber = JsonDecimal(value)
+  final def unsafeDecimal(value: String): JsonNumber = JsonDecimal(value)
 
   /**
    * Parse a JSON number from a `String`.
@@ -326,7 +334,7 @@ object JsonNumber {
    * @param value a JSON number encoded as a string
    * @return a JSON number if the string is valid
    */
-  def fromString(value: String): Option[JsonNumber] = {
+  final def fromString(value: String): Option[JsonNumber] = {
     // Span over [0-9]*
     def digits(index: Int): Int = {
       if (index >= value.length) value.length
@@ -415,7 +423,7 @@ object JsonNumber {
     }
   }
 
-  implicit val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
+  implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
     case (a, b) if !a.isReal || !b.isReal => a.toDouble == b.toDouble
     case (a @ JsonDecimal(_), b) => a.normalized == b.toJsonDecimal.normalized
     case (a, b @ JsonDecimal(_)) => a.toJsonDecimal.normalized == b.normalized
@@ -426,8 +434,8 @@ object JsonNumber {
     case (a, b) => a.toBigDecimal == b.toBigDecimal
   }
 
-  private[this] val MaxLongString: String = Long.MaxValue.toString
-  private[this] val MinLongString: String = Long.MinValue.toString
+  private[this] final val MaxLongString: String = Long.MaxValue.toString
+  private[this] final val MinLongString: String = Long.MinValue.toString
 
   /**
    * A regular expression that can match a valid JSON number.
@@ -441,5 +449,6 @@ object JsonNumber {
    *
    * The negative sign, fractional part and exponent part are optional matches and may be `null`.
    */
-  val JsonNumberRegex: Regex = """(-)?((?:[1-9][0-9]*|0))(?:\.([0-9]+))?(?:[eE]([-+]?[0-9]+))?""".r
+  final val JsonNumberRegex: Regex =
+    """(-)?((?:[1-9][0-9]*|0))(?:\.([0-9]+))?(?:[eE]([-+]?[0-9]+))?""".r
 }

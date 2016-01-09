@@ -16,11 +16,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.Serializers
 import io.circe.Json
 
-object CirceJsonModule extends SimpleModule("CirceJson", Version.unknownVersion()) {
-  override def setupModule(context: SetupContext): Unit = {
+final object CirceJsonModule extends SimpleModule("CirceJson", Version.unknownVersion()) {
+  override final def setupModule(context: SetupContext): Unit = {
     context.addDeserializers(
       new Deserializers.Base {
-        override def findBeanDeserializer(
+        override final def findBeanDeserializer(
           javaType: JavaType,
           config: DeserializationConfig,
           beanDesc: BeanDescription
@@ -35,7 +35,7 @@ object CirceJsonModule extends SimpleModule("CirceJson", Version.unknownVersion(
 
     context.addSerializers(
       new Serializers.Base {
-        override def findSerializer(
+        override final def findSerializer(
           config: SerializationConfig,
           javaType: JavaType,
           beanDesc: BeanDescription

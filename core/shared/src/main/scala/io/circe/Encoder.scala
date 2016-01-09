@@ -22,7 +22,7 @@ trait Encoder[A] extends Serializable {
   /**
    * Creates a new instance by applying a function to a value of type `B` before encoding as an `A`.
    */
-  def contramap[B](f: B => A): Encoder[B] = Encoder.instance(b => apply(f(b)))
+  final def contramap[B](f: B => A): Encoder[B] = Encoder.instance(b => apply(f(b)))
 }
 
 /**
@@ -58,15 +58,15 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
    *
    * @group Utilities
    */
-  def apply[A](implicit e: Encoder[A]): Encoder[A] = e
+  final def apply[A](implicit e: Encoder[A]): Encoder[A] = e
 
   /**
    * Construct an instance from a function.
    *
    * @group Utilities
    */
-  def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
-    def apply(a: A): Json = f(a)
+  final def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
+    final def apply(a: A): Json = f(a)
   }
 
   /**
@@ -74,7 +74,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
    *
    * @group Utilities
    */
-  def fromFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): Encoder[F[A]] =
+  final def fromFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): Encoder[F[A]] =
     instance(fa =>
       Json.fromValues(F.foldLeft(fa, List.empty[Json])((list, a) => e(a) :: list).reverse)
     )
@@ -82,7 +82,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit def encodeTraversableOnce[A0, C[_]](implicit
+  implicit final def encodeTraversableOnce[A0, C[_]](implicit
     e: Encoder[A0],
     is: IsTraversableOnce[C[A0]] { type A = A0 }
   ): Encoder[C[A0]] =
@@ -99,100 +99,102 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit val encodeJson: Encoder[Json] = instance(identity)
+  implicit final val encodeJson: Encoder[Json] = instance(identity)
 
   /**
    * @group Encoding
    */
-  implicit val encodeJsonObject: Encoder[JsonObject] = instance(Json.fromJsonObject)
+  implicit final val encodeJsonObject: Encoder[JsonObject] = instance(Json.fromJsonObject)
 
   /**
    * @group Encoding
    */
-  implicit val encodeJsonNumber: Encoder[JsonNumber] = instance(Json.fromJsonNumber)
+  implicit final val encodeJsonNumber: Encoder[JsonNumber] = instance(Json.fromJsonNumber)
 
   /**
    * @group Encoding
    */
-  implicit val encodeString: Encoder[String] = instance(Json.string)
+  implicit final val encodeString: Encoder[String] = instance(Json.string)
 
   /**
    * @group Encoding
    */
-  implicit val encodeUnit: Encoder[Unit] = instance(_ => Json.obj())
+  implicit final val encodeUnit: Encoder[Unit] = instance(_ => Json.obj())
 
   /**
    * @group Encoding
    */
-  implicit val encodeBoolean: Encoder[Boolean] = instance(Json.bool)
+  implicit final val encodeBoolean: Encoder[Boolean] = instance(Json.bool)
 
   /**
    * @group Encoding
    */
-  implicit val encodeChar: Encoder[Char] = instance(a => Json.string(a.toString))
+  implicit final val encodeChar: Encoder[Char] = instance(a => Json.string(a.toString))
 
   /**
    * @group Encoding
    */
-  implicit val encodeFloat: Encoder[Float] = instance(a => JsonDouble(a.toDouble).asJsonOrNull)
+  implicit final val encodeFloat: Encoder[Float] =
+    instance(a => JsonDouble(a.toDouble).asJsonOrNull)
 
   /**
    * @group Encoding
    */
-  implicit val encodeDouble: Encoder[Double] = instance(a => JsonDouble(a).asJsonOrNull)
+  implicit final val encodeDouble: Encoder[Double] = instance(a => JsonDouble(a).asJsonOrNull)
 
   /**
    * @group Encoding
    */
-  implicit val encodeByte: Encoder[Byte] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeByte: Encoder[Byte] = instance(a => Json.JNumber(JsonLong(a.toLong)))
 
   /**
    * @group Encoding
    */
-  implicit val encodeShort: Encoder[Short] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeShort: Encoder[Short] = instance(a => Json.JNumber(JsonLong(a.toLong)))
 
   /**
    * @group Encoding
    */
-  implicit val encodeInt: Encoder[Int] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeInt: Encoder[Int] = instance(a => Json.JNumber(JsonLong(a.toLong)))
 
   /**
    * @group Encoding
    */
-  implicit val encodeLong: Encoder[Long] = instance(a => Json.JNumber(JsonLong(a)))
+  implicit final val encodeLong: Encoder[Long] = instance(a => Json.JNumber(JsonLong(a)))
 
   /**
    * @group Encoding
    */
-  implicit val encodeBigInt: Encoder[BigInt] =
+  implicit final val encodeBigInt: Encoder[BigInt] =
     instance(a => JsonBigDecimal(BigDecimal(a, java.math.MathContext.UNLIMITED)).asJsonOrNull)
 
   /**
    * @group Encoding
    */
-  implicit val encodeBigDecimal: Encoder[BigDecimal] = instance(a => JsonBigDecimal(a).asJsonOrNull)
+  implicit final val encodeBigDecimal: Encoder[BigDecimal] =
+    instance(a => JsonBigDecimal(a).asJsonOrNull)
 
   /**
    * @group Encoding
    */
-  implicit val encodeUUID: Encoder[UUID] = instance(a => Json.string(a.toString))
+  implicit final val encodeUUID: Encoder[UUID] = instance(a => Json.string(a.toString))
 
   /**
    * @group Encoding
    */
-  implicit def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] =
+  implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] =
     instance(_.fold(Json.empty)(e(_)))
 
   /**
    * @group Encoding
    */
-  implicit def encodeNonEmptyList[A: Encoder]: Encoder[NonEmptyList[A]] =
+  implicit final def encodeNonEmptyList[A: Encoder]: Encoder[NonEmptyList[A]] =
     fromFoldable[NonEmptyList, A]
 
   /**
    * @group Encoding
    */
-  implicit def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
+  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
     e: Encoder[V]
   ): ObjectEncoder[M[String, V]] = ObjectEncoder.instance(m =>
     JsonObject.fromMap(
@@ -205,7 +207,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Disjunction
    */
-  def encodeXor[A, B](leftKey: String, rightKey: String)(implicit
+  final def encodeXor[A, B](leftKey: String, rightKey: String)(implicit
     ea: Encoder[A],
     eb: Encoder[B]
   ): ObjectEncoder[Xor[A, B]] = ObjectEncoder.instance(
@@ -218,7 +220,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Disjunction
    */
-  def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
+  final def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
     ea: Encoder[A],
     eb: Encoder[B]
   ): ObjectEncoder[Either[A, B]] = ObjectEncoder.instance(
@@ -231,7 +233,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Disjunction
    */
-  def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
+  final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
     ee: Encoder[E],
     ea: Encoder[A]
   ): ObjectEncoder[Validated[E, A]] = ObjectEncoder.instance(
@@ -244,8 +246,8 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Instances
    */
-  implicit val contravariantEncode: Contravariant[Encoder] = new Contravariant[Encoder] {
-    def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
+  implicit final val contravariantEncode: Contravariant[Encoder] = new Contravariant[Encoder] {
+    final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 }
 
