@@ -70,13 +70,21 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
     "-groups",
     "-implicits",
     "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
-    "-Ymacro-no-expand"
+    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject --
-      inProjects(async, benchmark, coreJS, literalJS, genericJS, refinedJS, parseJS, tests, testsJS)
+    inAnyProject -- inProjects(
+      async,
+      benchmark,
+      coreJS,
+      literal, literalJS,
+      genericJS,
+      refinedJS,
+      parseJS,
+      tests,
+      testsJS
+    )
 )
 
 lazy val circe = project.in(file("."))
