@@ -14,6 +14,8 @@ import scala.collection.mutable.ArrayBuffer
  * @author Travis Brown
  */
 trait Encoder[A] extends Serializable {
+  type Config
+
   /**
    * Converts a value to JSON.
    */
@@ -53,8 +55,6 @@ trait Encoder[A] extends Serializable {
  * @author Travis Brown
  */
 object Encoder extends TupleEncoders with LowPriorityEncoders {
-  type Config
-
   /**
    * Return an instance for a given type `A`.
    *

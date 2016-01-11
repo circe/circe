@@ -11,10 +11,6 @@ import io.circe.generic.encoding.{ ConfiguredDerivedObjectEncoder, DerivedObject
  * instances for tuples, case classes (if all members have instances), "incomplete" case classes,
  * sealed trait hierarchies, etc.
  */
-@reexports[
-  DerivedDecoder,
-  ConfiguredDerivedDecoder,
-  DerivedObjectEncoder,
-  ConfiguredDerivedObjectEncoder
-]
+@reexports[DerivedDecoder, ConfiguredDerivedDecoder,
+  DerivedObjectEncoder, ConfiguredDerivedObjectEncoder]
 final object auto

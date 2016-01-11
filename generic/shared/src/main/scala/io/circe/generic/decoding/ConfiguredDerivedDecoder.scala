@@ -3,7 +3,7 @@ package io.circe.generic.decoding
 import cats.data.Xor
 import cats.syntax.monoidal._
 import io.circe.{ AccumulatingDecoder, ConfiguredDecoder, Decoder, DecodingFailure, HCursor }
-import io.circe.generic.config.{ SnakeCaseKeys, snakeCase }
+import io.circe.generic.config.{ snakeCase, SnakeCaseKeys }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
 trait ConfiguredDerivedDecoder[C, A] extends DerivedDecoder[A] with ConfiguredDecoder[C, A]
