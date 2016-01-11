@@ -20,39 +20,9 @@ final object ConfiguredDerivedObjectEncoder extends MidPriorityConfiguredDerived
         sys.error("No JSON representation of CNil (this shouldn't happen)")
     }
 
-  implicit final def encodeCoproduct[C, K <: Symbol, H, T <: Coproduct](implicit
+  implicit final def encodeCoproductUnconfigured[C, K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
     encodeHead: Lazy[Encoder[H]],
-    encodeTail: Lazy[ConfiguredDerivedObjectEncoder[C, T]]
-  ): ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] =
-    new ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] {
-      final def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
-        case Inl(h) => JsonObject.singleton(
-          key.value.name,
-          encodeHead.value(h)
-        )
-        case Inr(t) => encodeTail.value.encodeObject(t)
-      }
-    }
-
-  implicit final def encodeLabelledHListSnakeCaseKeys[K <: Symbol, H, T <: HList](implicit
-    key: Witness.Aux[K],
-    encodeHead: Lazy[ConfiguredObjectEncoder[SnakeCaseKeys, H]],
-    encodeTail: Lazy[ConfiguredDerivedObjectEncoder[SnakeCaseKeys, T]]
-  ): ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] =
-    new ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] {
-      final def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-        case h :: t =>
-          (snakeCase(key.value.name) -> encodeHead.value(h)) +: encodeTail.value.encodeObject(t)
-      }
-    }
-}
-
-private[circe] trait MidPriorityConfiguredDerivedObjectEncoders
-  extends LowPriorityConfiguredDerivedObjectEncoders {
-  implicit final def encodeCoproductDerived[C, K <: Symbol, H, T <: Coproduct](implicit
-    key: Witness.Aux[K],
-    encodeHead: Lazy[ConfiguredDerivedObjectEncoder[C, H]],
     encodeTail: Lazy[ConfiguredDerivedObjectEncoder[C, T]]
   ): ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] =
     new ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] {
@@ -68,6 +38,37 @@ private[circe] trait MidPriorityConfiguredDerivedObjectEncoders
   implicit final def encodeLabelledHListSnakeCaseKeysBase[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     encodeHead: Lazy[Encoder[H]],
+    encodeTail: Lazy[ConfiguredDerivedObjectEncoder[SnakeCaseKeys, T]]
+  ): ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] =
+    new ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] {
+      final def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
+        case h :: t =>
+          (snakeCase(key.value.name) -> encodeHead.value(h)) +: encodeTail.value.encodeObject(t)
+      }
+    }
+}
+
+private[circe] trait MidPriorityConfiguredDerivedObjectEncoders
+  extends LowPriorityConfiguredDerivedObjectEncoders {
+
+  implicit final def encodeCoproduct[C, K <: Symbol, H, T <: Coproduct](implicit
+    key: Witness.Aux[K],
+    encodeHead: Lazy[ConfiguredEncoder[C, H]],
+    encodeTail: Lazy[ConfiguredDerivedObjectEncoder[C, T]]
+  ): ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] =
+    new ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] {
+      final def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
+        case Inl(h) => JsonObject.singleton(
+          key.value.name,
+          encodeHead.value(h)
+        )
+        case Inr(t) => encodeTail.value.encodeObject(t)
+      }
+    }
+
+  implicit final def encodeLabelledHListSnakeCaseKeys[K <: Symbol, H, T <: HList](implicit
+    key: Witness.Aux[K],
+    encodeHead: Lazy[ConfiguredObjectEncoder[SnakeCaseKeys, H]],
     encodeTail: Lazy[ConfiguredDerivedObjectEncoder[SnakeCaseKeys, T]]
   ): ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] =
     new ConfiguredDerivedObjectEncoder[SnakeCaseKeys, FieldType[K, H] :: T] {
@@ -94,23 +95,23 @@ private[circe] trait MidPriorityConfiguredDerivedObjectEncoders
     }
 }
 
-private[circe] trait LowPriorityConfiguredDerivedObjectEncoders extends
-  LowestPriorityConfiguredDerivedObjectEncoders {
-  implicit final def encodeLabelledHListUnconfigured[C, K <: Symbol, H, T <: HList](implicit
+private[circe] trait LowPriorityConfiguredDerivedObjectEncoders {
+  implicit final def encodeCoproductDerived[C, K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
-    encodeHead: Lazy[ConfiguredEncoder[C, H]],
+    encodeHead: Lazy[ConfiguredDerivedObjectEncoder[C, H]],
     encodeTail: Lazy[ConfiguredDerivedObjectEncoder[C, T]]
-  ): ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :: T] =
-    new ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :: T] {
-      final def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-        case h :: t =>
-          (key.value.name -> encodeHead.value(h)) +: encodeTail.value.encodeObject(t)
+  ): ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] =
+    new ConfiguredDerivedObjectEncoder[C, FieldType[K, H] :+: T] {
+      final def encodeObject(a: FieldType[K, H] :+: T): JsonObject = a match {
+        case Inl(h) => JsonObject.singleton(
+          key.value.name,
+          encodeHead.value(h)
+        )
+        case Inr(t) => encodeTail.value.encodeObject(t)
       }
     }
-}
 
-private[circe] trait LowestPriorityConfiguredDerivedObjectEncoders {
-  implicit final def encodeLabelledHListUnconfiguredBase[C, K <: Symbol, H, T <: HList](implicit
+  implicit final def encodeLabelledHListUnconfigured[C, K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     encodeHead: Lazy[Encoder[H]],
     encodeTail: Lazy[ConfiguredDerivedObjectEncoder[C, T]]
