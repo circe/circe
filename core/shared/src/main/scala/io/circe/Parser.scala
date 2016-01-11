@@ -8,7 +8,7 @@ trait Parser extends Serializable {
   final def decode[A](input: String)(implicit d: Decoder[A]): Xor[Error, A] =
     parse(input).flatMap(d.decodeJson)
 
-  final def configuredDecode[C, A](input: String)(implicit
+  final def decodeConfigured[A, C](input: String)(implicit
     d: ConfiguredDecoder[C, A]
   ): Xor[Error, A] =
     parse(input).flatMap(d.decodeJson)
