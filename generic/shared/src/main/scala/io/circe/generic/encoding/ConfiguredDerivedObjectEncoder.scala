@@ -1,7 +1,7 @@
 package io.circe.generic.encoding
 
 import io.circe.{ ConfiguredEncoder, ConfiguredObjectEncoder, Encoder, JsonObject, ObjectEncoder }
-import io.circe.generic.config.{ SnakeCaseKeys, snakeCase }
+import io.circe.generic.config.{ snakeCase, SnakeCaseKeys }
 import shapeless._, shapeless.labelled.FieldType
 
 trait ConfiguredDerivedObjectEncoder[C, A]
