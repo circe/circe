@@ -33,3 +33,7 @@ object ObjectEncoder extends LowPriorityObjectEncoders {
 }
 
 @export.imports[ObjectEncoder] private[circe] trait LowPriorityObjectEncoders
+
+trait ConfiguredObjectEncoder[C, A] extends ObjectEncoder[A] with ConfiguredEncoder[C, A]
+
+@export.imports[ConfiguredObjectEncoder] object ConfiguredObjectEncoder

@@ -10,6 +10,8 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
 
 trait Decoder[A] extends Serializable { self =>
+  type Config
+
   /**
    * Decode the given hcursor.
    */
@@ -608,3 +610,9 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
 }
 
 @export.imports[Decoder] private[circe] trait LowPriorityDecoders
+
+trait ConfiguredDecoder[C, A] extends Decoder[A] {
+  type Config = C
+}
+
+@export.imports[ConfiguredDecoder] object ConfiguredDecoder

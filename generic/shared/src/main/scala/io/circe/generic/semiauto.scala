@@ -1,7 +1,7 @@
 package io.circe.generic
 
 import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
-import io.circe.generic.decoding.DerivedDecoder
+import io.circe.generic.decoding.{ ConfiguredDerivedDecoder, DerivedDecoder }
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ HList, LabelledGeneric, Lazy }
@@ -56,13 +56,13 @@ final object semiauto {
       ffp: FnFromProduct.Aux[P => C, A],
       gen: LabelledGeneric.Aux[C, T],
       removeAll: RemoveAll.Aux[T, P, (P, R)],
-      decode: DerivedDecoder[R]
-    ): Decoder[A] = DerivedDecoder.decodeIncompleteCaseClass[A, P, C, T, R]
+      decode: ConfiguredDerivedDecoder[Nothing, R]
+    ): Decoder[A] = ConfiguredDerivedDecoder.decodeIncompleteCaseClass[Nothing, A, P, C, T, R]
 
     final def patch[R <: HList, O <: HList](implicit
       gen: LabelledGeneric.Aux[A, R],
       patch: PatchWithOptions.Aux[R, O],
-      decode: DerivedDecoder[O]
-    ): DerivedDecoder[A => A] = DerivedDecoder.decodeCaseClassPatch[A, R, O]
+      decode: ConfiguredDerivedDecoder[Nothing, O]
+    ): DerivedDecoder[A => A] = ConfiguredDerivedDecoder.decodeCaseClassPatch[Nothing, A, R, O]
   }
 }
