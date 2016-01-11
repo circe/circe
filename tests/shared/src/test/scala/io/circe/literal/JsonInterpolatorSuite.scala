@@ -49,6 +49,17 @@ class JsonInterpolatorSuite extends CirceSuite {
     assert(parsed === Xor.right(interpolated))
   }
 
+  test("The json interpolator should work with interpolated strings as keys") {
+    val key = "foo"
+
+    val interpolated = json"{ $key: 1 }"
+
+    val parsed = parse("""{ "foo": 1 }""")
+
+    assert(parsed === Xor.right(interpolated))
+  }
+
+
   test("The json interpolator should fail with invalid JSON") {
     illTyped("json\"\"\"1a2b3c\"\"\"")
   }
