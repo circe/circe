@@ -53,6 +53,8 @@ trait Encoder[A] extends Serializable {
  * @author Travis Brown
  */
 object Encoder extends TupleEncoders with LowPriorityEncoders {
+  type Config
+
   /**
    * Return an instance for a given type `A`.
    *
@@ -252,3 +254,9 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
 }
 
 @export.imports[Encoder] private[circe] trait LowPriorityEncoders
+
+trait ConfiguredEncoder[C, A] extends Encoder[A] {
+  type Config = C
+}
+
+@export.imports[ConfiguredEncoder] object ConfiguredEncoder
