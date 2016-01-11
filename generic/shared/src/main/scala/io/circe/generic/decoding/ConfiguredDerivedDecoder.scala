@@ -22,6 +22,33 @@ final object ConfiguredDerivedDecoder
         Xor.left(DecodingFailure("CNil", c.history))
     }
 
+  implicit final def decodeCoproductUnconfigured[C, K <: Symbol, H, T <: Coproduct](implicit
+    key: Witness.Aux[K],
+    decodeHead: Lazy[Decoder[H]],
+    decodeTail: Lazy[ConfiguredDerivedDecoder[C, T]]
+  ): ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] =
+    new ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] {
+      final def apply(c: HCursor): Decoder.Result[FieldType[K, H] :+: T] =
+        c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
+          decodeTail.value(c).map(Inr(_))
+        ) { headJson =>
+          headJson.as(decodeHead.value).map(h => Inl(field(h)))
+        }
+    }
+
+  implicit final def decodeLabelledHListSnakeCaseKeysBase[K <: Symbol, H, T <: HList](implicit
+    key: Witness.Aux[K],
+    decodeHead: Lazy[Decoder[H]],
+    decodeTail: Lazy[ConfiguredDerivedDecoder[SnakeCaseKeys, T]]
+  ): ConfiguredDerivedDecoder[SnakeCaseKeys, FieldType[K, H] :: T] = fromDecoder(
+    (decodeHead.value.prepare(_.downField(snakeCase(key.value.name))) |@| decodeTail.value).map(
+      (head, tail) => field[K](head) :: tail
+    )
+  )
+}
+
+private[circe] trait MidPriorityConfiguredDerivedDecoders
+  extends LowPriorityConfiguredDerivedDecoders {
   implicit final def decodeCoproduct[C, K <: Symbol, H, T <: Coproduct](implicit
     key: Witness.Aux[K],
     decodeHead: Lazy[ConfiguredDecoder[C, H]],
@@ -39,33 +66,6 @@ final object ConfiguredDerivedDecoder
   implicit final def decodeLabelledHListSnakeCaseKeys[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     decodeHead: Lazy[ConfiguredDecoder[SnakeCaseKeys, H]],
-    decodeTail: Lazy[ConfiguredDerivedDecoder[SnakeCaseKeys, T]]
-  ): ConfiguredDerivedDecoder[SnakeCaseKeys, FieldType[K, H] :: T] = fromDecoder(
-    (decodeHead.value.prepare(_.downField(snakeCase(key.value.name))) |@| decodeTail.value).map(
-      (head, tail) => field[K](head) :: tail
-    )
-  )
-}
-
-private[circe] trait MidPriorityConfiguredDerivedDecoders
-  extends LowPriorityConfiguredDerivedDecoders {
-  implicit final def decodeCoproductDerived[C, K <: Symbol, H, T <: Coproduct](implicit
-    key: Witness.Aux[K],
-    decodeHead: Lazy[ConfiguredDerivedDecoder[C, H]],
-    decodeTail: Lazy[ConfiguredDerivedDecoder[C, T]]
-  ): ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] =
-    new ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] {
-      final def apply(c: HCursor): Decoder.Result[FieldType[K, H] :+: T] =
-        c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
-          decodeTail.value(c).map(Inr(_))
-        ) { headJson =>
-          headJson.as(decodeHead.value).map(h => Inl(field(h)))
-        }
-    }
-
-  implicit final def decodeLabelledHListSnakeCaseKeysBase[K <: Symbol, H, T <: HList](implicit
-    key: Witness.Aux[K],
-    decodeHead: Lazy[Decoder[H]],
     decodeTail: Lazy[ConfiguredDerivedDecoder[SnakeCaseKeys, T]]
   ): ConfiguredDerivedDecoder[SnakeCaseKeys, FieldType[K, H] :: T] = fromDecoder(
     (decodeHead.value.prepare(_.downField(snakeCase(key.value.name))) |@| decodeTail.value).map(
@@ -96,6 +96,20 @@ private[circe] trait LowPriorityConfiguredDerivedDecoders {
       final def apply(c: HCursor): Decoder.Result[A] = decode(c)
       override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
         decode.decodeAccumulating(c)
+    }
+
+  implicit final def decodeCoproductDerived[C, K <: Symbol, H, T <: Coproduct](implicit
+    key: Witness.Aux[K],
+    decodeHead: Lazy[ConfiguredDerivedDecoder[C, H]],
+    decodeTail: Lazy[ConfiguredDerivedDecoder[C, T]]
+  ): ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] =
+    new ConfiguredDerivedDecoder[C, FieldType[K, H] :+: T] {
+      final def apply(c: HCursor): Decoder.Result[FieldType[K, H] :+: T] =
+        c.downField(key.value.name).focus.fold[Xor[DecodingFailure, FieldType[K, H] :+: T]](
+          decodeTail.value(c).map(Inr(_))
+        ) { headJson =>
+          headJson.as(decodeHead.value).map(h => Inl(field(h)))
+        }
     }
 
   implicit final def decodeLabelledHListUnconfigured[C, K <: Symbol, H, T <: HList](implicit
