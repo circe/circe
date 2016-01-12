@@ -253,10 +253,12 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   }
 }
 
-@export.imports[Encoder] private[circe] trait LowPriorityEncoders
+@export.imports[Encoder]
+private[circe] trait LowPriorityEncoders
 
 trait ConfiguredEncoder[C, A] extends Encoder[A] {
-  type Config = C
+  final type Config = C
 }
 
-@export.imports[ConfiguredEncoder] object ConfiguredEncoder
+@export.imports[ConfiguredEncoder]
+final object ConfiguredEncoder

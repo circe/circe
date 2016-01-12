@@ -609,10 +609,12 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 }
 
-@export.imports[Decoder] private[circe] trait LowPriorityDecoders
+@export.imports[Decoder]
+private[circe] trait LowPriorityDecoders
 
 trait ConfiguredDecoder[C, A] extends Decoder[A] {
-  type Config = C
+  final type Config = C
 }
 
-@export.imports[ConfiguredDecoder] object ConfiguredDecoder
+@export.imports[ConfiguredDecoder]
+final object ConfiguredDecoder

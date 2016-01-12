@@ -1,8 +1,7 @@
 package io.circe.generic
 
-import export.reexports
-import io.circe.generic.decoding.{ ConfiguredDerivedDecoder, DerivedDecoder }
-import io.circe.generic.encoding.{ ConfiguredDerivedObjectEncoder, DerivedObjectEncoder }
+import io.circe.generic.decoding.{ DerivedConfiguredDecoder, DerivedDecoder }
+import io.circe.generic.encoding.{ DerivedConfiguredEncoder, DerivedEncoder }
 
 /**
  * Fully automatic codec derivation.
@@ -11,6 +10,10 @@ import io.circe.generic.encoding.{ ConfiguredDerivedObjectEncoder, DerivedObject
  * instances for tuples, case classes (if all members have instances), "incomplete" case classes,
  * sealed trait hierarchies, etc.
  */
-@reexports[DerivedDecoder, ConfiguredDerivedDecoder,
-  DerivedObjectEncoder, ConfiguredDerivedObjectEncoder]
+@export.reexports[
+  DerivedDecoder,
+  DerivedConfiguredDecoder,
+  DerivedEncoder,
+  DerivedConfiguredEncoder
+]
 final object auto

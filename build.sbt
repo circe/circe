@@ -39,7 +39,7 @@ lazy val baseSettings = Seq(
   scalacOptions in (Compile, test) := compilerOptions,
   libraryDependencies ++= Seq(
     "org.typelevel" %% "export-hook" % "1.1.0",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   ),
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
@@ -145,7 +145,10 @@ lazy val genericBase = crossProject.in(file("generic"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+    libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % shapelessVersion changing(),
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
+    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
