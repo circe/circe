@@ -33,6 +33,7 @@ class DerivationMacros(val c: whitebox.Context) {
   object KeyTransformationType extends ParamExtractor[io.circe.generic.config.KeyTransformation]
   object DiscriminatorType extends ParamExtractor[io.circe.generic.config.Discriminator]
   object CaseObjectEncodingType extends ParamExtractor[io.circe.generic.config.CaseObjectEncoding]
+  object DefaultValuesType extends ParamExtractor[io.circe.generic.config.DefaultValues]
 
   /**
    * Create a [[io.circe.generic.config.Configuration]] instance tree from a type.
@@ -41,30 +42,33 @@ class DerivationMacros(val c: whitebox.Context) {
     val config = C.tpe match {
       case KeyTransformationType(param) => q"$defaultConfiguration.copy(keyTransformation = $param)"
       case DiscriminatorType(param) => q"$defaultConfiguration.copy(discriminator = $param)"
-      case CaseObjectEncodingType(param) =>
-        q"$defaultConfiguration.copy(caseObjectEncoding = $param)"
+      case CaseObjectEncodingType(param) => q"$defaultConfiguration.copy(caseObjectEncoding = $param)"
+      case DefaultValuesType(param) => q"$defaultConfiguration.copy(defaultValues = $param)"
 
       case RefinedType(params, _) =>
-        val keyTransformation =
-          params.foldLeft[Tree](q"_root_.io.circe.generic.config.KeyIdentity") {
-            case (last, KeyTransformationType(next)) => next
-            case (last, _) => last
-          }
+        val keyTransformation = params.foldLeft[Tree](q"_root_.io.circe.generic.config.KeyIdentity") {
+          case (last, KeyTransformationType(next)) => next
+          case (last, _) => last
+        }
         val discriminator = params.foldLeft[Tree](q"_root_.io.circe.generic.config.ObjectWrapper") {
           case (last, DiscriminatorType(next)) => next
           case (last, _) => last
         }
-        val caseObjectEncoding =
-          params.foldLeft[Tree](q"_root_.io.circe.generic.config.CaseObjectObject") {
-            case (last, CaseObjectEncodingType(next)) => next
-            case (last, _) => last
-          }
+        val caseObjectEncoding = params.foldLeft[Tree](q"_root_.io.circe.generic.config.CaseObjectObject") {
+          case (last, CaseObjectEncodingType(next)) => next
+          case (last, _) => last
+        }
+        val defaultValues = params.foldLeft[Tree](q"_root_.io.circe.generic.config.NoDefaultValues") {
+          case (last, DefaultValuesType(next)) => next
+          case (last, _) => last
+        }
 
         q"""
           _root_.io.circe.generic.config.Configuration(
             $keyTransformation,
             $discriminator,
-            $caseObjectEncoding
+            $caseObjectEncoding,
+            $defaultValues
           )
         """
       case param => q"$defaultConfiguration"

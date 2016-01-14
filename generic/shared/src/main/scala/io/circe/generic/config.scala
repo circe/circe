@@ -47,15 +47,24 @@ final object CaseObjectObject extends CaseObjectObject
 trait CaseObjectString extends CaseObjectEncoding
 final object CaseObjectString extends CaseObjectString
 
+sealed trait DefaultValues
+
+trait NoDefaultValues extends DefaultValues
+final object NoDefaultValues extends NoDefaultValues
+
+trait UseDefaultValues extends DefaultValues
+final object UseDefaultValues extends UseDefaultValues
+
 case class Configuration[C](
   keyTransformation: KeyTransformation,
   discriminator: Discriminator,
-  caseObjectEncoding: CaseObjectEncoding
+  caseObjectEncoding: CaseObjectEncoding,
+  defaultValues: DefaultValues
 )
 
 object Configuration {
-  final val default: Configuration[KeyIdentity with ObjectWrapper with CaseObjectObject] =
-    Configuration(KeyIdentity, ObjectWrapper, CaseObjectObject)
+  final val default: Configuration[KeyIdentity with ObjectWrapper with CaseObjectObject with NoDefaultValues] =
+    Configuration(KeyIdentity, ObjectWrapper, CaseObjectObject, NoDefaultValues)
 
   implicit def materializeConfiguration[C]: Configuration[C] =
     macro DerivationMacros.materializeConfiguration[C]
