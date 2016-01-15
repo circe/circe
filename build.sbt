@@ -78,8 +78,9 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
       async,
       benchmark,
       coreJS,
-      literal, literalJS,
       genericJS,
+      java8,
+      literal, literalJS,
       refinedJS,
       parseJS,
       tests,
@@ -256,6 +257,14 @@ lazy val jawn = project
     libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
   )
   .dependsOn(core)
+
+lazy val java8 = project
+  .settings(
+    description := "circe java8",
+    moduleName := "circe-java8"
+  )
+  .settings(allSettings)
+  .dependsOn(core, tests % "test")
 
 lazy val streaming = project
   .settings(
