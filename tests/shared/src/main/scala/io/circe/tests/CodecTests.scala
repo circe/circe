@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
+import io.circe.{ ConfiguredDecoder, ConfiguredEncoder, Decoder, DecodingFailure, Encoder, Json }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
@@ -45,5 +45,14 @@ trait CodecTests[A] extends Laws with ArbitraryInstances {
 object CodecTests {
   def apply[A: Decoder: Encoder]: CodecTests[A] = new CodecTests[A] {
     val laws: CodecLaws[A] = CodecLaws[A]
+  }
+}
+
+object ConfiguredCodecTests {
+  def apply[A, C](implicit
+    decoder: ConfiguredDecoder[C, A],
+    encoder: ConfiguredEncoder[C, A]
+  ): CodecTests[A] = new CodecTests[A] {
+    val laws: CodecLaws[A] = CodecLaws[A](decoder, encoder)
   }
 }

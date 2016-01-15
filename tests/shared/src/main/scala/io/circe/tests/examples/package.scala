@@ -58,9 +58,10 @@ package examples {
   }
 
   sealed trait Foo
-  case class Bar(i: Int, s: String) extends Foo
+  case class Bar(i: Int, s: String = "") extends Foo
   case class Baz(xs: List[String]) extends Foo
-  case class Bam(w: Wub, d: Double) extends Foo
+  case class Bam(w: Wub, thisIsADoubleField: Double) extends Foo
+  case object Xuq extends Foo
 
   object Baz {
     implicit val decodeBaz: Decoder[Baz] = Decoder[List[String]].map(Baz(_))
@@ -82,7 +83,8 @@ package examples {
         for {
           w <- Arbitrary.arbitrary[Wub]
           d <- Arbitrary.arbitrary[Double]
-        } yield Bam(w, d)
+        } yield Bam(w, d),
+        Gen.const(Xuq)
       )
     )
   }
