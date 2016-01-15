@@ -96,6 +96,7 @@ lazy val circe = project.in(file("."))
       """
         |import io.circe._
         |import io.circe.generic.auto._
+        |import io.circe.literal._
         |import io.circe.parse._
         |import io.circe.syntax._
         |import cats.data.Xor
@@ -114,7 +115,7 @@ lazy val circe = project.in(file("."))
     async,
     benchmark
   )
-  .dependsOn(core, generic, parse)
+  .dependsOn(core, generic, literal, parse)
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(
