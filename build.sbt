@@ -163,7 +163,10 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "org.typelevel" %%% "macro-compat" % "1.1.1-SNAPSHOT"
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      "org.typelevel" %%% "macro-compat" % "1.1.1-SNAPSHOT"
+    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "literal"))
