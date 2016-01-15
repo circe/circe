@@ -12,7 +12,9 @@ class JsonInterpolatorSuite extends CirceSuite {
     {
       "a": [1, 2, 3],
       "b": { "foo": false },
-      "c": null
+      "c": null,
+      "d": "bar",
+      "e": 0.0001
     }
     """
 
@@ -21,7 +23,9 @@ class JsonInterpolatorSuite extends CirceSuite {
       {
         "a": [1, 2, 3],
         "b": { "foo": false },
-        "c": null
+        "c": null,
+        "d": "bar",
+        "e": 0.0001
       }
       """
     )
@@ -33,7 +37,7 @@ class JsonInterpolatorSuite extends CirceSuite {
     val i = 13
     val m = Map("bar" -> List(1, 2, 3), "baz" -> Nil)
 
-    val interpolated = json"""{ "i": $i, "ms": [$m, $m] }"""
+    val interpolated = json"""{ "i": $i, "ms": [$m, $m], "other": [1.0, "abc"] }"""
 
     val parsed = parse("""
       {
@@ -41,7 +45,8 @@ class JsonInterpolatorSuite extends CirceSuite {
         "ms": [
           { "bar": [1, 2, 3], "baz": [] },
           { "bar": [1, 2, 3], "baz": [] }
-        ]
+        ],
+        "other": [1.0, "abc"]
       }
       """
     )
