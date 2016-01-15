@@ -3,7 +3,7 @@ package io.circe
 import cats.data.Xor
 import io.circe.Json._
 import scala.scalajs.js
-import scala.scalajs.js.{ JavaScriptException, SyntaxError, undefined }
+import scala.scalajs.js.{ undefined, JavaScriptException, SyntaxError }
 import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
 
 package object scalajs {
