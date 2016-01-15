@@ -51,7 +51,10 @@ lazy val baseSettings = Seq(
       case _ => true
     }
   ),
-  (scalastyleSources in Compile) <++= unmanagedSourceDirectories in Compile
+  (scalastyleSources in Compile) <++= unmanagedSourceDirectories in Compile,
+  ivyConfigurations += config("compile-time").hide,
+  unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compile-time")),
+  unmanagedClasspath in Test ++= update.value.select(configurationFilter("compile-time"))
 )
 
 lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
@@ -71,7 +74,17 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(async, benchmark, coreJS, genericJS, refinedJS, parseJS, tests, testsJS)
+    inAnyProject -- inProjects(
+      async,
+      benchmark,
+      coreJS,
+      literal, literalJS,
+      genericJS,
+      refinedJS,
+      parseJS,
+      tests,
+      testsJS
+    )
 )
 
 lazy val circe = project.in(file("."))
@@ -83,6 +96,7 @@ lazy val circe = project.in(file("."))
       """
         |import io.circe._
         |import io.circe.generic.auto._
+        |import io.circe.literal._
         |import io.circe.parse._
         |import io.circe.syntax._
         |import cats.data.Xor
@@ -91,6 +105,7 @@ lazy val circe = project.in(file("."))
   .aggregate(
     core, coreJS,
     generic, genericJS,
+    literal, literalJS,
     refined, refinedJS,
     parse, parseJS,
     tests, testsJS,
@@ -100,7 +115,7 @@ lazy val circe = project.in(file("."))
     async,
     benchmark
   )
-  .dependsOn(core, generic, parse)
+  .dependsOn(core, generic, literal, parse)
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(
@@ -139,6 +154,27 @@ lazy val genericBase = crossProject.in(file("generic"))
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
+
+lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal"))
+  .settings(
+    description := "circe literal",
+    moduleName := "circe-literal",
+    name := "literal"
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      "org.typelevel" %%% "macro-compat" % "1.1.1-SNAPSHOT"
+    )
+  )
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "literal"))
+  .jsConfigure(_.copy(id = "literalJS"))
+  .dependsOn(coreBase)
+
+lazy val literal = literalBase.jvm
+lazy val literalJS = literalBase.js
 
 lazy val refinedBase = crossProject.in(file("refined"))
   .settings(
@@ -200,8 +236,12 @@ lazy val testsBase = crossProject.in(file("tests"))
   .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, async))
-  .jsConfigure(_.copy(id = "testsJS"))
-  .dependsOn(coreBase, genericBase, refinedBase, parseBase)
+  .jsConfigure(
+    _.copy(id = "testsJS").settings(
+      libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
+    )
+  )
+  .dependsOn(coreBase, genericBase, literalBase, refinedBase, parseBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
