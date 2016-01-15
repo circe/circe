@@ -39,7 +39,7 @@ lazy val baseSettings = Seq(
   scalacOptions in (Compile, test) := compilerOptions,
   libraryDependencies ++= Seq(
     "org.typelevel" %% "export-hook" % "1.1.0",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   ),
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
@@ -64,6 +64,28 @@ lazy val commonJsSettings = Seq(
   scalaJSStage in Global := FastOptStage
 )
 
+/**
+ * We omit all Scala.js projects from Unidoc generation, as well as
+ * circe-generic on 2.10, since Unidoc doesn't like its macros.
+ */
+def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
+  async,
+  benchmark,
+  coreJS,
+  literal,
+  literalJS,
+  genericJS,
+  refinedJS,
+  parseJS,
+  tests,
+  testsJS
+) ++ (
+  CrossVersion.partialVersion(sv) match {
+    case Some((2, 10)) => Seq[ProjectReference](generic)
+    case _ => Nil
+  }
+)
+
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
@@ -74,17 +96,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(
-      async,
-      benchmark,
-      coreJS,
-      literal, literalJS,
-      genericJS,
-      refinedJS,
-      parseJS,
-      tests,
-      testsJS
-    )
+    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*)
 )
 
 lazy val circe = project.in(file("."))
@@ -145,7 +157,10 @@ lazy val genericBase = crossProject.in(file("generic"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+    libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % shapelessVersion changing(),
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
+    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))

@@ -14,7 +14,7 @@
     </check>
     <check level="error" class="org.scalastyle.file.FileLineLengthChecker" enabled="true">
         <parameters>
-            <parameter name="maxLineLength"><![CDATA[100]]></parameter>
+            <parameter name="maxLineLength"><![CDATA[120]]></parameter>
         </parameters>
     </check>
     <check level="error" class="org.scalastyle.file.WhitespaceEndOfLineChecker" enabled="true"></check>
@@ -39,8 +39,6 @@
             <parameter name="illegalImports"><![CDATA[sun._,java.awt._]]></parameter>
         </parameters>
     </check>
-    <check level="error" class="org.scalastyle.scalariform.NoWhitespaceBeforeLeftBracketChecker" enabled="true"></check>
-    <check level="error" class="org.scalastyle.scalariform.NoWhitespaceAfterLeftBracketChecker" enabled="true"></check>
     <check level="warning" class="org.scalastyle.scalariform.ReturnChecker" enabled="true"></check>
     <check level="warning" class="org.scalastyle.scalariform.NullChecker" enabled="true"></check>
     <check level="error" class="org.scalastyle.scalariform.NoCloneChecker" enabled="true"></check>

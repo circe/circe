@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.generic.encoding.DerivedEncoder
 import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
@@ -126,7 +126,7 @@ class SemiautoDerivedSuite extends CirceSuite {
     implicitly[DerivedDecoder[OvergenerationExampleInner]]
     illTyped("Decoder[OvergenerationExampleInner]")
 
-    implicitly[DerivedObjectEncoder[OvergenerationExampleInner]]
+    implicitly[DerivedEncoder[OvergenerationExampleInner]]
     illTyped("Encoder[OvergenerationExampleInner]")
 
     illTyped("Decoder[OvergenerationExampleOuter0]")

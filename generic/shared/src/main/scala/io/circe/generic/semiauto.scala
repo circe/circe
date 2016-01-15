@@ -1,8 +1,8 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, HCursor, JsonObject, ObjectEncoder }
-import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.{ ConfiguredDecoder, ConfiguredEncoder, Decoder, Encoder, HCursor, Json }
+import io.circe.generic.decoding.{ DerivedConfiguredDecoder, DerivedDecoder }
+import io.circe.generic.encoding.{ DerivedConfiguredEncoder, DerivedEncoder }
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ HList, LabelledGeneric, Lazy }
 import shapeless.ops.function.FnFromProduct
@@ -28,41 +28,35 @@ import shapeless.ops.record.RemoveAll
  * }}}
  */
 final object semiauto {
-  final def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
+  final def deriveDecoder[A](implicit decoder: Lazy[DerivedDecoder[A]]): Decoder[A] = decoder.value
+  final def deriveEncoder[A](implicit encoder: Lazy[DerivedEncoder[A]]): Encoder[A] = encoder.value
 
-  final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
-    encode.value
+  final def deriveConfiguredDecoder[A, C](implicit
+    decoder: Lazy[DerivedConfiguredDecoder[C, A]]
+  ): ConfiguredDecoder[C, A] = decoder.value
 
-  final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
+  final def deriveConfiguredEncoder[A, C](implicit
+    encoder: Lazy[DerivedConfiguredEncoder[C, A]]
+  ): ConfiguredEncoder[C, A] = encoder.value
 
-  final class DerivationHelper[A] {
-    @deprecated("Use deriveDecoder", "0.3.0")
-    final def decoder[R](implicit
-      gen: LabelledGeneric.Aux[A, R],
-      decode: Lazy[DerivedDecoder[R]]
-    ): Decoder[A] = new Decoder[A] {
-      final def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
-    }
+  final def deriveFor[A]: DerivationHelper[A, Unit, Decoder] = new DerivationHelper[A, Unit, Decoder]
+  final def deriveConfiguredFor[A, C]: DerivationHelper[A, C, ({ type L[x] = ConfiguredDecoder[C, x] })#L] =
+    new DerivationHelper[A, C, ({ type L[x] = ConfiguredDecoder[C, x] })#L]
 
-    @deprecated("Use deriveEncoder", "0.3.0")
-    final def encoder[R](implicit
-      gen: LabelledGeneric.Aux[A, R],
-      encode: Lazy[DerivedObjectEncoder[R]]
-    ): ObjectEncoder[A] = new ObjectEncoder[A] {
-      final def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
-    }
-
-    final def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
-      ffp: FnFromProduct.Aux[P => C, A],
-      gen: LabelledGeneric.Aux[C, T],
+  final class DerivationHelper[A, C, Res[x] >: ConfiguredDecoder[C, x]] {
+    final def incomplete[P <: HList, B, T <: HList, R <: HList](implicit
+      ffp: FnFromProduct.Aux[P => B, A],
+      gen: LabelledGeneric.Aux[B, T],
       removeAll: RemoveAll.Aux[T, P, (P, R)],
-      decode: DerivedDecoder[R]
-    ): Decoder[A] = DerivedDecoder.decodeIncompleteCaseClass[A, P, C, T, R]
+      decoder: DerivedConfiguredDecoder[C, R]
+    ): Res[A] =
+      DerivedConfiguredDecoder.decodeIncompleteCaseClass[C, A, P, B, T, R]
 
     final def patch[R <: HList, O <: HList](implicit
       gen: LabelledGeneric.Aux[A, R],
       patch: PatchWithOptions.Aux[R, O],
-      decode: DerivedDecoder[O]
-    ): DerivedDecoder[A => A] = DerivedDecoder.decodeCaseClassPatch[A, R, O]
+      decoder: DerivedConfiguredDecoder[C, O]
+    ): Res[A => A] =
+      DerivedConfiguredDecoder.decodeCaseClassPatch[C, A, R, O]
   }
 }

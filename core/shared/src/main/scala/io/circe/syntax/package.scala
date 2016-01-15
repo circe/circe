@@ -6,5 +6,7 @@ package io.circe
 package object syntax {
   implicit final class EncoderOps[A](val a: A) extends AnyVal {
     final def asJson(implicit e: Encoder[A]): Json = e(a)
+
+    final def asJsonConfigured[C](implicit e: ConfiguredEncoder[C, A]): Json = e(a)
   }
 }
