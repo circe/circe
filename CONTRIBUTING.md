@@ -10,10 +10,14 @@ GitHub pull requests:
 
 ## Pick or report an issue
 
-Often [open issues][issues] are flagged with a [_help wanted_][help-wanted] label, and these issues
-are good places to get started by offering ideas or code. When you begin working on an issue, please
-leave a comment to notify others that the issue is taken, and join us in the
-[Gitter channel][gitter] if you have any questions along the way.
+The [_beginner-friendly_][beginner-friendly] label flags [open issues][issues] where there is
+general agreement about the best way forward, and where the fix is likely to be relatively
+straightforward for someone with Scala experience. The [_help wanted_][help-wanted] label is a
+little more general, and indicates issues that may be much more challenging or have unresolved
+questions that need additional discussion.
+
+When you begin working on an issue, please leave a comment to notify others that the issue is taken,
+and join us in the [Gitter channel][gitter] if you have any questions along the way.
 
 We always welcome bug reports and feature requests—please don't feel like you need to have time to
 contribute a fix or implementation for your issue to be appreciated.
@@ -72,6 +76,7 @@ compatibility before the next release.
 * If a pull request decreases code coverage more than by 2%, please file an issue to make sure that
   tests get added.
 
+[beginner-friendly]: https://github.com/travisbrown/circe/labels/beginner-friendly
 [discipline]: https://github.com/typelevel/discipline
 [gitter]: https://gitter.im/travisbrown/circe
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests/
