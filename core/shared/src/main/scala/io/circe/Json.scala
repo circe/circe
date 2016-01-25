@@ -124,6 +124,29 @@ sealed abstract class Json extends Product with Serializable {
   final def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
+    * Perform a deep merge of this JSON value with another JSON value.
+    *
+    * Objects are merged by key, values from the argument JSON take
+    * precedence over values from this JSON. Nested objects are
+    * recursed.
+    *
+    * Null, Array, Boolean, String and Number are treated as values,
+    * and values from the argument JSON completely replace values
+    * from this JSON.
+    */
+  def deepMerge(that: Json): Json =
+    (asObject, that.asObject) match {
+      case (Some(lhs), Some(rhs)) =>
+        fromJsonObject(
+          lhs.toList.foldLeft(rhs) {
+            case (acc, (key, value)) =>
+              rhs(key).fold(acc.add(key, value)) { r => acc.add(key, value.deepMerge(r)) }
+          }
+        )
+      case _ => that
+    }
+
+  /**
    * Compute a `String` representation for this JSON value.
    */
   override final def toString: String = spaces2
