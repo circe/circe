@@ -3,8 +3,8 @@ package io.circe
 import cats.Monad
 import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
 import cats.std.list._
+import cats.syntax.cartesian._
 import cats.syntax.functor._
-import cats.syntax.monoidal._
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable

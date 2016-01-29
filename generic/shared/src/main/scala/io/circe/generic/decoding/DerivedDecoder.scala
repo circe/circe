@@ -1,7 +1,7 @@
 package io.circe.generic.decoding
 
 import cats.data.Xor
-import cats.syntax.monoidal._
+import cats.syntax.cartesian._
 import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, HCursor }
 import shapeless._, shapeless.labelled.{ FieldType, field }
 
