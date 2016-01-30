@@ -1,9 +1,9 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.{OneAnd, NonEmptyList, Validated, Xor}
 import cats.functor.Contravariant
 import cats.std.list._
-import cats.Foldable
+import cats.{MonadCombine, Foldable}
 import java.util.UUID
 import scala.collection.generic.IsTraversableOnce
 import scala.collection.mutable.ArrayBuffer
@@ -77,6 +77,11 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   final def fromFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): Encoder[F[A]] =
     instance(fa =>
       Json.fromValues(F.foldLeft(fa, List.empty[Json])((list, a) => e(a) :: list).reverse)
+    )
+
+  final def fromOneAnd[G[_], A](implicit e: Encoder[A], G: MonadCombine[G] with Foldable[G], F : OneAnd[G, A]): Encoder[OneAnd[G, A]] =
+    instance(fa =>
+      Json.fromValues(F.foldLeft[List[Json]](List.empty[Json])((list: List[Json], a: A) => e(a) :: list))
     )
 
   /**
@@ -190,6 +195,12 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
    */
   implicit final def encodeNonEmptyList[A: Encoder]: Encoder[NonEmptyList[A]] =
     fromFoldable[NonEmptyList, A]
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeOneAnd[A: Encoder, F[_], G[_]](implicit G : MonadCombine[G] with Foldable[G], F : OneAnd[G, A]): Encoder[OneAnd[F, A]] =
+    fromOneAnd[F, A]
 
   /**
    * @group Encoding
