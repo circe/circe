@@ -199,8 +199,8 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
     * @group Encoding
     */
-  implicit final def encodeOneAnd[A: Encoder, F[_], G[_]](implicit G : MonadCombine[G] with Foldable[G], F : OneAnd[G, A]): Encoder[OneAnd[F, A]] =
-    fromOneAnd[F, A]
+  implicit final def encodeOneAnd[A: Encoder, F[_]]: Encoder[OneAnd[F, A]] =
+    ??? //    fromOneAnd[F, A]
 
   /**
    * @group Encoding
