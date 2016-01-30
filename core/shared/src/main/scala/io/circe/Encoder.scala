@@ -1,10 +1,10 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data._
 import cats.functor.Contravariant
-import cats.std.list._
 import cats.Foldable
 import java.util.UUID
+import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
 import scala.collection.mutable.ArrayBuffer
 
@@ -188,8 +188,12 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final def encodeNonEmptyList[A: Encoder]: Encoder[NonEmptyList[A]] =
-    fromFoldable[NonEmptyList, A]
+  implicit final def encodeOneAnd[A0, C[_]](
+    implicit ea: Encoder[A0],
+    is: IsTraversableOnce[C[A0]] { type A = A0 }
+  ): Encoder[OneAnd[C, A0]] = encodeTraversableOnce[A0, GenSeq].contramap[OneAnd[C, A0]] {
+    oneAnd => oneAnd.head +: is.conversion(oneAnd.tail).toSeq
+  }
 
   /**
    * @group Encoding

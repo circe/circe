@@ -2,6 +2,7 @@ package io.circe.benchmark
 
 import algebra.Eq
 import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+import cats.data.NonEmptyList
 import io.circe.{ Decoder, Encoder, Json => JsonC }
 import io.circe.generic.semiauto._
 import io.circe.jawn._
@@ -23,12 +24,22 @@ object Foo {
   implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals[Foo]
 }
 
+case class FooNel(s: String, d: Double, i: Int, l: Long, bs: NonEmptyList[Boolean])
+
+object FooNel {
+  implicit val encodeFooNel: Encoder[FooNel] = deriveEncoder
+}
+
 class ExampleData {
   val ints: List[Int] = (0 to 1000).toList
 
   val foos: Map[String, Foo] = List.tabulate(100) { i =>
     ("b" * i) -> Foo("a" * i, (i + 2.0) / (i + 1.0), i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
   }.toMap
+
+  val fooNels: Map[String, FooNel] = foos.mapValues {
+    foo => FooNel(foo.s, foo.d, foo.i, foo.l, NonEmptyList(true, foo.bs))
+  }
 
   @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
   @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): JsonC = encode(a)
@@ -41,6 +52,7 @@ class ExampleData {
   val intsS: JsValueS = encodeS(ints)
 
   val foosC: JsonC = encodeC(foos)
+  val fooNelsC: JsonC = encodeC(fooNels)
   val foosA: JsonA = encodeA(foos)
   val foosP: JsValueP = encodeP(foos)
   val foosS: JsValueS = encodeS(foos)
@@ -83,6 +95,8 @@ class EncodingBenchmark extends ExampleData {
 
   @Benchmark
   def encodeFoosS: JsValueS = encodeS(foos)
+
+  def encodeFooNelsC: JsonC = encodeC(fooNels)
 }
 
 /**

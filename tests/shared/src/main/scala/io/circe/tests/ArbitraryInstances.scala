@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import cats.data.NonEmptyList
+import cats.data.OneAnd
 import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import java.util.UUID
@@ -104,10 +104,12 @@ trait ArbitraryInstances {
     )
   )
 
-  implicit def oneAndArbitrary[A](implicit A: Arbitrary[A]): Arbitrary[NonEmptyList[A]] = Arbitrary(
+  implicit def oneAndArbitrary[A, C[_]](implicit
+    A: Arbitrary[A], CA: Arbitrary[C[A]]
+  ): Arbitrary[OneAnd[C, A]] = Arbitrary(
     for {
       h <- A.arbitrary
-      t <- Arbitrary.arbitrary[List[A]]
-    } yield NonEmptyList(h, t)
+      t <- CA.arbitrary
+    } yield OneAnd(h, t)
   )
 }

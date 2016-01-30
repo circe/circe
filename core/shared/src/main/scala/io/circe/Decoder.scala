@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.Monad
-import cats.data.{ Kleisli, NonEmptyList, Validated, Xor }
+import cats.data._
 import cats.std.list._
 import cats.syntax.cartesian._
 import cats.syntax.functor._
@@ -545,17 +545,29 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
     decodeCanBuildFrom[A, List].map(_.toSet).withErrorMessage("[A]Set[A]")
 
   /**
-   * @group Decoding
-   */
-  implicit final def decodeNonEmptyList[A: Decoder]: Decoder[NonEmptyList[A]] =
-    decodeCanBuildFrom[A, List].flatMap { l =>
-      instance { c =>
-        l match {
-          case h :: t => Xor.right(NonEmptyList(h, t))
-          case Nil => Xor.left(DecodingFailure("[A]NonEmptyList[A]", c.history))
-        }
-      }
-    }.withErrorMessage("[A]NonEmptyList[A]")
+    * @group Decoding
+    */
+  implicit final def decodeOneAnd[A, C[_]](implicit
+  da: Decoder[A],
+  cbf: CanBuildFrom[Nothing, A, C[A]]
+  ): Decoder[OneAnd[C, A]] = new Decoder[OneAnd[C, A]] {
+    def apply(c: HCursor): Result[OneAnd[C, A]] = {
+      val arr = c.downArray
+      for {
+        head <- da.tryDecode(arr)
+        tail <- decodeCanBuildFrom[A, C].tryDecode(arr.delete)
+      } yield OneAnd(head, tail)
+    }
+
+    override private[circe] def decodeAccumulating(
+      c: HCursor
+    ): AccumulatingDecoder.Result[OneAnd[C, A]] = {
+      val arr = c.downArray
+      val head = da.tryDecodeAccumulating(arr)
+      val tail = decodeCanBuildFrom[A, C].tryDecodeAccumulating(arr.delete)
+      tail.ap(head.map(h => (t: C[A]) => OneAnd(h, t)))
+    }
+  }
 
   /**
    * @group Disjunction
