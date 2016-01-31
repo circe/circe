@@ -601,7 +601,7 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   implicit final val monadDecode: Monad[Decoder] = new Monad[Decoder] {
     final def pure[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
     override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
-    override final def ap[A, B](fa: Decoder[A])(f: Decoder[A => B]): Decoder[B] = fa.ap(f)
+    override final def ap[A, B](f: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = fa.ap(f)
     override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
     final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
   }
