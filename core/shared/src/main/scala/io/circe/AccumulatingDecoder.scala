@@ -52,8 +52,8 @@ final object AccumulatingDecoder {
       override final def map[A, B](fa: AccumulatingDecoder[A])(f: A => B): AccumulatingDecoder[B] =
         fa.map(f)
 
-      final def ap[A, B](fa: AccumulatingDecoder[A])(
-        f: AccumulatingDecoder[A => B]
+      final def ap[A, B](f: AccumulatingDecoder[A => B])(
+        fa: AccumulatingDecoder[A]
       ): AccumulatingDecoder[B] = fa.ap(f)
 
       final def product[A, B](
