@@ -20,7 +20,7 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.4.0-SNAPSHOT"
+lazy val catsVersion = "0.4.0"
 lazy val shapelessVersion = "2.3.0-SNAPSHOT"
 lazy val refinedVersion = "0.3.3"
 
@@ -127,7 +127,7 @@ lazy val coreBase = crossProject.in(file("core"))
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.spire-math" %%% "cats-core" % catsVersion
+      "org.typelevel" %%% "cats-core" % catsVersion
     ),
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
@@ -223,7 +223,7 @@ lazy val testsBase = crossProject.in(file("tests"))
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.spire-math" %%% "cats-laws" % catsVersion,
+      "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion
     ),
