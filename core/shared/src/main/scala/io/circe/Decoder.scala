@@ -270,7 +270,7 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
       case JNull => Xor.right(())
       case JObject(obj) if obj.isEmpty => Xor.right(())
       case JArray(arr) if arr.isEmpty => Xor.right(())
-      case _ => Xor.left(DecodingFailure("String", c.history))
+      case _ => Xor.left(DecodingFailure("Unit", c.history))
     }
   }
 
