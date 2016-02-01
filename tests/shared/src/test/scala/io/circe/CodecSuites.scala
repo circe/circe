@@ -2,7 +2,7 @@ package io.circe
 
 import java.util.UUID
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data._
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
 
@@ -80,6 +80,8 @@ class StdLibCodecSuite extends CirceSuite {
 
 class CatsCodecSuite extends CirceSuite {
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
+  checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
+  checkAll("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
 }
 
 class CirceCodecSuite extends CirceSuite {
