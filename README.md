@@ -36,10 +36,12 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 you can just add the following to your build:
 
 ```scala
+resolvers += Resolver.sonatypeRepo("snapshots")
+
 libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core" % "0.2.1",
-  "io.circe" %% "circe-generic" % "0.2.1",
-  "io.circe" %% "circe-parser" % "0.2.1"
+  "io.circe" %% "circe-core" % "0.3.0-SNAPSHOT",
+  "io.circe" %% "circe-generic" % "0.3.0-SNAPSHOT",
+  "io.circe" %% "circe-parser" % "0.3.0-SNAPSHOT"
 )
 ```
 
