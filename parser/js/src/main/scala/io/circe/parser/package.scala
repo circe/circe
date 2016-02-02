@@ -10,7 +10,7 @@ import scalajs.js.{
   SyntaxError
 }
 
-package object parse extends Parser {
+package object parser extends Parser {
   def parse(input: String): Xor[ParsingFailure, Json] = try {
     Xor.right(convertJson(JSON.parse(input)))
   } catch {

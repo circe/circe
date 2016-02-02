@@ -82,7 +82,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
       java8,
       literal, literalJS,
       refinedJS,
-      parseJS,
+      parserJS,
       tests,
       testsJS
     )
@@ -98,7 +98,7 @@ lazy val circe = project.in(file("."))
         |import io.circe._
         |import io.circe.generic.auto._
         |import io.circe.literal._
-        |import io.circe.parse._
+        |import io.circe.parser._
         |import io.circe.syntax._
         |import cats.data.Xor
       """.stripMargin
@@ -108,7 +108,7 @@ lazy val circe = project.in(file("."))
     generic, genericJS,
     literal, literalJS,
     refined, refinedJS,
-    parse, parseJS,
+    parser, parserJS,
     tests, testsJS,
     jawn,
     jackson,
@@ -117,7 +117,7 @@ lazy val circe = project.in(file("."))
     async,
     benchmark
   )
-  .dependsOn(core, generic, literal, parse)
+  .dependsOn(core, generic, literal, parser)
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(
@@ -199,20 +199,20 @@ lazy val refinedBase = crossProject.in(file("refined"))
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
 
-lazy val parseBase = crossProject.in(file("parse"))
+lazy val parserBase = crossProject.in(file("parser"))
   .settings(
-    description := "circe parse",
-    moduleName := "circe-parse",
-    name := "parse"
+    description := "circe parser",
+    moduleName := "circe-parser",
+    name := "parser"
   )
   .settings(allSettings: _*)
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "parse").dependsOn(jawn))
-  .jsConfigure(_.copy(id = "parseJS"))
+  .jvmConfigure(_.copy(id = "parser").dependsOn(jawn))
+  .jsConfigure(_.copy(id = "parserJS"))
   .dependsOn(coreBase)
 
-lazy val parse = parseBase.jvm
-lazy val parseJS = parseBase.js
+lazy val parser = parserBase.jvm
+lazy val parserJS = parserBase.js
 
 lazy val testsBase = crossProject.in(file("tests"))
   .settings(
@@ -246,7 +246,7 @@ lazy val testsBase = crossProject.in(file("tests"))
       libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
     )
   )
-  .dependsOn(coreBase, genericBase, literalBase, refinedBase, parseBase)
+  .dependsOn(coreBase, genericBase, literalBase, refinedBase, parserBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -412,7 +412,7 @@ val jvmProjects = Seq(
   "core",
   "generic",
   "refined",
-  "parse",
+  "parser",
   "tests",
   "jawn",
   "jackson",
@@ -424,7 +424,7 @@ val jsProjects = Seq(
   "coreJS",
   "genericJS",
   "refinedJS",
-  "parseJS",
+  "parserJS",
   "testsJS"
 )
 

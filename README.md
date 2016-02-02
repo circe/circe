@@ -39,7 +39,7 @@ you can just add the following to your build:
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % "0.2.1",
   "io.circe" %% "circe-generic" % "0.2.1",
-  "io.circe" %% "circe-parse" % "0.2.1"
+  "io.circe" %% "circe-parser" % "0.2.1"
 )
 ```
 
@@ -56,10 +56,10 @@ Then type `sbt console` to start a REPL and then paste the following (this will 
 root directory of this repository):
 
 ```scala
-scala> import io.circe._, io.circe.generic.auto._, io.circe.parse._, io.circe.syntax._
+scala> import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 import io.circe._
 import io.circe.generic.auto._
-import io.circe.parse._
+import io.circe.parser._
 import io.circe.syntax._
 
 scala> sealed trait Foo
@@ -110,7 +110,7 @@ facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us
 fussiest code in Argonaut. The [`jackson`][circe-jackson] subproject supports using
 [Jackson][jackson] for both parsing and printing.
 
-circe also provides a [`parse`][circe-parse] subproject that provides parsing support for Scala.js,
+circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
 with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
 
 ### Lenses
@@ -361,7 +361,7 @@ limitations under the License.
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
-[circe-parse]: https://travisbrown.github.io/circe/api/#io.circe.parse.package
+[circe-parser]: https://travisbrown.github.io/circe/api/#io.circe.parser.package
 [code-of-conduct]: http://typelevel.org/conduct.html
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$

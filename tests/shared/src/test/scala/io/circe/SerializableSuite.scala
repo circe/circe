@@ -28,6 +28,6 @@ class SerializableSuite extends CirceSuite {
   	SerializableTests.serializable(ObjectEncoder[Map[String, Int]])
   )
 
-  checkAll("Parser", SerializableTests.serializable(parse.`package`))
+  checkAll("Parser", SerializableTests.serializable(parser.`package`))
   checkAll("Printer", SerializableTests.serializable(Printer.noSpaces))
 }
