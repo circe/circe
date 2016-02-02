@@ -48,7 +48,7 @@ Paradise][paradise] compiler plugin in your build:
 
 ```scala
 addCompilerPlugin(
-  "org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full
+  "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full
 )
 ```
 
