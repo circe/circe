@@ -7,8 +7,8 @@ import cats.std.vector._
 import cats.syntax.traverse._
 import io.circe.{ Json, ParsingFailure }
 import io.circe.jawn.CirceSupportParser
-import io.iteratee.internal.Step
 import io.iteratee.{ Enumeratee, Iteratee }
+import io.iteratee.internal.Step
 
 private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: MonadError[F, Throwable])
   extends Enumeratee[F, S, Json] {
