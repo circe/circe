@@ -113,6 +113,7 @@ lazy val circe = project.in(file("."))
     jawn,
     jackson,
     optics,
+    streaming,
     async,
     benchmark
   )
@@ -276,7 +277,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.0-SNAPSHOT"
+    libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.0"
   )
   .dependsOn(core, jawn)
 

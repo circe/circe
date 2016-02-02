@@ -24,15 +24,6 @@ awk 'BEGIN{print"["} NR>4 {print l} {l=$0}' citylots.json > data.json
 
 (You can also do this by hand, of course.)
 
-You'll also need to publish `circe-streaming` locally, since it's not yet in the 0.3.0 snapshot. You
-can do this by typing the following command in the root project directory:
-
-```bash
-sbt "project streaming" publishLocal
-```
-
-(This second step will soon be unnecessary.)
-
 ## Decoders
 
 Next we'll define our decoders for the JSON representation of the shapefile. We'll start with our
