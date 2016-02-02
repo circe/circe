@@ -1,4 +1,4 @@
-package io.circe.parse
+package io.circe.parser
 
 import io.circe.tests.{ CirceSuite, ParserTests }
 

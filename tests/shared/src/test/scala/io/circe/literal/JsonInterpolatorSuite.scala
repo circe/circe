@@ -2,7 +2,7 @@ package io.circe.literal
 
 import cats.data.Xor
 import io.circe.Json
-import io.circe.parse.parse
+import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 import shapeless.test.illTyped
 
