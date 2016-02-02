@@ -248,6 +248,20 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   )
 
   /**
+   * @group EncodeJson
+   */
+  final def mapLikeEncodeJson[M[K, +V] <: Map[K, V], K, V](implicit
+    ke: KeyEncoder[K],
+    ev: Encoder[V]
+  ): Encoder[M[K, V]] = ObjectEncoder.instance(m =>
+    JsonObject.fromMap(
+      m.map {
+        case (k, v) => (ke.toJsonKey(k), ev(v))
+      }
+    )
+  )
+
+  /**
    * @group Instances
    */
   implicit final val contravariantEncode: Contravariant[Encoder] = new Contravariant[Encoder] {
