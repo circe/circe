@@ -167,7 +167,10 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
       "org.typelevel" %%% "macro-compat" % "1.1.1-SNAPSHOT"
-    )
+    ),
+    publishArtifact in (Compile, packageDoc) := false,
+    publishArtifact in packageDoc := false,
+    sources in (Compile, doc) := Nil
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "literal"))
