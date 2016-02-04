@@ -198,7 +198,7 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   final def toBigDecimal: Option[BigDecimal] = Some(value)
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = value.toDouble
-  final def toLong: Option[Long] = if (value.isValidLong) Some(value.toLong) else None
+  final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = toDouble.round
   final def isNaN: Boolean = false
   final def isInfinity: Boolean = false

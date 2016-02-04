@@ -80,9 +80,9 @@ private[util] final class SigAndExp(
     (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
   )
 
-  def toLong: Option[Long] = toBigDecimal.flatMap { d =>
+  def toLong: Option[Long] = if (!this.isWhole) None else toBigInteger.flatMap { i =>
     try {
-      Some(d.longValueExact)
+      Some(i.longValueExact)
     } catch {
       case _: ArithmeticException => None
     }
