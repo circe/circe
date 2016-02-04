@@ -7,6 +7,9 @@ import monocle.Prism
 /**
  * Optics instances for [[io.circe.JsonObject]].
  *
+ * Note that the prisms for integral types will fail on [[io.circe.JsonNumber]] values representing
+ * negative zero, since this would make them unlawful.
+ *
  * @author Sean Parsons
  * @author Travis Brown
  */
