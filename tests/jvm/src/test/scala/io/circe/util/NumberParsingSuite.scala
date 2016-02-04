@@ -29,12 +29,12 @@ class NumberParsingSuite extends CirceSuite {
       val d = NumberParsing.parseBiggerDecimal(s)
 
       val scale = if (fractional != 0) -exponent else {
-        Stream.iterate((integral, integral != 0 && integral % 10 == 0)) {
-          case (i, powerOfTen) => (i / 10, i != 0 && i % 10 == 0)
+        Stream.iterate((integral / 10, integral != 0 && integral % 10 == 0)) {
+          case (i, _) => (i / 10, i != 0 && i % 10 == 0)
         }.takeWhile(_._2).size - exponent
       }
 
-      if (exponent == scale.isValidInt && (-scale).isValidInt) {
+      if (scale.isValidInt && (-scale).isValidInt) {
         d.flatMap(_.toBigDecimal).exists { roundTripped =>
           roundTripped.compareTo(new BigDecimal(s)) == 0
         }

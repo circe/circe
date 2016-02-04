@@ -170,7 +170,6 @@ class DecoderSuite extends CirceSuite {
     }
   }
 
-
   test("Decoder[Double] should attempt to parse string values as doubles (#173)") {
     check { (d: Double) =>
       val Xor.Right(json) = parse("\"" + d.toString + "\"")
