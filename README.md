@@ -358,7 +358,7 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
-[benchmarks]: https://github.com/travisbrown/circe/blob/topic/plugins/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
+[benchmarks]: https://github.com/travisbrown/circe/blob/master/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
