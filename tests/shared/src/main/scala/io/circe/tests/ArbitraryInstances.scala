@@ -65,17 +65,19 @@ trait ArbitraryInstances {
     else xs.head #:: ys.head #:: interleave(xs.tail, ys.tail)
 
   implicit def shrinkJsonNumber: Shrink[JsonNumber] = Shrink { jn =>
-    val n = jn.toBigDecimal
-
     def halfs(n: BigDecimal): Stream[BigDecimal] =
       if (n < minNumberShrink) Stream.empty else n #:: halfs(n / two)
 
-    val ns = if (n == zero) Stream.empty else {
-      val hs = halfs(n / two).map(n - _)
-      zero #:: interleave(hs, hs.map(h => -h))
-    }
+    jn.toBigDecimal match {
+      case Some(n) =>
+        val ns = if (n == zero) Stream.empty else {
+          val hs = halfs(n / two).map(n - _)
+          zero #:: interleave(hs, hs.map(h => -h))
+        }
 
-    ns.map(JsonBigDecimal(_))
+        ns.map(JsonBigDecimal(_))
+      case None => Stream(jn)
+    }
   }
 
   implicit def shrinkJsonObject: Shrink[JsonObject] = Shrink(o =>

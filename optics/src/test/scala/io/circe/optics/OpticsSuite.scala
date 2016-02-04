@@ -12,6 +12,8 @@ import org.scalatest.{ FunSuite, Matchers }
 import org.typelevel.discipline.scalatest.Discipline
 import scalaz.Equal
 import scalaz.std.anyVal._
+import scalaz.std.math.bigDecimal._
+import scalaz.std.math.bigInt._
 import scalaz.std.option._
 import scalaz.std.string._
 
@@ -21,10 +23,9 @@ class OpticsSuite extends CirceSuite {
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
   checkAll("Json to Boolean", PrismTests(jsonBoolean))
-  // TODO: Uncomment when #124 is resolved.
-  //checkAll("Json to BigDecimal", PrismTests(jsonBigDecmal))
-  //checkAll("Json to Double", PrismTests(jsonDouble))
-  //checkAll("Json to BigInt", PrismTests(jsonBigInt))
+  checkAll("Json to BigDecimal", PrismTests(jsonBigDecimal))
+  checkAll("Json to Double", PrismTests(jsonDouble))
+  checkAll("Json to BigInt", PrismTests(jsonBigInt))
   checkAll("Json to Long", PrismTests(jsonLong))
   checkAll("Json to Int", PrismTests(jsonInt))
   checkAll("Json to Short", PrismTests(jsonShort))
@@ -34,10 +35,9 @@ class OpticsSuite extends CirceSuite {
   checkAll("Json to JsonObject", PrismTests(jsonObject))
   checkAll("Json to List[Json]", PrismTests(jsonArray))
 
-  // TODO: Uncomment when #124 is resolved.
-  //checkAll("JsonNumber to BigDecimal", IsoTests(jsonNumberBigDecimal))
-  //checkAll("JsonNumber to Double", PrismTests(jsonNumberDouble))
-  //checkAll("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))
+  checkAll("JsonNumber to BigDecimal", PrismTests(jsonNumberBigDecimal))
+  checkAll("JsonNumber to Double", PrismTests(jsonNumberDouble))
+  checkAll("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))
   checkAll("JsonNumber to Long", PrismTests(jsonNumberLong))
   checkAll("JsonNumber to Int", PrismTests(jsonNumberInt))
   checkAll("JsonNumber to Short", PrismTests(jsonNumberShort))

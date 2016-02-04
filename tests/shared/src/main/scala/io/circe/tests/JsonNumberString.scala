@@ -4,11 +4,7 @@ import io.circe.JsonNumber
 import org.scalacheck.{ Arbitrary, Gen }
 
 case class JsonNumberString(s: String) {
-  def toJsonNumber: JsonNumber = JsonNumber.fromString(s).getOrElse(
-    sys.error(
-      s"An Arbitrary-provided JsonNumberString should always contain a valid JsonNumber; %s isn't."
-    )
-  )
+  def toJsonNumber: JsonNumber = JsonNumber.unsafeDecimal(s)
 }
 
 object JsonNumberString {
@@ -16,18 +12,18 @@ object JsonNumberString {
     Arbitrary(
       for {
         sign <- Gen.oneOf("", "-")
-        number <- Gen.oneOf(
+        integral <- Gen.oneOf(
           Gen.const("0"),
           for {
             nonZero <- Gen.choose(1, 9).map(_.toString)
             rest <- Gen.numStr
           } yield s"$nonZero$rest"
         )
-        frac <- Gen.oneOf(
+        fractional <- Gen.oneOf(
           Gen.const(""),
           Gen.nonEmptyListOf(Gen.numChar).map(_.mkString).map("." + _)
         )
-        exp <- Gen.oneOf(
+        exponent <- Gen.oneOf(
           Gen.const(""),
           for {
             e <- Gen.oneOf("e", "E")
@@ -35,6 +31,6 @@ object JsonNumberString {
             n <- Gen.nonEmptyListOf(Gen.numChar).map(_.mkString)
           } yield s"$e$s$n"
         )
-      } yield JsonNumberString(s"$sign$number$frac$exp")
+      } yield JsonNumberString(s"$sign$integral$fractional$exponent")
     )
 }

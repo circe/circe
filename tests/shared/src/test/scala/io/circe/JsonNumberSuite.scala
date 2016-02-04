@@ -82,15 +82,23 @@ class JsonNumberSuite extends CirceSuite {
     }
   }
 
-  test("asNumber is empty on Double.NaN") {
+  test("Eq[JsonNumber] distinguishes negative values") {
+    assert(JsonNumber.unsafeIntegral("-0") =!= JsonNumber.unsafeIntegral("0"))
+  }
+
+  test("Eq[JsonNumber] distinguishes negative values with fractional parts") {
+    assert(JsonNumber.unsafeDecimal("-0.0") =!= JsonNumber.unsafeDecimal("0.0"))
+  }
+
+  test("number is empty on Double.NaN") {
     assert(Json.number(Double.NaN) === None)
   }
 
-  test("asNumber is empty on Double.PositiveInfinity") {
+  test("number is empty on Double.PositiveInfinity") {
     assert(Json.number(Double.PositiveInfinity) === None)
   }
 
-  test("asNumber is empty on Double.NegativeInfinity") {
+  test("number is empty on Double.NegativeInfinity") {
     assert(Json.number(Double.NegativeInfinity) === None)
   }
 }

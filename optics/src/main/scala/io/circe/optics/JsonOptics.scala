@@ -18,7 +18,7 @@ import monocle.function.Plated
 trait JsonOptics extends CatsConversions {
   final lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.bool)
   final lazy val jsonBigDecimal: Prism[Json, BigDecimal] =
-    jsonNumber.composeIso(jsonNumberBigDecimal)
+    jsonNumber.composePrism(jsonNumberBigDecimal)
   final lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberDouble)
   final lazy val jsonBigInt: Prism[Json, BigInt] = jsonNumber.composePrism(jsonNumberBigInt)
   final lazy val jsonLong: Prism[Json, Long] = jsonNumber.composePrism(jsonNumberLong)

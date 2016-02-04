@@ -1,6 +1,6 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonDecimal }
+import io.circe.{ Json, JsonNumber }
 import jawn.{ Facade, FContext, SupportParser }
 import scala.collection.mutable.ArrayBuffer
 
@@ -9,8 +9,8 @@ final object CirceSupportParser extends SupportParser[Json] {
     final def jnull(): Json = Json.Empty
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
-    final def jnum(s: String): Json = Json.JNumber(JsonDecimal(s))
-    final def jint(s: String): Json = Json.JNumber(JsonDecimal(s))
+    final def jnum(s: String): Json = Json.JNumber(JsonNumber.unsafeDecimal(s))
+    final def jint(s: String): Json = Json.JNumber(JsonNumber.unsafeIntegral(s))
     final def jstring(s: String): Json = Json.JString(s)
 
     final def singleContext(): FContext[Json] = new FContext[Json] {

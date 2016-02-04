@@ -301,6 +301,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
     c.focus match {
       case JNull => Xor.right(Float.NaN)
       case JNumber(number) => Xor.right(number.toDouble.toFloat)
+      case JString(string) => Xor.fromOption(
+        JsonNumber.fromString(string).map(_.toDouble.toFloat),
+        DecodingFailure("Float", c.history)
+      )
       case _ => Xor.left(DecodingFailure("Float", c.history))
     }
   }
@@ -312,6 +316,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
     c.focus match {
       case JNull => Xor.right(Double.NaN)
       case JNumber(number) => Xor.right(number.toDouble)
+      case JString(string) => Xor.fromOption(
+        JsonNumber.fromString(string).map(_.toDouble),
+        DecodingFailure("Double", c.history)
+      )
       case _ => Xor.left(DecodingFailure("Double", c.history))
     }
   }
@@ -321,7 +329,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeByte: Decoder[Byte] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToByte)
+      case JNumber(number) => Xor.fromOption(
+        number.toByte,
+        DecodingFailure("Byte", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toByte)
       } catch {
@@ -336,7 +347,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeShort: Decoder[Short] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToShort)
+      case JNumber(number) => Xor.fromOption(
+        number.toShort,
+        DecodingFailure("Short", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toShort)
       } catch {
@@ -351,7 +365,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeInt: Decoder[Int] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToInt)
+      case JNumber(number) => Xor.fromOption(
+        number.toInt,
+        DecodingFailure("Int", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toInt)
       } catch {
@@ -366,7 +383,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeLong: Decoder[Long] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToLong)
+      case JNumber(number) => Xor.fromOption(
+        number.toLong,
+        DecodingFailure("Long", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toLong)
       } catch {
@@ -381,7 +401,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeBigInt: Decoder[BigInt] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToBigInt)
+      case JNumber(number) => Xor.fromOption(
+        number.toBigInt,
+        DecodingFailure("BigInt", c.history)
+      )
       case JString(string) => try {
         Xor.right(BigInt(string))
       } catch {
@@ -396,7 +419,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
    */
   implicit final val decodeBigDecimal: Decoder[BigDecimal] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.toBigDecimal)
+      case JNumber(number) => Xor.fromOption(
+        number.toBigDecimal,
+        DecodingFailure("BigDecimal", c.history)
+      )
       case JString(string) => try {
         Xor.right(BigDecimal(string))
       } catch {
