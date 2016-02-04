@@ -91,8 +91,8 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Convert to a Kleisli arrow.
    */
-  final def kleisli: Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A] =
-    Kleisli[({ type L[x] = Decoder.Result[x] })#L, HCursor, A](apply(_))
+  final def kleisli: Kleisli[Decoder.Result, HCursor, A] =
+    Kleisli[Decoder.Result, HCursor, A](apply(_))
 
   /**
    * Combine two decoders.
