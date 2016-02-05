@@ -20,9 +20,9 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.4.0"
+lazy val catsVersion = "0.4.1"
 lazy val shapelessVersion = "2.3.0-SNAPSHOT"
-lazy val refinedVersion = "0.3.3"
+lazy val refinedVersion = "0.3.4"
 
 lazy val scalaTestVersion = "3.0.0-M9"
 lazy val scalaCheckVersion = "1.12.5"
@@ -277,7 +277,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-task" % "0.2.1"
   )
   .dependsOn(core, jawn)
 
