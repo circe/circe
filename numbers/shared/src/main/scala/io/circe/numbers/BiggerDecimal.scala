@@ -81,11 +81,9 @@ private[numbers] final class SigAndExp(
   )
 
   def toLong: Option[Long] = if (!this.isWhole) None else toBigInteger.flatMap { i =>
-    try {
-      Some(i.longValueExact)
-    } catch {
-      case _: ArithmeticException => None
-    }
+    val asLong = i.longValue
+
+    if (BigInteger.valueOf(asLong) == i) Some(asLong) else None
   }
 
   def truncateToLong: Long = toDouble.round

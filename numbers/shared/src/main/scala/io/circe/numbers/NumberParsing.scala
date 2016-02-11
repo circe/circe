@@ -3,7 +3,14 @@ package io.circe.numbers
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.switch
 
-final object NumberParsing {
+/**
+ * Utilities for parsing JSON numbers.
+ *
+ * `BigIntegerParsing` provides `BigInteger` parsing and has different implementations for the JVM
+ * and Scala.js. It is necessary only to work around a Scala.js bug, and will be removed once that
+ * bug is resolved in a published Scala.js release.
+ */
+final object NumberParsing extends BigIntegerParsing {
   private[this] final val MaxLongString = "9223372036854775807"
   private[this] final val MinLongString = "-9223372036854775808"
 
@@ -134,10 +141,10 @@ final object NumberParsing {
       }
 
       val unscaledString = integral + fractional
-      val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
+      val unscaled = parseBigInteger(unscaledString.substring(0, unscaledString.length - zeros))
       val rescale = BigInteger.valueOf(fractional.length.toLong - zeros)
       val exponent = if (expIndex == -1) BigInteger.ZERO else {
-        new BigInteger(input.substring(expIndex + 1))
+        parseBigInteger(input.substring(expIndex + 1))
       }
 
       Some(
