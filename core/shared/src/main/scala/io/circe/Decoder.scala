@@ -1,11 +1,13 @@
 package io.circe
 
+import java.nio.ByteBuffer
+
 import cats.Monad
 import cats.data._
 import cats.std.list._
 import cats.syntax.cartesian._
 import cats.syntax.functor._
-import java.util.UUID
+import java.util.{ Base64, UUID }
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
 
@@ -616,6 +618,10 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
     override final def ap[A, B](f: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = fa.ap(f)
     override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
     final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
+  }
+
+  implicit val decodeByteBuffer: Decoder[ByteBuffer] = decodeString.map { b64String =>
+    ByteBuffer.wrap(Base64.getDecoder.decode(b64String))
   }
 }
 
