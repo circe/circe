@@ -1,4 +1,4 @@
-package io.circe.util
+package io.circe.numbers
 
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.switch

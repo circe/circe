@@ -104,6 +104,7 @@ lazy val circe = project.in(file("."))
       """.stripMargin
   )
   .aggregate(
+    numbers, numbersJS,
     core, coreJS,
     generic, genericJS,
     literal, literalJS,
@@ -118,6 +119,20 @@ lazy val circe = project.in(file("."))
     benchmark
   )
   .dependsOn(core, generic, literal, parser)
+
+lazy val numbersBase = crossProject.in(file("numbers"))
+  .settings(
+    description := "circe numbers",
+    moduleName := "circe-numbers",
+    name := "numbers"
+  )
+  .settings(allSettings: _*)
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "numbers"))
+  .jsConfigure(_.copy(id = "numbersJS"))
+
+lazy val numbers = numbersBase.jvm
+lazy val numbersJS = numbersBase.js
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(
@@ -135,6 +150,7 @@ lazy val coreBase = crossProject.in(file("core"))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
   .jsConfigure(_.copy(id = "coreJS"))
+  .dependsOn(numbersBase)
 
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
@@ -409,6 +425,7 @@ credentials ++= (
 ).toSeq
 
 val jvmProjects = Seq(
+  "numbers",
   "core",
   "generic",
   "refined",
@@ -421,6 +438,7 @@ val jvmProjects = Seq(
 )
 
 val jsProjects = Seq(
+  "numbersJS",
   "coreJS",
   "genericJS",
   "refinedJS",

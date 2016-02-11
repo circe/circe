@@ -1,4 +1,4 @@
-package io.circe.util
+package io.circe.numbers
 
 import io.circe.tests.{ CirceSuite, JsonNumberString }
 import java.math.BigDecimal

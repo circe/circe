@@ -1,4 +1,4 @@
-package io.circe.util
+package io.circe.numbers
 
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.tailrec
@@ -56,7 +56,7 @@ sealed abstract class BiggerDecimal {
  * First, the scale is a `java.math.BigInteger`, not a [[scala.Int]], and the unscaled value will
  * never be an exact power of ten (in order to facilitate comparison).
  */
-private[util] final class SigAndExp(
+private[numbers] final class SigAndExp(
   val unscaled: BigInteger,
   val scale: BigInteger
 ) extends BiggerDecimal {
@@ -103,12 +103,12 @@ private[util] final class SigAndExp(
 }
 
 final object BiggerDecimal {
-  private[util] val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
+  private[numbers] val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
 
   final val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
   final val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
 
-  private[util] val NegativeZero: BiggerDecimal = new BiggerDecimal {
+  private[numbers] val NegativeZero: BiggerDecimal = new BiggerDecimal {
     final def isWhole: Boolean = true
     final def isNegativeZero: Boolean = true
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)

@@ -1,7 +1,7 @@
 package io.circe
 
 import algebra.Eq
-import io.circe.util.{ BiggerDecimal, NumberParsing }
+import io.circe.numbers.{ BiggerDecimal, NumberParsing }
 import java.math.{ BigDecimal => JBigDecimal, MathContext }
 import scala.util.matching.Regex
 
