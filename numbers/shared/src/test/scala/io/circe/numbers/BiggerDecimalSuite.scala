@@ -1,11 +1,12 @@
 package io.circe.numbers
 
-import io.circe.tests.CirceSuite
 import java.math.BigDecimal
+import org.scalatest.FunSuite
+import org.scalatest.prop.Checkers
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 
-class BiggerDecimalSuite extends CirceSuite {
+class BiggerDecimalSuite extends FunSuite with Checkers {
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(
     minSuccessful = 1000,
     sizeRange = 10000

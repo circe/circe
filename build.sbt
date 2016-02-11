@@ -81,6 +81,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
       genericJS,
       java8,
       literal, literalJS,
+      numbersJS,
       refinedJS,
       parserJS,
       tests,
@@ -127,6 +128,12 @@ lazy val numbersBase = crossProject.in(file("numbers"))
     name := "numbers"
   )
   .settings(allSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % "test",
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % "test"
+    )
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "numbers"))
   .jsConfigure(_.copy(id = "numbersJS"))
@@ -262,7 +269,14 @@ lazy val testsBase = crossProject.in(file("tests"))
       libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
     )
   )
-  .dependsOn(coreBase, genericBase, literalBase, refinedBase, parserBase)
+  .dependsOn(
+    numbersBase % "compile->test",
+    coreBase,
+    genericBase,
+    literalBase,
+    refinedBase,
+    parserBase
+  )
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js

@@ -6,7 +6,7 @@ import scala.math.{ min, max }
 class JsonNumberSuite extends CirceSuite {
   test("fromString") {
     check { (jsn: JsonNumberString) =>
-      JsonNumber.fromString(jsn.s).nonEmpty
+      JsonNumber.fromString(jsn.value).nonEmpty
     }
   }
 

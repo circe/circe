@@ -1,11 +1,8 @@
 package io.circe.tests
 
-import io.circe.JsonNumber
 import org.scalacheck.{ Arbitrary, Gen }
 
-case class JsonNumberString(s: String) {
-  def toJsonNumber: JsonNumber = JsonNumber.unsafeDecimal(s)
-}
+case class JsonNumberString(value: String)
 
 object JsonNumberString {
   implicit val arbitraryJsonNumberString: Arbitrary[JsonNumberString] =

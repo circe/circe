@@ -99,7 +99,7 @@ trait ArbitraryInstances {
 
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
-      Arbitrary.arbitrary[JsonNumberString].map(_.toJsonNumber),
+      Arbitrary.arbitrary[JsonNumberString].map(jns => JsonNumber.unsafeDecimal(jns.value)),
       Arbitrary.arbitrary[BigDecimal].map(JsonBigDecimal(_)),
       Arbitrary.arbitrary[Long].map(JsonLong(_)),
       Arbitrary.arbitrary[Double].map(JsonDouble(_))
