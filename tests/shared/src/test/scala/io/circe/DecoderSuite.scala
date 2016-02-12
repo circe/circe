@@ -82,8 +82,8 @@ class DecoderSuite extends CirceSuite {
   }
 
   test("Decoder[Byte] fails on non-whole values (#83)") {
-    check { (d: BigDecimal) =>
-      val json = Json.bigDecimal(d)
+    check { (d: Double) =>
+      val json = Json.numberOrNull(d)
       val result = Decoder[Byte].apply(json.hcursor)
 
       d.isWhole || result.isEmpty
@@ -91,8 +91,8 @@ class DecoderSuite extends CirceSuite {
   }
 
   test("Decoder[Short] fails on non-whole values (#83)") {
-    check { (d: BigDecimal) =>
-      val json = Json.bigDecimal(d)
+    check { (d: Double) =>
+      val json = Json.numberOrNull(d)
       val result = Decoder[Short].apply(json.hcursor)
 
       d.isWhole || result.isEmpty
@@ -100,8 +100,8 @@ class DecoderSuite extends CirceSuite {
   }
 
   test("Decoder[Int] fails on non-whole values (#83)") {
-    check { (d: BigDecimal) =>
-      val json = Json.bigDecimal(d)
+    check { (d: Double) =>
+      val json = Json.numberOrNull(d)
       val result = Decoder[Int].apply(json.hcursor)
 
       d.isWhole || result.isEmpty
@@ -109,8 +109,8 @@ class DecoderSuite extends CirceSuite {
   }
 
   test("Decoder[Long] fails on non-whole values (#83)") {
-    check { (d: BigDecimal) =>
-      val json = Json.bigDecimal(d)
+    check { (d: Double) =>
+      val json = Json.numberOrNull(d)
       val result = Decoder[Long].apply(json.hcursor)
 
       d.isWhole || result.isEmpty
