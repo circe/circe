@@ -28,10 +28,18 @@ sealed abstract class BiggerDecimal {
   /**
    * Convert to a `java.math.BigInteger` if this is a sufficiently small whole number.
    *
-   * The size limit is somewhat arbitrarily set at 2^18 digits, since larger values may require
-   * excessive processing power. Larger values may be converted to `BigInteger` via `toBigDecimal`.
    */
-  def toBigInteger: Option[BigInteger]
+  def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger]
+
+  /**
+   * Convert to a `java.math.BigInteger` if this is a sufficiently small whole number.
+   *
+   * The maximum number of digits is somewhat arbitrarily set at 2^18 digits, since larger values
+   * may require excessive processing power. Larger values may be converted to `BigInteger` with
+   * [[toBigIntegerWithMaxDigits]] or via [[toBigDecimal]].
+   */
+  final def toBigInteger: Option[BigInteger] =
+    toBigIntegerWithMaxDigits(BiggerDecimal.MaxBigIntegerDigits)
 
   /**
    * Convert to the nearest [[scala.Double]].
@@ -68,13 +76,14 @@ private[numbers] final class SigAndExp(
       Some(new BigDecimal(unscaled, scale.intValue))
     } else None
 
-  def toBigInteger: Option[BigInteger] = if (!isWhole) None else {
-    val digits = BigInteger.valueOf(unscaled.toString.length.toLong).subtract(scale)
+  def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
+    if (!isWhole) None else {
+      val digits = BigInteger.valueOf(unscaled.toString.length.toLong).subtract(scale)
 
-    if (digits.compareTo(BiggerDecimal.MaxBigIntegerDigits) > 0) None else Some(
-      new BigDecimal(unscaled, scale.intValue).toBigInteger
-    )
-  }
+      if (digits.compareTo(BiggerDecimal.MaxBigIntegerDigits) > 0) None else Some(
+        new BigDecimal(unscaled, scale.intValue).toBigInteger
+      )
+    }
 
   def toDouble: Double = toBigDecimal.map(_.doubleValue).getOrElse(
     (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
@@ -110,7 +119,8 @@ final object BiggerDecimal {
     final def isWhole: Boolean = true
     final def isNegativeZero: Boolean = true
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
-    final val toBigInteger: Option[BigInteger] = Some(BigInteger.ZERO)
+    final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
+      Some(BigInteger.ZERO)
     final def toDouble: Double = -0.0
     final val toLong: Option[Long] = Some(truncateToLong)
     final def truncateToLong: Long = 0L
