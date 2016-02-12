@@ -5,7 +5,7 @@ import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
-class DecoderSuite extends CirceSuite {
+class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   test("prepare with identity") {
     check { (i: Int) =>
       Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Xor.right(i)
@@ -141,24 +141,6 @@ class DecoderSuite extends CirceSuite {
       val Xor.Right(json) = parse(s"$v.$zeros")
 
       Decoder[Int].apply(json.hcursor) === Xor.right(v)
-    }
-  }
-
-  test("Decoder[Long] succeeds on whole decimal values (#83)") {
-    check { (v: Long, n: Byte) =>
-      val zeros = "0" * (math.abs(n.toInt) + 1)
-      val Xor.Right(json) = parse(s"$v.$zeros")
-
-      Decoder[Long].apply(json.hcursor) === Xor.right(v)
-    }
-  }
-
-  test("Decoder[BigInt] succeeds on whole decimal values (#83)") {
-    check { (v: BigInt, n: Byte) =>
-      val zeros = "0" * (math.abs(n.toInt) + 1)
-      val Xor.Right(json) = parse(s"$v.$zeros")
-
-      Decoder[BigInt].apply(json.hcursor) === Xor.right(v)
     }
   }
 
