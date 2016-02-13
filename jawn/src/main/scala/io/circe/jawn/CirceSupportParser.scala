@@ -9,7 +9,8 @@ final object CirceSupportParser extends SupportParser[Json] {
     final def jnull(): Json = Json.Empty
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
-    final def jnum(s: String): Json = Json.JNumber(JsonNumber.unsafeDecimal(s))
+    final def jnum(s: String): Json =
+      if (s.startsWith("-.")) Json.Empty else Json.JNumber(JsonNumber.unsafeDecimal(s))
     final def jint(s: String): Json = Json.JNumber(JsonNumber.unsafeIntegral(s))
     final def jstring(s: String): Json = Json.JString(s)
 
