@@ -51,7 +51,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/decoding/DerivedDecoder.scala" target="_blank">DerivedDecoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.generic.decoding.LowPriorityDerivedDecoders">LowPriorityDerivedDecoders</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders">IncompleteDerivedDecoders</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -192,7 +192,7 @@
       <a id="decodeAdt[A,R&lt;:Coproduct](Aux[A,R],Lazy[DerivedDecoder[R]]):DerivedDecoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -209,7 +209,7 @@
       <a id="decodeCNil:DerivedDecoder[CNil]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -226,7 +226,7 @@
       <a id="decodeCaseClass[A,R&lt;:HList](Aux[A,R],Lazy[DerivedDecoder[R]]):DerivedDecoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -243,7 +243,7 @@
       <a id="decodeCaseClassPatch[A,R&lt;:HList,O&lt;:HList](Aux[A,R],Aux[R,O],DerivedDecoder[O]):DerivedDecoder[(A)⇒A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -260,7 +260,7 @@
       <a id="decodeCoproduct[K&lt;:Symbol,H,T&lt;:Coproduct](Aux[K],Lazy[Decoder[H]],Lazy[DerivedDecoder[T]]):DerivedDecoder[:+:[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -277,7 +277,7 @@
       <a id="decodeCoproductDerived[K&lt;:Symbol,H,T&lt;:Coproduct](Aux[K],Lazy[DerivedDecoder[H]],Lazy[DerivedDecoder[T]]):DerivedDecoder[:+:[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -294,7 +294,7 @@
       <a id="decodeHNil:DerivedDecoder[HNil]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -307,18 +307,18 @@
     </span>
       
     </li><li name="io.circe.generic.decoding.IncompleteDerivedDecoders#decodeIncompleteCaseClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeIncompleteCaseClass[F,P&lt;:shapeless.HList,A,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;A,F],implicitgen:shapeless.LabelledGeneric.Aux[A,T],implicitremoveAll:shapeless.ops.record.RemoveAll.Aux[T,P,(P,R)],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.generic.decoding.DerivedDecoder[F]"></a>
-      <a id="decodeIncompleteCaseClass[F,P&lt;:HList,A,T&lt;:HList,R&lt;:HList](shapeless.ops.function.FnFromProduct.Aux[(P)⇒A,F],Aux[A,T],Aux[T,P,(P,R)],DerivedDecoder[R]):DerivedDecoder[F]"></a>
+      <a id="decodeIncompleteCaseClass[F,P&lt;:shapeless.HList,A,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;A,F],implicitgen:shapeless.LabelledGeneric.Aux[A,T],implicitcomplement:io.circe.generic.util.Complement.Aux[T,P,R],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.generic.decoding.DerivedDecoder[F]"></a>
+      <a id="decodeIncompleteCaseClass[F,P&lt;:HList,A,T&lt;:HList,R&lt;:HList](shapeless.ops.function.FnFromProduct.Aux[(P)⇒A,F],Aux[A,T],Aux[T,P,R],DerivedDecoder[R]):DerivedDecoder[F]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeIncompleteCaseClass</span><span class="tparams">[<span name="F">F</span>, <span name="P">P &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="A">A</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="R">R &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ffp">ffp: <span class="extype" name="shapeless.ops.FnFromProductInstances.Aux">shapeless.ops.function.FnFromProduct.Aux</span>[(<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.P">P</span>) ⇒ <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.A">A</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.F">F</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.A">A</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.T">T</span>]</span>, <span name="removeAll">removeAll: <span class="extype" name="shapeless.ops.record.RemoveAll.Aux">Aux</span>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.T">T</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.P">P</span>, (<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.P">P</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.R">R</span>)]</span>, <span name="decode">decode: <a href="DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.R">R</span>]</span>)</span><span class="result">: <a href="DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.F">F</span>]</span>
+        <span class="name">decodeIncompleteCaseClass</span><span class="tparams">[<span name="F">F</span>, <span name="P">P &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="A">A</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="R">R &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ffp">ffp: <span class="extype" name="shapeless.ops.FnFromProductInstances.Aux">shapeless.ops.function.FnFromProduct.Aux</span>[(<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.P">P</span>) ⇒ <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.A">A</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.F">F</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.A">A</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.T">T</span>]</span>, <span name="complement">complement: <a href="../util/Complement$.html#Aux[L&lt;:shapeless.HList,A&lt;:shapeless.HList,Out0]=io.circe.generic.util.Complement[L,A]{typeOut=Out0}" class="extmbr" name="io.circe.generic.util.Complement.Aux">Aux</a>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.T">T</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.P">P</span>, <span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.R">R</span>]</span>, <span name="decode">decode: <a href="DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.R">R</span>]</span>)</span><span class="result">: <a href="DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.decoding.IncompleteDerivedDecoders.decodeIncompleteCaseClass.F">F</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder$@decodeIncompleteCaseClass[F,P&lt;:shapeless.HList,A,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;A,F],implicitgen:shapeless.LabelledGeneric.Aux[A,T],implicitremoveAll:shapeless.ops.record.RemoveAll.Aux[T,P,(P,R)],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.generic.decoding.DerivedDecoder[F]" title="Permalink" target="_top">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder$@decodeIncompleteCaseClass[F,P&lt;:shapeless.HList,A,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;A,F],implicitgen:shapeless.LabelledGeneric.Aux[A,T],implicitcomplement:io.circe.generic.util.Complement.Aux[T,P,R],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.generic.decoding.DerivedDecoder[F]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -328,7 +328,7 @@
       <a id="decodeLabelledHList[K&lt;:Symbol,H,T&lt;:HList](Aux[K],Lazy[Decoder[H]],Lazy[DerivedDecoder[T]]):DerivedDecoder[::[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -414,6 +414,23 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.generic.decoding.DerivedDecoder#fromDecoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromDecoder[A](decode:io.circe.Decoder[A]):io.circe.generic.decoding.DerivedDecoder[A]"></a>
+      <a id="fromDecoder[A](Decoder[A]):DerivedDecoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromDecoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="decode">decode: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.fromDecoder.A">A</span>]</span>)</span><span class="result">: <a href="DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.fromDecoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder$@fromDecoder[A](decode:io.circe.Decoder[A]):io.circe.generic.decoding.DerivedDecoder[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>

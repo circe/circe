@@ -60,7 +60,7 @@ members that are required in order to represent the different roles of the three
 the context in which the focus is available, <code>Result</code> is the type that is returned by all
 navigation and modification operations, and <code>M</code> is a type class that includes the operations that
 we need for <code>withFocusM</code>.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/GenericCursor.scala" target="_blank">GenericCursor.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -132,7 +132,7 @@ we need for <code>withFocusM</code>.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> &lt;: <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.GenericCursor.M.F">F</span>[<span class="extype" name="io.circe.GenericCursor.M.F._">_</span>]]</span>
+        <span class="name">M</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> &lt;: <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.GenericCursor.M.F">F</span>[<span class="extype" name="io.circe.GenericCursor.M.F._">_</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.GenericCursor@M[F[_]]&lt;:cats.Functor[F]" title="Permalink" target="_top">
@@ -590,6 +590,23 @@ the new focus.</p>
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the left.</p>
+    </li><li name="io.circe.GenericCursor#replay" visbl="pub" data-isabs="true" fullComment="no" group="Utilities">
+      <a id="replay(history:List[io.circe.HistoryOp]):GenericCursor.this.Result"></a>
+      <a id="replay(List[HistoryOp]):Result"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">replay</span><span class="params">(<span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result">: <a href="#Result" class="extmbr" name="io.circe.GenericCursor.Result">Result</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.GenericCursor@replay(history:List[io.circe.HistoryOp]):GenericCursor.this.Result" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.</p>
     </li><li name="io.circe.GenericCursor#right" visbl="pub" data-isabs="true" fullComment="no" group="ArrayNavigation">
       <a id="right:GenericCursor.this.Result"></a>
       <a id="right:Result"></a>
@@ -1175,7 +1192,7 @@ the new focus.</p>
       <a id="set(Json):C"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1349,7 +1366,10 @@ the new focus.</p>
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="TypeMembers">
+        <div class="group" name="Utilities">
+              <h3>Miscellaneous utilities</h3>
+              
+            </div><div class="group" name="TypeMembers">
               <h3>Type members</h3>
               
             </div><div class="group" name="Access">

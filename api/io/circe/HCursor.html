@@ -43,18 +43,18 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">HCursor</span><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <span class="name">HCursor</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/HCursor.scala" target="_blank">HCursor.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -72,7 +72,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.HCursor"><span>HCursor</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="io.circe.cursor.HCursorOperations"><span>HCursorOperations</span></li><li class="in" name="io.circe.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.HCursor"><span>HCursor</span></li><li class="in" name="io.circe.cursor.HCursorOperations"><span>HCursorOperations</span></li><li class="in" name="io.circe.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -94,27 +94,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="io.circe.HCursor#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(cursor:io.circe.Cursor,history:List[io.circe.HistoryOp]):io.circe.HCursor"></a>
-      <a id="&lt;init&gt;:HCursor"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">HCursor</span><span class="params">(<span name="cursor">cursor: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>, <span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.HCursor@&lt;init&gt;(cursor:io.circe.Cursor,history:List[io.circe.HistoryOp]):io.circe.HCursor" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li></ol>
-            </div>
+        
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
@@ -145,7 +125,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.M.x">x</span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.cursor.HCursorOperations.M.x">x</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
@@ -175,10 +155,30 @@
     </li></ol>
             </div>
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="io.circe.HCursor#history" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="history:List[io.circe.HistoryOp]"></a>
+      <a id="history:List[HistoryOp]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">history</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@history:List[io.circe.HistoryOp]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -280,7 +280,7 @@
       <a id="acursor:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -684,12 +684,29 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.HCursor#failedACursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="failedACursor:io.circe.ACursor"></a>
       <a id="failedACursor:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -893,23 +910,23 @@ matches the given predicate.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.HCursor#history" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="history:List[io.circe.HistoryOp]"></a>
-      <a id="history:List[HistoryOp]"></a>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">history</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.HCursor@history:List[io.circe.HistoryOp]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.HCursor@hashCode():Int" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -1070,6 +1087,24 @@ the new focus.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.cursor.HCursorOperations#replay" visbl="pub" data-isabs="false" fullComment="yes" group="Utilities">
+      <a id="replay(history:List[io.circe.HistoryOp]):io.circe.ACursor"></a>
+      <a id="replay(List[HistoryOp]):ACursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">replay</span><span class="params">(<span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@replay(history:List[io.circe.HistoryOp]):io.circe.ACursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.</p><div class="fullcomment"><div class="comment cmt"><p>Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="io.circe.cursor.HCursorOperations#right" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="right:io.circe.ACursor"></a>
       <a id="right:ACursor"></a>
@@ -1149,7 +1184,7 @@ the new focus.
       <a id="set(Json):HCursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1215,6 +1250,23 @@ the new focus.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@toString():String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.cursor.HCursorOperations#top" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="top:io.circe.Json"></a>
       <a id="top:Json"></a>
@@ -1238,7 +1290,7 @@ the new focus.
       <a id="traverseDecode[A](A)((HCursor)⇒ACursor,(A,HCursor)⇒Decoder.Result[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1254,6 +1306,30 @@ accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt
 accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
 large structures (in contrast with recursively binding).
 </p></div></div>
+    </li><li name="io.circe.HCursor#traverseDecodeAccumulating" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]"></a>
+      <a id="traverseDecodeAccumulating[A](AccumulatingDecoder.Result[A])((HCursor)⇒ACursor,(AccumulatingDecoder.Result[A],HCursor)⇒AccumulatingDecoder.Result[A]):AccumulatingDecoder.Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseDecodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>], <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
+large structures (in contrast with recursively binding).
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@tailrec</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="io.circe.cursor.HCursorOperations#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="up:io.circe.ACursor"></a>
       <a id="up:ACursor"></a>
@@ -1368,7 +1444,7 @@ large structures (in contrast with recursively binding).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
+        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]" title="Permalink" target="_top">
@@ -1407,11 +1483,7 @@ large structures (in contrast with recursively binding).
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Product">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
-            </div><div class="parent" name="io.circe.cursor.HCursorOperations">
+        <div class="parent" name="io.circe.cursor.HCursorOperations">
               <h3>Inherited from <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span></h3>
             </div><div class="parent" name="io.circe.GenericCursor">
               <h3>Inherited from <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</h3>
@@ -1444,7 +1516,10 @@ large structures (in contrast with recursively binding).
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="TypeMembers">
+        <div class="group" name="Utilities">
+              <h3>Miscellaneous utilities</h3>
+              
+            </div><div class="group" name="TypeMembers">
               <h3>Type members</h3>
               
             </div><div class="group" name="Ungrouped">

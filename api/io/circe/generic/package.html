@@ -146,8 +146,8 @@ for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies,
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
 <span class="kw">object</span> Foo {
-  <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
-  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
+  <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveEncoder[Foo]
 }</pre></div></div>
     </li><li name="io.circe.generic.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="util"></a>

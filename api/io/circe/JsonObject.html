@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A mapping from keys to JSON values that maintains insertion order.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/JsonObject.scala" target="_blank">JsonObject.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -228,7 +228,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">kleisli</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>, <span class="extype" name="scala.Predef.String">String</span>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>
+        <span class="name">kleisli</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>, <span class="extype" name="scala.Predef.String">String</span>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.JsonObject@kleisli:cats.data.Kleisli[Option,String,io.circe.Json]" title="Permalink" target="_top">
@@ -313,7 +313,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">traverse</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.JsonObject.traverse.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="F">F: <a href="https://non.github.io/cats/api/index.html#cats.Applicative" class="extype" target="_top">Applicative</a>[<span class="extype" name="io.circe.JsonObject.traverse.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.JsonObject.traverse.F">F</span>[<a href="" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
+        <span class="name">traverse</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.JsonObject.traverse.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="F">F: <a href="http://typelevel.org/cats/api/index.html#cats.Applicative" class="extype" target="_top">Applicative</a>[<span class="extype" name="io.circe.JsonObject.traverse.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.JsonObject.traverse.F">F</span>[<a href="" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.JsonObject@traverse[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitF:cats.Applicative[F]):F[io.circe.JsonObject]" title="Permalink" target="_top">
@@ -713,7 +713,7 @@
       <a id="nonEmpty:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -919,7 +919,7 @@
       <a id="+(String,Json):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -940,7 +940,7 @@
       <a id="-(String):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A data type representing possible JSON values.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Json.scala" target="_blank">Json.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -100,7 +100,92 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scala.Equals#canEqual" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="io.circe.Json#asArray" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asArray:Option[List[io.circe.Json]]"></a>
+      <a id="asArray:Option[List[Json]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@asArray:Option[List[io.circe.Json]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#asBoolean" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asBoolean:Option[Boolean]"></a>
+      <a id="asBoolean:Option[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@asBoolean:Option[Boolean]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#asNumber" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asNumber:Option[io.circe.JsonNumber]"></a>
+      <a id="asNumber:Option[JsonNumber]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@asNumber:Option[io.circe.JsonNumber]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#asObject" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asObject:Option[io.circe.JsonObject]"></a>
+      <a id="asObject:Option[JsonObject]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@asObject:Option[io.circe.JsonObject]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#asString" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asString:Option[String]"></a>
+      <a id="asString:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@asString:Option[String]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="scala.Equals#canEqual" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="canEqual(that:Any):Boolean"></a>
       <a id="canEqual(Any):Boolean"></a>
       <h4 class="signature">
@@ -117,6 +202,193 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Equals</dd></dl></div>
+    </li><li name="io.circe.Json#isArray" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isArray:Boolean"></a>
+      <a id="isArray:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isArray:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#isBoolean" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isBoolean:Boolean"></a>
+      <a id="isBoolean:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isBoolean:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#isNull" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isNull:Boolean"></a>
+      <a id="isNull:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isNull</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isNull:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#isNumber" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isNumber:Boolean"></a>
+      <a id="isNumber:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isNumber:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#isObject" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isObject:Boolean"></a>
+      <a id="isObject:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isObject:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#isString" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isString:Boolean"></a>
+      <a id="isString:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@isString:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#mapArray" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json"></a>
+      <a id="mapArray((List[Json])⇒List[Json]):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#mapBoolean" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mapBoolean(f:Boolean=&gt;Boolean):io.circe.Json"></a>
+      <a id="mapBoolean((Boolean)⇒Boolean):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@mapBoolean(f:Boolean=&gt;Boolean):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#mapNumber" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mapNumber(f:io.circe.JsonNumber=&gt;io.circe.JsonNumber):io.circe.Json"></a>
+      <a id="mapNumber((JsonNumber)⇒JsonNumber):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapNumber</span><span class="params">(<span name="f">f: (<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>) ⇒ <a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@mapNumber(f:io.circe.JsonNumber=&gt;io.circe.JsonNumber):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#mapObject" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mapObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.Json"></a>
+      <a id="mapObject((JsonObject)⇒JsonObject):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapObject</span><span class="params">(<span name="f">f: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@mapObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.Json#mapString" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mapString(f:String=&gt;String):io.circe.Json"></a>
+      <a id="mapString((String)⇒String):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapString</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@mapString(f:String=&gt;String):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.Product#productArity" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="productArity:Int"></a>
       <a id="productArity:Int"></a>
@@ -257,7 +529,7 @@
       <a id="arrayOrObject[X](⇒X,(List[Json])⇒X,(JsonObject)⇒X):X"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -274,7 +546,7 @@
       <a id="as[A](Decoder[A]):Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -286,40 +558,6 @@
       </a>
     </span>
       <p class="shortcomment cmt">Attempts to decode this JSON value to another data type.</p>
-    </li><li name="io.circe.Json#asArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asArray:Option[List[io.circe.Json]]"></a>
-      <a id="asArray:Option[List[Json]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@asArray:Option[List[io.circe.Json]]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#asBoolean" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asBoolean:Option[Boolean]"></a>
-      <a id="asBoolean:Option[Boolean]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@asBoolean:Option[Boolean]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -337,57 +575,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.Json#asNumber" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asNumber:Option[io.circe.JsonNumber]"></a>
-      <a id="asNumber:Option[JsonNumber]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@asNumber:Option[io.circe.JsonNumber]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#asObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asObject:Option[io.circe.JsonObject]"></a>
-      <a id="asObject:Option[JsonObject]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@asObject:Option[io.circe.JsonObject]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#asString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asString:Option[String]"></a>
-      <a id="asString:Option[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@asString:Option[String]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -416,7 +603,7 @@
       <a id="cursor:Cursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -428,6 +615,28 @@
       </a>
     </span>
       <p class="shortcomment cmt">Construct a cursor from this JSON value.</p>
+    </li><li name="io.circe.Json#deepMerge" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="deepMerge(that:io.circe.Json):io.circe.Json"></a>
+      <a id="deepMerge(Json):Json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deepMerge</span><span class="params">(<span name="that">that: <a href="" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Json@deepMerge(that:io.circe.Json):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Perform a deep merge of this JSON value with another JSON value.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a deep merge of this JSON value with another JSON value.</p><p>Objects are merged by key, values from the argument JSON take
+precedence over values from this JSON. Nested objects are
+recursed.</p><p>Null, Array, Boolean, String and Number are treated as values,
+and values from the argument JSON completely replace values
+from this JSON.
+</p></div></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((Json)⇒Boolean,⇒Any):Json"></a>
@@ -534,7 +743,7 @@
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -575,7 +784,7 @@
       <a id="fold[X](⇒X,(Boolean)⇒X,(JsonNumber)⇒X,(String)⇒X,(List[Json])⇒X,(JsonObject)⇒X):X"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -628,7 +837,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.Json#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -644,14 +853,13 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Hashing that is consistent with our universal equality.</p><div class="fullcomment"><div class="comment cmt"><p>Hashing that is consistent with our universal equality.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.Json">Json</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.Json#hcursor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="hcursor:io.circe.HCursor"></a>
       <a id="hcursor:HCursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -663,40 +871,6 @@
       </a>
     </span>
       <p class="shortcomment cmt">Construct a cursor with history from this JSON value.</p>
-    </li><li name="io.circe.Json#isArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isArray:Boolean"></a>
-      <a id="isArray:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isArray:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#isBoolean" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isBoolean:Boolean"></a>
-      <a id="isBoolean:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isBoolean:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -714,165 +888,12 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.Json#isNull" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isNull:Boolean"></a>
-      <a id="isNull:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isNull</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isNull:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#isNumber" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isNumber:Boolean"></a>
-      <a id="isNumber:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isNumber:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#isObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isObject:Boolean"></a>
-      <a id="isObject:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isObject:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#isString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isString:Boolean"></a>
-      <a id="isString:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@isString:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#mapArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json"></a>
-      <a id="mapArray((List[Json])⇒List[Json]):Json"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#mapBoolean" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mapBoolean(f:Boolean=&gt;Boolean):io.circe.Json"></a>
-      <a id="mapBoolean((Boolean)⇒Boolean):Json"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@mapBoolean(f:Boolean=&gt;Boolean):io.circe.Json" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#mapNumber" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mapNumber(f:io.circe.JsonNumber=&gt;io.circe.JsonNumber):io.circe.Json"></a>
-      <a id="mapNumber((JsonNumber)⇒JsonNumber):Json"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapNumber</span><span class="params">(<span name="f">f: (<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>) ⇒ <a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@mapNumber(f:io.circe.JsonNumber=&gt;io.circe.JsonNumber):io.circe.Json" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#mapObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mapObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.Json"></a>
-      <a id="mapObject((JsonObject)⇒JsonObject):Json"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapObject</span><span class="params">(<span name="f">f: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@mapObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.Json" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.Json#mapString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mapString(f:String=&gt;String):io.circe.Json"></a>
-      <a id="mapString((String)⇒String):Json"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapString</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Json@mapString(f:String=&gt;String):io.circe.Json" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="io.circe.Json#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="name:String"></a>
       <a id="name:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -906,7 +927,7 @@
       <a id="noSpaces:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -957,7 +978,7 @@
       <a id="pretty(Printer):String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1008,7 +1029,7 @@
       <a id="spaces2:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1025,7 +1046,7 @@
       <a id="spaces4:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1059,7 +1080,7 @@
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1146,7 +1167,7 @@
       <a id="withArray((List[Json])⇒Json):Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1163,7 +1184,7 @@
       <a id="withBoolean((Boolean)⇒Json):Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1180,7 +1201,7 @@
       <a id="withNumber((JsonNumber)⇒Json):Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1197,7 +1218,7 @@
       <a id="withObject((JsonObject)⇒Json):Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1214,7 +1235,7 @@
       <a id="withString((String)⇒Json):Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

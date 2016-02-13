@@ -54,7 +54,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A zipper that represents a position in a JSON value and supports navigation around the JSON
 value.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated with <code>withFocus</code> or
 changed using the navigation methods <code>left</code>, <code>right</code>, etc.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Cursor.scala" target="_blank">Cursor.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="io.circe.cursor.CursorOperations">CursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.Cursor">Cursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -147,7 +147,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <a href="https://non.github.io/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.cursor.CursorOperations.M.x">x</span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.cursor.CursorOperations.M.x">x</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Cursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
@@ -392,7 +392,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="as[A](Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -576,7 +576,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="downArray:Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -594,7 +594,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="downAt((Json)⇒Boolean):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -612,7 +612,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="downField(String):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -630,7 +630,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="downN(Int):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -843,7 +843,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <a id="find((Json)⇒Boolean):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -905,7 +905,7 @@ matches the given predicate.
       <a id="get[A](String)(Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -957,7 +957,7 @@ matches the given predicate.
       <a id="hcursor:HCursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1047,7 +1047,7 @@ the new focus.
       <a id="leftN(Int):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1129,6 +1129,24 @@ the new focus.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.cursor.CursorOperations#replay" visbl="pub" data-isabs="false" fullComment="yes" group="Utilities">
+      <a id="replay(history:List[io.circe.HistoryOp]):Option[io.circe.Cursor]"></a>
+      <a id="replay(List[HistoryOp]):Option[Cursor]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">replay</span><span class="params">(<span name="history">history: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="" class="extype" name="io.circe.Cursor">Cursor</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Cursor@replay(history:List[io.circe.HistoryOp]):Option[io.circe.Cursor]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.</p><div class="fullcomment"><div class="comment cmt"><p>Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>CursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="io.circe.cursor.CursorOperations#right" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="right:Option[io.circe.Cursor]"></a>
       <a id="right:Option[Cursor]"></a>
@@ -1152,7 +1170,7 @@ the new focus.
       <a id="rightAt((Json)⇒Boolean):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1172,7 +1190,7 @@ the new focus.
       <a id="rightN(Int):Option[Cursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1208,7 +1226,7 @@ the new focus.
       <a id="set(Json):Cursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1296,7 +1314,7 @@ the new focus.
       <a id="top:Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1441,7 +1459,10 @@ the new focus.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="TypeMembers">
+        <div class="group" name="Utilities">
+              <h3>Miscellaneous utilities</h3>
+              
+            </div><div class="group" name="TypeMembers">
               <h3>Type members</h3>
               
             </div><div class="group" name="Ungrouped">

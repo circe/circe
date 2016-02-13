@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Constructors, type class instances, and other utilities for <a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/JsonNumber.scala" target="_blank">JsonNumber.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -148,27 +148,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.JsonNumber#JsonNumberRegex" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="JsonNumberRegex:scala.util.matching.Regex"></a>
-      <a id="JsonNumberRegex:Regex"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">JsonNumberRegex</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.util.matching.Regex" class="extype" target="_top">Regex</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber$@JsonNumberRegex:scala.util.matching.Regex" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">A regular expression that can match a valid JSON number.</p><div class="fullcomment"><div class="comment cmt"><p>A regular expression that can match a valid JSON number.</p><p>This has four match groups:</p><ol class="decimal"><li>The optional negative sign.
- 2. The integer part.
- 3. The fractional part without the leading period.
- 4. The exponent part without the leading 'e', but with an optional leading '+' or '-'.</li></ol><p>The negative sign, fractional part and exponent part are optional matches and may be <code>null</code>.
-</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -231,7 +210,7 @@
       <a id="eqJsonNumber:Eq[JsonNumber]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -283,12 +262,12 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.JsonNumber#fromString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.circe.JsonNumber#fromString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="fromString(value:String):Option[io.circe.JsonNumber]"></a>
       <a id="fromString(String):Option[JsonNumber]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -299,10 +278,7 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Parse a JSON number from a <code>String</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a JSON number from a <code>String</code>.</p><p>A string is valid if it conforms to the grammar in section 2.4 of the
-<a href="http://www.ietf.org/rfc/rfc4627.txt" target="_blank">JSON specification</a>. If it is valid, then the number is
-returned in a <code>Some</code>. Otherwise the number is invalid and <code>None</code> is returned.
-</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>a JSON number encoded as a string</p></dd><dt>returns</dt><dd class="cmt"><p>a JSON number if the string is valid</p></dd></dl></div>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -444,7 +420,7 @@ returned in a <code>Some</code>. Otherwise the number is invalid and <code>None<
       <a id="unsafeDecimal(String):JsonNumber"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -456,6 +432,27 @@ returned in a <code>Some</code>. Otherwise the number is invalid and <code>None<
       </a>
     </span>
       <p class="shortcomment cmt">Return a <code>JsonNumber</code> whose value is the valid JSON number in <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return a <code>JsonNumber</code> whose value is the valid JSON number in <code>value</code>.
+</p></div><dl class="attributes block"> <dt>Note</dt><dd><span class="cmt"><p>This value is <i>not</i> verified to be a valid JSON string. It is assumed that <code>value</code> is a
+valid JSON number, according to the JSON specification. If the value is invalid the behavior is
+undefined. This operation is provided for use in situations where the validity of the input has
+already been verified.</p></span></dd></dl></div>
+    </li><li name="io.circe.JsonNumber#unsafeIntegral" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unsafeIntegral(value:String):io.circe.JsonNumber"></a>
+      <a id="unsafeIntegral(String):JsonNumber"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unsafeIntegral</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonNumber$@unsafeIntegral(value:String):io.circe.JsonNumber" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return a <code>JsonNumber</code> whose value is the valid integral JSON number in <code>value</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return a <code>JsonNumber</code> whose value is the valid integral JSON number in <code>value</code>.
 </p></div><dl class="attributes block"> <dt>Note</dt><dd><span class="cmt"><p>This value is <i>not</i> verified to be a valid JSON string. It is assumed that <code>value</code> is a
 valid JSON number, according to the JSON specification. If the value is invalid the behavior is
 undefined. This operation is provided for use in situations where the validity of the input has

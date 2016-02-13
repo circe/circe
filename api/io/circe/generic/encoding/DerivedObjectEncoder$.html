@@ -51,7 +51,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/encoding/DerivedObjectEncoder.scala" target="_blank">DerivedObjectEncoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.generic.encoding.LowPriorityDerivedObjectEncoders">LowPriorityDerivedObjectEncoders</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -192,7 +192,7 @@
       <a id="encodeAdt[A,R&lt;:Coproduct](Aux[A,R],Lazy[DerivedObjectEncoder[R]]):DerivedObjectEncoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -209,7 +209,7 @@
       <a id="encodeCNil:DerivedObjectEncoder[CNil]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -226,7 +226,7 @@
       <a id="encodeCaseClass[A,R&lt;:HList](Aux[A,R],Lazy[DerivedObjectEncoder[R]]):DerivedObjectEncoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -243,7 +243,7 @@
       <a id="encodeCoproduct[K&lt;:Symbol,H,T&lt;:Coproduct](Aux[K],Lazy[Encoder[H]],Lazy[DerivedObjectEncoder[T]]):DerivedObjectEncoder[:+:[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -260,7 +260,7 @@
       <a id="encodeCoproductDerived[K&lt;:Symbol,H,T&lt;:Coproduct](Aux[K],Lazy[DerivedObjectEncoder[H]],Lazy[DerivedObjectEncoder[T]]):DerivedObjectEncoder[:+:[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -277,7 +277,7 @@
       <a id="encodeHNil:DerivedObjectEncoder[HNil]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -294,7 +294,7 @@
       <a id="encodeLabelledHList[K&lt;:Symbol,H,T&lt;:HList](Aux[K],Lazy[Encoder[H]],Lazy[DerivedObjectEncoder[T]]):DerivedObjectEncoder[::[FieldType[K,H],T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

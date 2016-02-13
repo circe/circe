@@ -54,7 +54,7 @@ decoded value satisfies <code>Predicate</code>.</p><p>E.g. with generic codecs</
   i: <span class="std">Int</span> Refined Positive
 )
 
-Obj(refineV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div><div class="toggleContainer block">
+Obj(refineMV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/refined/shared/src/main/scala/io/circe/refined.scala" target="_blank">refined.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -354,7 +354,7 @@ Obj(refineV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""
       <a id="refinedDecoder[T,P,F[_,_]](Decoder[T],Validate[T,P],RefType[F]):Decoder[F[T,P]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -371,7 +371,7 @@ Obj(refineV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""
       <a id="refinedEncoder[T,P,F[_,_]](Encoder[T],RefType[F]):Encoder[F[T,P]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

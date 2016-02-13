@@ -41,7 +41,7 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
@@ -49,7 +49,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/semiauto.scala" target="_blank">semiauto.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -255,40 +255,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.generic.semiauto.DerivationHelper#decoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="decoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[R]]):io.circe.Decoder[A]"></a>
-      <a id="decoder[R](Aux[A,R],Lazy[DerivedDecoder[R]]):Decoder[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">decoder</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.decoder.R">R</span>]</span>, <span name="decode">decode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.decoder.R">R</span>]]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@decoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[R]]):io.circe.Decoder[A]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
-    </li><li name="io.circe.generic.semiauto.DerivationHelper#encoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[R]]):io.circe.ObjectEncoder[A]"></a>
-      <a id="encoder[R](Aux[A,R],Lazy[DerivedObjectEncoder[R]]):ObjectEncoder[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">encoder</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.encoder.R">R</span>]</span>, <span name="encode">encode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="encoding/DerivedObjectEncoder.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.encoder.R">R</span>]]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@encoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[R]]):io.circe.ObjectEncoder[A]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((DerivationHelper[A])⇒Boolean,⇒Any):DerivationHelper[A]"></a>
@@ -489,18 +455,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.generic.semiauto.DerivationHelper#incomplete" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="incomplete[P&lt;:shapeless.HList,C,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;C,A],implicitgen:shapeless.LabelledGeneric.Aux[C,T],implicitremoveAll:shapeless.ops.record.RemoveAll.Aux[T,P,(P,R)],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.Decoder[A]"></a>
-      <a id="incomplete[P&lt;:HList,C,T&lt;:HList,R&lt;:HList](shapeless.ops.function.FnFromProduct.Aux[(P)⇒C,A],Aux[C,T],Aux[T,P,(P,R)],DerivedDecoder[R]):Decoder[A]"></a>
+      <a id="incomplete[P&lt;:shapeless.HList,C,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;C,A],implicitgen:shapeless.LabelledGeneric.Aux[C,T],implicitcomplement:io.circe.generic.util.Complement.Aux[T,P,R],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.Decoder[A]"></a>
+      <a id="incomplete[P&lt;:HList,C,T&lt;:HList,R&lt;:HList](shapeless.ops.function.FnFromProduct.Aux[(P)⇒C,A],Aux[C,T],Aux[T,P,R],DerivedDecoder[R]):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">incomplete</span><span class="tparams">[<span name="P">P &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="C">C</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="R">R &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ffp">ffp: <span class="extype" name="shapeless.ops.FnFromProductInstances.Aux">shapeless.ops.function.FnFromProduct.Aux</span>[(<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.P">P</span>) ⇒ <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.C">C</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.C">C</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.T">T</span>]</span>, <span name="removeAll">removeAll: <span class="extype" name="shapeless.ops.record.RemoveAll.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.T">T</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.P">P</span>, (<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.P">P</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.R">R</span>)]</span>, <span name="decode">decode: <a href="decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.R">R</span>]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
+        <span class="name">incomplete</span><span class="tparams">[<span name="P">P &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="C">C</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="R">R &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ffp">ffp: <span class="extype" name="shapeless.ops.FnFromProductInstances.Aux">shapeless.ops.function.FnFromProduct.Aux</span>[(<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.P">P</span>) ⇒ <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.C">C</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>, <span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.C">C</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.T">T</span>]</span>, <span name="complement">complement: <a href="util/Complement$.html#Aux[L&lt;:shapeless.HList,A&lt;:shapeless.HList,Out0]=io.circe.generic.util.Complement[L,A]{typeOut=Out0}" class="extmbr" name="io.circe.generic.util.Complement.Aux">Aux</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.T">T</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.P">P</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.R">R</span>]</span>, <span name="decode">decode: <a href="decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.incomplete.R">R</span>]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@incomplete[P&lt;:shapeless.HList,C,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;C,A],implicitgen:shapeless.LabelledGeneric.Aux[C,T],implicitremoveAll:shapeless.ops.record.RemoveAll.Aux[T,P,(P,R)],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.Decoder[A]" title="Permalink" target="_top">
+      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@incomplete[P&lt;:shapeless.HList,C,T&lt;:shapeless.HList,R&lt;:shapeless.HList](implicitffp:shapeless.ops.function.FnFromProduct.Aux[P=&gt;C,A],implicitgen:shapeless.LabelledGeneric.Aux[C,T],implicitcomplement:io.circe.generic.util.Complement.Aux[T,P,R],implicitdecode:io.circe.generic.decoding.DerivedDecoder[R]):io.circe.Decoder[A]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -578,7 +544,7 @@
       <a id="patch[R&lt;:HList,O&lt;:HList](Aux[A,R],Aux[R,O],DerivedDecoder[O]):DerivedDecoder[(A)⇒A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -719,7 +685,50 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.generic.semiauto.DerivationHelper#decoder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[R]]):io.circe.Decoder[A]"></a>
+      <a id="decoder[R](Aux[A,R],Lazy[DerivedDecoder[R]]):Decoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.3.0) Use deriveDecoder">decoder</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.decoder.R">R</span>]</span>, <span name="decode">decode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.decoder.R">R</span>]]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@decoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[R]]):io.circe.Decoder[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use deriveDecoder</p></dd></dl></div>
+    </li><li name="io.circe.generic.semiauto.DerivationHelper#encoder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="encoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[R]]):io.circe.ObjectEncoder[A]"></a>
+      <a id="encoder[R](Aux[A,R],Lazy[DerivedObjectEncoder[R]]):ObjectEncoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.3.0) Use deriveEncoder">encoder</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>, <span class="extype" name="io.circe.generic.semiauto.DerivationHelper.encoder.R">R</span>]</span>, <span name="encode">encode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="encoding/DerivedObjectEncoder.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.encoder.R">R</span>]]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.DerivationHelper.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.generic.semiauto$$DerivationHelper@encoder[R](implicitgen:shapeless.LabelledGeneric.Aux[A,R],implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[R]]):io.circe.ObjectEncoder[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.3.0)</i> Use deriveEncoder</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

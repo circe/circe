@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Utilities and instances for <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Encoder.scala" target="_blank">Encoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityEncoders">LowPriorityEncoders</span>, <span class="extype" name="io.circe.LowPriorityEncoders.fresh$macro$6">fresh$macro$6</span>, <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -153,7 +153,7 @@
       <a id="apply[A](Encoder[A]):Encoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -210,11 +210,11 @@
       <a id="contravariantEncode:Contravariant[Encoder]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">contravariantEncode</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.functor.Contravariant" class="extype" target="_top">Contravariant</a>[<a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>]</span>
+        <span class="name">contravariantEncode</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.functor.Contravariant" class="extype" target="_top">Contravariant</a>[<a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Encoder$@contravariantEncode:cats.functor.Contravariant[io.circe.Encoder]" title="Permalink" target="_top">
@@ -227,7 +227,7 @@
       <a id="encodeBigDecimal:Encoder[BigDecimal]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -244,7 +244,7 @@
       <a id="encodeBigInt:Encoder[BigInt]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -261,7 +261,7 @@
       <a id="encodeBoolean:Encoder[Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -278,7 +278,7 @@
       <a id="encodeByte:Encoder[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -295,7 +295,7 @@
       <a id="encodeChar:Encoder[Char]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -312,7 +312,7 @@
       <a id="encodeDouble:Encoder[Double]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -329,7 +329,7 @@
       <a id="encodeEither[A,B](String,String)(Encoder[A],Encoder[B]):ObjectEncoder[Either[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -346,7 +346,7 @@
       <a id="encodeFloat:Encoder[Float]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -363,7 +363,7 @@
       <a id="encodeInt:Encoder[Int]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -380,7 +380,7 @@
       <a id="encodeJson:Encoder[Json]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -397,7 +397,7 @@
       <a id="encodeJsonNumber:Encoder[JsonNumber]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -414,7 +414,7 @@
       <a id="encodeJsonObject:Encoder[JsonObject]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -431,7 +431,7 @@
       <a id="encodeLong:Encoder[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -448,7 +448,7 @@
       <a id="encodeMapLike[M[K,+V]&lt;:Map[K,V],V](Encoder[V]):ObjectEncoder[M[String,V]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -460,19 +460,19 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Encoder#encodeNonEmptyList" visbl="pub" data-isabs="false" fullComment="no" group="Encoding">
-      <a id="encodeNonEmptyList[A](implicitevidence$1:io.circe.Encoder[A]):io.circe.Encoder[cats.data.NonEmptyList[A]]"></a>
-      <a id="encodeNonEmptyList[A](Encoder[A]):Encoder[NonEmptyList[A]]"></a>
+    </li><li name="io.circe.Encoder#encodeOneAnd" visbl="pub" data-isabs="false" fullComment="no" group="Encoding">
+      <a id="encodeOneAnd[A0,C[_]](implicitea:io.circe.Encoder[A0],implicitis:scala.collection.generic.IsTraversableOnce[C[A0]]{typeA=A0}):io.circe.Encoder[cats.data.OneAnd[C,A0]]"></a>
+      <a id="encodeOneAnd[A0,C[_]](Encoder[A0],IsTraversableOnce[C[A0]]{typeA=A0}):Encoder[OneAnd[C,A0]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeNonEmptyList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeNonEmptyList.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<span class="extype" name="io.circe.Encoder.encodeNonEmptyList.A">A</span>]]</span>
+        <span class="name">encodeOneAnd</span><span class="tparams">[<span name="A0">A0</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeOneAnd.A0">A0</span>]</span>, <span name="is">is: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.collection.generic.IsTraversableOnce" class="extype" target="_top">IsTraversableOnce</a>[<span class="extype" name="io.circe.Encoder.encodeOneAnd.C">C</span>[<span class="extype" name="io.circe.Encoder.encodeOneAnd.A0">A0</span>]] { type A = A0 }</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.OneAnd" class="extype" target="_top">OneAnd</a>[<span class="extype" name="io.circe.Encoder.encodeOneAnd.C">C</span>, <span class="extype" name="io.circe.Encoder.encodeOneAnd.A0">A0</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Encoder$@encodeNonEmptyList[A](implicitevidence$1:io.circe.Encoder[A]):io.circe.Encoder[cats.data.NonEmptyList[A]]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Encoder$@encodeOneAnd[A0,C[_]](implicitea:io.circe.Encoder[A0],implicitis:scala.collection.generic.IsTraversableOnce[C[A0]]{typeA=A0}):io.circe.Encoder[cats.data.OneAnd[C,A0]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -482,7 +482,7 @@
       <a id="encodeOption[A](Encoder[A]):Encoder[Option[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -499,7 +499,7 @@
       <a id="encodeShort:Encoder[Short]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -516,7 +516,7 @@
       <a id="encodeString:Encoder[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -533,7 +533,7 @@
       <a id="encodeTraversableOnce[A0,C[_]](Encoder[A0],IsTraversableOnce[C[A0]]{typeA=A0}):Encoder[C[A0]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -924,7 +924,7 @@
       <a id="encodeUUID:Encoder[UUID]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -941,7 +941,7 @@
       <a id="encodeUnit:Encoder[Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -958,11 +958,11 @@
       <a id="encodeValidated[E,A](String,String)(Encoder[E],Encoder[A]):ObjectEncoder[Validated[E,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span name="failureKey">failureKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="successKey">successKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.E">E</span>, <span class="extype" name="io.circe.Encoder.encodeValidated.A">A</span>]]</span>
+        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span name="failureKey">failureKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="successKey">successKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.Encoder.encodeValidated.E">E</span>, <span class="extype" name="io.circe.Encoder.encodeValidated.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Encoder$@encodeValidated[E,A](failureKey:String,successKey:String)(implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.ObjectEncoder[cats.data.Validated[E,A]]" title="Permalink" target="_top">
@@ -975,11 +975,11 @@
       <a id="encodeXor[A,B](String,String)(Encoder[A],Encoder[B]):ObjectEncoder[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="leftKey">leftKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rightKey">rightKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeXor.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeXor.B">B</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Encoder.encodeXor.A">A</span>, <span class="extype" name="io.circe.Encoder.encodeXor.B">B</span>]]</span>
+        <span class="name">encodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="leftKey">leftKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rightKey">rightKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeXor.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.encodeXor.B">B</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Encoder.encodeXor.A">A</span>, <span class="extype" name="io.circe.Encoder.encodeXor.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Encoder$@encodeXor[A,B](leftKey:String,rightKey:String)(implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.ObjectEncoder[cats.data.Xor[A,B]]" title="Permalink" target="_top">
@@ -1066,18 +1066,18 @@
       <a id="fromFoldable[F[_],A](Encoder[A],Foldable[F]):Encoder[F[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromFoldable</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="e">e: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.A">A</span>]</span>, <span name="F">F: <a href="https://non.github.io/cats/api/index.html#cats.Foldable" class="extype" target="_top">Foldable</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.F">F</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.F">F</span>[<span class="extype" name="io.circe.Encoder.fromFoldable.A">A</span>]]</span>
+        <span class="name">fromFoldable</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="e">e: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.A">A</span>]</span>, <span name="F">F: <a href="http://typelevel.org/cats/api/index.html#cats.Foldable" class="extype" target="_top">Foldable</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.F">F</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.fromFoldable.F">F</span>[<span class="extype" name="io.circe.Encoder.fromFoldable.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Encoder$@fromFoldable[F[_],A](implicite:io.circe.Encoder[A],implicitF:cats.Foldable[F]):io.circe.Encoder[F[A]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Construct an instance for a given type with a <a href="https://non.github.io/cats/api/index.html#cats.Foldable" class="extype" target="_top">cats.Foldable</a> instance.</p>
+      <p class="shortcomment cmt">Construct an instance for a given type with a <a href="http://typelevel.org/cats/api/index.html#cats.Foldable" class="extype" target="_top">cats.Foldable</a> instance.</p>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -1117,7 +1117,7 @@
       <a id="instance[A]((A)⇒Json):Encoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

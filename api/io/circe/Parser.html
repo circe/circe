@@ -49,7 +49,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Parser.scala" target="_blank">Parser.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div><div class="toggleContainer block">
@@ -109,7 +109,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parse</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="ParsingFailure.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>
+        <span class="name">parse</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="ParsingFailure.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Parser@parse(input:String):cats.data.Xor[io.circe.ParsingFailure,io.circe.Json]" title="Permalink" target="_top">
@@ -263,11 +263,11 @@
       <a id="decode[A](String)(Decoder[A]):Xor[Error,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
+        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Parser@decode[A](input:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.Error,A]" title="Permalink" target="_top">

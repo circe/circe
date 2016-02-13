@@ -51,7 +51,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/decoding/DerivedDecoder.scala" target="_blank">DerivedDecoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -218,24 +218,58 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.Decoder#and" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="and[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
-      <a id="and[B](Decoder[B]):Decoder[(A,B)]"></a>
+    </li><li name="io.circe.Decoder#accumulating" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="accumulating:io.circe.AccumulatingDecoder[A]"></a>
+      <a id="accumulating:AccumulatingDecoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">and</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.and.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.and.B">B</span>)]</span>
+        <span class="name">accumulating</span><span class="result">: <a href="../../AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@and[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@accumulating:io.circe.AccumulatingDecoder[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="io.circe.Decoder#and" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="and[B](fb:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
+      <a id="and[B](Decoder[B]):Decoder[(A,B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="fb">fb: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.and.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.and.B">B</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@and[B](fb:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Combine two decoders.</p><div class="fullcomment"><div class="comment cmt"><p>Combine two decoders.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="io.circe.Decoder#ap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ap[B](f:io.circe.Decoder[A=&gt;B]):io.circe.Decoder[B]"></a>
+      <a id="ap[B](Decoder[(A)⇒B]):Decoder[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>) ⇒ <span class="extype" name="io.circe.Decoder.ap.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.ap.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@ap[B](f:io.circe.Decoder[A=&gt;B]):io.circe.Decoder[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -281,7 +315,7 @@
       <a id="decodeJson(Json):Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -294,6 +328,24 @@
     </span>
       <p class="shortcomment cmt">Decode the given <a href="../../Json.html" class="extype" name="io.circe.Json">Json</a> value.</p><div class="fullcomment"><div class="comment cmt"><p>Decode the given <a href="../../Json.html" class="extype" name="io.circe.Json">Json</a> value.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="io.circe.Decoder#emap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="emap[B](f:A=&gt;cats.data.Xor[String,B]):io.circe.Decoder[B]"></a>
+      <a id="emap[B]((A)⇒Xor[String,B]):Decoder[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">emap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>) ⇒ <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="io.circe.Decoder.emap.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.emap.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@emap[B](f:A=&gt;cats.data.Xor[String,B]):io.circe.Decoder[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create a new decoder that performs some operation on the result if this one succeeds.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new decoder that performs some operation on the result if this one succeeds.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a function returning either a value or an error message</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((DerivedDecoder[A])⇒Boolean,⇒Any):DerivedDecoder[A]"></a>
@@ -440,7 +492,7 @@
       <a id="flatMap[B]((A)⇒Decoder[B]):Decoder[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -529,18 +581,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.circe.Decoder#kleisli" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="kleisli:cats.data.Kleisli[[x]cats.data.Xor[io.circe.DecodingFailure,x],io.circe.HCursor,A]"></a>
-      <a id="kleisli:Kleisli[[x]Xor[DecodingFailure,x],HCursor,A]"></a>
+      <a id="kleisli:cats.data.Kleisli[io.circe.Decoder.Result,io.circe.HCursor,A]"></a>
+      <a id="kleisli:Kleisli[Result,HCursor,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">kleisli</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[[x]<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="../../DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.&lt;refinement&gt;.L.x">x</span>], <a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>]</span>
+        <span class="name">kleisli</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Kleisli" class="extype" target="_top">Kleisli</a>[<a href="../../Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>, <a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@kleisli:cats.data.Kleisli[[x]cats.data.Xor[io.circe.DecodingFailure,x],io.circe.HCursor,A]" title="Permalink" target="_top">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@kleisli:cats.data.Kleisli[io.circe.Decoder.Result,io.circe.HCursor,A]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -551,7 +603,7 @@
       <a id="map[B]((A)⇒B):Decoder[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -620,7 +672,7 @@
       <a id="or[AA&gt;:A](⇒Decoder[AA]):Decoder[AA]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -633,12 +685,30 @@
     </span>
       <p class="shortcomment cmt">Choose the first succeeding decoder.</p><div class="fullcomment"><div class="comment cmt"><p>Choose the first succeeding decoder.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="io.circe.Decoder#prepare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prepare(f:io.circe.HCursor=&gt;io.circe.ACursor):io.circe.Decoder[A]"></a>
+      <a id="prepare((HCursor)⇒ACursor):Decoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="params">(<span name="f">f: (<a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="../../ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@prepare(f:io.circe.HCursor=&gt;io.circe.ACursor):io.circe.Decoder[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create a new decoder that performs some operation on the incoming JSON before decoding.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new decoder that performs some operation on the incoming JSON before decoding.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="io.circe.Decoder#product" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="product[B](x:io.circe.Decoder[B]):(io.circe.HCursor,io.circe.HCursor)=&gt;io.circe.Decoder.Result[(A,B)]"></a>
       <a id="product[B](Decoder[B]):(HCursor,HCursor)⇒Result[(A,B)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -656,11 +726,11 @@
       <a id="split[B](Decoder[B]):(Xor[HCursor,HCursor])⇒Result[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">split</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="d">d: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.split.B">B</span>]</span>)</span><span class="result">: (<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>]) ⇒ <a href="../../Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.split.B">B</span>]]</span>
+        <span class="name">split</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="d">d: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.split.B">B</span>]</span>)</span><span class="result">: (<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>, <a href="../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>]) ⇒ <a href="../../Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.split.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@split[B](d:io.circe.Decoder[B]):cats.data.Xor[io.circe.HCursor,io.circe.HCursor]=&gt;io.circe.Decoder.Result[cats.data.Xor[A,B]]" title="Permalink" target="_top">
@@ -726,7 +796,7 @@
       <a id="validate((HCursor)⇒Boolean,⇒String):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -813,7 +883,7 @@
       <a id="withErrorMessage(String):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -855,18 +925,18 @@
         <div id="values" class="values members">
               <h3>Deprecated Value Members</h3>
               <ol><li name="io.circe.Decoder#&amp;&amp;&amp;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
+      <a id="&amp;&amp;&amp;[B](fb:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]"></a>
       <a id="&amp;&amp;&amp;[B](Decoder[B]):Decoder[(A,B)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $amp$amp$amp. Deprecated: (Since version 0.3.0) Use and" class="name deprecated">&amp;&amp;&amp;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="x">x: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>)]</span>
+        <span title="gt4s: $amp$amp$amp. Deprecated: (Since version 0.3.0) Use and" class="name deprecated">&amp;&amp;&amp;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="fb">fb: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>]</span>)</span><span class="result">: <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.generic.decoding.DerivedDecoder.A">A</span>, <span class="extype" name="io.circe.Decoder.&amp;&amp;&amp;.B">B</span>)]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@&amp;&amp;&amp;[B](x:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
+      <a href="../../../../index.html#io.circe.generic.decoding.DerivedDecoder@&amp;&amp;&amp;[B](fb:io.circe.Decoder[B]):io.circe.Decoder[(A,B)]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -880,7 +950,7 @@
       <a id="|||[AA&gt;:A](⇒Decoder[AA]):Decoder[AA]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

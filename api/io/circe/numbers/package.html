@@ -1,0 +1,162 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>numbers - io.circe.numbers</title>
+          <meta name="description" content="numbers - io.circe.numbers" />
+          <meta name="keywords" content="numbers io.circe.numbers" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'io.circe.numbers.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="io">io</a>.<a href="../package.html" class="extype" name="io.circe">circe</a></p>
+        <h1>numbers</h1><span class="permalink">
+      <a href="../../../index.html#io.circe.numbers.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">numbers</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="io.circe.numbers.BiggerDecimal" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="BiggerDecimalextendsAnyRef"></a>
+      <a id="BiggerDecimal:BiggerDecimal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BiggerDecimal.html"><span class="name">BiggerDecimal</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.numbers.package@BiggerDecimalextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Represents a large decimal number.</p><div class="fullcomment"><div class="comment cmt"><p>Represents a large decimal number.</p><p>In theory <code>BigDecimal</code> can represent a very large range of valid JSON numbers (in most cases if a
+JSON number string can fit in memory, it's possible to construct an exact <code>BigDecimal</code>
+representation), but in practice this becomes intractable for many small JSON numbers (e.g.
+&quot;1e2147483648&quot; cannot be directly parsed as a <code>BigDecimal</code>).</p><p>This type makes it possible to represent much, much larger numbers efficiently (although it
+doesn't support many operations on these values). It also makes it possible to distinguish
+between positive and negative zeros (unlike <code>BigDecimal</code>), which may be useful in some
+applications.
+</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="io.circe.numbers.BiggerDecimal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BiggerDecimal"></a>
+      <a id="BiggerDecimal:BiggerDecimal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BiggerDecimal$.html"><span class="name">BiggerDecimal</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.numbers.package@BiggerDecimal" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.numbers.NumberParsing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NumberParsing"></a>
+      <a id="NumberParsing:NumberParsing"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="NumberParsing$.html"><span class="name">NumberParsing</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.numbers.package@NumberParsing" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Utilities for parsing JSON numbers.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

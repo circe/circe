@@ -50,7 +50,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p><a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a> and <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a> instances for disjunction types with reasonable names for the sides.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/disjunctionCodecs.scala" target="_blank">disjunctionCodecs.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -191,11 +191,11 @@
       <a id="decodeValidated[E,A](Decoder[E],Decoder[A]):Decoder[Validated[E,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]]</span>
+        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.disjunctionCodecs$@decodeValidated[E,A](implicitde:io.circe.Decoder[E],implicitda:io.circe.Decoder[A]):io.circe.Decoder[cats.data.Validated[E,A]]" title="Permalink" target="_top">
@@ -208,11 +208,11 @@
       <a id="decodeXor[A,B](Decoder[A],Decoder[B]):Decoder[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.A">A</span>]</span>, <span name="db">db: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeXor.B">B</span>]]</span>
+        <span class="name">decodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.A">A</span>]</span>, <span name="db">db: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeXor.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeXor.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.disjunctionCodecs$@decodeXor[A,B](implicitda:io.circe.Decoder[A],implicitdb:io.circe.Decoder[B]):io.circe.Decoder[cats.data.Xor[A,B]]" title="Permalink" target="_top">
@@ -225,7 +225,7 @@
       <a id="decoderEither[A,B](Decoder[A],Decoder[B]):Decoder[Either[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -242,7 +242,7 @@
       <a id="encodeEither[A,B](Encoder[A],Encoder[B]):Encoder[Either[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -259,11 +259,11 @@
       <a id="encodeValidated[E,A](Encoder[E],Encoder[A]):Encoder[Validated[E,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]]</span>
+        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.disjunctionCodecs$@encodeValidated[E,A](implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.Encoder[cats.data.Validated[E,A]]" title="Permalink" target="_top">
@@ -276,11 +276,11 @@
       <a id="encodeXor[A,B](Encoder[A],Encoder[B]):Encoder[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeXor.B">B</span>]]</span>
+        <span class="name">encodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeXor.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeXor.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.disjunctionCodecs$@encodeXor[A,B](implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.Encoder[cats.data.Xor[A,B]]" title="Permalink" target="_top">

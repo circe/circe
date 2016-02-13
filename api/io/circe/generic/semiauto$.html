@@ -55,9 +55,9 @@ for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies,
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
 <span class="kw">object</span> Foo {
-  <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveFor[Foo].decoder
-  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveFor[Foo].encoder
-}</pre></div><div class="toggleContainer block">
+  <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveEncoder[Foo]
+}</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/semiauto.scala" target="_blank">semiauto.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -103,7 +103,7 @@ for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies,
       <a id="DerivationHelper[A]:DerivationHelper[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
@@ -213,12 +213,46 @@ for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies,
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.generic.semiauto#deriveDecoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="deriveDecoder[A](implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[A]]):io.circe.Decoder[A]"></a>
+      <a id="deriveDecoder[A](Lazy[DerivedDecoder[A]]):Decoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deriveDecoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="decode">decode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="decoding/DerivedDecoder.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a>[<span class="extype" name="io.circe.generic.semiauto.deriveDecoder.A">A</span>]]</span>)</span><span class="result">: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.semiauto.deriveDecoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.generic.semiauto$@deriveDecoder[A](implicitdecode:shapeless.Lazy[io.circe.generic.decoding.DerivedDecoder[A]]):io.circe.Decoder[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.semiauto#deriveEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[A]]):io.circe.ObjectEncoder[A]"></a>
+      <a id="deriveEncoder[A](Lazy[DerivedObjectEncoder[A]]):ObjectEncoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deriveEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encode">encode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="encoding/DerivedObjectEncoder.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.deriveEncoder.A">A</span>]]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.semiauto.deriveEncoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.generic.semiauto$@deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.encoding.DerivedObjectEncoder[A]]):io.circe.ObjectEncoder[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="io.circe.generic.semiauto#deriveFor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="deriveFor[A]:io.circe.generic.semiauto.DerivationHelper[A]"></a>
       <a id="deriveFor[A]:DerivationHelper[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

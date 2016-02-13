@@ -52,9 +52,9 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Utilities and instances for <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Decoder.scala" target="_blank">Decoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span>, <span class="extype" name="io.circe.LowPriorityDecoders.fresh$macro$3">fresh$macro$3</span>, <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span>, <span class="extype" name="io.circe.LowPriorityDecoders.fresh$macro$3">fresh$macro$3</span>, <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span>, <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances" class="extype" target="_top">ListInstances</a>, <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances1" class="extype" target="_top">ListInstances1</a>, <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances2" class="extype" target="_top">ListInstances2</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -72,7 +72,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.Decoder"><span>Decoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="io.circe.LowPriorityDecoders"><span>LowPriorityDecoders</span></li><li class="in" name="io.circe.LowPriorityDecoders.fresh$macro$3"><span>fresh$macro$3</span></li><li class="in" name="io.circe.TupleDecoders"><span>TupleDecoders</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.Decoder"><span>Decoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="io.circe.LowPriorityDecoders"><span>LowPriorityDecoders</span></li><li class="in" name="io.circe.LowPriorityDecoders.fresh$macro$3"><span>fresh$macro$3</span></li><li class="in" name="io.circe.TupleDecoders"><span>TupleDecoders</span></li><li class="in" name="cats.std.ListInstances"><span>ListInstances</span></li><li class="in" name="cats.std.ListInstances1"><span>ListInstances1</span></li><li class="in" name="cats.std.ListInstances2"><span>ListInstances2</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -98,11 +98,11 @@
       <a id="Result[A]:Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.Result.A">A</span>]</span>
+        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.Result.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Decoder$@Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
@@ -173,7 +173,7 @@
       <a id="apply[A](Decoder[A]):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -225,12 +225,12 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.Decoder#decodeBigDecimal" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeBigDecimal" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeBigDecimal:io.circe.Decoder[BigDecimal]"></a>
       <a id="decodeBigDecimal:Decoder[BigDecimal]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -241,13 +241,17 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeBigInt" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><p>Note that decoding will fail on some very large values that could in principle be represented
+as <code>BigDecimal</code>s (specifically if the <code>scale</code> is out of the range of <code>scala.Int</code> when the
+<code>unscaledValue</code> is adjusted to have no trailing zeros). These large values can, however, be
+round-tripped through <code>JsonNumber</code>, so you may wish to use <a href="#decodeJsonNumber:io.circe.Decoder[io.circe.JsonNumber]" class="extmbr" name="io.circe.Decoder#decodeJsonNumber">decodeJsonNumber</a> in these cases.
+</p></div></div>
+    </li><li name="io.circe.Decoder#decodeBigInt" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeBigInt:io.circe.Decoder[BigInt]"></a>
       <a id="decodeBigInt:Decoder[BigInt]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -258,13 +262,17 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><p>Note that decoding will fail if the number has a large number of digits (the limit is currently
+<code>1 &lt;&lt; 18</code>, or around a quarter million). Larger numbers can be decoded by mapping over a
+<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>, but be aware that the conversion to the integral form can be
+computationally expensive.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeBoolean" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeBoolean:io.circe.Decoder[Boolean]"></a>
       <a id="decodeBoolean:Decoder[Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -276,12 +284,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeByte" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeByte" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeByte:io.circe.Decoder[Byte]"></a>
       <a id="decodeByte:Decoder[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -292,13 +300,14 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeCanBuildFrom" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeCanBuildFrom[A,C[_]](implicitd:io.circe.Decoder[A],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,C[A]]):io.circe.Decoder[C[A]]"></a>
       <a id="decodeCanBuildFrom[A,C[_]](Decoder[A],CanBuildFrom[Nothing,A,C[A]]):Decoder[C[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -315,7 +324,7 @@
       <a id="decodeChar:Decoder[Char]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -327,12 +336,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeDouble" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeDouble:io.circe.Decoder[Double]"></a>
       <a id="decodeDouble:Decoder[Double]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -343,13 +352,16 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><p>Unlike the integral decoders provided here, this decoder will accept values that are too large
+to be represented and will return them as <code>PositiveInfinity</code> or <code>NegativeInfinity</code>, and it may
+lose precision.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeEither" visbl="pub" data-isabs="false" fullComment="no" group="Disjunction">
       <a id="decodeEither[A,B](leftKey:String,rightKey:String)(implicitda:io.circe.Decoder[A],implicitdb:io.circe.Decoder[B]):io.circe.Decoder[Either[A,B]]"></a>
       <a id="decodeEither[A,B](String,String)(Decoder[A],Decoder[B]):Decoder[Either[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -361,12 +373,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeFloat" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeFloat" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeFloat:io.circe.Decoder[Float]"></a>
       <a id="decodeFloat:Decoder[Float]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -377,13 +389,14 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><p>See <a href="#decodeDouble:io.circe.Decoder[Double]" class="extmbr" name="io.circe.Decoder#decodeDouble">decodeDouble</a> for discussion of the approach taken for floating-point decoding.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeHCursor" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeHCursor:io.circe.Decoder[io.circe.HCursor]"></a>
       <a id="decodeHCursor:Decoder[HCursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -395,12 +408,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeInt" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeInt" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeInt:io.circe.Decoder[Int]"></a>
       <a id="decodeInt:Decoder[Int]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -411,13 +424,14 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeJson" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeJson:io.circe.Decoder[io.circe.Json]"></a>
       <a id="decodeJson:Decoder[Json]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -434,7 +448,7 @@
       <a id="decodeJsonNumber:Decoder[JsonNumber]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -451,7 +465,7 @@
       <a id="decodeJsonObject:Decoder[JsonObject]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -463,12 +477,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeLong" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeLong" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeLong:io.circe.Decoder[Long]"></a>
       <a id="decodeLong:Decoder[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -479,13 +493,17 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><p>Decoding will fail if the value doesn't represent a whole number within the range of the target
+type (although it can have a decimal part: e.g. <code>10.0</code> will be successfully decoded, but
+<code>10.01</code> will not). If the value is a JSON string, the decoder will attempt to parse it as a
+number.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeMap" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeMap[M[K,+V]&lt;:Map[K,V],V](implicitd:io.circe.Decoder[V],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,(String,V),M[String,V]]):io.circe.Decoder[M[String,V]]"></a>
       <a id="decodeMap[M[K,+V]&lt;:Map[K,V],V](Decoder[V],CanBuildFrom[Nothing,(String,V),M[String,V]]):Decoder[M[String,V]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -497,19 +515,19 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeNonEmptyList" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
-      <a id="decodeNonEmptyList[A](implicitevidence$2:io.circe.Decoder[A]):io.circe.Decoder[cats.data.NonEmptyList[A]]"></a>
-      <a id="decodeNonEmptyList[A](Decoder[A]):Decoder[NonEmptyList[A]]"></a>
+    </li><li name="io.circe.Decoder#decodeOneAnd" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+      <a id="decodeOneAnd[A,C[_]](implicitda:io.circe.Decoder[A],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,C[A]]):io.circe.Decoder[cats.data.OneAnd[C,A]]"></a>
+      <a id="decodeOneAnd[A,C[_]](Decoder[A],CanBuildFrom[Nothing,A,C[A]]):Decoder[OneAnd[C,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeNonEmptyList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeNonEmptyList.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<span class="extype" name="io.circe.Decoder.decodeNonEmptyList.A">A</span>]]</span>
+        <span class="name">decodeOneAnd</span><span class="tparams">[<span name="A">A</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.OneAnd" class="extype" target="_top">OneAnd</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder$@decodeNonEmptyList[A](implicitevidence$2:io.circe.Decoder[A]):io.circe.Decoder[cats.data.NonEmptyList[A]]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder$@decodeOneAnd[A,C[_]](implicitda:io.circe.Decoder[A],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,C[A]]):io.circe.Decoder[cats.data.OneAnd[C,A]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -519,7 +537,7 @@
       <a id="decodeOption[A](Decoder[A]):Decoder[Option[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -536,7 +554,7 @@
       <a id="decodeSet[A](Decoder[A]):Decoder[Set[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -548,12 +566,12 @@
       </a>
     </span>
       <p class="shortcomment cmt"></p>
-    </li><li name="io.circe.Decoder#decodeShort" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
+    </li><li name="io.circe.Decoder#decodeShort" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeShort:io.circe.Decoder[Short]"></a>
       <a id="decodeShort:Decoder[Short]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -564,13 +582,14 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p>
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+</p></div></div>
     </li><li name="io.circe.Decoder#decodeString" visbl="pub" data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeString:io.circe.Decoder[String]"></a>
       <a id="decodeString:Decoder[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -961,7 +980,7 @@
       <a id="decodeUUID:Decoder[UUID]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -978,7 +997,7 @@
       <a id="decodeUnit:Decoder[Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -995,11 +1014,11 @@
       <a id="decodeValidated[E,A](String,String)(Decoder[E],Decoder[A]):Decoder[Validated[E,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span name="failureKey">failureKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="successKey">successKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.E">E</span>, <span class="extype" name="io.circe.Decoder.decodeValidated.A">A</span>]]</span>
+        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span name="failureKey">failureKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="successKey">successKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="io.circe.Decoder.decodeValidated.E">E</span>, <span class="extype" name="io.circe.Decoder.decodeValidated.A">A</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Decoder$@decodeValidated[E,A](failureKey:String,successKey:String)(implicitde:io.circe.Decoder[E],implicitda:io.circe.Decoder[A]):io.circe.Decoder[cats.data.Validated[E,A]]" title="Permalink" target="_top">
@@ -1012,11 +1031,11 @@
       <a id="decodeXor[A,B](String,String)(Decoder[A],Decoder[B]):Decoder[Xor[A,B]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="leftKey">leftKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rightKey">rightKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeXor.A">A</span>]</span>, <span name="db">db: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="https://non.github.io/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Decoder.decodeXor.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeXor.B">B</span>]]</span>
+        <span class="name">decodeXor</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="leftKey">leftKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rightKey">rightKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeXor.A">A</span>]</span>, <span name="db">db: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeXor.B">B</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<span class="extype" name="io.circe.Decoder.decodeXor.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeXor.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Decoder$@decodeXor[A,B](leftKey:String,rightKey:String)(implicitda:io.circe.Decoder[A],implicitdb:io.circe.Decoder[B]):io.circe.Decoder[cats.data.Xor[A,B]]" title="Permalink" target="_top">
@@ -1041,6 +1060,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="cats.std.ListInstances2#eqList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eqList[A](implicitevidence$4:algebra.Eq[A]):algebra.Eq[List[A]]"></a>
+      <a id="eqList[A](Eq[A]):Eq[List[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eqList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://non.github.io/algebra/api/index.html#algebra.Eq" class="extype" target="_top">Eq</a>[<span class="extype" name="cats.std.ListInstances2.eqList.A">A</span>]</span>)</span><span class="result">: <a href="https://non.github.io/algebra/api/index.html#algebra.Eq" class="extype" target="_top">Eq</a>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="cats.std.ListInstances2.eqList.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@eqList[A](implicitevidence$4:algebra.Eq[A]):algebra.Eq[List[A]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances2</dd></dl></div>
     </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a>
       <a id="equals(Any):Boolean"></a>
@@ -1058,6 +1094,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.Decoder#failWith" visbl="pub" data-isabs="false" fullComment="no" group="Utilities">
+      <a id="failWith[A](message:String):io.circe.Decoder[A]"></a>
+      <a id="failWith[A](String):Decoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">failWith</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.failWith.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@failWith[A](message:String):io.circe.Decoder[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Construct an instance that always fails with the given error message.</p>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -1137,7 +1190,7 @@
       <a id="instance[A]((HCursor)⇒Result[A]):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1166,16 +1219,84 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.Decoder#monadDecode" visbl="pub" data-isabs="false" fullComment="no" group="Instances">
-      <a id="monadDecode:cats.Monad[io.circe.Decoder]"></a>
-      <a id="monadDecode:Monad[Decoder]"></a>
+    </li><li name="cats.std.ListInstances#listAlgebra" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listAlgebra[A]:cats.Monoid[List[A]]"></a>
+      <a id="listAlgebra[A]:Monoid[List[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">listAlgebra</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <span class="extype" name="cats.Monoid">Monoid</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="cats.std.ListInstances.listAlgebra.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@listAlgebra[A]:cats.Monoid[List[A]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances</dd></dl></div>
+    </li><li name="cats.std.ListInstances#listInstance" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listInstance:cats.Traverse[List]withcats.MonadCombine[List]withcats.CoflatMap[List]"></a>
+      <a id="listInstance:Traverse[List]withMonadCombine[List]withCoflatMap[List]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">monadDecode</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.Monad" class="extype" target="_top">Monad</a>[<a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>]</span>
+        <span class="name">listInstance</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.Traverse" class="extype" target="_top">Traverse</a>[<span class="extype" name="scala.List">List</span>] with <a href="http://typelevel.org/cats/api/index.html#cats.MonadCombine" class="extype" target="_top">MonadCombine</a>[<span class="extype" name="scala.List">List</span>] with <a href="http://typelevel.org/cats/api/index.html#cats.CoflatMap" class="extype" target="_top">CoflatMap</a>[<span class="extype" name="scala.List">List</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@listInstance:cats.Traverse[List]withcats.MonadCombine[List]withcats.CoflatMap[List]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances</dd></dl></div>
+    </li><li name="cats.std.ListInstances#listOrder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listOrder[A](implicitevidence$1:cats.Order[A]):cats.Order[List[A]]"></a>
+      <a id="listOrder[A](Order[A]):Order[List[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">listOrder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.Order">Order</span>[<span class="extype" name="cats.std.ListInstances.listOrder.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.Order">Order</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="cats.std.ListInstances.listOrder.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@listOrder[A](implicitevidence$1:cats.Order[A]):cats.Order[List[A]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances</dd></dl></div>
+    </li><li name="cats.std.ListInstances#listShow" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listShow[A](implicitevidence$2:cats.Show[A]):cats.Show[List[A]]"></a>
+      <a id="listShow[A](Show[A]):Show[List[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">listShow</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://typelevel.org/cats/api/index.html#cats.Show" class="extype" target="_top">Show</a>[<span class="extype" name="cats.std.ListInstances.listShow.A">A</span>]</span>)</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.Show" class="extype" target="_top">Show</a>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="cats.std.ListInstances.listShow.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@listShow[A](implicitevidence$2:cats.Show[A]):cats.Show[List[A]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances</dd></dl></div>
+    </li><li name="io.circe.Decoder#monadDecode" visbl="pub" data-isabs="false" fullComment="no" group="Instances">
+      <a id="monadDecode:cats.Monad[io.circe.Decoder]"></a>
+      <a id="monadDecode:Monad[Decoder]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">monadDecode</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.Monad" class="extype" target="_top">Monad</a>[<a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Decoder$@monadDecode:cats.Monad[io.circe.Decoder]" title="Permalink" target="_top">
@@ -1200,6 +1321,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.TupleDecoders#nelSemigroup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nelSemigroup:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a>
+      <a id="nelSemigroup:Semigroup[NonEmptyList[DecodingFailure]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nelSemigroup</span><span class="result">: <span class="extype" name="cats.Semigroup">Semigroup</span>[<span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@nelSemigroup:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TupleDecoders</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -1234,6 +1372,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="cats.std.ListInstances1#partialOrderList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="partialOrderList[A](implicitevidence$3:cats.PartialOrder[A]):cats.PartialOrder[List[A]]"></a>
+      <a id="partialOrderList[A](PartialOrder[A]):PartialOrder[List[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partialOrderList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.PartialOrder">PartialOrder</span>[<span class="extype" name="cats.std.ListInstances1.partialOrderList.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.PartialOrder">PartialOrder</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="cats.std.ListInstances1.partialOrderList.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder$@partialOrderList[A](implicitevidence$3:cats.PartialOrder[A]):cats.PartialOrder[List[A]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ListInstances1</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -1342,7 +1497,7 @@
       <a id="withReattempt[A]((ACursor)⇒Result[A]):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1353,7 +1508,7 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Construct an instance from a function that will reattempt on failure.</p>
+      <p class="shortcomment cmt">Construct an instance from a function that may reattempt on failure.</p>
     </li></ol>
             </div>
 
@@ -1373,6 +1528,12 @@
               <h3>Inherited from <span class="extype" name="io.circe.LowPriorityDecoders.fresh$macro$3">fresh$macro$3</span></h3>
             </div><div class="parent" name="io.circe.TupleDecoders">
               <h3>Inherited from <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span></h3>
+            </div><div class="parent" name="cats.std.ListInstances">
+              <h3>Inherited from <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances" class="extype" target="_top">ListInstances</a></h3>
+            </div><div class="parent" name="cats.std.ListInstances1">
+              <h3>Inherited from <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances1" class="extype" target="_top">ListInstances1</a></h3>
+            </div><div class="parent" name="cats.std.ListInstances2">
+              <h3>Inherited from <a href="http://typelevel.org/cats/api/index.html#cats.std.ListInstances2" class="extype" target="_top">ListInstances2</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

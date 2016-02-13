@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Constructors, type class instances, and other utilities for <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/JsonObject.scala" target="_blank">JsonObject.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -193,7 +193,7 @@
       <a id="empty:JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -227,7 +227,7 @@
       <a id="eqJsonObject:Eq[JsonObject]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -284,11 +284,11 @@
       <a id="from[F[_]](F[(String,Json)])(Foldable[F]):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">from</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: <span class="extype" name="io.circe.JsonObject.from.F">F</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="F">F: <a href="https://non.github.io/cats/api/index.html#cats.Foldable" class="extype" target="_top">Foldable</a>[<span class="extype" name="io.circe.JsonObject.from.F">F</span>]</span>)</span><span class="result">: <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+        <span class="name">from</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: <span class="extype" name="io.circe.JsonObject.from.F">F</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="Json.html" class="extype" name="io.circe.Json">Json</a>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="F">F: <a href="http://typelevel.org/cats/api/index.html#cats.Foldable" class="extype" target="_top">Foldable</a>[<span class="extype" name="io.circe.JsonObject.from.F">F</span>]</span>)</span><span class="result">: <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.JsonObject$@from[F[_]](f:F[(String,io.circe.Json)])(implicitF:cats.Foldable[F]):io.circe.JsonObject" title="Permalink" target="_top">
@@ -301,7 +301,7 @@
       <a id="fromIndexedSeq(IndexedSeq[(String,Json)]):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -318,7 +318,7 @@
       <a id="fromMap(Map[String,Json]):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -438,11 +438,11 @@
       <a id="showJsonObject:Show[JsonObject]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier">implicit final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">showJsonObject</span><span class="result">: <a href="https://non.github.io/cats/api/index.html#cats.Show" class="extype" target="_top">Show</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
+        <span class="name">showJsonObject</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.Show" class="extype" target="_top">Show</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.JsonObject$@showJsonObject:cats.Show[io.circe.JsonObject]" title="Permalink" target="_top">
@@ -455,7 +455,7 @@
       <a id="singleton(String,Json):JsonObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">

@@ -52,7 +52,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A JSON number with optimization by cases.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/JsonNumber.scala" target="_blank">JsonNumber.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -100,23 +100,78 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="io.circe.JsonNumber#toBigDecimal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="toBigDecimal:BigDecimal"></a>
-      <a id="toBigDecimal:BigDecimal"></a>
+              <ol><li name="io.circe.JsonNumber#isInfinity" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="isInfinity:Boolean"></a>
+      <a id="isInfinity:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toBigDecimal</span><span class="result">: <span class="extype" name="scala.BigDecimal">BigDecimal</span></span>
+        <span class="name">isInfinity</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber@toBigDecimal:BigDecimal" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.JsonNumber@isInfinity:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and is either
+<code>Double.NegativeInfinity</code> or <code>Double.PositiveInfinity</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and is either
+<code>Double.NegativeInfinity</code> or <code>Double.PositiveInfinity</code>.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="io.circe.JsonNumber#isNaN" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="isNaN:Boolean"></a>
+      <a id="isNaN:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isNaN</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonNumber@isNaN:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and it is <code>Double.NaN</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and it is <code>Double.NaN</code>.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="io.circe.JsonNumber#toBigDecimal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="toBigDecimal:Option[BigDecimal]"></a>
+      <a id="toBigDecimal:Option[BigDecimal]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toBigDecimal</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.BigDecimal">BigDecimal</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonNumber@toBigDecimal:Option[BigDecimal]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Return this number as a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p>
+    </li><li name="io.circe.JsonNumber#toBigInt" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="toBigInt:Option[BigInt]"></a>
+      <a id="toBigInt:Option[BigInt]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toBigInt</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.JsonNumber@toBigInt:Option[BigInt]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return this number as a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a> if it's a sufficiently small whole number.</p>
     </li><li name="io.circe.JsonNumber#toDouble" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="toDouble:Double"></a>
       <a id="toDouble:Double"></a>
@@ -295,7 +350,7 @@ is <code>1e99</code>, for example, this will return <code>Long.MaxValue</code>.
       <a id="asJson:Option[Json]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -312,7 +367,7 @@ is <code>1e99</code>, for example, this will return <code>Long.MaxValue</code>.
       <a id="asJsonOrNull:Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -331,7 +386,7 @@ distinguish between <code>Double.NaN</code> and infinity.
       <a id="asJsonOrString:Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -474,7 +529,7 @@ handling for interoperability with other JSON systems.
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -556,7 +611,7 @@ handling for interoperability with other JSON systems.
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -569,26 +624,6 @@ handling for interoperability with other JSON systems.
     </span>
       <p class="shortcomment cmt">Hashing that is consistent with our universal equality.</p><div class="fullcomment"><div class="comment cmt"><p>Hashing that is consistent with our universal equality.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.JsonNumber">JsonNumber</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.JsonNumber#isInfinity" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isInfinity:Boolean"></a>
-      <a id="isInfinity:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isInfinity</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber@isInfinity:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and is either
-<code>Double.NegativeInfinity</code> or <code>Double.PositiveInfinity</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and is either
-<code>Double.NegativeInfinity</code> or <code>Double.PositiveInfinity</code>.
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -606,30 +641,12 @@ handling for interoperability with other JSON systems.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.JsonNumber#isNaN" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isNaN:Boolean"></a>
-      <a id="isNaN:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isNaN</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber@isNaN:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and it is <code>Double.NaN</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return <code>true</code> if and only if this number wraps a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Double" class="extype" target="_top">scala.Double</a> and it is <code>Double.NaN</code>.
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="io.circe.JsonNumber#isReal" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isReal:Boolean"></a>
       <a id="isReal:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -710,29 +727,12 @@ handling for interoperability with other JSON systems.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.JsonNumber#toBigInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toBigInt:Option[BigInt]"></a>
-      <a id="toBigInt:Option[BigInt]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toBigInt</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber@toBigInt:Option[BigInt]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Return this number as a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a> if it is an integer.</p>
     </li><li name="io.circe.JsonNumber#toByte" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="toByte:Option[Byte]"></a>
       <a id="toByte:Option[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -749,7 +749,7 @@ handling for interoperability with other JSON systems.
       <a id="toInt:Option[Int]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -766,7 +766,7 @@ handling for interoperability with other JSON systems.
       <a id="toShort:Option[Short]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -795,30 +795,12 @@ handling for interoperability with other JSON systems.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.JsonNumber#truncateToBigInt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="truncateToBigInt:BigInt"></a>
-      <a id="truncateToBigInt:BigInt"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">truncateToBigInt</span><span class="result">: <span class="extype" name="scala.BigInt">BigInt</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.JsonNumber@truncateToBigInt:BigInt" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Truncate the number to a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Truncate the number to a <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><p>Truncation means that we round toward zero to the closest <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.
-</p></div></div>
     </li><li name="io.circe.JsonNumber#truncateToByte" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="truncateToByte:Byte"></a>
       <a id="truncateToByte:Byte"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -837,7 +819,7 @@ is <code>1e99</code>, for example, this will return <code>Byte.MaxValue</code>.
       <a id="truncateToInt:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -856,7 +838,7 @@ is <code>1e99</code>, for example, this will return <code>Byte.MaxValue</code>.
       <a id="truncateToShort:Short"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
