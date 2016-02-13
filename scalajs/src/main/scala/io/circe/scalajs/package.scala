@@ -26,20 +26,20 @@ package object scalajs {
   /**
    * Convert [[scala.scalajs.js.Any]] to [[Json]].
    */
-  def convertJsToJson(input: js.Any): Xor[Throwable, Json] = Xor.catchNonFatal(
+  final def convertJsToJson(input: js.Any): Xor[Throwable, Json] = Xor.catchNonFatal(
     unsafeConvertAnyToJson(input)
   )
 
   /**
    * Decode [[scala.scalajs.js.Any]].
    */
-  def decodeJs[A](input: js.Any)(implicit d: Decoder[A]): Xor[Throwable, A] =
+  final def decodeJs[A](input: js.Any)(implicit d: Decoder[A]): Xor[Throwable, A] =
     convertJsToJson(input).flatMap(d.decodeJson)
 
   /**
    * Convert [[Json]] to [[scala.scalajs.js.Any]].
    */
-  def convertJsonToJs(input: Json): js.Any = input match {
+  final def convertJsonToJs(input: Json): js.Any = input match {
     case JString(s) => s
     case JNumber(n) => n.toDouble
     case JBoolean(b) => b
@@ -48,13 +48,13 @@ package object scalajs {
     case JObject(obj) => obj.toMap.mapValues(convertJsonToJs).toJSDictionary
   }
 
-  implicit class EncoderJsOps[A](val a: A) extends AnyVal {
-    def asJsAny(implicit e: Encoder[A]): js.Any = convertJsonToJs(e(a))
+  implicit final class EncoderJsOps[A](val wrappedEncodeable: A) extends AnyVal {
+    def asJsAny(implicit encoder: Encoder[A]): js.Any = convertJsonToJs(encoder(wrappedEncodeable))
   }
 
-  implicit def decodeJsUndefOr[A](implicit d: Decoder[A]): Decoder[js.UndefOr[A]] =
+  implicit final def decodeJsUndefOr[A](implicit d: Decoder[A]): Decoder[js.UndefOr[A]] =
     Decoder[Option[A]].map(_.fold[js.UndefOr[A]](js.undefined)(js.UndefOr.any2undefOrA))
 
-  implicit def encodeJsUndefOr[A](implicit e: Encoder[A]): Encoder[js.UndefOr[A]] =
+  implicit final def encodeJsUndefOr[A](implicit e: Encoder[A]): Encoder[js.UndefOr[A]] =
     Encoder.instance(_.fold(Json.empty)(e(_)))
 }
