@@ -232,7 +232,7 @@ lazy val parserBase = crossProject.in(file("parser"))
   .settings(allSettings: _*)
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "parser").dependsOn(jawn))
-  .jsConfigure(_.copy(id = "parserJS")).dependsOn(scalajs))
+  .jsConfigure(_.copy(id = "parserJS").dependsOn(scalajs))
   .dependsOn(coreBase)
 
 lazy val parser = parserBase.jvm
