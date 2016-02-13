@@ -162,7 +162,7 @@ sealed abstract class JsonNumber extends Serializable {
   override final def hashCode: Int = if (isReal) toBiggerDecimal.hashCode else toDouble.hashCode
 }
 
-private[circe] abstract class BiggerDecimalJsonNumber extends JsonNumber {
+private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = toBiggerDecimal.toDouble

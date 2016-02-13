@@ -19,10 +19,6 @@ script:
     then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
     else
       sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM &&
-      if [[ "$(java -version 2>&1 | awk -F '\"' '/version/ {print $2}')" < "1.8" ]];
-        then echo "Skipping circe-java8 build and tests";
-        else sbt ++$TRAVIS_SCALA_VERSION java8/test;
-      fi &&
       sbt ++$TRAVIS_SCALA_VERSION coverageReport;
     fi
 

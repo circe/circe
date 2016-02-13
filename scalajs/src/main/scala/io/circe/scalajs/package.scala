@@ -41,12 +41,7 @@ package object scalajs {
    */
   def convertJsonToJs(input: Json): js.Any = input match {
     case JString(s) => s
-    case JNumber(n) => n match {
-      case JsonLong(x) => x
-      case JsonDouble(x) => x
-      case JsonDecimal(x) => x
-      case JsonBigDecimal(x) => x.toDouble
-    }
+    case JNumber(n) => n.toDouble
     case JBoolean(b) => b
     case JArray(arr) => arr.map(convertJsonToJs).toJSArray
     case JNull => undefined
