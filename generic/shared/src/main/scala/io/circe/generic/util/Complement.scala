@@ -1,7 +1,7 @@
 package io.circe.generic.util
 
 import shapeless._
-import shapeless.labelled.{ FieldType, field }
+import shapeless.labelled.{ field, FieldType }
 
 /**
  * Supports removal and insertion of an element (possibly unlabeled) into an `HList`.
