@@ -61,7 +61,7 @@ lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
 
 lazy val commonJsSettings = Seq(
   postLinkJSEnv := NodeJSEnv().value,
-  scalaJSStage in Global := FastOptStage
+  scalaJSUseRhino in Global := false
 )
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
