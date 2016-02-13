@@ -115,6 +115,7 @@ lazy val circe = project.in(file("."))
     jawn,
     jackson,
     optics,
+    scalajs,
     streaming,
     async,
     benchmark
@@ -231,11 +232,20 @@ lazy val parserBase = crossProject.in(file("parser"))
   .settings(allSettings: _*)
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "parser").dependsOn(jawn))
-  .jsConfigure(_.copy(id = "parserJS"))
+  .jsConfigure(_.copy(id = "parserJS").dependsOn(scalajs))
   .dependsOn(coreBase)
 
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
+
+lazy val scalajs = project
+  .settings(
+    description := "circe scalajs",
+    moduleName := "circe-scalajs"
+  )
+  .settings(allSettings)
+  .enablePlugins(ScalaJSPlugin)
+  .dependsOn(coreJS)
 
 lazy val testsBase = crossProject.in(file("tests"))
   .settings(
@@ -267,7 +277,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
-    )
+    ).dependsOn(scalajs)
   )
   .dependsOn(
     numbersBase % "compile->test",
@@ -457,6 +467,7 @@ val jsProjects = Seq(
   "genericJS",
   "refinedJS",
   "parserJS",
+  "scalajs",
   "testsJS"
 )
 
