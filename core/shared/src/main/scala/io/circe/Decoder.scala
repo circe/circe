@@ -295,33 +295,58 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.Float]].
+   *
+   * See [[decodeDouble]] for discussion of the approach taken for floating-point decoding.
+   *
    * @group Decoding
    */
   implicit final val decodeFloat: Decoder[Float] = instance { c =>
     c.focus match {
       case JNull => Xor.right(Float.NaN)
       case JNumber(number) => Xor.right(number.toDouble.toFloat)
+      case JString(string) => Xor.fromOption(
+        JsonNumber.fromString(string).map(_.toDouble.toFloat),
+        DecodingFailure("Float", c.history)
+      )
       case _ => Xor.left(DecodingFailure("Float", c.history))
     }
   }
 
   /**
+   * Decode a JSON value into a [[scala.Double]].
+   *
+   * Unlike the integral decoders provided here, this decoder will accept values that are too large
+   * to be represented and will return them as `PositiveInfinity` or `NegativeInfinity`, and it may
+   * lose precision.
+   *
    * @group Decoding
    */
   implicit final val decodeDouble: Decoder[Double] = instance { c =>
     c.focus match {
       case JNull => Xor.right(Double.NaN)
       case JNumber(number) => Xor.right(number.toDouble)
+      case JString(string) => Xor.fromOption(
+        JsonNumber.fromString(string).map(_.toDouble),
+        DecodingFailure("Double", c.history)
+      )
       case _ => Xor.left(DecodingFailure("Double", c.history))
     }
   }
 
   /**
+   * Decode a JSON value into a [[scala.Byte]].
+   *
+   * See [[decodeLong]] for discussion of the approach taken for integral decoding.
+   *
    * @group Decoding
    */
   implicit final val decodeByte: Decoder[Byte] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToByte)
+      case JNumber(number) => Xor.fromOption(
+        number.toByte,
+        DecodingFailure("Byte", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toByte)
       } catch {
@@ -332,11 +357,18 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.Short]].
+   *
+   * See [[decodeLong]] for discussion of the approach taken for integral decoding.
+   *
    * @group Decoding
    */
   implicit final val decodeShort: Decoder[Short] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToShort)
+      case JNumber(number) => Xor.fromOption(
+        number.toShort,
+        DecodingFailure("Short", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toShort)
       } catch {
@@ -347,11 +379,18 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.Int]].
+   *
+   * See [[decodeLong]] for discussion of the approach taken for integral decoding.
+   *
    * @group Decoding
    */
   implicit final val decodeInt: Decoder[Int] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToInt)
+      case JNumber(number) => Xor.fromOption(
+        number.toInt,
+        DecodingFailure("Int", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toInt)
       } catch {
@@ -362,11 +401,21 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.Long]].
+   *
+   * Decoding will fail if the value doesn't represent a whole number within the range of the target
+   * type (although it can have a decimal part: e.g. `10.0` will be successfully decoded, but
+   * `10.01` will not). If the value is a JSON string, the decoder will attempt to parse it as a
+   * number.
+   *
    * @group Decoding
    */
   implicit final val decodeLong: Decoder[Long] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToLong)
+      case JNumber(number) => Xor.fromOption(
+        number.toLong,
+        DecodingFailure("Long", c.history)
+      )
       case JString(string) => try {
         Xor.right(string.toLong)
       } catch {
@@ -377,11 +426,21 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.math.BigInt]].
+   *
+   * Note that decoding will fail if the number has a large number of digits (the limit is currently
+   * `1 << 18`, or around a quarter million). Larger numbers can be decoded by mapping over a
+   * [[scala.math.BigDecimal]], but be aware that the conversion to the integral form can be
+   * computationally expensive.
+   *
    * @group Decoding
    */
   implicit final val decodeBigInt: Decoder[BigInt] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.truncateToBigInt)
+      case JNumber(number) => Xor.fromOption(
+        number.toBigInt,
+        DecodingFailure("BigInt", c.history)
+      )
       case JString(string) => try {
         Xor.right(BigInt(string))
       } catch {
@@ -392,11 +451,21 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   }
 
   /**
+   * Decode a JSON value into a [[scala.math.BigDecimal]].
+   *
+   * Note that decoding will fail on some very large values that could in principle be represented
+   * as `BigDecimal`s (specifically if the `scale` is out of the range of `scala.Int` when the
+   * `unscaledValue` is adjusted to have no trailing zeros). These large values can, however, be
+   * round-tripped through `JsonNumber`, so you may wish to use [[decodeJsonNumber]] in these cases.
+   *
    * @group Decoding
    */
   implicit final val decodeBigDecimal: Decoder[BigDecimal] = instance { c =>
     c.focus match {
-      case JNumber(number) => Xor.right(number.toBigDecimal)
+      case JNumber(number) => Xor.fromOption(
+        number.toBigDecimal,
+        DecodingFailure("BigDecimal", c.history)
+      )
       case JString(string) => try {
         Xor.right(BigDecimal(string))
       } catch {

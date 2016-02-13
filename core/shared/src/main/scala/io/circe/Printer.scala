@@ -171,12 +171,7 @@ final case class Printer(
           }
           builder.append(p.rBraces)
         case JString(s) => encloseJsonString(s)
-        case JNumber(n) => n match {
-          case JsonLong(x) => builder.append(x.toString)
-          case JsonDouble(x) => builder.append(x.toString)
-          case JsonDecimal(x) => builder.append(x)
-          case JsonBigDecimal(x) => builder.append(x.toString)
-        }
+        case JNumber(n) => builder.append(n.toString)
         case JBoolean(b)   => builder.append(if (b) trueText else falseText)
         case JArray(arr) =>
           if (arr.length == 0) builder.append(p.lrEmptyBrackets) else {

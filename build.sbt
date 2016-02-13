@@ -81,6 +81,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
       genericJS,
       java8,
       literal, literalJS,
+      numbersJS,
       refinedJS,
       parserJS,
       tests,
@@ -104,6 +105,7 @@ lazy val circe = project.in(file("."))
       """.stripMargin
   )
   .aggregate(
+    numbers, numbersJS,
     core, coreJS,
     generic, genericJS,
     literal, literalJS,
@@ -118,6 +120,26 @@ lazy val circe = project.in(file("."))
     benchmark
   )
   .dependsOn(core, generic, literal, parser)
+
+lazy val numbersBase = crossProject.in(file("numbers"))
+  .settings(
+    description := "circe numbers",
+    moduleName := "circe-numbers",
+    name := "numbers"
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % "test",
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % "test"
+    )
+  )
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "numbers"))
+  .jsConfigure(_.copy(id = "numbersJS"))
+
+lazy val numbers = numbersBase.jvm
+lazy val numbersJS = numbersBase.js
 
 lazy val coreBase = crossProject.in(file("core"))
   .settings(
@@ -135,6 +157,7 @@ lazy val coreBase = crossProject.in(file("core"))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
   .jsConfigure(_.copy(id = "coreJS"))
+  .dependsOn(numbersBase)
 
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
@@ -246,7 +269,14 @@ lazy val testsBase = crossProject.in(file("tests"))
       libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
     )
   )
-  .dependsOn(coreBase, genericBase, literalBase, refinedBase, parserBase)
+  .dependsOn(
+    numbersBase % "compile->test",
+    coreBase,
+    genericBase,
+    literalBase,
+    refinedBase,
+    parserBase
+  )
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -409,6 +439,7 @@ credentials ++= (
 ).toSeq
 
 val jvmProjects = Seq(
+  "numbers",
   "core",
   "generic",
   "refined",
@@ -421,6 +452,7 @@ val jvmProjects = Seq(
 )
 
 val jsProjects = Seq(
+  "numbersJS",
   "coreJS",
   "genericJS",
   "refinedJS",
