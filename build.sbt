@@ -89,6 +89,25 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
     )
 )
 
+lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
+  numbers, numbersJS,
+  core, coreJS,
+  generic, genericJS,
+  literal, literalJS,
+  refined, refinedJS,
+  parser, parserJS,
+  tests, testsJS,
+  jawn,
+  jackson,
+  optics,
+  scalajs,
+  streaming,
+  async,
+  benchmark
+) ++ (
+  if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
+)
+
 lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(docSettings)
@@ -104,22 +123,7 @@ lazy val circe = project.in(file("."))
         |import cats.data.Xor
       """.stripMargin
   )
-  .aggregate(
-    numbers, numbersJS,
-    core, coreJS,
-    generic, genericJS,
-    literal, literalJS,
-    refined, refinedJS,
-    parser, parserJS,
-    tests, testsJS,
-    jawn,
-    jackson,
-    optics,
-    scalajs,
-    streaming,
-    async,
-    benchmark
-  )
+  .aggregate(aggregatedProjects: _*)
   .dependsOn(core, generic, literal, parser)
 
 lazy val numbersBase = crossProject.in(file("numbers"))
@@ -459,6 +463,16 @@ val jvmProjects = Seq(
   "jackson",
   "async",
   "benchmark"
+) ++ (
+  if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
+)
+
+val jvmTestProjects = Seq(
+  "tests",
+  "optics",
+  "benchmark"
+) ++ (
+  if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
 )
 
 val jsProjects = Seq(
@@ -472,7 +486,7 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM;tests/test;optics/test;benchmark/test;scalastyle;unidoc")
+addCommandAlias("validateJVM", ";buildJVM" + jvmTestProjects.map(";" + _ + "/test").mkString + ";scalastyle;unidoc")
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
