@@ -2,13 +2,25 @@ package io.circe.scalajs
 
 import algebra.Eq
 import cats.data.Xor
-import io.circe.generic.auto._
+import io.circe.{ Decoder, Encoder }
+import io.circe.generic.semiauto._
 import io.circe.tests.CirceSuite
 import scala.scalajs.js
 import scalajs.js.Dynamic
 
 case class Example(name: String)
+
+object Example {
+  implicit val decodeExample: Decoder[Example] = deriveDecoder
+  implicit val encodeExample: Encoder[Example] = deriveEncoder
+}
+
 case class UndefOrExample(name: js.UndefOr[String])
+
+object UndefOrExample {
+  implicit val decodeUndefOrExample: Decoder[UndefOrExample] = deriveDecoder
+  implicit val encodeUndefOrExample: Encoder[UndefOrExample] = deriveEncoder
+}
 
 class ScalaJsSuite extends CirceSuite {
   implicit val eqThrowable: Eq[Throwable] = Eq.fromUniversalEquals

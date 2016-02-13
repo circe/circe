@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.data.NonEmptyList
-import io.circe.generic.auto._
+import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
@@ -133,7 +133,17 @@ class AccumulatingDecoderSuite extends CirceSuite {
 
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
+  private object BadSample {
+    implicit val decodeBadSample: Decoder[BadSample] = deriveDecoder
+    implicit val encodeBadSample: Encoder[BadSample] = deriveEncoder
+  }
+
   private case class Sample(a: String, b: String, c: String)
+
+  private object Sample {
+    implicit val decodeSample: Decoder[Sample] = deriveDecoder
+    implicit val encodeSample: Encoder[Sample] = deriveEncoder
+  }
 
   test("Accumulating decoder returns as many errors as invalid elements in a case class") {
     check { (a: Int, b: Boolean, c: Int) =>

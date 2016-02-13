@@ -50,7 +50,7 @@ class RefinedSuite extends CirceSuite {
 }
 
 class RefinedFieldsSuite extends CirceSuite {
-  import io.circe.generic.auto._
+  import io.circe.generic.semiauto._
 
   case class RefinedFields(
     i: Int Refined Positive,
@@ -73,6 +73,9 @@ class RefinedFieldsSuite extends CirceSuite {
         RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
       )
     )
+
+    implicit val decodeRefinedFields: Decoder[RefinedFields] = deriveDecoder
+    implicit val encodeRefinedFields: Encoder[RefinedFields] = deriveEncoder
   }
 
   checkAll("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
