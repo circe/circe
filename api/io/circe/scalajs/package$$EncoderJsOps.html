@@ -94,7 +94,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.circe.scalajs.EncoderJsOps#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(a:A):io.circe.scalajs.package.EncoderJsOps[A]"></a>
+      <a id="&lt;init&gt;(wrappedEncodeable:A):io.circe.scalajs.package.EncoderJsOps[A]"></a>
       <a id="&lt;init&gt;:EncoderJsOps[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -102,10 +102,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">EncoderJsOps</span><span class="params">(<span name="a">a: <span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span></span>)</span>
+        <span class="name">EncoderJsOps</span><span class="params">(<span name="wrappedEncodeable">wrappedEncodeable: <span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@&lt;init&gt;(a:A):io.circe.scalajs.package.EncoderJsOps[A]" title="Permalink" target="_top">
+      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@&lt;init&gt;(wrappedEncodeable:A):io.circe.scalajs.package.EncoderJsOps[A]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -215,23 +215,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.scalajs.EncoderJsOps#a" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="a:A"></a>
-      <a id="a:A"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">a</span><span class="result">: <span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@a:A" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -250,7 +233,7 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.circe.scalajs.EncoderJsOps#asJsAny" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asJsAny(implicite:io.circe.Encoder[A]):scala.scalajs.js.Any"></a>
+      <a id="asJsAny(implicitencoder:io.circe.Encoder[A]):scala.scalajs.js.Any"></a>
       <a id="asJsAny(Encoder[A]):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -258,10 +241,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asJsAny</span><span class="params">(<span class="implicit">implicit </span><span name="e">e: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]</span>)</span><span class="result">: <a href="http://www.scala-js.org/api/scalajs-library/0.6.7/index.html#scala.scalajs.js.Any" class="extype" target="_top">Any</a></span>
+        <span class="name">asJsAny</span><span class="params">(<span class="implicit">implicit </span><span name="encoder">encoder: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]</span>)</span><span class="result">: <a href="http://www.scala-js.org/api/scalajs-library/0.6.7/index.html#scala.scalajs.js.Any" class="extype" target="_top">Any</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@asJsAny(implicite:io.circe.Encoder[A]):scala.scalajs.js.Any" title="Permalink" target="_top">
+      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@asJsAny(implicitencoder:io.circe.Encoder[A]):scala.scalajs.js.Any" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -425,6 +408,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.scalajs.EncoderJsOps#wrappedEncodeable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="wrappedEncodeable:A"></a>
+      <a id="wrappedEncodeable:A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wrappedEncodeable</span><span class="result">: <span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@wrappedEncodeable:A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
       <a id="→[B](B):(EncoderJsOps[A],B)"></a>
@@ -451,29 +451,8 @@
 
         <div id="values" class="values members">
               <h3>Shadowed Implicit Value Members</h3>
-              <ol><li name="io.circe.scalajs.EncoderJsOps#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="a:A"></a>
-      <a id="a:EncoderJsOps[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed">a</span><span class="result">: <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@a:A" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>] to
-            <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]] performed by method EncoderJsOps in <a href="package.html" class="extype" name="io.circe.scalajs">io.circe.scalajs</a>.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderJsOps: EncoderJsOps[EncoderJsOps[A]]).a</pre></div></dd></dl></div>
-    </li><li name="io.circe.scalajs.EncoderJsOps#asJsAny" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asJsAny(implicite:io.circe.Encoder[A]):scala.scalajs.js.Any"></a>
+              <ol><li name="io.circe.scalajs.EncoderJsOps#asJsAny" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asJsAny(implicitencoder:io.circe.Encoder[A]):scala.scalajs.js.Any"></a>
       <a id="asJsAny(Encoder[EncoderJsOps[A]]):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -481,10 +460,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed">asJsAny</span><span class="params">(<span class="implicit">implicit </span><span name="e">e: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]]</span>)</span><span class="result">: <a href="http://www.scala-js.org/api/scalajs-library/0.6.7/index.html#scala.scalajs.js.Any" class="extype" target="_top">Any</a></span>
+        <span class="implicit shadowed">asJsAny</span><span class="params">(<span class="implicit">implicit </span><span name="encoder">encoder: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]]</span>)</span><span class="result">: <a href="http://www.scala-js.org/api/scalajs-library/0.6.7/index.html#scala.scalajs.js.Any" class="extype" target="_top">Any</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@asJsAny(implicite:io.circe.Encoder[A]):scala.scalajs.js.Any" title="Permalink" target="_top">
+      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@asJsAny(implicitencoder:io.circe.Encoder[A]):scala.scalajs.js.Any" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -492,7 +471,28 @@
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>] to
             <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]] performed by method EncoderJsOps in <a href="package.html" class="extype" name="io.circe.scalajs">io.circe.scalajs</a>.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderJsOps: EncoderJsOps[EncoderJsOps[A]]).asJsAny(e)</pre></div></dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderJsOps: EncoderJsOps[EncoderJsOps[A]]).asJsAny(encoder)</pre></div></dd></dl></div>
+    </li><li name="io.circe.scalajs.EncoderJsOps#wrappedEncodeable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wrappedEncodeable:A"></a>
+      <a id="wrappedEncodeable:EncoderJsOps[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed">wrappedEncodeable</span><span class="result">: <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.scalajs.package$$EncoderJsOps@wrappedEncodeable:A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>] to
+            <a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<a href="" class="extype" name="io.circe.scalajs.EncoderJsOps">EncoderJsOps</a>[<span class="extype" name="io.circe.scalajs.EncoderJsOps.A">A</span>]] performed by method EncoderJsOps in <a href="package.html" class="extype" name="io.circe.scalajs">io.circe.scalajs</a>.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderJsOps: EncoderJsOps[EncoderJsOps[A]]).wrappedEncodeable</pre></div></dd></dl></div>
     </li></ol>
             </div>
 
