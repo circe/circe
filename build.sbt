@@ -64,6 +64,20 @@ lazy val commonJsSettings = Seq(
   scalaJSUseRhino in Global := false
 )
 
+lazy val noDocProjects: Seq[ProjectReference] = Seq[ProjectReference](
+  async,
+  benchmark,
+  coreJS,
+  genericJS,
+  java8,
+  literalJS,
+  numbersJS,
+  refinedJS,
+  parserJS,
+  tests,
+  testsJS
+)
+
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
@@ -73,20 +87,13 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
     "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(
-      async,
-      benchmark,
-      coreJS,
-      genericJS,
-      java8,
-      literalJS,
-      numbersJS,
-      refinedJS,
-      parserJS,
-      tests,
-      testsJS
-    )
+  unidocProjectFilter in (ScalaUnidoc, unidoc) := (
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) =>
+        inAnyProject -- inProjects((noDocProjects ++ Seq[ProjectReference](literal)): _*)
+      case _ => inAnyProject -- inProjects(noDocProjects: _*)
+    }
+  )
 )
 
 lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
