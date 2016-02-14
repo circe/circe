@@ -80,7 +80,7 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
       coreJS,
       genericJS,
       java8,
-      literal, literalJS,
+      literalJS,
       numbersJS,
       refinedJS,
       parserJS,
@@ -197,9 +197,12 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
       "org.typelevel" %%% "macro-compat" % "1.1.0"
     ),
-    publishArtifact in (Compile, packageDoc) := false,
-    publishArtifact in packageDoc := false,
-    sources in (Compile, doc) := Nil
+    sources in (Compile, doc) := (
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 11)) => (sources in (Compile, doc)).value
+        case _ => Nil
+      }
+    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "literal"))
