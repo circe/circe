@@ -104,24 +104,12 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-   * Combine two decoders.
-   */
-  @deprecated("Use and", "0.3.0")
-  final def &&&[B](fb: Decoder[B]): Decoder[(A, B)] = and(fb)
-
-  /**
    * Choose the first succeeding decoder.
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = Decoder.instance[AA] { c =>
     val res = apply(c).map(a => (a: AA))
     res.fold(_ => d(c), _ => res)
   }
-
-  /**
-   * Choose the first succeeding decoder.
-   */
-  @deprecated("Use or", "0.3.0")
-  final def |||[AA >: A](d: => Decoder[AA]): Decoder[AA] = or(d)
 
   /**
    * Run one or another decoder.

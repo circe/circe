@@ -34,22 +34,6 @@ final object semiauto {
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
   final class DerivationHelper[A] {
-    @deprecated("Use deriveDecoder", "0.3.0")
-    final def decoder[R](implicit
-      gen: LabelledGeneric.Aux[A, R],
-      decode: Lazy[DerivedDecoder[R]]
-    ): Decoder[A] = new Decoder[A] {
-      final def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
-    }
-
-    @deprecated("Use deriveEncoder", "0.3.0")
-    final def encoder[R](implicit
-      gen: LabelledGeneric.Aux[A, R],
-      encode: Lazy[DerivedObjectEncoder[R]]
-    ): ObjectEncoder[A] = new ObjectEncoder[A] {
-      final def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
-    }
-
     final def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
       ffp: FnFromProduct.Aux[P => C, A],
       gen: LabelledGeneric.Aux[C, T],

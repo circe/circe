@@ -68,12 +68,6 @@ abstract class ACursor private[circe](val any: HCursor) extends ACursorOperation
   final def or(c: => ACursor): ACursor = if (succeeded) this else c
 
   /**
-   * Return the current cursor or the given one if this one isn't successful.
-   */
-  @deprecated("Use or", "0.3.0")
-  final def |||(c: => ACursor): ACursor = or(c)
-
-  /**
    * Return a [[cats.data.Validated]] of the underlying cursor.
    */
   final def validation: Validated[HCursor, HCursor] = either.toValidated
