@@ -82,11 +82,11 @@ class JsonNumberSuite extends CirceSuite {
     }
   }
 
-  test("Eq[JsonNumber] distinguishes negative values") {
+  test("Eq[JsonNumber] distinguishes negative zeros") {
     assert(JsonNumber.unsafeIntegral("-0") =!= JsonNumber.unsafeIntegral("0"))
   }
 
-  test("Eq[JsonNumber] distinguishes negative values with fractional parts") {
+  test("Eq[JsonNumber] distinguishes negative zeros with fractional parts") {
     assert(JsonNumber.unsafeDecimal("-0.0") =!= JsonNumber.unsafeDecimal("0.0"))
   }
 

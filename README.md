@@ -39,9 +39,9 @@ you can just add the following to your build:
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core" % "0.3.0-SNAPSHOT",
-  "io.circe" %% "circe-generic" % "0.3.0-SNAPSHOT",
-  "io.circe" %% "circe-parser" % "0.3.0-SNAPSHOT"
+  "io.circe" %% "circe-core" % "0.3.0",
+  "io.circe" %% "circe-generic" % "0.3.0",
+  "io.circe" %% "circe-parser" % "0.3.0"
 )
 ```
 
@@ -117,11 +117,10 @@ with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalaj
 
 ### Lenses
 
-circe doesn't use or provide lenses in the `core` project (or at all, for now). This is related to
-the first point above, since [Monocle][monocle] has a Scalaz dependency, but we also feel that it
-simplifies the API. We are likely to add [an experimental `optics` subproject][optics-pr] in 0.3.0
-that will provide Monocle lenses (note that this will require your project to depend on both Scalaz
-and cats).
+circe doesn't use or provide lenses in the `core` project. This is related to the first point above,
+since [Monocle][monocle] has a Scalaz dependency, but we also feel that it simplifies the API. The
+0.3.0 release adds [an experimental `optics` subproject][optics-pr] that provides Monocle lenses
+(note that this will require your project to depend on both Scalaz and cats).
 
 ### Codec derivation
 
@@ -306,7 +305,7 @@ circe is a fork of Argonaut, and if you find it at all useful, you should thank
 the [Argonaut contributors][argonaut-contributors].
 
 circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archambault][archambault],
-and [Vladimir Kostyukov][vkostyukov]. After the 0.3.0 release, all pull requests will require two
+and [Vladimir Kostyukov][vkostyukov]. After the 0.4.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
 The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
@@ -319,15 +318,15 @@ Please see the [contributors' guide](CONTRIBUTING.md) for details on how to subm
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
    Paradise][paradise] plugin to your build. See the [quick start section](#quick-start) above for
    details.
-2. In the 0.3.0 snapshot, the `io.circe.generic` package depends on the Shapeless 2.3.0 snapshot,
-   which means that in principle it may stop working at any time. 0.3.0 will not be released until
+2. In the 0.4.0 snapshot, the `io.circe.generic` package depends on the Shapeless 2.3.0 snapshot,
+   which means that in principle it may stop working at any time. 0.4.0 will not be released until
    Shapeless 2.3.0 is available, and of course we will never publish a stable version with snapshot
    dependencies.
-3. The `refined` subproject (available only in the 0.3.0 snapshot) depends on refined 0.3.1, which
-   depends on Shapeless 2.2.5, which means that if you use it, you'll have to cross your fingers and
-   hope that you don't run into binary compatibility issues. This will be resolved before the 0.3.0
-   release, and the risk should be low in the meantime (because of how refined uses Shapeless), but
-   there is a chance you will run into problems.
+3. The `refined` subproject depends on refined 0.3, which depends on Shapeless 2.2.5, which means
+   that if you use it with the 0.4.0 snapshot, you'll have to cross your fingers and hope that you
+   don't run into binary compatibility issues. This will be resolved before the 0.4.0 release, and
+   the risk should be low in the meantime (because of how refined uses Shapeless), but there is a
+   chance you will run into problems.
 4. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
    provided by the `generic` subproject may stack overflow during compilation, which will result in
    the derived encoders or decoders simply not being found. Increasing the stack size available to
