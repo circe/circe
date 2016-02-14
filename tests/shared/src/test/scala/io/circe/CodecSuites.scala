@@ -3,6 +3,7 @@ package io.circe
 import java.util.UUID
 
 import algebra.Eq
+import cats.Show
 import cats.data._
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
@@ -51,6 +52,21 @@ class StdLibCodecSuite extends CirceSuite {
       val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
 
       json === target && json.as[(Int, String, Char)] === Xor.right(t)
+    }
+  }
+
+  test("A map with a custom values as keys can be encoded") {
+    case class Foo(value: String)
+
+    implicit val fooShow: Show[Foo] =
+      Show.show[Foo](_.value)
+
+    check { (s: String, i: Int) =>
+      val source: Map[Foo, Int] = Map(Foo(s) -> i)
+      val json = Encoder[Map[Foo, Int]].apply(source)
+      val target = Json.obj(s -> Json.int(i))
+
+      json === target
     }
   }
 
