@@ -24,12 +24,6 @@ sealed abstract class JsonObject extends Serializable {
   def add(k: String, j: Json): JsonObject
 
   /**
-   * Insert the given key-value pair.
-   */
-  @deprecated("Use add", "0.3.0")
-  final def +(k: String, j: Json): JsonObject = add(k, j)
-
-  /**
    * Prepend the given key-value pair.
    */
   def +:(f: (String, Json)): JsonObject
@@ -38,12 +32,6 @@ sealed abstract class JsonObject extends Serializable {
    * Remove the field with the given key (if it exists).
    */
   def remove(k: String): JsonObject
-
-  /**
-   * Remove the field with the given key (if it exists).
-   */
-  @deprecated("Use remove", "0.3.0")
-  final def -(k: String): JsonObject = remove(k)
 
   /**
    * Return the JSON value associated with the given field.
