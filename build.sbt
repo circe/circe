@@ -21,7 +21,7 @@ lazy val compilerOptions = Seq(
 )
 
 lazy val catsVersion = "0.4.1"
-lazy val shapelessVersion = "2.3.0-SNAPSHOT"
+lazy val shapelessVersion = "2.3.0-RC1"
 lazy val refinedVersion = "0.3.4"
 
 lazy val scalaTestVersion = "3.0.0-M9"
@@ -202,7 +202,7 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
   .settings(
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      "org.typelevel" %%% "macro-compat" % "1.1.1-SNAPSHOT"
+      "org.typelevel" %%% "macro-compat" % "1.1.1"
     ),
     sources in (Compile, doc) := (
       CrossVersion.partialVersion(scalaVersion.value) match {
