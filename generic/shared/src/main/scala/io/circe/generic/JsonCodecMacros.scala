@@ -6,11 +6,11 @@ import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 class JsonCodec extends scala.annotation.StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro JsonCodecMacrosMacros.jsonCodecAnnotationMacro
+  def macroTransform(annottees: Any*): Any = macro JsonCodecMacros.jsonCodecAnnotationMacro
 }
 
 @bundle
-private[generic] class JsonCodecMacrosMacros(val c: blackbox.Context) {
+private[generic] class JsonCodecMacros(val c: blackbox.Context) {
   import c.universe._
 
   def jsonCodecAnnotationMacro(annottees: Tree*): Tree = annottees match {
