@@ -37,15 +37,14 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
 
   private[this] val DecoderClass = symbolOf[Decoder[_]]
   private[this] val EncoderClass = symbolOf[Encoder[_]]
+  private[this] val semiautoObject = symbolOf[semiauto.type].asClass.module
 
   private[this] def codec(tpname: TypeName): List[Tree] = {
     val decodeNme = TermName("decode" + tpname.decodedName)
     val encodeNme = TermName("encode" + tpname.decodedName)
     List(
-      q"""implicit val $decodeNme: $DecoderClass[$tpname] =
-            _root_.io.circe.generic.semiauto.deriveDecoder[$tpname]""",
-      q"""implicit val $encodeNme: $EncoderClass[$tpname] =
-            _root_.io.circe.generic.semiauto.deriveEncoder[$tpname]"""
+      q"""implicit val $decodeNme: $DecoderClass[$tpname] = $semiautoObject.deriveDecoder[$tpname]""",
+      q"""implicit val $encodeNme: $EncoderClass[$tpname] = $semiautoObject.deriveEncoder[$tpname]"""
     )
   }
 }
