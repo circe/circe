@@ -48,7 +48,7 @@ class SemiautoDerivedSuite extends CirceSuite {
     implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] = deriveEncoder
   }
 
-  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
+  @JsonCodec case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
 
   object RecursiveWithOptionExample {
     implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
@@ -61,12 +61,6 @@ class SemiautoDerivedSuite extends CirceSuite {
 
     implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
       Arbitrary(atDepth(0))
-
-    implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
-      deriveDecoder
-
-    implicit val encodeRecursiveWithOptionExample: Encoder[RecursiveWithOptionExample] =
-      deriveEncoder
   }
 
   case class OvergenerationExampleInner(i: Int)
