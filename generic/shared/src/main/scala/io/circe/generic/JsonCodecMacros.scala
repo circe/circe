@@ -13,8 +13,11 @@ class JsonCodec extends scala.annotation.StaticAnnotation {
 private[generic] class JsonCodecMacros(val c: blackbox.Context) {
   import c.universe._
 
+  private[this] def isCaseClassOrSealed(clsDef: ClassDef) =
+    clsDef.mods.hasFlag(Flag.CASE) || clsDef.mods.hasFlag(Flag.SEALED)
+
   def jsonCodecAnnotationMacro(annottees: Tree*): Tree = annottees match {
-    case List(clsDef: ClassDef) if clsDef.mods.hasFlag(Flag.CASE) =>
+    case List(clsDef: ClassDef) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
        object ${clsDef.name.toTermName} {
@@ -24,7 +27,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
     case List(
       clsDef: ClassDef,
       q"object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
-    ) if clsDef.mods.hasFlag(Flag.CASE) =>
+    ) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
        object $objName extends { ..$objEarlyDefs} with ..$objParents { $objSelf =>
@@ -32,7 +35,8 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
          ..$objDefs
        }
        """
-    case _ => c.abort(c.enclosingPosition, "Invalid annotation target: must be a case class")
+    case _ => c.abort(c.enclosingPosition,
+      "Invalid annotation target: must be a case class or a sealed trait/class")
   }
 
   private[this] val DecoderClass = symbolOf[Decoder[_]]

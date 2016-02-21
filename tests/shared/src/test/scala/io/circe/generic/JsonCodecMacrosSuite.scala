@@ -59,8 +59,7 @@ package jsoncodecmacrossuiteaux {
 
   // Hierarchy
 
-//  @JsonCodec
-  sealed trait Hierarchy
+  @JsonCodec sealed trait Hierarchy
   final case class Hierarchy1(i: Int, s: String) extends Hierarchy
   final case class Hierarchy2(xs: List[String]) extends Hierarchy
   final case class Hierarchy3(s: Single, d: Double) extends Hierarchy
@@ -85,8 +84,7 @@ package jsoncodecmacrossuiteaux {
 
   // RecursiveHierarchy
 
-//  @JsonCodec
-  sealed trait RecursiveHierarchy
+  @JsonCodec sealed trait RecursiveHierarchy
   final case class BaseRecursiveHierarchy(a: String) extends RecursiveHierarchy
   final case class NestedRecursiveHierarchy(r: RecursiveHierarchy) extends RecursiveHierarchy
 
@@ -124,7 +122,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
 //  checkAll("Codec[Typed[Int]]", CodecTests[Typed[Int]].codec)
-//  checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
-//  checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
+  checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
+  checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 }
