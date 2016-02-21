@@ -14,7 +14,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
   import c.universe._
 
   def jsonCodecAnnotationMacro(annottees: Tree*): Tree = annottees match {
-    case List(clsDef: ClassDef) if clsDef.mods hasFlag Flag.CASE =>
+    case List(clsDef: ClassDef) if clsDef.mods.hasFlag(Flag.CASE) =>
       q"""
        $clsDef
        object ${clsDef.name.toTermName} {
@@ -24,7 +24,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
     case List(
       clsDef: ClassDef,
       q"object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
-    ) if clsDef.mods hasFlag Flag.CASE =>
+    ) if clsDef.mods.hasFlag(Flag.CASE) =>
       q"""
        $clsDef
        object $objName extends { ..$objEarlyDefs} with ..$objParents { $objSelf =>
