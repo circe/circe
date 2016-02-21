@@ -21,7 +21,8 @@ lazy val compilerOptions = Seq(
 )
 
 lazy val catsVersion = "0.4.1"
-lazy val shapelessVersion = "2.3.0-RC1"
+lazy val jawnVersion = "0.8.4"
+lazy val shapelessVersion = "2.3.0-RC2"
 lazy val refinedVersion = "0.3.4"
 
 lazy val scalaTestVersion = "3.0.0-M9"
@@ -290,7 +291,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, async))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
-      libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
+      libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
     ).dependsOn(scalajs)
   )
   .dependsOn(
@@ -312,7 +313,7 @@ lazy val jawn = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
+    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
   )
   .dependsOn(core)
 
