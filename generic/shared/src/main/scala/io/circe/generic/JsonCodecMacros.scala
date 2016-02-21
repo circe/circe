@@ -59,7 +59,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
       def mkImplicitParams(typeSymbol: TypeSymbol) =
         tparamNames map { tparamName =>
           val paramName = c.freshName(tparamName.toTermName)
-          val paramType = tq"$typeSymbol[${tparamName}]"
+          val paramType = tq"$typeSymbol[$tparamName]"
           q"$paramName: $paramType"
         }
       val decodeParams = mkImplicitParams(DecoderClass)
