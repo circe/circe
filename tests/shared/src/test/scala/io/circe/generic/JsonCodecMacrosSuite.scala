@@ -39,21 +39,39 @@ package jsoncodecmacrossuiteaux {
       Arbitrary(Arbitrary.arbitrary[Int].map(Single(_)))
   }
 
-  // Typed
+  // Typed1
 
-//  @JsonCodec
-  final case class Typed[A](i: Int, a: A, j: Int)
+  @JsonCodec final case class Typed1[A](i: Int, a: A, j: Int)
 
-  object Typed {
-    implicit def eqTyped[A: Eq]: Eq[Typed[A]] = Eq.by(t => (t.i, t.a, t.j))
+  object Typed1 {
+    implicit def eqTyped1[A: Eq]: Eq[Typed1[A]] = Eq.by(t => (t.i, t.a, t.j))
 
-    implicit def arbitraryTyped[A](implicit A: Arbitrary[A]): Arbitrary[Typed[A]] =
+    implicit def arbitraryTyped1[A](implicit A: Arbitrary[A]): Arbitrary[Typed1[A]] =
       Arbitrary(
         for {
           i <- Arbitrary.arbitrary[Int]
           a <- A.arbitrary
           j <- Arbitrary.arbitrary[Int]
-        } yield Typed(i, a, j)
+        } yield Typed1(i, a, j)
+      )
+  }
+
+  // Typed
+
+  @JsonCodec final case class Typed2[A, B](i: Int, a: A, b: B, j: Int)
+
+  object Typed2 {
+    implicit def eqTyped2[A: Eq, B: Eq]: Eq[Typed2[A, B]] = Eq.by(t => (t.i, t.a, t.b, t.j))
+
+    implicit def arbitraryTyped2[A, B](implicit A: Arbitrary[A], B: Arbitrary[B])
+    : Arbitrary[Typed2[A, B]] =
+      Arbitrary(
+        for {
+          i <- Arbitrary.arbitrary[Int]
+          a <- A.arbitrary
+          b <- B.arbitrary
+          j <- Arbitrary.arbitrary[Int]
+        } yield Typed2(i, a, b, j)
       )
   }
 
@@ -121,7 +139,8 @@ package jsoncodecmacrossuiteaux {
 class JsonCodecMacrosSuite extends CirceSuite {
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
-//  checkAll("Codec[Typed[Int]]", CodecTests[Typed[Int]].codec)
+  checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
+  checkAll("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
   checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
   checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
