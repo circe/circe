@@ -31,8 +31,8 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
       q"""
        $clsDef
        object $objName extends { ..$objEarlyDefs} with ..$objParents { $objSelf =>
-         ..${codec(clsDef)}
          ..$objDefs
+         ..${codec(clsDef)}
        }
        """
     case _ => c.abort(c.enclosingPosition,
