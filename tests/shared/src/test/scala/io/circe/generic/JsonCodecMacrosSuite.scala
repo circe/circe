@@ -83,9 +83,9 @@ package jsoncodecmacrossuiteaux {
   final case class Hierarchy3(s: Single, d: Double) extends Hierarchy
 
   object Hierarchy {
-    implicit val eqFoo: Eq[Hierarchy] = Eq.fromUniversalEquals
+    implicit val eqHierarchy: Eq[Hierarchy] = Eq.fromUniversalEquals
 
-    implicit val arbitraryFoo: Arbitrary[Hierarchy] = Arbitrary(
+    implicit val arbitraryHierarchy: Arbitrary[Hierarchy] = Arbitrary(
       Gen.oneOf(
         for {
           i <- Arbitrary.arbitrary[Int]
@@ -107,7 +107,7 @@ package jsoncodecmacrossuiteaux {
   final case class NestedRecursiveHierarchy(r: RecursiveHierarchy) extends RecursiveHierarchy
 
   object RecursiveHierarchy {
-    implicit val eqRecursiveAdtExample: Eq[RecursiveHierarchy] = Eq.fromUniversalEquals
+    implicit val eqRecursiveHierarchy: Eq[RecursiveHierarchy] = Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveHierarchy] = if (depth < 3)
       Gen.oneOf(
@@ -115,7 +115,7 @@ package jsoncodecmacrossuiteaux {
         atDepth(depth + 1).map(NestedRecursiveHierarchy(_))
       ) else Arbitrary.arbitrary[String].map(BaseRecursiveHierarchy(_))
 
-    implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveHierarchy] =
+    implicit val arbitraryRecursiveHierarchy: Arbitrary[RecursiveHierarchy] =
       Arbitrary(atDepth(0))
   }
 
