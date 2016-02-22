@@ -56,7 +56,7 @@ package jsoncodecmacrossuiteaux {
       )
   }
 
-  // Typed
+  // Typed2
 
   @JsonCodec final case class Typed2[A, B](i: Int, a: A, b: B, j: Int)
 
