@@ -183,7 +183,10 @@ lazy val genericBase = crossProject.in(file("generic"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+    libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % shapelessVersion,
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
+    )
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
