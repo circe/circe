@@ -25,7 +25,7 @@ class LiteralMacros(val c: whitebox.Context) {
     def toJsonKey(s: String): Tree = placeHolders.get(s).flatMap(_._2).getOrElse(q"$s")
 
     def toJsonString(s: String): Tree =
-      placeHolders.get(s).map(_._1).getOrElse(q"_root_.io.circe.Json.string($s)")
+      placeHolders.get(s).map(_._1).getOrElse(q"_root_.io.circe.Json.fromString($s)")
 
     def asProxy(cls: Class[_]): Object =
       Proxy.newProxyInstance(getClass.getClassLoader, Array(cls), this)
@@ -55,7 +55,7 @@ class LiteralMacros(val c: whitebox.Context) {
     var values: List[Tree] = Nil
 
     val invokeWithoutArg: String => Object = {
-      case "finish" => q"_root_.io.circe.Json.array(..$values)"
+      case "finish" => q"_root_.io.circe.Json.arr(..$values)"
       case "isObj" => false: java.lang.Boolean
     }
 
@@ -98,7 +98,7 @@ class LiteralMacros(val c: whitebox.Context) {
   private[this] class TreeFacadeHandler(placeHolders: Map[String, (Tree, Option[Tree])])
     extends HandlerHelpers(placeHolders) {
     val invokeWithoutArg: String => Object = {
-      case "jnull" => q"_root_.io.circe.Json.empty"
+      case "jnull" => q"_root_.io.circe.Json.Null"
       case "jfalse" => q"_root_.io.circe.Json.False"
       case "jtrue" => q"_root_.io.circe.Json.True"
       case "singleContext" =>
@@ -112,12 +112,12 @@ class LiteralMacros(val c: whitebox.Context) {
     val invokeWithArg: (String, Class[_], Object) => Object = {
       case ("jnum", cls, arg: String) if cls == classOf[String] => q"""
         _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromString($arg).get
+          _root_.io.circe.JsonNumber.unsafeDecimal($arg)
         )
       """
       case ("jint", cls, arg: String) if cls == classOf[String] => q"""
         _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromString($arg).get
+          _root_.io.circe.JsonNumber.unsafeIntegral($arg)
         )
       """
       case ("jstring", cls, arg: String) if cls == classOf[String] => toJsonString(arg)

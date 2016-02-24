@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.`type`.TypeFactory
 import io.circe.{ Json, JsonBigDecimal, JsonObject }
 import java.util.ArrayList
 import scala.annotation.{ switch, tailrec }
+import scala.collection.JavaConverters._
 
 private[jackson] sealed trait DeserializerContext {
   def addValue(value: Json): DeserializerContext
@@ -63,7 +64,7 @@ private[jackson] final class CirceJsonDeserializer(factory: TypeFactory, klass: 
 
       case JsonTokenId.ID_END_ARRAY => parserContext match {
         case ReadingList(content) :: stack =>
-          (Some(Json.JArray(content.toArray(new Array[Json](content.size)))), stack)
+          (Some(Json.fromValues(content.asScala)), stack)
         case _ => throw new RuntimeException("We weren't reading a list, something went wrong")
       }
 
@@ -76,11 +77,7 @@ private[jackson] final class CirceJsonDeserializer(factory: TypeFactory, klass: 
 
       case JsonTokenId.ID_END_OBJECT => parserContext match {
         case ReadingMap(content) :: stack => (
-          Some(
-            Json.JObject(
-              JsonObject.fromIndexedSeq(content.toArray(new Array[(String, Json)](content.size)))
-            )
-          ),
+          Some(Json.fromFields(content.asScala)),
           stack
         )
         case _ => throw new RuntimeException("We weren't reading an object, something went wrong")

@@ -53,7 +53,7 @@ class StdLibCodecSuite extends CirceSuite {
   test("Tuples should be encoded as JSON arrays") {
     check { (t: (Int, String, Char)) =>
       val json = Encoder[(Int, String, Char)].apply(t)
-      val target = Json.array(Json.int(t._1), Json.string(t._2), Encoder[Char].apply(t._3))
+      val target = Json.arr(Json.fromInt(t._1), Json.fromString(t._2), Encoder[Char].apply(t._3))
 
       json === target && json.as[(Int, String, Char)] === Xor.right(t)
     }
@@ -61,19 +61,19 @@ class StdLibCodecSuite extends CirceSuite {
 
   test("Decoding a JSON array without enough elements into a tuple should fail") {
     check { (i: Int, s: String) =>
-      Json.array(Json.int(i), Json.string(s)).as[(Int, String, Double)].isLeft
+      Json.arr(Json.fromInt(i), Json.fromString(s)).as[(Int, String, Double)].isLeft
     }
   }
 
   test("Decoding a JSON array with too many elements into a tuple should fail") {
     check { (i: Int, s: String, d: Double) =>
-      Json.array(Json.int(i), Json.string(s), Json.numberOrNull(d)).as[(Int, String)].isLeft
+      Json.arr(Json.fromInt(i), Json.fromString(s), Json.fromDoubleOrNull(d)).as[(Int, String)].isLeft
     }
   }
 
   test("Decoding a JSON array with many elements into a sequence should not stack overflow") {
     val size = 10000
-    val jsonArr = Json.array(Seq.fill(size)(Json.int(1)): _*)
+    val jsonArr = Json.arr(Seq.fill(size)(Json.fromInt(1)): _*)
 
     val maybeList = jsonArr.as[List[Int]]
     assert(maybeList.isRight)
@@ -93,7 +93,7 @@ class StdLibCodecSuite extends CirceSuite {
       }
     }
 
-    val jsonArr = Json.array(Json.int(1), Json.string("foo"), Json.int(0))
+    val jsonArr = Json.arr(Json.fromInt(1), Json.fromString("foo"), Json.fromInt(0))
     val result = jsonArr.as[List[Bomb]]
 
     assert(result.isLeft)
@@ -121,10 +121,10 @@ class DisjunctionCodecSuite extends CirceSuite {
 }
 
 class DecodingFailureSuite extends CirceSuite {
-  val n = Json.int(10)
+  val n = Json.fromInt(10)
   val b = Json.True
-  val s = Json.string("foo")
-  val l = Json.array(s)
+  val s = Json.fromString("foo")
+  val l = Json.arr(s)
   val o = Json.obj("foo" -> n)
 
   val nd = Decoder[Int]

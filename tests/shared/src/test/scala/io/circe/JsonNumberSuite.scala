@@ -10,9 +10,9 @@ class JsonNumberSuite extends CirceSuite {
     }
   }
 
-  test("fromString should match Json.number") {
+  test("fromString should match Json.fromDouble") {
     check { (d: Double) =>
-      Json.number(d).flatMap(_.asNumber) === JsonNumber.fromString(d.toString)
+      Json.fromDouble(d).flatMap(_.asNumber) === JsonNumber.fromString(d.toString)
     }
   }
 
@@ -91,14 +91,14 @@ class JsonNumberSuite extends CirceSuite {
   }
 
   test("number is empty on Double.NaN") {
-    assert(Json.number(Double.NaN) === None)
+    assert(Json.fromDouble(Double.NaN) === None)
   }
 
   test("number is empty on Double.PositiveInfinity") {
-    assert(Json.number(Double.PositiveInfinity) === None)
+    assert(Json.fromDouble(Double.PositiveInfinity) === None)
   }
 
   test("number is empty on Double.NegativeInfinity") {
-    assert(Json.number(Double.NegativeInfinity) === None)
+    assert(Json.fromDouble(Double.NegativeInfinity) === None)
   }
 }

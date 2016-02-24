@@ -16,7 +16,7 @@ import monocle.function.Plated
  * @author Julien Truffaut
  */
 trait JsonOptics extends CatsConversions {
-  final lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.bool)
+  final lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.fromBoolean)
   final lazy val jsonBigDecimal: Prism[Json, BigDecimal] =
     jsonNumber.composePrism(jsonNumberBigDecimal)
   final lazy val jsonDouble: Prism[Json, Double] = jsonNumber.composePrism(jsonNumberDouble)
@@ -25,7 +25,7 @@ trait JsonOptics extends CatsConversions {
   final lazy val jsonInt: Prism[Json, Int] = jsonNumber.composePrism(jsonNumberInt)
   final lazy val jsonShort: Prism[Json, Short] = jsonNumber.composePrism(jsonNumberShort)
   final lazy val jsonByte: Prism[Json, Byte] = jsonNumber.composePrism(jsonNumberByte)
-  final lazy val jsonString: Prism[Json, String] = Prism[Json, String](_.asString)(Json.string)
+  final lazy val jsonString: Prism[Json, String] = Prism[Json, String](_.asString)(Json.fromString)
   final lazy val jsonNumber: Prism[Json, JsonNumber] =
     Prism[Json, JsonNumber](_.asNumber)(Json.fromJsonNumber)
   final lazy val jsonObject: Prism[Json, JsonObject] =
@@ -41,9 +41,9 @@ trait JsonOptics extends CatsConversions {
         implicit val F = csApplicative(FZ)
         a.fold(
           F.pure(a),
-          b => F.pure(Json.bool(b)),
+          b => F.pure(Json.fromBoolean(b)),
           n => F.pure(Json.fromJsonNumber(n)),
-          s => F.pure(Json.string(s)),
+          s => F.pure(Json.fromString(s)),
           _.traverse(f).map(Json.fromValues),
           _.traverse(f).map(Json.fromJsonObject)
         )

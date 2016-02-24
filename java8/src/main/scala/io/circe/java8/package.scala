@@ -15,7 +15,7 @@ package object java8 {
     }
 
   final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
-    Encoder.instance(time => Json.string(time.format(formatter)))
+    Encoder.instance(time => Json.fromString(time.format(formatter)))
 
   implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] =
     decodeLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME)

@@ -43,13 +43,19 @@ class BiggerDecimalSuite extends FunSuite with Checkers {
 
   test("fromBigDecimal") {
     check { (value: SBigDecimal) =>
-      val d = BiggerDecimal.fromBigDecimal(value.underlying)
+      val result = BiggerDecimal.fromBigDecimal(value.underlying)
 
       Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
-        d.toBigDecimal.exists { roundTripped =>
+        result.toBigDecimal.exists { roundTripped =>
           roundTripped.compareTo(parsedValue) == 0
         }
       }
+    }
+  }
+
+  test("fromBigInteger") {
+    check { (value: BigInt) =>
+      BiggerDecimal.fromBigInteger(value.underlying).toBigInteger == value.underlying
     }
   }
 }

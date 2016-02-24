@@ -11,16 +11,16 @@ package object scalajs {
    * Attempt to convert a value to [[Json]].
    */
   private[this] def unsafeConvertAnyToJson(input: Any): Json = input match {
-    case s: String => Json.string(s)
-    case n: Double => Json.numberOrNull(n)
+    case s: String => Json.fromString(s)
+    case n: Double => Json.fromDoubleOrNull(n)
     case true => Json.True
     case false => Json.False
-    case null => Json.Empty
+    case null => Json.Null
     case a: js.Array[_] => Json.fromValues(a.map(unsafeConvertAnyToJson(_: Any)))
     case o: js.Object => Json.fromFields(
       o.asInstanceOf[js.Dictionary[_]].mapValues(unsafeConvertAnyToJson).toSeq
     )
-    case undefined => Json.Empty
+    case undefined => Json.Null
   }
 
   /**
@@ -56,5 +56,5 @@ package object scalajs {
     Decoder[Option[A]].map(_.fold[js.UndefOr[A]](js.undefined)(js.UndefOr.any2undefOrA))
 
   implicit final def encodeJsUndefOr[A](implicit e: Encoder[A]): Encoder[js.UndefOr[A]] =
-    Encoder.instance(_.fold(Json.empty)(e(_)))
+    Encoder.instance(_.fold(Json.Null)(e(_)))
 }

@@ -134,24 +134,28 @@ final object BiggerDecimal {
   }
 
   @tailrec
-  private[this] def removeTrailingZeros(d: BigInteger, depth: Long): (BigInteger, Long) = {
+  private[this] def removeTrailingZeros(d: BigInteger, depth: Long): SigAndExp = if (d == BigInteger.ZERO) {
+    new SigAndExp(d, BigInteger.ZERO)
+  } else {
     val divAndRem = d.divideAndRemainder(BigInteger.TEN)
 
     if (divAndRem(1) == BigInteger.ZERO) removeTrailingZeros(divAndRem(0), depth + 1) else {
-      (d, depth)
+      new SigAndExp(d, BigInteger.valueOf(-depth))
     }
   }
+
+  def fromBigInteger(i: BigInteger): BiggerDecimal = removeTrailingZeros(i, 0L)
 
   def fromBigDecimal(d: BigDecimal): BiggerDecimal = try {
     val noZeros = d.stripTrailingZeros
     new SigAndExp(noZeros.unscaledValue, BigInteger.valueOf(noZeros.scale.toLong))
   } catch {
     case _: ArithmeticException =>
-      val (unscaled, zeros) = removeTrailingZeros(d.unscaledValue, 0L)
+      val unscaledAndZeros = removeTrailingZeros(d.unscaledValue, 0L)
 
       new SigAndExp(
-        unscaled,
-        BigInteger.valueOf(d.scale.toLong).subtract(BigInteger.valueOf(zeros))
+        unscaledAndZeros.unscaled,
+        BigInteger.valueOf(d.scale.toLong).subtract(unscaledAndZeros.scale)
       )
   }
 
