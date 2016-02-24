@@ -296,27 +296,90 @@ final object Json {
   final val True: Json = JBoolean(true)
   final val False: Json = JBoolean(false)
 
+  /**
+   * Create a `Json` value representing a JSON object from key-value pairs.
+   */
   final def obj(fields: (String, Json)*): Json = fromFields(fields)
+
+  /**
+   * Create a `Json` value representing a JSON array from values.
+   */
   final def arr(values: Json*): Json = fromValues(values)
 
+  /**
+   * Create a `Json` value representing a JSON object from a collection of key-value pairs.
+   */
   final def fromFields(fields: Iterable[(String, Json)]): Json = JObject(JsonObject.fromIterable(fields))
+
+  /**
+   * Create a `Json` value representing a JSON array from a collection of values.
+   */
   final def fromValues(values: Iterable[Json]): Json = JArray(values.toList)
 
+  /**
+   * Create a `Json` value representing a JSON object from a [[JsonObject]].
+   */
   final def fromJsonObject(value: JsonObject): Json = JObject(value)
+
+  /**
+   * Create a `Json` value representing a JSON number from a [[JsonNumber]].
+   */
   final def fromJsonNumber(value: JsonNumber): Json = JNumber(value)
 
+  /**
+   * Create a `Json` value representing a JSON string.
+   *
+   * Note that this does not parse the argument.
+   */
   final def fromString(value: String): Json = JString(value)
+
+  /**
+   * Create a `Json` value representing a JSON boolean.
+   */
   final def fromBoolean(value: Boolean): Json = JBoolean(value)
 
+  /**
+   * Create a `Json` value representing a JSON number from an `Int`.
+   */
   final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
+
+  /**
+   * Create a `Json` value representing a JSON number from a `Long`.
+   */
   final def fromLong(value: Long): Json = JNumber(JsonLong(value))
 
+  /**
+   * Try to create a `Json` value representing a JSON number from a `Double`.
+   *
+   * The result is empty if the argument cannot be represented as a JSON number.
+   */
   final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
+
+  /**
+   * Create a `Json` value representing a JSON number or null from a `Double`.
+   *
+   * The result is a JSON null if the argument cannot be represented as a JSON
+   * number.
+   */
   final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JNumber(JsonDouble(value)) else Null
+
+  /**
+   * Create a `Json` value representing a JSON number or string from a `Double`.
+   *
+   * The result is a JSON string if the argument cannot be represented as a JSON
+   * number.
+   */
   final def fromDoubleOrString(value: Double): Json =
     if (isReal(value)) JNumber(JsonDouble(value)) else fromString(value.toString)
 
+  /**
+   * Create a `Json` value representing a JSON number from a `BigInt`.
+   */
   final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
+
+  /**
+   * Create a `Json` value representing a JSON number from a `BigDecimal`.
+   */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
 
   private[this] def isReal(value: Double): Boolean = !value.isNaN && !value.isInfinity
