@@ -198,12 +198,13 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
-    e: Encoder[V]
-  ): ObjectEncoder[M[String, V]] = ObjectEncoder.instance(m =>
+  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
+    ek: KeyEncoder[K],
+    ev: Encoder[V]
+  ): ObjectEncoder[M[K, V]] = ObjectEncoder.instance(m =>
     JsonObject.fromMap(
       m.map {
-        case (k, v) => (k, e(v))
+        case (k, v) => (ek(k), ev(v))
       }
     )
   )
