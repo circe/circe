@@ -2,7 +2,7 @@ package io.circe
 
 import cats.data._
 import cats.functor.Contravariant
-import cats.{Show, Foldable}
+import cats.Foldable
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
@@ -95,11 +95,6 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
 
     Json.fromValues(items)
   }
-
-  /**
-   * @group Encoding
-   */
-  implicit final val showString: Show[String] = cats.std.string.stringShow
 
   /**
    * @group Encoding
@@ -203,13 +198,12 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
-    sk: Show[K],
-    ev: Encoder[V]
-  ): Encoder[M[K, V]] = ObjectEncoder.instance(m =>
+  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
+    e: Encoder[V]
+  ): ObjectEncoder[M[String, V]] = ObjectEncoder.instance(m =>
     JsonObject.fromMap(
       m.map {
-        case (k, v) => (sk.show(k), ev(v))
+        case (k, v) => (k, e(v))
       }
     )
   )
@@ -250,6 +244,20 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
     _.fold(
       e => JsonObject.singleton(failureKey, ee(e)),
       a => JsonObject.singleton(successKey, ea(a))
+    )
+  )
+
+  /**
+   * @group EncodeJson
+   */
+  final def mapLikeEncodeJson[M[K, +V] <: Map[K, V], K, V](implicit
+    ke: KeyEncoder[K],
+    ev: Encoder[V]
+  ): Encoder[M[K, V]] = ObjectEncoder.instance(m =>
+    JsonObject.fromMap(
+      m.map {
+        case (k, v) => (ke.toJsonKey(k), ev(v))
+      }
     )
   )
 
