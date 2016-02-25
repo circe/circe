@@ -13,7 +13,7 @@ import io.circe.cursor.ACursorOperations
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-abstract class ACursor private[circe](val any: HCursor) extends ACursorOperations {
+abstract class ACursor private[circe](final val any: HCursor) extends ACursorOperations {
   final def either: Xor[HCursor, HCursor] = if (succeeded) Xor.right(any) else Xor.left(any)
 
   /**

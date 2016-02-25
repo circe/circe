@@ -568,14 +568,17 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
       builder: mutable.Builder[(K, V), M[K, V]]
     ): Option[DecodingFailure] = fields match {
       case Nil => None
-      case h :: t => c.get(h)(dv) match {
-        case Xor.Left(error) => Some(error)
-        case Xor.Right(value) => dk(h) match {
-          case None => Some(failure(c))
-          case Some(k) =>
-            builder += (k -> value)
-            spinResult(t, c, builder)
-        }
+      case h :: t =>
+        val atH = c.downField(h)
+
+        atH.as(dv) match {
+          case Xor.Left(error) => Some(error)
+          case Xor.Right(value) => dk(h) match {
+            case None => Some(failure(atH.any))
+            case Some(k) =>
+              builder += (k -> value)
+              spinResult(t, c, builder)
+          }
       }
     }
 
@@ -588,21 +591,18 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
       errors: mutable.Builder[DecodingFailure, List[DecodingFailure]]
     ): List[DecodingFailure] = fields match {
       case Nil => errors.result
-      case h :: t => c.get(h)(dv) match {
-        case Xor.Left(error) => spinAccumulating(t, c, builder, true, errors += error)
-        case Xor.Right(value) =>
-          val newFailed = if (!failed) {
-            dk(h) match {
-              case None =>
-                errors += failure(c)
-                true
-              case Some(k) =>
-                builder += (k -> value)
-                false
-            }
-          } else failed
+      case h :: t =>
+        val atH = c.downField(h)
 
-          spinAccumulating(t, c, builder, newFailed, errors)
+        (atH.as(dv), dk(h)) match {
+          case (Xor.Left(error), _) => spinAccumulating(t, c, builder, true, errors += error)
+          case (_, None) => spinAccumulating(t, c, builder, true, errors += failure(atH.any))
+          case (Xor.Right(value), Some(k)) =>
+            if (!failed) {
+              builder += (k -> value)
+            } else ()
+
+            spinAccumulating(t, c, builder, failed, errors)
         }
     }
   }
