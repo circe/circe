@@ -13,6 +13,8 @@ trait MissingInstances {
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
 
+  implicit lazy val arbitrarySymbol: Arbitrary[Symbol] = Arbitrary(Arbitrary.arbitrary[String].map(Symbol(_)))
+
   implicit lazy val eqHNil: Eq[HNil] = Eq.instance((_, _) => true)
 
   implicit def eqTupleHCons[H, T <: HList](implicit eqH: Eq[H], eqT: Eq[T]): Eq[H :: T] =

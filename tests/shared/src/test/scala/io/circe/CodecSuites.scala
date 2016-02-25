@@ -43,6 +43,11 @@ class StdLibCodecSuite extends CirceSuite {
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
+  checkAll("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
+  checkAll("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
+  checkAll("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
+  checkAll("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
+  checkAll("Codec[Map[Long, Int]]", CodecTests[Map[Long, Int]].codec)
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
 
   test("Tuples should be encoded as JSON arrays") {

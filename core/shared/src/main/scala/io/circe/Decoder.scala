@@ -533,66 +533,78 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
-  implicit final def decodeMap[M[K, +V] <: Map[K, V], V](implicit
-    d: Decoder[V],
-    cbf: CanBuildFrom[Nothing, (String, V), M[String, V]]
-  ): Decoder[M[String, V]] = new Decoder[M[String, V]] {
-    def apply(c: HCursor): Decoder.Result[M[String, V]] =
-      c.fields.fold(
-        Xor.left[DecodingFailure, M[String, V]](DecodingFailure("[V]Map[String, V]", c.history))
-      ) { s =>
-        val builder = cbf()
-        spinResult(s, c, builder).fold[Result[M[String, V]]](Xor.right(builder.result()))(Xor.left)
-      }
+  implicit final def decodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
+    dk: KeyDecoder[K],
+    dv: Decoder[V],
+    cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
+  ): Decoder[M[K, V]] = new Decoder[M[K, V]] {
+    private[this] def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[String, V]] =
-      c.fields.fold[AccumulatingDecoder.Result[M[String, V]]](
-        Validated.invalid(DecodingFailure("[V]Map[String, V]", c.history)).toValidatedNel
-      ) { s =>
+    def apply(c: HCursor): Result[M[K, V]] = c.fields match {
+      case None => Xor.left[DecodingFailure, M[K, V]](failure(c))
+      case Some(fields) =>
         val builder = cbf()
-        spinAccumulating(s, c, builder, false, List.newBuilder[DecodingFailure]) match {
-          case Nil => Validated.valid(builder.result())
-          case error :: errors => Validated.invalid(NonEmptyList(error, errors))
+        spinResult(fields, c, builder) match {
+          case None => Xor.right(builder.result())
+          case Some(error) => Xor.left(error)
         }
+    }
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] =
+      c.fields match {
+        case None => Validated.invalid(failure(c)).toValidatedNel
+        case Some(fields) =>
+          val builder = cbf()
+          spinAccumulating(fields, c, builder, false, List.newBuilder[DecodingFailure]) match {
+            case Nil => Validated.valid(builder.result())
+            case error :: errors => Validated.invalid(NonEmptyList(error, errors))
+          }
       }
 
     @scala.annotation.tailrec
     private[this] def spinResult(
-      x: List[String],
+      fields: List[String],
       c: HCursor,
-      builder: mutable.Builder[(String, V), M[String, V]]
-    ): Option[DecodingFailure] =
-      x match {
-        case Nil => None
-        case h :: t =>
-          c.get(h)(d) match {
-            case Xor.Left(error) => Some(error)
-            case Xor.Right(value) =>
-              builder += (h -> value)
-              spinResult(t, c, builder)
-          }
+      builder: mutable.Builder[(K, V), M[K, V]]
+    ): Option[DecodingFailure] = fields match {
+      case Nil => None
+      case h :: t => c.get(h)(dv) match {
+        case Xor.Left(error) => Some(error)
+        case Xor.Right(value) => dk(h) match {
+          case None => Some(failure(c))
+          case Some(k) =>
+            builder += (k -> value)
+            spinResult(t, c, builder)
+        }
       }
+    }
 
     @scala.annotation.tailrec
     private[this] def spinAccumulating(
-      x: List[String],
+      fields: List[String],
       c: HCursor,
-      builder: mutable.Builder[(String, V), M[String, V]],
+      builder: mutable.Builder[(K, V), M[K, V]],
       failed: Boolean,
       errors: mutable.Builder[DecodingFailure, List[DecodingFailure]]
-    ): List[DecodingFailure] =
-      x match {
-        case Nil => errors.result
-        case h :: t =>
-          c.get(h)(d) match {
-            case Xor.Left(error) => spinAccumulating(t, c, builder, true, errors += error)
-            case Xor.Right(value) =>
-              if (!failed) {
-                builder += (h -> value)
-              }
-              spinAccumulating(t, c, builder, failed, errors)
-          }
-      }
+    ): List[DecodingFailure] = fields match {
+      case Nil => errors.result
+      case h :: t => c.get(h)(dv) match {
+        case Xor.Left(error) => spinAccumulating(t, c, builder, true, errors += error)
+        case Xor.Right(value) =>
+          val newFailed = if (!failed) {
+            dk(h) match {
+              case None =>
+                errors += failure(c)
+                true
+              case Some(k) =>
+                builder += (k -> value)
+                false
+            }
+          } else failed
+
+          spinAccumulating(t, c, builder, newFailed, errors)
+        }
+    }
   }
 
   /**
