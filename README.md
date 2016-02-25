@@ -320,17 +320,12 @@ Please see the [contributors' guide](CONTRIBUTING.md) for details on how to subm
    which means that in principle it may stop working at any time. 0.4.0 will not be released until
    Shapeless 2.3.0 is available, and of course we will never publish a stable version with snapshot
    dependencies.
-3. The `refined` subproject depends on refined 0.3, which depends on Shapeless 2.2.5, which means
-   that if you use it with the 0.4.0 snapshot, you'll have to cross your fingers and hope that you
-   don't run into binary compatibility issues. This will be resolved before the 0.4.0 release, and
-   the risk should be low in the meantime (because of how refined uses Shapeless), but there is a
-   chance you will run into problems.
-4. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
+3. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
    provided by the `generic` subproject may stack overflow during compilation, which will result in
    the derived encoders or decoders simply not being found. Increasing the stack size available to
    the compiler (e.g. with `sbt -J-Xss64m` if you're using SBT) will help in many cases, but we have
    at least [one report][very-large-adt] of a case where it doesn't.
-5. More generally, the generic derivation provided by the `generic` subproject works for a wide
+4. More generally, the generic derivation provided by the `generic` subproject works for a wide
    range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by
    Shapeless) that rely on compiler functionality that is not always perfectly robust
    ("[SI-7046][si-7046] is like [playing roulette][si-7046-roulette]"), and if you're running into
