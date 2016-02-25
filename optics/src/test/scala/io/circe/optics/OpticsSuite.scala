@@ -36,7 +36,6 @@ class OpticsSuite extends CirceSuite {
   checkAll("Json to List[Json]", PrismTests(jsonArray))
 
   checkAll("JsonNumber to BigDecimal", PrismTests(jsonNumberBigDecimal))
-  checkAll("JsonNumber to Double", PrismTests(jsonNumberDouble))
   checkAll("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))
   checkAll("JsonNumber to Long", PrismTests(jsonNumberLong))
   checkAll("JsonNumber to Int", PrismTests(jsonNumberInt))
