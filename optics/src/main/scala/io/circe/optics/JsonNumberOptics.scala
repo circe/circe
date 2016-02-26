@@ -14,11 +14,6 @@ import monocle.Prism
  * @author Travis Brown
  */
 trait JsonNumberOptics {
-  final lazy val jsonNumberDouble: Prism[JsonNumber, Double] = Prism[JsonNumber, Double]{ n =>
-    val d = n.toDouble
-    if (JsonNumber.eqJsonNumber.eqv(JsonDouble(d), n)) Some(d) else None
-  }(JsonDouble(_))
-
   final lazy val jsonNumberBigInt: Prism[JsonNumber, BigInt] = Prism[JsonNumber, BigInt](jn =>
     if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigInt
   )(b => JsonBigDecimal(BigDecimal(b, MathContext.UNLIMITED)))

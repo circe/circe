@@ -112,25 +112,10 @@ sealed abstract class JsonNumber extends Serializable {
   def truncateToLong: Long
 
   /**
-   * Return `true` if and only if this number wraps a [[scala.Double]] and it is `Double.NaN`.
-   */
-  protected def isNaN: Boolean
-
-  /**
-   * Return `true` if and only if this number wraps a [[scala.Double]] and is either
-   * `Double.NegativeInfinity` or `Double.PositiveInfinity`.
-   */
-  protected def isInfinity: Boolean
-
-  /**
-   * Return true if this is a valid real number (i.e. not infinity or `Double.NaN`).
-   */
-  protected final def isReal: Boolean = !(isNaN || isInfinity)
-
-  /**
    * Construct a JSON number if this is a valid JSON number.
    */
-  final def asJson: Option[Json] = if (isReal) Some(Json.fromJsonNumber(this)) else None
+  @deprecated("Use Json.fromJsonNumber", "0.4.0")
+  final def asJson: Option[Json] = Some(Json.fromJsonNumber(this))
 
   /**
    * Construct a JSON number if this is a valid JSON number and a JSON null otherwise.
@@ -138,6 +123,7 @@ sealed abstract class JsonNumber extends Serializable {
    * This matches the behaviour of most browsers, but it is a lossy operation as you can no longer
    * distinguish between `Double.NaN` and infinity.
    */
+  @deprecated("Use Json.fromJsonNumber", "0.4.0")
   final def asJsonOrNull: Json = asJson.getOrElse(Json.Null)
 
   /**
@@ -146,6 +132,7 @@ sealed abstract class JsonNumber extends Serializable {
    * This allows a [[scala.Double]] to be losslessly encoded, but it is likely to need custom
    * handling for interoperability with other JSON systems.
    */
+  @deprecated("Use Json.fromJsonNumber", "0.4.0")
   final def asJsonOrString: Json = asJson.getOrElse(Json.fromString(toString))
 
   /**
@@ -159,7 +146,7 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Hashing that is consistent with our universal equality.
    */
-  override final def hashCode: Int = if (isReal) toBiggerDecimal.hashCode else toDouble.hashCode
+  override final def hashCode: Int = toBiggerDecimal.hashCode
 }
 
 private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
@@ -168,8 +155,6 @@ private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber 
   final def toDouble: Double = toBiggerDecimal.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = toBiggerDecimal.truncateToLong
-  final def isNaN: Boolean = false
-  final def isInfinity: Boolean = false
 }
 
 /**
@@ -200,8 +185,6 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = toDouble.round
-  final def isNaN: Boolean = false
-  final def isInfinity: Boolean = false
   override final def toString: String = value.toString
 }
 
@@ -215,8 +198,6 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = Some(value)
   final def truncateToLong: Long = value
-  final def isNaN: Boolean = false
-  final def isInfinity: Boolean = false
   override final def toString: String = value.toString
 }
 
@@ -237,8 +218,6 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   }
 
   final def truncateToLong: Long = value.round
-  final def isNaN: Boolean = value.isNaN
-  final def isInfinity: Boolean = value.isInfinity
   override final def toString: String = value.toString
 }
 
@@ -275,7 +254,6 @@ final object JsonNumber {
     NumberParsing.parseBiggerDecimal(value).map(JsonBiggerDecimal(_))
 
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
-    case (a, b) if !a.isReal || !b.isReal => a.toDouble == b.toDouble
     case (JsonBiggerDecimal(a), b) => a == b.toBiggerDecimal
     case (a, JsonBiggerDecimal(b)) => a.toBiggerDecimal == b
     case (a @ JsonDecimal(_), b) => a.toBiggerDecimal == b.toBiggerDecimal
