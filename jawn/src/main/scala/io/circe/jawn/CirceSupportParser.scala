@@ -6,12 +6,12 @@ import scala.collection.mutable.ArrayBuffer
 
 final object CirceSupportParser extends SupportParser[Json] {
   implicit final val facade: Facade[Json] = new Facade[Json] {
-    final def jnull(): Json = Json.Empty
+    final def jnull(): Json = Json.Null
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
     final def jnum(s: String): Json = Json.JNumber(JsonNumber.unsafeDecimal(s))
     final def jint(s: String): Json = Json.JNumber(JsonNumber.unsafeIntegral(s))
-    final def jstring(s: String): Json = Json.JString(s)
+    final def jstring(s: String): Json = Json.fromString(s)
 
     final def singleContext(): FContext[Json] = new FContext[Json] {
       private[this] final var value: Json = null

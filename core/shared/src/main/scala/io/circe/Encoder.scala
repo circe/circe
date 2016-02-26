@@ -114,7 +114,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final val encodeString: Encoder[String] = instance(Json.string)
+  implicit final val encodeString: Encoder[String] = instance(Json.fromString)
 
   /**
    * @group Encoding
@@ -124,66 +124,63 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final val encodeBoolean: Encoder[Boolean] = instance(Json.bool)
+  implicit final val encodeBoolean: Encoder[Boolean] = instance(Json.fromBoolean)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeChar: Encoder[Char] = instance(a => Json.string(a.toString))
+  implicit final val encodeChar: Encoder[Char] = instance(a => Json.fromString(a.toString))
 
   /**
    * @group Encoding
    */
-  implicit final val encodeFloat: Encoder[Float] =
-    instance(a => JsonDouble(a.toDouble).asJsonOrNull)
+  implicit final val encodeFloat: Encoder[Float] = instance(a => Json.fromDoubleOrNull(a.toDouble))
 
   /**
    * @group Encoding
    */
-  implicit final val encodeDouble: Encoder[Double] = instance(a => JsonDouble(a).asJsonOrNull)
+  implicit final val encodeDouble: Encoder[Double] = instance(Json.fromDoubleOrNull)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeByte: Encoder[Byte] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeByte: Encoder[Byte] = instance(a => Json.fromInt(a.toInt))
 
   /**
    * @group Encoding
    */
-  implicit final val encodeShort: Encoder[Short] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeShort: Encoder[Short] = instance(a => Json.fromInt(a.toInt))
 
   /**
    * @group Encoding
    */
-  implicit final val encodeInt: Encoder[Int] = instance(a => Json.JNumber(JsonLong(a.toLong)))
+  implicit final val encodeInt: Encoder[Int] = instance(Json.fromInt)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeLong: Encoder[Long] = instance(a => Json.JNumber(JsonLong(a)))
+  implicit final val encodeLong: Encoder[Long] = instance(Json.fromLong)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeBigInt: Encoder[BigInt] =
-    instance(a => JsonBigDecimal(BigDecimal(a, java.math.MathContext.UNLIMITED)).asJsonOrNull)
+  implicit final val encodeBigInt: Encoder[BigInt] = instance(Json.fromBigInt)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeBigDecimal: Encoder[BigDecimal] =
-    instance(a => JsonBigDecimal(a).asJsonOrNull)
+  implicit final val encodeBigDecimal: Encoder[BigDecimal] = instance(Json.fromBigDecimal)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeUUID: Encoder[UUID] = instance(a => Json.string(a.toString))
+  implicit final val encodeUUID: Encoder[UUID] = instance(a => Json.fromString(a.toString))
 
   /**
    * @group Encoding
    */
   implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] =
-    instance(_.fold(Json.empty)(e(_)))
+    instance(_.fold(Json.Null)(e(_)))
 
   /**
    * @group Encoding

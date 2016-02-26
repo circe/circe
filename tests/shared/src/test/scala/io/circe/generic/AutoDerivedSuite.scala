@@ -81,8 +81,8 @@ class AutoDerivedSuite extends CirceSuite {
   test("Decoder[Int => Qux[String]]") {
     check { (i: Int, s: String, j: Int) =>
       Json.obj(
-        "a" -> Json.string(s),
-        "j" -> Json.int(j)
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
       ).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s, j))
     }
   }
@@ -90,8 +90,8 @@ class AutoDerivedSuite extends CirceSuite {
   test("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]") {
     check { (i: Int, s: String, j: Int) =>
       Json.obj(
-        "i" -> Json.int(i),
-        "a" -> Json.string(s)
+        "i" -> Json.fromInt(i),
+        "a" -> Json.fromString(s)
       ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
          _(field(j))
       ) === Xor.right(Qux(i, s, j))
@@ -116,13 +116,13 @@ class AutoDerivedSuite extends CirceSuite {
     check { (is: List[Int]) =>
       val json = Encoder[List[Int]].apply(is)
 
-      json === Json.fromValues(is.map(Json.int)) && json.as[List[Int]] === Xor.right(is)
+      json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is)
     }
   }
 
   test("Generic decoders should not interfere with defined decoders") {
     check { (xs: List[String]) =>
-      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
       Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo)
     }
@@ -130,14 +130,14 @@ class AutoDerivedSuite extends CirceSuite {
 
   test("Generic encoders should not interfere with defined encoders") {
     check { (xs: List[String]) =>
-      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.string)))
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
       Encoder[Foo].apply(Baz(xs): Foo) === json
     }
   }
 
   test("Decoding with Decoder[CNil] should fail") {
-    assert(Json.empty.as[CNil].isLeft)
+    assert(Json.Null.as[CNil].isLeft)
   }
 
   test("Encoding with Encoder[CNil] should throw an exception") {

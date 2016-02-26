@@ -3,7 +3,7 @@ package io.circe
 import algebra.Eq
 import cats.Show
 import cats.data.Xor
-import cats.std.list._
+import io.circe.numbers.BiggerDecimal
 
 /**
  * A data type representing possible JSON values.
@@ -292,27 +292,130 @@ final object Json {
     final def mapObject(f: JsonObject => JsonObject): Json = JObject(f(o))
   }
 
-  final def empty: Json = Empty
-
-  final val Empty: Json = JNull
+  final val Null: Json = JNull
   final val True: Json = JBoolean(true)
   final val False: Json = JBoolean(false)
 
-  final def bool(b: Boolean): Json = JBoolean(b)
-  final def int(n: Int): Json = JNumber(JsonLong(n.toLong))
-  final def long(n: Long): Json = JNumber(JsonLong(n))
-  final def number(n: Double): Option[Json] = JsonDouble(n).asJson
-  final def bigDecimal(n: BigDecimal): Json = JNumber(JsonBigDecimal(n))
-  final def numberOrNull(n: Double): Json = JsonDouble(n).asJsonOrNull
-  final def numberOrString(n: Double): Json = JsonDouble(n).asJsonOrString
-  final def string(s: String): Json = JString(s)
-  final def array(elements: Json*): Json = JArray(elements)
-  final def obj(fields: (String, Json)*): Json = JObject(JsonObject.from(fields.toList))
+  /**
+   * Create a `Json` value representing a JSON object from key-value pairs.
+   */
+  final def obj(fields: (String, Json)*): Json = fromFields(fields)
 
-  final def fromJsonNumber(num: JsonNumber): Json = JNumber(num)
-  final def fromJsonObject(obj: JsonObject): Json = JObject(obj)
-  final def fromFields(fields: Seq[(String, Json)]): Json = JObject(JsonObject.from(fields.toList))
-  final def fromValues(values: Seq[Json]): Json = JArray(values)
+  /**
+   * Create a `Json` value representing a JSON array from values.
+   */
+  final def arr(values: Json*): Json = fromValues(values)
+
+  /**
+   * Create a `Json` value representing a JSON object from a collection of key-value pairs.
+   */
+  final def fromFields(fields: Iterable[(String, Json)]): Json = JObject(JsonObject.fromIterable(fields))
+
+  /**
+   * Create a `Json` value representing a JSON array from a collection of values.
+   */
+  final def fromValues(values: Iterable[Json]): Json = JArray(values.toList)
+
+  /**
+   * Create a `Json` value representing a JSON object from a [[JsonObject]].
+   */
+  final def fromJsonObject(value: JsonObject): Json = JObject(value)
+
+  /**
+   * Create a `Json` value representing a JSON number from a [[JsonNumber]].
+   */
+  final def fromJsonNumber(value: JsonNumber): Json = JNumber(value)
+
+  /**
+   * Create a `Json` value representing a JSON string.
+   *
+   * Note that this does not parse the argument.
+   */
+  final def fromString(value: String): Json = JString(value)
+
+  /**
+   * Create a `Json` value representing a JSON boolean.
+   */
+  final def fromBoolean(value: Boolean): Json = JBoolean(value)
+
+  /**
+   * Create a `Json` value representing a JSON number from an `Int`.
+   */
+  final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
+
+  /**
+   * Create a `Json` value representing a JSON number from a `Long`.
+   */
+  final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+
+  /**
+   * Try to create a `Json` value representing a JSON number from a `Double`.
+   *
+   * The result is empty if the argument cannot be represented as a JSON number.
+   */
+  final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
+
+  /**
+   * Create a `Json` value representing a JSON number or null from a `Double`.
+   *
+   * The result is a JSON null if the argument cannot be represented as a JSON
+   * number.
+   */
+  final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JNumber(JsonDouble(value)) else Null
+
+  /**
+   * Create a `Json` value representing a JSON number or string from a `Double`.
+   *
+   * The result is a JSON string if the argument cannot be represented as a JSON
+   * number.
+   */
+  final def fromDoubleOrString(value: Double): Json =
+    if (isReal(value)) JNumber(JsonDouble(value)) else fromString(value.toString)
+
+  /**
+   * Create a `Json` value representing a JSON number from a `BigInt`.
+   */
+  final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
+
+  /**
+   * Create a `Json` value representing a JSON number from a `BigDecimal`.
+   */
+  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
+
+  private[this] def isReal(value: Double): Boolean = !value.isNaN && !value.isInfinity
+
+  @deprecated("Use Null", "0.4.0")
+  final val Empty: Json = Null
+
+  @deprecated("Use Null", "0.4.0")
+  final def empty: Json = Null
+
+  @deprecated("Use fromBoolean", "0.4.0")
+  final def bool(b: Boolean): Json = fromBoolean(b)
+
+  @deprecated("Use fromInt", "0.4.0")
+  final def int(n: Int): Json = fromInt(n)
+
+  @deprecated("Use fromLong", "0.4.0")
+  final def long(n: Long): Json = fromLong(n)
+
+  @deprecated("Use fromBigDecimal", "0.4.0")
+  final def bigDecimal(n: BigDecimal): Json = fromBigDecimal(n)
+
+  @deprecated("Use fromDouble", "0.4.0")
+  final def number(n: Double): Option[Json] = fromDouble(n)
+
+  @deprecated("Use fromDoubleOrNull", "0.4.0")
+  final def numberOrNull(n: Double): Json = fromDoubleOrNull(n)
+
+  @deprecated("Use fromDoubleOrString", "0.4.0")
+  final def numberOrString(n: Double): Json = fromDoubleOrString(n)
+
+  @deprecated("Use fromString", "0.4.0")
+  final def string(s: String): Json = JString(s)
+
+  @deprecated("Use arr", "0.4.0")
+  final def array(values: Json*): Json = arr(values: _*)
 
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator

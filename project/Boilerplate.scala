@@ -171,7 +171,7 @@ object Boilerplate {
         -   * @group Tuple
         -   */
         -  implicit def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
-        -    Encoder.instance(t => Json.array($applied))
+        -    Encoder.instance(t => Json.arr($applied))
         |}
       """
     }

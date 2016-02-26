@@ -83,8 +83,8 @@ class SemiautoDerivedSuite extends CirceSuite {
   test("Decoder[Int => Qux[String]]") {
     check { (i: Int, s: String, j: Int) =>
       Json.obj(
-        "a" -> Json.string(s),
-        "j" -> Json.int(j)
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
       ).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s, j))
     }
   }
@@ -92,8 +92,8 @@ class SemiautoDerivedSuite extends CirceSuite {
   test("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]") {
     check { (i: Int, s: String, j: Int) =>
       Json.obj(
-        "i" -> Json.int(i),
-        "a" -> Json.string(s)
+        "i" -> Json.fromInt(i),
+        "a" -> Json.fromString(s)
       ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
         _(field(j))
       ) === Xor.right(Qux(i, s, j))
@@ -118,7 +118,7 @@ class SemiautoDerivedSuite extends CirceSuite {
     check { (is: List[Int]) =>
       val json = Encoder[List[Int]].apply(is)
 
-      json === Json.fromValues(is.map(Json.int)) && json.as[List[Int]] === Xor.right(is)
+      json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is)
     }
   }
 

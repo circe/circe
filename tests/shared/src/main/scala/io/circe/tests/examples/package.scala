@@ -8,23 +8,23 @@ import org.scalacheck.{ Arbitrary, Gen }
 package object examples extends AllInstances with ArbitraryInstances with MissingInstances {
   val glossary: Json = Json.obj(
     "glossary" -> Json.obj(
-      "title" -> Json.string("example glossary"),
+      "title" -> Json.fromString("example glossary"),
       "GlossDiv" -> Json.obj(
-        "title" -> Json.string("S"),
+        "title" -> Json.fromString("S"),
         "GlossList" -> Json.obj(
           "GlossEntry" -> Json.obj(
-            "ID" -> Json.string("SGML"),
-            "SortAs" -> Json.string("SGML"),
-            "GlossTerm" -> Json.string("Standard Generalized Markup Language"),
-            "Acronym" -> Json.string("SGML"),
-            "Abbrev" -> Json.string("ISO 8879:1986"),
+            "ID" -> Json.fromString("SGML"),
+            "SortAs" -> Json.fromString("SGML"),
+            "GlossTerm" -> Json.fromString("Standard Generalized Markup Language"),
+            "Acronym" -> Json.fromString("SGML"),
+            "Abbrev" -> Json.fromString("ISO 8879:1986"),
             "GlossDef" -> Json.obj(
-              "para" -> Json.string(
+              "para" -> Json.fromString(
                 "A meta-markup language, used to create markup languages such as DocBook."
               ),
-              "GlossSeeAlso" -> Json.array(Json.string("GML"), Json.string("XML"))
+              "GlossSeeAlso" -> Json.arr(Json.fromString("GML"), Json.fromString("XML"))
             ),
-            "GlossSee" -> Json.string("markup")
+            "GlossSee" -> Json.fromString("markup")
           )
         )
       )
@@ -65,7 +65,7 @@ package examples {
   object Baz {
     implicit val decodeBaz: Decoder[Baz] = Decoder[List[String]].map(Baz(_))
     implicit val encodeBaz: Encoder[Baz] = Encoder.instance {
-      case Baz(xs) => Json.fromValues(xs.map(Json.string))
+      case Baz(xs) => Json.fromValues(xs.map(Json.fromString))
     }
   }
 

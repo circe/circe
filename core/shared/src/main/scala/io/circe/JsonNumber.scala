@@ -138,7 +138,7 @@ sealed abstract class JsonNumber extends Serializable {
    * This matches the behaviour of most browsers, but it is a lossy operation as you can no longer
    * distinguish between `Double.NaN` and infinity.
    */
-  final def asJsonOrNull: Json = asJson.getOrElse(Json.empty)
+  final def asJsonOrNull: Json = asJson.getOrElse(Json.Null)
 
   /**
    * Construct a JSON number if this is a valid JSON number and a JSON string otherwise.
@@ -146,7 +146,7 @@ sealed abstract class JsonNumber extends Serializable {
    * This allows a [[scala.Double]] to be losslessly encoded, but it is likely to need custom
    * handling for interoperability with other JSON systems.
    */
-  final def asJsonOrString: Json = asJson.getOrElse(Json.string(toString))
+  final def asJsonOrString: Json = asJson.getOrElse(Json.fromString(toString))
 
   /**
    * Universal equality derived from our type-safe equality.

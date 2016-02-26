@@ -10,21 +10,21 @@ trait ArbitraryInstances {
   private[this] def maxDepth: Int = 5
   private[this] def maxSize: Int = 20
 
-  private[this] def genNull: Gen[Json] = Gen.const(Json.empty)
-  private[this] def genBool: Gen[Json] = Arbitrary.arbBool.arbitrary.map(Json.bool)
+  private[this] def genNull: Gen[Json] = Gen.const(Json.Null)
+  private[this] def genBool: Gen[Json] = Arbitrary.arbBool.arbitrary.map(Json.fromBoolean)
 
   private[this] def genNumber: Gen[Json] = Gen.oneOf(
-    Arbitrary.arbLong.arbitrary.map(Json.long),
-    Arbitrary.arbDouble.arbitrary.map(Json.numberOrNull)
+    Arbitrary.arbLong.arbitrary.map(Json.fromLong),
+    Arbitrary.arbDouble.arbitrary.map(Json.fromDoubleOrNull)
   )
 
-  private[this] def genString: Gen[Json] = Arbitrary.arbString.arbitrary.map(Json.string)
+  private[this] def genString: Gen[Json] = Arbitrary.arbString.arbitrary.map(Json.fromString)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
     Gen.listOfN(
       size,
       arbitraryJsonAtDepth(depth + 1).arbitrary
-    ).map(Json.array)
+    ).map(Json.arr)
   }
 
   private[this] def genObject(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
@@ -81,9 +81,7 @@ trait ArbitraryInstances {
   }
 
   implicit def shrinkJsonObject: Shrink[JsonObject] = Shrink(o =>
-    Shrink.shrinkContainer[IndexedSeq, (String, Json)].shrink(
-      o.toList.toIndexedSeq
-    ).map(JsonObject.fromIndexedSeq)
+    Shrink.shrinkContainer[List, (String, Json)].shrink(o.toList).map(JsonObject.fromIterable)
   )
 
   implicit def shrinkJson: Shrink[Json] = Shrink(

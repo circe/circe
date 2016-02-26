@@ -105,8 +105,28 @@ final object JsonObject {
     F.foldLeft(f, empty) { case (acc, (k, v)) => acc.add(k, v) }
 
   /**
+   * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
+   */
+  final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
+    val m = scala.collection.mutable.Map.empty[String, Json]
+    val fs = Vector.newBuilder[String]
+
+    val it = fields.iterator
+
+    while (it.hasNext) {
+      val (k, v) = it.next
+      if (!m.contains(k)) fs += k else {}
+
+      m(k) = v
+    }
+
+    MapAndVectorJsonObject(m.toMap, fs.result())
+  }
+
+  /**
    * Construct a [[JsonObject]] from an [[scala.collection.IndexedSeq]] (provided for optimization).
    */
+  @deprecated("Use fromIterable", "0.4.0")
   final def fromIndexedSeq(f: IndexedSeq[(String, Json)]): JsonObject = {
     var i = 0
     val m = scala.collection.mutable.Map.empty[String, Json]
