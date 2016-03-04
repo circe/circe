@@ -1,16 +1,20 @@
 package io.circe.benchmark
 
 import algebra.Eq
-import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+import argonaut.{Json => JsonA, _}
+import argonaut.Argonaut._
 import cats.data.NonEmptyList
-import io.circe.{ Decoder, Encoder, Json => JsonC }
+import io.circe.{Decoder, Encoder, Json => JsonC}
 import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
+
+import io.github.netvl.picopickle.backends.jawn.JsonPickler
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
-import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
+import play.api.libs.json.{Format, Writes, JsValue => JsValueP, Json => JsonP}
+import spray.json.{JsonFormat, JsonWriter, JsValue => JsValueS, JsonParser => JsonParserS}
 import spray.json.DefaultJsonProtocol._
+import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 
@@ -45,17 +49,21 @@ class ExampleData {
   @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): JsonC = encode(a)
   @inline def encodeP[A](a: A)(implicit encode: Writes[A]): JsValueP = encode.writes(a)
   @inline def encodeS[A](a: A)(implicit encode: JsonWriter[A]): JsValueS = encode.write(a)
+  @inline def encodePico[A](a: A)(implicit encode: JsonPickler.Writer[A]): backend.BValue = write(a)(encode)
 
   val intsC: JsonC = encodeC(ints)
   val intsA: JsonA = encodeA(ints)
   val intsP: JsValueP = encodeP(ints)
   val intsS: JsValueS = encodeS(ints)
+  val intsPico: backend.BValue = encodePico(ints)
 
   val foosC: JsonC = encodeC(foos)
   val fooNelsC: JsonC = encodeC(fooNels)
   val foosA: JsonA = encodeA(foos)
   val foosP: JsValueP = encodeP(foos)
   val foosS: JsValueS = encodeS(foos)
+  val foosPico: backend.BValue = encodePico(foos)
+  //val foosNelsPico: backend.BValue = encodePico(fooNels)
 
   val intsJson: String = intsC.noSpaces
   val foosJson: String = foosC.noSpaces
@@ -85,6 +93,9 @@ class EncodingBenchmark extends ExampleData {
   def encodeIntsS: JsValueS = encodeS(ints)
 
   @Benchmark
+  def encodeIntsPico: backend.BValue = encodePico(ints)
+
+  @Benchmark
   def encodeFoosC: JsonC = encodeC(foos)
 
   @Benchmark
@@ -97,6 +108,11 @@ class EncodingBenchmark extends ExampleData {
   def encodeFoosS: JsValueS = encodeS(foos)
 
   def encodeFooNelsC: JsonC = encodeC(fooNels)
+
+  @Benchmark
+  def encodeFoosPico: backend.BValue = encodePico(foos)
+
+  def encodeFoosNelsPico: backend.BValue = encodePico(fooNels)
 }
 
 /**
@@ -123,6 +139,9 @@ class DecodingBenchmark extends ExampleData {
   def decodeIntsS: List[Int] = intsS.convertTo[List[Int]]
 
   @Benchmark
+  def decodeIntsPico: List[Int] = read[List[Int]](intsPico)
+
+  @Benchmark
   def decodeFoosC: Map[String, Foo] =
     foosC.as[Map[String, Foo]].getOrElse(throw new Exception)
 
@@ -135,6 +154,9 @@ class DecodingBenchmark extends ExampleData {
 
   @Benchmark
   def decodeFoosS: Map[String, Foo] = foosS.convertTo[Map[String, Foo]]
+
+  @Benchmark
+  def decodeFoosPico: Map[String, Foo] = read[Map[String, Foo]](foosPico)
 }
 
 /**
@@ -164,6 +186,9 @@ class ParsingBenchmark extends ExampleData {
   def parseIntsS: JsValueS = JsonParserS(intsJson)
 
   @Benchmark
+  def parseIntsPico: backend.BValue = readAst(intsJson)
+
+  @Benchmark
   def parseFoosC: JsonC = parse(foosJson).getOrElse(throw new Exception)
 
   @Benchmark
@@ -177,6 +202,9 @@ class ParsingBenchmark extends ExampleData {
 
   @Benchmark
   def parseFoosS: JsValueS = JsonParserS(foosJson)
+
+  @Benchmark
+  def parseFoosPico: backend.BValue = readAst(foosJson)
 }
 
 /**
@@ -206,6 +234,9 @@ class PrintingBenchmark extends ExampleData {
   def printIntsS: String = intsS.compactPrint
 
   @Benchmark
+  def printIntsPico: String = writeAst(intsPico)
+
+  @Benchmark
   def printFoosC: String = foosC.noSpaces
 
   @Benchmark
@@ -219,6 +250,9 @@ class PrintingBenchmark extends ExampleData {
 
   @Benchmark
   def printFoosS: String = foosS.compactPrint
+
+  @Benchmark
+  def printFoosPico: String = writeAst(foosPico)
 }
 
 /**

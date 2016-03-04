@@ -23,6 +23,10 @@ class DecodingBenchmarkSpec extends FlatSpec {
     assert(decodeIntsS === ints)
   }
 
+  it should "correctly decode integers using Picopickle" in {
+    assert(decodeIntsPico === ints)
+  }
+
   it should "correctly decode case classes using Circe" in {
     assert(decodeFoosC === foos)
   }
@@ -37,5 +41,9 @@ class DecodingBenchmarkSpec extends FlatSpec {
 
   it should "correctly decode case classes using Spray JSON" in {
     assert(decodeFoosS === foos)
+  }
+
+  it should "correctly decode case classes using Picopickle" in {
+    assert(decodeFoosPico === foos)
   }
 }

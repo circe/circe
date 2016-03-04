@@ -35,6 +35,10 @@ class PrintingBenchmarkSpec extends FlatSpec {
     assert(decodeInts(printIntsS) === Some(ints))
   }
 
+  it should "correctly print integers using Picopickle" in {
+    assert(decodeInts(printIntsPico) === Some(ints))
+  }
+
   it should "correctly print case classes using Circe" in {
     assert(decodeFoos(printFoosC) === Some(foos))
   }
@@ -53,5 +57,9 @@ class PrintingBenchmarkSpec extends FlatSpec {
 
   it should "correctly print case classes using Spray JSON" in {
     assert(decodeFoos(printFoosS) === Some(foos))
+  }
+
+  it should "correctly print case classes using Picopickle" in {
+    assert(decodeFoos(printFoosPico) === Some(foos))
   }
 }
