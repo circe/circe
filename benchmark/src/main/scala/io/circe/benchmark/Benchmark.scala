@@ -6,13 +6,13 @@ import cats.data.NonEmptyList
 import io.circe.{ Decoder, Encoder, Json => JsonC }
 import io.circe.generic.semiauto._
 import io.circe.jawn._
-import java.util.concurrent.TimeUnit
 import io.github.netvl.picopickle.backends.jawn.JsonPickler
+import io.github.netvl.picopickle.backends.jawn.JsonPickler._
+import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
 import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
 import spray.json.DefaultJsonProtocol._
-import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 
