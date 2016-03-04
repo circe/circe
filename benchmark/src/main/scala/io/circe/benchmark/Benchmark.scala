@@ -2,13 +2,11 @@ package io.circe.benchmark
 
 import algebra.Eq
 import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
-
 import cats.data.NonEmptyList
 import io.circe.{ Decoder, Encoder, Json => JsonC }
 import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
-
 import io.github.netvl.picopickle.backends.jawn.JsonPickler
 import org.openjdk.jmh.annotations._
 import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
