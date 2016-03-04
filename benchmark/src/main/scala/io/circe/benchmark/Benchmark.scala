@@ -1,18 +1,18 @@
 package io.circe.benchmark
 
 import algebra.Eq
-import argonaut.{Json => JsonA, _}
-import argonaut.Argonaut._
+import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+
 import cats.data.NonEmptyList
-import io.circe.{Decoder, Encoder, Json => JsonC}
+import io.circe.{ Decoder, Encoder, Json => JsonC }
 import io.circe.generic.semiauto._
 import io.circe.jawn._
 import java.util.concurrent.TimeUnit
 
 import io.github.netvl.picopickle.backends.jawn.JsonPickler
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{Format, Writes, JsValue => JsValueP, Json => JsonP}
-import spray.json.{JsonFormat, JsonWriter, JsValue => JsValueS, JsonParser => JsonParserS}
+import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
+import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
 import spray.json.DefaultJsonProtocol._
 import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 
@@ -63,7 +63,6 @@ class ExampleData {
   val foosP: JsValueP = encodeP(foos)
   val foosS: JsValueS = encodeS(foos)
   val foosPico: backend.BValue = encodePico(foos)
-  //val foosNelsPico: backend.BValue = encodePico(fooNels)
 
   val intsJson: String = intsC.noSpaces
   val foosJson: String = foosC.noSpaces
@@ -111,8 +110,6 @@ class EncodingBenchmark extends ExampleData {
 
   @Benchmark
   def encodeFoosPico: backend.BValue = encodePico(foos)
-
-  def encodeFoosNelsPico: backend.BValue = encodePico(fooNels)
 }
 
 /**
