@@ -391,6 +391,8 @@ lazy val benchmark = project
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
       "io.spray" %% "spray-json" % "1.3.2",
+      "io.github.netvl.picopickle" %% "picopickle-core" % "0.2.1",
+      "io.github.netvl.picopickle" %% "picopickle-backend-jawn" % "0.2.1",
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
     )
   )
