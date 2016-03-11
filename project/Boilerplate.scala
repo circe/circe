@@ -117,7 +117,7 @@ object Boilerplate {
         |package io.circe
         |
         |import cats.{ Applicative, Semigroup, SemigroupK }
-        |import cats.data.{ NonEmptyList, Validated, Xor }
+        |import cats.data.{ NonEmptyList, Xor }
         |import cats.std.ListInstances
         |
         |private[circe] trait TupleDecoders extends ListInstances {

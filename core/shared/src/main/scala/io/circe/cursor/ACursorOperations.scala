@@ -1,7 +1,6 @@
 package io.circe.cursor
 
 import cats.Applicative
-import cats.data.Xor
 import io.circe._
 
 /**

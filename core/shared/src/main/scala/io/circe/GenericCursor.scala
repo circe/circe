@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.Functor
-import cats.data.Xor
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.

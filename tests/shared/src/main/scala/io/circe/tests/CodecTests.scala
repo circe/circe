@@ -4,7 +4,7 @@ import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
+import io.circe.{ Decoder, Encoder, Json }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws

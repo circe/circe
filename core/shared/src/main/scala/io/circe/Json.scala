@@ -2,7 +2,6 @@ package io.circe
 
 import algebra.Eq
 import cats.Show
-import cats.data.Xor
 import io.circe.numbers.BiggerDecimal
 
 /**

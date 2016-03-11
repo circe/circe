@@ -1,6 +1,6 @@
 package io.circe.optics
 
-import io.circe.{ JsonBigDecimal, JsonDouble, JsonLong, JsonNumber }
+import io.circe.{ JsonBigDecimal, JsonLong, JsonNumber }
 import java.math.MathContext
 import monocle.Prism
 
