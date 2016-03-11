@@ -1,6 +1,6 @@
 package io.circe
 
-import algebra.{ Eq, Monoid }
+import algebra.Eq
 import cats.Show
 import cats.std.list._
 import io.circe.cursor.{ CArray, CJson, CObject, CursorOperations }

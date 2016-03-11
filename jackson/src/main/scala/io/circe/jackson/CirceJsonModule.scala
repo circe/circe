@@ -1,12 +1,10 @@
 package io.circe.jackson
 
-import cats.data.Xor
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind.{
   BeanDescription,
   DeserializationConfig,
   JavaType,
-  JsonDeserializer,
   JsonSerializer,
   SerializationConfig
 }

@@ -1,6 +1,5 @@
 package io.circe.tests
 
-import algebra.Eq
 import cats.data.Xor
 import cats.laws._
 import cats.laws.discipline._

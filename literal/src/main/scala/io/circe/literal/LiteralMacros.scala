@@ -1,7 +1,7 @@
 package io.circe.literal
 
 import cats.data.Xor
-import io.circe.{ Json, Parser }
+import io.circe.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import macrocompat.bundle
