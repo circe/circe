@@ -155,7 +155,7 @@ trait Decoder[A] extends Serializable { self =>
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
- * instances are implicit, since they require non-obvious decisions about the names of the
+ * instances are not implicit, since they require non-obvious decisions about the names of the
  * discriminators. If you want instances for these types you can include the following import in
  * your program:
  * {{{
