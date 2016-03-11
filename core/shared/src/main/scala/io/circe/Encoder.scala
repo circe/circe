@@ -35,10 +35,10 @@ trait Encoder[A] extends Serializable {
  * @groupprio Encoding 1
  *
  * @groupname Disjunction Disjunction instances
- * @groupdesc Disjunction Instance creation methods for disjunction-like types.
- * Note that these are implicit, since they require non-obvious decisions about
- * the names of the discriminators. If you want instances for these types you
- * can include the following import in your program:
+ * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
+ * instances are not implicit, since they require non-obvious decisions about the names of the
+ * discriminators. If you want instances for these types you can include the following import in
+ * your program:
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
