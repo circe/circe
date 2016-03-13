@@ -316,10 +316,29 @@ Please see the [contributors' guide](CONTRIBUTING.md) for details on how to subm
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
    Paradise][paradise] plugin to your build. See the [quick start section](#quick-start) above for
    details.
-2. In the 0.4.0 snapshot, the `io.circe.generic` package depends on the Shapeless 2.3.0 snapshot,
-   which means that in principle it may stop working at any time. 0.4.0 will not be released until
-   Shapeless 2.3.0 is available, and of course we will never publish a stable version with snapshot
-   dependencies.
+2. Generic derivation may not work as expected when the type definitions that you're trying to
+   derive instances for are at the same level as the attempted derivation. For example:
+
+   ```scala
+scala> import io.circe.Decoder, io.circe.generic.auto._
+import io.circe.Decoder
+import io.circe.generic.auto._
+
+scala> sealed trait A; case object B extends A; object X { val d = Decoder[A] }
+defined trait A
+defined object B
+defined object X
+
+scala> object X { sealed trait A; case object B extends A; val d = Decoder[A] }
+<console>:19: error: could not find implicit value for parameter d: io.circe.Decoder[X.A]
+       object X { sealed trait A; case object B extends A; val d = Decoder[A] }
+                                                                          ^
+   ```
+
+   This is unfortunately a limitation of the macro API that Shapeless uses to derive the generic
+   representation of the sealed trait. You can manually define these instances, or you can arrange
+   the sealed trait definition so that it is not in the same immediate scope as the attempted
+   derivation (which is typically what you want, anyway).
 3. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
    provided by the `generic` subproject may stack overflow during compilation, which will result in
    the derived encoders or decoders simply not being found. Increasing the stack size available to
