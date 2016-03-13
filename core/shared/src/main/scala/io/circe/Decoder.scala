@@ -527,7 +527,9 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
           case Xor.Left(df) if df.history.isEmpty => rightNone
           case Xor.Left(df) => Xor.left(df)
         }
-      } else rightNone
+      } else if (c.any.focus.isObject) {
+        rightNone
+      } else Xor.left(DecodingFailure("[A]Option[A]", c.history))
     )
 
   /**
