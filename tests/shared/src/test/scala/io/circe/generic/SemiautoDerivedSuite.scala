@@ -9,7 +9,7 @@ import io.circe.generic.semiauto._
 import io.circe.tests.{ CodecTests, CirceSuite }
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
+import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
 class SemiautoDerivedSuite extends CirceSuite {

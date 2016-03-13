@@ -2,7 +2,6 @@ package io.circe
 
 import cats.laws.discipline.eq._
 import io.circe.tests.CirceSuite
-import org.scalacheck.{ Arbitrary, Gen }
 
 class JsonObjectSuite extends CirceSuite {
   test("+: with duplicate") {
