@@ -11,18 +11,20 @@ private[circe] trait HCursorOperations extends GenericCursor[HCursor] { self: HC
   type Result = ACursor
   type M[x[_]] = Functor[x]
 
-  private[this] def toACursor(c: Option[Cursor], e: CursorOp) =
-    c.fold(
-      ACursor.fail(
-        new HCursor(this.cursor) {
-          def history: List[HistoryOp] = HistoryOp.fail(e) :: self.history
-        }
-      )
-    )(c => ACursor.ok(
-      new HCursor(c) {
-        def history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
+  private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
+    case None => ACursor.fail(
+      new HCursor(this.cursor) {
+        private[this] val incorrectFocus: Boolean =
+          (e.requiresObject && !self.focus.isObject) || (e.requiresArray && !self.focus.isArray)
+        final def history: List[HistoryOp] = HistoryOp.fail(e, incorrectFocus) :: self.history
       }
-    ))
+    )
+    case Some(c) => ACursor.ok(
+      new HCursor(c) {
+        final def history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
+      }
+    )
+  }
 
   def focus: Json = cursor.focus
   def top: Json = cursor.top
