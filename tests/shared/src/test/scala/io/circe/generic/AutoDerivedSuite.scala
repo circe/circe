@@ -1,7 +1,7 @@
 package io.circe.generic
 
 import algebra.Eq
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.tests.{ CodecTests, CirceSuite }
@@ -11,8 +11,8 @@ import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
 class AutoDerivedSuite extends CirceSuite {
-  final case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
-  final case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
+  case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
+  case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
 
   object InnerCaseClassExample {
     implicit val arbitraryInnerCaseClassExample: Arbitrary[InnerCaseClassExample] =

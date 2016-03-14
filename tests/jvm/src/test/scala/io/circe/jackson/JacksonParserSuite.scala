@@ -1,6 +1,6 @@
 package io.circe.jackson
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.Xor
 import io.circe.tests.{ CirceSuite, ParserTests }
 import io.circe.tests.examples.glossary
 import java.io.File
