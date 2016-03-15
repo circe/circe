@@ -6,7 +6,6 @@ import cats.Foldable
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
-import scala.collection.mutable.ArrayBuffer
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -89,7 +88,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
     is: IsTraversableOnce[C[A0]] { type A = A0 }
   ): Encoder[C[A0]] = new Encoder[C[A0]] {
     final def apply(a: C[A0]): Json = {
-      val items = ArrayBuffer.empty[Json]
+      val items = List.newBuilder[Json]
 
       val it = is.conversion(a).toIterator
 
@@ -97,7 +96,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
         items += e(it.next())
       }
 
-      Json.fromValues(items)
+      Json.fromValues(items.result)
     }
   }
 
