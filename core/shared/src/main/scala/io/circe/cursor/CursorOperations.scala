@@ -94,9 +94,10 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
     go(Some(this))
   }
 
-  final def downArray: Option[Cursor] = focus.asArray.flatMap {
-    case h :: t => Some(CArray(h, this, false, Nil, t))
-    case Nil => None
+  final def downArray: Option[Cursor] = focus.asArray match {
+    case Some(h :: t) => Some(CArray(h, this, false, Nil, t))
+    case Some(Nil) => None
+    case None => None
   }
 
   final def downAt(p: Json => Boolean): Option[Cursor] = downArray.flatMap(_.find(p))
@@ -105,8 +106,13 @@ private[circe] trait CursorOperations extends GenericCursor[Cursor] { this: Curs
 
   def field(k: String): Option[Cursor] = None
 
-  final def downField(k: String): Option[Cursor] =
-    focus.asObject.flatMap(o => o(k).map(j => CObject(j, k, this, false, o)))
+  final def downField(k: String): Option[Cursor] = focus.asObject match {
+    case Some(o) => o(k) match {
+      case Some(j) => Some(CObject(j, k, this, false, o))
+      case None => None
+    }
+    case None => None
+  }
 
   def deleteGoLeft: Option[Cursor] = None
   def deleteGoRight: Option[Cursor] = None
