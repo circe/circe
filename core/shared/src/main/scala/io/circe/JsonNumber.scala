@@ -216,7 +216,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   }
 
   final def truncateToLong: Long = value.round
-  override final def toString: String = value.toString
+  override final def toString: String = java.lang.Double.toString(value)
 }
 
 /**

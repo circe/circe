@@ -49,7 +49,7 @@ final object KeyEncoder {
   }
 
   implicit val encodeKeyInt: KeyEncoder[Int] = new KeyEncoder[Int] {
-    final def apply(key: Int): String = java.lang.Int.toString(key)
+    final def apply(key: Int): String = java.lang.Integer.toString(key)
   }
 
   implicit val encodeKeyLong: KeyEncoder[Long] = new KeyEncoder[Long] {
