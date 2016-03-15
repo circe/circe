@@ -75,8 +75,7 @@ sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACur
   /**
    * A helper method to simplify performing operations on the underlying [[HCursor]].
    */
-  private[this] def withHCursor(f: HCursor => ACursor): ACursor =
-    if (this.succeeded) f(this.any) else this
+  @inline private[this] def withHCursor(f: HCursor => ACursor): ACursor = if (this.succeeded) f(this.any) else this
 
   final def focus: Option[Json] = success.map(_.focus)
   final def top: Option[Json] = success.map(_.top)
