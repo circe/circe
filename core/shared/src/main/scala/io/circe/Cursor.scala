@@ -32,9 +32,7 @@ abstract class Cursor extends GenericCursor[Cursor] {
    * Create an [[HCursor]] for this cursor in order to track history.
    */
   @deprecated("Use HCursor.fromCursor", "0.4.0")
-  final def hcursor: HCursor = new HCursor(this) {
-    final def history: List[HistoryOp] = Nil
-  }
+  final def hcursor: HCursor = HCursor.fromCursor(this)
 
   final def top: Json = {
     @tailrec

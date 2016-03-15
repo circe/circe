@@ -14,7 +14,7 @@ import scala.annotation.tailrec
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-abstract class HCursor private[circe](final val cursor: Cursor) { self =>
+sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HCursor] { self =>
   type Focus[x] = Id[x]
   type Result = ACursor
   type M[x[_]] = Functor[x]
@@ -30,6 +30,13 @@ abstract class HCursor private[circe](final val cursor: Cursor) { self =>
    * Create a failed [[ACursor]] for this cursor.
    */
   final def failedACursor: ACursor = ACursor.fail(this)
+
+  /**
+   * If the last operation was not successful, reattempt it.
+   */
+  final def reattempted: HCursor = new HCursor(self.cursor) {
+    final def history: List[HistoryOp] = HistoryOp.reattempt :: self.history
+  }
 
   /**
    * Traverse taking `op` at each step, performing `f` on the current cursor and
@@ -87,8 +94,7 @@ abstract class HCursor private[circe](final val cursor: Cursor) { self =>
       case Some(next) => next.traverseDecodeAccumulating(f(init, this))(op, f)
     }
 
-  @inline
-  private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
+  @inline private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
     case None => ACursor.fail(
       new HCursor(this.cursor) {
         private[this] val incorrectFocus: Boolean =

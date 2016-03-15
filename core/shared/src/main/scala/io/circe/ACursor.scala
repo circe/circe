@@ -13,7 +13,7 @@ import cats.data.{ Validated, Xor }
  * @see [[GenericCursor]]
  * @author Travis Brown
  */
-sealed abstract class ACursor private[circe](final val any: HCursor) {
+sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACursor] {
   type Focus[x] = Option[x]
   type Result = ACursor
   type M[x[_]] = Applicative[x]
@@ -55,11 +55,7 @@ sealed abstract class ACursor private[circe](final val any: HCursor) {
   /**
    * If the last operation was not successful, reattempt it.
    */
-  final def reattempt: ACursor = if (succeeded) this else ACursor.ok(
-    new HCursor(any.cursor) {
-      final def history: List[HistoryOp] = HistoryOp.reattempt +: any.history
-    }
-  )
+  final def reattempt: ACursor = if (succeeded) this else ACursor.ok(any.reattempted)
 
   /**
    * Return the previous focus, if and only if we didn't succeed.
