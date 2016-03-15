@@ -51,7 +51,7 @@ private[circe] final case class CObject(
   def right: Option[Cursor] = None
   def first: Option[Cursor] = None
   def last: Option[Cursor] = None
-  
+
   def deleteGoLeft: Option[Cursor] = None
   def deleteGoRight: Option[Cursor] = None
   def deleteGoFirst: Option[Cursor] = None

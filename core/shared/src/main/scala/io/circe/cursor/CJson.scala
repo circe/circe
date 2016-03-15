@@ -18,7 +18,7 @@ private[circe] final case class CJson(focus: Json) extends Cursor {
   def right: Option[Cursor] = None
   def first: Option[Cursor] = None
   def last: Option[Cursor] = None
-  
+
   def deleteGoLeft: Option[Cursor] = None
   def deleteGoRight: Option[Cursor] = None
   def deleteGoFirst: Option[Cursor] = None
@@ -28,7 +28,7 @@ private[circe] final case class CJson(focus: Json) extends Cursor {
 
   def setLefts(x: List[Json]): Option[Cursor] = None
   def setRights(x: List[Json]): Option[Cursor] = None
-  
+
   def field(k: String): Option[Cursor] = None
   def deleteGoField(q: String): Option[Cursor] = None
 }
