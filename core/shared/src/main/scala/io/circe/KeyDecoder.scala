@@ -41,8 +41,14 @@ final object KeyDecoder {
     }
   }
 
-  implicit val decodeKeyString: KeyDecoder[String] = instance(Some(_))
-  implicit val decodeKeySymbol: KeyDecoder[Symbol] = instance(key => Some(Symbol(key)))
+  implicit val decodeKeyString: KeyDecoder[String] = new KeyDecoder[String] {
+    final def apply(key: String): Option[String] = Some(key)
+  }
+
+  implicit val decodeKeySymbol: KeyDecoder[Symbol] = new KeyDecoder[Symbol] {
+    final def apply(key: String): Option[Symbol] = Some(Symbol(key))
+  }
+
   implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(_.toByte)
   implicit val decodeKeyShort: KeyDecoder[Short] = numberInstance(_.toShort)
   implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(_.toInt)
