@@ -13,11 +13,26 @@ final case class ParsingFailure(message: String, underlying: Throwable) extends 
   final override def getMessage: String = message
 }
 
-final case class DecodingFailure(message: String, history: List[HistoryOp]) extends Error {
+sealed abstract class DecodingFailure(val message: String) extends Error {
+  def history: List[HistoryOp]
   final override def getMessage: String =
     if (history.isEmpty) message else s"$message: ${ history.mkString(",") }"
 
+  final def copy(message: String = message, history: => List[HistoryOp] = history): DecodingFailure = {
+    def newHistory = history
+    new DecodingFailure(message) {
+      final lazy val history: List[HistoryOp] = newHistory
+    }
+  }
+
   final def withMessage(message: String): DecodingFailure = copy(message = message)
+
+  override final def toString: String = s"DecodingFailure($message, $history)"
+  override final def equals(that: Any): Boolean = that match {
+    case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
+    case _ => false
+  }
+  override final def hashCode: Int = message.hashCode
 }
 
 final object ParsingFailure {
@@ -31,6 +46,15 @@ final object ParsingFailure {
 }
 
 final object DecodingFailure {
+  def apply(message: String, ops: => List[HistoryOp]): DecodingFailure = new DecodingFailure(message) {
+    final lazy val history: List[HistoryOp] = ops
+  }
+
+  def unapply(error: Error): Option[(String, List[HistoryOp])] = error match {
+    case ParsingFailure(_, _) => None
+    case other: DecodingFailure => Some((other.message, other.history))
+  }
+
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
     case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
       m1 == m2 && Eq[List[HistoryOp]].eqv(h1, h2)
