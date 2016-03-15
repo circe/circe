@@ -5,7 +5,9 @@ import cats.Show
 import cats.std.list._
 import io.circe.CursorOp._
 
-sealed trait Error extends Exception
+sealed abstract class Error extends Exception {
+  final override def fillInStackTrace(): Throwable = this
+}
 
 final case class ParsingFailure(message: String, underlying: Throwable) extends Error {
   final override def getMessage: String = message
