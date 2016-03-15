@@ -40,51 +40,54 @@ private[circe] final case class CArray(
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Functor[F]): F[Cursor] =
     F.map(f(focus))(newFocus => copy(focus = newFocus, changed = true))
 
-  override def lefts: Option[List[Json]] = Some(ls)
-  override def rights: Option[List[Json]] = Some(rs)
+  def lefts: Option[List[Json]] = Some(ls)
+  def rights: Option[List[Json]] = Some(rs)
 
-  override def left: Option[Cursor] = ls match {
+  def left: Option[Cursor] = ls match {
     case h :: t => Some(CArray(h, parent, changed, t, focus :: rs))
     case Nil => None
   }
 
-  override def right: Option[Cursor] = rs match {
+  def right: Option[Cursor] = rs match {
     case h :: t => Some(CArray(h, parent, changed, focus :: ls, t))
     case Nil => None
   }
 
-  override def first: Option[Cursor] = (focus :: rs).reverse_:::(ls) match {
+  def first: Option[Cursor] = (focus :: rs).reverse_:::(ls) match {
     case h :: t => Some(CArray(h, parent, changed, Nil, t))
     case Nil => None
   }
 
-  override def last: Option[Cursor] = (focus :: ls).reverse_:::(rs) match {
+  def last: Option[Cursor] = (focus :: ls).reverse_:::(rs) match {
     case h :: t => Some(CArray(h, parent, changed, t, Nil))
     case Nil => None
   }
 
-  override def deleteGoLeft: Option[Cursor] = ls match {
+  def deleteGoLeft: Option[Cursor] = ls match {
     case h :: t => Some(CArray(h, parent, true, t, rs))
     case Nil => None
   }
 
-  override def deleteGoRight: Option[Cursor] = rs match {
+  def deleteGoRight: Option[Cursor] = rs match {
     case h :: t => Some(CArray(h, parent, true, ls, t))
     case Nil => None
   }
 
-  override def deleteGoFirst: Option[Cursor] = rs.reverse_:::(ls) match {
+  def deleteGoFirst: Option[Cursor] = rs.reverse_:::(ls) match {
     case h :: t => Some(CArray(h, parent, true, Nil, t))
     case Nil => None
   }
 
-  override def deleteGoLast: Option[Cursor] = ls.reverse_:::(rs) match {
+  def deleteGoLast: Option[Cursor] = ls.reverse_:::(rs) match {
     case h :: t => Some(CArray(h, parent, true, t, Nil))
     case Nil => None
   }
 
-  override def deleteLefts: Option[Cursor] = Some(copy(changed = true, ls = Nil))
-  override def deleteRights: Option[Cursor] = Some(copy(changed = true, rs = Nil))
-  override def setLefts(js: List[Json]): Option[Cursor] = Some(copy(changed = true, ls = js))
-  override def setRights(js: List[Json]): Option[Cursor] = Some(copy(changed = true, rs = js))
+  def deleteLefts: Option[Cursor] = Some(copy(changed = true, ls = Nil))
+  def deleteRights: Option[Cursor] = Some(copy(changed = true, rs = Nil))
+  def setLefts(js: List[Json]): Option[Cursor] = Some(copy(changed = true, ls = js))
+  def setRights(js: List[Json]): Option[Cursor] = Some(copy(changed = true, rs = js))
+
+  def field(k: String): Option[Cursor] = None
+  def deleteGoField(q: String): Option[Cursor] = None
 }

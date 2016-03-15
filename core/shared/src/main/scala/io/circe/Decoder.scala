@@ -33,7 +33,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Decode the given [[Json]] value.
    */
-  final def decodeJson(j: Json): Decoder.Result[A] = apply(j.cursor.hcursor)
+  final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromCursor(j.cursor))
 
   final def accumulating: AccumulatingDecoder[A] = AccumulatingDecoder.fromDecoder(self)
 

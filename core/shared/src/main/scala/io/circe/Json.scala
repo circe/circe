@@ -57,7 +57,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Construct a cursor with history from this JSON value.
    */
-  final def hcursor: HCursor = Cursor(this).hcursor
+  final def hcursor: HCursor = HCursor.fromCursor(Cursor(this))
 
   def isNull: Boolean
   def isBoolean: Boolean
@@ -100,7 +100,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Attempts to decode this JSON value to another data type.
    */
-  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(cursor.hcursor)
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(HCursor.fromCursor(cursor))
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
