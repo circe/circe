@@ -3,7 +3,7 @@ package io.circe.cursor
 import cats.Functor
 import io.circe.{ Context, Cursor, Json }
 
-private[circe] case class CJson(focus: Json) extends Cursor {
+private[circe] final case class CJson(focus: Json) extends Cursor {
   def context: List[Context] = Nil
   def up: Option[Cursor] = None
   def delete: Option[Cursor] = None

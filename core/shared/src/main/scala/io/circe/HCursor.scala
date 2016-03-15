@@ -38,27 +38,34 @@ abstract class HCursor private[circe](val cursor: Cursor) extends HCursorOperati
     op: HCursor => ACursor,
     f: (A, HCursor) => Decoder.Result[A]
   ): Decoder.Result[A] = loop[(HCursor, A), A](
-    f(init, this).map(a => (this, a)),
-    { case (c, acc) =>
-        op(c).success.fold[Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]]](
-          Xor.left(Xor.right[DecodingFailure, A](acc))
-        )(hcursor =>
-          Xor.right(f(acc, hcursor).map(b => (hcursor, b)))
-        )
+    f(init, this) match {
+      case Xor.Right(a) => Xor.Right((this, a))
+      case l @ Xor.Left(_) => l
+    },
+    new Function1[(HCursor, A), Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]]] {
+      final def apply(p: (HCursor, A)): Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]] = {
+        val result = op(p._1)
+
+        if (result.succeeded) Xor.right(
+          f(p._2, result.any) match {
+            case Xor.Right(b) => Xor.right((result.any, b))
+            case l @ Xor.Left(_) => l
+          }
+        ) else Xor.left(Xor.right(p._2))
+      }
     }
   )
 
   @tailrec private[this] final def loop[A, B](
     r1: Decoder.Result[A],
     f: A => Xor[Decoder.Result[B], Decoder.Result[A]]
-  ): Decoder.Result[B] =
-    r1 match {
-      case l @ Xor.Left(_) => l
-      case Xor.Right(a) => f(a) match {
-        case Xor.Left(b) => b
-        case Xor.Right(r2) => loop[A, B](r2, f)
-      }
+  ): Decoder.Result[B] = r1 match {
+    case l @ Xor.Left(_) => l
+    case Xor.Right(a) => f(a) match {
+      case Xor.Left(b) => b
+      case Xor.Right(r2) => loop[A, B](r2, f)
     }
+  }
 
   /**
    * Traverse taking `op` at each step, performing `f` on the current cursor and

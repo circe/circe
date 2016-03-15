@@ -335,7 +335,7 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON boolean.
    */
-  final def fromBoolean(value: Boolean): Json = JBoolean(value)
+  final def fromBoolean(value: Boolean): Json = if (value) True else False
 
   /**
    * Create a `Json` value representing a JSON number from an `Int`.

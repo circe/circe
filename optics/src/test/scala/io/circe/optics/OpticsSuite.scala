@@ -8,8 +8,6 @@ import io.circe.tests.CirceSuite
 import monocle.function.Plated.plate
 import monocle.law.discipline.{ PrismTests, TraversalTests }
 import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
-import org.scalatest.{ FunSuite, Matchers }
-import org.typelevel.discipline.scalatest.Discipline
 import scalaz.Equal
 import scalaz.std.anyVal._
 import scalaz.std.math.bigDecimal._

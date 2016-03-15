@@ -3,7 +3,7 @@ package io.circe.cursor
 import cats.Functor
 import io.circe.{ Context, Cursor, Json, JsonObject }
 
-private[circe] case class CObject(
+private[circe] final case class CObject(
   focus: Json,
   key: String,
   parent: Cursor,

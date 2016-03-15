@@ -3,7 +3,7 @@ package io.circe.cursor
 import cats.Functor
 import io.circe.{ Context, Cursor, Json }
 
-private[circe] case class CArray(
+private[circe] final case class CArray(
   focus: Json,
   parent: Cursor,
   changed: Boolean,
