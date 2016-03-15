@@ -288,7 +288,7 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Instances
    */
-  implicit final val contravariantEncode: Contravariant[Encoder] = new Contravariant[Encoder] {
+  implicit final val contravariantEncoder: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 }

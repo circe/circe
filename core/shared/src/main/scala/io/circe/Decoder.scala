@@ -700,7 +700,7 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Instances
    */
-  implicit final val monadDecode: Monad[Decoder] = new Monad[Decoder] {
+  implicit final val monadDecoder: Monad[Decoder] = new Monad[Decoder] {
     final def pure[A](a: A): Decoder[A] = new Decoder[A] {
       final def apply(c: HCursor): Result[A] = Xor.right(a)
     }
