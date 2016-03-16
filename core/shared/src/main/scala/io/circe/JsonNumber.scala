@@ -196,7 +196,7 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = Some(value)
   final def truncateToLong: Long = value
-  override final def toString: String = value.toString
+  override final def toString: String = java.lang.Long.toString(value)
 }
 
 /**
@@ -216,7 +216,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   }
 
   final def truncateToLong: Long = value.round
-  override final def toString: String = value.toString
+  override final def toString: String = java.lang.Double.toString(value)
 }
 
 /**

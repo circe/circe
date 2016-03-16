@@ -85,14 +85,18 @@ private[numbers] final class SigAndExp(
       )
     }
 
-  def toDouble: Double = toBigDecimal.map(_.doubleValue).getOrElse(
-    (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
-  )
+  def toDouble: Double = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
+    new BigDecimal(unscaled, scale.intValue).doubleValue
+  } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
 
-  def toLong: Option[Long] = if (!this.isWhole) None else toBigInteger.flatMap { i =>
-    val asLong = i.longValue
+  def toLong: Option[Long] = if (!this.isWhole) None else {
+    toBigInteger match {
+      case Some(i) =>
+        val asLong = i.longValue
 
-    if (BigInteger.valueOf(asLong) == i) Some(asLong) else None
+        if (BigInteger.valueOf(asLong) == i) Some(asLong) else None
+      case None => None
+    }
   }
 
   def truncateToLong: Long = toDouble.round

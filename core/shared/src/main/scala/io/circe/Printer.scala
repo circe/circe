@@ -157,33 +157,33 @@ final case class Printer(
           val items = if (preserveOrder) o.toList else o.toMap
           var first = true
 
-          items.foreach {
-            case (key, value) =>
-              if (!dropNullKeys || !value.isNull) {
-                if (!first) {
-                  builder.append(p.objectCommas)
-                }
-                encloseJsonString(key)
-                builder.append(p.colons)
-                trav(depth + 1, value)
-                first = false
+          val itemIterator = items.iterator
+
+          while (itemIterator.hasNext) {
+            val (key, value) = itemIterator.next()
+            if (!dropNullKeys || !value.isNull) {
+              if (!first) {
+                builder.append(p.objectCommas)
               }
+              encloseJsonString(key)
+              builder.append(p.colons)
+              trav(depth + 1, value)
+              first = false
+            }
           }
           builder.append(p.rBraces)
         case JString(s) => encloseJsonString(s)
         case JNumber(n) => builder.append(n.toString)
         case JBoolean(b)   => builder.append(if (b) trueText else falseText)
         case JArray(arr) =>
-          if (arr.length == 0) builder.append(p.lrEmptyBrackets) else {
+          val arrIterator = arr.iterator
+          if (!arrIterator.hasNext) builder.append(p.lrEmptyBrackets) else {
           builder.append(p.lBrackets)
-          trav(depth + 1, arr(0))
+          trav(depth + 1, arrIterator.next)
 
-          var i = 1
-
-          while (i < arr.length) {
+          while (arrIterator.hasNext) {
             builder.append(p.arrayCommas)
-            trav(depth + 1, arr(i))
-            i += 1
+            trav(depth + 1, arrIterator.next())
           }
           builder.append(p.rBrackets)
         }

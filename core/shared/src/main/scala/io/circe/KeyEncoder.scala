@@ -21,7 +21,7 @@ abstract class KeyEncoder[A] extends Serializable { self =>
    * Construct an instance for type `B` from an instance for type `A`.
    */
   final def contramap[B](f: B => A): KeyEncoder[B] = new KeyEncoder[B] {
-    def apply(key: B): String = self(f(key))
+    final def apply(key: B): String = self(f(key))
   }
 }
 
@@ -32,12 +32,29 @@ final object KeyEncoder {
     def apply(key: A): String = f(key)
   }
 
-  implicit val encodeKeyString: KeyEncoder[String] = instance(identity)
-  implicit val encodeKeySymbol: KeyEncoder[Symbol] = instance(_.name)
-  implicit val encodeKeyByte: KeyEncoder[Byte] = instance(_.toString)
-  implicit val encodeKeyShort: KeyEncoder[Short] = instance(_.toString)
-  implicit val encodeKeyInt: KeyEncoder[Int] = instance(_.toString)
-  implicit val encodeKeyLong: KeyEncoder[Long] = instance(_.toString)
+  implicit val encodeKeyString: KeyEncoder[String] = new KeyEncoder[String] {
+    final def apply(key: String): String = key
+  }
+
+  implicit val encodeKeySymbol: KeyEncoder[Symbol] = new KeyEncoder[Symbol] {
+    final def apply(key: Symbol): String = key.name
+  }
+
+  implicit val encodeKeyByte: KeyEncoder[Byte] = new KeyEncoder[Byte] {
+    final def apply(key: Byte): String = java.lang.Byte.toString(key)
+  }
+
+  implicit val encodeKeyShort: KeyEncoder[Short] = new KeyEncoder[Short] {
+    final def apply(key: Short): String = java.lang.Short.toString(key)
+  }
+
+  implicit val encodeKeyInt: KeyEncoder[Int] = new KeyEncoder[Int] {
+    final def apply(key: Int): String = java.lang.Integer.toString(key)
+  }
+
+  implicit val encodeKeyLong: KeyEncoder[Long] = new KeyEncoder[Long] {
+    final def apply(key: Long): String = java.lang.Long.toString(key)
+  }
 
   implicit val contravariantKeyEncode: Contravariant[KeyEncoder] = new Contravariant[KeyEncoder] {
     final def contramap[A, B](e: KeyEncoder[A])(f: B => A): KeyEncoder[B] = e.contramap(f)

@@ -1,6 +1,6 @@
 package io.circe.numbers
 
-import java.math.{ BigDecimal, BigInteger }
+import java.math.BigInteger
 import scala.annotation.switch
 
 /**

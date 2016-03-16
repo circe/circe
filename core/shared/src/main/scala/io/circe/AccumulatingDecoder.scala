@@ -5,7 +5,7 @@ import cats.data.{ NonEmptyList, OneAnd, Validated, ValidatedNel }
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
   /**
-   * Decode the given hcursor.
+   * Decode the given [[HCursor]].
    */
   def apply(c: HCursor): AccumulatingDecoder.Result[A]
 
@@ -16,6 +16,14 @@ sealed trait AccumulatingDecoder[A] extends Serializable { self =>
     final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).map(f)
   }
 
+  final def product[B](other: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] =
+    new AccumulatingDecoder[(A, B)] {
+      final def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] = self(c).product(other(c))(
+        AccumulatingDecoder.failureNelInstance
+      )
+    }
+
+  @deprecated("Use product", "0.4.0")
   final def ap[B](f: AccumulatingDecoder[A => B]): AccumulatingDecoder[B] =
     new AccumulatingDecoder[B] {
       final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
@@ -49,19 +57,14 @@ final object AccumulatingDecoder {
         final def apply(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
       }
 
-      override final def map[A, B](fa: AccumulatingDecoder[A])(f: A => B): AccumulatingDecoder[B] =
-        fa.map(f)
+      override final def map[A, B](fa: AccumulatingDecoder[A])(f: A => B): AccumulatingDecoder[B] = fa.map(f)
 
-      final def ap[A, B](f: AccumulatingDecoder[A => B])(
-        fa: AccumulatingDecoder[A]
-      ): AccumulatingDecoder[B] = fa.ap(f)
+      final def ap[A, B](f: AccumulatingDecoder[A => B])(fa: AccumulatingDecoder[A]): AccumulatingDecoder[B] =
+        new AccumulatingDecoder[B] {
+          final def apply(c: HCursor): AccumulatingDecoder.Result[B] = resultInstance.ap(f(c))(fa(c))
+        }
 
-      final def product[A, B](
-        fa: AccumulatingDecoder[A],
-        fb: AccumulatingDecoder[B]
-      ): AccumulatingDecoder[(A, B)] = new AccumulatingDecoder[(A, B)] {
-        final def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
-          fb(c).ap(fa(c).map(a => (b: B) => (a, b)))(failureNelInstance)
-      }
+      final def product[A, B](fa: AccumulatingDecoder[A], fb: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] =
+        fa.product(fb)
     }
 }
