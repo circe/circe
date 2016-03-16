@@ -41,6 +41,8 @@ class StdLibCodecSuite extends CirceSuite {
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
   checkAll("Codec[UUID]", CodecTests[UUID].codec)
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
+  checkAll("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
+  checkAll("Codec[None.type]", CodecTests[None.type].codec)
   checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkAll("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)

@@ -225,6 +225,18 @@ object Encoder extends TupleEncoders with LowPriorityEncoders {
   /**
    * @group Encoding
    */
+  implicit final def encodeSome[A](implicit e: Encoder[A]): Encoder[Some[A]] = e.contramap(_.x)
+
+  /**
+   * @group Encoding
+   */
+  implicit final val encodeNone: Encoder[None.type] = new Encoder[None.type] {
+    final def apply(a: None.type): Json = Json.Null
+  }
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeOneAnd[A0, C[_]](
     implicit ea: Encoder[A0],
     is: IsTraversableOnce[C[A0]] { type A = A0 }
