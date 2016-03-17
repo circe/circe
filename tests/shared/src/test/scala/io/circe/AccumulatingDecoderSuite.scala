@@ -20,7 +20,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
   test("replaying accumulating decoder history returns expected failures in a list") {
     check { (xs: List[Either[Int, String]]) =>
       val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = xs.collect { case Left(e) => Option(e.asJson) }
       Decoder[List[String]].accumulating(json.hcursor)
@@ -42,7 +42,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
   test("replaying accumulating decoder history returns expected failures in a map") {
     check { (xs: Map[String, Either[Int, String]]) =>
       val json = xs.map { case (k, v) => (k, v.fold(Json.fromInt, Json.fromString)) }.asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = xs.values.collect { case Left(e) => Option(e.asJson) }.toSet
 
@@ -65,7 +65,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
   test("replaying accumulating decoder history returns expected failures in a set") {
     check { (xs: Set[Either[Int, String]]) =>
       val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = xs.collect { case Left(e) => Option(e.asJson) }
 
@@ -96,7 +96,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
         xs._2.fold(Json.fromInt, Json.fromString),
         xs._3.fold(Json.fromInt, Json.fromString)
         ).asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = xs.productIterator
         .map(_.asInstanceOf[Either[Int, String]])
@@ -122,7 +122,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
   test("replaying accumulating decoder history returns expected failures in a non-empty list") {
     check { (nel: NonEmptyList[Either[Int, String]]) =>
       val json = nel.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = nel.toList.collect { case Left(e) => Option(e.asJson) }
       Decoder[NonEmptyList[String]].accumulating(json.hcursor)
@@ -157,7 +157,7 @@ class AccumulatingDecoderSuite extends CirceSuite {
   test("replaying accumulating decoder history returns expected failures in a case class") {
     check { (a: Int, b: Boolean, c: Int) =>
       val json = BadSample(a, b, c).asJson
-      val cursor = Cursor(json).hcursor
+      val cursor = json.hcursor
 
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
 
