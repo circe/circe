@@ -14,12 +14,12 @@ import scala.collection.generic.IsTraversableOnce
  */
 trait Encoder[A] extends Serializable { self =>
   /**
-   * Converts a value to JSON.
+   * Convert a value to JSON.
    */
   def apply(a: A): Json
 
   /**
-   * Creates a new [Encoder]] by applying a function to a value of type `B` before encoding as an
+   * Create a new [Encoder]] by applying a function to a value of type `B` before encoding as an
    * `A`.
    */
   final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
@@ -27,7 +27,7 @@ trait Encoder[A] extends Serializable { self =>
   }
 
   /**
-   * Creates a new [[Encoder]] by applying a function to the output of this one.
+   * Create a new [[Encoder]] by applying a function to the output of this one.
    */
   final def mapJson(f: Json => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(self(a))
