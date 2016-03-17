@@ -65,6 +65,8 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
             case Some(o2) => o2("") match {
               // The second-level object doesn't contain a "" key, so we should succeed emptily.
               case None => result === Xor.Right(None)
+              // The third-level value is null, so we succeed emptily.
+              case Some(j3) if j3.isNull => result === Xor.Right(None)
               case Some(j3) => j3.asString match {
                 // The third-level value isn't a string, so we should fail.
                 case None => result.isLeft
@@ -96,8 +98,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
             // The second-level value isn't an array, so we should fail.
             case None => result.isLeft
             case Some(a2) => a2.lift(1) match {
-              // The second-level array doesn't a second element, so we should succeed emptily.
+              // The second-level array doesn't have a second element, so we should succeed emptily.
               case None => result === Xor.Right(None)
+              // The third-level value is null, so we succeed emptily.
+              case Some(j3) if j3.isNull => result === Xor.Right(None)
               case Some(j3) => j3.asString match {
                 // The third-level value isn't a string, so we should fail.
                 case None => result.isLeft

@@ -552,6 +552,21 @@ final object Decoder extends TupleDecoders with LowPriorityDecoders {
   /**
    * @group Decoding
    */
+  implicit final def decodeSome[A](implicit d: Decoder[A]): Decoder[Some[A]] = d.map(Some(_))
+
+  /**
+   * @group Decoding
+   */
+  implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
+    final def apply(c: HCursor): Result[None.type] = if (c.focus.isNull) Xor.right(None) else {
+      Xor.left(DecodingFailure("None", c.history))
+    }
+  }
+
+
+  /**
+   * @group Decoding
+   */
   implicit final def decodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
     dk: KeyDecoder[K],
     dv: Decoder[V],
