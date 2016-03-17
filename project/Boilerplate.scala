@@ -28,6 +28,11 @@ object Boilerplate {
     GenProductEncoders
   )
 
+  val testTemplates: Seq[Template] = Seq(
+    GenTupleTests,
+    GenProductTests
+  )
+
   val header = "// auto-generated boilerplate"
   val maxArity = 22
 
@@ -47,10 +52,10 @@ object Boilerplate {
    *
    * As a side-effect, it actually generates them...
    */
-  def genTests(dir: File): Seq[File] = {
-    val tgtFile = GenTupleTests.filename(dir)
-    IO.write(tgtFile, GenTupleTests.body)
-    Seq(tgtFile)
+  def genTests(dir: File): Seq[File] = testTemplates.map { template =>
+    val tgtFile = template.filename(dir)
+    IO.write(tgtFile, template.body)
+    tgtFile
   }
 
   class TemplateVals(val arity: Int) {
@@ -276,6 +281,45 @@ object Boilerplate {
         -        JsonObject.fromIterable(Vector($kvs))
         -      }
         -    }
+        |}
+      """
+    }
+  }
+
+  object GenProductTests extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "ProductCodecSuite.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val members = (0 until arity).map(i => s"s$i: String").mkString(", ")
+      val memberNames = (0 until arity).map(i => "\"" + s"s$i" + "\"").mkString(", ")
+
+      val memberVariableNames = (0 until arity).map(i => s"s$i").mkString(", ")
+      val memberArbitraryItems = (0 until arity).map(i => s"s$i <- Arbitrary.arbitrary[String]").mkString("; ")
+
+      block"""
+        |package io.circe
+        |
+        |import algebra.Eq
+        |import io.circe.tests.{ CodecTests, CirceSuite }
+        |import org.scalacheck.Arbitrary
+        |
+        |class ProductCodecSuite extends CirceSuite {
+        -  case class Cc$arity($members)
+        -  object Cc$arity {
+        -    implicit val eqCc$arity: Eq[Cc$arity] = Eq.fromUniversalEquals
+        -    implicit val arbitraryCc$arity: Arbitrary[Cc$arity] = Arbitrary(
+        -      for { $memberArbitraryItems } yield Cc$arity($memberVariableNames)
+        -    )
+        -    implicit val encodeCc$arity: Encoder[Cc$arity] =
+        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
+        -    implicit val decodeCc$arity: Decoder[Cc$arity] =
+        -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
+        -  }
+        -  checkAll("Codec[Cc$arity]", CodecTests[Cc$arity].codec)
         |}
       """
     }
