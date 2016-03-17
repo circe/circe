@@ -172,9 +172,12 @@ trait Decoder[A] extends Serializable { self =>
  * @groupname Tuple Tuple instances
  * @groupprio Tuple 5
  *
+ * @groupname Product Case class and other product instances
+ * @groupprio Product 6
+ *
  * @author Travis Brown
  */
-final object Decoder extends TupleDecoders with LowPriorityDecoders {
+final object Decoder extends TupleDecoders with ProductDecoders with LowPriorityDecoders {
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
