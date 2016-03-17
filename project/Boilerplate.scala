@@ -23,7 +23,14 @@ object Boilerplate {
 
   val templates: Seq[Template] = Seq(
     GenTupleDecoders,
-    GenTupleEncoders
+    GenTupleEncoders,
+    GenProductDecoders,
+    GenProductEncoders
+  )
+
+  val testTemplates: Seq[Template] = Seq(
+    GenTupleTests,
+    GenProductTests
   )
 
   val header = "// auto-generated boilerplate"
@@ -45,10 +52,10 @@ object Boilerplate {
    *
    * As a side-effect, it actually generates them...
    */
-  def genTests(dir: File): Seq[File] = {
-    val tgtFile = GenTupleTests.filename(dir)
-    IO.write(tgtFile, GenTupleTests.body)
-    Seq(tgtFile)
+  def genTests(dir: File): Seq[File] = testTemplates.map { template =>
+    val tgtFile = template.filename(dir)
+    IO.write(tgtFile, template.body)
+    tgtFile
   }
 
   class TemplateVals(val arity: Int) {
@@ -122,16 +129,16 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
-        -    new Decoder[${`(A..N)`}] { self =>
-        -      def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.as[Vector[HCursor]] match {
+        -  implicit final def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
+        -    new Decoder[${`(A..N)`}] {
+        -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.as[Vector[HCursor]] match {
         -        case Xor.Right(js) => if (js.size == $arity) {
         -          $result
         -        } else Xor.left(DecodingFailure("${`(A..N)`}", c.history))
         -        case l @ Xor.Left(_) => l
         -      }
         -
-        -      override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
+        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
         -        c.as[Vector[HCursor]].leftMap[NonEmptyList[DecodingFailure]](NonEmptyList(_)).flatMap { js =>
         -          if (js.size == $arity) {
         -            $accumulatingResult.toXor
@@ -163,7 +170,7 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
+        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
         -    new Encoder[${`(A..N)`}] {
         -      final def apply(a: ${`(A..N)`}): Json = Json.arr($applied)
         -    }
@@ -192,6 +199,127 @@ object Boilerplate {
         |class TupleCodecSuite extends CirceSuite {
         |  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
         -  checkAll("Codec[$tupleType]", CodecTests[$tupleType].codec)
+        |}
+      """
+    }
+  }
+
+  object GenProductDecoders extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "ProductDecoders.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val instances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
+      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
+
+      val results = synTypes.map(tpe => s"c.get[$tpe](name$tpe)(decode$tpe)").mkString(", ")
+
+      val accumulatingResults = synTypes.map(tpe =>
+        s"decode$tpe.tryDecodeAccumulating(c.downField(name$tpe))"
+      ).mkString(",")
+
+      val result =
+        if (arity == 1) s"($results).map(f)" else s"Decoder.resultInstance.map$arity($results)(f)"
+
+      val accumulatingResult =
+        if (arity == 1) s"$accumulatingResults.map(f)"
+          else s"AccumulatingDecoder.resultInstance.map$arity($accumulatingResults)(f)"
+
+      block"""
+        |package io.circe
+        |
+        |private[circe] trait ProductDecoders {
+        -  /**
+        -   * @group Product
+        -   */
+        -  final def forProduct$arity[${`A..N`}, Target]($memberNames)(f: (${`A..N`}) => Target)(implicit
+        -    $instances
+        -  ): Decoder[Target] =
+        -    new Decoder[Target] {
+        -      final def apply(c: HCursor): Decoder.Result[Target] = $result
+        -
+        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Target] =
+        -        $accumulatingResult
+        -    }
+        |}
+      """
+    }
+  }
+
+  object GenProductEncoders extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "ProductEncoders.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
+      val kvs = if (arity == 1) s"(name${ synTypes.head }, encode${ synTypes.head }(members))" else {
+        synTypes.zipWithIndex.map {
+          case (tpe, i) => s"(name$tpe, encode$tpe(members._${ i + 1 }))"
+        }.mkString(", ")
+      }
+
+      block"""
+        |package io.circe
+        |
+        |private[circe] trait ProductEncoders {
+        -  /**
+        -   * @group Product
+        -   */
+        -  final def forProduct$arity[${`A..N`}, Source]($memberNames)(f: Source => (${`A..N`}))(implicit
+        -    $instances
+        -  ): ObjectEncoder[Source] =
+        -    new ObjectEncoder[Source] {
+        -      final def encodeObject(a: Source): JsonObject = {
+        -        val members = f(a)
+        -        JsonObject.fromIterable(Vector($kvs))
+        -      }
+        -    }
+        |}
+      """
+    }
+  }
+
+  object GenProductTests extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "ProductCodecSuite.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val members = (0 until arity).map(i => s"s$i: String").mkString(", ")
+      val memberNames = (0 until arity).map(i => "\"" + s"s$i" + "\"").mkString(", ")
+
+      val memberVariableNames = (0 until arity).map(i => s"s$i").mkString(", ")
+      val memberArbitraryItems = (0 until arity).map(i => s"s$i <- Arbitrary.arbitrary[String]").mkString("; ")
+
+      block"""
+        |package io.circe
+        |
+        |import algebra.Eq
+        |import io.circe.tests.{ CodecTests, CirceSuite }
+        |import org.scalacheck.Arbitrary
+        |
+        |class ProductCodecSuite extends CirceSuite {
+        -  case class Cc$arity($members)
+        -  object Cc$arity {
+        -    implicit val eqCc$arity: Eq[Cc$arity] = Eq.fromUniversalEquals
+        -    implicit val arbitraryCc$arity: Arbitrary[Cc$arity] = Arbitrary(
+        -      for { $memberArbitraryItems } yield Cc$arity($memberVariableNames)
+        -    )
+        -    implicit val encodeCc$arity: Encoder[Cc$arity] =
+        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
+        -    implicit val decodeCc$arity: Decoder[Cc$arity] =
+        -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
+        -  }
+        -  checkAll("Codec[Cc$arity]", CodecTests[Cc$arity].codec)
         |}
       """
     }

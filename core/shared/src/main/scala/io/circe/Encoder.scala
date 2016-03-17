@@ -59,9 +59,12 @@ trait Encoder[A] extends Serializable { self =>
  * @groupname Tuple Tuple instances
  * @groupprio Tuple 4
  *
+ * @groupname Product Case class and other product instances
+ * @groupprio Product 5
+ *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders with LowPriorityEncoders {
+object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
