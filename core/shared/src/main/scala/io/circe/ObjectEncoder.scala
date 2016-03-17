@@ -12,6 +12,13 @@ trait ObjectEncoder[A] extends Encoder[A] { self =>
    * Convert a value to a JSON object.
    */
   def encodeObject(a: A): JsonObject
+
+  /**
+   * Create a new [[ObjectEncoder]] by applying a function to the output of this one.
+   */
+  final def mapJsonObject(f: JsonObject => JsonObject): ObjectEncoder[A] = new ObjectEncoder[A] {
+    final def encodeObject(a: A): JsonObject = f(self.encodeObject(a))
+  }
 }
 
 object ObjectEncoder extends LowPriorityObjectEncoders {
