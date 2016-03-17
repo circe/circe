@@ -19,10 +19,18 @@ trait Encoder[A] extends Serializable { self =>
   def apply(a: A): Json
 
   /**
-   * Creates a new instance by applying a function to a value of type `B` before encoding as an `A`.
+   * Creates a new [Encoder]] by applying a function to a value of type `B` before encoding as an
+   * `A`.
    */
   final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
     final def apply(a: B) = self(f(a))
+  }
+
+  /**
+   * Creates a new [[Encoder]] by applying a function to the output of this one.
+   */
+  final def mapJson(f: Json => Json): Encoder[A] = new Encoder[A] {
+    final def apply(a: A): Json = f(self(a))
   }
 }
 
