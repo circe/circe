@@ -289,7 +289,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   )
   .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson))
+  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, streaming))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
@@ -333,7 +333,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.3.0-SNAPSHOT"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.3.0-SNAPSHOT" changing()
   )
   .dependsOn(core, jawn)
 

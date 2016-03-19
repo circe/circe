@@ -6,9 +6,9 @@ import org.scalacheck.{ Arbitrary, Gen }
 import shapeless._
 
 trait MissingInstances {
-  implicit def eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
-
-  implicit def eqUUID: Eq[UUID] = Eq.fromUniversalEquals
+  implicit lazy val eqThrowable: Eq[Throwable] = Eq.fromUniversalEquals
+  implicit lazy val eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
+  implicit lazy val eqUUID: Eq[UUID] = Eq.fromUniversalEquals
 
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
