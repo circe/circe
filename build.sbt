@@ -66,7 +66,6 @@ lazy val commonJsSettings = Seq(
 )
 
 lazy val noDocProjects: Seq[ProjectReference] = Seq[ProjectReference](
-  async,
   benchmark,
   coreJS,
   genericJS,
@@ -110,7 +109,6 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   optics,
   scalajs,
   streaming,
-  async,
   benchmark
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
@@ -291,7 +289,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   )
   .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, async))
+  .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
@@ -366,18 +364,6 @@ lazy val optics = project
     )
   )
   .dependsOn(core, tests % "test")
-
-lazy val async = project
-  .settings(
-    description := "circe async",
-    moduleName := "circe-async"
-  )
-  .settings(allSettings)
-  .settings(noPublishSettings)
-  .settings(
-    libraryDependencies += "com.twitter" %% "util-core" % "6.29.0"
-  )
-  .dependsOn(core, jawn)
 
 lazy val benchmark = project
   .settings(
@@ -477,7 +463,6 @@ val jvmProjects = Seq(
   "tests",
   "jawn",
   "jackson",
-  "async",
   "benchmark"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
