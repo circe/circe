@@ -5,7 +5,6 @@ import shapeless._, shapeless.labelled.FieldType
 
 trait DerivedObjectEncoder[A] extends ObjectEncoder[A]
 
-@export.exports
 final object DerivedObjectEncoder extends LowPriorityDerivedObjectEncoders {
   implicit final val encodeHNil: DerivedObjectEncoder[HNil] =
     new DerivedObjectEncoder[HNil] {

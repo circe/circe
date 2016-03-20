@@ -24,6 +24,7 @@ lazy val catsVersion = "0.4.1"
 lazy val jawnVersion = "0.8.4"
 lazy val shapelessVersion = "2.3.0"
 lazy val refinedVersion = "0.3.6"
+lazy val macroCompatVersion = "1.1.1"
 
 lazy val scalaTestVersion = "3.0.0-M9"
 lazy val scalaCheckVersion = "1.12.5"
@@ -38,10 +39,6 @@ lazy val baseSettings = Seq(
   ),
   scalacOptions in (Compile, console) := compilerOptions,
   scalacOptions in (Compile, test) := compilerOptions,
-  libraryDependencies ++= Seq(
-    "org.typelevel" %% "export-hook" % "1.1.0",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-  ),
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
@@ -183,7 +180,9 @@ lazy val genericBase = crossProject.in(file("generic"))
   .settings(
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided"
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      "org.typelevel" %%% "macro-compat" % macroCompatVersion,
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
   .jsSettings(commonJsSettings: _*)
@@ -204,7 +203,8 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
   .settings(
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      "org.typelevel" %%% "macro-compat" % "1.1.1"
+      "org.typelevel" %%% "macro-compat" % macroCompatVersion,
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
     sources in (Compile, doc) := (
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -278,7 +278,8 @@ lazy val testsBase = crossProject.in(file("tests"))
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
-      "eu.timepit" %%% "refined-scalacheck" % refinedVersion
+      "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
@@ -379,7 +380,8 @@ lazy val benchmark = project
       "io.spray" %% "spray-json" % "1.3.2",
       "io.github.netvl.picopickle" %% "picopickle-core" % "0.2.1",
       "io.github.netvl.picopickle" %% "picopickle-backend-jawn" % "0.2.1",
-      "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
   .enablePlugins(JmhPlugin)

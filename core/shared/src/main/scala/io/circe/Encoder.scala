@@ -3,6 +3,7 @@ package io.circe
 import cats.data._
 import cats.functor.Contravariant
 import cats.Foldable
+import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
@@ -316,4 +317,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
   }
 }
 
-@export.imports[Encoder] private[circe] trait LowPriorityEncoders
+private[circe] trait LowPriorityEncoders {
+  implicit def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
+}
