@@ -1,5 +1,7 @@
 package io.circe
 
+import io.circe.export.Exported
+
 /**
  * A type class that provides a conversion from a value of type `A` to a [[JsonObject]].
  *
@@ -39,4 +41,8 @@ object ObjectEncoder extends LowPriorityObjectEncoders {
   }
 }
 
-@export.imports[ObjectEncoder] private[circe] trait LowPriorityObjectEncoders
+private[circe] trait LowPriorityObjectEncoders {
+  implicit def importedObjectEncoder[A](implicit
+    exported: Exported[ObjectEncoder[A]]
+  ): ObjectEncoder[A] = exported.instance
+}

@@ -7,7 +7,6 @@ import shapeless._, shapeless.labelled.{ FieldType, field }
 
 trait DerivedDecoder[A] extends Decoder[A]
 
-@export.exports
 final object DerivedDecoder extends IncompleteDerivedDecoders with LowPriorityDerivedDecoders {
   final def fromDecoder[A](decode: Decoder[A]): DerivedDecoder[A] = new DerivedDecoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = decode(c)
