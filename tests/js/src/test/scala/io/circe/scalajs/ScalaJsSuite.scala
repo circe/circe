@@ -1,6 +1,5 @@
 package io.circe.scalajs
 
-import algebra.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.semiauto._
@@ -23,8 +22,6 @@ object UndefOrExample {
 }
 
 class ScalaJsSuite extends CirceSuite {
-  implicit val eqThrowable: Eq[Throwable] = Eq.fromUniversalEquals
-
   test("should decode js.Object") {
     check { (s: String) =>
       decodeJs[Example](Dynamic.literal(name = s)).map(_.name) === Xor.right(s)
