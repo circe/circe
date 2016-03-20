@@ -24,7 +24,6 @@ lazy val catsVersion = "0.4.1"
 lazy val jawnVersion = "0.8.4"
 lazy val shapelessVersion = "2.3.0"
 lazy val refinedVersion = "0.3.6"
-lazy val macroCompatVersion = "1.1.1"
 
 lazy val scalaTestVersion = "3.0.0-M9"
 lazy val scalaCheckVersion = "1.12.5"
@@ -62,17 +61,26 @@ lazy val commonJsSettings = Seq(
   scalaJSUseRhino in Global := false
 )
 
-lazy val noDocProjects: Seq[ProjectReference] = Seq[ProjectReference](
+/**
+ * We omit all Scala.js projects from Unidoc generation, as well as
+ * circe-generic on 2.10, since Unidoc doesn't like its macros.
+ */
+def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   benchmark,
   coreJS,
-  genericJS,
   java8,
   literalJS,
+  genericJS,
   numbersJS,
-  refinedJS,
   parserJS,
+  refinedJS,
   tests,
   testsJS
+) ++ (
+  CrossVersion.partialVersion(sv) match {
+    case Some((2, 10)) => Seq[ProjectReference](generic, literal)
+    case _ => Nil
+  }
 )
 
 lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
@@ -84,13 +92,8 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
     "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) := (
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) =>
-        inAnyProject -- inProjects((noDocProjects ++ Seq[ProjectReference](literal)): _*)
-      case _ => inAnyProject -- inProjects(noDocProjects: _*)
-    }
-  )
+  unidocProjectFilter in (ScalaUnidoc, unidoc) :=
+    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*)
 )
 
 lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
@@ -109,6 +112,23 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   benchmark
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
+)
+
+lazy val macroDependencies: Seq[Setting[_]] = Seq(
+  libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
+    "org.typelevel" %%% "macro-compat" % "1.1.1",
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+  ),
+  libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      // if scala 2.11+ is used, quasiquotes are merged into scala-reflect.
+      case Some((2, scalaMajor)) if scalaMajor >= 11 => Nil
+      // in Scala 2.10, quasiquotes are provided by macro paradise.
+      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.0" cross CrossVersion.binary)
+    }
+  }
 )
 
 lazy val circe = project.in(file("."))
@@ -177,16 +197,18 @@ lazy val genericBase = crossProject.in(file("generic"))
     name := "generic"
   )
   .settings(allSettings: _*)
+  .settings(macroDependencies: _*)
   .settings(
-    libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      "org.typelevel" %%% "macro-compat" % macroCompatVersion,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
+    sources in (Compile, doc) := (
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 11)) => (sources in (Compile, doc)).value
+        case _ => Nil
+      }
     )
   )
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "generic"))
+  .jvmConfigure(_.copy(id = "generic").settings(macroDependencies))
   .jsConfigure(_.copy(id = "genericJS"))
   .dependsOn(coreBase)
 
@@ -200,12 +222,8 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
     name := "literal"
   )
   .settings(allSettings: _*)
+  .settings(macroDependencies: _*)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-      "org.typelevel" %%% "macro-compat" % macroCompatVersion,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-    ),
     sources in (Compile, doc) := (
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, 11)) => (sources in (Compile, doc)).value
