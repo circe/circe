@@ -1,9 +1,11 @@
 package io.circe
 
+import java.nio.ByteBuffer
+
 import cats.data._
 import cats.functor.Contravariant
 import cats.Foldable
-import java.util.UUID
+import java.util.{ Base64, UUID }
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
 
@@ -314,6 +316,27 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
   implicit final val contravariantEncoder: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
+
+  implicit val encodeByteBuffer: Encoder[ByteBuffer] = instance { bb =>
+    val bytes = if (bb.hasArray){
+      bb.array()
+    } else {
+      //the index of the first byte in the backing byte array of this ByteBuffer.
+      //if there isn't a backing byte array, then this throws
+      val position = bb.position()
+
+      val remaining = bb.remaining()
+      if (position > remaining) {
+        throw new IndexOutOfBoundsException(s"$position > $remaining")
+      } else {
+        val dest = new Array[Byte](remaining)
+        bb.get(dest, position, remaining)
+        dest
+      }
+    }
+    encodeString(Base64.getEncoder.encodeToString(bytes))
+  }
+
 }
 
 @export.imports[Encoder] private[circe] trait LowPriorityEncoders
