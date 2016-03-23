@@ -1,11 +1,19 @@
 package io.circe
 
 import cats.data.NonEmptyList
+import cats.laws.discipline.{ ApplicativeErrorTests, SemigroupKTests }
+import cats.laws.discipline.arbitrary._
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class AccumulatingDecoderSuite extends CirceSuite {
+  checkAll(
+    "AccumulatingDecoder[Int]",
+    ApplicativeErrorTests[AccumulatingDecoder, NonEmptyList[DecodingFailure]].applicativeError[Int, Int, Int]
+  )
+
+  checkAll("AccumulatingDecoder[Int]", SemigroupKTests[AccumulatingDecoder].semigroupK[Int])
 
   test("Accumulating decoder returns as many errors as invalid elements in a list") {
     check { (xs: List[Either[Int, String]]) =>

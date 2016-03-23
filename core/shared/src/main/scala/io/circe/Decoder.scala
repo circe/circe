@@ -1,13 +1,12 @@
 package io.circe
 
-import cats.Monad
-import cats.data._
+import cats.{ MonadError, SemigroupK }
+import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
 import cats.std.list._
-import cats.syntax.cartesian._
 import cats.syntax.functor._
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable
+import scala.collection.mutable.Builder
 
 trait Decoder[A] extends Serializable { self =>
   /**
@@ -47,13 +46,14 @@ trait Decoder[A] extends Serializable { self =>
       self.decodeAccumulating(c).map(f)
   }
 
+  @deprecated("Use and", "0.4.0")
   final def ap[B](f: Decoder[A => B]): Decoder[B] = new Decoder[B] {
-    final def apply(c: HCursor): Decoder.Result[B] = self(c).flatMap(a => f(c).map(_(a)))
+    final def apply(c: HCursor): Decoder.Result[B] = f(c).flatMap(self(c).map)
     override def tryDecode(c: ACursor): Decoder.Result[B] =
-      self.tryDecode(c).flatMap(a => f.tryDecode(c).map(_(a)))
+      f.tryDecode(c).flatMap(self.tryDecode(c).map)
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
-      self.decodeAccumulating(c).ap(f.decodeAccumulating(c))
+      AccumulatingDecoder.resultInstance.ap(f.decodeAccumulating(c))(self.decodeAccumulating(c))
   }
 
   /**
@@ -68,6 +68,23 @@ trait Decoder[A] extends Serializable { self =>
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
+  }
+
+  /**
+   * Create a new instance that handles any of this instance's errors with the
+   * given function.
+   *
+   * Note that in the case of accumulating decoding, only the first error will
+   * be used in recovery.
+   */
+  final def handleErrorWith(f: DecodingFailure => Decoder[A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Decoder.Result[A] =
+      Decoder.resultInstance.handleErrorWith(self(c))(failure => f(failure)(c))
+
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      AccumulatingDecoder.resultInstance.handleErrorWith(self.decodeAccumulating(c))(failures =>
+        f(failures.head).decodeAccumulating(c)
+      )
   }
 
   /**
@@ -95,37 +112,37 @@ trait Decoder[A] extends Serializable { self =>
     Kleisli[Decoder.Result, HCursor, A](apply(_))
 
   /**
-   * Combine two decoders.
+   * Run two decoders and return their results as a pair.
    */
   final def and[B](fb: Decoder[B]): Decoder[(A, B)] = new Decoder[(A, B)] {
-    final def apply(c: HCursor): Decoder.Result[(A, B)] = (self(c) |@| fb(c)).tupled
+    final def apply(c: HCursor): Decoder.Result[(A, B)] = Decoder.resultInstance.product(self(c), fb(c))
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
-      (self.decodeAccumulating(c) |@| fb.decodeAccumulating(c)).tupled
+      AccumulatingDecoder.resultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
   }
 
   /**
    * Choose the first succeeding decoder.
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = new Decoder[AA] {
-    final def apply(c: HCursor): Decoder.Result[AA] = {
-      val res = self(c).map(a => (a: AA))
-      res.fold(_ => d(c), _ => res)
+    final def apply(c: HCursor): Decoder.Result[AA] = self(c) match {
+      case r @ Xor.Right(_) => r
+      case Xor.Left(_) => d(c)
     }
   }
 
   /**
    * Run one or another decoder.
    */
-  final def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Decoder.Result[Xor[A, B]] = _.fold(
-    c => this(c).map(Xor.left),
-    c => d(c).map(Xor.right)
-  )
+  final def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Decoder.Result[Xor[A, B]] = _ match {
+    case Xor.Left(c) => self(c).map(Xor.left)
+    case Xor.Right(c) => d(c).map(Xor.right)
+  }
 
   /**
    * Run two decoders.
    */
   final def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
-    (this(a1) |@| x(a2)).tupled
+    Decoder.resultInstance.product(self(a1), x(a2))
 
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
@@ -181,7 +198,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
-  val resultInstance: Monad[Result] = implicitly
+  val resultInstance: MonadError[Result, DecodingFailure] = Xor.xorInstances[DecodingFailure]
 
   /**
    * Return an instance for a given type.
@@ -217,13 +234,30 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
+   * Construct an instance that always fails with the given [[DecodingFailure]].
+   *
+   * @group Utilities
+   */
+  final def failed[A](failure: DecodingFailure): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = Xor.left(failure)
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      Validated.invalidNel(failure)
+  }
+
+  /**
    * Construct an instance that always fails with the given error message.
    *
    * @group Utilities
    */
-  final def failWith[A](message: String): Decoder[A] = new Decoder[A] {
-    final def apply(c: HCursor): Result[A] = Xor.left(DecodingFailure(message, Nil))
-  }
+  @deprecated("Use failedWithMessage", "0.4.0")
+  final def failWith[A](message: String): Decoder[A] = failedWithMessage(message)
+
+  /**
+   * Construct an instance that always fails with the given error message.
+   *
+   * @group Utilities
+   */
+  final def failedWithMessage[A](message: String): Decoder[A] = failed(DecodingFailure(message, Nil))
 
   /**
    * @group Decoding
@@ -589,7 +623,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] =
       c.fields match {
-        case None => Validated.invalid(failure(c)).toValidatedNel
+        case None => Validated.invalidNel(failure(c))
         case Some(fields) =>
           val builder = cbf()
           spinAccumulating(fields, c, builder, false, List.newBuilder[DecodingFailure]) match {
@@ -602,7 +636,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     private[this] def spinResult(
       fields: List[String],
       c: HCursor,
-      builder: mutable.Builder[(K, V), M[K, V]]
+      builder: Builder[(K, V), M[K, V]]
     ): Option[DecodingFailure] = fields match {
       case Nil => None
       case h :: t =>
@@ -623,9 +657,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     private[this] def spinAccumulating(
       fields: List[String],
       c: HCursor,
-      builder: mutable.Builder[(K, V), M[K, V]],
+      builder: Builder[(K, V), M[K, V]],
       failed: Boolean,
-      errors: mutable.Builder[DecodingFailure, List[DecodingFailure]]
+      errors: Builder[DecodingFailure, List[DecodingFailure]]
     ): List[DecodingFailure] = fields match {
       case Nil => errors.result
       case h :: t =>
@@ -718,15 +752,20 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Instances
    */
-  implicit final val monadDecoder: Monad[Decoder] = new Monad[Decoder] {
-    final def pure[A](a: A): Decoder[A] = new Decoder[A] {
-      final def apply(c: HCursor): Result[A] = Xor.right(a)
+  implicit final val monadInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+    new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
+      final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
+      final def pure[A](a: A): Decoder[A] = new Decoder[A] {
+        final def apply(c: HCursor): Result[A] = Xor.right(a)
+        override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
+      }
+      override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
+      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
+      final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
+
+      final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
+      final def handleErrorWith[A](fa: Decoder[A])(f: DecodingFailure => Decoder[A]): Decoder[A] = fa.handleErrorWith(f)
     }
-    override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
-    override final def ap[A, B](f: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = fa.ap(f)
-    override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
-    final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
-  }
 }
 
 @export.imports[Decoder] private[circe] trait LowPriorityDecoders
