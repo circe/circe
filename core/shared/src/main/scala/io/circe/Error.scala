@@ -13,6 +13,16 @@ final case class ParsingFailure(message: String, underlying: Throwable) extends 
   final override def getMessage: String = message
 }
 
+final object ParsingFailure {
+  implicit final val eqParsingFailure: Eq[ParsingFailure] = Eq.instance {
+    case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
+  }
+
+  implicit final val showParsingFailure: Show[ParsingFailure] = Show.show { failure =>
+    s"ParsingFailure: ${failure.message}"
+  }
+}
+
 sealed abstract class DecodingFailure(val message: String) extends Error {
   def history: List[HistoryOp]
   final override def getMessage: String =
@@ -33,16 +43,6 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
     case _ => false
   }
   override final def hashCode: Int = message.hashCode
-}
-
-final object ParsingFailure {
-  implicit final val eqParsingFailure: Eq[ParsingFailure] = Eq.instance {
-    case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
-  }
-
-  implicit final val showParsingFailure: Show[ParsingFailure] = Show.show { failure =>
-    s"ParsingFailure: ${failure.message}"
-  }
 }
 
 final object DecodingFailure {

@@ -1,11 +1,16 @@
 package io.circe
 
 import cats.data.Xor
+import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import cats.laws.discipline.arbitrary._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
+  checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
+  checkAll("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
+
   test("prepare with identity") {
     check { (i: Int) =>
       Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Xor.right(i)
@@ -39,9 +44,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     }
   }
 
-  test("failWith") {
+  test("failedWithMessage") {
     check { (json: Json) =>
-      Decoder.failWith[Int]("Bad").decodeJson(json) === Xor.left(DecodingFailure("Bad", Nil))
+      Decoder.failedWithMessage[Int]("Bad").decodeJson(json) === Xor.left(DecodingFailure("Bad", Nil))
     }
   }
 

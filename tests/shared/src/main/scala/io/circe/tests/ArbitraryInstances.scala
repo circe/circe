@@ -1,7 +1,7 @@
 package io.circe.tests
 
-import cats.data.OneAnd
-import io.circe.{ Json, JsonBigDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
+import cats.data.{ ValidatedNel, Xor }
+import io.circe._
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
@@ -104,12 +104,27 @@ trait ArbitraryInstances {
     )
   )
 
-  implicit def oneAndArbitrary[A, C[_]](implicit
-    A: Arbitrary[A], CA: Arbitrary[C[A]]
-  ): Arbitrary[OneAnd[C, A]] = Arbitrary(
-    for {
-      h <- A.arbitrary
-      t <- CA.arbitrary
-    } yield OneAnd(h, t)
+  implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
+    Arbitrary.arbitrary[String].map(DecodingFailure(_, Nil))
+  )
+
+  implicit def arbitraryEncoder[A](implicit arbitraryF: Arbitrary[A => Json]): Arbitrary[Encoder[A]] = Arbitrary(
+    arbitraryF.arbitrary.map(Encoder.instance)
+  )
+
+  implicit def arbitraryDecoder[A](implicit
+    arbitraryF: Arbitrary[Json => Xor[DecodingFailure, A]]
+  ): Arbitrary[Decoder[A]] = Arbitrary(
+    arbitraryF.arbitrary.map(f =>
+      Decoder.instance(c => f(c.focus))
+    )
+  )
+
+  implicit def arbitraryAccumulatingDecoder[A](implicit
+    arbitraryF: Arbitrary[Json => ValidatedNel[DecodingFailure, A]]
+  ): Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
+    arbitraryF.arbitrary.map(f =>
+      AccumulatingDecoder.instance(c => f(c.focus))
+    )
   )
 }

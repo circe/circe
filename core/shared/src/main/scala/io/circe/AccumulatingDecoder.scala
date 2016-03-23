@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ Applicative, Semigroup }
+import cats.{ ApplicativeError, Semigroup, SemigroupK }
 import cats.data.{ NonEmptyList, OneAnd, Validated, ValidatedNel }
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
@@ -16,19 +16,40 @@ sealed trait AccumulatingDecoder[A] extends Serializable { self =>
     final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).map(f)
   }
 
-  final def product[B](other: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] =
-    new AccumulatingDecoder[(A, B)] {
-      final def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] = self(c).product(other(c))(
-        AccumulatingDecoder.failureNelInstance
-      )
-    }
+  /**
+   * Run two decoders and return their results as a pair.
+   */
+  final def and[B](other: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] = new AccumulatingDecoder[(A, B)] {
+    final def apply(c: HCursor): AccumulatingDecoder.Result[(A, B)] = self(c).product(other(c))(
+      AccumulatingDecoder.failureNelInstance
+    )
+  }
 
-  @deprecated("Use product", "0.4.0")
-  final def ap[B](f: AccumulatingDecoder[A => B]): AccumulatingDecoder[B] =
-    new AccumulatingDecoder[B] {
-      final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
-        AccumulatingDecoder.failureNelInstance
-      )
+  /**
+   * Choose the first succeeding decoder.
+   */
+  final def or[AA >: A](d: => AccumulatingDecoder[AA]): AccumulatingDecoder[AA] = new AccumulatingDecoder[AA] {
+    final def apply(c: HCursor): AccumulatingDecoder.Result[AA] = self(c) match {
+      case v @ Validated.Valid(_) => v
+      case Validated.Invalid(_) => d(c)
+    }
+  }
+
+  @deprecated("Use and", "0.4.0")
+  final def ap[B](f: AccumulatingDecoder[A => B]): AccumulatingDecoder[B] = new AccumulatingDecoder[B] {
+    final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
+      AccumulatingDecoder.failureNelInstance
+    )
+  }
+
+  /**
+   * Create a new instance that handles any of this instance's errors with the
+   * given function.
+   */
+  final def handleErrorWith(f: NonEmptyList[DecodingFailure] => AccumulatingDecoder[A]): AccumulatingDecoder[A] =
+    new AccumulatingDecoder[A] {
+      final def apply(c: HCursor): AccumulatingDecoder.Result[A] =
+        AccumulatingDecoder.resultInstance.handleErrorWith(self(c))(failure => f(failure)(c))
     }
 }
 
@@ -38,7 +59,7 @@ final object AccumulatingDecoder {
   final val failureNelInstance: Semigroup[NonEmptyList[DecodingFailure]] =
     OneAnd.oneAndSemigroup[List, DecodingFailure](cats.std.list.listInstance)
 
-  final val resultInstance: Applicative[({ type L[x] = ValidatedNel[DecodingFailure, x] })#L] =
+  final val resultInstance: ApplicativeError[Result, NonEmptyList[DecodingFailure]] =
     Validated.validatedInstances[NonEmptyList[DecodingFailure]](failureNelInstance)
 
   /**
@@ -46,25 +67,44 @@ final object AccumulatingDecoder {
    */
   final def apply[A](implicit d: AccumulatingDecoder[A]): AccumulatingDecoder[A] = d
 
-  implicit final def fromDecoder[A](implicit decode: Decoder[A]): AccumulatingDecoder[A] =
-    new AccumulatingDecoder[A] {
-      final def apply(c: HCursor): Result[A] = decode.decodeAccumulating(c)
-    }
+  /**
+   * Construct an instance from a function.
+   */
+  final def instance[A](f: HCursor => Result[A]): AccumulatingDecoder[A] = new AccumulatingDecoder[A] {
+    final def apply(c: HCursor): Result[A] = f(c)
+  }
 
-  implicit final val accumulatingDecoderInstance: Applicative[AccumulatingDecoder] =
-    new Applicative[AccumulatingDecoder] {
+  implicit final def fromDecoder[A](implicit decode: Decoder[A]): AccumulatingDecoder[A] = new AccumulatingDecoder[A] {
+    final def apply(c: HCursor): Result[A] = decode.decodeAccumulating(c)
+  }
+
+  final def failed[A](e: NonEmptyList[DecodingFailure]): AccumulatingDecoder[A] = new AccumulatingDecoder[A] {
+    final def apply(c: HCursor): Result[A] = Validated.invalid(e)
+  }
+
+  implicit final val accumulatingDecoderInstances: SemigroupK[AccumulatingDecoder] with
+    ApplicativeError[AccumulatingDecoder, NonEmptyList[DecodingFailure]] =
+    new SemigroupK[AccumulatingDecoder] with ApplicativeError[AccumulatingDecoder, NonEmptyList[DecodingFailure]] {
+      final def combineK[A](x: AccumulatingDecoder[A], y: AccumulatingDecoder[A]): AccumulatingDecoder[A] = x.or(y)
+
       final def pure[A](a: A): AccumulatingDecoder[A] = new AccumulatingDecoder[A] {
-        final def apply(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
+        final def apply(c: HCursor): Result[A] = Validated.valid(a)
       }
 
       override final def map[A, B](fa: AccumulatingDecoder[A])(f: A => B): AccumulatingDecoder[B] = fa.map(f)
 
       final def ap[A, B](f: AccumulatingDecoder[A => B])(fa: AccumulatingDecoder[A]): AccumulatingDecoder[B] =
         new AccumulatingDecoder[B] {
-          final def apply(c: HCursor): AccumulatingDecoder.Result[B] = resultInstance.ap(f(c))(fa(c))
+          final def apply(c: HCursor): Result[B] = resultInstance.ap(f(c))(fa(c))
         }
 
       final def product[A, B](fa: AccumulatingDecoder[A], fb: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] =
-        fa.product(fb)
+        fa.and(fb)
+
+      final def raiseError[A](e: NonEmptyList[DecodingFailure]): AccumulatingDecoder[A] = AccumulatingDecoder.failed(e)
+
+      final def handleErrorWith[A](fa: AccumulatingDecoder[A])(
+        f: NonEmptyList[DecodingFailure] => AccumulatingDecoder[A]
+      ): AccumulatingDecoder[A] = fa.handleErrorWith(f)
     }
 }
