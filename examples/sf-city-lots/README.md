@@ -80,9 +80,32 @@ object Geometry {
 ```
 
 Note that we don't explicitly give decoder instances for `Polygon` or `MultiPolygon`—these are very
-simple types, and generic derivation will work for them. We can't use generic derivation for
-`Geometry`, though, since by default the derived decoder expects an enclosing object where the key
-name determines the subtype, like this:
+simple types, and generic derivation will work for them. If we wanted to avoid generic derivation
+entirely, we could skip the `io.circe.generic.auto._` import above and write instances for these two
+case classes by hand:
+
+```scala
+object Polygon {
+  implicit val decodePolygon: Decoder[Polygon] =
+    Decoder[List[List[Coord]]].prepare(
+      _.downField("coordinates")
+    ).map(Polygon(_))
+}
+
+object MultiPolygon {
+  implicit val decodeMultiPolygon: Decoder[MultiPolygon] =
+    Decoder[List[List[List[Coord]]]].prepare(
+      _.downField("coordinates")
+    ).map(MultiPolygon(_))
+}
+```
+
+Which approach you should prefer is a matter of taste and the details of your use case, but in
+general using generically derived instances when possible will result in less boilerplate and more
+maintainable code.
+
+We also can't use generic derivation for `Geometry`, since by default the derived decoder expects an
+enclosing object where the key name determines the subtype, like this:
 
 ```json
 {
