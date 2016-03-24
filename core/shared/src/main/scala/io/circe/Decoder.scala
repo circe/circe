@@ -25,7 +25,7 @@ trait Decoder[A] extends Serializable { self =>
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
 
-  private[circe] def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+  def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
     if (c.succeeded) decodeAccumulating(c.any) else Validated.invalidNel(
       DecodingFailure("Attempt to decode value on failed cursor", c.history)
     )
