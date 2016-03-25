@@ -92,9 +92,8 @@ circe is a fork of Argonaut with a few important differences.
 
 ### Dependencies and modularity
 
-circe depends on [cats][cats] instead of [Scalaz][scalaz], and the `core` project has only two
-dependencies: cats-core and [export-hook][export-hook] (a lightweight mechanism for cleaner generic
-type class instance derivation).
+circe depends on [cats][cats] instead of [Scalaz][scalaz], and the `core` project has only one
+dependency (cats-core).
 
 Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][circe-jawn]
 subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][circe-generic]),
@@ -412,7 +411,6 @@ limitations under the License.
 [code-of-conduct]: http://typelevel.org/conduct.html
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
-[export-hook]: https://github.com/milessabin/export-hook
 [finch]: https://github.com/finagle/finch
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [gitter]: https://gitter.im/travisbrown/circe
