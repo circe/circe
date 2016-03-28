@@ -43,18 +43,18 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
+        <span class="modifier">sealed abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">HCursor</span><span class="result"> extends <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span></span>
+        <span class="name">HCursor</span><span class="result"> extends <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/HCursor.scala" target="_blank">HCursor.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a></dd><dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/HCursor.scala" target="_blank">HCursor.scala</a></dd><dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span>, <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>], <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -65,14 +65,14 @@
               <ol>
                 <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
-                <li class="inherit out"><span>By inheritance</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
               </ol>
             </div>
         <div id="ancestors">
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.HCursor"><span>HCursor</span></li><li class="in" name="io.circe.cursor.HCursorOperations"><span>HCursorOperations</span></li><li class="in" name="io.circe.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.HCursor"><span>HCursor</span></li><li class="in" name="io.circe.GenericCursor"><span>GenericCursor</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -83,7 +83,7 @@
             <span class="filtertype"></span>
             <ol>
               <li class="hideall out"><span>Hide All</span></li>
-              <li class="showall in"><span>Show all</span></li>
+              <li class="showall in"><span>Show All</span></li>
             </ol>
           </div>
         <div id="visbl">
@@ -98,7 +98,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.circe.cursor.HCursorOperations.Focus" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+              <ol><li name="io.circe.HCursor.Focus" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="Focus[x]=cats.Id[x]"></a>
       <a id="Focus[x]:Focus[x]"></a>
       <h4 class="signature">
@@ -107,7 +107,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Focus</span><span class="tparams">[<span name="x">x</span>]</span><span class="result"> = <span class="extype" name="io.circe.cursor.HCursorOperations.Focus.x">x</span></span>
+        <span class="name">Focus</span><span class="tparams">[<span name="x">x</span>]</span><span class="result"> = <span class="extype" name="io.circe.HCursor.Focus.x">x</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@Focus[x]=cats.Id[x]" title="Permalink" target="_top">
@@ -115,8 +115,8 @@
       </a>
     </span>
       <p class="shortcomment cmt">The context that the cursor is available in.</p><div class="fullcomment"><div class="comment cmt"><p>The context that the cursor is available in.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations.M" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor.M" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="M[x[_]]=cats.Functor[x]"></a>
       <a id="M[x[_]]:M[x]"></a>
       <h4 class="signature">
@@ -125,7 +125,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.cursor.HCursorOperations.M.x">x</span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.HCursor.M.x">x</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
@@ -133,8 +133,8 @@
       </a>
     </span>
       <p class="shortcomment cmt">The type class including the operations needed for <code>withFocusM</code>.</p><div class="fullcomment"><div class="comment cmt"><p>The type class including the operations needed for <code>withFocusM</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations.Result" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor.Result" visbl="pub" data-isabs="false" fullComment="yes" group="TypeMembers">
       <a id="Result=io.circe.ACursor"></a>
       <a id="Result:Result"></a>
       <h4 class="signature">
@@ -151,7 +151,7 @@
       </a>
     </span>
       <p class="shortcomment cmt">The type returned by navigation and modifications operations.</p><div class="fullcomment"><div class="comment cmt"><p>The type returned by navigation and modifications operations.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -188,7 +188,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@!=(x$1:Any):Boolean" title="Permalink" target="_top">
@@ -205,7 +205,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@##():Int" title="Permalink" target="_top">
@@ -267,7 +267,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@==(x$1:Any):Boolean" title="Permalink" target="_top">
@@ -292,16 +292,16 @@
       </a>
     </span>
       <p class="shortcomment cmt">Create an <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> for this cursor.</p>
-    </li><li name="io.circe.cursor.HCursorOperations#as" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+    </li><li name="io.circe.HCursor#as" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="as[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
       <a id="as[A](Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.as.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.as.A">A</span>]</span>
+        <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.HCursor.as.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.as.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@as[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
@@ -309,7 +309,7 @@
       </a>
     </span>
       <p class="shortcomment cmt">Attempt to decode the focus as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the focus as an <code>A</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -336,7 +336,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@clone():Object" title="Permalink" target="_top">
@@ -355,7 +355,7 @@
       <a id="cursor:Cursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
@@ -367,12 +367,12 @@
       </a>
     </span>
       
-    </li><li name="io.circe.cursor.HCursorOperations#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+    </li><li name="io.circe.HCursor#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="delete:io.circe.ACursor"></a>
       <a id="delete:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -384,13 +384,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to its parent.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to its parent.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteGoField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteGoField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectModification">
       <a id="deleteGoField(k:String):io.circe.ACursor"></a>
       <a id="deleteGoField(String):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -402,13 +402,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the sibling with the given key in a JSON object.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the sibling with the given key in a JSON object.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteGoFirst" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteGoFirst" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoFirst:io.circe.ACursor"></a>
       <a id="deleteGoFirst:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -420,13 +420,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the first element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the first element in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteGoLast" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteGoLast" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoLast:io.circe.ACursor"></a>
       <a id="deleteGoLast:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -438,13 +438,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the last element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the last element in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteGoLeft" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteGoLeft" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoLeft:io.circe.ACursor"></a>
       <a id="deleteGoLeft:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -456,13 +456,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the left in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the left in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteGoRight" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteGoRight" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteGoRight:io.circe.ACursor"></a>
       <a id="deleteGoRight:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -474,13 +474,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete the focus and move to the right in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the right in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteLefts:io.circe.ACursor"></a>
       <a id="deleteLefts:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -492,13 +492,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the left of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#deleteRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#deleteRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="deleteRights:io.circe.ACursor"></a>
       <a id="deleteRights:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -510,13 +510,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">Delete all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the right of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#downArray" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#downArray" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downArray:io.circe.ACursor"></a>
       <a id="downArray:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -528,17 +528,17 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, move to its first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to its first element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#downAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#downAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
       <a id="downAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">downAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">downAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
@@ -546,13 +546,13 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, move to the first element that satisfies the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the first element that satisfies the given predicate.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#downField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#downField" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
       <a id="downField(k:String):io.circe.ACursor"></a>
       <a id="downField(String):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -564,17 +564,17 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON object, move to the value of the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, move to the value of the given key.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#downN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#downN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="downN(n:Int):io.circe.ACursor"></a>
       <a id="downN(Int):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">downN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">downN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@downN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
@@ -582,7 +582,7 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, move to the element at the given index.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the element at the given index.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((HCursor)⇒Boolean,⇒Any):HCursor"></a>
@@ -592,7 +592,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
@@ -613,7 +613,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
@@ -634,7 +634,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
@@ -655,7 +655,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@ensuring(cond:Boolean):A" title="Permalink" target="_top">
@@ -676,7 +676,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -693,7 +693,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@equals(x$1:Any):Boolean" title="Permalink" target="_top">
@@ -718,12 +718,12 @@
       </a>
     </span>
       <p class="shortcomment cmt">Create a failed <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> for this cursor.</p>
-    </li><li name="io.circe.cursor.HCursorOperations#field" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
+    </li><li name="io.circe.HCursor#field" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectNavigation">
       <a id="field(k:String):io.circe.ACursor"></a>
       <a id="field(String):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -735,17 +735,17 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a value in a JSON object, move to a sibling with the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a value in a JSON object, move to a sibling with the given key.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#fieldSet" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#fieldSet" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
       <a id="fieldSet:Option[Set[String]]"></a>
       <a id="fieldSet:Option[Set[String]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fieldSet</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+        <span class="name">fieldSet</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@fieldSet:Option[Set[String]]" title="Permalink" target="_top">
@@ -753,17 +753,17 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON object, return its field names in a set.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in a set.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#fields" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#fields" visbl="pub" data-isabs="false" fullComment="yes" group="ObjectAccess">
       <a id="fields:Option[List[String]]"></a>
       <a id="fields:Option[List[String]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fields</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+        <span class="name">fields</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@fields:Option[List[String]]" title="Permalink" target="_top">
@@ -771,7 +771,7 @@
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON object, return its field names in their original order.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in their original order.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -781,7 +781,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@finalize():Unit" title="Permalink" target="_top">
@@ -795,16 +795,16 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#find" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+    </li><li name="io.circe.HCursor#find" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
       <a id="find((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">find</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
@@ -814,13 +814,13 @@
       <p class="shortcomment cmt">If the focus is an element in a JSON array, find the first element at or to its right that
 matches the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, find the first element at or to its right that
 matches the given predicate.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#first" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#first" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="first:io.circe.ACursor"></a>
       <a id="first:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -832,13 +832,13 @@ matches the given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the first element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#focus" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#focus" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="focus:io.circe.Json"></a>
       <a id="focus:Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -850,7 +850,7 @@ matches the given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">The current location in the document.</p><div class="fullcomment"><div class="comment cmt"><p>The current location in the document.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="formatted(fmtstr:String):String"></a>
       <a id="formatted(String):String"></a>
@@ -875,16 +875,16 @@ matches the given predicate.
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#get" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+    </li><li name="io.circe.HCursor#get" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="get[A](k:String)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
       <a id="get[A](String)(Decoder[A]):Decoder.Result[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">get</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.get.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.cursor.HCursorOperations.get.A">A</span>]</span>
+        <span class="name">get</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.HCursor.get.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.get.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@get[A](k:String)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
@@ -892,7 +892,7 @@ matches the given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">Attempt to decode the value at the given key in a JSON object as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the value at the given key in a JSON object as an <code>A</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -919,7 +919,7 @@ matches the given predicate.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@hashCode():Int" title="Permalink" target="_top">
@@ -936,7 +936,7 @@ matches the given predicate.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
@@ -944,12 +944,12 @@ matches the given predicate.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#last" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+    </li><li name="io.circe.HCursor#last" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="last:io.circe.ACursor"></a>
       <a id="last:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -961,13 +961,13 @@ matches the given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the last element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the last element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#left" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#left" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="left:io.circe.ACursor"></a>
       <a id="left:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -979,17 +979,17 @@ matches the given predicate.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#leftAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#leftAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
       <a id="leftAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">leftAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">leftAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
@@ -999,17 +999,17 @@ matches the given predicate.
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left until the given predicate matches
 the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left until the given predicate matches
 the new focus.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#leftN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#leftN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="leftN(n:Int):io.circe.ACursor"></a>
       <a id="leftN(Int):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">leftN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">leftN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@leftN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
@@ -1017,17 +1017,17 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in JSON array, move to the left the given number of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the left the given number of times.</p><p>A negative value will move the cursor right.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#lefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#lefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
       <a id="lefts:Option[List[io.circe.Json]]"></a>
       <a id="lefts:Option[List[Json]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">lefts</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
+        <span class="name">lefts</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@lefts:Option[List[io.circe.Json]]" title="Permalink" target="_top">
@@ -1035,7 +1035,7 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the left.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -1045,7 +1045,7 @@ the new focus.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -1062,7 +1062,7 @@ the new focus.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@notify():Unit" title="Permalink" target="_top">
@@ -1079,7 +1079,7 @@ the new focus.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@notifyAll():Unit" title="Permalink" target="_top">
@@ -1087,7 +1087,24 @@ the new focus.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#replay" visbl="pub" data-isabs="false" fullComment="yes" group="Utilities">
+    </li><li name="io.circe.HCursor#reattempted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reattempted:io.circe.HCursor"></a>
+      <a id="reattempted:HCursor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reattempted</span><span class="result">: <a href="" class="extype" name="io.circe.HCursor">HCursor</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@reattempted:io.circe.HCursor" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">If the last operation was not successful, reattempt it.</p>
+    </li><li name="io.circe.HCursor#replay" visbl="pub" data-isabs="false" fullComment="yes" group="Utilities">
       <a id="replay(history:List[io.circe.HistoryOp]):io.circe.ACursor"></a>
       <a id="replay(List[HistoryOp]):ACursor"></a>
       <h4 class="signature">
@@ -1104,13 +1121,13 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.</p><div class="fullcomment"><div class="comment cmt"><p>Replay history (a list of operations in reverse &quot;chronological&quot; order) against this cursor.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#right" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#right" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="right:io.circe.ACursor"></a>
       <a id="right:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1122,17 +1139,17 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#rightAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#rightAt" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a>
       <a id="rightAt((Json)⇒Boolean):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rightAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">rightAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink" target="_top">
@@ -1142,17 +1159,17 @@ the new focus.
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right until the given predicate matches
 the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right until the given predicate matches
 the new focus.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#rightN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#rightN" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="rightN(n:Int):io.circe.ACursor"></a>
       <a id="rightN(Int):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rightN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+        <span class="name">rightN</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@rightN(n:Int):io.circe.ACursor" title="Permalink" target="_top">
@@ -1160,17 +1177,17 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is an element in JSON array, move to the right the given number of times.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in JSON array, move to the right the given number of times.</p><p>A negative value will move the cursor left.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#rights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#rights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayAccess">
       <a id="rights:Option[List[io.circe.Json]]"></a>
       <a id="rights:Option[List[Json]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rights</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
+        <span class="name">rights</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@rights:Option[List[io.circe.Json]]" title="Permalink" target="_top">
@@ -1178,7 +1195,7 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the right.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="io.circe.GenericCursor#set" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="set(j:io.circe.Json):C"></a>
       <a id="set(Json):HCursor"></a>
@@ -1197,12 +1214,12 @@ the new focus.
     </span>
       <p class="shortcomment cmt">Replace the focus.</p><div class="fullcomment"><div class="comment cmt"><p>Replace the focus.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#setLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+    </li><li name="io.circe.HCursor#setLefts" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="setLefts(js:List[io.circe.Json]):io.circe.ACursor"></a>
       <a id="setLefts(List[Json]):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1214,13 +1231,13 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">Replace all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the left of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#setRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#setRights" visbl="pub" data-isabs="false" fullComment="yes" group="ArrayModification">
       <a id="setRights(js:List[io.circe.Json]):io.circe.ACursor"></a>
       <a id="setRights(List[Json]):ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1232,7 +1249,7 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">Replace all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the right of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -1267,12 +1284,12 @@ the new focus.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#top" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+    </li><li name="io.circe.HCursor#top" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="top:io.circe.Json"></a>
       <a id="top:Json"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1284,7 +1301,7 @@ the new focus.
       </a>
     </span>
       <p class="shortcomment cmt">Return to the root of the document.</p><div class="fullcomment"><div class="comment cmt"><p>Return to the root of the document.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#traverseDecode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;io.circe.Decoder.Result[A]):io.circe.Decoder.Result[A]"></a>
       <a id="traverseDecode[A](A)((HCursor)⇒ACursor,(A,HCursor)⇒Decoder.Result[A]):Decoder.Result[A]"></a>
@@ -1330,12 +1347,12 @@ large structures (in contrast with recursively binding).
                 <span class="name">@tailrec</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
+    </li><li name="io.circe.HCursor#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="up:io.circe.ACursor"></a>
       <a id="up:ACursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1347,7 +1364,7 @@ large structures (in contrast with recursively binding).
       </a>
     </span>
       <p class="shortcomment cmt">Move the focus to the parent.</p><div class="fullcomment"><div class="comment cmt"><p>Move the focus to the parent.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -1357,7 +1374,7 @@ large structures (in contrast with recursively binding).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@wait():Unit" title="Permalink" target="_top">
@@ -1380,7 +1397,7 @@ large structures (in contrast with recursively binding).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
@@ -1403,7 +1420,7 @@ large structures (in contrast with recursively binding).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@wait(x$1:Long):Unit" title="Permalink" target="_top">
@@ -1417,12 +1434,12 @@ large structures (in contrast with recursively binding).
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#withFocus" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+    </li><li name="io.circe.HCursor#withFocus" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="withFocus(f:io.circe.Json=&gt;io.circe.Json):io.circe.HCursor"></a>
       <a id="withFocus((Json)⇒Json):HCursor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
@@ -1434,17 +1451,17 @@ large structures (in contrast with recursively binding).
       </a>
     </span>
       <p class="shortcomment cmt">Modify the focus using the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Modify the focus using the given function.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.cursor.HCursorOperations#withFocusM" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+    </li><li name="io.circe.HCursor#withFocusM" visbl="pub" data-isabs="false" fullComment="yes" group="Modification">
       <a id="withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]"></a>
       <a id="withFocusM[F[_]]((Json)⇒F[Json])(Functor[F]):F[HCursor]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.cursor.HCursorOperations.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
+        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]" title="Permalink" target="_top">
@@ -1452,7 +1469,7 @@ large structures (in contrast with recursively binding).
       </a>
     </span>
       <p class="shortcomment cmt">Modify the focus in a context using the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Modify the focus in a context using the given function.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>HCursorOperations → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
       <a id="→[B](B):(HCursor,B)"></a>
@@ -1483,18 +1500,16 @@ large structures (in contrast with recursively binding).
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="io.circe.cursor.HCursorOperations">
-              <h3>Inherited from <span class="extype" name="io.circe.cursor.HCursorOperations">HCursorOperations</span></h3>
-            </div><div class="parent" name="io.circe.GenericCursor">
+        <div class="parent" name="io.circe.GenericCursor">
               <h3>Inherited from <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</h3>
             </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from

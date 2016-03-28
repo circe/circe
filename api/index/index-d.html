@@ -50,6 +50,9 @@
       <div class="name">DerivationHelper</div>
       <div class="occurrences"><a href="../io/circe/generic/semiauto$.html" class="extype" name="io.circe.generic.semiauto">semiauto</a> </div>
     </div><div class="entry">
+      <div class="name">DerivationMacros</div>
+      <div class="occurrences"><a href="../io/circe/generic/package.html" class="extype" name="io.circe.generic">generic</a> </div>
+    </div><div class="entry">
       <div class="name">DerivedDecoder</div>
       <div class="occurrences"><a href="../io/circe/generic/decoding/package.html" class="extype" name="io.circe.generic.decoding">decoding</a> </div>
     </div><div class="entry">
@@ -77,11 +80,8 @@
       <div class="name">decode</div>
       <div class="occurrences"><a href="../io/circe/Parser.html" class="extype" name="io.circe.Parser">Parser</a> </div>
     </div><div class="entry">
-      <div class="name">decodeAnyRef0</div>
-      <div class="occurrences"><a href="../io/circe/generic/auto$.html" class="extype" name="io.circe.generic.auto">auto</a> </div>
-    </div><div class="entry">
-      <div class="name">decodeAnyRef1</div>
-      <div class="occurrences"><a href="../io/circe/generic/auto$.html" class="extype" name="io.circe.generic.auto">auto</a> </div>
+      <div class="name">decodeAdt</div>
+      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeBigDecimal</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
@@ -95,17 +95,17 @@
       <div class="name">decodeByte</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
-      <div class="name">decodeCNil</div>
-      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
-    </div><div class="entry">
       <div class="name">decodeCanBuildFrom</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeCaseClass</div>
+      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeChar</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeCoproduct</div>
-      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
+      <div class="occurrences"><a href="../io/circe/generic/DerivationMacros.html" class="extype" name="io.circe.generic.DerivationMacros">DerivationMacros</a> <a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeDouble</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
@@ -119,8 +119,8 @@
       <div class="name">decodeHCursor</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
-      <div class="name">decodeHNil</div>
-      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
+      <div class="name">decodeHList</div>
+      <div class="occurrences"><a href="../io/circe/generic/DerivationMacros.html" class="extype" name="io.circe.generic.DerivationMacros">DerivationMacros</a> <a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeInt</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
@@ -140,8 +140,23 @@
       <div class="name">decodeJsonObject</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
-      <div class="name">decodeLabelledHList</div>
-      <div class="occurrences"><a href="../io/circe/generic/decoding/DerivedDecoder$.html" class="extype" name="io.circe.generic.decoding.DerivedDecoder">DerivedDecoder</a> </div>
+      <div class="name">decodeKeyByte</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeKeyInt</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeKeyLong</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeKeyShort</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeKeyString</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeKeySymbol</div>
+      <div class="occurrences"><a href="../io/circe/KeyDecoder$.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeLiteralBoolean</div>
       <div class="occurrences"><a href="../io/circe/literal/package.html" class="extype" name="io.circe.literal">literal</a> </div>
@@ -188,14 +203,11 @@
       <div class="name">decodeLong</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
-      <div class="name">decodeMap</div>
+      <div class="name">decodeMapLike</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
-      <div class="name">decodeObject0</div>
-      <div class="occurrences"><a href="../io/circe/generic/auto$.html" class="extype" name="io.circe.generic.auto">auto</a> </div>
-    </div><div class="entry">
-      <div class="name">decodeObject1</div>
-      <div class="occurrences"><a href="../io/circe/generic/auto$.html" class="extype" name="io.circe.generic.auto">auto</a> </div>
+      <div class="name">decodeNone</div>
+      <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeOneAnd</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
@@ -207,6 +219,9 @@
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeShort</div>
+      <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
+    </div><div class="entry">
+      <div class="name">decodeSome</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> </div>
     </div><div class="entry">
       <div class="name">decodeString</div>
@@ -224,9 +239,6 @@
       <div class="name">decodeXor</div>
       <div class="occurrences"><a href="../io/circe/Decoder$.html" class="extype" name="io.circe.Decoder">Decoder</a> <a href="../io/circe/disjunctionCodecs$.html" class="extype" name="io.circe.disjunctionCodecs">disjunctionCodecs</a> </div>
     </div><div class="entry">
-      <div class="name"><strike>decoder</strike></div>
-      <div class="occurrences"><strike><a href="../io/circe/generic/semiauto$$DerivationHelper.html" class="extype" name="io.circe.generic.semiauto.DerivationHelper">DerivationHelper</a></strike> </div>
-    </div><div class="entry">
       <div class="name">decoderEither</div>
       <div class="occurrences"><a href="../io/circe/disjunctionCodecs$.html" class="extype" name="io.circe.disjunctionCodecs">disjunctionCodecs</a> </div>
     </div><div class="entry">
@@ -237,28 +249,28 @@
       <div class="occurrences"><a href="../io/circe/Json.html" class="extype" name="io.circe.Json">Json</a> </div>
     </div><div class="entry">
       <div class="name">delete</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteGoField</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteGoFirst</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteGoLast</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteGoLeft</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteGoRight</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteLefts</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deleteRights</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">deriveDecoder</div>
       <div class="occurrences"><a href="../io/circe/generic/semiauto$.html" class="extype" name="io.circe.generic.semiauto">semiauto</a> </div>
@@ -273,16 +285,16 @@
       <div class="occurrences"><a href="../io/circe/package.html" class="extype" name="io.circe">circe</a> </div>
     </div><div class="entry">
       <div class="name">downArray</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">downAt</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">downField</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">downN</div>
-      <div class="occurrences"><a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> </div>
+      <div class="occurrences"><a href="../io/circe/ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> <a href="../io/circe/Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a> <a href="../io/circe/GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> <a href="../io/circe/HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> </div>
     </div><div class="entry">
       <div class="name">dropNullKeys</div>
       <div class="occurrences"><a href="../io/circe/Printer.html" class="extype" name="io.circe.Printer">Printer</a> </div>
