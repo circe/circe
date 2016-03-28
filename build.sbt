@@ -352,7 +352,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.3.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.3.1"
   )
   .dependsOn(core, jawn)
 
