@@ -1,8 +1,8 @@
 package io.circe.generic
 
-import export.reexports
-import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.{ Decoder, ObjectEncoder }
+import io.circe.export.Exported
+import scala.language.experimental.macros
 
 /**
  * Fully automatic codec derivation.
@@ -11,5 +11,7 @@ import io.circe.generic.encoding.DerivedObjectEncoder
  * instances for tuples, case classes (if all members have instances), "incomplete" case classes,
  * sealed trait hierarchies, etc.
  */
-@reexports[DerivedDecoder, DerivedObjectEncoder]
-object auto
+final object auto {
+  implicit def exportDecoder[A]: Exported[Decoder[A]] = macro ExportMacros.exportDecoderImpl[A]
+  implicit def exportEncoder[A]: Exported[ObjectEncoder[A]] = macro ExportMacros.exportEncoderImpl[A]
+}

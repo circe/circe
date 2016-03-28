@@ -4,6 +4,7 @@ import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
 import cats.std.list._
 import cats.syntax.functor._
+import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
@@ -24,7 +25,7 @@ trait Decoder[A] extends Serializable { self =>
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
 
-  private[circe] def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+  def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
     if (c.succeeded) decodeAccumulating(c.any) else Validated.invalidNel(
       DecodingFailure("Attempt to decode value on failed cursor", c.history)
     )
@@ -768,4 +769,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     }
 }
 
-@export.imports[Decoder] private[circe] trait LowPriorityDecoders
+private[circe] trait LowPriorityDecoders {
+  implicit def importedDecoder[A](implicit exported: Exported[Decoder[A]]): Decoder[A] = exported.instance
+}
