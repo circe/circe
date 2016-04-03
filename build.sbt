@@ -36,8 +36,12 @@ lazy val baseSettings = Seq(
       case _ => Nil
     }
   ),
-  scalacOptions in (Compile, console) := compilerOptions,
-  scalacOptions in (Compile, test) := compilerOptions,
+  scalacOptions in (Compile, console) ~= {
+    _.filterNot(Set("-Ywarn-unused-import"))
+  },
+  scalacOptions in (Test, console) ~= {
+    _.filterNot(Set("-Ywarn-unused-import"))
+  },
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
@@ -137,6 +141,7 @@ lazy val circe = project.in(file("."))
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
     initialCommands in console :=
       """
         |import io.circe._
@@ -209,7 +214,7 @@ lazy val genericBase = crossProject.in(file("generic"))
     )
   )
   .jsSettings(commonJsSettings: _*)
-  .jvmConfigure(_.copy(id = "generic").settings(macroDependencies))
+  .jvmConfigure(_.copy(id = "generic"))
   .jsConfigure(_.copy(id = "genericJS"))
   .dependsOn(coreBase)
 
