@@ -2,7 +2,7 @@ package io.circe.generic
 
 import algebra.Eq
 import cats.data.Xor
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.semiauto._
@@ -16,9 +16,9 @@ class SemiautoDerivedSuite extends CirceSuite {
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
   implicit val decodeWub: Decoder[Wub] = deriveDecoder
-  implicit val encodeWub: Encoder[Wub] = deriveEncoder
+  implicit val encodeWub: ObjectEncoder[Wub] = deriveEncoder
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
-  implicit val encodeFoo: Encoder[Foo] = deriveEncoder
+  implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
@@ -45,7 +45,7 @@ class SemiautoDerivedSuite extends CirceSuite {
       Arbitrary(atDepth(0))
 
     implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
-    implicit val encodeRecursiveAdtExample: Encoder[RecursiveAdtExample] = deriveEncoder
+    implicit val encodeRecursiveAdtExample: ObjectEncoder[RecursiveAdtExample] = deriveEncoder
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
@@ -65,7 +65,7 @@ class SemiautoDerivedSuite extends CirceSuite {
     implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
       deriveDecoder
 
-    implicit val encodeRecursiveWithOptionExample: Encoder[RecursiveWithOptionExample] =
+    implicit val encodeRecursiveWithOptionExample: ObjectEncoder[RecursiveWithOptionExample] =
       deriveEncoder
   }
 
@@ -127,12 +127,12 @@ class SemiautoDerivedSuite extends CirceSuite {
     illTyped("Decoder[OvergenerationExampleInner]")
 
     implicitly[DerivedObjectEncoder[OvergenerationExampleInner]]
-    illTyped("Encoder[OvergenerationExampleInner]")
+    illTyped("ObjectEncoder[OvergenerationExampleInner]")
 
     illTyped("Decoder[OvergenerationExampleOuter0]")
-    illTyped("Encoder[OvergenerationExampleOuter0]")
+    illTyped("ObjectEncoder[OvergenerationExampleOuter0]")
     illTyped("Decoder[OvergenerationExampleOuter1]")
-    illTyped("Encoder[OvergenerationExampleOuter1]")
+    illTyped("ObjectEncoder[OvergenerationExampleOuter1]")
   }
 
   test("Semi-automatic derivation should require explicit instances for all parts") {

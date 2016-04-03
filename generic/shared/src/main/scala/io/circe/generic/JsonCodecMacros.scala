@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
 import macrocompat.bundle
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
@@ -41,6 +41,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
 
   private[this] val DecoderClass = symbolOf[Decoder[_]]
   private[this] val EncoderClass = symbolOf[Encoder[_]]
+  private[this] val ObjectEncoderClass = symbolOf[ObjectEncoder[_]]
   private[this] val semiautoObj = symbolOf[semiauto.type].asClass.module
 
   private[this] def codec(clsDef: ClassDef): List[Tree] = {
@@ -52,12 +53,12 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
       val Type = tpname
       List(
         q"""implicit val $decodeNme: $DecoderClass[$Type] = $semiautoObj.deriveDecoder[$Type]""",
-        q"""implicit val $encodeNme: $EncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]"""
+        q"""implicit val $encodeNme: $ObjectEncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]"""
       )
     } else {
       val tparamNames = tparams.map(_.name)
       def mkImplicitParams(typeSymbol: TypeSymbol) =
-        tparamNames map { tparamName =>
+        tparamNames.map { tparamName =>
           val paramName = c.freshName(tparamName.toTermName)
           val paramType = tq"$typeSymbol[$tparamName]"
           q"$paramName: $paramType"
@@ -68,7 +69,7 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
       List(
         q"""implicit def $decodeNme[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
            $semiautoObj.deriveDecoder[$Type]""",
-        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): $EncoderClass[$Type] =
+        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): $ObjectEncoderClass[$Type] =
            $semiautoObj.deriveEncoder[$Type]"""
       )
     }

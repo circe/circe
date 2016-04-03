@@ -2,6 +2,7 @@ package io.circe.generic
 
 import algebra.Eq
 import cats.std.AllInstances
+import io.circe.ObjectEncoder
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.tests.{ ArbitraryInstances, CirceSuite, CodecTests, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
@@ -144,4 +145,14 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
   checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
+
+  test("@JsonCodec should provide ObjectEncoder instances") {
+    ObjectEncoder[Simple]
+    ObjectEncoder[Single]
+    ObjectEncoder[Typed1[Int]]
+    ObjectEncoder[Typed2[Int, Long]]
+    ObjectEncoder[Hierarchy]
+    ObjectEncoder[RecursiveHierarchy]
+    ObjectEncoder[SelfRecursiveWithOption]
+  }
 }
