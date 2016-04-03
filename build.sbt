@@ -108,6 +108,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   jackson,
   optics,
   scalajs,
+  spray,
   streaming,
   benchmark
 ) ++ (
@@ -370,6 +371,24 @@ lazy val jackson = project
   )
   .dependsOn(core)
 
+lazy val spray = project
+  .settings(
+    description := "circe spray",
+    moduleName := "circe-spray"
+  )
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-actor" % "2.3.9",
+      "io.spray" %% "spray-httpx" % "1.3.3",
+      "io.spray" %% "spray-routing-shapeless2" % "1.3.3" % "test",
+      "io.spray" %% "spray-testkit" % "1.3.3" % "test",
+      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+    )
+  )
+  .dependsOn(core, jawn, generic % "test")
+
 lazy val optics = project
   .settings(
     description := "circe optics",
@@ -483,6 +502,7 @@ val jvmProjects = Seq(
   "tests",
   "jawn",
   "jackson",
+  "spray",
   "benchmark"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
@@ -491,6 +511,7 @@ val jvmProjects = Seq(
 val jvmTestProjects = Seq(
   "tests",
   "optics",
+  "spray",
   "benchmark"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
