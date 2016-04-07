@@ -69,7 +69,7 @@ compatibility before the next release.
 * In general we discourage force pushing to an active pull-request branch that other people are
   commenting on or contributing to, and suggest using `git merge master` during development. Once
   development is complete, use `git rebase master` and force push to [clean up the history][squash].
-* The first line of a commit message should be no more than 72 characters long (to accomodate
+* The first line of a commit message should be no more than 72 characters long (to accommodate
   formatting in various environments).
 * Commit messages should general use the present tense, normal sentence capitalization, and no final
   punctuation.
