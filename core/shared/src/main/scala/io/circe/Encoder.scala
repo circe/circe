@@ -65,13 +65,13 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncoders {
+object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
    * @group Utilities
    */
-  final def apply[A](implicit e: Encoder[A]): Encoder[A] = e
+  final def apply[A](implicit instance: Encoder[A]): Encoder[A] = instance
 
   /**
    * Construct an instance from a function.
@@ -87,30 +87,11 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
    *
    * @group Utilities
    */
-  final def fromFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): Encoder[F[A]] = new Encoder[F[A]] {
-    final def apply(a: F[A]): Json =
-      Json.fromValues(F.foldLeft(a, List.empty[Json])((list, v) => e(v) :: list).reverse)
-  }
-
-  /**
-   * @group Encoding
-   */
-  implicit final def encodeTraversableOnce[A0, C[_]](implicit
-    e: Encoder[A0],
-    is: IsTraversableOnce[C[A0]] { type A = A0 }
-  ): Encoder[C[A0]] = new Encoder[C[A0]] {
-    final def apply(a: C[A0]): Json = {
-      val items = List.newBuilder[Json]
-
-      val it = is.conversion(a).toIterator
-
-      while (it.hasNext) {
-        items += e(it.next())
-      }
-
-      Json.fromValues(items.result)
+  final def encodeFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): ArrayEncoder[F[A]] =
+    new ArrayEncoder[F[A]] {
+      final def encodeArray(a: F[A]): List[Json] =
+        F.foldLeft(a, List.empty[Json])((list, v) => e(v) :: list).reverse
     }
-  }
 
   /**
    * @group Encoding
@@ -122,8 +103,8 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
   /**
    * @group Encoding
    */
-  implicit final val encodeJsonObject: Encoder[JsonObject] = new Encoder[JsonObject] {
-    final def apply(a: JsonObject): Json = Json.fromJsonObject(a)
+  implicit final val encodeJsonObject: ObjectEncoder[JsonObject] = new ObjectEncoder[JsonObject] {
+    final def encodeObject(a: JsonObject): JsonObject = a
   }
 
   /**
@@ -252,8 +233,12 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
   implicit final def encodeOneAnd[A0, C[_]](
     implicit ea: Encoder[A0],
     is: IsTraversableOnce[C[A0]] { type A = A0 }
-  ): Encoder[OneAnd[C, A0]] = encodeTraversableOnce[A0, GenSeq].contramap[OneAnd[C, A0]] {
-    oneAnd => oneAnd.head +: is.conversion(oneAnd.tail).toSeq
+  ): ArrayEncoder[OneAnd[C, A0]] = new ArrayEncoder[OneAnd[C, A0]] {
+    private[this] val encoder = encodeTraversableOnce[A0, GenSeq]
+
+    final def encodeArray(a: OneAnd[C, A0]): List[Json] = encoder.encodeArray(
+      a.head :: is.conversion(a.tail).toList
+    )
   }
 
   /**
@@ -317,6 +302,28 @@ object Encoder extends TupleEncoders with ProductEncoders with LowPriorityEncode
   }
 }
 
+private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeTraversableOnce[A0, C[_]](implicit
+    e: Encoder[A0],
+    is: IsTraversableOnce[C[A0]] { type A = A0 }
+  ): ArrayEncoder[C[A0]] = new ArrayEncoder[C[A0]] {
+    final def encodeArray(a: C[A0]): List[Json] = {
+      val items = List.newBuilder[Json]
+
+      val it = is.conversion(a).toIterator
+
+      while (it.hasNext) {
+        items += e(it.next())
+      }
+
+      items.result
+    }
+  }
+}
+
 private[circe] trait LowPriorityEncoders {
-  implicit def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
+  implicit final def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
 }

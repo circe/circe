@@ -206,7 +206,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Utilities
    */
-  final def apply[A](implicit d: Decoder[A]): Decoder[A] = d
+  final def apply[A](implicit instance: Decoder[A]): Decoder[A] = instance
 
   /**
    * Construct an instance from a function.

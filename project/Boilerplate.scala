@@ -170,9 +170,9 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder[${`(A..N)`}] =
-        -    new Encoder[${`(A..N)`}] {
-        -      final def apply(a: ${`(A..N)`}): Json = Json.arr($applied)
+        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): ArrayEncoder[${`(A..N)`}] =
+        -    new ArrayEncoder[${`(A..N)`}] {
+        -      final def encodeArray(a: ${`(A..N)`}): List[Json] = List($applied)
         -    }
         |}
       """
