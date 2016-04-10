@@ -2,11 +2,18 @@ package io.circe
 
 import algebra.Eq
 import cats.Show
+import cats.data.NonEmptyList
 import cats.std.list._
 import io.circe.CursorOp._
 
 sealed abstract class Error extends Exception {
   final override def fillInStackTrace(): Throwable = this
+}
+
+final case class Errors(errors: NonEmptyList[Error]) extends Exception {
+  def toList: List[Error] = errors.head :: errors.tail
+
+  override def fillInStackTrace(): Throwable = this
 }
 
 final case class ParsingFailure(message: String, underlying: Throwable) extends Error {
