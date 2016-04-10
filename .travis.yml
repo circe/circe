@@ -9,6 +9,15 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
+# http://austinpray.com/ops/2015/09/20/change-travis-node-version.html
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+
+env:
+  global:
+  - TRAVIS_NODE_VERSION="4"
+  - CIRCE_BOT_BUILD=true
+
 cache:
   directories:
     - $HOME/.ivy2/cache
