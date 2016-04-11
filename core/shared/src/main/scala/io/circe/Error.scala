@@ -94,7 +94,7 @@ final object DecodingFailure {
     private[this] case class SelectIndex(index: Int) extends Selection
     private[this] case class Op(op: CursorOp) extends Selection
 
-    def show(failure: DecodingFailure) = {
+    def show(failure: DecodingFailure): String = {
 
       // Fold into sequence of selections (to reduce array ops etc. into single selections)
       val selections = failure.history.foldRight(List[Selection]()) { (historyOp, sels) =>
