@@ -37,9 +37,9 @@ you can just add the following to your build:
 
 ```scala
 libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core" % "0.3.0",
-  "io.circe" %% "circe-generic" % "0.3.0",
-  "io.circe" %% "circe-parser" % "0.3.0"
+  "io.circe" %% "circe-core" % "0.4.0",
+  "io.circe" %% "circe-generic" % "0.4.0",
+  "io.circe" %% "circe-parser" % "0.4.0"
 )
 ```
 
@@ -116,7 +116,7 @@ with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalaj
 
 circe doesn't use or provide lenses in the `core` project. This is related to the first point above,
 since [Monocle][monocle] has a Scalaz dependency, but we also feel that it simplifies the API. The
-0.3.0 release adds [an experimental `optics` subproject][optics-pr] that provides Monocle lenses
+0.3.0 release added [an experimental `optics` subproject][optics-pr] that provides Monocle lenses
 (note that this will require your project to depend on both Scalaz and cats).
 
 ### Codec derivation
@@ -303,7 +303,7 @@ val json: String = """
   }
 """
 
-val doc: Json = parse(json).getOrElse(Json.empty)
+val doc: Json = parse(json).getOrElse(Json.Null)
 ```
 
 In order to transform this document we need to create an `HCursor` with the focus at the document's
@@ -384,7 +384,32 @@ scala> object X { sealed trait A; case object B extends A; val d = Decoder[A] }
    problems, it's likely that they're not your fault. Please file an issue here or ask a question on
    the [Gitter channel][gitter], and we'll do our best to figure out whether the problem is
    something we can fix.
-5. circe's representation of numbers is designed not to lose precision during decoding into integral
+5. When using the `io.circe.generic.JsonCodec` annotation, the following will not compile:
+
+   ```scala
+import io.circe.generic.JsonCodec
+
+@JsonCodec sealed trait A
+case class B(b: String) extends A
+case class C(c: Int) extends A
+   ```
+
+   In cases like this it's necessary to define a companion object for the root type _after_ all of
+   the leaf types:
+   ```scala
+import io.circe.generic.JsonCodec
+
+@JsonCodec sealed trait A
+case class B(b: String) extends A
+case class C(c: Int) extends A
+
+object A
+   ```
+
+   See [this issue][circe-251] for additional discussion (this workaround may not be necessary in
+   future versions).
+
+6. circe's representation of numbers is designed not to lose precision during decoding into integral
    or arbitrary-precision types, but precision may still be lost during parsing. This shouldn't
    happen when using Jawn for parsing, but `scalajs.js.JSON` parses JSON numbers into a floating
    point representation that may lose precision (even when decoding into a type like `BigDecimal`;
@@ -409,6 +434,7 @@ limitations under the License.
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [benchmarks]: https://github.com/travisbrown/circe/blob/master/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
+[circe-251]: https://github.com/travisbrown/circe/issues/251
 [circe-262]: https://github.com/travisbrown/circe/issues/262
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
