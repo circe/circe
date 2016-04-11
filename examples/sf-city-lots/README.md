@@ -200,7 +200,7 @@ res: Map[String,Int] = Map(Polygon -> 206434, MultiPolygon -> 120)
 Or simply gather the first few lots into a sequence:
 
 ```scala
-scala> val first3 = lots.run(take(3)).run
+scala> val first3 = lots.run(takeI(3)).run
 first3: Vector[Lot] = Vector(Lot(Feature,Map(MAPBLKLOT -> 0001001, ...
 ```
 
