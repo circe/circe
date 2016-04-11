@@ -9,7 +9,7 @@ To start the service locally on port 8080, run `sbt run`. If that works, you can
 test the service from your favorite HTTP client (I'll use [httpie][httpie])
 here):
 
-```
+```bash
 $ http POST :8080/api/v1/todo title=Foo completed:=false order=0
 HTTP/1.1 200 OK
 Content-Length: 87
@@ -28,7 +28,7 @@ Server: spray-can/1.3.3
 If the posted JSON is missing required fields, the errors will be accumulated
 and we'll get back a message listing all of them:
 
-```
+```bash
 $ http POST :8080/api/v1/todo title=Foo
 HTTP/1.1 400 Bad Request
 Content-Length: 145
