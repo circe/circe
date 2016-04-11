@@ -496,6 +496,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * `unscaledValue` is adjusted to have no trailing zeros). These large values can, however, be
    * round-tripped through `JsonNumber`, so you may wish to use [[decodeJsonNumber]] in these cases.
    *
+   * Also note that because `scala.scalajs.js.JSON` parses JSON numbers into a floating point
+   * representation, decoding a JSON number into a [[BigDecimal]] on Scala.js may lose precision.
+   *
    * @group Decoding
    */
   implicit final val decodeBigDecimal: Decoder[BigDecimal] = new Decoder[BigDecimal] {

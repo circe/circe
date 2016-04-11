@@ -384,6 +384,11 @@ scala> object X { sealed trait A; case object B extends A; val d = Decoder[A] }
    problems, it's likely that they're not your fault. Please file an issue here or ask a question on
    the [Gitter channel][gitter], and we'll do our best to figure out whether the problem is
    something we can fix.
+5. circe's representation of numbers is designed not to lose precision during decoding into integral
+   or arbitrary-precision types, but precision may still be lost during parsing. This shouldn't
+   happen when using Jawn for parsing, but `scalajs.js.JSON` parses JSON numbers into a floating
+   point representation that may lose precision (even when decoding into a type like `BigDecimal`;
+   see [this issue][circe-262] for an example).
 
 ## License
 
@@ -404,6 +409,7 @@ limitations under the License.
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [benchmarks]: https://github.com/travisbrown/circe/blob/master/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
+[circe-262]: https://github.com/travisbrown/circe/issues/262
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
