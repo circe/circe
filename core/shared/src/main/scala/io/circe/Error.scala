@@ -2,13 +2,31 @@ package io.circe
 
 import algebra.Eq
 import cats.Show
+import cats.data.NonEmptyList
 import cats.std.list._
 import io.circe.CursorOp._
 
+/**
+ * The base exception type for both decoding and parsing errors.
+ */
 sealed abstract class Error extends Exception {
   final override def fillInStackTrace(): Throwable = this
 }
 
+/**
+ * A convenience exception type for aggregating one or more decoding or parsing
+ * errors.
+ */
+final case class Errors(errors: NonEmptyList[Error]) extends Exception {
+  def toList: List[Error] = errors.head :: errors.tail
+
+  override def fillInStackTrace(): Throwable = this
+}
+
+/**
+ * An exception representing a parsing failure and wrapping the exception
+ * provided by the parsing library.
+ */
 final case class ParsingFailure(message: String, underlying: Throwable) extends Error {
   final override def getMessage: String = message
 }
@@ -23,6 +41,10 @@ final object ParsingFailure {
   }
 }
 
+/**
+ * An exception representing a decoding failure and (lazily) capturing the
+ * decoding history resulting in the failure.
+ */
 sealed abstract class DecodingFailure(val message: String) extends Error {
   def history: List[HistoryOp]
   final override def getMessage: String =
@@ -113,5 +135,4 @@ final object Error {
     case pf: ParsingFailure  => ParsingFailure.showParsingFailure.show(pf)
     case df: DecodingFailure => DecodingFailure.showDecodingFailure.show(df)
   }
-
 }

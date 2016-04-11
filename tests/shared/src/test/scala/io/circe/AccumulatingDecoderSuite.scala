@@ -6,6 +6,7 @@ import cats.laws.discipline.arbitrary._
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
+import io.circe.tests.examples.Qux
 
 class AccumulatingDecoderSuite extends CirceSuite {
   checkAll(
@@ -95,6 +96,12 @@ class AccumulatingDecoderSuite extends CirceSuite {
 
       decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
     }
+  }
+
+  test("Accumulating decoder returns as many errors as invalid elements in a partial case class") {
+    val decoded = deriveFor[Int => Qux[String]].incomplete.accumulating(Json.fromJsonObject(JsonObject.empty).hcursor)
+
+    decoded.fold(_.tail.size + 1, _ => 0) === 2
   }
 
   test("replaying accumulating decoder history returns expected failures in a tuple") {

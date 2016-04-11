@@ -39,8 +39,8 @@ object Employee {
     }
 }
 
-class CirceJsonSupportSpec extends FunSuite {
-  import CirceJsonSupport._
+class JsonSupportSpec extends FunSuite {
+  import JsonSupport._
 
   test("providing unmarshalling support for a case class") {
     val expected = Right(Employee.simple)
