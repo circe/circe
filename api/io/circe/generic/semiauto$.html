@@ -49,14 +49,14 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../Encoder.html" class="extype" name="io.circe.Encoder">io.circe.Encoder</a> instances
-for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">io.circe.ObjectEncoder</a>
+instances for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
 
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
 <span class="kw">object</span> Foo {
   <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
-  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveEncoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
 }</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/generic/shared/src/main/scala/io/circe/generic/semiauto.scala" target="_blank">semiauto.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>

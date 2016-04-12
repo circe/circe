@@ -169,7 +169,7 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="io.circe.Decoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="Utilities">
-      <a id="apply[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder[A]"></a>
+      <a id="apply[A](implicitinstance:io.circe.Decoder[A]):io.circe.Decoder[A]"></a>
       <a id="apply[A](Decoder[A]):Decoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -177,10 +177,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.apply.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.apply.A">A</span>]</span>
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="instance">instance: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.apply.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.apply.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder$@apply[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder[A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Decoder$@apply[A](implicitinstance:io.circe.Decoder[A]):io.circe.Decoder[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -244,7 +244,8 @@
       <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><p>Note that decoding will fail on some very large values that could in principle be represented
 as <code>BigDecimal</code>s (specifically if the <code>scale</code> is out of the range of <code>scala.Int</code> when the
 <code>unscaledValue</code> is adjusted to have no trailing zeros). These large values can, however, be
-round-tripped through <code>JsonNumber</code>, so you may wish to use <a href="#decodeJsonNumber:io.circe.Decoder[io.circe.JsonNumber]" class="extmbr" name="io.circe.Decoder#decodeJsonNumber">decodeJsonNumber</a> in these cases.
+round-tripped through <code>JsonNumber</code>, so you may wish to use <a href="#decodeJsonNumber:io.circe.Decoder[io.circe.JsonNumber]" class="extmbr" name="io.circe.Decoder#decodeJsonNumber">decodeJsonNumber</a> in these cases.</p><p>Also note that because <code>scala.scalajs.js.JSON</code> parses JSON numbers into a floating point
+representation, decoding a JSON number into a <code>BigDecimal</code> on Scala.js may lose precision.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeBigInt" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
       <a id="decodeBigInt:io.circe.Decoder[BigInt]"></a>

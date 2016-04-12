@@ -123,6 +123,24 @@
       </a>
     </span>
       
+    </li><li name="io.circe.ArrayEncoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArrayEncoder[A]extendsRootEncoder[A]"></a>
+      <a id="ArrayEncoder[A]:ArrayEncoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ArrayEncoder.html"><span class="name">ArrayEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.ArrayEncoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@ArrayEncoder[A]extendsRootEncoder[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a JSON
+array.</p>
     </li><li name="io.circe.Context" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ContextextendsSerializable"></a>
       <a id="Context:Context"></a>
@@ -211,7 +229,8 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">An exception representing a decoding failure and (lazily) capturing the
+decoding history resulting in the failure.</p>
     </li><li name="io.circe.Encoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="Encoder[A]extendsSerializable"></a>
       <a id="Encoder[A]:Encoder[A]"></a>
@@ -245,7 +264,25 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">The base exception type for both decoding and parsing errors.</p>
+    </li><li name="io.circe.Errors" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorsextendsExceptionwithProductwithSerializable"></a>
+      <a id="Errors:Errors"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Errors.html"><span class="name">Errors</span></a><span class="params">(<span name="errors">errors: <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@ErrorsextendsExceptionwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A convenience exception type for aggregating one or more decoding or parsing
+errors.</p>
     </li><li name="io.circe.GenericCursor" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="GenericCursor[C&lt;:io.circe.GenericCursor[C]]extendsSerializable"></a>
       <a id="GenericCursor[C&lt;:GenericCursor[C]]:GenericCursor[C]"></a>
@@ -399,7 +436,7 @@ value of type <code>A</code>.</p>
 object may have fewer fields than the original map.
 </p></div></div>
     </li><li name="io.circe.ObjectEncoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ObjectEncoder[A]extendsEncoder[A]"></a>
+      <a id="ObjectEncoder[A]extendsRootEncoder[A]"></a>
       <a id="ObjectEncoder[A]:ObjectEncoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -407,14 +444,15 @@ object may have fewer fields than the original map.
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ObjectEncoder.html"><span class="name">ObjectEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.ObjectEncoder.A">A</span>]</span>
+        <a href="ObjectEncoder.html"><span class="name">ObjectEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.ObjectEncoder.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.package@ObjectEncoder[A]extendsEncoder[A]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.package@ObjectEncoder[A]extendsRootEncoder[A]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
+      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a
+<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
     </li><li name="io.circe.Parser" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ParserextendsSerializable"></a>
       <a id="Parser:Parser"></a>
@@ -448,7 +486,8 @@ object may have fewer fields than the original map.
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">An exception representing a parsing failure and wrapping the exception
+provided by the parsing library.</p>
     </li><li name="io.circe.Printer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="PrinterextendsSerializablewithProduct"></a>
       <a id="Printer:Printer"></a>
@@ -467,6 +506,24 @@ object may have fewer fields than the original map.
     </span>
       <p class="shortcomment cmt">A pretty-printer for JSON values.</p><div class="fullcomment"><div class="comment cmt"><p>A pretty-printer for JSON values.
 </p></div><dl class="paramcmts block"><dt class="param">preserveOrder</dt><dd class="cmt"><p>Determines if field ordering should be preserved.</p></dd><dt class="param">dropNullKeys</dt><dd class="cmt"><p>Determines if object fields with values of null are dropped from the output.</p></dd><dt class="param">indent</dt><dd class="cmt"><p>The indentation to use if any format strings contain a new line.</p></dd><dt class="param">lbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left brace.</p></dd><dt class="param">lbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a left brace.</p></dd><dt class="param">rbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right brace.</p></dd><dt class="param">rbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a right brace.</p></dd><dt class="param">lbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left bracket.</p></dd><dt class="param">lbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a left bracket.</p></dd><dt class="param">rbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right bracket.</p></dd><dt class="param">rbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a right bracket.</p></dd><dt class="param">lrbracketsEmpty</dt><dd class="cmt"><p>Spaces to insert for an empty array.</p></dd><dt class="param">arrayCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an array.</p></dd><dt class="param">arrayCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an array.</p></dd><dt class="param">objectCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an object.</p></dd><dt class="param">objectCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an object.</p></dd><dt class="param">colonLeft</dt><dd class="cmt"><p>Spaces to insert to left of a colon.</p></dd><dt class="param">colonRight</dt><dd class="cmt"><p>Spaces to insert to right of a colon.</p></dd></dl></div>
+    </li><li name="io.circe.RootEncoder" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RootEncoder[A]extendsEncoder[A]"></a>
+      <a id="RootEncoder[A]:RootEncoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="RootEncoder.html"><span class="name">RootEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.RootEncoder.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@RootEncoder[A]extendsEncoder[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A subtype of <code>Encoder</code> that statically verifies that the instance encodes
+either a JSON array or an object.</p>
     </li></ol>
             </div>
 
@@ -504,6 +561,23 @@ object may have fewer fields than the original map.
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@AccumulatingDecoder" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.ArrayEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArrayEncoder"></a>
+      <a id="ArrayEncoder:ArrayEncoder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ArrayEncoder$.html"><span class="name">ArrayEncoder</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@ArrayEncoder" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -602,7 +676,7 @@ object may have fewer fields than the original map.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Encoder$.html"><span class="name">Encoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.LowPriorityEncoders">LowPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <a href="Encoder$.html"><span class="name">Encoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.MidPriorityEncoders">MidPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@Encoder" title="Permalink" target="_top">
@@ -797,6 +871,23 @@ object may have fewer fields than the original map.
       </a>
     </span>
       
+    </li><li name="io.circe.RootEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RootEncoder"></a>
+      <a id="RootEncoder:RootEncoder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RootEncoder$.html"><span class="name">RootEncoder</span></a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityRootEncoders">LowPriorityRootEncoders</span> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@RootEncoder" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="io.circe.disjunctionCodecs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="disjunctionCodecs"></a>
       <a id="disjunctionCodecs:disjunctionCodecs"></a>
@@ -955,7 +1046,7 @@ decoded value satisfies <code>Predicate</code>.</p><p>E.g. with generic codecs</
   i: <span class="std">Int</span> Refined Positive
 )
 
-Obj(refineMV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div></div>
+Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div></div>
     </li><li name="io.circe.scalajs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="scalajs"></a>
       <a id="scalajs:scalajs"></a>
@@ -969,6 +1060,23 @@ Obj(refineMV(<span class="num">4</span>)).asJson.nospaces == <span class="lit">"
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.package@scalajs" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.spray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="spray"></a>
+      <a id="spray:spray"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="spray/package.html"><span class="name">spray</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.package@spray" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

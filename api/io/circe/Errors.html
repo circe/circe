@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>DecodingFailure - io.circe.DecodingFailure</title>
-          <meta name="description" content="DecodingFailure - io.circe.DecodingFailure" />
-          <meta name="keywords" content="DecodingFailure io.circe.DecodingFailure" />
+          <title>Errors - io.circe.Errors</title>
+          <meta name="description" content="Errors - io.circe.Errors" />
+          <meta name="keywords" content="Errors io.circe.Errors" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -16,7 +16,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'io.circe.DecodingFailure';
+            var hash = 'io.circe.Errors';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -28,14 +28,12 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="DecodingFailure$.html" title="See companion object"><img alt="Class/Object" src="../../lib/class_to_object_big.png" /></a>
+        <img alt="Class" src="../../lib/class_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="io">io</a>.<a href="package.html" class="extype" name="io.circe">circe</a></p>
-        <h1><a href="DecodingFailure$.html" title="See companion object">DecodingFailure</a></h1><h3><span class="morelinks"><div>
-            Related Docs:
-            <a href="DecodingFailure$.html" title="See companion object">object DecodingFailure</a>
-            | <a href="package.html" class="extype" name="io.circe">package circe</a>
+        <h1>Errors</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="io.circe">package circe</a>
           </div></span></h3><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -43,19 +41,19 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">DecodingFailure</span><span class="result"> extends <a href="Error.html" class="extype" name="io.circe.Error">Error</a></span>
+        <span class="name">Errors</span><span class="params">(<span name="errors">errors: <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An exception representing a decoding failure and (lazily) capturing the
-decoding history resulting in the failure.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A convenience exception type for aggregating one or more decoding or parsing
+errors.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/core/shared/src/main/scala/io/circe/Error.scala" target="_blank">Error.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="java.lang.Exception">Exception</span>, <span class="extype" name="java.lang.Throwable">Throwable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <span class="extype" name="java.lang.Exception">Exception</span>, <span class="extype" name="java.lang.Throwable">Throwable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -73,7 +71,7 @@ decoding history resulting in the failure.
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.DecodingFailure"><span>DecodingFailure</span></li><li class="in" name="io.circe.Error"><span>Error</span></li><li class="in" name="java.lang.Exception"><span>Exception</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.Errors"><span>Errors</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="java.lang.Exception"><span>Exception</span></li><li class="in" name="java.lang.Throwable"><span>Throwable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -95,25 +93,21 @@ decoding history resulting in the failure.
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="io.circe.DecodingFailure#history" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="history:List[io.circe.HistoryOp]"></a>
-      <a id="history:List[HistoryOp]"></a>
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="io.circe.Errors#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(errors:cats.data.NonEmptyList[io.circe.Error]):io.circe.Errors"></a>
+      <a id="&lt;init&gt;:Errors"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">history</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>]</span>
+        <span class="name">Errors</span><span class="params">(<span name="errors">errors: <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@history:List[io.circe.HistoryOp]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@&lt;init&gt;(errors:cats.data.NonEmptyList[io.circe.Error]):io.circe.Errors" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -121,8 +115,12 @@ decoding history resulting in the failure.
     </li></ol>
             </div>
 
+        
+
+        
+
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -135,7 +133,7 @@ decoding history resulting in the failure.
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@!=(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -152,7 +150,7 @@ decoding history resulting in the failure.
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@##():Int" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@##():Int" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -169,34 +167,34 @@ decoding history resulting in the failure.
         <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@+(other:String):String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@+(other:String):String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method any2stringadd in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
-      <a id="-&gt;[B](B):(DecodingFailure,B)"></a>
+      <a id="-&gt;[B](B):(Errors,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.Errors">Errors</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -214,7 +212,7 @@ decoding history resulting in the failure.
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@==(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@==(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -231,7 +229,7 @@ decoding history resulting in the failure.
         <span class="name">addSuppressed</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.lang.Throwable">Throwable</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@addSuppressed(x$1:Throwable):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@addSuppressed(x$1:Throwable):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -248,7 +246,7 @@ decoding history resulting in the failure.
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@asInstanceOf[T0]:T0" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -265,7 +263,7 @@ decoding history resulting in the failure.
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@clone():Object" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@clone():Object" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -276,105 +274,88 @@ decoding history resulting in the failure.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#copy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="copy(message:String,history:=&gt;List[io.circe.HistoryOp]):io.circe.DecodingFailure"></a>
-      <a id="copy(String,⇒List[HistoryOp]):DecodingFailure"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">copy</span><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">message</span></span>, <span name="history">history: ⇒ <span class="extype" name="scala.List">List</span>[<a href="HistoryOp.html" class="extype" name="io.circe.HistoryOp">HistoryOp</a>] = <span class="symbol">history</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@copy(message:String,history:=&gt;List[io.circe.HistoryOp]):io.circe.DecodingFailure" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring((DecodingFailure)⇒Boolean,⇒Any):DecodingFailure"></a>
+      <a id="ensuring((Errors)⇒Boolean,⇒Any):Errors"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Errors">Errors</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Errors">Errors</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
-      <a id="ensuring((DecodingFailure)⇒Boolean):DecodingFailure"></a>
+      <a id="ensuring((Errors)⇒Boolean):Errors"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Errors">Errors</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Errors">Errors</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring(Boolean,⇒Any):DecodingFailure"></a>
+      <a id="ensuring(Boolean,⇒Any):Errors"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Errors">Errors</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
-      <a id="ensuring(Boolean):DecodingFailure"></a>
+      <a id="ensuring(Boolean):Errors"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Errors">Errors</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@ensuring(cond:Boolean):A" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -389,45 +370,45 @@ decoding history resulting in the failure.
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(that:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
+    </li><li name="io.circe.Errors#errors" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="errors:cats.data.NonEmptyList[io.circe.Error]"></a>
+      <a id="errors:NonEmptyList[Error]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="that">that: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">errors</span><span class="result">: <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@equals(that:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@errors:cats.data.NonEmptyList[io.circe.Error]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.Error#fillInStackTrace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="io.circe.Errors#fillInStackTrace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fillInStackTrace():Throwable"></a>
       <a id="fillInStackTrace():Throwable"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
+        <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">fillInStackTrace</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Throwable">Throwable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@fillInStackTrace():Throwable" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@fillInStackTrace():Throwable" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Error.html" class="extype" name="io.circe.Error">Error</a> → Throwable</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.Errors">Errors</a> → Throwable</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -440,7 +421,7 @@ decoding history resulting in the failure.
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@finalize():Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@finalize():Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -463,13 +444,13 @@ decoding history resulting in the failure.
         <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@formatted(fmtstr:String):String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@formatted(fmtstr:String):String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method StringFormat in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method StringFormat in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -487,7 +468,7 @@ decoding history resulting in the failure.
         <span class="name">getCause</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Throwable">Throwable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getCause():Throwable" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getCause():Throwable" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -504,7 +485,7 @@ decoding history resulting in the failure.
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getClass():Class[_]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getClass():Class[_]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -521,28 +502,28 @@ decoding history resulting in the failure.
         <span class="name">getLocalizedMessage</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getLocalizedMessage():String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getLocalizedMessage():String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#getMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="java.lang.Throwable#getMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getMessage():String"></a>
       <a id="getMessage():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
+        <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getMessage</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">getMessage</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getMessage():String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getMessage():String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> → Throwable</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li name="java.lang.Throwable#getStackTrace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getStackTrace():Array[StackTraceElement]"></a>
       <a id="getStackTrace():Array[StackTraceElement]"></a>
@@ -555,7 +536,7 @@ decoding history resulting in the failure.
         <span class="name">getStackTrace</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Array" class="extype" target="_top">Array</a>[<span class="extype" name="java.lang.StackTraceElement">StackTraceElement</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getStackTrace():Array[StackTraceElement]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getStackTrace():Array[StackTraceElement]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -572,28 +553,11 @@ decoding history resulting in the failure.
         <span class="name">getSuppressed</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Array" class="extype" target="_top">Array</a>[<span class="extype" name="java.lang.Throwable">Throwable</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getSuppressed():Array[Throwable]" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getSuppressed():Array[Throwable]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@hashCode():Int" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> → AnyRef → Any</dd></dl></div>
     </li><li name="java.lang.Throwable#initCause" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initCause(x$1:Throwable):Throwable"></a>
       <a id="initCause(Throwable):Throwable"></a>
@@ -606,7 +570,7 @@ decoding history resulting in the failure.
         <span class="name">initCause</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.lang.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="java.lang.Throwable">Throwable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@initCause(x$1:Throwable):Throwable" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@initCause(x$1:Throwable):Throwable" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -623,28 +587,11 @@ decoding history resulting in the failure.
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#message" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="message:String"></a>
-      <a id="message:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">message</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@message:String" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -657,7 +604,7 @@ decoding history resulting in the failure.
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -674,7 +621,7 @@ decoding history resulting in the failure.
         <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@notify():Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@notify():Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -691,7 +638,7 @@ decoding history resulting in the failure.
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@notifyAll():Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@notifyAll():Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -708,7 +655,7 @@ decoding history resulting in the failure.
         <span class="name">printStackTrace</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.io.PrintWriter">PrintWriter</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@printStackTrace(x$1:java.io.PrintWriter):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@printStackTrace(x$1:java.io.PrintWriter):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -725,7 +672,7 @@ decoding history resulting in the failure.
         <span class="name">printStackTrace</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.io.PrintStream">PrintStream</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@printStackTrace(x$1:java.io.PrintStream):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@printStackTrace(x$1:java.io.PrintStream):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -742,7 +689,7 @@ decoding history resulting in the failure.
         <span class="name">printStackTrace</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@printStackTrace():Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@printStackTrace():Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -759,7 +706,7 @@ decoding history resulting in the failure.
         <span class="name">setStackTrace</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Array" class="extype" target="_top">Array</a>[<span class="extype" name="java.lang.StackTraceElement">StackTraceElement</span>]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@setStackTrace(x$1:Array[StackTraceElement]):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@setStackTrace(x$1:Array[StackTraceElement]):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -776,28 +723,45 @@ decoding history resulting in the failure.
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="io.circe.Errors#toList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="toList:List[io.circe.Error]"></a>
+      <a id="toList:List[Error]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toList</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Errors@toList:List[io.circe.Error]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="java.lang.Throwable#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
+        <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@toString():String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@toString():String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> → Throwable → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -810,7 +774,7 @@ decoding history resulting in the failure.
         <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@wait():Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@wait():Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -833,7 +797,7 @@ decoding history resulting in the failure.
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -856,7 +820,7 @@ decoding history resulting in the failure.
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@wait(x$1:Long):Unit" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@wait(x$1:Long):Unit" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -867,42 +831,25 @@ decoding history resulting in the failure.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.DecodingFailure#withMessage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="withMessage(message:String):io.circe.DecodingFailure"></a>
-      <a id="withMessage(String):DecodingFailure"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withMessage</span><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@withMessage(message:String):io.circe.DecodingFailure" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
-      <a id="→[B](B):(DecodingFailure,B)"></a>
+      <a id="→[B](B):(Errors,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.Errors">Errors</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@→[B](y:B):(A,B)" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@→[B](y:B):(A,B)" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>] performed by method ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -924,12 +871,12 @@ decoding history resulting in the failure.
         <span class="implicit deprecated" title="Deprecated: (Since version 2.11.0) Use Throwable#getStackTrace">getStackTraceString</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.DecodingFailure@getStackTraceString:String" title="Permalink" target="_top">
+      <a href="../../index.html#io.circe.Errors@getStackTraceString:String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.Errors">Errors</a> to
             <span class="extype" name="scala.Predef.RichException">RichException</span> performed by method RichException in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>RichException</dd><dt>Annotations</dt><dd>
@@ -941,8 +888,12 @@ decoding history resulting in the failure.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="io.circe.Error">
-              <h3>Inherited from <a href="Error.html" class="extype" name="io.circe.Error">Error</a></h3>
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
             </div><div class="parent" name="java.lang.Exception">
               <h3>Inherited from <span class="extype" name="java.lang.Exception">Exception</span></h3>
             </div><div class="parent" name="java.lang.Throwable">
@@ -956,23 +907,23 @@ decoding history resulting in the failure.
             </div>
         <div class="conversion" name="scala.Predef.RichException">
               <h3>Inherited by implicit conversion RichException from
-                <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to <span class="extype" name="scala.Predef.RichException">RichException</span>
+                <a href="" class="extype" name="io.circe.Errors">Errors</a> to <span class="extype" name="scala.Predef.RichException">RichException</span>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]
+                <a href="" class="extype" name="io.circe.Errors">Errors</a> to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>]
               </h3>
             </div><div class="conversion" name="scala.Predef.StringFormat">
               <h3>Inherited by implicit conversion StringFormat from
-                <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]
+                <a href="" class="extype" name="io.circe.Errors">Errors</a> to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>]
               </h3>
             </div><div class="conversion" name="scala.Predef.Ensuring">
               <h3>Inherited by implicit conversion Ensuring from
-                <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]
+                <a href="" class="extype" name="io.circe.Errors">Errors</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>]
               </h3>
             </div><div class="conversion" name="scala.Predef.ArrowAssoc">
               <h3>Inherited by implicit conversion ArrowAssoc from
-                <a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]
+                <a href="" class="extype" name="io.circe.Errors">Errors</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.Errors">Errors</a>]
               </h3>
             </div>
         </div>

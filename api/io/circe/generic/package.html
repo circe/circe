@@ -66,7 +66,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.circe.generic.DerivationMacros" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="io.circe.generic.DerivationMacros" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DerivationMacrosextendsAnyRef"></a>
       <a id="DerivationMacros:DerivationMacros"></a>
       <h4 class="signature">
@@ -82,11 +82,8 @@
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@bundle</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="io.circe.generic.ExportMacros" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="io.circe.generic.ExportMacros" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ExportMacrosextendsAnyRef"></a>
       <a id="ExportMacros:ExportMacros"></a>
       <h4 class="signature">
@@ -102,16 +99,13 @@
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@bundle</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="io.circe.generic.JsonCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      
+    </li><li name="io.circe.generic.JsonCodec" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="JsonCodecextendsAnnotationwithStaticAnnotation"></a>
       <a id="JsonCodec:JsonCodec"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">macro </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
@@ -122,7 +116,13 @@
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@compileTimeOnly</span><span class="args">(<span>
       
+      <span class="defval" name="&quot;macro annotation could not be expanded (the most common reason for that is that you need to enable the macro paradise plugin; another possibility is that you try to use macro annotation in the same compilation run that defines it)&quot;">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li></ol>
             </div>
 
@@ -200,14 +200,14 @@ sealed trait hierarchies, etc.
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Semi-automatic codec derivation.</p><div class="fullcomment"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../Encoder.html" class="extype" name="io.circe.Encoder">io.circe.Encoder</a> instances
-for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
+      <p class="shortcomment cmt">Semi-automatic codec derivation.</p><div class="fullcomment"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">io.circe.ObjectEncoder</a>
+instances for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
 
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
 <span class="kw">object</span> Foo {
   <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
-  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder[Foo] = deriveEncoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
 }</pre></div></div>
     </li><li name="io.circe.generic.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="util"></a>

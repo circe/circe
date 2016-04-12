@@ -235,7 +235,7 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.circe.Parser#decode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decode[A](input:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.Error,A]"></a>
+      <a id="decode[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.Xor[io.circe.Error,A]"></a>
       <a id="decode[A](String)(Decoder[A]):Xor[Error,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -243,10 +243,27 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
+        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.data.Xor" class="extype" target="_top">Xor</a>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#io.circe.jawn.package@decode[A](input:String)(implicitd:io.circe.Decoder[A]):cats.data.Xor[io.circe.Error,A]" title="Permalink" target="_top">
+      <a href="../../../index.html#io.circe.jawn.package@decode[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.Xor[io.circe.Error,A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></dd></dl></div>
+    </li><li name="io.circe.Parser#decodeAccumulating" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeAccumulating[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a>
+      <a id="decodeAccumulating[A](String)(Decoder[A]):ValidatedNel[Error,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.jawn.package@decodeAccumulating[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

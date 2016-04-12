@@ -1,22 +1,22 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>refined - io.circe.refined</title>
-          <meta name="description" content="refined - io.circe.refined" />
-          <meta name="keywords" content="refined io.circe.refined" />
+          <title>JsonSupport - io.circe.spray.JsonSupport</title>
+          <meta name="description" content="JsonSupport - io.circe.spray.JsonSupport" />
+          <meta name="keywords" content="JsonSupport io.circe.spray.JsonSupport" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../lib/template.js"></script>
-      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
       
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../index.html';
-            var hash = 'io.circe.refined$';
+            var url = '../../../index.html';
+            var hash = 'io.circe.spray.JsonSupport$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -28,13 +28,15 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img alt="Object" src="../../lib/object_big.png" />
-        <p id="owner"><a href="../package.html" class="extype" name="io">io</a>.<a href="package.html" class="extype" name="io.circe">circe</a></p>
-        <h1>refined</h1><h3><span class="morelinks"><div>Related Doc:
-            <a href="package.html" class="extype" name="io.circe">package circe</a>
+        <a href="JsonSupport.html" title="See companion trait"><img alt="Object/Trait" src="../../../lib/object_to_trait_big.png" /></a>
+        <p id="owner"><a href="../../package.html" class="extype" name="io">io</a>.<a href="../package.html" class="extype" name="io.circe">circe</a>.<a href="package.html" class="extype" name="io.circe.spray">spray</a></p>
+        <h1><a href="JsonSupport.html" title="See companion trait">JsonSupport</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="JsonSupport.html" title="See companion trait">trait JsonSupport</a>
+            | <a href="package.html" class="extype" name="io.circe.spray">package spray</a>
           </div></span></h3><span class="permalink">
-      <a href="../../index.html#io.circe.refined$" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       </div>
@@ -45,18 +47,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">refined</span>
+        <span class="name">JsonSupport</span><span class="result"> extends <a href="JsonSupport.html" class="extype" name="io.circe.spray.JsonSupport">JsonSupport</a> with <a href="NoSpacesPrinter.html" class="extype" name="io.circe.spray.NoSpacesPrinter">NoSpacesPrinter</a> with <a href="FailFastUnmarshaller.html" class="extype" name="io.circe.spray.FailFastUnmarshaller">FailFastUnmarshaller</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides codecs for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</p><p>A refined type <code>T Refined Predicate</code> is encoded as <code>T</code>. Decoding ensures that the
-decoded value satisfies <code>Predicate</code>.</p><p>E.g. with generic codecs</p><pre><span class="kw">case</span> <span class="kw">class</span> Obj(
-  i: <span class="std">Int</span> Refined Positive
-)
-
-Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">""</span><span class="lit">"{"</span>i<span class="lit">":4}"</span><span class="lit">""</span></pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/refined/shared/src/main/scala/io/circe/refined.scala" target="_blank">refined.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">JsonSupport.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="FailFastUnmarshaller.html" class="extype" name="io.circe.spray.FailFastUnmarshaller">FailFastUnmarshaller</a>, <a href="NoSpacesPrinter.html" class="extype" name="io.circe.spray.NoSpacesPrinter">NoSpacesPrinter</a>, <a href="JsonSupport.html" class="extype" name="io.circe.spray.JsonSupport">JsonSupport</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -74,7 +71,7 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="io.circe.refined"><span>refined</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="io.circe.spray.JsonSupport"><span>JsonSupport</span></li><li class="in" name="io.circe.spray.FailFastUnmarshaller"><span>FailFastUnmarshaller</span></li><li class="in" name="io.circe.spray.NoSpacesPrinter"><span>NoSpacesPrinter</span></li><li class="in" name="io.circe.spray.JsonSupport"><span>JsonSupport</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -111,8 +108,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -128,8 +125,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@##():Int" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@##():Int" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -145,8 +142,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@==(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -162,11 +159,45 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.spray.JsonSupport#circeJsonMarshaller" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="circeJsonMarshaller[A](implicitencoder:io.circe.RootEncoder[A]):spray.httpx.marshalling.Marshaller[A]"></a>
+      <a id="circeJsonMarshaller[A](RootEncoder[A]):Marshaller[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">circeJsonMarshaller</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encoder">encoder: <a href="../RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.spray.JsonSupport.circeJsonMarshaller.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="spray.httpx.marshalling.Marshaller">Marshaller</span>[<span class="extype" name="io.circe.spray.JsonSupport.circeJsonMarshaller.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@circeJsonMarshaller[A](implicitencoder:io.circe.RootEncoder[A]):spray.httpx.marshalling.Marshaller[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JsonSupport.html" class="extype" name="io.circe.spray.JsonSupport">JsonSupport</a></dd></dl></div>
+    </li><li name="io.circe.spray.FailFastUnmarshaller#circeJsonUnmarshaller" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="circeJsonUnmarshaller[A](implicitdecoder:io.circe.spray.RootDecoder[A]):spray.httpx.unmarshalling.Unmarshaller[A]"></a>
+      <a id="circeJsonUnmarshaller[A](RootDecoder[A]):Unmarshaller[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">circeJsonUnmarshaller</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="RootDecoder.html" class="extype" name="io.circe.spray.RootDecoder">RootDecoder</a>[<span class="extype" name="io.circe.spray.FailFastUnmarshaller.circeJsonUnmarshaller.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="spray.httpx.unmarshalling.Unmarshaller">Unmarshaller</span>[<span class="extype" name="io.circe.spray.FailFastUnmarshaller.circeJsonUnmarshaller.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@circeJsonUnmarshaller[A](implicitdecoder:io.circe.spray.RootDecoder[A]):spray.httpx.unmarshalling.Unmarshaller[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="FailFastUnmarshaller.html" class="extype" name="io.circe.spray.FailFastUnmarshaller">FailFastUnmarshaller</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -179,11 +210,11 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@clone():Object" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@clone():Object" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -202,8 +233,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -219,8 +250,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -236,11 +267,11 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@finalize():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -259,8 +290,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@getClass():Class[_]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -276,8 +307,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@hashCode():Int" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -293,8 +324,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -310,8 +341,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -327,8 +358,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@notify():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -344,45 +375,28 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@notifyAll():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.refined#refinedDecoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="refinedDecoder[T,P,F[_,_]](implicitunderlying:io.circe.Decoder[T],implicitvalidate:eu.timepit.refined.api.Validate[T,P],implicitrefType:eu.timepit.refined.api.RefType[F]):io.circe.Decoder[F[T,P]]"></a>
-      <a id="refinedDecoder[T,P,F[_,_]](Decoder[T],Validate[T,P],RefType[F]):Decoder[F[T,P]]"></a>
+    </li><li name="io.circe.spray.NoSpacesPrinter#printer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="printer:io.circe.Printer"></a>
+      <a id="printer:Printer"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">refinedDecoder</span><span class="tparams">[<span name="T">T</span>, <span name="P">P</span>, <span name="F">F<span class="tparams">[<span name="_">_</span>, <span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="underlying">underlying: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.refined.refinedDecoder.T">T</span>]</span>, <span name="validate">validate: <a href="http://fthomas.github.io/refined/latest/api/index.html#eu.timepit.refined.api.Validate" class="extype" target="_top">Validate</a>[<span class="extype" name="io.circe.refined.refinedDecoder.T">T</span>, <span class="extype" name="io.circe.refined.refinedDecoder.P">P</span>]</span>, <span name="refType">refType: <a href="http://fthomas.github.io/refined/latest/api/index.html#eu.timepit.refined.api.RefType" class="extype" target="_top">RefType</a>[<span class="extype" name="io.circe.refined.refinedDecoder.F">F</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.refined.refinedDecoder.F">F</span>[<span class="extype" name="io.circe.refined.refinedDecoder.T">T</span>, <span class="extype" name="io.circe.refined.refinedDecoder.P">P</span>]]</span>
+        <span class="name">printer</span><span class="result">: <a href="../Printer.html" class="extype" name="io.circe.Printer">Printer</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@refinedDecoder[T,P,F[_,_]](implicitunderlying:io.circe.Decoder[T],implicitvalidate:eu.timepit.refined.api.Validate[T,P],implicitrefType:eu.timepit.refined.api.RefType[F]):io.circe.Decoder[F[T,P]]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@printer:io.circe.Printer" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
-    </li><li name="io.circe.refined#refinedEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="refinedEncoder[T,P,F[_,_]](implicitunderlying:io.circe.Encoder[T],implicitrefType:eu.timepit.refined.api.RefType[F]):io.circe.Encoder[F[T,P]]"></a>
-      <a id="refinedEncoder[T,P,F[_,_]](Encoder[T],RefType[F]):Encoder[F[T,P]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">refinedEncoder</span><span class="tparams">[<span name="T">T</span>, <span name="P">P</span>, <span name="F">F<span class="tparams">[<span name="_">_</span>, <span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="underlying">underlying: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.refined.refinedEncoder.T">T</span>]</span>, <span name="refType">refType: <a href="http://fthomas.github.io/refined/latest/api/index.html#eu.timepit.refined.api.RefType" class="extype" target="_top">RefType</a>[<span class="extype" name="io.circe.refined.refinedEncoder.F">F</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.refined.refinedEncoder.F">F</span>[<span class="extype" name="io.circe.refined.refinedEncoder.T">T</span>, <span class="extype" name="io.circe.refined.refinedEncoder.P">P</span>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@refinedEncoder[T,P,F[_,_]](implicitunderlying:io.circe.Encoder[T],implicitrefType:eu.timepit.refined.api.RefType[F]):io.circe.Encoder[F[T,P]]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="NoSpacesPrinter.html" class="extype" name="io.circe.spray.NoSpacesPrinter">NoSpacesPrinter</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -395,8 +409,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -412,8 +426,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@toString():String" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@toString():String" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -429,8 +443,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@wait():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -452,8 +466,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -475,8 +489,8 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#io.circe.refined$@wait(x$1:Long):Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
+      <a href="../../../index.html#io.circe.spray.JsonSupport$@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -495,7 +509,13 @@ Obj(refineMV(<span class="num">4</span>)).asJson.noSpaces == <span class="lit">"
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="io.circe.spray.FailFastUnmarshaller">
+              <h3>Inherited from <a href="FailFastUnmarshaller.html" class="extype" name="io.circe.spray.FailFastUnmarshaller">FailFastUnmarshaller</a></h3>
+            </div><div class="parent" name="io.circe.spray.NoSpacesPrinter">
+              <h3>Inherited from <a href="NoSpacesPrinter.html" class="extype" name="io.circe.spray.NoSpacesPrinter">NoSpacesPrinter</a></h3>
+            </div><div class="parent" name="io.circe.spray.JsonSupport">
+              <h3>Inherited from <a href="JsonSupport.html" class="extype" name="io.circe.spray.JsonSupport">JsonSupport</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
