@@ -4,7 +4,6 @@ import algebra.Eq
 import cats.Show
 import cats.data.NonEmptyList
 import cats.std.list._
-import io.circe.CursorOp._
 
 /**
  * The base exception type for both decoding and parsing errors.
@@ -86,39 +85,9 @@ final object DecodingFailure {
     * Creates compact, human readable string representations for DecodingFailure
     * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
     */
-  implicit final val showDecodingFailure: Show[DecodingFailure] = new Show[DecodingFailure] {
-
-    /** Represents JS style selections into JSON structure */
-    private[this] sealed trait Selection
-    private[this] case class SelectField(field: String) extends Selection
-    private[this] case class SelectIndex(index: Int) extends Selection
-    private[this] case class Op(op: CursorOp) extends Selection
-
-    def show(failure: DecodingFailure): String = {
-
-      // Fold into sequence of selections (to reduce array ops etc. into single selections)
-      val selections = failure.history.foldRight(List[Selection]()) { (historyOp, sels) =>
-        (historyOp.op, sels) match {
-          case (Some(DownField(k)), _)                   => SelectField(k) :: sels
-          case (Some(DownArray), _)                      => SelectIndex(0) :: sels
-          case (Some(MoveUp), _ :: rest)                 => rest
-          case (Some(MoveRight), SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
-          case (Some(MoveLeft), SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
-          case (Some(RightN(n)), SelectIndex(i) :: tail) => SelectIndex(i + n) :: tail
-          case (Some(LeftN(n)), SelectIndex(i) :: tail)  => SelectIndex(i - n) :: tail
-          case (Some(op), _)                             => Op(op) :: sels
-          case (None, _)                                 => sels
-        }
-      }
-
-      val selectionsStr = selections.foldLeft("") {
-        case (str, SelectField(f)) => s".$f$str"
-        case (str, SelectIndex(i)) => s"[$i]$str"
-        case (str, Op(op))         => s"{${Show[CursorOp].show(op)}}$str"
-      }
-
-      s"DecodingFailure at $selectionsStr: ${failure.message}"
-    }
+  implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { failure =>
+    val path = HistoryOp.opsToPath(failure.history)
+    s"DecodingFailure at ${path}: ${failure.message}"
   }
 
 }
