@@ -47,16 +47,6 @@ trait Decoder[A] extends Serializable { self =>
       self.decodeAccumulating(c).map(f)
   }
 
-  @deprecated("Use and", "0.4.0")
-  final def ap[B](f: Decoder[A => B]): Decoder[B] = new Decoder[B] {
-    final def apply(c: HCursor): Decoder.Result[B] = f(c).flatMap(self(c).map)
-    override def tryDecode(c: ACursor): Decoder.Result[B] =
-      f.tryDecode(c).flatMap(self.tryDecode(c).map)
-
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
-      AccumulatingDecoder.resultInstance.ap(f.decodeAccumulating(c))(self.decodeAccumulating(c))
-  }
-
   /**
    * Monadically bind a function over this [[Decoder]].
    */
@@ -244,14 +234,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       Validated.invalidNel(failure)
   }
-
-  /**
-   * Construct an instance that always fails with the given error message.
-   *
-   * @group Utilities
-   */
-  @deprecated("Use failedWithMessage", "0.4.0")
-  final def failWith[A](message: String): Decoder[A] = failedWithMessage(message)
 
   /**
    * Construct an instance that always fails with the given error message.

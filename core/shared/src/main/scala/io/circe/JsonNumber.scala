@@ -110,30 +110,6 @@ sealed abstract class JsonNumber extends Serializable {
   def truncateToLong: Long
 
   /**
-   * Construct a JSON number if this is a valid JSON number.
-   */
-  @deprecated("Use Json.fromJsonNumber", "0.4.0")
-  final def asJson: Option[Json] = Some(Json.fromJsonNumber(this))
-
-  /**
-   * Construct a JSON number if this is a valid JSON number and a JSON null otherwise.
-   *
-   * This matches the behaviour of most browsers, but it is a lossy operation as you can no longer
-   * distinguish between `Double.NaN` and infinity.
-   */
-  @deprecated("Use Json.fromJsonNumber", "0.4.0")
-  final def asJsonOrNull: Json = asJson.getOrElse(Json.Null)
-
-  /**
-   * Construct a JSON number if this is a valid JSON number and a JSON string otherwise.
-   *
-   * This allows a [[scala.Double]] to be losslessly encoded, but it is likely to need custom
-   * handling for interoperability with other JSON systems.
-   */
-  @deprecated("Use Json.fromJsonNumber", "0.4.0")
-  final def asJsonOrString: Json = asJson.getOrElse(Json.fromString(toString))
-
-  /**
    * Universal equality derived from our type-safe equality.
    */
   override final def equals(that: Any): Boolean = that match {
