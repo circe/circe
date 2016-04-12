@@ -10,7 +10,7 @@ test the service from your favorite HTTP client (I'll use [httpie][httpie])
 here):
 
 ```bash
-$ http POST :8080/api/v1/todo title=Foo completed:=false order=0
+$ http POST :8080/api/v1/todo title=Foo completed:=false order=0 dueDate=2007-12-03T10:15:30
 HTTP/1.1 200 OK
 Content-Length: 87
 Content-Type: application/json; charset=UTF-8
@@ -21,7 +21,8 @@ Server: spray-can/1.3.3
     "completed": false,
     "id": "173bae76-0058-41ce-849e-d418b0985643",
     "order": 0,
-    "title": "Foo"
+    "title": "Foo",
+    "dueDate": "2007-12-03T10:15:30"
 }
 ```
 
@@ -38,7 +39,8 @@ Server: spray-can/1.3.3
 
 [
     "DecodingFailure at .completed: Attempt to decode value on failed cursor",
-    "DecodingFailure at .order: Attempt to decode value on failed cursor"
+    "DecodingFailure at .order: Attempt to decode value on failed cursor",
+    "DecodingFailure at .dueDate: Attempt to decode value on failed cursor"
 ]
 ```
 
