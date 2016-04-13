@@ -28,12 +28,6 @@ abstract class Cursor extends GenericCursor[Cursor] {
    */
   def context: List[Context]
 
-  /**
-   * Create an [[HCursor]] for this cursor in order to track history.
-   */
-  @deprecated("Use HCursor.fromCursor", "0.4.0")
-  final def hcursor: HCursor = HCursor.fromCursor(this)
-
   final def top: Json = {
     @tailrec
     def go(c: Cursor): Json = c match {

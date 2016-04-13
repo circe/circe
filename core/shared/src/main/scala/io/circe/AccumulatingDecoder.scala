@@ -35,13 +35,6 @@ sealed trait AccumulatingDecoder[A] extends Serializable { self =>
     }
   }
 
-  @deprecated("Use and", "0.4.0")
-  final def ap[B](f: AccumulatingDecoder[A => B]): AccumulatingDecoder[B] = new AccumulatingDecoder[B] {
-    final def apply(c: HCursor): AccumulatingDecoder.Result[B] = self(c).ap(f(c))(
-      AccumulatingDecoder.failureNelInstance
-    )
-  }
-
   /**
    * Create a new instance that handles any of this instance's errors with the
    * given function.

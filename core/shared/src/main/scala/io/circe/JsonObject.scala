@@ -124,27 +124,6 @@ final object JsonObject {
   }
 
   /**
-   * Construct a [[JsonObject]] from an [[scala.collection.IndexedSeq]] (provided for optimization).
-   */
-  @deprecated("Use fromIterable", "0.4.0")
-  final def fromIndexedSeq(f: IndexedSeq[(String, Json)]): JsonObject = {
-    var i = 0
-    val m = scala.collection.mutable.Map.empty[String, Json]
-    val fs = Vector.newBuilder[String]
-
-    while (i < f.size) {
-      val item = f(i)
-      if (!m.contains(item._1)) {
-        fs += item._1
-      }
-      m(item._1) = item._2
-      i += 1
-    }
-
-    MapAndVectorJsonObject(m.toMap, fs.result())
-  }
-
-  /**
    * Construct a [[JsonObject]] from a map from keys to [[Json]] values.
    *
    * Note that the order of the fields is arbitrary.

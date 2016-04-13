@@ -383,39 +383,6 @@ final object Json {
 
   private[this] def isReal(value: Double): Boolean = !value.isNaN && !value.isInfinity
 
-  @deprecated("Use Null", "0.4.0")
-  final val Empty: Json = Null
-
-  @deprecated("Use Null", "0.4.0")
-  final def empty: Json = Null
-
-  @deprecated("Use fromBoolean", "0.4.0")
-  final def bool(b: Boolean): Json = fromBoolean(b)
-
-  @deprecated("Use fromInt", "0.4.0")
-  final def int(n: Int): Json = fromInt(n)
-
-  @deprecated("Use fromLong", "0.4.0")
-  final def long(n: Long): Json = fromLong(n)
-
-  @deprecated("Use fromBigDecimal", "0.4.0")
-  final def bigDecimal(n: BigDecimal): Json = fromBigDecimal(n)
-
-  @deprecated("Use fromDouble", "0.4.0")
-  final def number(n: Double): Option[Json] = fromDouble(n)
-
-  @deprecated("Use fromDoubleOrNull", "0.4.0")
-  final def numberOrNull(n: Double): Json = fromDoubleOrNull(n)
-
-  @deprecated("Use fromDoubleOrString", "0.4.0")
-  final def numberOrString(n: Double): Json = fromDoubleOrString(n)
-
-  @deprecated("Use fromString", "0.4.0")
-  final def string(s: String): Json = JString(s)
-
-  @deprecated("Use arr", "0.4.0")
-  final def array(values: Json*): Json = arr(values: _*)
-
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
     val it1 = y.iterator
