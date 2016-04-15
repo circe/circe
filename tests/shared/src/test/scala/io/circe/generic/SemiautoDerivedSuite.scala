@@ -13,8 +13,12 @@ import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
 class SemiautoDerivedSuite extends CirceSuite {
+  implicit def decodeBox[A: Decoder]: Decoder[Box[A]] = deriveDecoder
+  implicit def encodeBox[A: Encoder]: Encoder[Box[A]] = deriveEncoder
+
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
+
   implicit val decodeWub: Decoder[Wub] = deriveDecoder
   implicit val encodeWub: ObjectEncoder[Wub] = deriveEncoder
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
@@ -75,6 +79,7 @@ class SemiautoDerivedSuite extends CirceSuite {
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+  checkAll("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
   checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)

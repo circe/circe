@@ -33,6 +33,15 @@ package object examples extends AllInstances with ArbitraryInstances with Missin
 }
 
 package examples {
+  case class Box[A](a: A)
+
+  object Box {
+    implicit def eqBox[A: Eq]: Eq[Box[A]] = Eq.by(_.a)
+
+    implicit def arbitraryBox[A](implicit A: Arbitrary[A]): Arbitrary[Box[A]] =
+      Arbitrary(A.arbitrary.map(Box(_)))
+  }
+
   case class Qux[A](i: Int, a: A, j: Int)
 
   object Qux {
