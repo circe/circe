@@ -121,13 +121,13 @@ class DerivationMacros(val c: whitebox.Context) {
             _root_.io.circe.Decoder.resultInstance.map2(
               $instanceName.tryDecode(c.downField($name)),
               $acc
-            )((h, t) => _root_.shapeless.::(_root_.shapeless.labelled.field[$nameTpe](h), t))
+            )((h, t) => _root_.shapeless.::(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](h), t))
           """,
           q"""
             _root_.io.circe.AccumulatingDecoder.resultInstance.map2(
               $instanceName.tryDecodeAccumulating(c.downField($name)),
               $accumulatingAcc
-            )((h, t) => _root_.shapeless.::(_root_.shapeless.labelled.field[$nameTpe](h), t))
+            )((h, t) => _root_.shapeless.::(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](h), t))
           """
         )
       }
@@ -172,7 +172,7 @@ class DerivationMacros(val c: whitebox.Context) {
               val result = c.downField($name)
 
               if (result.succeeded) $instanceName.tryDecode(result).map(a =>
-                _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe](a))
+                _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](a))
               ) else $acc.map(last => _root_.shapeless.Inr(last): $current)
             }
           """,
@@ -181,7 +181,7 @@ class DerivationMacros(val c: whitebox.Context) {
               val result = c.downField($name)
 
               if (result.succeeded) $instanceName.tryDecodeAccumulating(result).map(a =>
-                _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe](a))
+                _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](a))
               ) else $accumulatingAcc.map(last => _root_.shapeless.Inr(last): $current)
             }
           """
