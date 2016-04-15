@@ -2,6 +2,7 @@ package io.circe
 
 import algebra.Eq
 import cats.Show
+import io.circe.CursorOp._
 
 sealed abstract class HistoryOp extends Product with Serializable {
   def isReattempt: Boolean
@@ -48,5 +49,36 @@ final object HistoryOp {
     case El(o, s, _) =>
       val shownOp = Show[CursorOp].show(o)
       if (s) shownOp else s"*.$shownOp"
+  }
+
+  /** Represents JS style selections into JSON structure */
+  private[this] sealed trait Selection
+  private[this] case class SelectField(field: String) extends Selection
+  private[this] case class SelectIndex(index: Int) extends Selection
+  private[this] case class Op(op: CursorOp) extends Selection
+
+  /** Shows history as JS style selections, i.e. ".foo.bar[3]" */
+  def opsToPath(history: List[HistoryOp]): String = {
+
+    // Fold into sequence of selections (reducing array ops etc. into single selections)
+    val selections = history.foldRight(List[Selection]()) { (historyOp, sels) =>
+      (historyOp.op, sels) match {
+        case (Some(DownField(k)), _)                   => SelectField(k) :: sels
+        case (Some(DownArray), _)                      => SelectIndex(0) :: sels
+        case (Some(MoveUp), _ :: rest)                 => rest
+        case (Some(MoveRight), SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
+        case (Some(MoveLeft), SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
+        case (Some(RightN(n)), SelectIndex(i) :: tail) => SelectIndex(i + n) :: tail
+        case (Some(LeftN(n)), SelectIndex(i) :: tail)  => SelectIndex(i - n) :: tail
+        case (Some(op), _)                             => Op(op) :: sels
+        case (None, _)                                 => sels
+      }
+    }
+
+    selections.foldLeft("") {
+      case (str, SelectField(f)) => s".$f$str"
+      case (str, SelectIndex(i)) => s"[$i]$str"
+      case (str, Op(op))         => s"{${Show[CursorOp].show(op)}}$str"
+    }
   }
 }
