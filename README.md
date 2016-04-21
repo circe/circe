@@ -36,11 +36,13 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 you can just add the following to your build:
 
 ```scala
+val circeVersion = "0.4.1"
+
 libraryDependencies ++= Seq(
-  "io.circe" %% "circe-core" % "0.4.0",
-  "io.circe" %% "circe-generic" % "0.4.0",
-  "io.circe" %% "circe-parser" % "0.4.0"
-)
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-parser"
+).map(_ % circeVersion)
 ```
 
 If you are using circe's generic derivation with Scala 2.10, you'll also need to include the [Macro
