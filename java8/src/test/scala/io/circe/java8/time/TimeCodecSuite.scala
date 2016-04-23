@@ -3,17 +3,21 @@ package io.circe.java8.time
 import algebra.Eq
 import io.circe.tests.{ CodecTests, CirceSuite }
 import java.time.{ Instant, LocalDate, LocalDateTime, OffsetDateTime, ZoneId, ZonedDateTime }
-import java.util.Date
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
 
 class LocalDateTimeCodecSuite extends CirceSuite {
+  private[this] val minInstant: Instant = Instant.EPOCH
+  private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
+
   implicit val arbitraryZoneId: Arbitrary[ZoneId] = Arbitrary(
     Gen.oneOf(ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of).toSeq)
   )
 
-  implicit val arbitraryInstant: Arbitrary[Instant] = Arbitrary(arbitrary[Date].map(_.toInstant))
+  implicit val arbitraryInstant: Arbitrary[Instant] = Arbitrary(
+    Gen.choose(minInstant.getEpochSecond, maxInstant.getEpochSecond).map(Instant.ofEpochSecond)
+  )
 
   implicit val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary(
     for {
@@ -37,7 +41,6 @@ class LocalDateTimeCodecSuite extends CirceSuite {
   )
 
   implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalDate))
-
 
   implicit val eqInstant: Eq[Instant] = Eq.fromUniversalEquals
   implicit val eqLocalDateTime: Eq[LocalDateTime] = Eq.fromUniversalEquals
