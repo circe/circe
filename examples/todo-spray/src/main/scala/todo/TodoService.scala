@@ -8,12 +8,12 @@ import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
 import cats.syntax.show._
-import io.circe.{Decoder, DecodingFailure, Encoder, Errors}
+import io.circe.{ DecodingFailure, Errors}
 import io.circe.generic.auto._
+import io.circe.java8.time._
 import io.circe.spray.ErrorAccumulatingJsonSupport._
 import io.circe.syntax._
 import java.util.UUID
-
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.can.Http
@@ -37,9 +37,6 @@ object Boot extends App {
 
 class TodoService extends Actor with HttpService {
   def actorRefFactory: ActorRefFactory = context
-
-  implicit val dateTimeEncoder: Encoder[LocalDateTime] = Encoder.instance(a => a.toString.asJson)
-  implicit val dateTimeDecoder: Decoder[LocalDateTime] = Decoder.instance(a => a.as[String].map(LocalDateTime.parse(_)))
 
   val rejectionHandler: RejectionHandler = RejectionHandler {
     case MalformedRequestContentRejection(_, Some(errors @ Errors(_))) :: _ =>
