@@ -119,40 +119,45 @@ final case class Printer(
    * Returns a string representation of a pretty-printed JSON value.
    */
   final def pretty(j: Json): String = {
-    val builder = new StringBuilder()
+    val builder = new java.lang.StringBuilder()
 
     @tailrec
     def appendJsonString(
       jsonString: String,
-      normalChars: Boolean = true
+      normalChars: Boolean,
+      offset: Int
     ): Unit = if (normalChars) {
-      jsonString.span(Printer.isNormalChar) match {
-        case (prefix, suffix) =>
-          builder.append(prefix)
-          if (suffix.nonEmpty) appendJsonString(suffix, normalChars = false)
+      var i = offset
+
+      while (i < jsonString.length && Printer.isNormalChar(jsonString.charAt(i))) {
+        i += 1
       }
+
+      builder.append(jsonString, offset, i)
+
+      if (i < jsonString.length) appendJsonString(jsonString, false, i)
     } else {
-      jsonString.span(c => !Printer.isNormalChar(c)) match {
-        case (prefix, suffix) => {
-          prefix.foreach { c => builder.append(Printer.escape(c)) }
-          if (suffix.nonEmpty) appendJsonString(suffix, normalChars = true)
-        }
+      var i = offset
+
+      while (i < jsonString.length && !Printer.isNormalChar(jsonString.charAt(i))) {
+        builder.append(Printer.escape(jsonString.charAt(i)))
+        i += 1
       }
+
+      if (i < jsonString.length) appendJsonString(jsonString, true, i)
     }
 
     def encloseJsonString(jsonString: String): Unit = {
       builder.append(stringEnclosureText)
-      appendJsonString(jsonString)
+      appendJsonString(jsonString, true, 0)
       builder.append(stringEnclosureText)
     }
 
     def trav(depth: Int, k: Json): Unit = {
       val p = pieces(depth)
 
-      import Json._
-
       k match {
-        case JObject(o) =>
+        case Json.JObject(o) =>
           builder.append(p.lBraces)
           val items = if (preserveOrder) o.toList else o.toMap
           var first = true
@@ -172,22 +177,22 @@ final case class Printer(
             }
           }
           builder.append(p.rBraces)
-        case JString(s) => encloseJsonString(s)
-        case JNumber(n) => builder.append(n.toString)
-        case JBoolean(b)   => builder.append(if (b) trueText else falseText)
-        case JArray(arr) =>
+        case Json.JString(s) => encloseJsonString(s)
+        case Json.JNumber(n) => builder.append(n.toString)
+        case Json.JBoolean(b) => builder.append(if (b) trueText else falseText)
+        case Json.JArray(arr) =>
           val arrIterator = arr.iterator
           if (!arrIterator.hasNext) builder.append(p.lrEmptyBrackets) else {
-          builder.append(p.lBrackets)
-          trav(depth + 1, arrIterator.next)
+            builder.append(p.lBrackets)
+            trav(depth + 1, arrIterator.next)
 
-          while (arrIterator.hasNext) {
-            builder.append(p.arrayCommas)
-            trav(depth + 1, arrIterator.next())
+            while (arrIterator.hasNext) {
+              builder.append(p.arrayCommas)
+              trav(depth + 1, arrIterator.next())
+            }
+            builder.append(p.rBrackets)
           }
-          builder.append(p.rBrackets)
-        }
-        case JNull => builder.append(nullText)
+        case Json.JNull => builder.append(nullText)
       }
     }
 
