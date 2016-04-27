@@ -38,89 +38,51 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
 
   val cursor: C = fromJson(j1)
 
-  test("focus") {
-    check { (j: Json) =>
-      focus(fromJson(j)) === Some(j)
-    }
+  "focus" should "return the JSON value in a newly created cursor" in forAll { (j: Json) =>
+    assert(focus(fromJson(j)) === Some(j))
   }
 
-  test("top from inside object") {
-    check { (j: Json) =>
-      val c = fromJson(j)
+  "top" should "return from navigation into an object" in forAll { (j: Json) =>
+    val c = fromJson(j)
 
-      val intoObject = for {
-        fields  <- c.fields
-        first   <- fields.headOption
-        atFirst <- fromResult(c.downField(first))
-      } yield atFirst
+    val intoObject = for {
+      fields  <- c.fields
+      first   <- fields.headOption
+      atFirst <- fromResult(c.downField(first))
+    } yield atFirst
 
-      intoObject.forall(atFirst =>
-        top(atFirst) === Some(j)
-      )
-    }
+    assert(intoObject.forall(atFirst => top(atFirst) === Some(j)))
   }
 
-  test("top from inside array") {
-    check { (j: Json) =>
-      fromResult(fromJson(j).downArray).forall(atFirst => top(atFirst) === Some(j))
-    }
+  it should "return from navigation into an array" in forAll { (j: Json) =>
+    assert(fromResult(fromJson(j).downArray).forall(atFirst => top(atFirst) === Some(j)))
   }
 
-  test("up from inside object") {
-    check { (j: Json) =>
-      val c = fromJson(j)
+  "up" should "undo navigation into an object" in forAll { (j: Json) =>
+    val c = fromJson(j)
 
-      val intoObject = for {
-        fields  <- c.fields
-        first   <- fields.headOption
-        atFirst <- fromResult(c.downField(first))
-      } yield atFirst
+    val intoObject = for {
+      fields  <- c.fields
+      first   <- fields.headOption
+      atFirst <- fromResult(c.downField(first))
+    } yield atFirst
 
-      intoObject.forall(atFirst =>
-        fromResult(atFirst.up).flatMap(focus) === Some(j)
-      )
-    }
+    assert(intoObject.forall(atFirst => fromResult(atFirst.up).flatMap(focus) === Some(j)))
   }
 
-  test("up from inside array") {
-    check { (j: Json) =>
+  it should "undo navigation into an array" in forAll { (j: Json) =>
+    assert(
       fromResult(fromJson(j).downArray).forall(atFirst =>
         fromResult(atFirst.up).flatMap(focus) === Some(j)
       )
-    }
+    )
   }
 
-
-  test("withFocus(identity)") {
-    check { (j: Json) =>
-      focus(fromJson(j).withFocus(identity)) === Some(j)
-    }
+  "withFocus" should "have no effect when given the identity function" in forAll { (j: Json) =>
+    assert(focus(fromJson(j).withFocus(identity)) === Some(j))
   }
 
-  test("withFocusM(List(_))") {
-    check { (j: Json) =>
-      focus(fromJson(j).withFocusM[List](List(_))(M).head) === Some(j)
-    }
-  }
-
-  test("delete") {
-    val result = fromResult(cursor.downField("b")).flatMap(c => fromResult(c.delete))
-
-    assert(result.flatMap(top) === Some(j4))
-  }
-
-  test("delete in array") {
-    check { (h: Json, t: List[Json]) =>
-      val result = for {
-        f <- fromResult(fromJson(Json.fromValues(h :: t)).downArray)
-        u <- fromResult(f.delete)
-      } yield u
-
-      result.flatMap(focus) === Some(Json.fromValues(t))
-    }
-  }
-
-  test("withFocus") {
+  it should "support adding an element to an array" in {
     val result = fromResult(cursor.downField("a")).map(
       _.withFocus(j =>
         j.asArray.fold(j)(a => Json.fromValues(0.asJson :: a))
@@ -130,13 +92,32 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(top) === Some(j2))
   }
 
-  test("set") {
+  "withFocusM" should "lift a value into a List" in forAll { (j: Json) =>
+    assert(focus(fromJson(j).withFocusM[List](List(_))(M).head) === Some(j))
+  }
+
+  "delete" should "remove a value from an object" in {
+    val result = fromResult(cursor.downField("b")).flatMap(c => fromResult(c.delete))
+
+    assert(result.flatMap(top) === Some(j4))
+  }
+
+  it should "remove a value from an array" in forAll { (h: Json, t: List[Json]) =>
+    val result = for {
+      f <- fromResult(fromJson(Json.fromValues(h :: t)).downArray)
+      u <- fromResult(f.delete)
+    } yield u
+
+    assert(result.flatMap(focus) === Some(Json.fromValues(t)))
+  }
+
+  "set" should "replace an element" in {
     val result = fromResult(cursor.downField("b")).map(_.set(10.asJson))
 
     assert(result.flatMap(top) === Some(j3))
   }
 
-  test("lefts") {
+  "lefts" should "return the expected values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -146,7 +127,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result === Some(List(3.asJson, 2.asJson, 1.asJson)))
   }
 
-  test("rights") {
+  "rights" should "return the expected values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -156,15 +137,15 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result === Some(List(5.asJson)))
   }
 
-  test("fieldSet") {
+  "fieldSet" should "return the expected values" in {
     assert(fromJson(j1).fieldSet.map(_.toList.sorted) === Some(List("a", "b", "c")))
   }
 
-  test("fields") {
+  "fields" should "return the expected values" in {
     assert(fromJson(j1).fields === Some(List("a", "b", "c")))
   }
 
-  test("valid left") {
+  "left" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -174,7 +155,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(3.asJson))
   }
 
-  test("invalid left") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       l <- fromResult(c.left)
@@ -183,7 +164,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("valid right") {
+  "right" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -193,7 +174,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(5.asJson))
   }
 
-  test("invalid right") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       r <- fromResult(c.right)
@@ -202,7 +183,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("valid first") {
+  "first" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -212,7 +193,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(1.asJson))
   }
 
-  test("invalid first") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       f <- fromResult(c.first)
@@ -221,7 +202,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("valid last") {
+  "last" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -231,7 +212,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(5.asJson))
   }
 
-  test("invalid last") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       l <- fromResult(c.last)
@@ -240,7 +221,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("valid leftAt") {
+  "leftAt" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -250,7 +231,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(1.asJson))
   }
 
-  test("invalid leftAt") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       l <- fromResult(c.leftAt(_.as[Int].exists(_ == 1)))
@@ -259,7 +240,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("valid rightAt") {
+  "rightAt" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -269,7 +250,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(5.asJson))
   }
 
-  test("invalid rightAt") {
+  it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
       r <- fromResult(c.rightAt(_.as[Int].exists(_ == 5)))
@@ -278,7 +259,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === None)
   }
 
-  test("field") {
+  "field" should "successfully select an existing value" in {
     val result = for {
       c <- fromResult(cursor.downField("c"))
       e <- fromResult(c.downField("e"))
@@ -288,7 +269,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(result.flatMap(focus) === Some(200.2.asJson))
   }
 
-  test("deleteGoLeft") {
+  "deleteGoLeft" should "remove the current value and move appropriately" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -304,7 +285,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("deleteGoRight") {
+  "deleteGoRight" should "remove the current value and move appropriately" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -320,7 +301,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("deleteGoFirst") {
+  "deleteGoFirst" should "remove the current value and move appropriately" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -336,7 +317,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("deleteGoLast") {
+  "deleteGoLast" should "remove the current value and move appropriately" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(2))
@@ -352,7 +333,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("deleteLefts") {
+  "deleteLefts" should "remove the specified values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -368,7 +349,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("deleteRights") {
+  "deleteRights" should "remove the specified values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -384,7 +365,23 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("setLefts") {
+  "deleteGoField" should "remove the current value and move appropriately" in {
+    val result = for {
+      c <- fromResult(cursor.downField("c"))
+      a <- fromResult(c.downField("e"))
+      l <- fromResult(a.deleteGoField("f"))
+      u <- fromResult(l.up)
+      lf <- focus(l)
+      uf <- focus(u)
+    } yield (lf, uf)
+
+    assert(
+      result.map(_._1) === Some(200.2.asJson) &&
+      result.map(_._2) === Some(Map("f" -> 200.2).asJson)
+    )
+  }
+
+  "setLefts" should "replace the specified values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -400,7 +397,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     )
   }
 
-  test("setRights") {
+  "setRights" should "replace the specified values" in {
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
@@ -413,22 +410,6 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     assert(
       result.map(_._1) === Some(4.asJson) &&
       result.map(_._2) === Some(List(1, 2, 3, 4, 100, 101).asJson)
-    )
-  }
-
-  test("deleteGoField") {
-    val result = for {
-      c <- fromResult(cursor.downField("c"))
-      a <- fromResult(c.downField("e"))
-      l <- fromResult(a.deleteGoField("f"))
-      u <- fromResult(l.up)
-      lf <- focus(l)
-      uf <- focus(u)
-    } yield (lf, uf)
-
-    assert(
-      result.map(_._1) === Some(200.2.asJson) &&
-      result.map(_._2) === Some(Map("f" -> 200.2).asJson)
     )
   }
 }

@@ -48,9 +48,9 @@ class LocalDateTimeCodecSuite extends CirceSuite {
   implicit val eqOffsetDateTime: Eq[OffsetDateTime] = Eq.fromUniversalEquals
   implicit val eqLocalDate: Eq[LocalDate] = Eq.fromUniversalEquals
 
-  checkAll("Codec[Instant]", CodecTests[Instant].codec)
-  checkAll("Codec[LocalDateTime]", CodecTests[LocalDateTime].codec)
-  checkAll("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].codec)
-  checkAll("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].codec)
-  checkAll("Codec[LocalDate]", CodecTests[LocalDate].codec)
+  checkLaws("Codec[Instant]", CodecTests[Instant].codec)
+  checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].codec)
+  checkLaws("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].codec)
+  checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].codec)
+  checkLaws("Codec[LocalDate]", CodecTests[LocalDate].codec)
 }

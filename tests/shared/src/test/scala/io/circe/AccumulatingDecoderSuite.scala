@@ -8,143 +8,13 @@ import io.circe.syntax._
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Qux
 
-class AccumulatingDecoderSuite extends CirceSuite {
-  checkAll(
+class AccumulatingDecoderSpec extends CirceSuite {
+  checkLaws(
     "AccumulatingDecoder[Int]",
     ApplicativeErrorTests[AccumulatingDecoder, NonEmptyList[DecodingFailure]].applicativeError[Int, Int, Int]
   )
 
-  checkAll("AccumulatingDecoder[Int]", SemigroupKTests[AccumulatingDecoder].semigroupK[Int])
-
-  test("Accumulating decoder returns as many errors as invalid elements in a list") {
-    check { (xs: List[Either[Int, String]]) =>
-      val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val decoded = Decoder[List[String]].accumulating(json.hcursor)
-      val intElems = xs.collect { case Left(elem) => elem }
-
-      decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
-    }
-  }
-
-  test("replaying accumulating decoder history returns expected failures in a list") {
-    check { (xs: List[Either[Int, String]]) =>
-      val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = json.hcursor
-
-      val invalidElems = xs.collect { case Left(e) => Option(e.asJson) }
-      Decoder[List[String]].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
-    }
-  }
-
-  test("Accumulating decoder returns as many errors as invalid elements in a map") {
-    check { (xs: Map[String, Either[Int, String]]) =>
-      val json = xs.map { case (k, v) => (k, v.fold(Json.fromInt, Json.fromString)) }.asJson
-      val decoded = Decoder[Map[String, String]].accumulating(json.hcursor)
-      val intElems = xs.values.collect { case Left(elem) => elem }
-
-      decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
-    }
-  }
-
-  test("replaying accumulating decoder history returns expected failures in a map") {
-    check { (xs: Map[String, Either[Int, String]]) =>
-      val json = xs.map { case (k, v) => (k, v.fold(Json.fromInt, Json.fromString)) }.asJson
-      val cursor = json.hcursor
-
-      val invalidElems = xs.values.collect { case Left(e) => Option(e.asJson) }.toSet
-
-      Decoder[Map[String, String]].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus).toSet === invalidElems
-    }
-  }
-
-  test("Accumulating decoder returns as many errors as invalid elements in a set") {
-    check { (xs: Set[Either[Int, String]]) =>
-      val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val decoded = Decoder[Set[String]].accumulating(json.hcursor)
-      val intElems = xs.collect { case Left(elem) => elem }
-
-      decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
-    }
-  }
-
-  test("replaying accumulating decoder history returns expected failures in a set") {
-    check { (xs: Set[Either[Int, String]]) =>
-      val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = json.hcursor
-
-      val invalidElems = xs.collect { case Left(e) => Option(e.asJson) }
-
-      Decoder[Set[String]].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus).toSet === invalidElems
-    }
-  }
-
-  test("Accumulating decoder returns as many errors as invalid elements in a tuple") {
-    check { (xs: (Either[Int, String], Either[Int, String], Either[Int, String])) =>
-      val json = (
-        xs._1.fold(Json.fromInt, Json.fromString),
-        xs._2.fold(Json.fromInt, Json.fromString),
-        xs._3.fold(Json.fromInt, Json.fromString)
-        ).asJson
-      val decoded = Decoder[(String, String, String)].accumulating(json.hcursor)
-      val intElems = List(xs._1, xs._2, xs._3).collect { case Left(elem) => elem }
-
-      decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
-    }
-  }
-
-  test("Accumulating decoder returns as many errors as invalid elements in a partial case class") {
-    val decoded = deriveFor[Int => Qux[String]].incomplete.accumulating(Json.fromJsonObject(JsonObject.empty).hcursor)
-
-    decoded.fold(_.tail.size + 1, _ => 0) === 2
-  }
-
-  test("replaying accumulating decoder history returns expected failures in a tuple") {
-    check { (xs: (Either[Int, String], Either[Int, String], Either[Int, String])) =>
-      val json = (
-        xs._1.fold(Json.fromInt, Json.fromString),
-        xs._2.fold(Json.fromInt, Json.fromString),
-        xs._3.fold(Json.fromInt, Json.fromString)
-        ).asJson
-      val cursor = json.hcursor
-
-      val invalidElems = xs.productIterator
-        .map(_.asInstanceOf[Either[Int, String]])
-        .collect { case Left(e) => Option(e.asJson) }
-        .toList
-
-      Decoder[(String, String, String)].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
-    }
-  }
-
-  test("Accumulating decoder returns as many errors as invalid elements in a non-empty list") {
-    check { (nel: NonEmptyList[Either[Int, String]]) =>
-      val json = nel.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val decoded = Decoder[NonEmptyList[String]].accumulating(json.hcursor)
-      val intElems = nel.toList.collect { case Left(elem) => elem }
-
-      decoded.fold(_.tail.size + 1, _ => 0) === intElems.size
-    }
-  }
-
-  test("replaying accumulating decoder history returns expected failures in a non-empty list") {
-    check { (nel: NonEmptyList[Either[Int, String]]) =>
-      val json = nel.map(_.fold(Json.fromInt, Json.fromString)).asJson
-      val cursor = json.hcursor
-
-      val invalidElems = nel.toList.collect { case Left(e) => Option(e.asJson) }
-      Decoder[NonEmptyList[String]].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
-    }
-  }
+  checkLaws("AccumulatingDecoder[Int]", SemigroupKTests[AccumulatingDecoder].semigroupK[Int])
 
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
@@ -160,25 +30,87 @@ class AccumulatingDecoderSuite extends CirceSuite {
     implicit val encodeSample: Encoder[Sample] = deriveEncoder
   }
 
-  test("Accumulating decoder returns as many errors as invalid elements in a case class") {
-    check { (a: Int, b: Boolean, c: Int) =>
-      val json = BadSample(a, b, c).asJson
-      val decoded = Decoder[Sample].accumulating(json.hcursor)
+  "accumulating" should "return as many errors as invalid elements in a list" in {
+    forAll { (xs: List[Either[Int, String]]) =>
+      val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
+      val decoded = Decoder[List[String]].accumulating(json.hcursor)
+      val intElems = xs.collect { case Left(elem) => elem }
 
-      decoded.fold(_.tail.size + 1, _ => 0) === 3
+      assert(decoded.fold(_.tail.size + 1, _ => 0) === intElems.size)
     }
   }
 
-  test("replaying accumulating decoder history returns expected failures in a case class") {
-    check { (a: Int, b: Boolean, c: Int) =>
-      val json = BadSample(a, b, c).asJson
-      val cursor = json.hcursor
+  it should "return expected failures in a list" in {
+    forAll { (xs: List[Either[Int, String]]) =>
+      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
+      val invalidElems = xs.collect { case Left(e) => Some(e.asJson) }
+      val errors = Decoder[List[String]].accumulating(cursor).fold(_.toList, _ => Nil)
 
-      val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
-
-      Decoder[Sample].accumulating(json.hcursor)
-        .fold(error => error.toList, _ => List[DecodingFailure]())
-        .map(df => cursor.replay(df.history).focus) === invalidElems
+      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
     }
+  }
+
+  it should "return expected failures in a map" in {
+    forAll { (xs: Map[String, Either[Int, String]]) =>
+      val cursor = xs.map { case (k, v) => (k, v.fold(Json.fromInt, Json.fromString)) }.asJson.hcursor
+      val invalidElems = xs.values.collect { case Left(e) => e.asJson }.toSet
+      val errors = Decoder[Map[String, String]].accumulating(cursor).fold(_.toList, _ => Nil)
+
+      assert(errors.flatMap(df => cursor.replay(df.history).focus).toSet === invalidElems)
+    }
+  }
+
+  it should "return expected failures in a set" in {
+    forAll { (xs: Set[Either[Int, String]]) =>
+      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.asJson.hcursor
+      val invalidElems = xs.collect { case Left(e) => Some(e.asJson): Option[Json] }
+      val errors = Decoder[Set[String]].accumulating(cursor).fold(_.toList, _ => Nil)
+
+      assert(errors.map(df => cursor.replay(df.history).focus).toSet === invalidElems)
+    }
+  }
+
+  it should "return expected failures in a non-empty list" in {
+    forAll { (xs: NonEmptyList[Either[Int, String]]) =>
+      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.asJson.hcursor
+      val invalidElems = xs.toList.collect { case Left(e) => Some(e.asJson) }
+      val errors = Decoder[NonEmptyList[String]].accumulating(cursor).fold(_.toList, _ => Nil)
+
+      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+    }
+  }
+
+  it should "return expected failures in a tuple" in {
+    forAll { (xs: (Either[Int, String], Either[Int, String], Either[Int, String])) =>
+      val cursor = (
+        xs._1.fold(Json.fromInt, Json.fromString),
+        xs._2.fold(Json.fromInt, Json.fromString),
+        xs._3.fold(Json.fromInt, Json.fromString)
+      ).asJson.hcursor
+      
+      val invalidElems = xs.productIterator.toList.collect {
+        case Left(e: Int) => Some(e.asJson)
+      }
+
+      val errors = Decoder[(String, String, String)].accumulating(cursor).fold(_.toList, _ => Nil)
+
+      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+    }
+  }
+
+  it should "return expected failures in a case class" in {
+    forAll { (a: Int, b: Boolean, c: Int) =>
+      val cursor = BadSample(a, b, c).asJson.hcursor
+      val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
+      val errors = Decoder[Sample].accumulating(cursor).fold(_.toList, _ => Nil)
+
+      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+    }
+  }
+
+  it should "return as many errors as invalid elements in a partial case class" in {
+    val decoded = deriveFor[Int => Qux[String]].incomplete.accumulating(Json.fromJsonObject(JsonObject.empty).hcursor)
+
+    assert(decoded.fold(_.tail.size + 1, _ => 0) === 2)
   }
 }

@@ -1,7 +1,7 @@
 package io.circe.spray
 
 import io.circe.{ Decoder, Encoder, ObjectEncoder }
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import spray.httpx.unmarshalling._
 import spray.httpx.marshalling._
 import spray.http.{ ContentTypes, HttpCharsets, HttpEntity, MediaTypes }
@@ -39,28 +39,28 @@ object Employee {
     }
 }
 
-class JsonSupportSpec extends FunSuite {
+class JsonSupportSpec extends FlatSpec {
   import JsonSupport._
 
-  test("providing unmarshalling support for a case class") {
+  "JsonSupport" should "provide unmarshalling support for a case class" in {
     val expected = Right(Employee.simple)
 
     assert(HttpEntity(ContentTypes.`application/json`, Employee.json).as[Employee] === expected)
   }
 
-  test("providing marshalling support for a case class") {
+  it should "provide marshalling support for a case class" in {
     val expected = Right(HttpEntity(ContentTypes.`application/json`, Employee.json))
 
     assert(marshal(Employee.simple) === expected)
   }
 
-  test("using UTF-8 as the default charset for JSON source decoding") {
+  it should "use UTF-8 as the default charset for JSON source decoding" in {
     val expected = Right(Employee.utf8)
 
     assert(HttpEntity(MediaTypes.`application/json`, Employee.utf8json).as[Employee] === expected)
   }
 
-  test("provide proper error messages for requirement errors") {
+  it should "provide proper error messages for requirement errors" in {
     val Left(MalformedContent(msg, Some(ex: IllegalArgumentException))) =
       HttpEntity(MediaTypes.`application/json`, Employee.illegalEmployeeJson).as[Employee]
 

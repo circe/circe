@@ -20,37 +20,37 @@ class OpticsSuite extends CirceSuite {
   implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
-  checkAll("Json to Boolean", PrismTests(jsonBoolean))
-  checkAll("Json to BigDecimal", PrismTests(jsonBigDecimal))
-  checkAll("Json to Double", PrismTests(jsonDouble))
-  checkAll("Json to BigInt", PrismTests(jsonBigInt))
-  checkAll("Json to Long", PrismTests(jsonLong))
-  checkAll("Json to Int", PrismTests(jsonInt))
-  checkAll("Json to Short", PrismTests(jsonShort))
-  checkAll("Json to Byte", PrismTests(jsonByte))
-  checkAll("Json to String", PrismTests(jsonString))
-  checkAll("Json to JsonNumber", PrismTests(jsonNumber))
-  checkAll("Json to JsonObject", PrismTests(jsonObject))
-  checkAll("Json to List[Json]", PrismTests(jsonArray))
+  checkLaws("Json to Boolean", PrismTests(jsonBoolean))
+  checkLaws("Json to BigDecimal", PrismTests(jsonBigDecimal))
+  checkLaws("Json to Double", PrismTests(jsonDouble))
+  checkLaws("Json to BigInt", PrismTests(jsonBigInt))
+  checkLaws("Json to Long", PrismTests(jsonLong))
+  checkLaws("Json to Int", PrismTests(jsonInt))
+  checkLaws("Json to Short", PrismTests(jsonShort))
+  checkLaws("Json to Byte", PrismTests(jsonByte))
+  checkLaws("Json to String", PrismTests(jsonString))
+  checkLaws("Json to JsonNumber", PrismTests(jsonNumber))
+  checkLaws("Json to JsonObject", PrismTests(jsonObject))
+  checkLaws("Json to List[Json]", PrismTests(jsonArray))
 
-  checkAll("JsonNumber to BigDecimal", PrismTests(jsonNumberBigDecimal))
-  checkAll("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))
-  checkAll("JsonNumber to Long", PrismTests(jsonNumberLong))
-  checkAll("JsonNumber to Int", PrismTests(jsonNumberInt))
-  checkAll("JsonNumber to Short", PrismTests(jsonNumberShort))
-  checkAll("JsonNumber to Byte", PrismTests(jsonNumberByte))
+  checkLaws("JsonNumber to BigDecimal", PrismTests(jsonNumberBigDecimal))
+  checkLaws("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))
+  checkLaws("JsonNumber to Long", PrismTests(jsonNumberLong))
+  checkLaws("JsonNumber to Int", PrismTests(jsonNumberInt))
+  checkLaws("JsonNumber to Short", PrismTests(jsonNumberShort))
+  checkLaws("JsonNumber to Byte", PrismTests(jsonNumberByte))
 
-  checkAll("plated Json", TraversalTests(plate[Json]))
+  checkLaws("plated Json", TraversalTests(plate[Json]))
 
-  checkAll("objectEach", EachTests[JsonObject, Json])
-  checkAll("objectAt", AtTests[JsonObject, String, Option[Json]]("foo"))
-  checkAll("objectIndex", IndexTests[JsonObject, String, Json]("foo"))
-  checkAll("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
+  checkLaws("objectEach", EachTests[JsonObject, Json])
+  checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]]("foo"))
+  checkLaws("objectIndex", IndexTests[JsonObject, String, Json]("foo"))
+  checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
 
   val json = Map("foo" -> Map("bar" -> List(1, 2, 3, 4, 5))).asJson
 
   // This is mostly a test for syntax, and more tests should be added for JsonPath.
-  test("JsonPath should support traversal by field name and array index") {
-    JsonPath.root.foo.bar.at(0).json.getOption(json) === Some(1.asJson)
+  "JsonPath" should "support traversal by field name and array index" in {
+    assert(JsonPath.root.foo.bar.at(0).json.getOption(json) === Some(1.asJson))
   }
 }

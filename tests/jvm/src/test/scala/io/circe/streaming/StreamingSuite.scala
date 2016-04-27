@@ -22,27 +22,24 @@ class StreamingSuite extends CirceSuite {
     _.getBytes(java.nio.charset.Charset.forName("UTF-8"))
   )
 
-  test("stringParser") {
-    check { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
-      val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
-      val foos = (fooStream ++ fooVector).map(_.asJson)
-      enumerator.mapE(stringParser).toVector.value.value === Xor.right(foos.toVector)
-    }
+  "stringParser" should "parse enumerated lines" in forAll { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
+    val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
+    val foos = (fooStream ++ fooVector).map(_.asJson)
+
+    assert(enumerator.mapE(stringParser).toVector.value.value === Xor.right(foos.toVector))
   }
 
-  test("byteParser") {
-    check { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
-      val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector)).mapE(stringToBytes)
-      val foos = (fooStream ++ fooVector).map(_.asJson)
-      enumerator.mapE(byteParser).toVector.value.value === Xor.right(foos.toVector)
-    }
+  "byteParser" should "parse enumerated bytes" in forAll { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
+    val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector)).mapE(stringToBytes)
+    val foos = (fooStream ++ fooVector).map(_.asJson)
+
+    assert(enumerator.mapE(byteParser).toVector.value.value === Xor.right(foos.toVector))
   }
 
-  test("decoder") {
-    check { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
-      val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
-      val foos = fooStream ++ fooVector
-      enumerator.mapE(stringParser).mapE(decoder[Result, Foo]).toVector.value.value === Xor.right(foos.toVector)
-    }
+  "decoder" should "decode enumerated JSON values" in forAll { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
+    val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
+    val foos = fooStream ++ fooVector
+
+    assert(enumerator.mapE(stringParser).mapE(decoder[Result, Foo]).toVector.value.value === Xor.right(foos.toVector))
   }
 }

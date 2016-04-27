@@ -22,37 +22,29 @@ object UndefOrExample {
 }
 
 class ScalaJsSuite extends CirceSuite {
-  test("should decode js.Object") {
-    check { (s: String) =>
-      decodeJs[Example](Dynamic.literal(name = s)).map(_.name) === Xor.right(s)
-    }
+  "decodeJs" should "decode js.Object" in forAll { (s: String) =>
+    assert(decodeJs[Example](Dynamic.literal(name = s)).map(_.name) === Xor.right(s))
   }
 
-  test("should encode to js.Object") {
-    check { (s: String) =>
-      Example(s).asJsAny.asInstanceOf[js.Dynamic].name.toString === s
-    }
-  }
-
-  test("should handle undefined js.UndefOr when decoding js.Object") {
+  it should "handle undefined js.UndefOr when decoding js.Object" in {
     val res = decodeJs[UndefOrExample](Dynamic.literal(name = js.undefined))
 
     assert(res.map(_.name.isDefined) === Xor.right(false))
   }
 
-  test("should handle defined js.UndefOr when decoding js.Object") {
-    check { (s: String) =>
-      decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.get) === Xor.right(s)
-    }
+  it should "handle defined js.UndefOr when decoding js.Object" in forAll { (s: String) =>
+    assert(decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.get) === Xor.right(s))
   }
 
-  test("should handle defined js.UndefOr when encoding to js.Object") {
-    check { (s: String) =>
-      UndefOrExample(s).asJsAny.asInstanceOf[js.Dynamic].name.toString === s
-    }
+  "asJsAny" should "encode to js.Object" in forAll { (s: String) =>
+    assert(Example(s).asJsAny.asInstanceOf[js.Dynamic].name.toString === s)
   }
 
-  test("should handle undefined js.UndefOr when encoding to js.Object") {
+  it should "handle defined js.UndefOr when encoding to js.Object" in forAll { (s: String) =>
+    assert(UndefOrExample(s).asJsAny.asInstanceOf[js.Dynamic].name.toString === s)
+  }
+
+  it should "handle undefined js.UndefOr when encoding to js.Object" in {
     assert(js.isUndefined(UndefOrExample(js.undefined).asJsAny.asInstanceOf[js.Dynamic].name))
   }
 }
