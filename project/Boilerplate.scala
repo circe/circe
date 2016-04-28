@@ -193,7 +193,6 @@ object Boilerplate {
       block"""
         |package io.circe
         |
-        |import cats.laws.discipline.eq._
         |import io.circe.tests.{ CodecTests, CirceSuite }
         |
         |class TupleCodecSuite extends CirceSuite {

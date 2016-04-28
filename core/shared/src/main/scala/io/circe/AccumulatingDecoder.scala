@@ -91,8 +91,10 @@ final object AccumulatingDecoder {
           final def apply(c: HCursor): Result[B] = resultInstance.ap(f(c))(fa(c))
         }
 
-      final def product[A, B](fa: AccumulatingDecoder[A], fb: AccumulatingDecoder[B]): AccumulatingDecoder[(A, B)] =
-        fa.and(fb)
+      override final def product[A, B](
+        fa: AccumulatingDecoder[A],
+        fb: AccumulatingDecoder[B]
+      ): AccumulatingDecoder[(A, B)] = fa.and(fb)
 
       final def raiseError[A](e: NonEmptyList[DecodingFailure]): AccumulatingDecoder[A] = AccumulatingDecoder.failed(e)
 
