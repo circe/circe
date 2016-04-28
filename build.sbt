@@ -20,6 +20,8 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
+lazy val botBuild = settingKey[Boolean]("Build by TravisCI instead of local dev environment")
+
 lazy val catsVersion = "0.4.1"
 lazy val jawnVersion = "0.8.4"
 lazy val shapelessVersion = "2.3.0"
@@ -61,8 +63,14 @@ lazy val baseSettings = Seq(
 lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
 
 lazy val commonJsSettings = Seq(
-  postLinkJSEnv := NodeJSEnv().value,
-  scalaJSUseRhino in Global := false
+// Using Rhino as jsEnv to build scala.js code can lead to OOM, switch to PhantomJS by default
+  scalaJSUseRhino := false,
+  requiresDOM := false,
+  jsEnv := NodeJSEnv().value,
+  // Only used for scala.js for now
+  botBuild := sys.props.getOrElse("CIRCE_BOT_BUILD", default="false") == "true",
+  // batch mode decreases the amount of memory needed to compile scala.js code
+  scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(botBuild.value)
 )
 
 /**
