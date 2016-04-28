@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.laws.discipline.eq._
 import io.circe.tests.CirceSuite
 
 class JsonObjectSuite extends CirceSuite {
