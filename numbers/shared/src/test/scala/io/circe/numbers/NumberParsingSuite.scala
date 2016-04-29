@@ -1,6 +1,6 @@
 package io.circe.numbers
 
-import io.circe.tests.JsonNumberString
+import io.circe.tests.{ IntegralString, JsonNumberString }
 import java.math.BigDecimal
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
@@ -16,18 +16,20 @@ class NumberParsingSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   private[this] def trailingZeros(i: BigInt): Int = i.toString.reverse.takeWhile(_ == '0').size
   private[this] def significantDigits(i: BigInt): Int = i.toString.size - trailingZeros(i)
 
-  "parseBiggerDecimal" should "parse any BigDecimal string" in {
-    forAll { (value: SBigDecimal) =>
-      val d = NumberParsing.parseBiggerDecimal(value.toString)
+  "integralIsValidLong" should "agree with toLong" in forAll { (input: IntegralString) =>
+    assert(NumberParsing.integralIsValidLong(input.value) === Try(input.value.toLong).isSuccess)
+  }
 
-      assert(
-        d.nonEmpty && Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
-          d.flatMap(_.toBigDecimal).exists { roundTripped =>
-            roundTripped.compareTo(parsedValue) == 0
-          }
+  "parseBiggerDecimal" should "parse any BigDecimal string" in forAll { (value: SBigDecimal) =>
+    val d = NumberParsing.parseBiggerDecimal(value.toString)
+
+    assert(
+      d.nonEmpty && Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
+        d.flatMap(_.toBigDecimal).exists { roundTripped =>
+          roundTripped.compareTo(parsedValue) == 0
         }
-      )
-    }
+      }
+    )
   }
 
   it should "parse number strings with big exponents" in {
@@ -52,9 +54,15 @@ class NumberParsingSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     }
   }
 
-  it should "parse JSON numbers" in {
-    forAll { (jns: JsonNumberString) =>
-      assert(NumberParsing.parseBiggerDecimal(jns.value).nonEmpty)
+  it should "parse JSON numbers" in forAll { (jns: JsonNumberString) =>
+    assert(NumberParsing.parseBiggerDecimal(jns.value).nonEmpty)
+  }
+
+  it should "fail on bad input" in {
+    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x")
+
+    badNumbers.foreach { input =>
+      assert(NumberParsing.parseBiggerDecimal(input) === None)
     }
   }
 }
