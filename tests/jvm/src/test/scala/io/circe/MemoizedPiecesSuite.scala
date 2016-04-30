@@ -37,12 +37,12 @@ class MemoizedPiecesSuite extends CirceSuite with ScalaFutures {
     tmp
   }
 
-  test("Concurrent memoized usage should be correct for arbitrarily ordered depths") {
-    check { depths: Depths =>
+  "Printer.MemoizedPieces" should "should be correct for arbitrarily ordered depths under concurrent usage" in {
+    forAll { (depths: Depths) =>
       val newPieces = makePieces
 
       whenReady(Future.traverse(depths.depths)(depth => Future(newPieces(depth)))) { result =>
-        result.sameElements(depths.depths.map(pieces(_)))
+        assert(result.sameElements(depths.depths.map(pieces(_))))
       }
     }
   }

@@ -5,8 +5,8 @@ import io.circe.Errors
 import io.circe.generic.auto._
 import io.circe.syntax._
 import java.util.UUID
-import org.scalatest.FunSuite
-import org.scalatest.prop.Checkers
+import org.scalatest.FlatSpec
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import spray.http.StatusCodes.BadRequest
 import spray.routing.Directives._
 import spray.routing.{ HttpService, MalformedRequestContentRejection, RejectionHandler }
@@ -45,47 +45,47 @@ object ErrorAccumulatingTodoRoute {
   }
 }
 
-class TodoRouteSuite extends FunSuite with ScalatestRouteTest with Checkers with HttpService {
+class TodoRouteSuite extends FlatSpec with ScalatestRouteTest with GeneratorDrivenPropertyChecks with HttpService {
   def actorRefFactory: ActorRefFactory = system
 
-  test("Our route should accept a partial todo and return a completed version") {
+  "The fail-fast route" should "accept a partial todo and return a completed version" in {
     import JsonSupport._
 
-    check { (title: String, completed: Boolean, order: Int) =>
+    forAll { (title: String, completed: Boolean, order: Int) =>
       val fields = Map("title" -> title.asJson, "completed" -> completed.asJson, "order" -> order.asJson)
 
       Post("/api/v1/todo", fields) ~> TodoRoute.route ~> check {
         val todo = responseAs[Todo]
 
-        todo.title === title && todo.completed === completed && todo.order === order
+        assert(todo.title === title && todo.completed === completed && todo.order === order)
       }
     }
   }
 
-  test("Our error-accumulating route should accept a partial todo and return a completed version") {
+  "The error-accumulating route" should "accept a partial todo and return a completed version" in {
     import JsonSupport._
 
-    check { (title: String, completed: Boolean, order: Int) =>
+    forAll { (title: String, completed: Boolean, order: Int) =>
       val fields = Map("title" -> title.asJson, "completed" -> completed.asJson, "order" -> order.asJson)
 
       Post("/api/v1/todo", fields) ~> ErrorAccumulatingTodoRoute.route ~> check {
         val todo = responseAs[Todo]
 
-        todo.title === title && todo.completed === completed && todo.order === order
+        assert(todo.title === title && todo.completed === completed && todo.order === order)
       }
     }
   }
 
-  test("Our error-accumulating route should fail with the proper number of errors") {
+  it should "fail with the proper number of errors" in {
     import JsonSupport._
 
-    check { (title: String) =>
+    forAll { (title: String) =>
       val fields = Map("title" -> title.asJson)
 
       Post("/api/v1/todo", fields) ~> ErrorAccumulatingTodoRoute.route ~> check {
         val failure = responseAs[String]
 
-        status === BadRequest && failure === "2"
+        assert(status === BadRequest && failure === "2")
       }
     }
   }

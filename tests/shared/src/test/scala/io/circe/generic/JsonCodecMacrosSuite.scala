@@ -138,15 +138,15 @@ package jsoncodecmacrossuiteaux {
 }
 
 class JsonCodecMacrosSuite extends CirceSuite {
-  checkAll("Codec[Simple]", CodecTests[Simple].codec)
-  checkAll("Codec[Single]", CodecTests[Single].codec)
-  checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
-  checkAll("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
-  checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
-  checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
-  checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
+  checkLaws("Codec[Simple]", CodecTests[Simple].codec)
+  checkLaws("Codec[Single]", CodecTests[Single].codec)
+  checkLaws("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
+  checkLaws("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
+  checkLaws("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
+  checkLaws("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
+  checkLaws("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 
-  test("@JsonCodec should provide ObjectEncoder instances") {
+  "@JsonCodec" should "provide ObjectEncoder instances" in {
     ObjectEncoder[Simple]
     ObjectEncoder[Single]
     ObjectEncoder[Typed1[Int]]

@@ -1,10 +1,6 @@
-package io.circe
+package io.circe.refined
 
 import algebra.Eq
-import io.circe.tests.{ CodecTests, CirceSuite }
-import io.circe.refined._
-import io.circe.syntax._
-
 import eu.timepit.refined.{ refineMV, refineV }
 import eu.timepit.refined.api.{ Refined, RefType }
 import eu.timepit.refined.string.StartsWith
@@ -12,41 +8,43 @@ import eu.timepit.refined.numeric.{ Positive, Greater }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitraryWit
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
+import io.circe.{ Decoder, Encoder, Json }
+import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.syntax._
+import org.scalacheck.{ Gen, Arbitrary }
 import shapeless.{ Nat, Witness => W }
 
-import org.scalacheck.{ Gen, Arbitrary }
-
 class RefinedSuite extends CirceSuite {
+  implicit def refinedEq[T, P, F[_, _]](implicit refType: RefType[F]): Eq[F[T, P]] = Eq.fromUniversalEquals
 
-  implicit def refinedEq[T, P, F[_, _]](implicit refType: RefType[F]): Eq[F[T, P]] =
-    Eq.fromUniversalEquals
-
-  checkAll(
-    """Codec[Int Refined Greater[W.`2`.T]]""",
+  checkLaws(
+    "Codec[Int Refined Greater[W.`2`.T]]",
     CodecTests[Int Refined Greater[W.`2`.T]].codec
   )
-  checkAll(
+
+  checkLaws(
     """Codec[String Refined StartsWith[W.`"a"`.T]]""",
     CodecTests[String Refined StartsWith[W.`"a"`.T]].codec
   )
 
-  test("Refined instances should encode as the underlying type") {
+  "A refined encoder" should "encode as the underlying type" in {
     val n = refineMV[Greater[W.`2`.T]](5)
-    n.asJson shouldBe 5.asJson
+    assert(n.asJson === 5.asJson)
 
     val list = List(1, 2, 3, 4)
     val refinedList = refineV[Size[Greater[Nat._3]]](list)
-    refinedList.right.map(_.asJson) shouldBe Right(list.asJson)
+    val expected: Either[String, Json] = Right(list.asJson)
+
+    assert(expected === refinedList.right.map(_.asJson))
   }
 
-  test("Refined instances should refuse to decode wrong values") {
-    Decoder[Int Refined Greater[W.`2`.T]].decodeJson(3.asJson).isRight shouldBe true
-    Decoder[Int Refined Greater[W.`2`.T]].decodeJson(1.asJson).isLeft shouldBe true
+  "A refined decoder" should "refuse to decode wrong values" in {
+    assert(Decoder[Int Refined Greater[W.`2`.T]].decodeJson(3.asJson).isRight)
+    assert(Decoder[Int Refined Greater[W.`2`.T]].decodeJson(1.asJson).isLeft)
 
-    Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ab".asJson).isRight shouldBe true
-    Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ba".asJson).isLeft shouldBe true
+    assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ab".asJson).isRight)
+    assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ba".asJson).isLeft)
   }
-
 }
 
 class RefinedFieldsSuite extends CirceSuite {
@@ -78,21 +76,23 @@ class RefinedFieldsSuite extends CirceSuite {
     implicit val encodeRefinedFields: Encoder[RefinedFields] = deriveEncoder
   }
 
-  checkAll("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
+  checkLaws("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
 
-  test("Refined fields should be encoded as simple fields") {
-    val json = Encoder[RefinedFields].apply(RefinedFields(
-      refineMV(3),
-      refineMV("ab"),
-      refineV[Size[Greater[Nat._2]]](List(1, 2, 3, 4)).right.get
-    ))
+  "Refined fields" should "be encoded as simple fields" in {
+    val json = Encoder[RefinedFields].apply(
+      RefinedFields(
+        refineMV(3),
+        refineMV("ab"),
+        refineV[Size[Greater[Nat._2]]](List(1, 2, 3, 4)).right.get
+      )
+    )
+
     val expectedJson = Json.obj(
       "i" -> 3.asJson,
       "s" -> "ab".asJson,
       "l" -> List(1, 2, 3, 4).asJson
     )
 
-    json shouldBe expectedJson
+    assert(json === expectedJson)
   }
-
 }

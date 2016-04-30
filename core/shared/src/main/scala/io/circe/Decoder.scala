@@ -3,7 +3,6 @@ package io.circe
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
 import cats.std.list._
-import cats.syntax.functor._
 import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom

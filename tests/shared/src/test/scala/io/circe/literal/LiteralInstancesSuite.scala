@@ -17,44 +17,44 @@ class LiteralInstancesSuite extends CirceSuite {
   implicit def eqSingletonInt[S <: Int with Singleton]: Eq[S] = eqSingleton[S, Int]
   implicit def eqSingletonChar[S <: Char with Singleton]: Eq[S] = eqSingleton[S, Char]
 
-  test("Literal string encoding and decoding") {
+  "A literal String codec" should "round-trip values" in {
     val w = Witness("foo")
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }
 
-  test("Literal boolean encoding and decoding") {
+  "A literal Boolean codec" should "round-trip values" in {
     val w = Witness(true)
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }
 
-  test("Literal double encoding and decoding") {
-    val w = Witness(0.0)
-
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
-  }
-
-  test("Literal float encoding and decoding") {
+  "A literal Float codec" should "round-trip values" in {
     val w = Witness(0.0F)
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }
 
-  test("Literal long encoding and decoding") {
-    val w = Witness(0L)
+  "A literal Double codec" should "round-trip values" in {
+    val w = Witness(0.0)
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }
 
-  test("Literal int encoding and decoding") {
+  "A literal Char codec" should "round-trip values" in {
+    val w = Witness('a')
+
+    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
+  }
+
+  "A literal Int codec" should "round-trip values" in {
     val w = Witness(0)
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }
 
-  test("Literal char encoding and decoding") {
-    val w = Witness('a')
+  "A literal Long codec" should "round-trip values" in {
+    val w = Witness(0L)
 
     assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Xor.right(w.value))
   }

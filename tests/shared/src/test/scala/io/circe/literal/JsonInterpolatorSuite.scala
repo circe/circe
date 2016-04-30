@@ -6,7 +6,7 @@ import io.circe.tests.CirceSuite
 import shapeless.test.illTyped
 
 class JsonInterpolatorSuite extends CirceSuite {
-  test("The json interpolator should work with no interpolated variables") {
+  "json" should "work with no interpolated variables" in {
     val interpolated = json"""
     {
       "a": [1, 2, 3],
@@ -32,7 +32,7 @@ class JsonInterpolatorSuite extends CirceSuite {
     assert(parsed === Xor.right(interpolated))
   }
 
-  test("The json interpolator should work with interpolated variables") {
+  it should "work with interpolated variables" in {
     val i = 13
     val m = Map("bar" -> List(1, 2, 3), "baz" -> Nil)
 
@@ -53,7 +53,7 @@ class JsonInterpolatorSuite extends CirceSuite {
     assert(parsed === Xor.right(interpolated))
   }
 
-  test("The json interpolator should work with interpolated strings as keys") {
+  it should "work with interpolated strings as keys" in {
     val key = "foo"
 
     val interpolated = json"{ $key: 1 }"
@@ -63,12 +63,11 @@ class JsonInterpolatorSuite extends CirceSuite {
     assert(parsed === Xor.right(interpolated))
   }
 
-
-  test("The json interpolator should fail with invalid JSON") {
+  it should "fail with invalid JSON" in {
     illTyped("json\"\"\"1a2b3c\"\"\"")
   }
 
-  test("The json interpolator should fail with unencodable interpolated variables") {
+  it should "fail with unencodeable interpolated variables" in {
     trait Foo
 
     val foo = new Foo {}

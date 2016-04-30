@@ -77,36 +77,38 @@ class SemiautoDerivedSuite extends CirceSuite {
   case class OvergenerationExampleOuter0(i: OvergenerationExampleInner)
   case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
 
-  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
-  checkAll("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
-  checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
-  checkAll("Codec[Foo]", CodecTests[Foo].codec)
-  checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
-  checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+  checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+  checkLaws("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
+  checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
-  test("Decoder[Int => Qux[String]]") {
-    check { (i: Int, s: String, j: Int) =>
-      Json.obj(
-        "a" -> Json.fromString(s),
-        "j" -> Json.fromInt(j)
-      ).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s, j))
-    }
+  "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
+    val result = Json.obj(
+      "a" -> Json.fromString(s),
+      "j" -> Json.fromInt(j)
+    ).as[Int => Qux[String]].map(_(i))
+
+    assert(result === Xor.right(Qux(i, s, j)))
   }
 
-  test("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]") {
-    check { (i: Int, s: String, j: Int) =>
-      Json.obj(
+  "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
+    forAll { (i: Int, s: String, j: Int) =>
+      val result = Json.obj(
         "i" -> Json.fromInt(i),
         "a" -> Json.fromString(s)
       ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
-        _(field(j))
-      ) === Xor.right(Qux(i, s, j))
+         _(field(j))
+      )
+
+      assert(result === Xor.right(Qux(i, s, j)))
     }
   }
 
-  test("Decoder[Qux[String] => Qux[String]]") {
-    check { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
+  "Decoder[Qux[String] => Qux[String]]" should "decode patch JSON representations" in {
+    forAll { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
       val json = Json.obj(
         "i" -> Encoder[Option[Int]].apply(i),
         "a" -> Encoder[Option[String]].apply(a),
@@ -115,19 +117,17 @@ class SemiautoDerivedSuite extends CirceSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
+      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected))
     }
   }
 
-  test("Generic instances should not interfere with base instances") {
-    check { (is: List[Int]) =>
-      val json = Encoder[List[Int]].apply(is)
+  "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
+    val json = Encoder[List[Int]].apply(is)
 
-      json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is)
-    }
+    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is))
   }
 
-  test("Generic instances shouldn't come from nowhere") {
+  it should "not come from nowhere" in {
     implicitly[DerivedDecoder[OvergenerationExampleInner]]
     illTyped("Decoder[OvergenerationExampleInner]")
 
@@ -140,7 +140,7 @@ class SemiautoDerivedSuite extends CirceSuite {
     illTyped("ObjectEncoder[OvergenerationExampleOuter1]")
   }
 
-  test("Semi-automatic derivation should require explicit instances for all parts") {
+  it should "require instances for all parts" in {
     illTyped("deriveDecoder[OvergenerationExampleInner0]")
     illTyped("deriveDecoder[OvergenerationExampleInner1]")
     illTyped("deriveEncoder[OvergenerationExampleInner0]")

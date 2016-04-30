@@ -20,7 +20,7 @@ import eu.timepit.refined.api.{ RefType, Validate }
  *
  * @author Alexandre Archambault
  */
-final object refined {
+package object refined {
   implicit final def refinedDecoder[T, P, F[_, _]](implicit
     underlying: Decoder[T],
     validate: Validate[T, P],

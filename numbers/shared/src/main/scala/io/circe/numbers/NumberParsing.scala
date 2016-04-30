@@ -12,6 +12,9 @@ final object NumberParsing {
 
   /**
    * Is a string representing an integral value a valid [[scala.Long]]?
+   *
+   * Note that this method assumes that the input is a valid integral JSON
+   * number string (e.g. that it does have leading zeros).
    */
   def integralIsValidLong(s: String): Boolean = {
     val bound = if (s.charAt(0) == '-') MinLongString else MaxLongString

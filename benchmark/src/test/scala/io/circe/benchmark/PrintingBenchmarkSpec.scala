@@ -1,8 +1,7 @@
 package io.circe.benchmark
 
-import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+import argonaut.Parse, argonaut.Argonaut._
 import org.scalatest.FlatSpec
-import play.api.libs.json.{ Json => JsonP }
 
 class PrintingBenchmarkSpec extends FlatSpec {
   val benchmark: PrintingBenchmark = new PrintingBenchmark

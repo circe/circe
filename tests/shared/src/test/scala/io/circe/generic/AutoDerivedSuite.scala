@@ -70,36 +70,38 @@ class AutoDerivedSuite extends CirceSuite {
       Arbitrary(atDepth(0))
   }
 
-  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
-  checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
-  checkAll("Codec[Foo]", CodecTests[Foo].codec)
-  checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
-  checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
-  checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+  checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+  checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  checkLaws("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
+  checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
-  test("Decoder[Int => Qux[String]]") {
-    check { (i: Int, s: String, j: Int) =>
-      Json.obj(
-        "a" -> Json.fromString(s),
-        "j" -> Json.fromInt(j)
-      ).as[Int => Qux[String]].map(_(i)) === Xor.right(Qux(i, s, j))
-    }
+  "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
+    val result = Json.obj(
+      "a" -> Json.fromString(s),
+      "j" -> Json.fromInt(j)
+    ).as[Int => Qux[String]].map(_(i))
+
+    assert(result === Xor.right(Qux(i, s, j)))
   }
 
-  test("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]") {
-    check { (i: Int, s: String, j: Int) =>
-      Json.obj(
+  "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
+    forAll { (i: Int, s: String, j: Int) =>
+      val result = Json.obj(
         "i" -> Json.fromInt(i),
         "a" -> Json.fromString(s)
       ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
          _(field(j))
-      ) === Xor.right(Qux(i, s, j))
+      )
+
+      assert(result === Xor.right(Qux(i, s, j)))
     }
   }
 
-  test("Decoder[Qux[String] => Qux[String]]") {
-    check { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
+  "Decoder[Qux[String] => Qux[String]]" should "decode patch JSON representations" in {
+    forAll { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
       val json = Json.obj(
         "i" -> Encoder[Option[Int]].apply(i),
         "a" -> Encoder[Option[String]].apply(a),
@@ -108,49 +110,43 @@ class AutoDerivedSuite extends CirceSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected)
+      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected))
     }
   }
 
-  test("Generic instances should not interfere with base instances") {
-    check { (is: List[Int]) =>
-      val json = Encoder[List[Int]].apply(is)
+  "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
+    val json = Encoder[List[Int]].apply(is)
 
-      json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is)
-    }
+    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is))
   }
 
-  test("Generic decoders should not interfere with defined decoders") {
-    check { (xs: List[String]) =>
-      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
-
-      Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo)
-    }
-  }
-
-  test("Generic encoders should not interfere with defined encoders") {
-    check { (xs: List[String]) =>
-      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
-
-      Encoder[Foo].apply(Baz(xs): Foo) === json
-    }
-  }
-
-  test("Decoding with Decoder[CNil] should fail") {
-    assert(Json.Null.as[CNil].isLeft)
-  }
-
-  test("Encoding with Encoder[CNil] should throw an exception") {
-    intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
-  }
-
-  test("Generic instances should not be derived for Object") {
+  it should "not be derived for Object" in {
     illTyped("Decoder[Object]")
     illTyped("Encoder[Object]")
   }
 
-  test("Generic instances should not be derived for AnyRef") {
+  it should "not be derived for AnyRef" in {
     illTyped("Decoder[AnyRef]")
     illTyped("Encoder[AnyRef]")
+  }
+
+  "Generic decoders" should "not interfere with defined decoders" in forAll { (xs: List[String]) =>
+    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+
+    assert(Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo))
+  }
+
+  "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>
+    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+
+    assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
+  }
+
+  "Decoder[CNil]" should "fail" in {
+    assert(Json.Null.as[CNil].isLeft)
+  }
+
+  "Encoder[CNil]" should "throw an exception" in {
+    intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
   }
 }
