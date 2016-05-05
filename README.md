@@ -45,8 +45,9 @@ libraryDependencies ++= Seq(
 ).map(_ % circeVersion)
 ```
 
-If you are using circe's generic derivation with Scala 2.10, you'll also need to include the [Macro
-Paradise][paradise] compiler plugin in your build:
+If you are using circe's generic derivation (with Scala 2.10), or macro annotation support (with
+Scala 2.10 or Scala 2.11), you'll also need to include the [MacroParadise][paradise] compiler
+plugin in your build:
 
 ```scala
 addCompilerPlugin(
