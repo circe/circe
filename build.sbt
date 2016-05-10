@@ -22,7 +22,7 @@ lazy val compilerOptions = Seq(
 
 lazy val catsVersion = "0.5.0"
 lazy val jawnVersion = "0.8.4"
-lazy val shapelessVersion = "2.3.0"
+lazy val shapelessVersion = "2.3.1"
 lazy val refinedVersion = "0.4.0"
 
 lazy val scalaTestVersion = "3.0.0-M9"
@@ -410,8 +410,8 @@ lazy val optics = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %% "monocle-core" % "1.2.0",
-      "com.github.julien-truffaut" %% "monocle-law" % "1.2.0" % "test"
+      "com.github.julien-truffaut" %% "monocle-core" % "1.2.1",
+      "com.github.julien-truffaut" %% "monocle-law" % "1.2.1" % "test"
     )
   )
   .dependsOn(core, tests % "test")
