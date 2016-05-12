@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
 ).map(_ % circeVersion)
 ```
 
-If you are using circe's generic derivation (with Scala 2.10), or macro annotation support (with
+If you are using circe's generic derivation (with Scala 2.10), or the macro annotation `@JsonCodec` (with
 Scala 2.10 or Scala 2.11), you'll also need to include the [MacroParadise][paradise] compiler
 plugin in your build:
 
