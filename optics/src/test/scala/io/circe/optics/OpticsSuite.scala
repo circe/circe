@@ -43,8 +43,8 @@ class OpticsSuite extends CirceSuite {
   checkLaws("plated Json", TraversalTests(plate[Json]))
 
   checkLaws("objectEach", EachTests[JsonObject, Json])
-  checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]]("foo"))
-  checkLaws("objectIndex", IndexTests[JsonObject, String, Json]("foo"))
+  checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
+  checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
   checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
 
   val json = Map("foo" -> Map("bar" -> List(1, 2, 3, 4, 5))).asJson
