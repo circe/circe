@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import algebra.Eq
+import cats.Eq
 import cats.std.list._
 import cats.syntax.eq._
 import io.circe.{ AccumulatingDecoder, Decoder, Encoder, Json }

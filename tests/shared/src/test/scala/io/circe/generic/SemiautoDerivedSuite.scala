@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import algebra.Eq
+import cats.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder

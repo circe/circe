@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import algebra.Eq
+import cats.Eq
 import cats.laws._
 import cats.laws.discipline._
 import cats.std.option._

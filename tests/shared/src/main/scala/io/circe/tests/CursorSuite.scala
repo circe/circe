@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import algebra.Eq
+import cats.Eq
 import io.circe.{ GenericCursor, Json }
 import io.circe.syntax._
 

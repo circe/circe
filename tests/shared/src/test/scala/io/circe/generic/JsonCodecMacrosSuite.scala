@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import algebra.Eq
+import cats.Eq
 import cats.std.AllInstances
 import io.circe.ObjectEncoder
 import io.circe.generic.jsoncodecmacrossuiteaux._

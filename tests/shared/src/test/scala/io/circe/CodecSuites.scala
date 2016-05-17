@@ -2,26 +2,26 @@ package io.circe
 
 import java.util.UUID
 
-import algebra.Eq
+import cats.Eq
 import cats.data._
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
 
 class AnyValCodecSuite extends CirceSuite {
   /**
-   * We provide a special [[algebra.Eq]] instance for [[scala.Float]] that does not distinguish
-   * `NaN` from itself.
+   * We provide a special [[cats.Eq]] instance for [[scala.Float]] that does not distinguish `NaN`
+   * from itself.
    */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.std.float.floatAlgebra.eqv(a, b)
+    (a.isNaN && b.isNaN) || cats.std.float.floatOrder.eqv(a, b)
   }
 
   /**
-   * We provide a special [[algebra.Eq]] instance for [[scala.Double]] that does not distinguish
-   * `NaN` from itself.
+   * We provide a special [[cats.Eq]] instance for [[scala.Double]] that does not distinguish `NaN`
+   * from itself.
    */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.std.double.doubleAlgebra.eqv(a, b)
+    (a.isNaN && b.isNaN) || cats.std.double.doubleOrder.eqv(a, b)
   }
 
   checkLaws("Codec[Unit]", CodecTests[Unit].codec)

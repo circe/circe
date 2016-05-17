@@ -1,7 +1,6 @@
 package io.circe
 
-import algebra.Eq
-import cats.Show
+import cats.{ Eq, Show }
 
 sealed abstract class CursorOp extends Product with Serializable {
   /**

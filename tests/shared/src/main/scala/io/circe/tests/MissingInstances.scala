@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import algebra.Eq
+import cats.Eq
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import shapeless._

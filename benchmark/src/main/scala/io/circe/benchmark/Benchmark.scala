@@ -1,7 +1,7 @@
 package io.circe.benchmark
 
-import algebra.Eq
 import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
+import cats.Eq
 import cats.data.NonEmptyList
 import io.circe.{ Decoder, Encoder, Json => JsonC }
 import io.circe.generic.semiauto._
