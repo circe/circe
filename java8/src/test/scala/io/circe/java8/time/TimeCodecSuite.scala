@@ -29,7 +29,7 @@ class LocalDateTimeCodecSuite extends CirceSuite {
   implicit val arbitraryZonedDateTime: Arbitrary[ZonedDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId  <- arbitrary[ZoneId]
+      zoneId  <- arbitrary[ZoneId].suchThat(_ != ZoneId.of("GMT0")) // #280 - avoid JDK-8138664
     } yield ZonedDateTime.ofInstant(instant, zoneId)
   )
 
