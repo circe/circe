@@ -73,6 +73,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   benchmark,
   coreJS,
   java8,
+  java8JS,
   literalJS,
   genericJS,
   numbersJS,
@@ -343,13 +344,21 @@ lazy val jawn = project
   )
   .dependsOn(core)
 
-lazy val java8 = project
+lazy val java8Base = crossProject.crossType(CrossType.Pure).in(file("java8"))
   .settings(
     description := "circe java8",
-    moduleName := "circe-java8"
+    moduleName := "circe-java8",
+    name := "java8"
   )
-  .settings(allSettings)
-  .dependsOn(core, tests % "test")
+  .settings(allSettings: _*)
+  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.1.0")
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "java8"))
+  .jsConfigure(_.copy(id = "java8JS"))
+  .dependsOn(coreBase, testsBase % "test")
+
+lazy val java8 = java8Base.jvm
+lazy val java8JS = java8Base.js
 
 lazy val streaming = project
   .settings(
@@ -537,7 +546,8 @@ val jsProjects = Seq(
   "refinedJS",
   "parserJS",
   "scalajs",
-  "testsJS"
+  "testsJS",
+  "java8JS"
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
