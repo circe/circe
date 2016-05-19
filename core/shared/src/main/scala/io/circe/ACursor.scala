@@ -1,7 +1,6 @@
 package io.circe
 
-import algebra.Eq
-import cats.Applicative
+import cats.{ Applicative, Eq }
 import cats.data.{ Validated, Xor }
 
 /**

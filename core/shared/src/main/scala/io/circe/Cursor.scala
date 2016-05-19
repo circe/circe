@@ -1,7 +1,6 @@
 package io.circe
 
-import algebra.Eq
-import cats.{ Functor, Id, Show }
+import cats.{ Eq, Functor, Id, Show }
 import cats.std.list._
 import io.circe.cursor.{ CArray, CJson, CObject }
 import scala.annotation.tailrec

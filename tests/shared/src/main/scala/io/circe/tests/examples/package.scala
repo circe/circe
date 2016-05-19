@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import algebra.Eq
+import cats.Eq
 import cats.std.AllInstances
 import io.circe.{ Decoder, Encoder, Json }
 import org.scalacheck.{ Arbitrary, Gen }

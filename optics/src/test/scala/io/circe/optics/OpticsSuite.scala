@@ -1,6 +1,6 @@
 package io.circe.optics
 
-import algebra.Eq
+import cats.Eq
 import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.all._
 import io.circe.syntax._

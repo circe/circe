@@ -1,7 +1,6 @@
 package io.circe
 
-import algebra.Eq
-import cats.{ Functor, Id }
+import cats.{ Eq, Functor, Id }
 import cats.data.Xor
 import scala.annotation.tailrec
 

@@ -1,6 +1,6 @@
 package io.circe.literal
 
-import algebra.Eq
+import cats.Eq
 import cats.data.Xor
 import io.circe.{ Decoder, Encoder }
 import io.circe.tests.CirceSuite

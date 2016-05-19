@@ -1,7 +1,6 @@
 package io.circe
 
-import algebra.Eq
-import cats.{ Applicative, Foldable, Show }
+import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
 import cats.std.map._
 import scala.collection.breakOut

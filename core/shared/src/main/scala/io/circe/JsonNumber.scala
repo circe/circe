@@ -1,6 +1,6 @@
 package io.circe
 
-import algebra.Eq
+import cats.Eq
 import io.circe.numbers.{ BiggerDecimal, NumberParsing }
 
 /**
