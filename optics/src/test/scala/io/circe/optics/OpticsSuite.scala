@@ -1,13 +1,12 @@
 package io.circe.optics
 
 import cats.Eq
-import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.all._
-import io.circe.syntax._
 import io.circe.tests.CirceSuite
+import io.circe.{Json, JsonNumber, JsonObject}
 import monocle.function.Plated.plate
-import monocle.law.discipline.{ PrismTests, TraversalTests }
-import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
+import monocle.law.discipline.function.{AtTests, EachTests, FilterIndexTests, IndexTests}
+import monocle.law.discipline.{PrismTests, TraversalTests}
 import scalaz.Equal
 import scalaz.std.anyVal._
 import scalaz.std.math.bigDecimal._
@@ -20,6 +19,7 @@ class OpticsSuite extends CirceSuite {
   implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
+  checkLaws("Json to Unit", PrismTests(jsonNull))
   checkLaws("Json to Boolean", PrismTests(jsonBoolean))
   checkLaws("Json to BigDecimal", PrismTests(jsonBigDecimal))
   checkLaws("Json to Double", PrismTests(jsonDouble))
@@ -46,11 +46,4 @@ class OpticsSuite extends CirceSuite {
   checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
   checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
   checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
-
-  val json = Map("foo" -> Map("bar" -> List(1, 2, 3, 4, 5))).asJson
-
-  // This is mostly a test for syntax, and more tests should be added for JsonPath.
-  "JsonPath" should "support traversal by field name and array index" in {
-    assert(JsonPath.root.foo.bar.at(0).json.getOption(json) === Some(1.asJson))
-  }
 }
