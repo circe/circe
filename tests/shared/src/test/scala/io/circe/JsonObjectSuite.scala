@@ -1,6 +1,7 @@
 package io.circe
 
 import io.circe.tests.CirceSuite
+import cats.data.Const
 
 class JsonObjectSuite extends CirceSuite {
   "+:" should "replace existing fields with the same key" in forAll { (j: Json, h: Json, t: List[Json]) =>
@@ -51,5 +52,9 @@ class JsonObjectSuite extends CirceSuite {
     val o = JsonObject.from(fields)
 
     assert(o.traverse[Option](j => Some(j)) === Some(o))
+  }
+
+  it should "return values in order" in forAll { json: JsonObject =>
+    assert(json.traverse[({type l[A]=Const[List[Json],A]})#l](a => Const(List(a))).getConst === json.values)
   }
 }

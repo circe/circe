@@ -184,7 +184,7 @@ final object JsonObject {
 
     final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
       orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
-        case (acc, k) => F.ap(F.map(f(fieldMap(k)))(j => (_: Map[String, Json]).updated(k, j)))(acc)
+        case (acc, k) => F.map2(acc, f(fieldMap(k)))(_.updated(k, _))
       }
     )(mappedFields => copy(fieldMap = mappedFields))
 
