@@ -2,14 +2,19 @@ package io.circe.optics
 
 import cats.Eq
 import io.circe._
-import io.circe.generic.auto._
+import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class JsonPathSuite extends CirceSuite {
 
   case class Car(model: String, maxSpeed: Int, automatic: Boolean)
-  implicit val carEq: Eq[Car] = Eq.fromUniversalEquals[Car]
+  object  Car {
+    implicit val eq: Eq[Car] = Eq.fromUniversalEquals[Car]
+    implicit val decoder: Decoder[Car] = deriveDecoder[Car]
+    implicit val encoder: ObjectEncoder[Car] = deriveEncoder[Car]
+  }
+
 
   val john: Json = Json.obj(
     "first_name" -> "John".asJson,
