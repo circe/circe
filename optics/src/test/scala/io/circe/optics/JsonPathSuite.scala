@@ -15,7 +15,6 @@ class JsonPathSuite extends CirceSuite {
     implicit val encoder: ObjectEncoder[Car] = deriveEncoder[Car]
   }
 
-
   val john: Json = Json.obj(
     "first_name" -> "John".asJson,
     "last_name"  -> "Doe".asJson,
@@ -45,6 +44,22 @@ class JsonPathSuite extends CirceSuite {
 
   it should "support codec" in {
     assert(JsonPath.root.cars.index(0).as[Car].getOption(john) === Some(Car("fancy", 120, automatic = false)))
+  }
+
+  "JsonTraversalPath" should "support traversal over each values of a json object" in {
+    assert(JsonPath.root.each.string.getAll(john) === List("John", "Doe"))
+  }
+
+  it should "support traversal over each values of a json array" in {
+    assert(JsonPath.root.cars.each.maxSpeed.int.getAll(john) === List(120, 80))
+  }
+
+  it should "support filtering of json object" in {
+    assert(JsonPath.root.objFilter(_.contains("first")).string.getAll(john) === List("John"))
+  }
+
+  it should "support filtering of json array" in {
+    assert(JsonPath.root.cars.arrayFilter(_ % 2 == 1).as[Car].getAll(john) === List(Car("suv", 80, automatic = true)))
   }
 
 }

@@ -3,9 +3,10 @@ package io.circe.optics
 import io.circe._
 import io.circe.optics.JsonObjectOptics._
 import io.circe.optics.JsonOptics._
-import monocle.{ Optional, Prism }
-import monocle.function.{At, Index}
+import monocle.function.{At, Index, FilterIndex}
 import monocle.std.list._
+import monocle.{Optional, Prism, Traversal}
+
 import scala.language.dynamics
 
 final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
@@ -32,6 +33,15 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   final def index(i: Int): JsonPath =
     JsonPath(json.composePrism(jsonArray).composeOptional(Index.index(i)))
 
+  final def each: JsonTraversalPath =
+    JsonTraversalPath(json composeTraversal jsonDescendants)
+
+  final def arrayFilter(p: Int => Boolean): JsonTraversalPath =
+    JsonTraversalPath(array composeTraversal FilterIndex.filterIndex(p))
+
+  final def objFilter(p: String => Boolean): JsonTraversalPath =
+    JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
+
   /**
    * Decode a value at the current location.
    *
@@ -46,4 +56,43 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
 
 final object JsonPath {
   final val root: JsonPath = JsonPath(Optional.id)
+}
+
+final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic {
+  final def Null: Traversal[Json, Unit] = json composePrism jsonNull
+  final def boolean: Traversal[Json, Boolean] = json composePrism jsonBoolean
+  final def byte: Traversal[Json, Byte] = json composePrism jsonByte
+  final def short: Traversal[Json, Short] = json composePrism jsonShort
+  final def int: Traversal[Json, Int] = json composePrism jsonInt
+  final def long: Traversal[Json, Long] = json composePrism jsonLong
+  final def bigInt: Traversal[Json, BigInt] = json composePrism jsonBigInt
+  final def double: Traversal[Json, Double] = json composePrism jsonDouble
+  final def bigDecimal: Traversal[Json, BigDecimal] = json composePrism jsonBigDecimal
+  final def number: Traversal[Json, JsonNumber] = json composePrism jsonNumber
+  final def string: Traversal[Json, String] = json composePrism jsonString
+  final def array: Traversal[Json, List[Json]] = json composePrism jsonArray
+  final def obj: Traversal[Json, JsonObject] = json composePrism jsonObject
+
+  final def at(field: String): Traversal[Json, Option[Json]] =
+    json.composePrism(jsonObject).composeLens(At.at(field))
+
+  final def selectDynamic(field: String): JsonTraversalPath =
+    JsonTraversalPath(json.composePrism(jsonObject).composeOptional(Index.index(field)))
+
+  final def index(i: Int): JsonTraversalPath =
+    JsonTraversalPath(json.composePrism(jsonArray).composeOptional(Index.index(i)))
+
+  final def each: JsonTraversalPath =
+    JsonTraversalPath(json composeTraversal jsonDescendants)
+
+  final def arrayFilter(p: Int => Boolean): JsonTraversalPath =
+    JsonTraversalPath(array composeTraversal FilterIndex.filterIndex(p))
+
+  final def objFilter(p: String => Boolean): JsonTraversalPath =
+    JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
+
+  final def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Traversal[Json, A] =
+    json.composePrism(
+      Prism((j: Json) => decode.decodeJson(j).toOption)(encode(_))
+    )
 }
