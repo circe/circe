@@ -222,7 +222,8 @@ class DerivationMacros(val c: whitebox.Context) {
             new _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R] {
               ..$instanceDefs
               final def encodeObject(a: $R): _root_.io.circe.JsonObject = a match {
-                case $pattern => _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
+                case $pattern =>
+                  _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
               }
             }: _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R]
           }
