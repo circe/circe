@@ -22,6 +22,7 @@ script:
     then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
     else
       sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM &&
+      sbt hygiene/compile &&
       sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
     fi
 
