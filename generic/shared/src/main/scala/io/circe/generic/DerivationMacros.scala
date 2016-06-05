@@ -213,7 +213,7 @@ class DerivationMacros(val c: whitebox.Context) {
         case (Member(name, _, tpe, _), instanceName, (patternAcc, fieldsAcc)) =>
         val currentName = TermName(c.freshName)
 
-        (pq"_root_.shapeless.::($currentName, $patternAcc)", q"$name -> $instanceName.apply($currentName)" :: fieldsAcc)
+        (pq"_root_.shapeless.::($currentName, $patternAcc)", q"($name, $instanceName.apply($currentName))" :: fieldsAcc)
       }
 
       c.Expr[DerivedObjectEncoder[R]](
@@ -222,7 +222,8 @@ class DerivationMacros(val c: whitebox.Context) {
             new _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R] {
               ..$instanceDefs
               final def encodeObject(a: $R): _root_.io.circe.JsonObject = a match {
-                case $pattern => _root_.io.circe.JsonObject.fromIterable(Vector(..$fields))
+                case $pattern =>
+                  _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
               }
             }: _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R]
           }
@@ -235,7 +236,7 @@ class DerivationMacros(val c: whitebox.Context) {
       val (instanceDefs, patternAndCase) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Encoder[_]], false), (typeOf[DerivedObjectEncoder[_]], true))
       )(
-        cq"""_root_.shapeless.Inr(_) => sys.error("Cannot encode CNil")"""
+        cq"""_root_.shapeless.Inr(_) => _root_.scala.sys.error("Cannot encode CNil")"""
       ) {
         case (Member(name, _, tpe, _), instanceName, acc) =>
         val tailName = TermName(c.freshName)
