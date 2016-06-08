@@ -59,7 +59,7 @@ class JsonPathSuite extends CirceSuite {
   }
 
   it should "support filtering of json array" in {
-    assert(JsonPath.root.cars.arrayFilter(_ % 2 == 1).as[Car].getAll(john) === List(Car("suv", 80, automatic = true)))
+    assert(JsonPath.root.cars.arrFilter(_ % 2 == 1).as[Car].getAll(john) === List(Car("suv", 80, automatic = true)))
   }
 
 }

@@ -9,7 +9,7 @@ import monocle.std.list._
 import scala.language.dynamics
 
 final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
-  final def Null: Optional[Json, Unit] = json composePrism jsonNull
+  final def `null`: Optional[Json, Unit] = json composePrism jsonNull
   final def boolean: Optional[Json, Boolean] = json composePrism jsonBoolean
   final def byte: Optional[Json, Byte] = json composePrism jsonByte
   final def short: Optional[Json, Short] = json composePrism jsonShort
@@ -20,7 +20,7 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   final def bigDecimal: Optional[Json, BigDecimal] = json composePrism jsonBigDecimal
   final def number: Optional[Json, JsonNumber] = json composePrism jsonNumber
   final def string: Optional[Json, String] = json composePrism jsonString
-  final def array: Optional[Json, List[Json]] = json composePrism jsonArray
+  final def arr: Optional[Json, List[Json]] = json composePrism jsonArray
   final def obj: Optional[Json, JsonObject] = json composePrism jsonObject
 
   final def at(field: String): Optional[Json, Option[Json]] =
@@ -35,8 +35,8 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   final def each: JsonTraversalPath =
     JsonTraversalPath(json composeTraversal jsonDescendants)
 
-  final def arrayFilter(p: Int => Boolean): JsonTraversalPath =
-    JsonTraversalPath(array composeTraversal FilterIndex.filterIndex(p))
+  final def arrFilter(p: Int => Boolean): JsonTraversalPath =
+    JsonTraversalPath(arr composeTraversal FilterIndex.filterIndex(p))
 
   final def objFilter(p: String => Boolean): JsonTraversalPath =
     JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
@@ -58,7 +58,7 @@ final object JsonPath {
 }
 
 final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic {
-  final def Null: Traversal[Json, Unit] = json composePrism jsonNull
+  final def `null`: Traversal[Json, Unit] = json composePrism jsonNull
   final def boolean: Traversal[Json, Boolean] = json composePrism jsonBoolean
   final def byte: Traversal[Json, Byte] = json composePrism jsonByte
   final def short: Traversal[Json, Short] = json composePrism jsonShort
@@ -69,7 +69,7 @@ final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic 
   final def bigDecimal: Traversal[Json, BigDecimal] = json composePrism jsonBigDecimal
   final def number: Traversal[Json, JsonNumber] = json composePrism jsonNumber
   final def string: Traversal[Json, String] = json composePrism jsonString
-  final def array: Traversal[Json, List[Json]] = json composePrism jsonArray
+  final def arr: Traversal[Json, List[Json]] = json composePrism jsonArray
   final def obj: Traversal[Json, JsonObject] = json composePrism jsonObject
 
   final def at(field: String): Traversal[Json, Option[Json]] =
@@ -84,8 +84,8 @@ final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic 
   final def each: JsonTraversalPath =
     JsonTraversalPath(json composeTraversal jsonDescendants)
 
-  final def arrayFilter(p: Int => Boolean): JsonTraversalPath =
-    JsonTraversalPath(array composeTraversal FilterIndex.filterIndex(p))
+  final def arrFilter(p: Int => Boolean): JsonTraversalPath =
+    JsonTraversalPath(arr composeTraversal FilterIndex.filterIndex(p))
 
   final def objFilter(p: String => Boolean): JsonTraversalPath =
     JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
