@@ -8,6 +8,9 @@ import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
+/**
+ * A type class that provides a way to materialize a value of type `A` from a [[Json]] value.
+ */
 trait Decoder[A] extends Serializable { self =>
   /**
    * Decode the given hcursor.
