@@ -50,6 +50,9 @@ import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedS
 import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }
 
+/**
+ * A type class that provides a way to produce a value of type `A` from a [[Json]] value.
+ */
 trait Decoder[A] extends Serializable { self =>
 
   /**
