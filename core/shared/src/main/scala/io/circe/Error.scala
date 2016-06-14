@@ -75,6 +75,15 @@ final object DecodingFailure {
     case other: DecodingFailure => Some((other.message, other.history))
   }
 
+  def fromThrowable(t: Throwable, ops: => List[HistoryOp]): DecodingFailure = t match {
+    case (d: DecodingFailure) => d
+    case other =>
+      val sw = new java.io.StringWriter
+      val pw = new java.io.PrintWriter(sw)
+      other.printStackTrace(pw)
+      DecodingFailure(sw.toString, ops)
+  }
+
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
     case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
       m1 == m2 && Eq[List[HistoryOp]].eqv(h1, h2)

@@ -7,6 +7,7 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
+import scala.util.{Failure, Success, Try}
 
 trait Decoder[A] extends Serializable { self =>
   /**
@@ -152,6 +153,20 @@ trait Decoder[A] extends Serializable { self =>
     final def apply(c: HCursor): Decoder.Result[B] =
       self(c).flatMap(a => f(a).leftMap(message => DecodingFailure(message, c.history)))
   }
+  /**
+   * Create a new decoder that performs some operation on the result if this one succeeds.
+   *
+   * @param f a function returning either a value or an error message
+   */
+  final def trymap[B](f: A => Try[B]): Decoder[B] = new Decoder[B] {
+    final def apply(c: HCursor): Decoder.Result[B] =
+      self(c).flatMap { a =>
+        f(a) match {
+          case Success(b) => Xor.right(b)
+          case Failure(t) => Xor.left(DecodingFailure.fromThrowable(t, c.history))
+        }
+      }
+  }
 }
 
 /**
@@ -198,12 +213,28 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   final def apply[A](implicit instance: Decoder[A]): Decoder[A] = instance
 
   /**
+   * Create a decoder that always returns a single value, useful with some flatMap situations
+   */
+  final def const[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
+
+  /**
    * Construct an instance from a function.
    *
    * @group Utilities
    */
   final def instance[A](f: HCursor => Result[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = f(c)
+  }
+
+  /**
+   * This is for easier interop with code that already returns Try. You should
+   * prefer instance for any new code.
+   */
+  final def instanceTry[A](f: HCursor => Try[A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = f(c) match {
+      case Success(a) => Xor.right(a)
+      case Failure(t) => Xor.left(DecodingFailure.fromThrowable(t, c.history))
+    }
   }
 
   /**
