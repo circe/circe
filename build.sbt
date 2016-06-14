@@ -411,7 +411,8 @@ lazy val optics = project
   .settings(
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %% "monocle-core" % "1.2.1",
-      "com.github.julien-truffaut" %% "monocle-law" % "1.2.1" % "test"
+      "com.github.julien-truffaut" %% "monocle-law" % "1.2.1" % "test",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
   .dependsOn(core, tests % "test")
