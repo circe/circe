@@ -7,7 +7,7 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
   /**
@@ -158,7 +158,7 @@ trait Decoder[A] extends Serializable { self =>
    *
    * @param f a function returning either a value or an error message
    */
-  final def trymap[B](f: A => Try[B]): Decoder[B] = new Decoder[B] {
+  final def emapTry[B](f: A => Try[B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] =
       self(c).flatMap { a =>
         f(a) match {
@@ -215,7 +215,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * Create a decoder that always returns a single value, useful with some flatMap situations
    */
-  final def const[A](a: A): Decoder[A] = instance(_ => Xor.right(a))
+  final def const[A](a: A): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = Xor.right(a)
+    final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      Validated.valid(a)
+  }
 
   /**
    * Construct an instance from a function.
@@ -771,10 +775,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val monadInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
-      final def pure[A](a: A): Decoder[A] = new Decoder[A] {
-        final def apply(c: HCursor): Result[A] = Xor.right(a)
-        override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = Validated.valid(a)
-      }
+      final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)

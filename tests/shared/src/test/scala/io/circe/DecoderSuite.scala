@@ -6,6 +6,8 @@ import cats.laws.discipline.arbitrary._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
+import scala.util.{ Failure, Success, Try }
+import scala.util.control.NoStackTrace
 
 class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   checkLaws("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
@@ -30,6 +32,24 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   it should "appropriately transform the result with an operation that may fail" in forAll { (i: Int) =>
     val decoder = Decoder[Int].emap(v => if (v % 2 == 0) Xor.right(v) else Xor.left("Odd"))
     val expected = if (i % 2 == 0) Xor.right(i) else Xor.left(DecodingFailure("Odd", Nil))
+
+    assert(decoder.decodeJson(i.asJson) === expected)
+  }
+
+  "emapTry" should "do nothing when used with Success" in forAll { (i: Int) =>
+    assert(Decoder[Int].emapTry(Success(_)).decodeJson(i.asJson) === Xor.right(i))
+  }
+
+  it should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
+    assert(Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson) === Xor.right(i + 1))
+  }
+
+  it should "appropriately transform the result with an operation that may fail" in forAll { (i: Int) =>
+    val exception = new Exception("Odd") with NoStackTrace
+    val decoder = Decoder[Int].emapTry(v => if (v % 2 == 0) Success(v) else Failure(exception))
+    val expected = if (i % 2 == 0) Xor.right(i) else Xor.left(
+      DecodingFailure(s"${ exception.getClass.getName }: Odd\n", Nil)
+    )
 
     assert(decoder.decodeJson(i.asJson) === expected)
   }
@@ -110,6 +130,18 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
         }
       )
     }
+  }
+
+  "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
+    val exception = new Exception("Not an Int")
+    val expected = Xor.fromOption(
+      json.asNumber.flatMap(_.toInt),
+      DecodingFailure.fromThrowable(exception, Nil)
+    )
+
+    val instance = Decoder.instanceTry(c => Try(c.as[Int].getOrElse(throw exception)))
+
+    assert(instance.decodeJson(json) === expected)
   }
 
   "Decoder[Byte]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
