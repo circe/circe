@@ -72,6 +72,7 @@ lazy val commonJsSettings = Seq(
 def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   benchmark,
   coreJS,
+  hygiene,
   java8,
   literalJS,
   genericJS,
@@ -332,6 +333,17 @@ lazy val testsBase = crossProject.in(file("tests"))
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
+lazy val hygiene = project
+  .settings(
+    description := "circe hygiene",
+    moduleName := "circe-hygiene"
+  )
+  .settings(allSettings ++ noPublishSettings)
+  .settings(
+    scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
+  )
+  .dependsOn(core, generic, jawn, literal)
+
 lazy val jawn = project
   .settings(
     description := "circe jawn",
@@ -542,7 +554,10 @@ val jsProjects = Seq(
 )
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJVM", ";buildJVM" + jvmTestProjects.map(";" + _ + "/test").mkString + ";scalastyle;unidoc")
+addCommandAlias(
+  "validateJVM",
+  ";buildJVM" + jvmTestProjects.map(";" + _ + "/test").mkString + ";scalastyle;unidoc"
+)
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")

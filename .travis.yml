@@ -18,6 +18,10 @@ install:
   - pip install --user codecov
 
 script:
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.11.* ]];
+    then sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
+    else echo "Skipping hygiene tests on 2.10";
+    fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
     else
