@@ -72,6 +72,7 @@ lazy val commonJsSettings = Seq(
 def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   benchmark,
   coreJS,
+  hygiene,
   java8,
   literalJS,
   genericJS,
