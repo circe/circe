@@ -47,11 +47,8 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   it should "appropriately transform the result with an operation that may fail" in forAll { (i: Int) =>
     val exception = new Exception("Odd") with NoStackTrace
     val decoder = Decoder[Int].emapTry(v => if (v % 2 == 0) Success(v) else Failure(exception))
-    val expected = if (i % 2 == 0) Xor.right(i) else Xor.left(
-      DecodingFailure(s"${ exception.getClass.getName }: Odd\n", Nil)
-    )
 
-    assert(decoder.decodeJson(i.asJson) === expected)
+    assert(decoder.decodeJson(i.asJson).isRight == (i % 2 == 0))
   }
 
   "failedWithMessage" should "replace the message" in forAll { (json: Json) =>
