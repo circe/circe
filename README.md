@@ -14,7 +14,11 @@ number of reasons](https://github.com/travisbrown/circe/issues/11).
 ## Table of contents
 
 1. [Quick start](#quick-start)
-2. [Why?](#why)
+2. [Community](#community)
+  1. [Related projects](#related-projects)
+  2. [Examples](#examples)
+  3. [Adopters](#adopters)
+3. [Why?](#why)
   1. [Dependencies and modularity](#dependencies-and-modularity)
   2. [Parsing](#parsing)
   3. [Lenses](#lenses)
@@ -23,12 +27,12 @@ number of reasons](https://github.com/travisbrown/circe/issues/11).
   6. [Documentation](#documentation)
   7. [Testing](#testing)
   8. [Performance](#performance)
-3. [Usage](#usage)
+4. [Usage](#usage)
   1. [Encoding and decoding](#encoding-and-decoding)
   2. [Transforming JSON](#transforming-json)
-4. [Contributors and participation](#contributors-and-participation)
-5. [Warnings and known issues](#warnings-and-known-issues)
-6. [License](#license)
+5. [Contributors and participation](#contributors-and-participation)
+6. [Warnings and known issues](#warnings-and-known-issues)
+7. [License](#license)
 
 ## Quick start
 
@@ -85,6 +89,43 @@ res1: cats.data.Xor[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
 ```
 
 No boilerplate, no runtime reflection.
+
+## Community
+
+### Related projects
+
+The following open source projects are either built on circe or provide circe support:
+
+* [akka-http-json][akka-http-json]: A library that supports using circe for JSON marshalling and
+  unmarshalling in [Akka HTTP][akka-http].
+* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
+  into circe's `Json`.
+* [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
+* [Featherbed][featherbed]: A REST client library with circe support.
+* [Finch][finch]: A library for building web services with circe support.
+* [fintrospect][fintrospect]: HTTP contracts for [Finagle][finagle] with circe support.
+* [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
+* [kadai-log][kadai-log]: A logging library with circe support.
+* [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
+* [play-circe][play-circe]: circe support for [Play!][play].
+* [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
+* [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
+  implementation.
+* [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
+
+### Examples
+
+The following projects provide examples, templates, or benchmarks that include circe:
+
+* https://github.com/alanphillips78/akka-http-microservice-blueprint
+* https://github.com/bneil/fcs_boilerplate
+* https://github.com/gvolpe/simple-http4s-api
+* https://github.com/notvitor/akka-http-circe-json-template
+* https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
+
+### Adopters
+
+Are you using circe? Please consider opening a pull request to list your organization here!
 
 ## Why?
 
@@ -429,6 +470,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+[akka-http]: http://doc.akka.io/docs/akka/current/scala/http/
+[akka-http-json]: https://github.com/hseeberger/akka-http-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
 [api]: https://travisbrown.github.io/circe/api/#io.circe.package
 [archambault]: https://twitter.com/alxarchambault
@@ -443,29 +486,49 @@ limitations under the License.
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
 [circe-parser]: https://travisbrown.github.io/circe/api/#io.circe.parser.package
+[circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
 [code-of-conduct]: http://typelevel.org/conduct.html
+[cosmos]: https://github.com/dcos/cosmos
+[dcos]: https://dcos.io/
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
+[featherbed]: https://github.com/finagle/featherbed
+[finagle]: https://twitter.github.io/finagle/
 [finch]: https://github.com/finagle/finch
+[fintrospect]: https://github.com/daviddenton/fintrospect
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [gitter]: https://gitter.im/travisbrown/circe
+[graphql]: http://graphql.org/docs/getting-started/
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
+[jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
+[jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
+[kadai-log]: https://bitbucket.org/atlassian/kadai-log
 [markhibberd]: https://github.com/markhibberd
 [maven-central]: http://search.maven.org/
 [monocle]: https://github.com/julien-truffaut/Monocle
+[msgpack]: https://github.com/msgpack/msgpack/blob/master/spec.md
+[msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
 [optics-pr]: https://github.com/travisbrown/circe/pull/78
 [paradise]: http://docs.scala-lang.org/overviews/macros/paradise.html
 [picopickle]: https://github.com/netvl/picopickle
+[play]: https://www.playframework.com/
+[play-circe]: https://github.com/jilen/play-circe
 [play-json]: https://www.playframework.com/documentation/2.4.x/ScalaJson
+[rapture]: http://rapture.io/
+[sangria]: http://sangria-graphql.org/
+[sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
 [shapeless]: https://github.com/milessabin/shapeless
 [si-7046]: https://issues.scala-lang.org/browse/SI-7046
 [si-7046-roulette]: https://twitter.com/li_haoyi/status/637281580847878145
+[snakeyaml]: https://bitbucket.org/asomov/snakeyaml
 [spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
 [spray-json]: https://github.com/spray/spray-json
+[telegram-bot-api]: https://core.telegram.org/bots/api
+[telepooz]: https://github.com/nikdon/telepooz
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
