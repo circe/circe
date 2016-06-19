@@ -134,11 +134,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
     val exception = new Exception("Not an Int")
-    val expected = Xor.fromOption(
-      json.asNumber.flatMap(_.toInt),
-      DecodingFailure.fromThrowable(exception, Nil)
-    )
-
+    val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
     val instance = Decoder.instanceTry(c => Try(c.as[Int].getOrElse(throw exception)))
 
     assert(instance.decodeJson(json) === expected)

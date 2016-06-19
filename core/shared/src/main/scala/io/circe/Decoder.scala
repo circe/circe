@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ MonadError, SemigroupK }
+import cats.{ Eval, MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
 import cats.std.list._
 import io.circe.export.Exported
@@ -776,6 +776,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
+      final override def pureEval[A](a: Eval[A]): Decoder[A] = new Decoder[A] {
+        final def apply(c: HCursor): Result[A] = Xor.right(a.value)
+        final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+          Validated.valid(a.value)
+      }
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
