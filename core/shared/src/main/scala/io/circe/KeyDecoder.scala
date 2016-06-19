@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.MonadError
+import java.util.UUID
 
 /**
  * A type class that provides a conversion from a string used as a JSON key to a
@@ -47,6 +48,14 @@ final object KeyDecoder {
 
   implicit val decodeKeySymbol: KeyDecoder[Symbol] = new KeyDecoder[Symbol] {
     final def apply(key: String): Option[Symbol] = Some(Symbol(key))
+  }
+
+  implicit val decodeKeyUUID: KeyDecoder[UUID] = new KeyDecoder[UUID] {
+    final def apply(key: String): Option[UUID] = if (key.length == 36) {
+      try Some(UUID.fromString(key)) catch {
+        case _: IllegalArgumentException => None
+      }
+    } else None
   }
 
   implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(_.toByte)

@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.functor.Contravariant
+import java.util.UUID
 
 /**
  * A type class that provides a conversion from a value of type `A` to a string.
@@ -38,6 +39,10 @@ final object KeyEncoder {
 
   implicit val encodeKeySymbol: KeyEncoder[Symbol] = new KeyEncoder[Symbol] {
     final def apply(key: Symbol): String = key.name
+  }
+
+  implicit val encodeKeyUUID: KeyEncoder[UUID] = new KeyEncoder[UUID] {
+    final def apply(key: UUID): String = key.toString
   }
 
   implicit val encodeKeyByte: KeyEncoder[Byte] = new KeyEncoder[Byte] {
