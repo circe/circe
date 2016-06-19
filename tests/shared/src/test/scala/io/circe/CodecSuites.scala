@@ -1,11 +1,10 @@
 package io.circe
 
-import java.util.UUID
-
 import cats.Eq
 import cats.data._
 import cats.laws.discipline.arbitrary._
 import io.circe.tests.{ CodecTests, CirceSuite }
+import java.util.UUID
 
 class AnyValCodecSuite extends CirceSuite {
   /**
@@ -46,6 +45,7 @@ class StdLibCodecSuite extends CirceSuite {
   checkLaws("Codec[List[Int]]", CodecTests[List[Int]].codec)
   checkLaws("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkLaws("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
+  checkLaws("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
   checkLaws("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
   checkLaws("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
   checkLaws("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
