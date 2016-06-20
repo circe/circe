@@ -100,17 +100,23 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
+* [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [Featherbed][featherbed]: A REST client library with circe support.
 * [Finch][finch]: A library for building web services with circe support.
 * [fintrospect][fintrospect]: HTTP contracts for [Finagle][finagle] with circe support.
+* [fluflu][fluflu]: A [Fluentd][fluentd] logger.
+* [jsactor][jsactor]: An actor library for Scala.js with circe support.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
 * [play-circe][play-circe]: circe support for [Play!][play].
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
+* [roc][roc]: A PostgreSQL client built on Finagle.
 * [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
   implementation.
+* [scalist][scalist]: A [Todoist][todoist] API client.
+* [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 
 ### Examples
@@ -489,6 +495,7 @@ limitations under the License.
 [circe-parser]: https://travisbrown.github.io/circe/api/#io.circe.parser.package
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
 [code-of-conduct]: http://typelevel.org/conduct.html
+[cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
 [discipline]: https://github.com/typelevel/discipline
@@ -497,12 +504,15 @@ limitations under the License.
 [finagle]: https://twitter.github.io/finagle/
 [finch]: https://github.com/finagle/finch
 [fintrospect]: https://github.com/daviddenton/fintrospect
+[fluentd]: http://www.fluentd.org/
+[fluflu]: https://github.com/tkrs/fluflu
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
 [gitter]: https://gitter.im/travisbrown/circe
 [graphql]: http://graphql.org/docs/getting-started/
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
+[jsactor]: https://github.com/codemettle/jsactor
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
 [kadai-log]: https://bitbucket.org/atlassian/kadai-log
@@ -518,18 +528,23 @@ limitations under the License.
 [play-circe]: https://github.com/jilen/play-circe
 [play-json]: https://www.playframework.com/documentation/2.4.x/ScalaJson
 [rapture]: http://rapture.io/
+[roc]: https://github.com/finagle/roc
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
 [scalaz]: https://github.com/scalaz/scalaz
+[scalist]: https://github.com/vpavkin/scalist
 [shapeless]: https://github.com/milessabin/shapeless
 [si-7046]: https://issues.scala-lang.org/browse/SI-7046
 [si-7046-roulette]: https://twitter.com/li_haoyi/status/637281580847878145
+[slick]: http://slick.lightbend.com/
+[slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
 [spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
 [spray-json]: https://github.com/spray/spray-json
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
+[todoist]: https://developer.todoist.com/
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
