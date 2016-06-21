@@ -380,7 +380,9 @@ final object Json {
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
 
-  private[this] def isReal(value: Double): Boolean = !value.isNaN && !value.isInfinity
+  private[this] def isReal(value: Double): Boolean =
+    // .isNaN and .isInfinity box, we explicitly avoid that here
+    (!java.lang.Double.isNaN(value)) && (!java.lang.Double.isInfinite(value))
 
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
