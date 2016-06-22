@@ -5,7 +5,7 @@
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/circe)
 [![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11)
 
-circe (pronounced SUR-see, or KEER-kee in classical Greek) is a JSON library for Scala (and [Scala.js][scala-js]). The rest of this page tries to give
+circe (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is a JSON library for Scala (and [Scala.js][scala-js]). The rest of this page tries to give
 some justification for its existence. There are also [API docs][api].
 
 circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for [a
