@@ -96,16 +96,21 @@ No boilerplate, no runtime reflection.
 
 The following open source projects are either built on circe or provide circe support:
 
+* [Actor Messenger][actor-im]: A platform for instant messaging.
 * [akka-http-json][akka-http-json]: A library that supports using circe for JSON marshalling and
   unmarshalling in [Akka HTTP][akka-http].
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
+* [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
 * [Featherbed][featherbed]: A REST client library with circe support.
 * [Finch][finch]: A library for building web services with circe support.
 * [fintrospect][fintrospect]: HTTP contracts for [Finagle][finagle] with circe support.
 * [fluflu][fluflu]: A [Fluentd][fluentd] logger.
+* [Github4s][github4s]: A GitHub API wrapper written in Scala.
+* [content-api-models][guardian-content-api-models]: The Guardian's Content API Thrift models.
+* [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
 * [jsactor][jsactor]: An actor library for Scala.js with circe support.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
@@ -118,6 +123,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
+* [Zenith][zenith]: Functional HTTP library built on [Unfiltered][unfiltered] and circe.
 
 ### Examples
 
@@ -479,6 +485,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+[actor-im]: https://actor.im/
 [akka-http]: http://doc.akka.io/docs/akka/current/scala/http/
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
@@ -502,6 +509,7 @@ limitations under the License.
 [dcos]: https://dcos.io/
 [discipline]: https://github.com/typelevel/discipline
 [encoder]: https://travisbrown.github.io/circe/api/#io.circe.Encoder$
+[enumeratum]: https://github.com/lloydmeta/enumeratum
 [featherbed]: https://github.com/finagle/featherbed
 [finagle]: https://twitter.github.io/finagle/
 [finch]: https://github.com/finagle/finch
@@ -509,12 +517,16 @@ limitations under the License.
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
 [generic-cursor]: https://travisbrown.github.io/circe/api/#io.circe.GenericCursor
+[github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/travisbrown/circe
 [graphql]: http://graphql.org/docs/getting-started/
+[guardian-content-api-models]: https://github.com/guardian/content-api-models
+[iglu]: https://github.com/snowplow/iglu
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
 [jsactor]: https://github.com/codemettle/jsactor
+[json-schema]: http://json-schema.org/
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
 [kadai-log]: https://bitbucket.org/atlassian/kadai-log
@@ -550,7 +562,9 @@ limitations under the License.
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
+[unfiltered]: http://unfiltered.databinder.net/Unfiltered.html
 [util]: https://github.com/twitter/util
 [very-large-adt]: http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
+[zenith]: https://github.com/sungiant/zenith
