@@ -553,41 +553,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final def decodeCanBuildFrom[A, C[_]](implicit
     d: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[C[A]] = new Decoder[C[A]] {
-    final def apply(c: HCursor): Decoder.Result[C[A]] = {
-      val arrayCursor = c.downArray
-
-      if (arrayCursor.succeeded) {
-        arrayCursor.any.traverseDecode(cbf.apply)(
-          _.right,
-          (acc, hcursor) => hcursor.as[A] match {
-            case Xor.Right(a) => Xor.Right(acc += a)
-            case l @ Xor.Left(_) => l
-          }
-        ) match {
-          case Xor.Right(builder) => Xor.right(builder.result)
-          case l @ Xor.Left(_) => l
-        }
-      } else if (c.focus.isArray)
-          Xor.right(cbf.apply.result)
-        else
-          Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
-    }
-
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[C[A]] = {
-      val arrayCursor = c.downArray
-
-      if (arrayCursor.succeeded) {
-        arrayCursor.any.traverseDecodeAccumulating(Validated.valid(cbf.apply))(
-          _.right,
-          (acc, hcursor) => AccumulatingDecoder.resultInstance.map2(acc, d.decodeAccumulating(hcursor))(_ += _)
-        ).map(_.result)
-      } else if (c.focus.isArray)
-          Validated.valid(cbf.apply.result)
-        else
-          Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
-    }
-  }
+  ): Decoder[C[A]] = new SeqDecoder[A, C](d, cbf)
 
   private[this] final val rightNone: Xor[DecodingFailure, Option[Nothing]] = Xor.right(None)
 
