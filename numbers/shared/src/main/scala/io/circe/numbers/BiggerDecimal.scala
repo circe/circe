@@ -99,7 +99,7 @@ private[numbers] final class SigAndExp(
     }
   }
 
-  def truncateToLong: Long = toDouble.round
+  def truncateToLong: Long = math.round(toDouble)
 
   override def equals(that: Any): Boolean = that match {
     case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
