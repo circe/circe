@@ -20,7 +20,8 @@ lazy val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Xfuture"
+  "-Xfuture",
+  "-Yno-predef"
 )
 
 lazy val catsVersion = "0.7.2"
@@ -40,10 +41,13 @@ lazy val baseSettings = Seq(
     }
   ),
   scalacOptions in (Compile, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
   scalacOptions in (Test, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
+  },
+  scalacOptions in Test ~= {
+    _.filterNot(Set("-Yno-predef"))
   },
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
