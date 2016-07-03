@@ -110,6 +110,7 @@ The following open source projects are either built on circe or provide circe su
 * [fluflu][fluflu]: A [Fluentd][fluentd] logger.
 * [Github4s][github4s]: A GitHub API wrapper written in Scala.
 * [content-api-models][guardian-content-api-models]: The Guardian's Content API Thrift models.
+* [http4s][http4s]: A purely functional HTTP library for client and server applications.
 * [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
 * [jsactor][jsactor]: An actor library for Scala.js with circe support.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
@@ -521,6 +522,7 @@ limitations under the License.
 [gitter]: https://gitter.im/travisbrown/circe
 [graphql]: http://graphql.org/docs/getting-started/
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
+[http4s]: https://github.com/http4s/http4s
 [iglu]: https://github.com/snowplow/iglu
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
 [jackson]: https://github.com/FasterXML/jackson
