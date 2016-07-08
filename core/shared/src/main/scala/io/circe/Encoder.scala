@@ -300,6 +300,17 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   implicit final val contravariantEncoder: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
+
+  /**
+    * @group Enumeration
+    * {{{
+    *   object WeekDay extends Enumeration { ... }
+    *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
+    * }}}
+    */
+  final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
+    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+  }
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
