@@ -243,7 +243,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     assert(decoder.apply(friday.hcursor) == Xor.right(WeekDay.Fri))
   }
 
-  "Decoder[Enumeration]" should "throw on unknown values in Scala Enumerations" in {
+  "Decoder[Enumeration]" should "fail on unknown values in Scala Enumerations" in {
     object WeekDay extends Enumeration {
       type WeekDay = Value
       val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
@@ -252,12 +252,6 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val decoder = Decoder.enumDecoder(WeekDay)
     val Xor.Right(friday) = parse("\"Friday\"")
 
-    val success = try {
-      decoder.apply(friday.hcursor)
-      true
-    } catch {
-      case _: NoSuchElementException => false
-    }
-    assert(success === false)
+    assert(decoder.apply(friday.hcursor).isEmpty)
   }
 }

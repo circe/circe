@@ -796,9 +796,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
     * }}}
     */
-  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] = new Decoder[E#Value] {
-    override def apply(c: HCursor): Result[E#Value] = Decoder.decodeString.map(str => enum.withName(str))(c)
-  }
+  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] =
+    Decoder.decodeString.flatMap { str =>
+      Decoder.instanceTry { _ =>
+        Try(enum.withName(str))
+      }
+    }
 }
 
 private[circe] trait LowPriorityDecoders {
