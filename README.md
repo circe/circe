@@ -144,6 +144,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [Project September](http://www.projectseptember.com) (using circe to exchange/store data within the platform and serve data using graphql with sangria)
 
 ## Why?
 
