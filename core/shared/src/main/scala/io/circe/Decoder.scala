@@ -788,6 +788,20 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
       final def handleErrorWith[A](fa: Decoder[A])(f: DecodingFailure => Decoder[A]): Decoder[A] = fa.handleErrorWith(f)
     }
+
+  /**
+    * @group Enumeration
+    * {{{
+    *   object WeekDay extends Enumeration { ... }
+    *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
+    * }}}
+    */
+  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] =
+    Decoder.decodeString.flatMap { str =>
+      Decoder.instanceTry { _ =>
+        Try(enum.withName(str))
+      }
+    }
 }
 
 private[circe] trait LowPriorityDecoders {

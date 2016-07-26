@@ -15,4 +15,16 @@ class EncoderSuite extends CirceSuite {
 
     assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Xor.right(m.updated(k, v)))
   }
+
+  "Encoder[Enumeration]" should "write Scala Enumerations" in {
+    object WeekDay extends Enumeration {
+      type WeekDay = Value
+      val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+    }
+
+    implicit val encoder = Encoder.enumEncoder(WeekDay)
+    val json = WeekDay.Fri.asJson
+    val decoder = Decoder.enumDecoder(WeekDay)
+    assert(decoder.apply(json.hcursor) == Xor.right(WeekDay.Fri))
+  }
 }
