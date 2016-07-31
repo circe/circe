@@ -230,6 +230,22 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Encoding
    */
+  implicit final def encodeNonEmptyList[A](implicit e: Encoder[A]): Encoder[NonEmptyList[A]] =
+    new ArrayEncoder[NonEmptyList[A]] {
+      final def encodeArray(a: NonEmptyList[A]): List[Json] = a.toList.map(e(_))
+    }
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeNonEmptyVector[A](implicit e: Encoder[A]): Encoder[NonEmptyVector[A]] =
+    new ArrayEncoder[NonEmptyVector[A]] {
+      final def encodeArray(a: NonEmptyVector[A]): List[Json] = a.toVector.toList.map(e(_))
+    }
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeOneAnd[A0, C[_]](
     implicit ea: Encoder[A0],
     is: IsTraversableOnce[C[A0]] { type A = A0 }

@@ -1,6 +1,6 @@
 package io.circe.optics
 
-import cats.std.list.{ listInstance => catsListInstance }
+import cats.instances.list.catsStdInstancesForList
 import io.circe.{ Json, JsonObject }
 import monocle.{ Lens, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
@@ -41,7 +41,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
               case (field, json) =>
                 F.map(if (p(field)) f(json) else F.point(json))(field -> _)
             }
-          )(JsonObject.from(_)(catsListInstance))
+          )(JsonObject.from(_)(catsStdInstancesForList))
     }
   }
 
