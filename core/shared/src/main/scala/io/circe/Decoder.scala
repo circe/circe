@@ -1,8 +1,7 @@
 package io.circe
 
-import cats.{ Eval, MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
-import cats.std.list._
+import cats.{ MonadError, SemigroupK }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
 import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
@@ -203,7 +202,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
-  val resultInstance: MonadError[Result, DecodingFailure] = Xor.xorInstances[DecodingFailure]
+
+  val resultInstance: MonadError[Result, DecodingFailure] =
+    Xor.catsDataInstancesForXor[DecodingFailure]
 
   /**
    * Return an instance for a given type.
@@ -705,11 +706,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     decodeCanBuildFrom[A, List].map(_.toSet).withErrorMessage("[A]Set[A]")
 
   /**
-    * @group Decoding
-    */
+   * @group Decoding
+   */
   implicit final def decodeOneAnd[A, C[_]](implicit
-  da: Decoder[A],
-  cbf: CanBuildFrom[Nothing, A, C[A]]
+    da: Decoder[A],
+    cbf: CanBuildFrom[Nothing, A, C[A]]
   ): Decoder[OneAnd[C, A]] = new Decoder[OneAnd[C, A]] {
     def apply(c: HCursor): Result[OneAnd[C, A]] = {
       val arr = c.downArray
@@ -728,6 +729,52 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       tail.ap(head.map(h => (t: C[A]) => OneAnd(h, t)))
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeNonEmptyList[A](implicit da: Decoder[A]): Decoder[NonEmptyList[A]] =
+    new Decoder[NonEmptyList[A]] {
+      def apply(c: HCursor): Result[NonEmptyList[A]] = {
+        val arr = c.downArray
+        for {
+          head <- da.tryDecode(arr)
+          tail <- decodeCanBuildFrom[A, List].tryDecode(arr.delete)
+        } yield NonEmptyList(head, tail)
+      }
+
+      override private[circe] def decodeAccumulating(
+        c: HCursor
+      ): AccumulatingDecoder.Result[NonEmptyList[A]] = {
+        val arr = c.downArray
+        val head = da.tryDecodeAccumulating(arr)
+        val tail = decodeCanBuildFrom[A, List].tryDecodeAccumulating(arr.delete)
+        tail.ap(head.map(h => (t: List[A]) => NonEmptyList(h, t)))
+      }
+    }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeNonEmptyVector[A](implicit da: Decoder[A]): Decoder[NonEmptyVector[A]] =
+    new Decoder[NonEmptyVector[A]] {
+      def apply(c: HCursor): Result[NonEmptyVector[A]] = {
+        val arr = c.downArray
+        for {
+          head <- da.tryDecode(arr)
+          tail <- decodeCanBuildFrom[A, Vector].tryDecode(arr.delete)
+        } yield NonEmptyVector(head, tail)
+      }
+
+      override private[circe] def decodeAccumulating(
+        c: HCursor
+      ): AccumulatingDecoder.Result[NonEmptyVector[A]] = {
+        val arr = c.downArray
+        val head = da.tryDecodeAccumulating(arr)
+        val tail = decodeCanBuildFrom[A, Vector].tryDecodeAccumulating(arr.delete)
+        tail.ap(head.map(h => (t: Vector[A]) => NonEmptyVector(h, t)))
+      }
+    }
 
   /**
    * @group Disjunction
@@ -776,11 +823,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
-      final override def pureEval[A](a: Eval[A]): Decoder[A] = new Decoder[A] {
-        final def apply(c: HCursor): Result[A] = Xor.right(a.value)
-        final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-          Validated.valid(a.value)
-      }
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)

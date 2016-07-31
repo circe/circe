@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import cats.std.AllInstances
+import cats.instances.AllInstances
 import cats.syntax.AllSyntax
 import org.scalatest.FlatSpec
 import org.scalatest.prop.{ Checkers, GeneratorDrivenPropertyChecks }

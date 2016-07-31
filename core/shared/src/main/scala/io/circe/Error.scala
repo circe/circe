@@ -2,7 +2,7 @@ package io.circe
 
 import cats.{ Eq, Show }
 import cats.data.NonEmptyList
-import cats.std.list._
+import cats.instances.list._
 
 /**
  * The base exception type for both decoding and parsing errors.
