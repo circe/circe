@@ -4,9 +4,9 @@ import cats.{ Eq, Show }
 
 sealed abstract class Context extends Serializable {
   def json: Json
+  def field: Option[String]
+  def index: Option[Int]
   def fold[X](field: String => X, index: Int => X): X
-  final def field: Option[String] = fold(Some.apply, _ => None)
-  final def index: Option[Int] = fold(_ => None, Some.apply)
 }
 
 final object Context {
@@ -14,10 +14,14 @@ final object Context {
   final def inObject(j: Json, f: String): Context = ObjectContext(j, f)
 
   private[this] final case class ArrayContext(json: Json, i: Int) extends Context {
+    def field: Option[String] = None
+    def index: Option[Int] = Some(i)
     def fold[X](field: String => X, index: Int => X): X = index(i)
   }
 
   private[this] final case class ObjectContext(json: Json, f: String) extends Context {
+    def field: Option[String] = Some(f)
+    def index: Option[Int] = None
     def fold[X](field: String => X, index: Int => X): X = field(f)
   }
 
