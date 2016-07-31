@@ -15,7 +15,10 @@ final object DerivedDecoder extends IncompleteDerivedDecoders {
     gen: LabelledGeneric.Aux[A, R],
     decode: Lazy[DerivedDecoder[R]]
   ): DerivedDecoder[A] = new DerivedDecoder[A] {
-    final def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
+    final def apply(c: HCursor): Decoder.Result[A] = decode.value(c) match {
+      case Right(r) => Right(gen.from(r))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
+    }
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.decodeAccumulating(c).map(gen.from)
   }
@@ -24,7 +27,10 @@ final object DerivedDecoder extends IncompleteDerivedDecoders {
     gen: LabelledGeneric.Aux[A, R],
     decode: Lazy[DerivedDecoder[R]]
   ): DerivedDecoder[A] = new DerivedDecoder[A] {
-    final def apply(c: HCursor): Decoder.Result[A] = decode.value(c).map(gen.from)
+    final def apply(c: HCursor): Decoder.Result[A] = decode.value(c) match {
+      case Right(r) => Right(gen.from(r))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
+    }
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.decodeAccumulating(c).map(gen.from)
   }

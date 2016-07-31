@@ -117,7 +117,7 @@ class DerivationMacros(val c: whitebox.Context) {
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false))
       )(
         (
-          q"_root_.cats.data.Xor.right(_root_.shapeless.HNil: _root_.shapeless.HNil)",
+          q"_root_.scala.util.Right(_root_.shapeless.HNil: _root_.shapeless.HNil)",
           q"_root_.cats.data.Validated.valid(_root_.shapeless.HNil: _root_.shapeless.HNil)"
         )
       ) {
@@ -152,10 +152,10 @@ class DerivationMacros(val c: whitebox.Context) {
       )
     }
 
-  private[this] val cnilXorFailure: Tree = q"""
-    _root_.cats.data.Xor.left[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
+  private[this] val cnilEitherFailure: Tree = q"""
+    _root_.scala.util.Left[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
       _root_.io.circe.DecodingFailure("CNil", c.history)
-    )
+    ): _root_.scala.util.Either[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil]
   """
 
   private[this] val cnilValidatedNelFailure: Tree = q"""
@@ -169,16 +169,27 @@ class DerivationMacros(val c: whitebox.Context) {
       val (instanceDefs, (result, accumulatingResult)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false), (typeOf[DerivedDecoder[_]], true))
       )(
-        (cnilXorFailure, cnilValidatedNelFailure)
+        (cnilEitherFailure, cnilValidatedNelFailure)
       ) {
         case (Member(name, nameTpe, tpe, current), instanceName, (acc, accumulatingAcc)) => (
           q"""
             {
               val result = c.downField($name)
 
-              if (result.succeeded) $instanceName.tryDecode(result).map(a =>
-                _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](a))
-              ) else $acc.map(last => _root_.shapeless.Inr(last): $current)
+              if (result.succeeded) {
+                $instanceName.tryDecode(result) match {
+                  case _root_.scala.util.Right(a) =>
+                    _root_.scala.util.Right(
+                      _root_.shapeless.Inl(_root_.shapeless.labelled.field[$nameTpe].apply[$tpe](a))
+                    )
+                  case l @ _root_.scala.util.Left(_) => l.asInstanceOf[_root_.io.circe.Decoder.Result[$current]]
+                }
+              } else {
+                $acc match {
+                  case _root_.scala.util.Right(last) => Right(_root_.shapeless.Inr(last): $current)
+                  case l @ _root_.scala.util.Left(_) => l.asInstanceOf[_root_.io.circe.Decoder.Result[$current]]
+                }
+              }
             }
           """,
           q"""

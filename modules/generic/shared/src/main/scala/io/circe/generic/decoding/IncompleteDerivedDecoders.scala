@@ -13,10 +13,12 @@ private[circe] trait IncompleteDerivedDecoders {
     removeAll: RemoveAll.Aux[T, P, (P, R)],
     decode: DerivedDecoder[R]
   ): DerivedDecoder[F] = new DerivedDecoder[F] {
-    def apply(c: HCursor): Decoder.Result[F] =
-      decode(c).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
+    final def apply(c: HCursor): Decoder.Result[F] = decode(c) match {
+      case Right(r) => Right(ffp(p => gen.from(removeAll.reinsert((p, r)))))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[F]]
+    }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
       decode.decodeAccumulating(c).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
   }
 
@@ -25,10 +27,12 @@ private[circe] trait IncompleteDerivedDecoders {
     patch: PatchWithOptions.Aux[R, O],
     decode: DerivedDecoder[O]
   ): DerivedDecoder[A => A] = new DerivedDecoder[A => A] {
-    def apply(c: HCursor): Decoder.Result[A => A] =
-      decode(c).map(o => a => gen.from(patch(gen.to(a), o)))
+    final def apply(c: HCursor): Decoder.Result[A => A] = decode(c) match {
+      case Right(o) => Right(a => gen.from(patch(gen.to(a), o)))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A => A]]
+    }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
       decode.decodeAccumulating(c).map(o => a => gen.from(patch(gen.to(a), o)))
   }
 }

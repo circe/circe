@@ -1,6 +1,5 @@
 package io.circe.scalajs
 
-import cats.data.Xor
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.semiauto._
 import io.circe.tests.CirceSuite
@@ -23,17 +22,17 @@ object UndefOrExample {
 
 class ScalaJsSuite extends CirceSuite {
   "decodeJs" should "decode js.Object" in forAll { (s: String) =>
-    assert(decodeJs[Example](Dynamic.literal(name = s)).map(_.name) === Xor.right(s))
+    assert(decodeJs[Example](Dynamic.literal(name = s)).map(_.name) === Right(s))
   }
 
   it should "handle undefined js.UndefOr when decoding js.Object" in {
     val res = decodeJs[UndefOrExample](Dynamic.literal(name = js.undefined))
 
-    assert(res.map(_.name.isDefined) === Xor.right(false))
+    assert(res.map(_.name.isDefined) === Right(false))
   }
 
   it should "handle defined js.UndefOr when decoding js.Object" in forAll { (s: String) =>
-    assert(decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.get) === Xor.right(s))
+    assert(decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.get) === Right(s))
   }
 
   "asJsAny" should "encode to js.Object" in forAll { (s: String) =>

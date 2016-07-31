@@ -1,6 +1,5 @@
 package io.circe.literal
 
-import cats.data.Xor
 import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 import shapeless.test.illTyped
@@ -29,7 +28,7 @@ class JsonInterpolatorSuite extends CirceSuite {
       """
     )
 
-    assert(parsed === Xor.right(interpolated))
+    assert(parsed === Right(interpolated))
   }
 
   it should "work with interpolated variables" in {
@@ -50,7 +49,7 @@ class JsonInterpolatorSuite extends CirceSuite {
       """
     )
 
-    assert(parsed === Xor.right(interpolated))
+    assert(parsed === Right(interpolated))
   }
 
   it should "work with interpolated strings as keys" in {
@@ -60,7 +59,7 @@ class JsonInterpolatorSuite extends CirceSuite {
 
     val parsed = parse("""{ "foo": 1 }""")
 
-    assert(parsed === Xor.right(interpolated))
+    assert(parsed === Right(interpolated))
   }
 
   it should "fail with invalid JSON" in {

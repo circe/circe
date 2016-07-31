@@ -1,8 +1,6 @@
 package io.circe
 
-import cats.data.Xor
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import cats.laws.discipline.arbitrary._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
@@ -14,34 +12,34 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   checkLaws("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
 
   "prepare" should "do nothing when used with ok" in forAll { (i: Int) =>
-    assert(Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Xor.right(i))
+    assert(Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Right(i))
   }
 
   it should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
-    assert(Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Xor.right(i))
+    assert(Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Right(i))
   }
 
   "emap" should "do nothing when used with right" in forAll { (i: Int) =>
-    assert(Decoder[Int].emap(Xor.right).decodeJson(i.asJson) === Xor.right(i))
+    assert(Decoder[Int].emap(Right(_)).decodeJson(i.asJson) === Right(i))
   }
 
   it should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
-    assert(Decoder[Int].emap(v => Xor.right(v + 1)).decodeJson(i.asJson) === Xor.right(i + 1))
+    assert(Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
 
   it should "appropriately transform the result with an operation that may fail" in forAll { (i: Int) =>
-    val decoder = Decoder[Int].emap(v => if (v % 2 == 0) Xor.right(v) else Xor.left("Odd"))
-    val expected = if (i % 2 == 0) Xor.right(i) else Xor.left(DecodingFailure("Odd", Nil))
+    val decoder = Decoder[Int].emap(v => if (v % 2 == 0) Right(v) else Left("Odd"))
+    val expected = if (i % 2 == 0) Right(i) else Left(DecodingFailure("Odd", Nil))
 
     assert(decoder.decodeJson(i.asJson) === expected)
   }
 
   "emapTry" should "do nothing when used with Success" in forAll { (i: Int) =>
-    assert(Decoder[Int].emapTry(Success(_)).decodeJson(i.asJson) === Xor.right(i))
+    assert(Decoder[Int].emapTry(Success(_)).decodeJson(i.asJson) === Right(i))
   }
 
   it should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
-    assert(Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson) === Xor.right(i + 1))
+    assert(Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
 
   it should "appropriately transform the result with an operation that may fail" in forAll { (i: Int) =>
@@ -52,7 +50,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   }
 
   "failedWithMessage" should "replace the message" in forAll { (json: Json) =>
-    assert(Decoder.failedWithMessage[Int]("Bad").decodeJson(json) === Xor.left(DecodingFailure("Bad", Nil)))
+    assert(Decoder.failedWithMessage[Int]("Bad").decodeJson(json) === Left(DecodingFailure("Bad", Nil)))
   }
 
   "An optional object field decoder" should "fail appropriately" in {
@@ -69,20 +67,20 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
           case None => result.isLeft
           case Some(o1) => o1("") match {
             // The top-level object doesn't contain a "" key, so we should succeed emptily.
-            case None => result === Xor.Right(None)
+            case None => result === Right(None)
             case Some(j2) => j2.asObject match {
               // The second-level value isn't an object, so we should fail.
               case None => result.isLeft
               case Some(o2) => o2("") match {
                 // The second-level object doesn't contain a "" key, so we should succeed emptily.
-                case None => result === Xor.Right(None)
+                case None => result === Right(None)
                 // The third-level value is null, so we succeed emptily.
-                case Some(j3) if j3.isNull => result === Xor.Right(None)
+                case Some(j3) if j3.isNull => result === Right(None)
                 case Some(j3) => j3.asString match {
                   // The third-level value isn't a string, so we should fail.
                   case None => result.isLeft
                   // The third-level value is a string, so we should have decoded it.
-                  case Some(s3) => result === Xor.Right(Some(s3))
+                  case Some(s3) => result === Right(Some(s3))
                 }
               }
             }
@@ -106,20 +104,20 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
           case None => result.isLeft
           case Some(a1) => a1.lift(0) match {
             // The top-level array is empty, so we should succeed emptily.
-            case None => result === Xor.Right(None)
+            case None => result === Right(None)
             case Some(j2) => j2.asArray match {
               // The second-level value isn't an array, so we should fail.
               case None => result.isLeft
               case Some(a2) => a2.lift(1) match {
                 // The second-level array doesn't have a second element, so we should succeed emptily.
-                case None => result === Xor.Right(None)
+                case None => result === Right(None)
                 // The third-level value is null, so we succeed emptily.
-                case Some(j3) if j3.isNull => result === Xor.Right(None)
+                case Some(j3) if j3.isNull => result === Right(None)
                 case Some(j3) => j3.asString match {
                   // The third-level value isn't a string, so we should fail.
                   case None => result.isLeft
                   // The third-level value is a string, so we should have decoded it.
-                  case Some(s3) => result === Xor.Right(Some(s3))
+                  case Some(s3) => result === Right(Some(s3))
                 }
               }
             }
@@ -132,7 +130,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
     val exception = new Exception("Not an Int")
     val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
-    val instance = Decoder.instanceTry(c => Try(c.as[Int].getOrElse(throw exception)))
+    val instance = Decoder.instanceTry(c => Try(c.as[Int].right.getOrElse(throw exception)))
 
     assert(instance.decodeJson(json) === expected)
   }
@@ -141,7 +139,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val json = Json.fromLong(l)
     val result = Decoder[Byte].apply(json.hcursor)
 
-    assert(if (l.toByte.toLong == l) result === Xor.right(l.toByte) else result.isEmpty)
+    assert(if (l.toByte.toLong == l) result === Right(l.toByte) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
@@ -153,16 +151,16 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Byte, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
-    val Xor.Right(json) = parse(s"$v.$zeros")
+    val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Byte].apply(json.hcursor) === Xor.right(v))
+    assert(Decoder[Byte].apply(json.hcursor) === Right(v))
   }
 
   "Decoder[Short]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
     val json = Json.fromLong(l)
     val result = Decoder[Short].apply(json.hcursor)
 
-    assert(if (l.toShort.toLong == l) result === Xor.right(l.toShort) else result.isEmpty)
+    assert(if (l.toShort.toLong == l) result === Right(l.toShort) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
@@ -174,16 +172,16 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Short, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
-    val Xor.Right(json) = parse(s"$v.$zeros")
+    val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Short].apply(json.hcursor) === Xor.right(v))
+    assert(Decoder[Short].apply(json.hcursor) === Right(v))
   }
 
   "Decoder[Int]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
     val json = Json.fromLong(l)
     val result = Decoder[Int].apply(json.hcursor)
 
-    assert(if (l.toInt.toLong == l) result === Xor.right(l.toInt) else result.isEmpty)
+    assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll {(d: Double) =>
@@ -195,16 +193,16 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Int, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
-    val Xor.Right(json) = parse(s"$v.$zeros")
+    val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Int].apply(json.hcursor) === Xor.right(v))
+    assert(Decoder[Int].apply(json.hcursor) === Right(v))
   }
 
   "Decoder[Long]" should "fail on out-of-range values (#83)" in forAll { (i: BigInt) =>
     val json = Json.fromBigDecimal(BigDecimal(i))
     val result = Decoder[Long].apply(json.hcursor)
 
-    assert(if (BigInt(i.toLong) == i) result === Xor.right(i.toLong) else result.isEmpty)
+    assert(if (BigInt(i.toLong) == i) result === Right(i.toLong) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
@@ -215,19 +213,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   }
 
   "Decoder[Float]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Float) =>
-    val Xor.Right(json) = parse("\"" + d.toString + "\"")
+    val Right(json) = parse("\"" + d.toString + "\"")
 
-    assert(Decoder[Float].apply(json.hcursor) === Xor.right(d))
+    assert(Decoder[Float].apply(json.hcursor) === Right(d))
   }
 
   "Decoder[Double]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Double) =>
-    val Xor.Right(json) = parse("\"" + d.toString + "\"")
+    val Right(json) = parse("\"" + d.toString + "\"")
 
-    assert(Decoder[Double].apply(json.hcursor) === Xor.right(d))
+    assert(Decoder[Double].apply(json.hcursor) === Right(d))
   }
 
   "Decoder[BigInt]" should "fail when producing a value would be intractable" in {
-    val Xor.Right(bigNumber) = parse("1e2147483647")
+    val Right(bigNumber) = parse("1e2147483647")
 
     assert(Decoder[BigInt].apply(bigNumber.hcursor).isEmpty)
   }
@@ -239,8 +237,8 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     }
 
     val decoder = Decoder.enumDecoder(WeekDay)
-    val Xor.Right(friday) = parse("\"Fri\"")
-    assert(decoder.apply(friday.hcursor) == Xor.right(WeekDay.Fri))
+    val Right(friday) = parse("\"Fri\"")
+    assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
   }
 
   "Decoder[Enumeration]" should "fail on unknown values in Scala Enumerations" in {
@@ -250,7 +248,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     }
 
     val decoder = Decoder.enumDecoder(WeekDay)
-    val Xor.Right(friday) = parse("\"Friday\"")
+    val Right(friday) = parse("\"Friday\"")
 
     assert(decoder.apply(friday.hcursor).isEmpty)
   }

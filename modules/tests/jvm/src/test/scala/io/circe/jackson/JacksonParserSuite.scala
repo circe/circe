@@ -1,6 +1,5 @@
 package io.circe.jackson
 
-import cats.data.Xor
 import io.circe.tests.{ CirceSuite, ParserTests }
 import io.circe.tests.examples.glossary
 import java.io.File
@@ -17,7 +16,7 @@ class JacksonParserSuite extends CirceSuite {
     val url = getClass.getResource("/io/circe/tests/examples/glossary.json")
     val file = new File(url.toURI)
 
-    assert(parseFile(file) === Xor.right(glossary))
+    assert(parseFile(file) === Right(glossary))
   }
 
   "parseByteArray" should "parse an array of bytes" in {
@@ -26,6 +25,6 @@ class JacksonParserSuite extends CirceSuite {
     val bytes = source.map(_.toByte).toArray
     source.close()
 
-    assert(parseByteArray(bytes) === Xor.right(glossary))
+    assert(parseByteArray(bytes) === Right(glossary))
   }
 }

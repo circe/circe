@@ -1,6 +1,5 @@
 package io.circe.jawn
 
-import cats.data.Xor
 import io.circe.tests.{ CirceSuite, ParserTests }
 import io.circe.tests.examples.glossary
 import java.io.File
@@ -18,7 +17,7 @@ class JawnParserSuite extends CirceSuite {
     val url = getClass.getResource("/io/circe/tests/examples/glossary.json")
     val file = new File(url.toURI)
 
-    assert(parseFile(file) === Xor.right(glossary))
+    assert(parseFile(file) === Right(glossary))
   }
 
   "parseByteBuffer" should "parse a byte buffer" in {
@@ -29,6 +28,6 @@ class JawnParserSuite extends CirceSuite {
 
     val buffer = ByteBuffer.wrap(bytes)
 
-    assert(parseByteBuffer(buffer) === Xor.right(glossary))
+    assert(parseByteBuffer(buffer) === Right(glossary))
   }
 }

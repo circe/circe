@@ -22,7 +22,10 @@ trait FailFastUnmarshaller { this: JsonSupport =>
   implicit final def circeJsonUnmarshaller[A](implicit decoder: RootDecoder[A]): Unmarshaller[A] =
     Unmarshaller[A](MediaTypes.`application/json`) {
       case x: HttpEntity.NonEmpty =>
-        decode[A](x.asString(defaultCharset = HttpCharsets.`UTF-8`))(decoder.underlying).valueOr(throw _)
+        decode[A](x.asString(defaultCharset = HttpCharsets.`UTF-8`))(decoder.underlying) match {
+          case Right(a) => a
+          case Left(e) => throw e
+        }
     }
 }
 

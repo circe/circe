@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.{ NonEmptyList, Validated }
 import scala.collection.generic.CanBuildFrom
 
 private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
@@ -9,7 +9,7 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
   cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
 ) extends Decoder[M[K, V]] {
   def apply(c: HCursor): Decoder.Result[M[K, V]] = c.fields match {
-    case None => Xor.left[DecodingFailure, M[K, V]](MapDecoder.failure(c))
+    case None => Left[DecodingFailure, M[K, V]](MapDecoder.failure(c))
     case Some(fields) =>
       val it = fields.iterator
       val builder = cbf.apply
@@ -24,15 +24,15 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
             failed = MapDecoder.failure(atH.any)
           case Some(k) =>
             atH.as(dv) match {
-              case Xor.Left(error) =>
+              case Left(error) =>
                 failed = error
-              case Xor.Right(value) =>
+              case Right(value) =>
                 builder += ((k, value))
             }
         }
       }
 
-      if (failed.eq(null)) Xor.right(builder.result) else Xor.left(failed)
+      if (failed.eq(null)) Right(builder.result) else Left(failed)
   }
 
   override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] =
