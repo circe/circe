@@ -12,7 +12,7 @@ class AnyValCodecSuite extends CirceSuite {
    * from itself.
    */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.std.float.floatOrder.eqv(a, b)
+    (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
@@ -20,7 +20,7 @@ class AnyValCodecSuite extends CirceSuite {
    * from itself.
    */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.std.double.doubleOrder.eqv(a, b)
+    (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
 
   checkLaws("Codec[Unit]", CodecTests[Unit].codec)

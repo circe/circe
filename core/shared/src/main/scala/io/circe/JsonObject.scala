@@ -2,7 +2,7 @@ package io.circe
 
 import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
-import cats.std.map._
+import cats.instances.map._
 import scala.collection.breakOut
 
 /**

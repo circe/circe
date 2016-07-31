@@ -22,10 +22,10 @@ case class ParserTests(p: Parser) extends Laws {
     name = "parser",
     parent = None,
     "roundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
-      isEqToProp(laws.parsingRoundTripNoSpaces(json))
+      laws.parsingRoundTripNoSpaces(json)
     },
     "roundTripWithSpaces" -> Prop.forAll { (json: Json) =>
-      isEqToProp(laws.parsingRoundTripSpaces(json))
+      laws.parsingRoundTripSpaces(json)
     }
   )
 }
