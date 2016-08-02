@@ -6,6 +6,7 @@ sealed abstract class Context extends Serializable {
   def json: Json
   def field: Option[String]
   def index: Option[Int]
+  def fold[X](field: String => X, index: Int => X): X
 }
 
 final object Context {
@@ -15,11 +16,13 @@ final object Context {
   private[this] final case class ArrayContext(json: Json, i: Int) extends Context {
     def field: Option[String] = None
     def index: Option[Int] = Some(i)
+    def fold[X](field: String => X, index: Int => X): X = index(i)
   }
 
   private[this] final case class ObjectContext(json: Json, f: String) extends Context {
     def field: Option[String] = Some(f)
     def index: Option[Int] = None
+    def fold[X](field: String => X, index: Int => X): X = field(f)
   }
 
   implicit final val eqContext: Eq[Context] = Eq.instance {
