@@ -369,7 +369,7 @@ implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 
 ### @JsonCodec
 
-circe-generic includes a @JsonCodec annotation that simplifies the use of semi-automatic generic derivation
+circe-generic includes a @JsonCodec annotation that simplifies the use of semi-automatic generic derivation:
 ```scala
 scala> import io.circe.generic.JsonCodec, io.circe.syntax._
 import io.circe.generic.JsonCodec
@@ -386,12 +386,12 @@ res0: io.circe.Json =
   "s" : "Qux"
 }
 ```
-This works with both case classes and sealed trait hierarchies
+This works with both case classes and sealed trait hierarchies.
 
 ### forProductN helper methods
 
 It's possible to construct encoders and decoders for case class-like types in a relatively boilerplate-free way
-without generic derivation
+without generic derivation:
 
 ```scala
 import io.circe._, io.circe.jawn._, io.circe.syntax._
