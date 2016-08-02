@@ -1,6 +1,7 @@
 package io.circe.tests
 
 import cats.Eq
+import cats.data.Xor
 import io.circe.{ GenericCursor, Json }
 import io.circe.syntax._
 
@@ -267,6 +268,27 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     } yield f
 
     assert(result.flatMap(focus) === Some(200.2.asJson))
+  }
+
+  "getOrElse" should "successfully decode an existing field" in {
+    val result = for {
+      b <- fromResult(cursor.downField("b"))
+    } yield b.getOrElse[List[Boolean]]("d")(Nil)
+    assert(result === Some(Xor.Right(List(true, false, true))))
+  }
+
+  it should "use the fallback if field is missing" in {
+    val result = for {
+      b <- fromResult(cursor.downField("b"))
+    } yield b.getOrElse[List[Boolean]]("z")(Nil)
+    assert(result === Some(Xor.Right(Nil)))
+  }
+
+  it should "fail if the field is the wrong type" in {
+    val result = for {
+      b <- fromResult(cursor.downField("b"))
+    } yield b.getOrElse[List[Int]]("d")(Nil)
+    assert(result.fold(false)(_.isLeft))
   }
 
   "deleteGoLeft" should "remove the current value and move appropriately" in {
