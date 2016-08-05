@@ -1,9 +1,7 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated, Xor }
-import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable.Builder
 
 private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
   dk: KeyDecoder[K],
@@ -21,15 +19,16 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
         val field = it.next
         val atH = c.downField(field)
 
-        atH.as(dv) match {
-          case Xor.Left(error) =>
-            failed = error
-          case Xor.Right(value) => dk(field) match {
-            case None =>
-              failed = MapDecoder.failure(atH.any)
-            case Some(k) =>
-              builder += ((k, value))
-          }
+        dk(field) match {
+          case None =>
+            failed = MapDecoder.failure(atH.any)
+          case Some(k) =>
+            atH.as(dv) match {
+              case Xor.Left(error) =>
+                failed = error
+              case Xor.Right(value) =>
+                builder += ((k, value))
+            }
         }
       }
 
