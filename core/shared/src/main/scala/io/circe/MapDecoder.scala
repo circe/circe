@@ -13,11 +13,27 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
   def apply(c: HCursor): Decoder.Result[M[K, V]] = c.fields match {
     case None => Xor.left[DecodingFailure, M[K, V]](MapDecoder.failure(c))
     case Some(fields) =>
-      val builder = cbf()
-      spinResult(fields, c, builder) match {
-        case None => Xor.right(builder.result())
-        case Some(error) => Xor.left(error)
+      val it = fields.iterator
+      val builder = cbf.apply
+      var failed: DecodingFailure = null
+
+      while (failed.eq(null) && it.hasNext) {
+        val field = it.next
+        val atH = c.downField(field)
+
+        atH.as(dv) match {
+          case Xor.Left(error) =>
+            failed = error
+          case Xor.Right(value) => dk(field) match {
+            case None =>
+              failed = MapDecoder.failure(atH.any)
+            case Some(k) =>
+              builder += ((k, value))
+          }
+        }
       }
+
+      if (failed.eq(null)) Xor.right(builder.result) else Xor.left(failed)
   }
 
   override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] =
@@ -30,27 +46,6 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
           case error :: errors => Validated.invalid(NonEmptyList(error, errors))
         }
     }
-
-  @tailrec
-  private[this] def spinResult(
-    fields: List[String],
-    c: HCursor,
-    builder: Builder[(K, V), M[K, V]]
-  ): Option[DecodingFailure] = fields match {
-    case Nil => None
-    case h :: t =>
-      val atH = c.downField(h)
-
-      atH.as(dv) match {
-        case Xor.Left(error) => Some(error)
-        case Xor.Right(value) => dk(h) match {
-          case None => Some(MapDecoder.failure(atH.any))
-          case Some(k) =>
-            builder += (k -> value)
-            spinResult(t, c, builder)
-        }
-    }
-  }
 
   @tailrec
   private[this] def spinAccumulating(
