@@ -605,7 +605,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     }
   }
 
-
   /**
    * @group Decoding
    */
