@@ -45,8 +45,8 @@ private[circe] class SeqDecoder[A, C[_]](
             failures ++= es.tail
           case Validated.Valid(a) =>
             if (!failed) builder += a
-            current = current.right
         }
+        current = current.right
       }
 
       failures.result match {
