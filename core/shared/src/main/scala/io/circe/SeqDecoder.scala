@@ -3,11 +3,11 @@ package io.circe
 import cats.data.{ NonEmptyList, Validated, Xor }
 import scala.collection.generic.CanBuildFrom
 
-private[circe] class SeqDecoder[A, C[_]](
+private[circe] final class SeqDecoder[A, C[_]](
   decodeA: Decoder[A],
   cbf: CanBuildFrom[Nothing, A, C[A]]
 ) extends Decoder[C[A]] {
-  final def apply(c: HCursor): Decoder.Result[C[A]] = {
+  def apply(c: HCursor): Decoder.Result[C[A]] = {
     var current = c.downArray
 
     if (current.succeeded) {
@@ -25,7 +25,9 @@ private[circe] class SeqDecoder[A, C[_]](
 
       if (failed.eq(null)) Xor.right(builder.result) else Xor.left(failed)
     } else {
-      Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
+      if (c.focus.isArray) Xor.right(cbf.apply.result) else {
+        Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
+      }
     }
   }
 
@@ -49,12 +51,13 @@ private[circe] class SeqDecoder[A, C[_]](
         current = current.right
       }
 
-      failures.result match {
-        case Nil => Validated.valid(builder.result)
-        case h :: t => Validated.invalid(NonEmptyList(h, t))
+      if (!failed) Validated.valid(builder.result) else {
+        Validated.invalid(NonEmptyList.fromListUnsafe(failures.result))
       }
     } else {
-      Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
+      if (c.focus.isArray) Validated.valid(cbf.apply.result) else {
+        Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
+      }
     }
   }
 }

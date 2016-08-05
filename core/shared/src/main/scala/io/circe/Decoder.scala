@@ -6,7 +6,6 @@ import cats.std.list._
 import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
@@ -614,75 +613,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     dk: KeyDecoder[K],
     dv: Decoder[V],
     cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
-  ): Decoder[M[K, V]] = new Decoder[M[K, V]] {
-    private[this] def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
-
-    def apply(c: HCursor): Result[M[K, V]] = c.fields match {
-      case None => Xor.left[DecodingFailure, M[K, V]](failure(c))
-      case Some(fields) =>
-        val builder = cbf()
-        spinResult(fields, c, builder) match {
-          case None => Xor.right(builder.result())
-          case Some(error) => Xor.left(error)
-        }
-    }
-
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] =
-      c.fields match {
-        case None => Validated.invalidNel(failure(c))
-        case Some(fields) =>
-          val builder = cbf()
-          spinAccumulating(fields, c, builder, false, List.newBuilder[DecodingFailure]) match {
-            case Nil => Validated.valid(builder.result())
-            case error :: errors => Validated.invalid(NonEmptyList(error, errors))
-          }
-      }
-
-    @scala.annotation.tailrec
-    private[this] def spinResult(
-      fields: List[String],
-      c: HCursor,
-      builder: Builder[(K, V), M[K, V]]
-    ): Option[DecodingFailure] = fields match {
-      case Nil => None
-      case h :: t =>
-        val atH = c.downField(h)
-
-        atH.as(dv) match {
-          case Xor.Left(error) => Some(error)
-          case Xor.Right(value) => dk(h) match {
-            case None => Some(failure(atH.any))
-            case Some(k) =>
-              builder += (k -> value)
-              spinResult(t, c, builder)
-          }
-      }
-    }
-
-    @scala.annotation.tailrec
-    private[this] def spinAccumulating(
-      fields: List[String],
-      c: HCursor,
-      builder: Builder[(K, V), M[K, V]],
-      failed: Boolean,
-      errors: Builder[DecodingFailure, List[DecodingFailure]]
-    ): List[DecodingFailure] = fields match {
-      case Nil => errors.result
-      case h :: t =>
-        val atH = c.downField(h)
-
-        (atH.as(dv), dk(h)) match {
-          case (Xor.Left(error), _) => spinAccumulating(t, c, builder, true, errors += error)
-          case (_, None) => spinAccumulating(t, c, builder, true, errors += failure(atH.any))
-          case (Xor.Right(value), Some(k)) =>
-            if (!failed) {
-              builder += (k -> value)
-            } else ()
-
-            spinAccumulating(t, c, builder, failed, errors)
-        }
-    }
-  }
+  ): Decoder[M[K, V]] = new MapDecoder[M, K, V]
 
   /**
    * @group Decoding
@@ -694,25 +625,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     * @group Decoding
     */
   implicit final def decodeOneAnd[A, C[_]](implicit
-  da: Decoder[A],
-  cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[OneAnd[C, A]] = new Decoder[OneAnd[C, A]] {
-    def apply(c: HCursor): Result[OneAnd[C, A]] = {
-      val arr = c.downArray
-      for {
-        head <- da.tryDecode(arr)
-        tail <- decodeCanBuildFrom[A, C].tryDecode(arr.delete)
-      } yield OneAnd(head, tail)
-    }
-
-    override private[circe] def decodeAccumulating(
-      c: HCursor
-    ): AccumulatingDecoder.Result[OneAnd[C, A]] = {
-      val arr = c.downArray
-      val head = da.tryDecodeAccumulating(arr)
-      val tail = decodeCanBuildFrom[A, C].tryDecodeAccumulating(arr.delete)
-      tail.ap(head.map(h => (t: C[A]) => OneAnd(h, t)))
-    }
+    da: Decoder[A],
+    cbf: CanBuildFrom[Nothing, A, C[A]]
+  ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]] {
+    final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
 
   /**
