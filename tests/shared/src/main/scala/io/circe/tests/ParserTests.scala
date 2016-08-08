@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import cats.data.Xor
+import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Json, Parser, ParsingFailure }
@@ -8,11 +8,11 @@ import org.scalacheck.{ Arbitrary, Prop }
 import org.typelevel.discipline.Laws
 
 case class ParserLaws(parser: Parser) {
-  def parsingRoundTripNoSpaces(json: Json): IsEq[Xor[ParsingFailure, Json]] =
-    parser.parse(json.noSpaces) <-> Xor.right(json)
+  def parsingRoundTripNoSpaces(json: Json): IsEq[Either[ParsingFailure, Json]] =
+    parser.parse(json.noSpaces) <-> Right(json)
 
-  def parsingRoundTripSpaces(json: Json): IsEq[Xor[ParsingFailure, Json]] =
-    parser.parse(json.spaces2) <-> Xor.right(json)
+  def parsingRoundTripSpaces(json: Json): IsEq[Either[ParsingFailure, Json]] =
+    parser.parse(json.spaces2) <-> Right(json)
 }
 
 case class ParserTests(p: Parser) extends Laws {

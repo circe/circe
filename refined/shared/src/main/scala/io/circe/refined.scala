@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.data.Xor
 import eu.timepit.refined.api.{ RefType, Validate }
 
 /**
@@ -27,11 +26,13 @@ package object refined {
     refType: RefType[F]
   ): Decoder[F[T, P]] =
     Decoder.instance { c =>
-      underlying(c).flatMap { t0 =>
-        refType.refine(t0) match {
-          case Left(err) => Xor.Left(DecodingFailure(err, c.history))
-          case Right(t)  => Xor.right(t)
-        }
+      underlying(c) match {
+        case Right(t0) =>
+          refType.refine(t0) match {
+            case Left(err) => Left(DecodingFailure(err, c.history))
+            case r @ Right(t)  => r.asInstanceOf[Decoder.Result[F[T, P]]]
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[F[T, P]]]
       }
     }
 

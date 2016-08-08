@@ -49,7 +49,12 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
    */
   final def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Optional[Json, A] =
     json.composePrism(
-      Prism((j: Json) => decode.decodeJson(j).toOption)(encode(_))
+      Prism((j: Json) =>
+        decode.decodeJson(j) match {
+          case Right(a) => Some(a)
+          case Left(_) => None
+        }
+      )(encode(_))
     )
 }
 
@@ -92,6 +97,11 @@ final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic 
 
   final def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Traversal[Json, A] =
     json.composePrism(
-      Prism((j: Json) => decode.decodeJson(j).toOption)(encode(_))
+      Prism((j: Json) =>
+        decode.decodeJson(j) match {
+          case Right(a) => Some(a)
+          case Left(_) => None
+        }
+      )(encode(_))
     )
 }

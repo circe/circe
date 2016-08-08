@@ -1,11 +1,11 @@
 package io.circe.literal
 
-import cats.data.Xor
 import io.circe.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import macrocompat.bundle
 import scala.reflect.macros.whitebox
+import scala.util.control.NonFatal
 
 @bundle
 class LiteralMacros(val c: whitebox.Context) {
@@ -127,8 +127,8 @@ class LiteralMacros(val c: whitebox.Context) {
   final def parse(
     jsonString: String,
     placeHolders: Map[String, (Tree, Option[Tree])]
-  ): Xor[Throwable, Tree] =
-    Xor.catchNonFatal {
+  ): Either[Throwable, Tree] =
+    try Right {
       val jawnParserClass = Class.forName("jawn.Parser$")
       val jawnParser = jawnParserClass.getField("MODULE$").get(jawnParserClass)
       val jawnFacadeClass = Class.forName("jawn.Facade")
@@ -139,6 +139,8 @@ class LiteralMacros(val c: whitebox.Context) {
         jsonString,
         new TreeFacadeHandler(placeHolders).asProxy(jawnFacadeClass)
       ).asInstanceOf[Tree]
+    } catch {
+      case NonFatal(e) => Left(e)
     }
 
   private[this] final def randomPlaceHolder(): String = UUID.randomUUID().toString
@@ -185,12 +187,13 @@ class LiteralMacros(val c: whitebox.Context) {
         } + stringParts.last
 
         c.Expr[Json](
-          parse(jsonString, encodedArgs.toMap).valueOr[Tree] {
-            case _: ClassNotFoundException => c.abort(
+          parse(jsonString, encodedArgs.toMap) match {
+            case Right(tree) => tree
+            case Left(_: ClassNotFoundException) => c.abort(
               c.enclosingPosition,
               "The json interpolator requires jawn to be available at compile time"
             )
-            case t: Throwable => c.abort(
+            case Left(t: Throwable) => c.abort(
               c.enclosingPosition,
               "Invalid JSON in interpolated string"
             )
@@ -207,13 +210,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asString.flatMap[$sType] {
-                case s if s == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asString.exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -225,13 +228,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asBoolean.flatMap[$sType] {
-                case s if s == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asBoolean.exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -243,13 +246,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asNumber.map(_.toDouble).flatMap[$sType] {
-                case s if s == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asNumber.map(_.toDouble).exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -261,13 +264,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asNumber.map(_.toDouble).flatMap[$sType] {
-                case s if s.toFloat == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asNumber.map(_.toDouble).exists(s => s.toFloat == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -279,13 +282,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asNumber.flatMap(_.toLong).flatMap[$sType] {
-                case s if s == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asNumber.flatMap(_.toLong).exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -297,13 +300,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asNumber.flatMap(_.toInt).flatMap[$sType] {
-                case s if s == $lit => _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asNumber.flatMap(_.toInt).exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -315,14 +318,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            _root_.cats.data.Xor.fromOption(
-              c.focus.asString.flatMap[$sType] {
-                case s if s.length == 1 && s.charAt(0) == $lit =>
-                  _root_.scala.Some[$sType]($lit: $sType)
-                case _ => _root_.scala.None
-              },
-              _root_.io.circe.DecodingFailure($name, c.history)
-            )
+            if (c.focus.asString.exists(s => s.length == 1 && s.charAt(0) == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
           }
         """
     }
@@ -330,42 +332,42 @@ class LiteralMacros(val c: whitebox.Context) {
   final def encodeLiteralStringImpl[S <: String: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: String)) =>
-        q"_root_.io.circe.Encoder.apply[java.lang.String].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.java.lang.String].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralBooleanImpl[S <: Boolean: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Boolean)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Boolean].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Boolean].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralDoubleImpl[S <: Double: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Double)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Double].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Double].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralFloatImpl[S <: Float: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Float)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Float].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Float].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralLongImpl[S <: Long: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Long)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Long].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Long].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralIntImpl[S <: Int: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Int)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Int].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Int].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralCharImpl[S <: Char: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Char)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Char].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Char].contramap[$sType](_root_.scala.Predef.identity)"
     }
 }

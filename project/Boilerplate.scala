@@ -114,7 +114,7 @@ object Boilerplate {
       }.mkString(", ")
 
       val result =
-        if (arity == 1) s"$applied.map(Tuple1(_))" else s"Decoder.resultInstance.tuple$arity($applied)"
+        if (arity == 1) s"Decoder.resultInstance.map($applied)(Tuple1(_))" else s"Decoder.resultInstance.tuple$arity($applied)"
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingApplied.map(Tuple1(_))"
@@ -123,7 +123,7 @@ object Boilerplate {
       block"""
         |package io.circe
         |
-        |import cats.data.{ NonEmptyList, Xor }
+        |import cats.data.Validated
         |
         |private[circe] trait TupleDecoders {
         -  /**
@@ -132,18 +132,19 @@ object Boilerplate {
         -  implicit final def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
         -    new Decoder[${`(A..N)`}] {
         -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.as[Vector[HCursor]] match {
-        -        case Xor.Right(js) => if (js.size == $arity) {
+        -        case Right(js) => if (js.size == $arity) {
         -          $result
-        -        } else Xor.left(DecodingFailure("${`(A..N)`}", c.history))
-        -        case l @ Xor.Left(_) => l
+        -        } else Left(DecodingFailure("${`(A..N)`}", c.history))
+        -        case l @ Left(_) => l.asInstanceOf[Decoder.Result[${`(A..N)`}]]
         -      }
         -
         -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
-        -        c.as[Vector[HCursor]].leftMap[NonEmptyList[DecodingFailure]](NonEmptyList(_)).flatMap { js =>
-        -          if (js.size == $arity) {
-        -            $accumulatingResult.toXor
-        -          } else Xor.left(NonEmptyList(DecodingFailure("${`(A..N)`}", c.history), Nil))
-        -        }.toValidated
+        -        c.as[Vector[HCursor]] match {
+        -          case Right(js) => if (js.size == $arity) {
+        -            $accumulatingResult
+        -          } else Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
+        -          case Left(e) => Validated.invalidNel(e)
+        -        }
         -    }
         |}
       """
@@ -221,7 +222,7 @@ object Boilerplate {
       ).mkString(",")
 
       val result =
-        if (arity == 1) s"($results).map(f)" else s"Decoder.resultInstance.map$arity($results)(f)"
+        if (arity == 1) s"Decoder.resultInstance.map($results)(f)" else s"Decoder.resultInstance.map$arity($results)(f)"
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingResults.map(f)"

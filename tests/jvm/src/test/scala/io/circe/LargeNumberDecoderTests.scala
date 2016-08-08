@@ -1,6 +1,5 @@
 package io.circe
 
-import cats.data.Xor
 import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 
@@ -10,15 +9,15 @@ import io.circe.tests.CirceSuite
 trait LargeNumberDecoderTests { this: CirceSuite =>
   "Decoder[Long]" should "succeed on whole decimal values (#83)" in forAll { (v: Long, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
-    val Xor.Right(json) = parse(s"$v.$zeros")
+    val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Long].apply(json.hcursor) === Xor.right(v))
+    assert(Decoder[Long].apply(json.hcursor) === Right(v))
   }
 
   "Decoder[BigInt]" should "succeed on whole decimal values (#83)" in forAll { (v: BigInt, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
-    val Xor.Right(json) = parse(s"$v.$zeros")
+    val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[BigInt].apply(json.hcursor) === Xor.right(v))
+    assert(Decoder[BigInt].apply(json.hcursor) === Right(v))
   }
 }

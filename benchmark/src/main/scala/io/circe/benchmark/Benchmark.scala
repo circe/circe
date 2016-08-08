@@ -122,7 +122,7 @@ class EncodingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class DecodingBenchmark extends ExampleData {
   @Benchmark
-  def decodeIntsC: List[Int] = intsC.as[List[Int]].getOrElse(throw new Exception)
+  def decodeIntsC: List[Int] = intsC.as[List[Int]].right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeIntsA: List[Int] = intsA.as[List[Int]].result.getOrElse(throw new Exception)
@@ -138,7 +138,7 @@ class DecodingBenchmark extends ExampleData {
 
   @Benchmark
   def decodeFoosC: Map[String, Foo] =
-    foosC.as[Map[String, Foo]].getOrElse(throw new Exception)
+    foosC.as[Map[String, Foo]].right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeFoosA: Map[String, Foo] =
@@ -166,10 +166,10 @@ class DecodingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class ParsingBenchmark extends ExampleData {
   @Benchmark
-  def parseIntsC: JsonC = parse(intsJson).getOrElse(throw new Exception)
+  def parseIntsC: JsonC = parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseIntsCJ: JsonC = io.circe.jackson.parse(intsJson).getOrElse(throw new Exception)
+  def parseIntsCJ: JsonC = io.circe.jackson.parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
@@ -184,10 +184,10 @@ class ParsingBenchmark extends ExampleData {
   def parseIntsPico: backend.BValue = readAst(intsJson)
 
   @Benchmark
-  def parseFoosC: JsonC = parse(foosJson).getOrElse(throw new Exception)
+  def parseFoosC: JsonC = parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseFoosCJ: JsonC = io.circe.jackson.parse(foosJson).getOrElse(throw new Exception)
+  def parseFoosCJ: JsonC = io.circe.jackson.parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)
@@ -268,11 +268,11 @@ class CirceDerivationBenchmark {
 
   private[this] val nonDerivedDecoder: Decoder[Foo] = new Decoder[Foo] {
     def apply(c: HCursor): Decoder.Result[Foo] = for {
-      s <- c.get[String]("s")
-      d <- c.get[Double]("d")
-      i <- c.get[Int]("i")
-      l <- c.get[Long]("l")
-      bs <- c.get[List[Boolean]]("bs")
+      s <- c.get[String]("s").right
+      d <- c.get[Double]("d").right
+      i <- c.get[Int]("i").right
+      l <- c.get[Long]("l").right
+      bs <- c.get[List[Boolean]]("bs").right
     } yield Foo(s, d, i, l, bs)
   }
 

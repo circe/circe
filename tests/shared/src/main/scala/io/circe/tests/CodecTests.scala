@@ -1,7 +1,7 @@
 package io.circe.tests
 
 import cats.Eq
-import cats.data.Xor
+import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Json }
@@ -14,10 +14,10 @@ trait CodecLaws[A] {
   def encode: Encoder[A]
 
   def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
-    encode(a).as(decode) <-> Xor.right(a)
+    encode(a).as(decode) <-> Right(a)
 
   def codecAccumulatingConsistency(json: Json): IsEq[Decoder.Result[A]] =
-    decode(json.hcursor) <-> decode.accumulating(json.hcursor).leftMap(_.head).toXor
+    decode(json.hcursor) <-> decode.accumulating(json.hcursor).leftMap(_.head).toEither
 }
 
 object CodecLaws {

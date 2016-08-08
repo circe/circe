@@ -56,7 +56,7 @@ class StdLibCodecSuite extends CirceSuite {
     val json = Encoder[(Int, String, Char)].apply(t)
     val target = Json.arr(Json.fromInt(t._1), Json.fromString(t._2), Encoder[Char].apply(t._3))
 
-    assert(json === target && json.as[(Int, String, Char)] === Xor.right(t))
+    assert(json === target && json.as[(Int, String, Char)] === Right(t))
   }
 
   "A tuple decoder" should "fail if not given enough elements" in forAll { (i: Int, s: String) =>
@@ -74,7 +74,7 @@ class StdLibCodecSuite extends CirceSuite {
     val maybeList = jsonArr.as[List[Int]]
     assert(maybeList.isRight)
 
-    val list = maybeList.getOrElse(???)
+    val list = maybeList.right.getOrElse(???)
     assert(list.length == size)
     assert(list.forall(_ == 1))
   }

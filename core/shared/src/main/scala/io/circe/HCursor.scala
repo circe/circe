@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.{ Eq, Functor, Id }
-import cats.data.Xor
 import scala.annotation.tailrec
 
 /**
@@ -49,31 +48,31 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
     f: (A, HCursor) => Decoder.Result[A]
   ): Decoder.Result[A] = loop[(HCursor, A), A](
     f(init, this) match {
-      case Xor.Right(a) => Xor.Right((this, a))
-      case l @ Xor.Left(_) => l
+      case Right(a) => Right((this, a))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[(HCursor, A)]]
     },
-    new Function1[(HCursor, A), Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]]] {
-      final def apply(p: (HCursor, A)): Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]] = {
+    new Function1[(HCursor, A), Either[Decoder.Result[A], Decoder.Result[(HCursor, A)]]] {
+      final def apply(p: (HCursor, A)): Either[Decoder.Result[A], Decoder.Result[(HCursor, A)]] = {
         val result = op(p._1)
 
-        if (result.succeeded) Xor.right(
+        if (result.succeeded) Right(
           f(p._2, result.any) match {
-            case Xor.Right(b) => Xor.right((result.any, b))
-            case l @ Xor.Left(_) => l
+            case Right(b) => Right((result.any, b))
+            case l @ Left(_) => l.asInstanceOf[Decoder.Result[(HCursor, A)]]
           }
-        ) else Xor.left(Xor.right(p._2))
+        ) else Left(Right(p._2))
       }
     }
   )
 
   @tailrec private[this] final def loop[A, B](
     r1: Decoder.Result[A],
-    f: A => Xor[Decoder.Result[B], Decoder.Result[A]]
+    f: A => Either[Decoder.Result[B], Decoder.Result[A]]
   ): Decoder.Result[B] = r1 match {
-    case l @ Xor.Left(_) => l
-    case Xor.Right(a) => f(a) match {
-      case Xor.Left(b) => b
-      case Xor.Right(r2) => loop[A, B](r2, f)
+    case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
+    case Right(a) => f(a) match {
+      case Left(b) => b
+      case Right(r2) => loop[A, B](r2, f)
     }
   }
 
