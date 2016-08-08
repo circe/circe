@@ -4,7 +4,7 @@ import _root_.scodec.bits.{BitVector, ByteVector}
 import cats.data.Xor
 
 package object scodec {
-  implicit final val bitVectorDecoder: Decoder[BitVector] =
+  implicit final val decodeBitVector: Decoder[BitVector] =
     Decoder.instance { c =>
       Decoder.decodeString(c).flatMap { str =>
         BitVector.fromBase64Descriptive(str) match {
@@ -14,10 +14,10 @@ package object scodec {
       }
     }
 
-  implicit final val bitVectorEncoder: Encoder[BitVector] =
+  implicit final val encodeBitVector: Encoder[BitVector] =
     Encoder.encodeString.contramap(_.toBase64)
 
-  implicit final val byteVectorDecoder: Decoder[ByteVector] =
+  implicit final val decodeByteVector: Decoder[ByteVector] =
     Decoder.instance { c =>
       Decoder.decodeString(c).flatMap { str =>
         ByteVector.fromBase64Descriptive(str) match {
@@ -27,6 +27,6 @@ package object scodec {
       }
     }
 
-  implicit final val byteVectorEncoder: Encoder[ByteVector] =
+  implicit final val encodeByteVector: Encoder[ByteVector] =
     Encoder.encodeString.contramap(_.toBase64)
 }
