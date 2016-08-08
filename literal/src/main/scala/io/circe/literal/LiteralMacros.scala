@@ -330,42 +330,42 @@ class LiteralMacros(val c: whitebox.Context) {
   final def encodeLiteralStringImpl[S <: String: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: String)) =>
-        q"_root_.io.circe.Encoder.apply[java.lang.String].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.java.lang.String].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralBooleanImpl[S <: Boolean: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Boolean)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Boolean].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Boolean].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralDoubleImpl[S <: Double: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Double)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Double].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Double].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralFloatImpl[S <: Float: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Float)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Float].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Float].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralLongImpl[S <: Long: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Long)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Long].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Long].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralIntImpl[S <: Int: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Int)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Int].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Int].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralCharImpl[S <: Char: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Char)) =>
-        q"_root_.io.circe.Encoder.apply[scala.Char].contramap[$sType](identity)"
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Char].contramap[$sType](_root_.scala.Predef.identity)"
     }
 }
