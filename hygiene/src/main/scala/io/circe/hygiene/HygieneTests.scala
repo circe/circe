@@ -5,6 +5,7 @@ import io.circe.generic.auto._
 import io.circe.generic.semiauto._
 import io.circe.literal._
 import scala.StringContext
+import shapeless.Witness
 
 sealed trait Base
 
@@ -42,4 +43,19 @@ object HygieneTests {
       }
     }
   """
+
+  val se = Encoder[Witness.`"foo"`.T]
+  val sd = Decoder[Witness.`"foo"`.T]
+  val be = Encoder[Witness.`true`.T]
+  val db = Decoder[Witness.`true`.T]
+  val de = Encoder[Witness.`1.0`.T]
+  val dd = Decoder[Witness.`1.0`.T]
+  val fe = Encoder[Witness.`1.0F`.T]
+  val fd = Decoder[Witness.`1.0F`.T]
+  val le = Encoder[Witness.`1L`.T]
+  val ld = Decoder[Witness.`1L`.T]
+  val ie = Encoder[Witness.`1`.T]
+  val id = Decoder[Witness.`1`.T]
+  val ce = Encoder[Witness.`'a'`.T]
+  val cd = Decoder[Witness.`'a'`.T]
 }
