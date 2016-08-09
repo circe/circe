@@ -126,4 +126,19 @@ The answer is that `JsonPath` relies on a slightly obscure feature of Scala call
 means you can call methods that don't actually exist. When you do so, the `selectDynamic` method is
 called, and the name of the method you wanted to call is passed as an argument.
 
+### Warning
+
+The use of Dynamic means that your code is not "typo-safe". For example, if you fat-finger the previous
+example:
+
+```scala
+val doubleQuantities: Json => Json =
+  root.order.itemss.each.quantity.int.modify(_ * 2) // Note the "itemss" typo
+
+val modifiedJson = doubleQuantities(json)
+```
+
+This code will compile just fine, but not do what you expect. Because the JSON document doesn't have
+an `itemss` field, the same document will be returned unmodified.
+
 {% include references.md %}

@@ -75,7 +75,11 @@ Note that `Json` is immutable, so the original document is left unchanged.
 
 ## Cursors
 
-TODO explain the difference between Cursor, HCursor and ACursor
+circe has three slightly different cursor implementations:
+
+* `Cursor` provides functionality for moving around a tree and making modifications
+* `HCursor` tracks the history of operations performed. This can be used to provide useful error messages when something goes wrong.
+* `ACursor` also tracks history, but represents the possibility of failure (e.g. calling `downField` on a field that doesn't exist)
 
 ## Optics
 
