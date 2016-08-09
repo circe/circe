@@ -767,7 +767,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   ): Decoder[OneAnd[C, A]] = new Decoder[OneAnd[C, A]] {
     def apply(c: HCursor): Result[OneAnd[C, A]] = {
       val arr = c.downArray
-      
+
       da.tryDecode(arr) match {
         case Right(head) => decodeCanBuildFrom[A, C].tryDecode(arr.delete) match {
           case Right(tail) => Right(OneAnd(head, tail))
