@@ -125,8 +125,7 @@ div#content h1 {
 
 div#commute {
     float: left;
-    with: 200px;
-    height: 80px;
+    height: 100px;
 }
 
 div#commute img {
@@ -266,4 +265,8 @@ hr {
 
 h2:hover a:after {
     content: '§';
+}
+
+div#banner h1 {
+  margin-top: 0
 }

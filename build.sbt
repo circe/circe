@@ -105,7 +105,7 @@ lazy val docSettings = allSettings ++ tutSettings ++ site.settings ++ ghpages.se
   git.remoteRepo := "git@github.com:cb372/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
     inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
-  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.yml" | "*.md"
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
 lazy val docs = project.dependsOn(core, generic, parser, optics)
