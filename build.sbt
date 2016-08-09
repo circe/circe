@@ -80,6 +80,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   numbersJS,
   parserJS,
   refinedJS,
+  scodecJS,
   tests,
   testsJS
 ) ++ (
@@ -109,6 +110,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   literal, literalJS,
   refined, refinedJS,
   parser, parserJS,
+  scodec, scodecJS,
   tests, testsJS,
   jawn,
   jackson,
@@ -289,6 +291,24 @@ lazy val scalajs = project
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(coreJS)
 
+lazy val scodecBase = crossProject.in(file("scodec"))
+  .settings(
+    description := "circe scodec",
+    moduleName := "circe-scodec",
+    name := "scodec"
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies += "org.scodec" %% "scodec-bits" % "1.1.0"
+  )
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "scodec"))
+  .jsConfigure(_.copy(id = "scodecJS"))
+  .dependsOn(coreBase)
+
+lazy val scodec = scodecBase.jvm
+lazy val scodecJS = scodecBase.js
+
 lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     description := "circe tests",
@@ -328,7 +348,8 @@ lazy val testsBase = crossProject.in(file("tests"))
     genericBase,
     literalBase,
     refinedBase,
-    parserBase
+    parserBase,
+    scodecBase
   )
 
 lazy val tests = testsBase.jvm
@@ -539,6 +560,7 @@ val jvmProjects = Seq(
   "generic",
   "refined",
   "parser",
+  "scodec",
   "tests",
   "jawn",
   "jackson",
@@ -564,6 +586,7 @@ val jsProjects = Seq(
   "refinedJS",
   "parserJS",
   "scalajs",
+  "scodecJS",
   "testsJS"
 )
 
