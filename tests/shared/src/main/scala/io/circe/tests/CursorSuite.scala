@@ -1,7 +1,6 @@
 package io.circe.tests
 
 import cats.Eq
-import cats.data.Xor
 import io.circe.{ GenericCursor, Json }
 import io.circe.syntax._
 
@@ -274,14 +273,14 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       b <- fromResult(cursor.downField("b"))
     } yield b.getOrElse[List[Boolean]]("d")(Nil)
-    assert(result === Some(Xor.Right(List(true, false, true))))
+    assert(result === Some(Right(List(true, false, true))))
   }
 
   it should "use the fallback if field is missing" in {
     val result = for {
       b <- fromResult(cursor.downField("b"))
     } yield b.getOrElse[List[Boolean]]("z")(Nil)
-    assert(result === Some(Xor.Right(Nil)))
+    assert(result === Some(Right(Nil)))
   }
 
   it should "fail if the field is the wrong type" in {

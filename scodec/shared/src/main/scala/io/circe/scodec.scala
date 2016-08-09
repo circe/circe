@@ -6,11 +6,13 @@ import cats.data.Xor
 package object scodec {
   implicit final val decodeBitVector: Decoder[BitVector] =
     Decoder.instance { c =>
-      Decoder.decodeString(c).flatMap { str =>
-        BitVector.fromBase64Descriptive(str) match {
-          case Right(bits) => Xor.right(bits)
-          case Left(err) => Xor.left(DecodingFailure(err, c.history))
-        }
+      Decoder.decodeString(c) match {
+        case Right(str) =>
+          BitVector.fromBase64Descriptive(str) match {
+            case r @ Right(_) => r.asInstanceOf[Decoder.Result[BitVector]]
+            case Left(err) => Left(DecodingFailure(err, c.history))
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[BitVector]]
       }
     }
 
@@ -19,11 +21,13 @@ package object scodec {
 
   implicit final val decodeByteVector: Decoder[ByteVector] =
     Decoder.instance { c =>
-      Decoder.decodeString(c).flatMap { str =>
-        ByteVector.fromBase64Descriptive(str) match {
-          case Right(bytes) => Xor.right(bytes)
-          case Left(err) => Xor.left(DecodingFailure(err, c.history))
-        }
+      Decoder.decodeString(c) match {
+        case Right(str) =>
+          ByteVector.fromBase64Descriptive(str) match {
+            case r @ Right(_) => r.asInstanceOf[Decoder.Result[ByteVector]]
+            case Left(err) => Left(DecodingFailure(err, c.history))
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[ByteVector]]
       }
     }
 
