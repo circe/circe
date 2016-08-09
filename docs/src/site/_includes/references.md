@@ -7,6 +7,7 @@
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
+[argus]: https://github.com/aishfenton/Argus
 [benchmarks]: https://github.com/travisbrown/circe/blob/master/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
 [cats-xor]: http://typelevel.org/cats/tut/xor.html
