@@ -209,8 +209,8 @@ each of these cases the file will be closed when the processing is done (even if
 few lines from the file, or if we run into decoding or I/O errors during the processing).
 
 
-[cats]: https://github.com/non/cats
-[cats-32]: https://github.com/non/cats/issues/32
+[cats]: https://github.com/typelevel/cats
+[cats-32]: https://github.com/typelevel/cats/issues/32
 [circe-streaming]: ../../streaming/
 [error-accumulation]: https://meta.plasm.us/posts/2015/12/17/error-accumulating-decoders-in-circe/
 [jawn]: https://github.com/non/jawn
