@@ -41,9 +41,17 @@ trait Decoder[A] extends Serializable { self =>
    * Map a function over this [[Decoder]].
    */
   final def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    final def apply(c: HCursor): Decoder.Result[B] = self(c).map(f)
-    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c).map(f)
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    final def apply(c: HCursor): Decoder.Result[B] = self(c) match {
+      case Xor.Right(a) => Xor.Right(f(a))
+      case l @ Xor.Left(_) => l
+    }
+
+    override final def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+      case Xor.Right(a) => Xor.Right(f(a))
+      case l @ Xor.Left(_) => l
+    }
+
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).map(f)
   }
 
@@ -51,13 +59,17 @@ trait Decoder[A] extends Serializable { self =>
    * Monadically bind a function over this [[Decoder]].
    */
   final def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
-    final def apply(c: HCursor): Decoder.Result[B] = self(c).flatMap(a => f(a)(c))
-
-    override def tryDecode(c: ACursor): Decoder.Result[B] = {
-      self.tryDecode(c).flatMap(a => f(a).tryDecode(c))
+    final def apply(c: HCursor): Decoder.Result[B] = self(c) match {
+      case Xor.Right(a) => f(a)(c)
+      case l @ Xor.Left(_) => l
     }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override final def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+      case Xor.Right(a) => f(a).tryDecode(c)
+      case l @ Xor.Left(_) => l
+    }
+
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
   }
 
@@ -205,6 +217,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   type Result[A] = Xor[DecodingFailure, A]
   val resultInstance: MonadError[Result, DecodingFailure] = Xor.xorInstances[DecodingFailure]
 
+  private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
+    final def fail(c: HCursor): Result[A] = Xor.left(DecodingFailure(name, c.history))
+  }
+
   /**
    * Return an instance for a given type.
    *
@@ -294,16 +310,20 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Decoding
    */
   implicit final val decodeJsonObject: Decoder[JsonObject] = new Decoder[JsonObject] {
-    final def apply(c: HCursor): Result[JsonObject] =
-      Xor.fromOption(c.focus.asObject, DecodingFailure("JsonObject", c.history))
+    final def apply(c: HCursor): Result[JsonObject] = c.focus.asObject match {
+      case Some(v) => Xor.right(v)
+      case None => Xor.left(DecodingFailure("JsonObject", c.history))
+    }
   }
 
   /**
    * @group Decoding
    */
   implicit final val decodeJsonNumber: Decoder[JsonNumber] = new Decoder[JsonNumber] {
-    final def apply(c: HCursor): Result[JsonNumber] =
-      Xor.fromOption(c.focus.asNumber, DecodingFailure("JsonNumber", c.history))
+    final def apply(c: HCursor): Result[JsonNumber] = c.focus.asNumber match {
+      case Some(v) => Xor.right(v)
+      case None => Xor.left(DecodingFailure("JsonNumber", c.history))
+    }
   }
 
   /**
@@ -355,15 +375,15 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeFloat: Decoder[Float] = new Decoder[Float] {
+  implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.focus match {
       case JNull => Xor.right(Float.NaN)
       case JNumber(number) => Xor.right(number.toDouble.toFloat)
-      case JString(string) => Xor.fromOption(
-        JsonNumber.fromString(string).map(_.toDouble.toFloat),
-        DecodingFailure("Float", c.history)
-      )
-      case _ => Xor.left(DecodingFailure("Float", c.history))
+      case JString(string) => JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
+      case _ => fail(c)
     }
   }
 
@@ -376,15 +396,15 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeDouble: Decoder[Double] = new Decoder[Double] {
+  implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
     final def apply(c: HCursor): Result[Double] = c.focus match {
       case JNull => Xor.right(Double.NaN)
       case JNumber(number) => Xor.right(number.toDouble)
-      case JString(string) => Xor.fromOption(
-        JsonNumber.fromString(string).map(_.toDouble),
-        DecodingFailure("Double", c.history)
-      )
-      case _ => Xor.left(DecodingFailure("Double", c.history))
+      case JString(string) => JsonNumber.fromString(string).map(_.toDouble) match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
+      case _ => fail(c)
     }
   }
 
@@ -395,18 +415,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeByte: Decoder[Byte] = new Decoder[Byte] {
+  implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
     final def apply(c: HCursor): Result[Byte] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toByte,
-        DecodingFailure("Byte", c.history)
-      )
+      case JNumber(number) => number.toByte match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(string.toByte)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Byte", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("Byte", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -417,18 +437,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeShort: Decoder[Short] = new Decoder[Short] {
+  implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
     final def apply(c: HCursor): Result[Short] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toShort,
-        DecodingFailure("Short", c.history)
-      )
+      case JNumber(number) => number.toShort match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(string.toShort)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Short", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("Short", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -439,18 +459,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeInt: Decoder[Int] = new Decoder[Int] {
+  implicit final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
     final def apply(c: HCursor): Result[Int] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toInt,
-        DecodingFailure("Int", c.history)
-      )
+      case JNumber(number) => number.toInt match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(string.toInt)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Int", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("Int", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -464,18 +484,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeLong: Decoder[Long] = new Decoder[Long] {
+  implicit final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
     final def apply(c: HCursor): Result[Long] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toLong,
-        DecodingFailure("Long", c.history)
-      )
+      case JNumber(number) => number.toLong match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(string.toLong)
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("Long", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("Long", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -489,18 +509,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeBigInt: Decoder[BigInt] = new Decoder[BigInt] {
+  implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
     final def apply(c: HCursor): Result[BigInt] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toBigInt,
-        DecodingFailure("BigInt", c.history)
-      )
+      case JNumber(number) => number.toBigInt match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(BigInt(string))
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("BigInt", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("BigInt", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -517,18 +537,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new Decoder[BigDecimal] {
+  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
     final def apply(c: HCursor): Result[BigDecimal] = c.focus match {
-      case JNumber(number) => Xor.fromOption(
-        number.toBigDecimal,
-        DecodingFailure("BigDecimal", c.history)
-      )
+      case JNumber(number) => number.toBigDecimal match {
+        case Some(v) => Xor.right(v)
+        case None => fail(c)
+      }
       case JString(string) => try {
         Xor.right(BigDecimal(string))
       } catch {
-        case _: NumberFormatException => Xor.left(DecodingFailure("BigDecimal", c.history))
+        case _: NumberFormatException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("BigDecimal", c.history))
+      case _ => fail(c)
     }
   }
 
