@@ -1,7 +1,7 @@
 package io.circe.tests
 
 import cats.Eq
-import cats.std.AllInstances
+import cats.instances.AllInstances
 import io.circe.{ Decoder, Encoder, Json }
 import org.scalacheck.{ Arbitrary, Gen }
 

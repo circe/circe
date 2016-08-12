@@ -44,6 +44,7 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
    * This operation does not consume stack at each step, so is safe to work with
    * large structures (in contrast with recursively binding).
    */
+  @deprecated("No direct replacement", "0.6.0")
   final def traverseDecode[A](init: A)(
     op: HCursor => ACursor,
     f: (A, HCursor) => Decoder.Result[A]
@@ -84,6 +85,7 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
    * This operation does not consume stack at each step, so is safe to work with
    * large structures (in contrast with recursively binding).
    */
+  @deprecated("No direct replacement", "0.6.0")
   @tailrec final def traverseDecodeAccumulating[A](init: AccumulatingDecoder.Result[A])(
     op: HCursor => ACursor,
     f: (AccumulatingDecoder.Result[A], HCursor) => AccumulatingDecoder.Result[A]
