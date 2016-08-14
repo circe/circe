@@ -139,7 +139,7 @@ object Boilerplate {
         -      }
         -
         -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
-        -        c.as[Vector[HCursor]].leftMap[NonEmptyList[DecodingFailure]](NonEmptyList(_)).flatMap { js =>
+        -        c.as[Vector[HCursor]].leftMap[NonEmptyList[DecodingFailure]](NonEmptyList(_, Nil)).flatMap { js =>
         -          if (js.size == $arity) {
         -            $accumulatingResult.toXor
         -          } else Xor.left(NonEmptyList(DecodingFailure("${`(A..N)`}", c.history), Nil))

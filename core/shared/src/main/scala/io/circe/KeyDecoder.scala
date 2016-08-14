@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.MonadError
+import cats.data.Xor
 import java.util.UUID
 
 /**
@@ -63,7 +64,7 @@ final object KeyDecoder {
   implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(_.toInt)
   implicit val decodeKeyLong: KeyDecoder[Long] = numberInstance(_.toLong)
 
-  implicit val monadErrorKeyDecode: MonadError[KeyDecoder, Unit] = new MonadError[KeyDecoder, Unit] {
+  implicit val keyDecoderInstances: MonadError[KeyDecoder, Unit] = new MonadError[KeyDecoder, Unit] {
     final def pure[A](a: A): KeyDecoder[A] = new KeyDecoder[A] {
       final def apply(key: String): Option[A] = Some(a)
     }
@@ -78,6 +79,17 @@ final object KeyDecoder {
 
     final def handleErrorWith[A](fa: KeyDecoder[A])(f: Unit => KeyDecoder[A]): KeyDecoder[A] = new KeyDecoder[A] {
       final def apply(key: String): Option[A] = f(())(key)
+    }
+
+    final def tailRecM[A, B](a: A)(f: A => KeyDecoder[Xor[A, B]]): KeyDecoder[B] = new KeyDecoder[B] {
+      @scala.annotation.tailrec
+      private[this] def step(key: String, a1: A): Option[B] = f(a1)(key) match {
+        case None => None
+        case Some(Xor.Left(a2)) => step(key, a2)
+        case Some(Xor.Right(b)) => Some(b)
+      }
+
+      final def apply(key: String): Option[B] = step(key, a)
     }
   }
 }

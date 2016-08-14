@@ -720,7 +720,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Instances
    */
-  implicit final val monadInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+  implicit final val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
@@ -730,6 +730,17 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
       final def handleErrorWith[A](fa: Decoder[A])(f: DecodingFailure => Decoder[A]): Decoder[A] = fa.handleErrorWith(f)
+
+      final def tailRecM[A, B](a: A)(f: A => Decoder[Xor[A, B]]): Decoder[B] = new Decoder[B] {
+        @scala.annotation.tailrec
+        private[this] def step(c: HCursor, a1: A): Result[B] = f(a1)(c) match {
+          case l @ Xor.Left(df) => l
+          case Xor.Right(Xor.Left(a2)) => step(c, a2)
+          case Xor.Right(r @ Xor.Right(_)) => r
+        }
+
+        final def apply(c: HCursor): Result[B] = step(c, a)
+      }
     }
 
   /**
