@@ -571,6 +571,7 @@ val jvmProjects = Seq(
 )
 
 val jvmTestProjects = Seq(
+  "numbers",
   "tests",
   "optics",
   "spray",
