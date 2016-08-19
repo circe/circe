@@ -14,6 +14,10 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
 
   private[this] def doubleEqv(x: Double, y: Double): Boolean = java.lang.Double.compare(x, y) == 0
 
+  "fromDouble(0)" should "equal fromBigDecimal(ZERO) (#348)" in {
+    assert(BiggerDecimal.fromDouble(0) === BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
+  }
+
   "fromDouble" should "round-trip Double values" in forAll { (value: Double) =>
     val d = BiggerDecimal.fromDouble(value)
 

@@ -102,11 +102,13 @@ private[numbers] final class SigAndExp(
   def truncateToLong: Long = toDouble.round
 
   override def equals(that: Any): Boolean = that match {
-    case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
+    case other: SigAndExp =>
+      (unscaled == BigInteger.ZERO && other.unscaled == BigInteger.ZERO) ||
+      (unscaled == other.unscaled && scale == other.scale)
     case _ => false
   }
 
-  override def hashCode: Int = scale.hashCode + unscaled.hashCode
+  override def hashCode: Int = if (unscaled == BigInteger.ZERO) 0 else scale.hashCode + unscaled.hashCode
 
   override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString else {
     s"${ unscaled }e${ scale.negate }"
