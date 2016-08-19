@@ -635,46 +635,16 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Decoding
    */
   implicit final def decodeNonEmptyList[A](implicit da: Decoder[A]): Decoder[NonEmptyList[A]] =
-    new Decoder[NonEmptyList[A]] {
-      def apply(c: HCursor): Result[NonEmptyList[A]] = {
-        val arr = c.downArray
-        for {
-          head <- da.tryDecode(arr)
-          tail <- decodeCanBuildFrom[A, List].tryDecode(arr.delete)
-        } yield NonEmptyList(head, tail)
-      }
-
-      override private[circe] def decodeAccumulating(
-        c: HCursor
-      ): AccumulatingDecoder.Result[NonEmptyList[A]] = {
-        val arr = c.downArray
-        val head = da.tryDecodeAccumulating(arr)
-        val tail = decodeCanBuildFrom[A, List].tryDecodeAccumulating(arr.delete)
-        tail.ap(head.map(h => (t: List[A]) => NonEmptyList(h, t)))
-      }
+    new NonEmptySeqDecoder[A, List, NonEmptyList[A]] {
+      final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
     }
 
   /**
    * @group Decoding
    */
   implicit final def decodeNonEmptyVector[A](implicit da: Decoder[A]): Decoder[NonEmptyVector[A]] =
-    new Decoder[NonEmptyVector[A]] {
-      def apply(c: HCursor): Result[NonEmptyVector[A]] = {
-        val arr = c.downArray
-        for {
-          head <- da.tryDecode(arr)
-          tail <- decodeCanBuildFrom[A, Vector].tryDecode(arr.delete)
-        } yield NonEmptyVector(head, tail)
-      }
-
-      override private[circe] def decodeAccumulating(
-        c: HCursor
-      ): AccumulatingDecoder.Result[NonEmptyVector[A]] = {
-        val arr = c.downArray
-        val head = da.tryDecodeAccumulating(arr)
-        val tail = decodeCanBuildFrom[A, Vector].tryDecodeAccumulating(arr.delete)
-        tail.ap(head.map(h => (t: Vector[A]) => NonEmptyVector(h, t)))
-      }
+    new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]] {
+      final protected val create: (A, Vector[A]) => NonEmptyVector[A] = (h, t) => NonEmptyVector(h, t)
     }
 
   /**
