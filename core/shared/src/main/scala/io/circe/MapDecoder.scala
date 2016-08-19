@@ -65,7 +65,10 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
         }
 
         if (!failed) Validated.valid(builder.result) else {
-          Validated.invalid(NonEmptyList.fromListUnsafe(failures.result))
+          failures.result match {
+            case h :: t => Validated.invalid(NonEmptyList(h, t))
+            case Nil => Validated.valid(builder.result)
+          }
         }
     }
 }

@@ -52,7 +52,10 @@ private[circe] final class SeqDecoder[A, C[_]](
       }
 
       if (!failed) Validated.valid(builder.result) else {
-        Validated.invalid(NonEmptyList.fromListUnsafe(failures.result))
+        failures.result match {
+          case h :: t => Validated.invalid(NonEmptyList(h, t))
+          case Nil => Validated.valid(builder.result)
+        }
       }
     } else {
       if (c.focus.isArray) Validated.valid(cbf.apply.result) else {
