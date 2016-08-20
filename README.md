@@ -128,6 +128,7 @@ The following open source projects are either built on circe or provide circe su
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on [Unfiltered][unfiltered] and circe.
+* [Argus][argus]: Generates models and Circe encoders/decoders from Json schemas.
 
 ### Examples
 
@@ -644,3 +645,4 @@ limitations under the License.
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
 [zenith]: https://github.com/sungiant/zenith
+[argus]: https://github.com/aishfenton/Argus
