@@ -4,6 +4,7 @@ import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
 import io.circe.export.Exported
 import java.util.UUID
+import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
 import scala.util.{ Failure, Success, Try }
 
@@ -701,12 +702,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
       final def handleErrorWith[A](fa: Decoder[A])(f: DecodingFailure => Decoder[A]): Decoder[A] = fa.handleErrorWith(f)
 
-      final def tailRecM[A, B](a: A)(f: A => Decoder[Xor[A, B]]): Decoder[B] = new Decoder[B] {
-        @scala.annotation.tailrec
+      final def tailRecM[A, B](a: A)(f: A => Decoder[Either[A, B]]): Decoder[B] = new Decoder[B] {
+        @tailrec
         private[this] def step(c: HCursor, a1: A): Result[B] = f(a1)(c) match {
           case l @ Xor.Left(df) => l
-          case Xor.Right(Xor.Left(a2)) => step(c, a2)
-          case Xor.Right(r @ Xor.Right(_)) => r
+          case Xor.Right(Left(a2)) => step(c, a2)
+          case Xor.Right(Right(b)) => Xor.right(b)
         }
 
         final def apply(c: HCursor): Result[B] = step(c, a)

@@ -1,8 +1,8 @@
 package io.circe
 
 import cats.MonadError
-import cats.data.Xor
 import java.util.UUID
+import scala.annotation.tailrec
 
 /**
  * A type class that provides a conversion from a string used as a JSON key to a
@@ -81,12 +81,12 @@ final object KeyDecoder {
       final def apply(key: String): Option[A] = f(())(key)
     }
 
-    final def tailRecM[A, B](a: A)(f: A => KeyDecoder[Xor[A, B]]): KeyDecoder[B] = new KeyDecoder[B] {
-      @scala.annotation.tailrec
+    final def tailRecM[A, B](a: A)(f: A => KeyDecoder[Either[A, B]]): KeyDecoder[B] = new KeyDecoder[B] {
+      @tailrec
       private[this] def step(key: String, a1: A): Option[B] = f(a1)(key) match {
         case None => None
-        case Some(Xor.Left(a2)) => step(key, a2)
-        case Some(Xor.Right(b)) => Some(b)
+        case Some(Left(a2)) => step(key, a2)
+        case Some(Right(b)) => Some(b)
       }
 
       final def apply(key: String): Option[B] = step(key, a)
