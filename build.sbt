@@ -299,7 +299,7 @@ lazy val scodecBase = crossProject.in(file("scodec"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "org.scodec" %% "scodec-bits" % "1.1.0"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.0"
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "scodec"))
@@ -322,6 +322,7 @@ lazy val testsBase = crossProject.in(file("tests"))
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.scodec" %%% "scodec-bits" % "1.1.0",
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
