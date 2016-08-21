@@ -176,7 +176,7 @@ facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us
 fussiest code in Argonaut. The [`jackson`][circe-jackson] subproject supports using
 [Jackson][jackson] for both parsing and printing.
 
-circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
+circe also provides a [`scalajs`][circe-scalajs] subproject that provides parsing support for Scala.js,
 with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
 
 ### Lenses
@@ -577,7 +577,7 @@ limitations under the License.
 [circe-generic]: https://travisbrown.github.io/circe/api/#io.circe.generic.auto$
 [circe-jackson]: https://travisbrown.github.io/circe/api/#io.circe.jackson.package
 [circe-jawn]: https://travisbrown.github.io/circe/api/#io.circe.jawn.package
-[circe-parser]: https://travisbrown.github.io/circe/api/#io.circe.parser.package
+[circe-scalajs]: https://travisbrown.github.io/circe/api/#io.circe.scalajs.package
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
