@@ -21,7 +21,7 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.6.1"
+lazy val catsVersion = "0.7.0"
 lazy val jawnVersion = "0.9.0"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.5.0"
@@ -299,7 +299,7 @@ lazy val scodecBase = crossProject.in(file("scodec"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies += "org.scodec" %% "scodec-bits" % "1.1.0"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.0"
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "scodec"))
@@ -322,6 +322,7 @@ lazy val testsBase = crossProject.in(file("tests"))
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.scodec" %%% "scodec-bits" % "1.1.0",
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
@@ -392,7 +393,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.5.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.6.0-M2"
   )
   .dependsOn(core, jawn)
 

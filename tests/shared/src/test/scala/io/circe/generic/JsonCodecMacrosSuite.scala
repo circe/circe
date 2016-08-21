@@ -1,7 +1,7 @@
 package io.circe.generic
 
 import cats.Eq
-import cats.std.AllInstances
+import cats.instances.AllInstances
 import io.circe.ObjectEncoder
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.tests.{ ArbitraryInstances, CirceSuite, CodecTests, MissingInstances }

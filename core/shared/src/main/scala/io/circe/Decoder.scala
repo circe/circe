@@ -1,10 +1,10 @@
 package io.circe
 
-import cats.{ Eval, MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, OneAnd, Validated, Xor }
-import cats.std.list._
+import cats.{ MonadError, SemigroupK }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
 import io.circe.export.Exported
 import java.util.UUID
+import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
 import scala.util.{ Failure, Success, Try }
 
@@ -214,7 +214,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   import Json._
 
   type Result[A] = Xor[DecodingFailure, A]
-  val resultInstance: MonadError[Result, DecodingFailure] = Xor.xorInstances[DecodingFailure]
+
+  val resultInstance: MonadError[Result, DecodingFailure] =
+    Xor.catsDataInstancesForXor[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
     final def fail(c: HCursor): Result[A] = Xor.left(DecodingFailure(name, c.history))
@@ -621,14 +623,30 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     decodeCanBuildFrom[A, List].map(_.toSet).withErrorMessage("[A]Set[A]")
 
   /**
-    * @group Decoding
-    */
+   * @group Decoding
+   */
   implicit final def decodeOneAnd[A, C[_]](implicit
     da: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
   ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]] {
     final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeNonEmptyList[A](implicit da: Decoder[A]): Decoder[NonEmptyList[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptyList[A]] {
+      final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
+    }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeNonEmptyVector[A](implicit da: Decoder[A]): Decoder[NonEmptyVector[A]] =
+    new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]] {
+      final protected val create: (A, Vector[A]) => NonEmptyVector[A] = (h, t) => NonEmptyVector(h, t)
+    }
 
   /**
    * @group Disjunction
@@ -673,21 +691,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Instances
    */
-  implicit final val monadInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+  implicit final val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
-      final override def pureEval[A](a: Eval[A]): Decoder[A] = new Decoder[A] {
-        final def apply(c: HCursor): Result[A] = Xor.right(a.value)
-        final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-          Validated.valid(a.value)
-      }
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
       final def handleErrorWith[A](fa: Decoder[A])(f: DecodingFailure => Decoder[A]): Decoder[A] = fa.handleErrorWith(f)
+
+      final def tailRecM[A, B](a: A)(f: A => Decoder[Either[A, B]]): Decoder[B] = new Decoder[B] {
+        @tailrec
+        private[this] def step(c: HCursor, a1: A): Result[B] = f(a1)(c) match {
+          case l @ Xor.Left(df) => l
+          case Xor.Right(Left(a2)) => step(c, a2)
+          case Xor.Right(Right(b)) => Xor.right(b)
+        }
+
+        final def apply(c: HCursor): Result[B] = step(c, a)
+      }
     }
 
   /**

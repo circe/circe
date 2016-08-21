@@ -2,8 +2,8 @@ package io.circe.streaming
 
 import _root_.jawn.{ AsyncParser, ParseException }
 import cats.ApplicativeError
-import cats.std.either._
-import cats.std.vector._
+import cats.instances.either._
+import cats.instances.vector._
 import cats.syntax.traverse._
 import io.circe.{ Json, ParsingFailure }
 import io.circe.jawn.CirceSupportParser

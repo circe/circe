@@ -1,9 +1,9 @@
 package io.circe.tests
 
 import cats.Eq
+import cats.instances.option._
 import cats.laws._
 import cats.laws.discipline._
-import cats.std.option._
 import io.circe.{ Decoder, Encoder, Parser, Printer }
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
@@ -36,7 +36,7 @@ trait PrinterTests[A] extends Laws {
       name = "printer",
       parent = None,
       "roundTrip" -> Prop.forAll { (a: A) =>
-        isEqToProp(laws.printerRoundTrip(printer, parser, a))
+        laws.printerRoundTrip(printer, parser, a)
       }
     )
 }

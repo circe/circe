@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ ApplicativeError, Semigroup, SemigroupK }
-import cats.data.{ NonEmptyList, OneAnd, Validated, ValidatedNel }
+import cats.data.{ NonEmptyList, Validated, ValidatedNel }
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
   /**
@@ -50,10 +50,10 @@ final object AccumulatingDecoder {
   final type Result[A] = ValidatedNel[DecodingFailure, A]
 
   final val failureNelInstance: Semigroup[NonEmptyList[DecodingFailure]] =
-    OneAnd.oneAndSemigroup[List, DecodingFailure](cats.std.list.listInstance)
+    NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]
 
   final val resultInstance: ApplicativeError[Result, NonEmptyList[DecodingFailure]] =
-    Validated.validatedInstances[NonEmptyList[DecodingFailure]](failureNelInstance)
+    Validated.catsDataInstancesForValidated[NonEmptyList[DecodingFailure]](failureNelInstance)
 
   /**
    * Return an instance for a given type.

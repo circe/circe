@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.std.list._
+import cats.instances.list._
 import io.circe.tests.CursorSuite
 
 class BasicCursorSuite extends CursorSuite[Cursor] {
