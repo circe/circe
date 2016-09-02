@@ -85,6 +85,69 @@ case class Greeting(salutation: String, person: Person, exclamationMarks: Int)
 Greeting("Hey", Person("Chris"), 3).asJson
 ```
 
+## Custom encoders/decoders
+
+If you want to write your own codec instead of using automatic or semi-automatic derivation, you can
+do so in a couple of ways.
+
+Firstly, you can write a new `Encoder[A]` and `Decoder[A]` from scratch:
+
+```tut:book
+import cats.data.Xor
+
+class Thing()
+
+implicit val encodeFoo = new Encoder[Thing] {
+  final def apply(a: Thing): Json = ??? // your implementation goes here
+}
+
+implicit val decodeFoo = new Decoder[Thing] {
+  final def apply(c: HCursor): Decoder.Result[Thing] = Xor.left(DecodingFailure("Not implemented yet", c.history))
+}
+```
+
+But in many cases you might find it more convenient to piggyback on top of the decoders that are
+already available. For example, a codec for `java.time.Instant` might look like this:
+
+```tut:book
+import java.time.Instant
+
+implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](i => i.toString)
+
+implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =>
+  Xor.catchNonFatal(Instant.parse(str)).leftMap(t => "Instant")
+}
+```
+
+## Custom key types
+
+If you need to encode/decode `Map[K, V]` where `K` is not `String` (or `Symbol`, `Int`, `Long`, etc.), 
+you need to provide a `KeyEncoder` and/or `KeyDecoder` for your custom key type.
+
+For example:
+
+```tut:book
+import io.circe.syntax._
+
+case class Foo(value: String)
+
+implicit val fooKeyEncoder = new KeyEncoder[Foo] {
+  override def apply(foo: Foo): String = foo.value
+}
+val map = Map[Foo, Int](
+  Foo("hello") -> 123,
+  Foo("world") -> 456
+)
+
+val json = map.asJson
+
+implicit val fooKeyDecoder = new KeyDecoder[Foo] {
+  override def apply(key: String): Option[Foo] = Some(Foo(key))
+}
+
+json.as[Map[Foo, Int]]
+```
+
 ## Warnings and known issues
 
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
