@@ -395,7 +395,7 @@ This works with both case classes and sealed trait hierarchies.
 
 ### forProductN helper methods
 
-It's aslo possible to construct encoders and decoders for case class-like types
+It's also possible to construct encoders and decoders for case class-like types
 in a relatively boilerplate-free way without generic derivation:
 
 ```scala
