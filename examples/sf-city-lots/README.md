@@ -154,7 +154,7 @@ file (at least until Cats [gets its own version][cats-32] of `Task`).
 
 ```scala
 import io.circe.streaming._
-import io.iteratee.task._
+import io.iteratee.scalaz.task._
 import java.io.File
 import scalaz.concurrent.Task
 ```
@@ -163,7 +163,8 @@ And then we can define an `Enumerator` that will let us read lines from the file
 asynchronously with jawn, and decode them into `Task` values:
 
 ```scala
-val lots = bytes(new File("data.json")).mapE(byteParser).mapE(decoder[Task, Lot])
+val lots =
+  readBytes(new File("data.json")).through(byteParser).through(decoder[Task, Lot])
 ```
 
 This line doesn't do any real work—it doesn't even open the file. It just represents a source of
@@ -171,43 +172,42 @@ lots that we can process with an iteratee. For example, we can count the number 
 `length`:
 
 ```scala
-scala> val task = lots.run(length)
+scala> val task = lots.into(length)
 task: scalaz.concurrent.Task[Int] = scalaz.concurrent.Task@5f04c487
 
-scala> task.run
+scala> task.unsafePerformSync
 res0: Int = 206560
 ```
 
 Or we can count how many of each geometry type there are:
 
 ```scala
-scala> import cats.std.int._, cats.std.map._
-import cats.std.int._
-import cats.std.map._
+scala> import cats.instances.int._, cats.instances.map._
+import cats.instances.int._
+import cats.instances.map._
 
-scala> val task: Task[Map[String, Int]] = lots.mapE(
+scala> val task: Task[Map[String, Int]] = lots.through(
      |   collect {
      |     case Lot(_, _, Some(Polygon(_))) => Map("Polygon" -> 1)
      |     case Lot(_, _, Some(MultiPolygon(_))) => Map("MultiPolygon" -> 1)
      |   }
-     | ).run(sum)
+     | ).into(sum)
 task: scalaz.concurrent.Task[Map[String,Int]] = scalaz.concurrent.Task@1d3a58cb
 
-scala> val res: Map[String, Int] = task.run
+scala> val res: Map[String, Int] = task.unsafePerformSync
 res: Map[String,Int] = Map(Polygon -> 206434, MultiPolygon -> 120)
 ```
 
 Or simply gather the first few lots into a sequence:
 
 ```scala
-scala> val first3 = lots.run(takeI(3)).run
+scala> val first3 = lots.into(takeI(3)).unsafePerformSync
 first3: Vector[Lot] = Vector(Lot(Feature,Map(MAPBLKLOT -> 0001001, ...
 ```
 
 Because we're working with iteratees, we don't need to worry about managing resources manually—in
 each of these cases the file will be closed when the processing is done (even if we only read at a
 few lines from the file, or if we run into decoding or I/O errors during the processing).
-
 
 [cats]: https://github.com/typelevel/cats
 [cats-32]: https://github.com/typelevel/cats/issues/32

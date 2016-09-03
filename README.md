@@ -43,7 +43,7 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 you can just add the following to your build:
 
 ```scala
-val circeVersion = "0.4.1"
+val circeVersion = "0.5.0"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -53,7 +53,7 @@ libraryDependencies ++= Seq(
 ```
 
 If you are using circe's generic derivation (with Scala 2.10), or the macro annotation `@JsonCodec` (with
-Scala 2.10 or Scala 2.11), you'll also need to include the [MacroParadise][paradise] compiler
+Scala 2.10 or Scala 2.11), you'll also need to include the [Macro Paradise][paradise] compiler
 plugin in your build:
 
 ```scala
@@ -352,8 +352,8 @@ provides instances for `List[A]`, `Option[A]`, and other generic types, but only
 
 ### Semi-automatic derivation
 
-sometimes you might need to have an `Encoder` or `Decoder` defined in your code, the semiauto
-derivation can help, it's easy to use. You'd write:
+Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your
+code, and semi-automatic derivation can help. You'd write:
 
 ```scala
 import io.circe._, io.circe.generic.semiauto._
@@ -374,7 +374,8 @@ implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 
 ### @JsonCodec
 
-circe-generic includes a @JsonCodec annotation that simplifies the use of semi-automatic generic derivation:
+The circe-generic project includes a `@JsonCodec` annotation that simplifies the
+use of semi-automatic generic derivation:
 ```scala
 scala> import io.circe.generic.JsonCodec, io.circe.syntax._
 import io.circe.generic.JsonCodec
@@ -395,8 +396,8 @@ This works with both case classes and sealed trait hierarchies.
 
 ### forProductN helper methods
 
-It's possible to construct encoders and decoders for case class-like types in a relatively boilerplate-free way
-without generic derivation:
+It's also possible to construct encoders and decoders for case class-like types
+in a relatively boilerplate-free way without generic derivation:
 
 ```scala
 import io.circe._, io.circe.jawn._, io.circe.syntax._
@@ -414,9 +415,10 @@ object User {
 }
 ```
 
-It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing
-but circe-core, and if you need a custom name mapping it's currently the best solution
-(until configurable generic derivation is released in 0.5.0).
+It's not as clean or as maintainable as generic derivation, but it's less
+magical, it requires nothing but circe-core, and if you need a custom name
+mapping it's currently the best solution (until configurable generic derivation
+is released in 0.6.0).
 
 ### Transforming JSON
 
