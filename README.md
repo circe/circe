@@ -102,6 +102,7 @@ The following open source projects are either built on circe or provide circe su
 * [Actor Messenger][actor-im]: A platform for instant messaging.
 * [akka-http-json][akka-http-json]: A library that supports using circe for JSON marshalling and
   unmarshalling in [Akka HTTP][akka-http].
+* [akka-stream-json][akka-stream-json]: A library that provides Json support for stream based applications using jawn as a parser with a convenience example for circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
 * [cornichon][cornichon]: A DSL for JSON API testing.
@@ -564,6 +565,7 @@ limitations under the License.
 [actor-im]: https://actor.im/
 [akka-http]: http://doc.akka.io/docs/akka/current/scala/http/
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
+[akka-stream-json]: https://github.com/knutwalker/akka-stream-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
 [api]: https://travisbrown.github.io/circe/api/#io.circe.package
 [archambault]: https://twitter.com/alxarchambault
