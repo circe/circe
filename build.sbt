@@ -21,7 +21,7 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.7.0"
+lazy val catsVersion = "0.7.2"
 lazy val jawnVersion = "0.9.0"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.5.0"
@@ -393,7 +393,7 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.6.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.6.1"
   )
   .dependsOn(core, jawn)
 
