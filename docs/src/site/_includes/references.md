@@ -1,6 +1,7 @@
 [actor-im]: https://actor.im/
 [akka-http]: http://doc.akka.io/docs/akka/current/scala/http/
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
+[akka-stream-json]: https://github.com/knutwalker/akka-stream-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
 [api]: https://travisbrown.github.io/circe/api/#io.circe.package
 [archambault]: https://twitter.com/alxarchambault
