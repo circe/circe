@@ -15,8 +15,8 @@ provides instances for `List[A]`, `Option[A]`, and other generic types, but only
 
 ## Semi-automatic derivation
 
-Sometimes you might need to have an `Encoder` or `Decoder` defined in your code. In this case
-semi-automatic derivation can help, and it's easy to use. You'd write:
+Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic 
+derivation can help. You'd write:
 
 ```tut:silent
 import io.circe._, io.circe.generic.semiauto._
@@ -36,7 +36,8 @@ implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 
 ### @JsonCodec
 
-circe-generic includes a `@JsonCodec` annotation that simplifies the use of semi-automatic generic derivation:
+The circe-generic project includes a `@JsonCodec` annotation that simplifies the
+use of semi-automatic generic derivation:
 
 ```tut:book
 import io.circe.generic.JsonCodec, io.circe.syntax._
@@ -50,8 +51,8 @@ This works with both case classes and sealed trait hierarchies.
 
 ### forProductN helper methods
 
-It's possible to construct encoders and decoders for case class-like types in a relatively boilerplate-free way
-without generic derivation:
+It's also possible to construct encoders and decoders for case class-like types 
+in a relatively boilerplate-free way without generic derivation:
 
 ```tut:silent
 case class User(id: Long, firstName: String, lastName: String)
@@ -69,7 +70,7 @@ object UserCodec {
 
 It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing
 but circe-core, and if you need a custom name mapping it's currently the best solution
-(until configurable generic derivation is released in 0.5.0).
+(until configurable generic derivation is released in 0.6.0).
 
 ## Fully automatic derivation
 
