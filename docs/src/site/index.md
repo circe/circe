@@ -19,16 +19,6 @@ circe's working title was jfc, which stood for "JSON for [cats][cats]". The name
 
 {% include_relative _tut/quickstart.md %}
 
-## Adopters
-
-Are you using circe? Please consider opening a pull request to list your organization here:
-
-* [Reonomy](https://reonomy.com/)
-* [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
-* [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
-* [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
-* [Project September](http://www.projectseptember.com) (using circe to exchange/store data within the platform and serve data using graphql with sangria)
-
 ## Why?
 
 [Argonaut][argonaut] is a great library. It's by far the best JSON library for Scala, and the best
