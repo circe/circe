@@ -124,12 +124,12 @@ class Thing()
 implicit val encodeFoo = new Encoder[Thing] {
   final def apply(a: Thing): Json = ??? // your implementation goes here
 }
-// encodeFoo: io.circe.Encoder[Thing] = $anon$1@2565e4d6
+// encodeFoo: io.circe.Encoder[Thing] = $anon$1@728de579
 
 implicit val decodeFoo = new Decoder[Thing] {
   final def apply(c: HCursor): Decoder.Result[Thing] = Xor.left(DecodingFailure("Not implemented yet", c.history))
 }
-// decodeFoo: io.circe.Decoder[Thing] = $anon$1@d05042e
+// decodeFoo: io.circe.Decoder[Thing] = $anon$1@7d293004
 ```
 
 But in many cases you might find it more convenient to piggyback on top of the decoders that are
@@ -140,12 +140,12 @@ import java.time.Instant
 // import java.time.Instant
 
 implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](i => i.toString)
-// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$12@52d1ad68
+// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$12@32fe6d97
 
 implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =>
   Xor.catchNonFatal(Instant.parse(str)).leftMap(t => "Instant")
 }
-// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$21@3b5840e8
+// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$21@16894ec1
 ```
 
 ## Custom key types
@@ -165,7 +165,7 @@ case class Foo(value: String)
 implicit val fooKeyEncoder = new KeyEncoder[Foo] {
   override def apply(foo: Foo): String = foo.value
 }
-// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@6f6e128f
+// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@30a36de8
 
 val map = Map[Foo, Int](
   Foo("hello") -> 123,
@@ -183,7 +183,7 @@ val json = map.asJson
 implicit val fooKeyDecoder = new KeyDecoder[Foo] {
   override def apply(key: String): Option[Foo] = Some(Foo(key))
 }
-// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@5763a8e1
+// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@44845b44
 
 json.as[Map[Foo, Int]]
 // res5: io.circe.Decoder.Result[Map[Foo,Int]] = Right(Map(Foo(hello) -> 123, Foo(world) -> 456))
