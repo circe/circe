@@ -329,6 +329,24 @@
     </span>
       <p class="shortcomment cmt">Create a new decoder that performs some operation on the result if this one succeeds.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new decoder that performs some operation on the result if this one succeeds.
 </p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a function returning either a value or an error message</p></dd></dl></div>
+    </li><li name="io.circe.Decoder#emapTry" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="emapTry[B](f:A=&gt;scala.util.Try[B]):io.circe.Decoder[B]"></a>
+      <a id="emapTry[B]((A)⇒Try[B]):Decoder[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">emapTry</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="io.circe.Decoder.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.util.Try" class="extype" target="_top">Try</a>[<span class="extype" name="io.circe.Decoder.emapTry.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.emapTry.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Decoder@emapTry[B](f:A=&gt;scala.util.Try[B]):io.circe.Decoder[B]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create a new decoder that performs some operation on the result if this one succeeds.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new decoder that performs some operation on the result if this one succeeds.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a function returning either a value or an error message</p></dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((Decoder[A])⇒Boolean,⇒Any):Decoder[A]"></a>
@@ -933,30 +951,7 @@ be used in recovery.
 
         
 
-        <div id="values" class="values members">
-              <h3>Deprecated Value Members</h3>
-              <ol><li name="io.circe.Decoder#ap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ap[B](f:io.circe.Decoder[A=&gt;B]):io.circe.Decoder[B]"></a>
-      <a id="ap[B](Decoder[(A)⇒B]):Decoder[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.4.0) Use and">ap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[(<span class="extype" name="io.circe.Decoder.A">A</span>) ⇒ <span class="extype" name="io.circe.Decoder.ap.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.ap.B">B</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Decoder@ap[B](f:io.circe.Decoder[A=&gt;B]):io.circe.Decoder[B]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.4.0)</i> Use and</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
         </div>
 
         <div id="inheritedMembers">

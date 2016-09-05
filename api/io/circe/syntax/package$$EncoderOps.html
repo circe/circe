@@ -249,6 +249,23 @@
       </a>
     </span>
       
+    </li><li name="io.circe.syntax.EncoderOps#asJsonObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asJsonObject(implicitencoder:io.circe.ObjectEncoder[A]):io.circe.JsonObject"></a>
+      <a id="asJsonObject(ObjectEncoder[A]):JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asJsonObject</span><span class="params">(<span class="implicit">implicit </span><span name="encoder">encoder: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.syntax.EncoderOps.A">A</span>]</span>)</span><span class="result">: <a href="../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.syntax.package$$EncoderOps@asJsonObject(implicitencoder:io.circe.ObjectEncoder[A]):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((EncoderOps[A])⇒Boolean,⇒Any):EncoderOps[A]"></a>
@@ -472,6 +489,27 @@
             <a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<span class="extype" name="io.circe.syntax.EncoderOps.A">A</span>]] performed by method EncoderOps in <a href="package.html" class="extype" name="io.circe.syntax">io.circe.syntax</a>.
             
           </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderOps: EncoderOps[EncoderOps[A]]).asJson(encoder)</pre></div></dd></dl></div>
+    </li><li name="io.circe.syntax.EncoderOps#asJsonObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asJsonObject(implicitencoder:io.circe.ObjectEncoder[A]):io.circe.JsonObject"></a>
+      <a id="asJsonObject(ObjectEncoder[EncoderOps[A]]):JsonObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed">asJsonObject</span><span class="params">(<span class="implicit">implicit </span><span name="encoder">encoder: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<span class="extype" name="io.circe.syntax.EncoderOps.A">A</span>]]</span>)</span><span class="result">: <a href="../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.syntax.package$$EncoderOps@asJsonObject(implicitencoder:io.circe.ObjectEncoder[A]):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<span class="extype" name="io.circe.syntax.EncoderOps.A">A</span>] to
+            <a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<a href="" class="extype" name="io.circe.syntax.EncoderOps">EncoderOps</a>[<span class="extype" name="io.circe.syntax.EncoderOps.A">A</span>]] performed by method EncoderOps in <a href="package.html" class="extype" name="io.circe.syntax">io.circe.syntax</a>.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(encoderOps: EncoderOps[EncoderOps[A]]).asJsonObject(encoder)</pre></div></dd></dl></div>
     </li><li name="io.circe.syntax.EncoderOps#wrappedEncodeable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wrappedEncodeable:A"></a>
       <a id="wrappedEncodeable:EncoderOps[A]"></a>

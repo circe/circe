@@ -101,7 +101,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>], <span class="extype" name="io.circe.AccumulatingDecoder.Result.A">A</span>]</span>
+        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a href="http://typelevel.org/cats/api/index.html#cats.data.Validated" class="extype" target="_top">Validated</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>], <span class="extype" name="io.circe.AccumulatingDecoder.Result.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.AccumulatingDecoder$@Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" title="Permalink" target="_top">
@@ -176,7 +176,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">accumulatingDecoderInstances</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.SemigroupK" class="extype" target="_top">SemigroupK</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>] with <a href="http://typelevel.org/cats/api/index.html#cats.ApplicativeError" class="extype" target="_top">ApplicativeError</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>, <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+        <span class="name">accumulatingDecoderInstances</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.SemigroupK" class="extype" target="_top">SemigroupK</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>] with <a href="http://typelevel.org/cats/api/index.html#cats.ApplicativeError" class="extype" target="_top">ApplicativeError</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>, <a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.AccumulatingDecoder$@accumulatingDecoderInstances:cats.SemigroupK[io.circe.AccumulatingDecoder]withcats.ApplicativeError[io.circe.AccumulatingDecoder,cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink" target="_top">
@@ -284,7 +284,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">failed</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.failed.A">A</span>]</span>
+        <span class="name">failed</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.failed.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.AccumulatingDecoder$@failed[A](e:cats.data.NonEmptyList[io.circe.DecodingFailure]):io.circe.AccumulatingDecoder[A]" title="Permalink" target="_top">
@@ -301,7 +301,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">failureNelInstance</span><span class="result">: <span class="extype" name="cats.Semigroup">Semigroup</span>[<span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+        <span class="name">failureNelInstance</span><span class="result">: <span class="extype" name="cats.Semigroup">Semigroup</span>[<a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.AccumulatingDecoder$@failureNelInstance:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink" target="_top">
@@ -477,7 +477,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">resultInstance</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.ApplicativeError" class="extype" target="_top">ApplicativeError</a>[<a href="#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>, <span class="extype" name="cats.data.NonEmptyList">NonEmptyList</span>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+        <span class="name">resultInstance</span><span class="result">: <a href="http://typelevel.org/cats/api/index.html#cats.ApplicativeError" class="extype" target="_top">ApplicativeError</a>[<a href="#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>, <a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.AccumulatingDecoder$@resultInstance:cats.ApplicativeError[io.circe.AccumulatingDecoder.Result,cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink" target="_top">

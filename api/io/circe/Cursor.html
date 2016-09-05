@@ -147,7 +147,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.Cursor.M.x">x</span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <a href="http://typelevel.org/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.Cursor.M.x">x</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.Cursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
@@ -1061,6 +1061,25 @@ matches the given predicate.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.GenericCursor#getOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+      <a id="getOrElse[A](k:String)(fallback:=&gt;A)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
+      <a id="getOrElse[A](String)(⇒A)(Decoder[A]):Decoder.Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getOrElse</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="fallback">fallback: ⇒ <span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.Cursor@getOrElse[A](k:String)(fallback:=&gt;A)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Attempt to decode the value at the given key in a JSON object as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the value at the given key in a JSON object as an <code>A</code>.
+If the field <code>k</code> is missing, then use the <code>fallback</code> instead.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -1405,31 +1424,7 @@ the new focus.
 
         
 
-        <div id="values" class="values members">
-              <h3>Deprecated Value Members</h3>
-              <ol><li name="io.circe.Cursor#hcursor" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hcursor:io.circe.HCursor"></a>
-      <a id="hcursor:HCursor"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.4.0) Use HCursor.fromCursor">hcursor</span><span class="result">: <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.Cursor@hcursor:io.circe.HCursor" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Create an <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> for this cursor in order to track history.</p><div class="fullcomment"><div class="comment cmt"><p>Create an <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> for this cursor in order to track history.
-</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.4.0)</i> Use HCursor.fromCursor</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
         </div>
 
         <div id="inheritedMembers">

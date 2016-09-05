@@ -125,7 +125,7 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.HCursor.M.x">x</span>]</span>
+        <span class="name">M</span><span class="tparams">[<span name="x">x<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> = <a href="http://typelevel.org/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.HCursor.M.x">x</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@M[x[_]]=cats.Functor[x]" title="Permalink" target="_top">
@@ -910,6 +910,25 @@ matches the given predicate.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.GenericCursor#getOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Decoding">
+      <a id="getOrElse[A](k:String)(fallback:=&gt;A)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]"></a>
+      <a id="getOrElse[A](String)(⇒A)(Decoder[A]):Decoder.Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getOrElse</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="fallback">fallback: ⇒ <span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.GenericCursor.getOrElse.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@getOrElse[A](k:String)(fallback:=&gt;A)(implicitd:io.circe.Decoder[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Attempt to decode the value at the given key in a JSON object as an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to decode the value at the given key in a JSON object as an <code>A</code>.
+If the field <code>k</code> is missing, then use the <code>fallback</code> instead.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -1302,51 +1321,6 @@ the new focus.
     </span>
       <p class="shortcomment cmt">Return to the root of the document.</p><div class="fullcomment"><div class="comment cmt"><p>Return to the root of the document.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></dd></dl></div>
-    </li><li name="io.circe.HCursor#traverseDecode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;io.circe.Decoder.Result[A]):io.circe.Decoder.Result[A]"></a>
-      <a id="traverseDecode[A](A)((HCursor)⇒ACursor,(A,HCursor)⇒Decoder.Result[A]):Decoder.Result[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">traverseDecode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span></span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>, <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.HCursor@traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;io.circe.Decoder.Result[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
-accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
-accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
-large structures (in contrast with recursively binding).
-</p></div></div>
-    </li><li name="io.circe.HCursor#traverseDecodeAccumulating" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]"></a>
-      <a id="traverseDecodeAccumulating[A](AccumulatingDecoder.Result[A])((HCursor)⇒ACursor,(AccumulatingDecoder.Result[A],HCursor)⇒AccumulatingDecoder.Result[A]):AccumulatingDecoder.Result[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">traverseDecodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>], <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#io.circe.HCursor@traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
-accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
-accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
-large structures (in contrast with recursively binding).
-</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@tailrec</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="io.circe.HCursor#up" visbl="pub" data-isabs="false" fullComment="yes" group="Access">
       <a id="up:io.circe.ACursor"></a>
       <a id="up:ACursor"></a>
@@ -1461,7 +1435,7 @@ large structures (in contrast with recursively binding).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="cats.Functor">Functor</span>[<span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
+        <span class="name">withFocusM</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="f">f: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://typelevel.org/cats/api/index.html#cats.Functor" class="extype" target="_top">Functor</a>[<span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="io.circe.HCursor.withFocusM.F">F</span>[<a href="" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#io.circe.HCursor@withFocusM[F[_]](f:io.circe.Json=&gt;F[io.circe.Json])(implicitevidence$1:cats.Functor[F]):F[io.circe.HCursor]" title="Permalink" target="_top">
@@ -1496,7 +1470,60 @@ large structures (in contrast with recursively binding).
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.HCursor#traverseDecode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;io.circe.Decoder.Result[A]):io.circe.Decoder.Result[A]"></a>
+      <a id="traverseDecode[A](A)((HCursor)⇒ACursor,(A,HCursor)⇒Decoder.Result[A]):Decoder.Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.5.0) No direct replacement">traverseDecode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span></span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>, <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>)</span><span class="result">: <a href="Decoder$.html#Result[A]=cats.data.Xor[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Decoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecode.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@traverseDecode[A](init:A)(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(A,io.circe.HCursor)=&gt;io.circe.Decoder.Result[A]):io.circe.Decoder.Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
+large structures (in contrast with recursively binding).
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.5.0)</i> No direct replacement</p></dd></dl></div>
+    </li><li name="io.circe.HCursor#traverseDecodeAccumulating" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]"></a>
+      <a id="traverseDecodeAccumulating[A](AccumulatingDecoder.Result[A])((HCursor)⇒ACursor,(AccumulatingDecoder.Result[A],HCursor)⇒AccumulatingDecoder.Result[A]):AccumulatingDecoder.Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.5.0) No direct replacement">traverseDecodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="init">init: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="params">(<span name="op">op: (<a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="f">f: (<a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>], <a href="" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">AccumulatingDecoder.Result</a>[<span class="extype" name="io.circe.HCursor.traverseDecodeAccumulating.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#io.circe.HCursor@traverseDecodeAccumulating[A](init:io.circe.AccumulatingDecoder.Result[A])(op:io.circe.HCursor=&gt;io.circe.ACursor,f:(io.circe.AccumulatingDecoder.Result[A],io.circe.HCursor)=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder.Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Traverse taking <code>op</code> at each step, performing <code>f</code> on the current cursor and
+accumulating <code>A</code>.</p><p>This operation does not consume stack at each step, so is safe to work with
+large structures (in contrast with recursively binding).
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+                <span class="name">@tailrec</span><span class="args">()</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.5.0)</i> No direct replacement</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
