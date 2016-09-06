@@ -1,5 +1,7 @@
 import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
+import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
+import com.typesafe.sbt.SbtSite.SiteKeys._
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 lazy val buildSettings = Seq(
@@ -90,8 +92,10 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   }
 )
 
-lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
+lazy val docSettings = allSettings ++ tutSettings ++ site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
   site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
+  site.addMappingsToSiteDir(tut, "_tut"),
+  ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
@@ -100,8 +104,17 @@ lazy val docSettings = site.settings ++ ghpages.settings ++ unidocSettings ++ Se
   ),
   git.remoteRepo := "git@github.com:travisbrown/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*)
+    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
+
+lazy val docs = project.dependsOn(core, generic, parser, optics)
+  .settings(moduleName := "circe-docs")
+  .settings(docSettings)
+  .settings(noPublishSettings)
+  .settings(
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+  )
 
 lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   numbers, numbersJS,
@@ -118,7 +131,8 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   scalajs,
   spray,
   streaming,
-  benchmark
+  benchmark,
+  docs
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
 )
@@ -142,7 +156,6 @@ lazy val macroDependencies: Seq[Setting[_]] = Seq(
 
 lazy val circe = project.in(file("."))
   .settings(allSettings)
-  .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
