@@ -37,64 +37,6 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
     final def history: List[HistoryOp] = HistoryOp.reattempt :: self.history
   }
 
-  /**
-   * Traverse taking `op` at each step, performing `f` on the current cursor and
-   * accumulating `A`.
-   *
-   * This operation does not consume stack at each step, so is safe to work with
-   * large structures (in contrast with recursively binding).
-   */
-  @deprecated("No direct replacement", "0.5.0")
-  final def traverseDecode[A](init: A)(
-    op: HCursor => ACursor,
-    f: (A, HCursor) => Decoder.Result[A]
-  ): Decoder.Result[A] = loop[(HCursor, A), A](
-    f(init, this) match {
-      case Xor.Right(a) => Xor.Right((this, a))
-      case l @ Xor.Left(_) => l
-    },
-    new Function1[(HCursor, A), Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]]] {
-      final def apply(p: (HCursor, A)): Xor[Decoder.Result[A], Decoder.Result[(HCursor, A)]] = {
-        val result = op(p._1)
-
-        if (result.succeeded) Xor.right(
-          f(p._2, result.any) match {
-            case Xor.Right(b) => Xor.right((result.any, b))
-            case l @ Xor.Left(_) => l
-          }
-        ) else Xor.left(Xor.right(p._2))
-      }
-    }
-  )
-
-  @tailrec private[this] final def loop[A, B](
-    r1: Decoder.Result[A],
-    f: A => Xor[Decoder.Result[B], Decoder.Result[A]]
-  ): Decoder.Result[B] = r1 match {
-    case l @ Xor.Left(_) => l
-    case Xor.Right(a) => f(a) match {
-      case Xor.Left(b) => b
-      case Xor.Right(r2) => loop[A, B](r2, f)
-    }
-  }
-
-  /**
-   * Traverse taking `op` at each step, performing `f` on the current cursor and
-   * accumulating `A`.
-   *
-   * This operation does not consume stack at each step, so is safe to work with
-   * large structures (in contrast with recursively binding).
-   */
-  @deprecated("No direct replacement", "0.5.0")
-  @tailrec final def traverseDecodeAccumulating[A](init: AccumulatingDecoder.Result[A])(
-    op: HCursor => ACursor,
-    f: (AccumulatingDecoder.Result[A], HCursor) => AccumulatingDecoder.Result[A]
-  ): AccumulatingDecoder.Result[A] =
-    op(this).success match {
-      case None => f(init, this)
-      case Some(next) => next.traverseDecodeAccumulating(f(init, this))(op, f)
-    }
-
   @inline private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
     case None => ACursor.fail(
       new HCursor(this.cursor) {
