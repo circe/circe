@@ -62,6 +62,8 @@ class DerivationMacros(val c: whitebox.Context) {
     private[this] val KeyTagSym = typeOf[KeyTag[_, _]].typeSymbol
     private[this] val ShapelessTagType = typeOf[shapeless.tag.type]
     private[this] val ScalaSymbolType = typeOf[scala.Symbol]
+    private[this] val HListType = typeOf[HList]
+    private[this] val CoproductType = typeOf[Coproduct]
 
     case class Entry(label: String, keyType: Type, valueType: Type)
 
@@ -90,6 +92,9 @@ class DerivationMacros(val c: whitebox.Context) {
         }
       case _ => None
     }
+
+    def fromHListType(tpe: Type): Option[Members] = if (tpe <:< HListType) fromType(tpe) else None
+    def fromCoproductType(tpe: Type): Option[Members] = if (tpe <:< CoproductType) fromType(tpe) else None
   }
 
   def resolveInstance(tpe: Type, tcs: (Type, Boolean)*): Tree = tcs match {
@@ -107,7 +112,7 @@ class DerivationMacros(val c: whitebox.Context) {
   }
 
   def decodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedDecoder[R]] =
-    Members.fromType(R.tpe).fold(fail(R.tpe)) { members =>
+    Members.fromHListType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (result, accumulatingResult)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false))
       )(
@@ -160,7 +165,7 @@ class DerivationMacros(val c: whitebox.Context) {
   """
 
   def decodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedDecoder[R]] =
-    Members.fromType(R.tpe).fold(fail(R.tpe)) { members =>
+    Members.fromCoproductType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (result, accumulatingResult)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false), (typeOf[DerivedDecoder[_]], true))
       )(
@@ -204,7 +209,7 @@ class DerivationMacros(val c: whitebox.Context) {
     }
 
   def encodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedObjectEncoder[R]] =
-    Members.fromType(R.tpe).fold(fail(R.tpe)) { members =>
+    Members.fromHListType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (pattern, fields)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Encoder[_]], false))
       )(
@@ -232,7 +237,7 @@ class DerivationMacros(val c: whitebox.Context) {
     }
 
   def encodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedObjectEncoder[R]] =
-    Members.fromType(R.tpe).fold(fail(R.tpe)) { members =>
+    Members.fromCoproductType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, patternAndCase) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Encoder[_]], false), (typeOf[DerivedObjectEncoder[_]], true))
       )(
