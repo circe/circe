@@ -35,6 +35,7 @@ The following open source projects are either built on circe or provide circe su
   into circe's `Json`.
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
+* [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
 * [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
 * [Featherbed][featherbed]: A REST client library with circe support.
 * [Finch][finch]: A library for building web services with circe support.
@@ -104,6 +105,7 @@ limitations under the License.
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
+[crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
@@ -135,6 +137,7 @@ limitations under the License.
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
+[scalist]: https://github.com/vpavkin/scalist
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
