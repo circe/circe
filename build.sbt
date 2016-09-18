@@ -322,7 +322,7 @@ lazy val scodecBase = crossProject.in(file("modules/scodec"))
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
 
-lazy val testsBase = crossProject.in(file("tests"))
+lazy val testsBase = crossProject.in(file("modules/tests"))
   .settings(
     description := "circe tests",
     moduleName := "circe-tests",
@@ -343,7 +343,7 @@ lazy val testsBase = crossProject.in(file("tests"))
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
-      file("tests") / "shared" / "src" / "main" / "resources"
+      file("modules/tests") / "shared" / "src" / "main" / "resources"
   )
   .settings(
     ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.tests\\..*"
@@ -369,7 +369,7 @@ lazy val testsBase = crossProject.in(file("tests"))
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = project
+lazy val hygiene = project.in(file("modules/hygiene"))
   .settings(
     description := "circe hygiene",
     moduleName := "circe-hygiene"
@@ -465,7 +465,7 @@ lazy val optics = project.in(file("modules/optics"))
   )
   .dependsOn(core, tests % "test")
 
-lazy val benchmark = project
+lazy val benchmark = project.in(file("modules/benchmark"))
   .settings(
     description := "circe benchmark",
     moduleName := "circe-benchmark"
