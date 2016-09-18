@@ -91,6 +91,18 @@ sealed abstract class JsonObject extends Serializable {
    * Return the number of associations.
    */
   def size: Int
+
+  /**
+   * Filter by keys and values.
+   */
+  final def filter(pred: ((String, Json)) => Boolean): JsonObject = JsonObject.fromIterable(toList.filter(pred))
+
+  /**
+   * Filter by keys.
+   */
+  final def filterKeys(pred: String => Boolean): JsonObject = filter {
+    case (k, _) => pred(k)
+  }
 }
 
 /**
@@ -172,8 +184,7 @@ final object JsonObject {
       copy(fieldMap = fieldMap - k, orderedFields = orderedFields.filterNot(_ == k))
 
     final def apply(k: String): Option[Json] = fieldMap.get(k)
-    final def withJsons(f: Json => Json): JsonObject =
-      copy(fieldMap = fieldMap.mapValues(f).view.force)
+    final def withJsons(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
     final def isEmpty: Boolean = fieldMap.isEmpty
     final def contains(k: String): Boolean = fieldMap.contains(k)
     final def toList: List[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
@@ -200,11 +211,11 @@ final object JsonObject {
     /**
      * Universal equality derived from our type-safe equality.
      */
-    override final def equals(that: Any) = that match {
+    override final def equals(that: Any): Boolean = that match {
       case that: JsonObject => JsonObject.eqJsonObject.eqv(this, that)
       case _ => false
     }
 
-    override final def hashCode = fieldMap.hashCode
+    override final def hashCode: Int = fieldMap.hashCode
   }
 }
