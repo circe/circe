@@ -313,7 +313,7 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Instances
    */
-  implicit final val contravariantEncoder: Contravariant[Encoder] = new Contravariant[Encoder] {
+  implicit final val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 
