@@ -1,8 +1,6 @@
 package io.circe
 
 import cats.{ Eq, Functor, Id }
-import cats.data.Xor
-import scala.annotation.tailrec
 
 /**
  * A cursor that tracks the history of operations performed with it.
