@@ -130,6 +130,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   optics,
   scalajs,
   spray,
+  akkaHttp,
   streaming,
   benchmark,
   docs
@@ -450,6 +451,31 @@ lazy val spray = project
   )
   .dependsOn(core, jawn, generic % "test")
 
+lazy val akkaHttp = project
+  .settings(
+    description := "circe akka-http",
+    moduleName := "circe-akka-http"
+  )
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++=
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, 11)) => Seq(
+            "com.typesafe.akka" %% "akka-http-experimental" % "2.4.9",
+            "com.typesafe.akka" %% "akka-http-testkit" % "2.4.9" % "test"
+          )
+          case Some((2, 10)) => Seq(
+            "com.typesafe.akka" %% "akka-http-experimental" % "2.0.4",
+            "com.typesafe.akka" %% "akka-http-testkit-experimental" % "2.0.4"
+          )
+          case _ => Nil
+      }) ++ Seq(
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" % "test" cross CrossVersion.full)
+    )
+  )
+  .dependsOn(core, jawn, generic % "test")
+
 lazy val optics = project
   .settings(
     description := "circe optics",
@@ -579,6 +605,7 @@ val jvmProjects = Seq(
   "jawn",
   "jackson",
   "spray",
+  "akkaHttp",
   "benchmark"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
@@ -589,6 +616,7 @@ val jvmTestProjects = Seq(
   "tests",
   "optics",
   "spray",
+  "akkaHttp",
   "benchmark"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
