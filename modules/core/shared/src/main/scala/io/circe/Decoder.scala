@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated, Xor }
 import cats.instances.either.catsStdInstancesForEither
 import io.circe.export.Exported
 import java.util.UUID
@@ -272,6 +272,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   final def instance[A](f: HCursor => Result[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = f(c)
   }
+
+  def fromState[A](s: StateT[Result, ACursor, A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = s.runA(c.acursor)
+  }
+
+  def readState[A: Decoder](k: String): StateT[Result, ACursor, A] = StateT[Result, ACursor, A] { c =>
+    val field = c.downField(k)
+
+    field.as[A] match {
+      case Right(a) => Right((field.delete, a))
+      case l @ Left(_) => l.asInstanceOf[Result[(ACursor, A)]]
+    }
+  }
+
+  def requireEmptyState(createMessage: List[String] => String): StateT[Result, ACursor, Unit] =
+    StateT[Result, ACursor, Unit] { c =>
+      val fields = c.focus.flatMap(_.asObject).toList.flatMap(_.fields)
+
+      if (fields.isEmpty) Right((c, ())) else
+        Left(DecodingFailure(createMessage(fields), c.history))
+    }
 
   /**
    * This is for easier interop with code that already returns Try. You should
