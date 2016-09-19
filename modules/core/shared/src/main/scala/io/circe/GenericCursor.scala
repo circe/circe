@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.Functor
-import cats.data.Xor
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.
@@ -336,9 +335,9 @@ abstract class GenericCursor[C <: GenericCursor[C]] extends Serializable {
    */
   def getOrElse[A](k: String)(fallback: => A)(implicit d: Decoder[A]): Decoder.Result[A] =
     get[Option[A]](k) match {
-      case Xor.Right(Some(a)) => Xor.Right(a)
-      case Xor.Right(None) => Xor.Right(fallback)
-      case l @ Xor.Left(_) => l
+      case Right(Some(a)) => Right(a)
+      case Right(None) => Right(fallback)
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
     }
 
   /**

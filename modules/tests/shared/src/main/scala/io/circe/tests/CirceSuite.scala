@@ -16,6 +16,9 @@ trait CirceSuite extends FlatSpec with GeneratorDrivenPropertyChecks
   override def convertToEqualizer[T](left: T): Equalizer[T] =
     sys.error("Intentionally ambiguous implicit for Equalizer")
 
+  override def catsSyntaxEither[A, B](eab: Either[A, B]): cats.syntax.EitherOps[A, B] =
+    sys.error("Intentionally ambiguous implicit for EitherOps")
+
   def checkLaws(name: String, ruleSet: Laws#RuleSet): Unit = ruleSet.all.properties.zipWithIndex.foreach {
     case ((id, prop), 0) => name should s"obey $id" in Checkers.check(prop)
     case ((id, prop), _) => it should s"obey $id" in Checkers.check(prop)

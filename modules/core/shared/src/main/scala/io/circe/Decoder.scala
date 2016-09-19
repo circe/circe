@@ -2,6 +2,7 @@ package io.circe
 
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
+import cats.instances.either.catsStdInstancesForEither
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -231,23 +232,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
   type Result[A] = Either[DecodingFailure, A]
 
-  val resultInstance: MonadError[Result, DecodingFailure] = new MonadError[Result, DecodingFailure] {
-    final def pure[A](x: A): Decoder.Result[A] = Right(x)
-    override final def map[A, B](fa: Decoder.Result[A])(f: A => B): Decoder.Result[B] = fa match {
-      case Right(a) => Right(f(a))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
-    }
-    final def flatMap[A, B](fa: Decoder.Result[A])(f: A => Decoder.Result[B]): Decoder.Result[B] = fa match {
-      case Right(a) => f(a)
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
-    }
-    final def raiseError[A](e: DecodingFailure): Decoder.Result[A] = Left(e)
-    final def handleErrorWith[A](fa: Decoder.Result[A])(f: DecodingFailure => Decoder.Result[A]): Decoder.Result[A] =
-      fa match {
-        case r @ Right(_) => r
-        case Left(e) => f(e)
-      }
-  }
+  val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
@@ -682,60 +667,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     }
 
   /**
-   * @group Decoding
-   */
-  implicit final def decodeNonEmptyList[A](implicit da: Decoder[A]): Decoder[NonEmptyList[A]] =
-    new Decoder[NonEmptyList[A]] {
-      def apply(c: HCursor): Result[NonEmptyList[A]] = {
-        val arr = c.downArray
-
-        da.tryDecode(arr) match {
-          case Right(head) => decodeCanBuildFrom[A, List].tryDecode(arr.delete) match {
-            case Right(tail) => Right(NonEmptyList(head, tail))
-            case l @ Left(_) => l.asInstanceOf[Result[NonEmptyList[A]]]
-          }
-          case l @ Left(_) => l.asInstanceOf[Result[NonEmptyList[A]]]
-        }
-      }
-
-      override private[circe] def decodeAccumulating(
-        c: HCursor
-      ): AccumulatingDecoder.Result[NonEmptyList[A]] = {
-        val arr = c.downArray
-        val head = da.tryDecodeAccumulating(arr)
-        val tail = decodeCanBuildFrom[A, List].tryDecodeAccumulating(arr.delete)
-        tail.ap(head.map(h => (t: List[A]) => NonEmptyList(h, t)))
-      }
-    }
-
-  /**
-   * @group Decoding
-   */
-  implicit final def decodeNonEmptyVector[A](implicit da: Decoder[A]): Decoder[NonEmptyVector[A]] =
-    new Decoder[NonEmptyVector[A]] {
-      def apply(c: HCursor): Result[NonEmptyVector[A]] = {
-        val arr = c.downArray
-
-        da.tryDecode(arr) match {
-          case Right(head) => decodeCanBuildFrom[A, Vector].tryDecode(arr.delete) match {
-            case Right(tail) => Right(NonEmptyVector(head, tail))
-            case l @ Left(_) => l.asInstanceOf[Result[NonEmptyVector[A]]]
-          }
-          case l @ Left(_) => l.asInstanceOf[Result[NonEmptyVector[A]]]
-        }
-      }
-
-      override private[circe] def decodeAccumulating(
-        c: HCursor
-      ): AccumulatingDecoder.Result[NonEmptyVector[A]] = {
-        val arr = c.downArray
-        val head = da.tryDecodeAccumulating(arr)
-        val tail = decodeCanBuildFrom[A, Vector].tryDecodeAccumulating(arr.delete)
-        tail.ap(head.map(h => (t: Vector[A]) => NonEmptyVector(h, t)))
-      }
-    }
-
-  /**
    * @group Disjunction
    */
   final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
@@ -798,7 +729,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def tailRecM[A, B](a: A)(f: A => Decoder[Either[A, B]]): Decoder[B] = new Decoder[B] {
         @tailrec
         private[this] def step(c: HCursor, a1: A): Result[B] = f(a1)(c) match {
-          case l @ Left(df) => l
+          case l @ Left(_) => l.asInstanceOf[Result[B]]
           case Right(Left(a2)) => step(c, a2)
           case Right(Right(b)) => Right(b)
         }
