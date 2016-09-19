@@ -172,7 +172,7 @@ lazy val circe = project.in(file("."))
   .aggregate(aggregatedProjects: _*)
   .dependsOn(core, generic, literal, parser)
 
-lazy val numbersBase = crossProject.in(file("numbers"))
+lazy val numbersBase = crossProject.in(file("modules/numbers"))
   .settings(
     description := "circe numbers",
     moduleName := "circe-numbers",
@@ -192,7 +192,7 @@ lazy val numbersBase = crossProject.in(file("numbers"))
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
 
-lazy val coreBase = crossProject.in(file("core"))
+lazy val coreBase = crossProject.in(file("modules/core"))
   .settings(
     description := "circe core",
     moduleName := "circe-core",
@@ -213,7 +213,7 @@ lazy val coreBase = crossProject.in(file("core"))
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
-lazy val genericBase = crossProject.in(file("generic"))
+lazy val genericBase = crossProject.in(file("modules/generic"))
   .settings(
     description := "circe generic",
     moduleName := "circe-generic",
@@ -238,7 +238,7 @@ lazy val genericBase = crossProject.in(file("generic"))
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
-lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal"))
+lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("modules/literal"))
   .settings(
     description := "circe literal",
     moduleName := "circe-literal",
@@ -262,7 +262,7 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
 
-lazy val refinedBase = crossProject.in(file("refined"))
+lazy val refinedBase = crossProject.in(file("modules/refined"))
   .settings(
     description := "circe refined",
     moduleName := "circe-refined",
@@ -280,7 +280,7 @@ lazy val refinedBase = crossProject.in(file("refined"))
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
 
-lazy val parserBase = crossProject.in(file("parser"))
+lazy val parserBase = crossProject.in(file("modules/parser"))
   .settings(
     description := "circe parser",
     moduleName := "circe-parser",
@@ -295,7 +295,7 @@ lazy val parserBase = crossProject.in(file("parser"))
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = project
+lazy val scalajs = project.in(file("modules/scalajs"))
   .settings(
     description := "circe scalajs",
     moduleName := "circe-scalajs"
@@ -304,7 +304,7 @@ lazy val scalajs = project
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(coreJS)
 
-lazy val scodecBase = crossProject.in(file("scodec"))
+lazy val scodecBase = crossProject.in(file("modules/scodec"))
   .settings(
     description := "circe scodec",
     moduleName := "circe-scodec",
@@ -322,7 +322,7 @@ lazy val scodecBase = crossProject.in(file("scodec"))
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
 
-lazy val testsBase = crossProject.in(file("tests"))
+lazy val testsBase = crossProject.in(file("modules/tests"))
   .settings(
     description := "circe tests",
     moduleName := "circe-tests",
@@ -343,7 +343,7 @@ lazy val testsBase = crossProject.in(file("tests"))
     ),
     sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
     unmanagedResourceDirectories in Compile +=
-      file("tests") / "shared" / "src" / "main" / "resources"
+      file("modules/tests") / "shared" / "src" / "main" / "resources"
   )
   .settings(
     ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.tests\\..*"
@@ -369,7 +369,7 @@ lazy val testsBase = crossProject.in(file("tests"))
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = project
+lazy val hygiene = project.in(file("modules/hygiene"))
   .settings(
     description := "circe hygiene",
     moduleName := "circe-hygiene"
@@ -380,7 +380,7 @@ lazy val hygiene = project
   )
   .dependsOn(core, generic, jawn, literal)
 
-lazy val jawn = project
+lazy val jawn = project.in(file("modules/jawn"))
   .settings(
     description := "circe jawn",
     moduleName := "circe-jawn"
@@ -391,7 +391,7 @@ lazy val jawn = project
   )
   .dependsOn(core)
 
-lazy val java8 = project
+lazy val java8 = project.in(file("modules/java8"))
   .settings(
     description := "circe java8",
     moduleName := "circe-java8"
@@ -399,7 +399,7 @@ lazy val java8 = project
   .settings(allSettings)
   .dependsOn(core, tests % "test")
 
-lazy val streaming = project
+lazy val streaming = project.in(file("modules/streaming"))
   .settings(
     description := "circe streaming",
     moduleName := "circe-streaming"
@@ -410,7 +410,7 @@ lazy val streaming = project
   )
   .dependsOn(core, jawn)
 
-lazy val jackson = project
+lazy val jackson = project.in(file("modules/jackson"))
   .settings(
     description := "circe jackson",
     moduleName := "circe-jackson"
@@ -424,7 +424,7 @@ lazy val jackson = project
   )
   .dependsOn(core)
 
-lazy val spray = project
+lazy val spray = project.in(file("modules/spray"))
   .settings(
     description := "circe spray",
     moduleName := "circe-spray"
@@ -450,7 +450,7 @@ lazy val spray = project
   )
   .dependsOn(core, jawn, generic % "test")
 
-lazy val optics = project
+lazy val optics = project.in(file("modules/optics"))
   .settings(
     description := "circe optics",
     moduleName := "circe-optics"
@@ -465,7 +465,7 @@ lazy val optics = project
   )
   .dependsOn(core, tests % "test")
 
-lazy val benchmark = project
+lazy val benchmark = project.in(file("modules/benchmark"))
   .settings(
     description := "circe benchmark",
     moduleName := "circe-benchmark"
