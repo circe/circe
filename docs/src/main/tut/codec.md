@@ -13,6 +13,29 @@ types from the Scala standard library, including `Int`, `String`, and [others][e
 provides instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an
 `Encoder` instance.
 
+Encoding data to `Json` can be done using the `.asJson` syntax:
+
+```tut:book
+import io.circe.syntax._
+
+val intsJson = List(1, 2, 3).asJson
+```
+
+Use the `.as` syntax for decoding data from `Json`:
+
+```tut:book
+intsJson.as[List[Int]]
+```
+
+The `decode` function from the included [parser] module can be used to directly decode
+a JSON `String`:
+
+```tut:book
+import io.circe.parser.decode
+
+decode[List[Int]]("[1, 2, 3]")
+```
+
 ## Semi-automatic derivation
 
 Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic 
