@@ -186,7 +186,7 @@ class DerivationMacros(val c: whitebox.Context) {
                 }
               } else {
                 $acc match {
-                  case _root_.scala.util.Right(last) => Right(_root_.shapeless.Inr(last): $current)
+                  case _root_.scala.util.Right(last) => _root_.scala.util.Right(_root_.shapeless.Inr(last): $current)
                   case l @ _root_.scala.util.Left(_) => l.asInstanceOf[_root_.io.circe.Decoder.Result[$current]]
                 }
               }
