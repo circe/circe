@@ -55,6 +55,14 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   it should "return values in order" in forAll { json: JsonObject =>
-    assert(json.traverse[({type l[A]=Const[List[Json],A]})#l](a => Const(List(a))).getConst === json.values)
+    assert(json.traverse[({ type L[x] = Const[List[Json], x] })#L](a => Const(List(a))).getConst === json.values)
+  }
+
+  "filter" should "be consistent with Map#filter" in forAll { (obj: JsonObject, pred: ((String, Json)) => Boolean) =>
+    assert(obj.filter(pred).toMap === obj.toMap.filter(pred))
+  }
+
+  "filterKeys" should "be consistent with Map#filterKeys" in forAll { (obj: JsonObject, pred: String => Boolean) =>
+    assert(obj.filterKeys(pred).toMap === obj.toMap.filterKeys(pred))
   }
 }
