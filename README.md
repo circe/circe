@@ -55,6 +55,7 @@ The following open source projects are either built on circe or provide circe su
 * [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
   implementation.
 * [scalist][scalist]: A [Todoist][todoist] API client.
+* [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on [Unfiltered][unfiltered] and circe.
@@ -137,6 +138,7 @@ limitations under the License.
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
+[scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scalist]: https://github.com/vpavkin/scalist
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
