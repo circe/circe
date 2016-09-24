@@ -669,36 +669,36 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Disjunction
    */
-  final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
+  final def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
     da: Decoder[A],
     db: Decoder[B]
-  ): Decoder[Xor[A, B]] = new Decoder[Xor[A, B]] {
-    final def apply(c: HCursor): Result[Xor[A, B]] = {
+  ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
+    final def apply(c: HCursor): Result[Either[A, B]] = {
       val l = c.downField(leftKey)
       val r = c.downField(rightKey)
 
       if (l.succeeded && !r.succeeded) {
         da(l.any) match {
-          case Right(v) => Right(Xor.Left(v))
-          case l @ Left(_) => l.asInstanceOf[Result[Xor[A, B]]]
+          case Right(v) => Right(Left(v))
+          case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
         }
       } else if (!l.succeeded && r.succeeded) {
         db(r.any) match {
-          case Right(v) => Right(Xor.Right(v))
-          case l @ Left(_) => l.asInstanceOf[Result[Xor[A, B]]]
+          case Right(v) => Right(Right(v))
+          case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
         }
-      } else Left(DecodingFailure("[A, B]Xor[A, B]", c.history))
+      } else Left(DecodingFailure("[A, B]Either[A, B]", c.history))
     }
   }
 
   /**
    * @group Disjunction
    */
-  final def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
+  final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
     da: Decoder[A],
     db: Decoder[B]
-  ): Decoder[Either[A, B]] =
-    decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
+  ): Decoder[Xor[A, B]] =
+    decodeEither[A, B](leftKey, rightKey).map(Xor.fromEither).withErrorMessage("[A, B]Xor[A, B]")
 
   /**
    * @group Disjunction
@@ -707,10 +707,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     de: Decoder[E],
     da: Decoder[A]
   ): Decoder[Validated[E, A]] =
-    decodeXor[E, A](
+    decodeEither[E, A](
       failureKey,
       successKey
-    ).map(_.toValidated).withErrorMessage("[E, A]Validated[E, A]")
+    ).map(Validated.fromEither).withErrorMessage("[E, A]Validated[E, A]")
 
   /**
    * @group Instances
