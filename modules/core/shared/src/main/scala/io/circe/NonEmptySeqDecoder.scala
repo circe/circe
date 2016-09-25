@@ -12,10 +12,13 @@ private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](implicit
   final def apply(c: HCursor): Decoder.Result[S] = {
     val arr = c.downArray
 
-    decodeA.tryDecode(arr).flatMap { head =>
-      decodeCA.tryDecode(arr.delete).map { tail =>
-        create(head, tail)
-      }
+    decodeA.tryDecode(arr) match {
+      case Right(head) =>
+        decodeCA.tryDecode(arr.delete) match {
+          case Right(tail) => Right(create(head, tail))
+          case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
+        }
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
     }
   }
 

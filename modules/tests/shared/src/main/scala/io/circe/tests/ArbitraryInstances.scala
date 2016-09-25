@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import cats.data.{ ValidatedNel, Xor }
+import cats.data.ValidatedNel
 import io.circe._
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
 import java.util.UUID
@@ -113,7 +113,7 @@ trait ArbitraryInstances {
   )
 
   implicit def arbitraryDecoder[A](implicit
-    arbitraryF: Arbitrary[Json => Xor[DecodingFailure, A]]
+    arbitraryF: Arbitrary[Json => Either[DecodingFailure, A]]
   ): Arbitrary[Decoder[A]] = Arbitrary(
     arbitraryF.arbitrary.map(f =>
       Decoder.instance(c => f(c.focus))

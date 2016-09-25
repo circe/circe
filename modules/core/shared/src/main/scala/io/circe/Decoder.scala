@@ -2,6 +2,7 @@ package io.circe
 
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
+import cats.instances.either.catsStdInstancesForEither
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -14,13 +15,15 @@ trait Decoder[A] extends Serializable { self =>
    */
   def apply(c: HCursor): Decoder.Result[A]
 
-  private[circe] def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-    apply(c).toValidated.toValidatedNel
+  private[circe] def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = apply(c) match {
+    case Right(a) => Validated.valid(a)
+    case Left(e) => Validated.invalidNel(e)
+  }
 
   /**
    * Decode the given acursor.
    */
-  def tryDecode(c: ACursor): Decoder.Result[A] = if (c.succeeded) apply(c.any) else Xor.left(
+  def tryDecode(c: ACursor): Decoder.Result[A] = if (c.succeeded) apply(c.any) else Left(
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
   )
 
@@ -41,16 +44,14 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def map[B](f: A => B): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] = self(c) match {
-      case Xor.Right(a) => Xor.Right(f(a))
-      case l @ Xor.Left(_) => l
+      case Right(a) => Right(f(a))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
-
-    override final def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
-      case Xor.Right(a) => Xor.Right(f(a))
-      case l @ Xor.Left(_) => l
+    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+      case Right(a) => Right(f(a))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
-
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).map(f)
   }
 
@@ -59,13 +60,13 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] = self(c) match {
-      case Xor.Right(a) => f(a)(c)
-      case l @ Xor.Left(_) => l
+      case Right(a) => f(a)(c)
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
 
-    override final def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
-      case Xor.Right(a) => f(a).tryDecode(c)
-      case l @ Xor.Left(_) => l
+    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+      case Right(a) => f(a).tryDecode(c)
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
@@ -93,7 +94,10 @@ trait Decoder[A] extends Serializable { self =>
    * Build a new instance with the specified error message.
    */
   final def withErrorMessage(message: String): Decoder[A] = new Decoder[A] {
-    final def apply(c: HCursor): Decoder.Result[A] = self(c).leftMap(_.withMessage(message))
+    final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
+      case r @ Right(_) => r
+      case Left(e) => Left(e.withMessage(message))
+    }
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       self.decodeAccumulating(c).leftMap(_.map(_.withMessage(message)))
@@ -104,7 +108,7 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
-      if (pred(c)) apply(c) else Xor.left(DecodingFailure(message, c.history))
+      if (pred(c)) apply(c) else Left(DecodingFailure(message, c.history))
   }
 
   /**
@@ -127,17 +131,23 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = new Decoder[AA] {
     final def apply(c: HCursor): Decoder.Result[AA] = self(c) match {
-      case r @ Xor.Right(_) => r
-      case Xor.Left(_) => d(c)
+      case r @ Right(_) => r
+      case Left(_) => d(c)
     }
   }
 
   /**
    * Run one or another decoder.
    */
-  final def split[B](d: Decoder[B]): Xor[HCursor, HCursor] => Decoder.Result[Xor[A, B]] = _ match {
-    case Xor.Left(c) => self(c).map(Xor.left)
-    case Xor.Right(c) => d(c).map(Xor.right)
+  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = _ match {
+    case Left(c) => self(c) match {
+      case Right(v) => Right(Left(v))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
+    }
+    case Right(c) => d(c) match {
+      case Right(v) => Right(Right(v))
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
+    }
   }
 
   /**
@@ -160,9 +170,15 @@ trait Decoder[A] extends Serializable { self =>
    *
    * @param f a function returning either a value or an error message
    */
-  final def emap[B](f: A => Xor[String, B]): Decoder[B] = new Decoder[B] {
+  final def emap[B](f: A => Either[String, B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] =
-      self(c).flatMap(a => f(a).leftMap(message => DecodingFailure(message, c.history)))
+      self(c) match {
+        case Right(a) => f(a) match {
+          case r @ Right(_) => r.asInstanceOf[Decoder.Result[B]]
+          case Left(message) => Left(DecodingFailure(message, c.history))
+        }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
+      }
   }
   /**
    * Create a new decoder that performs some operation on the result if this one succeeds.
@@ -171,11 +187,12 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def emapTry[B](f: A => Try[B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] =
-      self(c).flatMap { a =>
-        f(a) match {
-          case Success(b) => Xor.right(b)
-          case Failure(t) => Xor.left(DecodingFailure.fromThrowable(t, c.history))
+      self(c) match {
+        case Right(a) => f(a) match {
+          case Success(b) => Right(b)
+          case Failure(t) => Left(DecodingFailure.fromThrowable(t, c.history))
         }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
       }
   }
 }
@@ -213,13 +230,12 @@ trait Decoder[A] extends Serializable { self =>
 final object Decoder extends TupleDecoders with ProductDecoders with LowPriorityDecoders {
   import Json._
 
-  type Result[A] = Xor[DecodingFailure, A]
+  type Result[A] = Either[DecodingFailure, A]
 
-  val resultInstance: MonadError[Result, DecodingFailure] =
-    Xor.catsDataInstancesForXor[DecodingFailure]
+  val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
-    final def fail(c: HCursor): Result[A] = Xor.left(DecodingFailure(name, c.history))
+    final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
   }
 
   /**
@@ -233,7 +249,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * Create a decoder that always returns a single value, useful with some flatMap situations
    */
   final def const[A](a: A): Decoder[A] = new Decoder[A] {
-    final def apply(c: HCursor): Result[A] = Xor.right(a)
+    final def apply(c: HCursor): Result[A] = Right(a)
     final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       Validated.valid(a)
   }
@@ -253,8 +269,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   final def instanceTry[A](f: HCursor => Try[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = f(c) match {
-      case Success(a) => Xor.right(a)
-      case Failure(t) => Xor.left(DecodingFailure.fromThrowable(t, c.history))
+      case Success(a) => Right(a)
+      case Failure(t) => Left(DecodingFailure.fromThrowable(t, c.history))
     }
   }
 
@@ -271,8 +287,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       tryDecodeAccumulating(c.acursor)
 
-    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
-      f(c).toValidated.toValidatedNel
+    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] = f(c) match {
+      case Right(v) => Validated.valid(v)
+      case Left(e) => Validated.invalidNel(e)
+    }
   }
 
   /**
@@ -281,7 +299,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Utilities
    */
   final def failed[A](failure: DecodingFailure): Decoder[A] = new Decoder[A] {
-    final def apply(c: HCursor): Result[A] = Xor.left(failure)
+    final def apply(c: HCursor): Result[A] = Left(failure)
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       Validated.invalidNel(failure)
   }
@@ -297,14 +315,14 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Decoding
    */
   implicit final val decodeHCursor: Decoder[HCursor] = new Decoder[HCursor] {
-    final def apply(c: HCursor): Result[HCursor] = Xor.right(c)
+    final def apply(c: HCursor): Result[HCursor] = Right(c)
   }
 
   /**
    * @group Decoding
    */
   implicit final val decodeJson: Decoder[Json] = new Decoder[Json] {
-    final def apply(c: HCursor): Result[Json] = Xor.right(c.focus)
+    final def apply(c: HCursor): Result[Json] = Right(c.focus)
   }
 
   /**
@@ -312,8 +330,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeJsonObject: Decoder[JsonObject] = new Decoder[JsonObject] {
     final def apply(c: HCursor): Result[JsonObject] = c.focus.asObject match {
-      case Some(v) => Xor.right(v)
-      case None => Xor.left(DecodingFailure("JsonObject", c.history))
+      case Some(v) => Right(v)
+      case None => Left(DecodingFailure("JsonObject", c.history))
     }
   }
 
@@ -322,8 +340,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeJsonNumber: Decoder[JsonNumber] = new Decoder[JsonNumber] {
     final def apply(c: HCursor): Result[JsonNumber] = c.focus.asNumber match {
-      case Some(v) => Xor.right(v)
-      case None => Xor.left(DecodingFailure("JsonNumber", c.history))
+      case Some(v) => Right(v)
+      case None => Left(DecodingFailure("JsonNumber", c.history))
     }
   }
 
@@ -332,8 +350,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeString: Decoder[String] = new Decoder[String] {
     final def apply(c: HCursor): Result[String] = c.focus match {
-      case JString(string) => Xor.right(string)
-      case _ => Xor.left(DecodingFailure("String", c.history))
+      case JString(string) => Right(string)
+      case _ => Left(DecodingFailure("String", c.history))
     }
   }
 
@@ -342,10 +360,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeUnit: Decoder[Unit] = new Decoder[Unit] {
     final def apply(c: HCursor): Result[Unit] = c.focus match {
-      case JNull => Xor.right(())
-      case JObject(obj) if obj.isEmpty => Xor.right(())
-      case JArray(arr) if arr.isEmpty => Xor.right(())
-      case _ => Xor.left(DecodingFailure("Unit", c.history))
+      case JNull => Right(())
+      case JObject(obj) if obj.isEmpty => Right(())
+      case JArray(arr) if arr.isEmpty => Right(())
+      case _ => Left(DecodingFailure("Unit", c.history))
     }
   }
 
@@ -354,8 +372,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
     final def apply(c: HCursor): Result[Boolean] = c.focus match {
-      case JBoolean(b) => Xor.right(b)
-      case _ => Xor.left(DecodingFailure("Boolean", c.history))
+      case JBoolean(b) => Right(b)
+      case _ => Left(DecodingFailure("Boolean", c.history))
     }
   }
 
@@ -364,8 +382,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeChar: Decoder[Char] = new Decoder[Char] {
     final def apply(c: HCursor): Result[Char] = c.focus match {
-      case JString(string) if string.length == 1 => Xor.right(string.charAt(0))
-      case _ => Xor.left(DecodingFailure("Char", c.history))
+      case JString(string) if string.length == 1 => Right(string.charAt(0))
+      case _ => Left(DecodingFailure("Char", c.history))
     }
   }
 
@@ -378,10 +396,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.focus match {
-      case JNull => Xor.right(Float.NaN)
-      case JNumber(number) => Xor.right(number.toDouble.toFloat)
+      case JNull => Right(Float.NaN)
+      case JNumber(number) => Right(number.toDouble.toFloat)
       case JString(string) => JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case _ => fail(c)
@@ -399,10 +417,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
     final def apply(c: HCursor): Result[Double] = c.focus match {
-      case JNull => Xor.right(Double.NaN)
-      case JNumber(number) => Xor.right(number.toDouble)
+      case JNull => Right(Double.NaN)
+      case JNumber(number) => Right(number.toDouble)
       case JString(string) => JsonNumber.fromString(string).map(_.toDouble) match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case _ => fail(c)
@@ -419,11 +437,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
     final def apply(c: HCursor): Result[Byte] = c.focus match {
       case JNumber(number) => number.toByte match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(string.toByte)
+        Right(string.toByte)
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -441,11 +459,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
     final def apply(c: HCursor): Result[Short] = c.focus match {
       case JNumber(number) => number.toShort match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(string.toShort)
+        Right(string.toShort)
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -463,11 +481,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
     final def apply(c: HCursor): Result[Int] = c.focus match {
       case JNumber(number) => number.toInt match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(string.toInt)
+        Right(string.toInt)
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -488,11 +506,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
     final def apply(c: HCursor): Result[Long] = c.focus match {
       case JNumber(number) => number.toLong match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(string.toLong)
+        Right(string.toLong)
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -513,11 +531,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
     final def apply(c: HCursor): Result[BigInt] = c.focus match {
       case JNumber(number) => number.toBigInt match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(BigInt(string))
+        Right(BigInt(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -541,11 +559,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
     final def apply(c: HCursor): Result[BigDecimal] = c.focus match {
       case JNumber(number) => number.toBigDecimal match {
-        case Some(v) => Xor.right(v)
+        case Some(v) => Right(v)
         case None => fail(c)
       }
       case JString(string) => try {
-        Xor.right(BigDecimal(string))
+        Right(BigDecimal(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -557,13 +575,13 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Decoding
    */
   implicit final val decodeUUID: Decoder[UUID] = new Decoder[UUID] {
+    private[this] def fail(c: HCursor): Result[UUID] = Left(DecodingFailure("UUID", c.history))
+
     final def apply(c: HCursor): Result[UUID] = c.focus match {
-      case JString(string) if string.length == 36 => try {
-        Xor.right(UUID.fromString(string))
-      } catch {
-        case _: IllegalArgumentException => Xor.left(DecodingFailure("UUID", c.history))
+      case JString(string) if string.length == 36 => try Right(UUID.fromString(string)) catch {
+        case _: IllegalArgumentException => fail(c)
       }
-      case _ => Xor.left(DecodingFailure("UUID", c.history))
+      case _ => fail(c)
     }
   }
 
@@ -575,7 +593,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     cbf: CanBuildFrom[Nothing, A, C[A]]
   ): Decoder[C[A]] = new SeqDecoder[A, C](d, cbf)
 
-  private[this] final val rightNone: Xor[DecodingFailure, Option[Nothing]] = Xor.right(None)
+  private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
   /**
    * @group Decoding
@@ -584,12 +602,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     withReattempt(c =>
       if (c.succeeded) {
         if (c.any.focus.isNull) rightNone else d(c.any) match {
-          case Xor.Right(a) => Xor.right(Some(a))
-          case Xor.Left(df) if df.history.isEmpty => rightNone
-          case Xor.Left(df) => Xor.left(df)
+          case Right(a) => Right(Some(a))
+          case Left(df) if df.history.isEmpty => rightNone
+          case Left(df) => Left(df)
         }
       } else if (!c.history.takeWhile(_.failed).exists(_.incorrectFocus)) rightNone else {
-        Xor.left(DecodingFailure("[A]Option[A]", c.history))
+        Left(DecodingFailure("[A]Option[A]", c.history))
       }
     )
 
@@ -602,8 +620,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Decoding
    */
   implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
-    final def apply(c: HCursor): Result[None.type] = if (c.focus.isNull) Xor.right(None) else {
-      Xor.left(DecodingFailure("None", c.history))
+    final def apply(c: HCursor): Result[None.type] = if (c.focus.isNull) Right(None) else {
+      Left(DecodingFailure("None", c.history))
     }
   }
 
@@ -651,30 +669,36 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Disjunction
    */
-  final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
+  final def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
     da: Decoder[A],
     db: Decoder[B]
-  ): Decoder[Xor[A, B]] = new Decoder[Xor[A, B]] {
-    final def apply(c: HCursor): Result[Xor[A, B]] = {
+  ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
+    final def apply(c: HCursor): Result[Either[A, B]] = {
       val l = c.downField(leftKey)
       val r = c.downField(rightKey)
 
       if (l.succeeded && !r.succeeded) {
-        da(l.any).map(Xor.left(_))
+        da(l.any) match {
+          case Right(v) => Right(Left(v))
+          case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
+        }
       } else if (!l.succeeded && r.succeeded) {
-        db(r.any).map(Xor.right(_))
-      } else Xor.left(DecodingFailure("[A, B]Xor[A, B]", c.history))
+        db(r.any) match {
+          case Right(v) => Right(Right(v))
+          case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
+        }
+      } else Left(DecodingFailure("[A, B]Either[A, B]", c.history))
     }
   }
 
   /**
    * @group Disjunction
    */
-  final def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
+  final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
     da: Decoder[A],
     db: Decoder[B]
-  ): Decoder[Either[A, B]] =
-    decodeXor[A, B](leftKey, rightKey).map(_.toEither).withErrorMessage("[A, B]Either[A, B]")
+  ): Decoder[Xor[A, B]] =
+    decodeEither[A, B](leftKey, rightKey).map(Xor.fromEither).withErrorMessage("[A, B]Xor[A, B]")
 
   /**
    * @group Disjunction
@@ -683,10 +707,10 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     de: Decoder[E],
     da: Decoder[A]
   ): Decoder[Validated[E, A]] =
-    decodeXor[E, A](
+    decodeEither[E, A](
       failureKey,
       successKey
-    ).map(_.toValidated).withErrorMessage("[E, A]Validated[E, A]")
+    ).map(Validated.fromEither).withErrorMessage("[E, A]Validated[E, A]")
 
   /**
    * @group Instances
@@ -705,9 +729,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def tailRecM[A, B](a: A)(f: A => Decoder[Either[A, B]]): Decoder[B] = new Decoder[B] {
         @tailrec
         private[this] def step(c: HCursor, a1: A): Result[B] = f(a1)(c) match {
-          case l @ Xor.Left(df) => l
-          case Xor.Right(Left(a2)) => step(c, a2)
-          case Xor.Right(Right(b)) => Xor.right(b)
+          case l @ Left(_) => l.asInstanceOf[Result[B]]
+          case Right(Left(a2)) => step(c, a2)
+          case Right(Right(b)) => Right(b)
         }
 
         final def apply(c: HCursor): Result[B] = step(c, a)

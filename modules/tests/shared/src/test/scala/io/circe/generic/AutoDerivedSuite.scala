@@ -1,7 +1,6 @@
 package io.circe.generic
 
 import cats.Eq
-import cats.data.Xor
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.tests.{ CodecTests, CirceSuite }
@@ -84,7 +83,7 @@ class AutoDerivedSuite extends CirceSuite {
       "j" -> Json.fromInt(j)
     ).as[Int => Qux[String]].map(_(i))
 
-    assert(result === Xor.right(Qux(i, s, j)))
+    assert(result === Right(Qux(i, s, j)))
   }
 
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
@@ -96,7 +95,7 @@ class AutoDerivedSuite extends CirceSuite {
          _(field(j))
       )
 
-      assert(result === Xor.right(Qux(i, s, j)))
+      assert(result === Right(Qux(i, s, j)))
     }
   }
 
@@ -110,14 +109,14 @@ class AutoDerivedSuite extends CirceSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Xor.right(expected))
+      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
     }
   }
 
   "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
     val json = Encoder[List[Int]].apply(is)
 
-    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Xor.right(is))
+    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
   }
 
   it should "not be derived for Object" in {
@@ -133,7 +132,7 @@ class AutoDerivedSuite extends CirceSuite {
   "Generic decoders" should "not interfere with defined decoders" in forAll { (xs: List[String]) =>
     val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-    assert(Decoder[Foo].apply(json.hcursor) === Xor.right(Baz(xs): Foo))
+    assert(Decoder[Foo].apply(json.hcursor) === Right(Baz(xs): Foo))
   }
 
   "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>

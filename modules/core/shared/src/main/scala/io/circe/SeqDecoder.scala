@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, Xor }
+import cats.data.{ NonEmptyList, Validated }
 import scala.collection.generic.CanBuildFrom
 
 private[circe] final class SeqDecoder[A, C[_]](
@@ -16,17 +16,17 @@ private[circe] final class SeqDecoder[A, C[_]](
 
       while (failed.eq(null) && current.succeeded) {
         decodeA(current.any) match {
-          case Xor.Left(e) => failed = e
-          case Xor.Right(a) =>
+          case Left(e) => failed = e
+          case Right(a) =>
             builder += a
             current = current.right
         }
       }
 
-      if (failed.eq(null)) Xor.right(builder.result) else Xor.left(failed)
+      if (failed.eq(null)) Right(builder.result) else Left(failed)
     } else {
-      if (c.focus.isArray) Xor.right(cbf.apply.result) else {
-        Xor.left(DecodingFailure("CanBuildFrom for A", c.history))
+      if (c.focus.isArray) Right(cbf.apply.result) else {
+        Left(DecodingFailure("CanBuildFrom for A", c.history))
       }
     }
   }

@@ -1,7 +1,6 @@
 package io.circe.tests
 
 import cats.Eq
-import cats.data.Xor
 import io.circe.{ GenericCursor, Json }
 import io.circe.syntax._
 
@@ -226,7 +225,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      l <- fromResult(a.leftAt(_.as[Int].exists(_ == 1)))
+      l <- fromResult(a.leftAt(_.as[Int].right.exists(_ == 1)))
     } yield l
 
     assert(result.flatMap(focus) === Some(1.asJson))
@@ -235,7 +234,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      l <- fromResult(c.leftAt(_.as[Int].exists(_ == 1)))
+      l <- fromResult(c.leftAt(_.as[Int].right.exists(_ == 1)))
     } yield l
 
     assert(result.flatMap(focus) === None)
@@ -245,7 +244,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      r <- fromResult(a.rightAt(_.as[Int].exists(_ == 5)))
+      r <- fromResult(a.rightAt(_.as[Int].right.exists(_ == 5)))
     } yield r
 
     assert(result.flatMap(focus) === Some(5.asJson))
@@ -254,7 +253,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      r <- fromResult(c.rightAt(_.as[Int].exists(_ == 5)))
+      r <- fromResult(c.rightAt(_.as[Int].right.exists(_ == 5)))
     } yield r
 
     assert(result.flatMap(focus) === None)
@@ -274,14 +273,14 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       b <- fromResult(cursor.downField("b"))
     } yield b.getOrElse[List[Boolean]]("d")(Nil)
-    assert(result === Some(Xor.Right(List(true, false, true))))
+    assert(result === Some(Right(List(true, false, true))))
   }
 
   it should "use the fallback if field is missing" in {
     val result = for {
       b <- fromResult(cursor.downField("b"))
     } yield b.getOrElse[List[Boolean]]("z")(Nil)
-    assert(result === Some(Xor.Right(Nil)))
+    assert(result === Some(Right(Nil)))
   }
 
   it should "fail if the field is the wrong type" in {

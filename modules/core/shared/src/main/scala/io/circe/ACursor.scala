@@ -1,7 +1,8 @@
 package io.circe
 
 import cats.{ Applicative, Eq }
-import cats.data.{ Validated, Xor }
+import cats.data.Validated
+import cats.instances.either._
 
 /**
  * A cursor that tracks history and represents the possibility of failure.
@@ -17,7 +18,7 @@ sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACur
   type Result = ACursor
   type M[x[_]] = Applicative[x]
 
-  final def either: Xor[HCursor, HCursor] = if (succeeded) Xor.right(any) else Xor.left(any)
+  final def either: Either[HCursor, HCursor] = if (succeeded) Right(any) else Left(any)
 
   /**
    * Return the current [[HCursor]] if we are in a success state.
@@ -69,7 +70,7 @@ sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACur
   /**
    * Return a [[cats.data.Validated]] of the underlying cursor.
    */
-  final def validation: Validated[HCursor, HCursor] = either.toValidated
+  final def validation: Validated[HCursor, HCursor] = Validated.fromEither(either)
 
   /**
    * A helper method to simplify performing operations on the underlying [[HCursor]].

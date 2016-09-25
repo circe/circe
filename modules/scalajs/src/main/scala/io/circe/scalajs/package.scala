@@ -1,10 +1,10 @@
 package io.circe
 
-import cats.data.Xor
 import io.circe.Json._
 import scala.scalajs.js
 import scala.scalajs.js.undefined
 import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
+import scala.util.control.NonFatal
 
 package object scalajs {
   /**
@@ -26,15 +26,19 @@ package object scalajs {
   /**
    * Convert [[scala.scalajs.js.Any]] to [[Json]].
    */
-  final def convertJsToJson(input: js.Any): Xor[Throwable, Json] = Xor.catchNonFatal(
-    unsafeConvertAnyToJson(input)
-  )
+  final def convertJsToJson(input: js.Any): Either[Throwable, Json] =
+    try Right(unsafeConvertAnyToJson(input)) catch {
+      case NonFatal(exception) => Left(exception)
+    }
 
   /**
    * Decode [[scala.scalajs.js.Any]].
    */
-  final def decodeJs[A](input: js.Any)(implicit d: Decoder[A]): Xor[Throwable, A] =
-    convertJsToJson(input).flatMap(d.decodeJson)
+  final def decodeJs[A](input: js.Any)(implicit d: Decoder[A]): Either[Throwable, A] =
+    convertJsToJson(input) match {
+      case Right(json) => d.decodeJson(json)
+      case l @ Left(_) => l.asInstanceOf[Either[Throwable, A]]
+    }
 
   /**
    * Convert [[Json]] to [[scala.scalajs.js.Any]].
