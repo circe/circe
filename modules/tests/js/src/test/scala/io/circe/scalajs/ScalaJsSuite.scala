@@ -44,6 +44,6 @@ class ScalaJsSuite extends CirceSuite {
   }
 
   it should "handle undefined js.UndefOr when encoding to js.Object" in {
-    assert(js.isUndefined(UndefOrExample(js.undefined).asJsAny.asInstanceOf[js.Dynamic].name))
+    assert(Option(UndefOrExample(js.undefined).asJsAny.asInstanceOf[js.Dynamic].name).isEmpty)
   }
 }
