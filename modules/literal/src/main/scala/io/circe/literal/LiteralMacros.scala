@@ -4,6 +4,8 @@ import io.circe.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import macrocompat.bundle
+import scala.Predef.classOf
+import scala.collection.immutable.Map
 import scala.reflect.macros.whitebox
 import scala.util.control.NonFatal
 
@@ -37,7 +39,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => value
-      case "isObj" => false: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.FALSE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
@@ -56,7 +58,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => q"_root_.io.circe.Json.arr(..$values)"
-      case "isObj" => false: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.FALSE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
@@ -76,7 +78,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => q"_root_.io.circe.Json.obj(..$fields)"
-      case "isObj" => true: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.TRUE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {

@@ -4,6 +4,7 @@ import cats.{ Eq, Functor, Id, Show }
 import cats.instances.list._
 import io.circe.cursor.{ CArray, CJson, CObject }
 import scala.annotation.tailrec
+import scala.collection.immutable.Set
 
 /**
  * A zipper that represents a position in a JSON value and supports navigation around the JSON

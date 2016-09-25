@@ -7,6 +7,8 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
+import scala.collection.immutable.Map
+import scala.Predef._
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.

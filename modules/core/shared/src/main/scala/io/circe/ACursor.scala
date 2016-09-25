@@ -3,6 +3,7 @@ package io.circe
 import cats.{ Applicative, Eq }
 import cats.data.Validated
 import cats.instances.either._
+import scala.collection.immutable.Set
 
 /**
  * A cursor that tracks history and represents the possibility of failure.

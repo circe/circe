@@ -2,6 +2,7 @@ package io.circe.jackson
 
 import io.circe.{ Json, Parser, ParsingFailure }
 import java.io.File
+import scala.Predef.classOf
 import scala.util.control.NonFatal
 
 trait JacksonParser extends Parser { this: WithJacksonMapper =>

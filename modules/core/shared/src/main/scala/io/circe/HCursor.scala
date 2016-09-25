@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.{ Eq, Functor, Id }
+import scala.collection.immutable.Set
 
 /**
  * A cursor that tracks the history of operations performed with it.

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.Serializers
 import io.circe.Json
+import scala.Predef.classOf
 
 final object CirceJsonModule extends SimpleModule("CirceJson", Version.unknownVersion()) {
   override final def setupModule(context: SetupContext): Unit = {

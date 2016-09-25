@@ -335,6 +335,9 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
   .settings(allSettings: _*)
   .settings(noPublishSettings: _*)
   .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
@@ -477,6 +480,9 @@ lazy val benchmark = project.in(file("modules/benchmark"))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
