@@ -20,7 +20,7 @@ package object scalajs {
     case o: js.Object => Json.fromFields(
       o.asInstanceOf[js.Dictionary[_]].mapValues(unsafeConvertAnyToJson).toSeq
     )
-    case undefined => Json.Null
+    case other if js.isUndefined(other) => Json.Null
   }
 
   /**
