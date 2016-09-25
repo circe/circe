@@ -48,7 +48,7 @@ package object scalajs {
     case JNumber(n) => n.toDouble
     case JBoolean(b) => b
     case JArray(arr) => arr.map(convertJsonToJs).toJSArray
-    case JNull => undefined
+    case JNull => null
     case JObject(obj) => obj.toMap.mapValues(convertJsonToJs).toJSDictionary
   }
 
