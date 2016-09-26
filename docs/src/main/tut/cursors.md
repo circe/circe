@@ -12,6 +12,7 @@ data and for performing modification.
 Suppose we have the following JSON document:
 
 ```tut:silent
+import cats.syntax.either._
 import io.circe._, io.circe.parser._
 
 val json: String = """

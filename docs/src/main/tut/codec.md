@@ -117,16 +117,14 @@ do so in a couple of ways.
 Firstly, you can write a new `Encoder[A]` and `Decoder[A]` from scratch:
 
 ```tut:book
-import cats.data.Xor
-
 class Thing()
 
-implicit val encodeFoo = new Encoder[Thing] {
+implicit val encodeFoo: Encoder[Thing] = new Encoder[Thing] {
   final def apply(a: Thing): Json = ??? // your implementation goes here
 }
 
-implicit val decodeFoo = new Decoder[Thing] {
-  final def apply(c: HCursor): Decoder.Result[Thing] = Xor.left(DecodingFailure("Not implemented yet", c.history))
+implicit val decodeFoo: Decoder[Thing] = new Decoder[Thing] {
+  final def apply(c: HCursor): Decoder.Result[Thing] = Left(DecodingFailure("Not implemented yet", c.history))
 }
 ```
 
@@ -134,12 +132,13 @@ But in many cases you might find it more convenient to piggyback on top of the d
 already available. For example, a codec for `java.time.Instant` might look like this:
 
 ```tut:book
+import cats.syntax.either._
 import java.time.Instant
 
-implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](i => i.toString)
+implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](_.toString)
 
 implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =>
-  Xor.catchNonFatal(Instant.parse(str)).leftMap(t => "Instant")
+  Either.catchNonFatal(Instant.parse(str)).leftMap(t => "Instant")
 }
 ```
 
