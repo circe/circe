@@ -3,7 +3,8 @@ package io.circe
 import cats.Eq
 import cats.data._
 import cats.laws.discipline.arbitrary._
-import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import java.util.UUID
 
 class AnyValCodecSuite extends CirceSuite {

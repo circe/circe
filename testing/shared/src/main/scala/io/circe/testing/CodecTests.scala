@@ -1,7 +1,7 @@
-package io.circe.tests
+package io.circe.testing
 
-import cats.Eq
 import cats.data.Xor
+import cats.Eq
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Json }

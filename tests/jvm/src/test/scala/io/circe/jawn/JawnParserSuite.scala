@@ -1,7 +1,8 @@
 package io.circe.jawn
 
 import cats.data.Xor
-import io.circe.tests.{ CirceSuite, ParserTests }
+import io.circe.testing.ParserTests
+import io.circe.tests.CirceSuite
 import io.circe.tests.examples.glossary
 import java.io.File
 import java.nio.ByteBuffer

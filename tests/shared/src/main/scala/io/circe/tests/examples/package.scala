@@ -3,6 +3,7 @@ package io.circe.tests
 import cats.Eq
 import cats.instances.AllInstances
 import io.circe.{ Decoder, Encoder, Json }
+import io.circe.testing.ArbitraryInstances
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object examples extends AllInstances with ArbitraryInstances with MissingInstances {

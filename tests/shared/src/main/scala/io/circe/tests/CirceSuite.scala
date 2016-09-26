@@ -2,6 +2,7 @@ package io.circe.tests
 
 import cats.instances.AllInstances
 import cats.syntax.AllSyntax
+import io.circe.testing.{ ArbitraryInstances, EqInstances }
 import org.scalatest.FlatSpec
 import org.scalatest.prop.{ Checkers, GeneratorDrivenPropertyChecks }
 import org.typelevel.discipline.Laws

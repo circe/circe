@@ -83,6 +83,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   parserJS,
   refinedJS,
   scodecJS,
+  testingJS,
   tests,
   testsJS
 ) ++ (
@@ -113,6 +114,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   refined, refinedJS,
   parser, parserJS,
   scodec, scodecJS,
+  testing, testingJS,
   tests, testsJS,
   jawn,
   jackson,
@@ -332,6 +334,28 @@ lazy val scodecBase = crossProject.in(file("scodec"))
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
 
+lazy val testingBase = crossProject.in(file("testing"))
+  .settings(
+    description := "circe testing",
+    moduleName := "circe-testing",
+    name := "testing"
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.typelevel" %%% "cats-laws" % catsVersion,
+      "org.typelevel" %%% "discipline" % disciplineVersion
+    )
+  )
+  .settings(
+    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.testing\\..*"
+  )
+  .dependsOn(coreBase)
+
+lazy val testing = testingBase.jvm
+lazy val testingJS = testingBase.js
+
 lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     description := "circe tests",
@@ -367,7 +391,7 @@ lazy val testsBase = crossProject.in(file("tests"))
     ).dependsOn(scalajs)
   )
   .dependsOn(
-    numbersBase % "compile->test",
+    testingBase,
     coreBase,
     genericBase,
     literalBase,

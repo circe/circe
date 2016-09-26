@@ -193,7 +193,8 @@ object Boilerplate {
       block"""
         |package io.circe
         |
-        |import io.circe.tests.{ CodecTests, CirceSuite }
+        |import io.circe.testing.CodecTests
+        |import io.circe.tests.CirceSuite
         |
         |class TupleCodecSuite extends CirceSuite {
         |  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
@@ -303,7 +304,8 @@ object Boilerplate {
         |package io.circe
         |
         |import cats.Eq
-        |import io.circe.tests.{ CodecTests, CirceSuite }
+        |import io.circe.testing.CodecTests
+        |import io.circe.tests.CirceSuite
         |import org.scalacheck.Arbitrary
         |
         |class ProductCodecSuite extends CirceSuite {

@@ -1,6 +1,6 @@
 package io.circe.numbers
 
-import io.circe.tests.{ IntegralString, JsonNumberString }
+import io.circe.testing.{ IntegralString, JsonNumberString }
 import java.math.BigDecimal
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks

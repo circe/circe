@@ -4,7 +4,8 @@ import cats.Eq
 import cats.instances.AllInstances
 import io.circe.ObjectEncoder
 import io.circe.generic.jsoncodecmacrossuiteaux._
-import io.circe.tests.{ ArbitraryInstances, CirceSuite, CodecTests, MissingInstances }
+import io.circe.testing.{ ArbitraryInstances, CodecTests }
+import io.circe.tests.{ CirceSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object jsoncodecmacrossuiteaux extends AnyRef
