@@ -1,6 +1,7 @@
 package io.circe
 
-import io.circe.tests.{ CirceSuite, JsonNumberString }
+import io.circe.testing.JsonNumberString
+import io.circe.tests.CirceSuite
 import scala.math.{ min, max }
 
 class JsonNumberSuite extends CirceSuite {

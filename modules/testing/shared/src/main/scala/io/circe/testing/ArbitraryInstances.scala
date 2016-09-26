@@ -1,4 +1,4 @@
-package io.circe.tests
+package io.circe.testing
 
 import cats.data.ValidatedNel
 import io.circe._
@@ -95,7 +95,7 @@ trait ArbitraryInstances {
     )
   )
 
-  implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
+  implicit def arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
       Arbitrary.arbitrary[JsonNumberString].map(jns => JsonNumber.unsafeDecimal(jns.value)),
       Arbitrary.arbitrary[BigDecimal].map(JsonBigDecimal(_)),

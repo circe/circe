@@ -1,8 +1,9 @@
 package io.circe.scodec
 
-import _root_.scodec.bits.{BitVector, ByteVector}
+import _root_.scodec.bits.{ BitVector, ByteVector }
 import cats.Eq
-import io.circe.tests.{CirceSuite, CodecTests}
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import org.scalacheck.Arbitrary
 
 class ScodecSuite extends CirceSuite {

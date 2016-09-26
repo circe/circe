@@ -1,6 +1,7 @@
 package io.circe.jackson
 
-import io.circe.tests.{ CirceSuite, ParserTests }
+import io.circe.testing.ParserTests
+import io.circe.tests.CirceSuite
 import io.circe.tests.examples.glossary
 import java.io.File
 import scala.io.Source
