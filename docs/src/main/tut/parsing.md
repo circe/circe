@@ -30,8 +30,9 @@ val rawJson: String = """
 val parseResult = parse(rawJson)
 ```
 
-Because parsing might fail, the result is a cats [Xor][cats-xor]. In the example above, the input
-was valid JSON, so the result was a `Right` containing the corresponding JSON representation.
+Because parsing might fail, the result is an `Either` with an `io.circe.Error` on the left side.
+In the example above, the input was valid JSON, so the result was a `Right` containing the
+corresponding JSON representation.
 
 Let's see what happens when you try to parse invalid JSON:
 
@@ -41,21 +42,21 @@ val badJson: String = "yolo"
 parse(badJson)
 ```
 
-There are a number of ways to extract the parse result from the `Xor`. For example you could pattern
+There are a number of ways to extract the parse result from the `Either`. For example you could pattern
 match on it:
 
 ```tut:book
-import cats.data.Xor._
-
 parse(rawJson) match {
   case Left(failure) => println("Invalid JSON :(")
   case Right(json) => println("Yay, got some JSON!")
 }
 ```
 
-Or use `getOrElse`:
+Or use `getOrElse` (an extension method provided by Cats):
 
 ```tut:book
+import cats.syntax.either._
+
 val json: Json = parse(rawJson).getOrElse(Json.Null)
 ```
 

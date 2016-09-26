@@ -23,6 +23,7 @@ Note that this will require your project to depend on both Scalaz and cats.
 Suppose we have the following JSON document:
 
 ```tut:silent
+import cats.syntax.either._
 import io.circe._, io.circe.parser._
 
 val json: Json = parse("""
