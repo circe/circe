@@ -18,7 +18,11 @@ trait Decoder[A] extends Serializable { self =>
     apply(c).toValidated.toValidatedNel
 
   /**
-   * Decode the given acursor.
+   * Decode the given [[ACursor]].
+   *
+   * Note that if you override the default implementation, you should also be
+   * sure to override `tryDecodeAccumulating` in order for fail-fast and
+   * accumulating decoding to be consistent.
    */
   def tryDecode(c: ACursor): Decoder.Result[A] = if (c.succeeded) apply(c.any) else Xor.left(
     DecodingFailure("Attempt to decode value on failed cursor", c.any.history)
@@ -52,6 +56,9 @@ trait Decoder[A] extends Serializable { self =>
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).map(f)
+
+    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+      self.tryDecodeAccumulating(c).map(f)
   }
 
   /**
@@ -70,6 +77,9 @@ trait Decoder[A] extends Serializable { self =>
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
       self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
+
+    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+      self.tryDecodeAccumulating(c).andThen(result => f(result).tryDecodeAccumulating(c))
   }
 
   /**

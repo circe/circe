@@ -5,7 +5,9 @@ import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import cats.laws.discipline.arbitrary._
 import io.circe.parser.parse
 import io.circe.syntax._
+import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
+import io.circe.tests.examples.WrappedOptionalField
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
@@ -254,4 +256,6 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
     assert(decoder.apply(friday.hcursor).isEmpty)
   }
+
+  checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 }
