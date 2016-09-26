@@ -1,7 +1,8 @@
 package io.circe.java8.time
 
 import cats.Eq
-import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import java.time.{ Instant, LocalDate, LocalDateTime, OffsetDateTime, ZoneId, ZonedDateTime }
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary

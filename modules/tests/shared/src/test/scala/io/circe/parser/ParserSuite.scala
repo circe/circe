@@ -1,6 +1,7 @@
 package io.circe.parser
 
-import io.circe.tests.{ CirceSuite, ParserTests }
+import io.circe.testing.ParserTests
+import io.circe.tests.CirceSuite
 
 class ParserSuite extends CirceSuite {
   checkLaws("Parser", ParserTests(`package`).parser)

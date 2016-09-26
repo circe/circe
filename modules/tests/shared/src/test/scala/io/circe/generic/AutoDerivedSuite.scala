@@ -3,7 +3,8 @@ package io.circe.generic
 import cats.Eq
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
-import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }

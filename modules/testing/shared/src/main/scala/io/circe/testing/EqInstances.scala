@@ -1,4 +1,4 @@
-package io.circe.tests
+package io.circe.testing
 
 import cats.Eq
 import cats.instances.either._
@@ -7,7 +7,7 @@ import io.circe.{ AccumulatingDecoder, Decoder, Encoder, Json }
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
-  private[this] val equalityCheckCount: Int = 16
+  private[this] def equalityCheckCount: Int = 16
 
   private[this] def arbitraryValues[A](implicit A: Arbitrary[A]): Stream[A] = Stream.continually(
     A.arbitrary.sample

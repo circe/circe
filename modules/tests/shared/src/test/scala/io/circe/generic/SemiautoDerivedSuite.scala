@@ -5,7 +5,8 @@ import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.semiauto._
-import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }

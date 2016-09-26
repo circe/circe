@@ -9,7 +9,8 @@ import eu.timepit.refined.collection.{ NonEmpty, Size }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitraryWit
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
 import io.circe.{ Decoder, Encoder, Json }
-import io.circe.tests.{ CodecTests, CirceSuite }
+import io.circe.testing.CodecTests
+import io.circe.tests.CirceSuite
 import io.circe.syntax._
 import org.scalacheck.{ Gen, Arbitrary }
 import shapeless.{ Nat, Witness => W }

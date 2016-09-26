@@ -1,4 +1,4 @@
-package io.circe.tests
+package io.circe.testing
 
 import cats.instances.either._
 import cats.laws._
