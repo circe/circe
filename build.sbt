@@ -7,7 +7,8 @@ import scala.xml.transform.{ RewriteRule, RuleTransformer }
 lazy val buildSettings = Seq(
   organization := "io.circe",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8")
+  crossScalaVersions := Seq("2.10.6", "2.11.8"),
+  coverageScalacPluginVersion := "1.3.0-RC1"
 )
 
 lazy val compilerOptions = Seq(
@@ -49,7 +50,7 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
   ),
-  ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
+  coverageHighlighting := (
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) => false
       case _ => true
@@ -339,7 +340,7 @@ lazy val testingBase = crossProject.in(file("modules/testing"))
     )
   )
   .settings(
-    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.testing\\..*"
+    coverageExcludedPackages := "io\\.circe\\.testing\\..*"
   )
   .dependsOn(coreBase)
 
@@ -370,7 +371,7 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
       file("modules/tests") / "shared" / "src" / "main" / "resources"
   )
   .settings(
-    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "io\\.circe\\.tests\\..*"
+    coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
   .jsSettings(commonJsSettings: _*)
