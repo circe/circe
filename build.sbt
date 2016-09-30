@@ -203,7 +203,9 @@ lazy val coreBase = crossProject.in(file("modules/core"))
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core" % catsVersion
+      "org.typelevel" %%% "cats-core" % catsVersion,
+      "org.typelevel" %%% "export-hook" % "1.1.0",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )

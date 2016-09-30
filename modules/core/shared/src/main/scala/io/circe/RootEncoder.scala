@@ -1,7 +1,5 @@
 package io.circe
 
-import io.circe.export.Exported
-
 /**
  * A subtype of `Encoder` that statically verifies that the instance encodes
  * either a JSON array or an object.
@@ -19,7 +17,4 @@ final object RootEncoder extends LowPriorityRootEncoders {
   final def apply[A](implicit instance: RootEncoder[A]): RootEncoder[A] = instance
 }
 
-private[circe] trait LowPriorityRootEncoders {
-  implicit final def importedRootEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): RootEncoder[A] =
-    exported.instance
-}
+@export.imports[ObjectEncoder] private[circe] trait LowPriorityRootEncoders

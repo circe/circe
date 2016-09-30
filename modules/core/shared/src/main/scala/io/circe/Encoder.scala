@@ -3,7 +3,6 @@ package io.circe
 import cats.data._
 import cats.functor.Contravariant
 import cats.Foldable
-import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
@@ -351,6 +350,4 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
   }
 }
 
-private[circe] trait LowPriorityEncoders {
-  implicit final def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
-}
+@export.imports[Encoder] private[circe] trait LowPriorityEncoders
