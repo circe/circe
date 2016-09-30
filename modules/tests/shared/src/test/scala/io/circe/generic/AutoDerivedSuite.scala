@@ -137,11 +137,31 @@ class AutoDerivedSuite extends CirceSuite {
     assert(decodeFoo(json.hcursor) === Right(Baz(xs): Foo))
   }
 
+  it should "not interfere with defined decoders for generic types" in forAll { (ns: List[NestedWithSeq]) =>
+    val encoder: Encoder[List[NestedWithSeq]] = Encoder.encodeTraversableOnce[NestedWithSeq, List](
+      NestedWithSeq.encodeNestedWithSeq,
+      implicitly
+    )
+    val derivedDecoder: Decoder[List[NestedWithSeq]] = Decoder[List[NestedWithSeq]]
+
+    assert(derivedDecoder(encoder(ns).hcursor) === Right(ns))
+  }
+
   "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>
     val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
     val encodeFoo = Encoder[Foo]
 
     assert(encodeFoo(Baz(xs): Foo) === json)
+  }
+
+  it should "not interfere with defined encoders for generic types" in forAll { (ns: List[NestedWithSeq]) =>
+    val derivedEncoder: Encoder[List[NestedWithSeq]] = Encoder[List[NestedWithSeq]]
+    val decoder: Decoder[List[NestedWithSeq]] = Decoder.decodeCanBuildFrom[NestedWithSeq, List](
+      NestedWithSeq.decodeNestedWithSeq,
+      implicitly
+    )
+
+    assert(decoder(derivedEncoder(ns).hcursor) === Right(ns))
   }
 
   "Decoder[CNil]" should "fail" in {
