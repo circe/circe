@@ -132,14 +132,16 @@ class AutoDerivedSuite extends CirceSuite {
 
   "Generic decoders" should "not interfere with defined decoders" in forAll { (xs: List[String]) =>
     val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+    val decodeFoo = Decoder[Foo]
 
-    assert(Decoder[Foo].apply(json.hcursor) === Right(Baz(xs): Foo))
+    assert(decodeFoo(json.hcursor) === Right(Baz(xs): Foo))
   }
 
   "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>
     val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+    val encodeFoo = Encoder[Foo]
 
-    assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
+    assert(encodeFoo(Baz(xs): Foo) === json)
   }
 
   "Decoder[CNil]" should "fail" in {
