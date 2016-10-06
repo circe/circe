@@ -255,5 +255,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     assert(decoder.apply(friday.hcursor).isEmpty)
   }
 
+  "validate" should "not infinitely recurse (#396)" in forAll { (i: Int) =>
+    assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
+  }
+
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 }
