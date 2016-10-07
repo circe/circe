@@ -2,6 +2,7 @@ package io.circe.testing
 
 import cats.data.ValidatedNel
 import io.circe._
+import io.circe.numbers.BiggerDecimal
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
@@ -33,9 +34,17 @@ trait ArbitraryInstances extends ShrinkInstances {
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
   private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
 
-  private[this] val genNumber: Gen[Json] = Gen.oneOf(
-    arbitrary[Long].map(Json.fromLong),
-    arbitrary[Double].map(Json.fromDoubleOrNull)
+  private[this] def genBiggerDecimal: Gen[BiggerDecimal] = Gen.oneOf(
+    Arbitrary.arbitrary[Long].map(BiggerDecimal.fromLong),
+    Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDouble),
+    Arbitrary.arbitrary[BigInt].map(_.bigInteger).map(BiggerDecimal.fromBigInteger),
+    Arbitrary.arbitrary[BigDecimal].map(_.bigDecimal).map(BiggerDecimal.fromBigDecimal)
+  )
+
+  private[this] def genNumber: Gen[Json] = Gen.oneOf(
+    Arbitrary.arbLong.arbitrary.map(Json.fromLong),
+    Arbitrary.arbDouble.arbitrary.map(Json.fromDoubleOrNull),
+    genBiggerDecimal.map(JsonBiggerDecimal.apply).map(Json.fromJsonNumber)
   )
 
   private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
