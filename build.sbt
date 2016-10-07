@@ -30,6 +30,8 @@ lazy val scalaTestVersion = "3.0.0-M9"
 lazy val scalaCheckVersion = "1.12.5"
 lazy val disciplineVersion = "0.4"
 
+lazy val previousCirceVersion = "0.5.2"
+
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -172,6 +174,9 @@ lazy val numbersBase = crossProject.in(file("numbers"))
       "org.scalatest" %%% "scalatest" % scalaTestVersion % "test"
     )
   )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-numbers" % previousCirceVersion)
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "numbers"))
   .jsConfigure(_.copy(id = "numbersJS"))
@@ -191,6 +196,9 @@ lazy val coreBase = crossProject.in(file("core"))
       "org.typelevel" %%% "cats-core" % catsVersion
     ),
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
+  )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-core" % previousCirceVersion)
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
@@ -217,6 +225,9 @@ lazy val genericBase = crossProject.in(file("generic"))
       }
     )
   )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-generic" % previousCirceVersion)
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
   .jsConfigure(_.copy(id = "genericJS"))
@@ -241,6 +252,9 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("literal")
       }
     )
   )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-literal" % previousCirceVersion)
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "literal"))
   .jsConfigure(_.copy(id = "literalJS"))
@@ -259,6 +273,9 @@ lazy val refinedBase = crossProject.in(file("refined"))
   .settings(
     libraryDependencies += "eu.timepit" %%% "refined" % refinedVersion
   )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-refined" % previousCirceVersion)
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "refined"))
   .jsConfigure(_.copy(id = "refinedJS"))
@@ -274,6 +291,9 @@ lazy val parserBase = crossProject.in(file("parser"))
     name := "parser"
   )
   .settings(allSettings: _*)
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-parser" % previousCirceVersion)
+  )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "parser").dependsOn(jawn))
   .jsConfigure(_.copy(id = "parserJS").dependsOn(scalajs))
@@ -300,6 +320,9 @@ lazy val scodecBase = crossProject.in(file("scodec"))
   .settings(allSettings: _*)
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.0"
+  )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-scodec" % previousCirceVersion)
   )
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "scodec"))
@@ -374,7 +397,8 @@ lazy val jawn = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
+    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion,
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-jawn" % previousCirceVersion)
   )
   .dependsOn(core)
 
@@ -384,6 +408,9 @@ lazy val java8 = project
     moduleName := "circe-java8"
   )
   .settings(allSettings)
+  .settings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-java8" % previousCirceVersion)
+  )
   .dependsOn(core, tests % "test")
 
 lazy val streaming = project
@@ -393,7 +420,8 @@ lazy val streaming = project
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.6.1"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.6.1",
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
 
@@ -407,7 +435,8 @@ lazy val jackson = project
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % "2.5.3",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.3"
-    )
+    ),
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-jackson" % previousCirceVersion)
   )
   .dependsOn(core)
 
@@ -433,7 +462,8 @@ lazy val spray = project
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" % "test" cross CrossVersion.full)
-    )
+    ),
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-spray" % previousCirceVersion)
   )
   .dependsOn(core, jawn, generic % "test")
 
@@ -448,7 +478,8 @@ lazy val optics = project
       "com.github.julien-truffaut" %% "monocle-core" % "1.2.2",
       "com.github.julien-truffaut" %% "monocle-law" % "1.2.2" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-    )
+    ),
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion)
   )
   .dependsOn(core, tests % "test")
 
