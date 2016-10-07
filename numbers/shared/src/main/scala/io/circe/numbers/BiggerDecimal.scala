@@ -16,7 +16,7 @@ import scala.annotation.tailrec
  * between positive and negative zeros (unlike `BigDecimal`), which may be useful in some
  * applications.
  */
-sealed abstract class BiggerDecimal {
+sealed abstract class BiggerDecimal extends Serializable {
   def isWhole: Boolean
   def isNegativeZero: Boolean
 
