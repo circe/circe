@@ -161,6 +161,28 @@ sealed abstract class Json extends Product with Serializable {
    * Use implementations provided by case classes.
    */
   override def hashCode(): Int
+
+  // Alias for `findAllByKey`.
+  final def \\(key: String): List[Json] = findAllByKey(key)
+
+  /**
+    * Recursively return all values matching the specified `key`.
+    *
+    * The Play docs, from which this method was inspired, reads:
+    *   "Lookup for fieldName in the current object and all descendants."
+    */
+  final def findAllByKey(key: String): List[Json] = keyValues(this).collect {
+    case (k, v) if (k == key) => v
+  }
+
+  private def keyValues(json: Json): List[(String, Json)] = json match {
+    case JObject(obj)  => obj.toList.flatMap { case (k, v) => keyValuesHelper(k, v) }
+    case JArray(elems) => elems.toList.flatMap(keyValues)
+    case _             => Nil
+  }
+
+  private def keyValuesHelper(key: String, value: Json): List[(String, Json)] =
+    (key, value) :: keyValues(value)
 }
 
 final object Json {
