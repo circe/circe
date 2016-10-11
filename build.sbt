@@ -512,12 +512,12 @@ lazy val opticsBase = crossProject.in(file("modules/optics"))
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %% "monocle-core" % "1.2.2",
-      "com.github.julien-truffaut" %% "monocle-law" % "1.2.2" % "test",
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-    ),
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion)
+          "com.github.julien-truffaut" %%% "monocle-core" % "1.2.2",
+          "com.github.julien-truffaut" %% "monocle-law" % "1.2.2" % "test",
+          compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    )
   )
+  .jvmSettings(mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "optics"))
   .jsConfigure(_.copy(id = "opticsJS"))
