@@ -131,7 +131,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   tests, testsJS,
   jawn,
   jackson,
-  optics,
+  optics, opticsJS,
   scalajs,
   spray,
   streaming,
@@ -504,12 +504,12 @@ lazy val spray = project.in(file("modules/spray"))
   )
   .dependsOn(core, jawn, generic % "test")
 
-lazy val optics = project.in(file("modules/optics"))
+lazy val opticsBase = crossProject.in(file("modules/optics"))
   .settings(
     description := "circe optics",
     moduleName := "circe-optics"
   )
-  .settings(allSettings)
+  .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %% "monocle-core" % "1.2.2",
@@ -518,7 +518,13 @@ lazy val optics = project.in(file("modules/optics"))
     ),
     mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion)
   )
-  .dependsOn(core, tests % "test")
+  .jsSettings(commonJsSettings: _*)
+  .jvmConfigure(_.copy(id = "optics"))
+  .jsConfigure(_.copy(id = "opticsJS"))
+  .dependsOn(coreBase)
+
+lazy val optics = opticsBase.jvm
+lazy val opticsJS = opticsBase.js
 
 lazy val benchmark = project.in(file("modules/benchmark"))
   .settings(
