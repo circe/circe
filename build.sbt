@@ -80,6 +80,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   literalJS,
   genericJS,
   numbersJS,
+  opticsJS,
   parserJS,
   refinedJS,
   scodecJS,
