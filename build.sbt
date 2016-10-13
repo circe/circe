@@ -491,7 +491,7 @@ lazy val spray = project
   )
   .dependsOn(core, jawn, generic % "test")
 
-lazy val opticsBase = crossProject.in(file("optics"))
+lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("optics"))
   .settings(
     description := "circe optics",
     moduleName := "circe-optics"
@@ -500,7 +500,7 @@ lazy val opticsBase = crossProject.in(file("optics"))
   .settings(
     libraryDependencies ++= Seq(
           "com.github.julien-truffaut" %%% "monocle-core" % "1.2.2",
-          "com.github.julien-truffaut" %% "monocle-law" % "1.2.2" % "test",
+          "com.github.julien-truffaut" %%% "monocle-law" % "1.2.2" % "test",
           compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
@@ -508,7 +508,7 @@ lazy val opticsBase = crossProject.in(file("optics"))
   .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "optics"))
   .jsConfigure(_.copy(id = "opticsJS"))
-  .dependsOn(coreBase)
+  .dependsOn(coreBase, testsBase % "test")
 
 lazy val optics = opticsBase.jvm
 lazy val opticsJS = opticsBase.js
@@ -646,8 +646,9 @@ val jsProjects = Seq(
   "numbersJS",
   "coreJS",
   "genericJS",
-  "refinedJS",
+  "opticsJS",
   "parserJS",
+  "refinedJS",
   "scalajs",
   "scodecJS",
   "testsJS"
@@ -659,5 +660,5 @@ addCommandAlias(
   ";buildJVM" + jvmTestProjects.map(";" + _ + "/test").mkString + ";scalastyle;unidoc"
 )
 addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
-addCommandAlias("validateJS", ";buildJS;testsJS/test;scalastyle")
+addCommandAlias("validateJS", ";buildJS;opticsJS/test;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
