@@ -32,10 +32,12 @@ final object NumberParsing {
   private[this] final val EXPONENT = 7
   private[this] final val INTEGRAL = 8
 
-  def parseBiggerDecimal(input: String): Option[BiggerDecimal] = {
+  def parseBiggerDecimal(input: String): Option[BiggerDecimal] = Option(parseBiggerDecimalUnsafe(input))
+
+  def parseBiggerDecimalUnsafe(input: String): BiggerDecimal = {
     val len = input.length
 
-    if (len == 0) None else {
+    if (len == 0) null else {
       var zeros = 0
       var decIndex = -1
       var expIndex = -1
@@ -128,7 +130,7 @@ final object NumberParsing {
         i += 1
       }
 
-      if (state == FAILED) None else {
+      if (state == FAILED) null else {
         val integral = if (decIndex >= 0) input.substring(0, decIndex) else {
           if (expIndex == -1) input else {
             input.substring(0, expIndex)
@@ -148,16 +150,14 @@ final object NumberParsing {
           new BigInteger(input.substring(expIndex + 1))
         }
 
-        Some(
-          if (input.charAt(0) == '-' && unscaled == BigInteger.ZERO) {
-            BiggerDecimal.NegativeZero
-          } else {
-            new SigAndExp(
-              unscaled,
-              if (unscaled == BigInteger.ZERO) BigInteger.ZERO else rescale.subtract(exponent)
-            )
-          }
-        )
+        if (input.charAt(0) == '-' && unscaled == BigInteger.ZERO) {
+          BiggerDecimal.NegativeZero
+        } else {
+          new SigAndExp(
+            unscaled,
+            if (unscaled == BigInteger.ZERO) BigInteger.ZERO else rescale.subtract(exponent)
+          )
+        }
       }
     }
   }

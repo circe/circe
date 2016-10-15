@@ -47,8 +47,7 @@ sealed abstract class BiggerDecimal extends Serializable {
    * may require excessive processing power. Larger values may be converted to `BigInteger` with
    * [[toBigIntegerWithMaxDigits]] or via [[toBigDecimal]].
    */
-  final def toBigInteger: Option[BigInteger] =
-    toBigIntegerWithMaxDigits(BiggerDecimal.MaxBigIntegerDigits)
+  final def toBigInteger: Option[BigInteger] = toBigIntegerWithMaxDigits(BiggerDecimal.MaxBigIntegerDigits)
 
   /**
    * Convert to the nearest [[scala.Double]].
