@@ -121,7 +121,7 @@ final object BiggerDecimal {
   private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
   private[numbers] val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
 
-  private[numbers] val NegativeZero: BiggerDecimal = new BiggerDecimal {
+  val NegativeZero: BiggerDecimal = new BiggerDecimal {
     final def isWhole: Boolean = true
     final def isNegativeZero: Boolean = true
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
