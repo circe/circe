@@ -118,8 +118,8 @@ private[numbers] final class SigAndExp(
 final object BiggerDecimal {
   private[numbers] val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
 
-  final val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
-  final val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
+  private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
+  private[numbers] val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
 
   private[numbers] val NegativeZero: BiggerDecimal = new BiggerDecimal {
     final def isWhole: Boolean = true
