@@ -3,10 +3,10 @@ package io.circe.optics
 import cats.Eq
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
-import io.circe.{Json, JsonNumber, JsonObject}
+import io.circe.{ Json, JsonNumber, JsonObject }
 import monocle.function.Plated.plate
-import monocle.law.discipline.function.{AtTests, EachTests, FilterIndexTests, IndexTests}
-import monocle.law.discipline.{PrismTests, TraversalTests}
+import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
+import monocle.law.discipline.{ PrismTests, TraversalTests }
 import scalaz.Equal
 import scalaz.std.anyVal._
 import scalaz.std.math.bigDecimal._
@@ -46,4 +46,14 @@ class OpticsSuite extends CirceSuite {
   checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
   checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
   checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
+
+  "jsonDouble" should "round-trip in reverse with Double.NaN" in {
+    assert(jsonDouble.getOption(jsonDouble.reverseGet(Double.NaN)) === Some(Double.NaN))
+  }
+
+  it should "partial round-trip with numbers larger than Double.MaxValue" in {
+    val json = Json.fromJsonNumber(JsonNumber.fromString((BigDecimal(Double.MaxValue) + 1).toString).get)
+
+    assert(jsonDouble.getOrModify(json).fold(identity, jsonDouble.reverseGet) === json)
+  }
 }
