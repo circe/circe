@@ -21,15 +21,24 @@ trait ArbitraryInstances extends ShrinkInstances {
    */
   protected def maxJsonObjectSize: Int = 10
 
-  private[this] def genNull: Gen[Json] = Gen.const(Json.Null)
-  private[this] def genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
+  implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
+    Gen.oneOf(
+      arbitrary[JsonNumberString].map(jns => JsonNumber.unsafeDecimal(jns.value)),
+      arbitrary[BigDecimal].map(JsonBigDecimal(_)),
+      arbitrary[Long].map(JsonLong(_)),
+      arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d))
+    )
+  )
 
-  private[this] def genNumber: Gen[Json] = Gen.oneOf(
+  private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
+  private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
+
+  private[this] val genNumber: Gen[Json] = Gen.oneOf(
     arbitrary[Long].map(Json.fromLong),
     arbitrary[Double].map(Json.fromDoubleOrNull)
   )
 
-  private[this] def genString: Gen[Json] = arbitrary[String].map(Json.fromString)
+  private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
     Gen.listOfN(
@@ -56,19 +65,8 @@ trait ArbitraryInstances extends ShrinkInstances {
     Arbitrary(Gen.oneOf(genNull, genBool, genJsons: _*))
   }
 
-  implicit def arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
-
-  implicit def arbitraryJsonObject: Arbitrary[JsonObject] =
-    Arbitrary(genObject(0).map(_.asObject.get))
-
-  implicit def arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
-    Gen.oneOf(
-      arbitrary[JsonNumberString].map(jns => JsonNumber.unsafeDecimal(jns.value)),
-      arbitrary[BigDecimal].map(JsonBigDecimal(_)),
-      arbitrary[Long].map(JsonLong(_)),
-      arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d))
-    )
-  )
+  implicit val arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
+  implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genObject(0).map(_.asObject.get))
 
   implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
     arbitrary[String].map(DecodingFailure(_, Nil))
