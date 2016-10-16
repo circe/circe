@@ -6,8 +6,20 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
 trait ArbitraryInstances extends ShrinkInstances {
-  private[this] def maxDepth: Int = 5
-  private[this] def maxSize: Int = 20
+  /**
+   * The maximum number of values in a generated JSON array.
+   */
+  protected def maxJsonArraySize: Int = 10
+
+  /**
+   * The maximum depth of a generated JSON object.
+   */
+  protected def maxJsonObjectDepth: Int = 5
+
+  /**
+   * The maximum number of key-value pairs in a generated JSON object.
+   */
+  protected def maxJsonObjectSize: Int = 10
 
   private[this] def genNull: Gen[Json] = Gen.const(Json.Null)
   private[this] def genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
@@ -19,14 +31,14 @@ trait ArbitraryInstances extends ShrinkInstances {
 
   private[this] def genString: Gen[Json] = arbitrary[String].map(Json.fromString)
 
-  private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
+  private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
     Gen.listOfN(
       size,
       arbitraryJsonAtDepth(depth + 1).arbitrary
     ).map(Json.arr)
   }
 
-  private[this] def genObject(depth: Int): Gen[Json] = Gen.choose(0, maxSize).flatMap { size =>
+  private[this] def genObject(depth: Int): Gen[Json] = Gen.choose(0, maxJsonObjectSize).flatMap { size =>
     Gen.listOfN(
       size,
       for {
@@ -38,7 +50,7 @@ trait ArbitraryInstances extends ShrinkInstances {
 
   private[this] def arbitraryJsonAtDepth(depth: Int): Arbitrary[Json] = {
     val genJsons = List(genNumber, genString) ++ (
-      if (depth < maxDepth) List(genArray(depth), genObject(depth)) else Nil
+      if (depth < maxJsonObjectDepth) List(genArray(depth), genObject(depth)) else Nil
     )
 
     Arbitrary(Gen.oneOf(genNull, genBool, genJsons: _*))
