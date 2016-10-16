@@ -210,7 +210,7 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  final def unsafeDecimal(value: String): JsonNumber = JsonDecimal(value)
+  final def fromDecimalStringUnsafe(value: String): JsonNumber = JsonDecimal(value)
 
   /**
    * Return a `JsonNumber` whose value is the valid integral JSON number in `value`.
@@ -220,7 +220,7 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  final def unsafeIntegral(value: String): JsonNumber =
+  final def fromIntegralStringUnsafe(value: String): JsonNumber =
     if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value) else {
       val longValue = value.toLong
 

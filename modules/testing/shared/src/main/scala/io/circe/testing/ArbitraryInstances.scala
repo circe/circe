@@ -23,7 +23,7 @@ trait ArbitraryInstances extends ShrinkInstances {
 
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
-      arbitrary[JsonNumberString].map(jns => JsonNumber.unsafeDecimal(jns.value)),
+      arbitrary[JsonNumberString].map(jns => JsonNumber.fromDecimalStringUnsafe(jns.value)),
       arbitrary[BigDecimal].map(JsonBigDecimal(_)),
       arbitrary[Long].map(JsonLong(_)),
       arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d))

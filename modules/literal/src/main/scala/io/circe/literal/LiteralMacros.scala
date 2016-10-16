@@ -112,12 +112,12 @@ class LiteralMacros(val c: whitebox.Context) {
     val invokeWithArg: (String, Class[_], Object) => Object = {
       case ("jnum", cls, arg: String) if cls == classOf[String] => q"""
         _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.unsafeDecimal($arg)
+          _root_.io.circe.JsonNumber.fromDecimalStringUnsafe($arg)
         )
       """
       case ("jint", cls, arg: String) if cls == classOf[String] => q"""
         _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.unsafeIntegral($arg)
+          _root_.io.circe.JsonNumber.fromIntegralStringUnsafe($arg)
         )
       """
       case ("jstring", cls, arg: String) if cls == classOf[String] => toJsonString(arg)

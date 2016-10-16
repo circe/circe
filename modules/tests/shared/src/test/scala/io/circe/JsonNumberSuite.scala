@@ -66,11 +66,11 @@ class JsonNumberSuite extends CirceSuite {
   }
 
   "Eq[JsonNumber]" should "distinguish negative and positive zeros" in {
-    assert(JsonNumber.unsafeIntegral("-0") =!= JsonNumber.unsafeIntegral("0"))
+    assert(JsonNumber.fromIntegralStringUnsafe("-0") =!= JsonNumber.fromIntegralStringUnsafe("0"))
   }
 
   it should "distinguishes negative and positive zeros with fractional parts" in {
-    assert(JsonNumber.unsafeDecimal("-0.0") =!= JsonNumber.unsafeDecimal("0.0"))
+    assert(JsonNumber.fromDecimalStringUnsafe("-0.0") =!= JsonNumber.fromDecimalStringUnsafe("0.0"))
   }
 
   "fromDouble" should "fail on Double.NaN" in {
