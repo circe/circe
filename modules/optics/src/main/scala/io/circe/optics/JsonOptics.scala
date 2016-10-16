@@ -31,7 +31,16 @@ trait JsonOptics extends CatsConversions {
   final lazy val jsonObject: Prism[Json, JsonObject] = Prism[Json, JsonObject](_.asObject)(Json.fromJsonObject)
   final lazy val jsonArray: Prism[Json, List[Json]] = Prism[Json, List[Json]](_.asArray)(Json.fromValues)
   final lazy val jsonDouble: Prism[Json, Double] =
-    Prism[Json, Double](_.asNumber.map(_.toDouble))(Json.fromDoubleOrNull)
+    Prism[Json, Double] {
+      case Json.JNull => Some(Double.NaN)
+      case Json.JNumber(number) =>
+        val d = number.toDouble
+
+        if (java.lang.Double.isInfinite(d)) None else {
+          if (Json.fromDouble(d).flatMap(_.asNumber).exists(JsonNumber.eqJsonNumber.eqv(number, _))) Some(d) else None
+        }
+      case _ => None
+    }(Json.fromDoubleOrNull)
 
   /** points to all values of a JsonObject or JsonList */
   final lazy val jsonDescendants: Traversal[Json, Json] = new Traversal[Json, Json]{
