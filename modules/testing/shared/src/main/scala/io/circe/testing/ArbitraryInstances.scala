@@ -3,7 +3,6 @@ package io.circe.testing
 import cats.data.ValidatedNel
 import io.circe._
 import io.circe.Json.{ JArray, JNumber, JObject, JString }
-import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen, Shrink }
 
 trait ArbitraryInstances {
@@ -49,8 +48,6 @@ trait ArbitraryInstances {
 
   implicit def arbitraryJsonObject: Arbitrary[JsonObject] =
     Arbitrary(genObject(0).map(_.asObject.get))
-
-  implicit def arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
   private[this] val minNumberShrink = BigDecimal.valueOf(1L)
   private[this] val zero = BigDecimal.valueOf(0L)

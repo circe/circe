@@ -6,6 +6,7 @@ import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import java.util.UUID
+import org.scalacheck.{ Arbitrary, Gen }
 
 class AnyValCodecSuite extends CirceSuite {
   /**
@@ -36,6 +37,8 @@ class AnyValCodecSuite extends CirceSuite {
 }
 
 class StdLibCodecSuite extends CirceSuite {
+  implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
+
   checkLaws("Codec[String]", CodecTests[String].codec)
   checkLaws("Codec[BigInt]", CodecTests[BigInt].codec)
   checkLaws("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
