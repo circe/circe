@@ -1,6 +1,6 @@
 package io.circe.numbers
 
-import java.math.BigDecimal
+import java.math.{ BigDecimal, BigInteger }
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
@@ -32,6 +32,30 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     val d = BiggerDecimal.fromDouble(-0.0)
 
     assert(doubleEqv(d.toDouble, -0.0))
+  }
+
+  "signum" should "agree with BigInteger" in forAll { (value: BigInt) =>
+    val d = BiggerDecimal.fromBigInteger(value.bigInteger)
+
+    assert(d.signum == value.signum)
+  }
+
+  it should "agree with BigDecimal" in forAll { (value: SBigDecimal) =>
+    val d = BiggerDecimal.fromBigDecimal(value.bigDecimal)
+
+    assert(d.signum == value.signum)
+  }
+
+  it should "agree with Long" in forAll { (value: Long) =>
+    val d = BiggerDecimal.fromLong(value)
+
+    assert(d.signum == value.signum)
+  }
+
+  it should "agree with Double" in forAll { (value: Double) =>
+    val d = BiggerDecimal.fromDouble(value)
+
+    assert(d.signum == value.signum)
   }
 
   "fromLong" should "round-trip Long values" in forAll { (value: Long) =>

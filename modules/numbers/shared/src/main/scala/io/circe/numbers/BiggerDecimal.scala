@@ -21,6 +21,15 @@ sealed abstract class BiggerDecimal extends Serializable {
   def isNegativeZero: Boolean
 
   /**
+   * The sign of this value.
+   *
+   * Returns -1 if it is less than 0, +1 if it is greater than 0, and 0 if it is
+   * equal to 0. Note that this follows the behavior of [[scala.Double]] for
+   * negative zero (returning 0).
+   */
+  def signum: Int
+
+  /**
    * Convert to a `java.math.BigDecimal` if the `scale` is within the range of [[scala.Int]].
    */
   def toBigDecimal: Option[BigDecimal]
@@ -70,6 +79,7 @@ private[numbers] final class SigAndExp(
 ) extends BiggerDecimal {
   def isWhole: Boolean = scale.signum != 1
   def isNegativeZero: Boolean = false
+  def signum: Int = unscaled.signum
 
   def toBigDecimal: Option[BigDecimal] =
     if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
@@ -124,6 +134,7 @@ final object BiggerDecimal {
   val NegativeZero: BiggerDecimal = new BiggerDecimal {
     final def isWhole: Boolean = true
     final def isNegativeZero: Boolean = true
+    final def signum: Int = 0
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
     final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
       Some(BigInteger.ZERO)
