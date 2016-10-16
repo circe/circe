@@ -22,9 +22,21 @@ trait ArbitraryInstances extends ShrinkInstances {
    */
   protected def maxJsonObjectSize: Int = 10
 
+  implicit val arbitraryBiggerDecimal: Arbitrary[BiggerDecimal] = Arbitrary(
+    Gen.oneOf(
+      Arbitrary.arbitrary[JsonNumberString].map(s => BiggerDecimal.parseBiggerDecimalUnsafe(s.value)),
+      Arbitrary.arbitrary[Long].map(BiggerDecimal.fromLong),
+      Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDouble),
+      Arbitrary.arbitrary[BigInt].map(_.bigInteger).map(BiggerDecimal.fromBigInteger),
+      Arbitrary.arbitrary[BigDecimal].map(_.bigDecimal).map(BiggerDecimal.fromBigDecimal),
+      Gen.const(BiggerDecimal.NegativeZero)
+    )
+  )
+
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
       arbitrary[JsonNumberString].map(jns => JsonNumber.fromDecimalStringUnsafe(jns.value)),
+      arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
       arbitrary[BigDecimal].map(JsonBigDecimal(_)),
       arbitrary[Long].map(JsonLong(_)),
       arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d))
@@ -33,20 +45,7 @@ trait ArbitraryInstances extends ShrinkInstances {
 
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
   private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
-
-  private[this] def genBiggerDecimal: Gen[BiggerDecimal] = Gen.oneOf(
-    Arbitrary.arbitrary[Long].map(BiggerDecimal.fromLong),
-    Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDouble),
-    Arbitrary.arbitrary[BigInt].map(_.bigInteger).map(BiggerDecimal.fromBigInteger),
-    Arbitrary.arbitrary[BigDecimal].map(_.bigDecimal).map(BiggerDecimal.fromBigDecimal)
-  )
-
-  private[this] def genNumber: Gen[Json] = Gen.oneOf(
-    Arbitrary.arbLong.arbitrary.map(Json.fromLong),
-    Arbitrary.arbDouble.arbitrary.map(Json.fromDoubleOrNull),
-    genBiggerDecimal.map(JsonBiggerDecimal.apply).map(Json.fromJsonNumber)
-  )
-
+  private[this] val genNumber: Gen[Json] = Arbitrary.arbitrary[JsonNumber].map(Json.fromJsonNumber)
   private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
