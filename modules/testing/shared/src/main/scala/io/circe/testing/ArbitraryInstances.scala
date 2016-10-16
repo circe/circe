@@ -2,10 +2,9 @@ package io.circe.testing
 
 import cats.data.ValidatedNel
 import io.circe._
-import io.circe.Json.{ JArray, JNumber, JObject, JString }
-import org.scalacheck.{ Arbitrary, Gen, Shrink }
+import org.scalacheck.{ Arbitrary, Gen }
 
-trait ArbitraryInstances {
+trait ArbitraryInstances extends ShrinkInstances {
   private[this] def maxDepth: Int = 5
   private[this] def maxSize: Int = 20
 
@@ -48,49 +47,6 @@ trait ArbitraryInstances {
 
   implicit def arbitraryJsonObject: Arbitrary[JsonObject] =
     Arbitrary(genObject(0).map(_.asObject.get))
-
-  private[this] val minNumberShrink = BigDecimal.valueOf(1L)
-  private[this] val zero = BigDecimal.valueOf(0L)
-  private[this] val two = BigDecimal.valueOf(2L)
-
-  /**
-   * Copied from ScalaCheck.
-   */
-  private[this] def interleave[T](xs: Stream[T], ys: Stream[T]): Stream[T] =
-    if (xs.isEmpty) ys
-    else if (ys.isEmpty) xs
-    else xs.head #:: ys.head #:: interleave(xs.tail, ys.tail)
-
-  implicit def shrinkJsonNumber: Shrink[JsonNumber] = Shrink { jn =>
-    def halfs(n: BigDecimal): Stream[BigDecimal] =
-      if (n < minNumberShrink) Stream.empty else n #:: halfs(n / two)
-
-    jn.toBigDecimal match {
-      case Some(n) =>
-        val ns = if (n == zero) Stream.empty else {
-          val hs = halfs(n / two).map(n - _)
-          zero #:: interleave(hs, hs.map(h => -h))
-        }
-
-        ns.map(JsonBigDecimal(_))
-      case None => Stream(jn)
-    }
-  }
-
-  implicit def shrinkJsonObject: Shrink[JsonObject] = Shrink(o =>
-    Shrink.shrinkContainer[List, (String, Json)].shrink(o.toList).map(JsonObject.fromIterable)
-  )
-
-  implicit def shrinkJson: Shrink[Json] = Shrink(
-    _.fold(
-      Stream.empty,
-      _ => Stream.empty,
-      n => shrinkJsonNumber.shrink(n).map(JNumber(_)),
-      s => Shrink.shrinkString.shrink(s).map(JString(_)),
-      a => Shrink.shrinkContainer[List, Json].shrink(a).map(JArray(_)),
-      o => shrinkJsonObject.shrink(o).map(JObject(_))
-    )
-  )
 
   implicit def arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
