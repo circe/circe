@@ -65,6 +65,26 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     )
   }
 
+  it should "agree with NumberParsing.parseBiggerDecimal" in forAll { (value: SBigDecimal) =>
+    assert(BiggerDecimal.fromBigDecimal(value.bigDecimal) === NumberParsing.parseBiggerDecimal(value.toString).get)
+  }
+
+  it should "agree with NumberParsing.parseBiggerDecimal on multiples of ten with trailing zeros" in {
+    val bigDecimal = new BigDecimal("10.0")
+    val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
+    val fromString = NumberParsing.parseBiggerDecimal(bigDecimal.toString).get
+
+    assert(fromBigDecimal === fromString)
+  }
+
+  it should "work correctly on values whose string representations have exponents larger than Int.MaxValue" in {
+    val bigDecimal = new BigDecimal("-17014118346046923173168730371588410572800E+2147483647")
+    val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
+    val fromString = NumberParsing.parseBiggerDecimal(bigDecimal.toString).get
+
+    assert(fromBigDecimal === fromString)
+  }
+
   "fromBigInteger" should "round-trip BigInteger values" in forAll { (value: BigInt) =>
     assert(BiggerDecimal.fromBigInteger(value.underlying).toBigInteger === Some(value.underlying))
   }
