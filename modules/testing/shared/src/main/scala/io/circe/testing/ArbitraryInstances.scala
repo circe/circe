@@ -6,7 +6,7 @@ import io.circe.numbers.BiggerDecimal
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
-trait ArbitraryInstances extends ShrinkInstances {
+trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with ShrinkInstances {
   /**
    * The maximum number of values in a generated JSON array.
    */
@@ -40,13 +40,13 @@ trait ArbitraryInstances extends ShrinkInstances {
       arbitrary[BigDecimal].map(JsonBigDecimal(_)),
       arbitrary[Long].map(JsonLong(_)),
       arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d))
-    )
+    ).map(transformJsonNumber)
   )
 
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
   private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
-  private[this] val genNumber: Gen[Json] = Arbitrary.arbitrary[JsonNumber].map(Json.fromJsonNumber)
   private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
+  private[this] val genNumber: Gen[Json] = Arbitrary.arbitrary[JsonNumber].map(Json.fromJsonNumber)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
     Gen.listOfN(
