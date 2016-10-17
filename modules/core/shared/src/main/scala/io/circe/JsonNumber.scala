@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.Eq
-import io.circe.numbers.{ BiggerDecimal, NumberParsing }
+import io.circe.numbers.BiggerDecimal
 
 /**
  * A JSON number with optimization by cases.
@@ -135,10 +135,13 @@ private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber 
  * Represent a valid JSON number as a `String`.
  */
 private[circe] final case class JsonDecimal(value: String) extends BiggerDecimalJsonNumber {
-  private[circe] lazy val toBiggerDecimal: BiggerDecimal =
-    NumberParsing.parseBiggerDecimal(value).getOrElse(
+  private[circe] lazy val toBiggerDecimal: BiggerDecimal = {
+    val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)
+
+    if (result.eq(null)) {
       throw new NumberFormatException("For input string \"" + value + "\"")
-    )
+    } else result
+  }
 
   override def toString: String = value
 }
@@ -207,7 +210,7 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  final def unsafeDecimal(value: String): JsonNumber = JsonDecimal(value)
+  final def fromDecimalStringUnsafe(value: String): JsonNumber = JsonDecimal(value)
 
   /**
    * Return a `JsonNumber` whose value is the valid integral JSON number in `value`.
@@ -217,15 +220,18 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  final def unsafeIntegral(value: String): JsonNumber =
-    if (!NumberParsing.integralIsValidLong(value)) JsonDecimal(value) else {
+  final def fromIntegralStringUnsafe(value: String): JsonNumber =
+    if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value) else {
       val longValue = value.toLong
 
       if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(value.toLong)
     }
 
-  final def fromString(value: String): Option[JsonNumber] =
-    NumberParsing.parseBiggerDecimal(value).map(JsonBiggerDecimal(_))
+  final def fromString(value: String): Option[JsonNumber] = {
+    val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)
+
+    if (result.eq(null)) None else Some(JsonBiggerDecimal(result))
+  }
 
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
     case (JsonBiggerDecimal(a), b) => a == b.toBiggerDecimal
