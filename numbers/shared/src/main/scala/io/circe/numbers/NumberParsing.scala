@@ -82,7 +82,7 @@ final object NumberParsing {
           case AFTER_DOT =>
             decIndex = i - 1
             if (c == '0') {
-              zeros = 1
+              zeros = zeros + 1
               state = FRACTIONAL
             } else if (c >= '1' && c <= '9') {
               zeros = 0

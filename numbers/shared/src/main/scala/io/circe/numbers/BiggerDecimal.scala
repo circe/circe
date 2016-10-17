@@ -145,7 +145,7 @@ final object BiggerDecimal {
   } else {
     val divAndRem = d.divideAndRemainder(BigInteger.TEN)
 
-    if (divAndRem(1) == BigInteger.ZERO) removeTrailingZeros(divAndRem(0), depth + 1) else {
+    if (divAndRem(1) == BigInteger.ZERO) removeTrailingZeros(divAndRem(0), depth + 1L) else {
       new SigAndExp(d, BigInteger.valueOf(-depth))
     }
   }
@@ -161,7 +161,7 @@ final object BiggerDecimal {
 
       new SigAndExp(
         unscaledAndZeros.unscaled,
-        BigInteger.valueOf(d.scale.toLong).subtract(unscaledAndZeros.scale)
+        BigInteger.valueOf(d.scale.toLong).add(unscaledAndZeros.scale)
       )
   }
 
