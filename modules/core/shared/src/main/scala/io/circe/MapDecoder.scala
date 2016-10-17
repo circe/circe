@@ -2,6 +2,7 @@ package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable.Map
 
 private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
   dk: KeyDecoder[K],

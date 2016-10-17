@@ -4,6 +4,7 @@ import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
 import cats.instances.map._
 import scala.collection.breakOut
+import scala.collection.immutable.{ Map, Set }
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -150,7 +151,7 @@ final object JsonObject {
    * Construct a [[JsonObject]] with a single field.
    */
   final def singleton(k: String, j: Json): JsonObject =
-    MapAndVectorJsonObject(Map(k -> j), Vector(k))
+    MapAndVectorJsonObject(Map((k, j)), Vector(k))
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
@@ -187,7 +188,7 @@ final object JsonObject {
     final def withJsons(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
     final def isEmpty: Boolean = fieldMap.isEmpty
     final def contains(k: String): Boolean = fieldMap.contains(k)
-    final def toList: List[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
+    final def toList: List[(String, Json)] = orderedFields.map(k => (k, fieldMap(k)))(breakOut)
     final def values: List[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
     final def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldMap.get)
     final def fields: List[String] = orderedFields.toList
@@ -201,12 +202,12 @@ final object JsonObject {
 
     final def size: Int = fieldMap.size
 
-    override final def toString: String =
-      "object[%s]".format(
-        fieldMap.map {
-          case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
-        }.mkString(",")
-      )
+    override final def toString: String = String.format(
+      "object[%s]",
+      fieldMap.map {
+        case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
+      }.mkString(",")
+    )
 
     /**
      * Universal equality derived from our type-safe equality.

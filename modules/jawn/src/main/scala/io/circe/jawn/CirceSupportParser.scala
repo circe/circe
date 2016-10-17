@@ -33,8 +33,8 @@ final object CirceSupportParser extends SupportParser[Json] {
       private[this] final var key: String = null
       private[this] final val vs = ArrayBuffer.empty[(String, Json)]
       final def add(s: String): Unit =
-        if (key == null) { key = s } else { vs += (key -> jstring(s)); key = null }
-      final def add(v: Json): Unit = { vs += (key -> v); key = null }
+        if (key == null) { key = s } else { vs += ((key, jstring(s))); key = null }
+      final def add(v: Json): Unit = { vs += ((key, v)); key = null }
       final def finish: Json = Json.fromFields(vs)
       final def isObj: Boolean = true
     }

@@ -35,7 +35,7 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: Applica
     final def onChunk(h1: S, h2: S, t: Vector[S]): F[Step[F, S, Step[F, Json, A]]] =
       (h1 +: h2 +: t).traverseU(parseWith(p)) match {
         case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
-        case Right(js) => F.map(feedStep(step, js.flatten))(doneOrLoop[A](p))
+        case Right(js) => F.map(feedStep(step, js.flatten(Predef.identity)))(doneOrLoop[A](p))
       }
     }
 

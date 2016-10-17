@@ -7,6 +7,7 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable.{ Map, Set }
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
@@ -451,7 +452,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case None => fail(c)
       }
       case JString(string) => try {
-        Right(string.toByte)
+        Right(java.lang.Byte.parseByte(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -473,7 +474,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case None => fail(c)
       }
       case JString(string) => try {
-        Right(string.toShort)
+        Right(java.lang.Short.parseShort(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -495,7 +496,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case None => fail(c)
       }
       case JString(string) => try {
-        Right(string.toInt)
+        Right(java.lang.Integer.parseInt(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }
@@ -520,7 +521,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case None => fail(c)
       }
       case JString(string) => try {
-        Right(string.toLong)
+        Right(java.lang.Long.parseLong(string))
       } catch {
         case _: NumberFormatException => fail(c)
       }

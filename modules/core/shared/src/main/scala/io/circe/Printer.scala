@@ -66,48 +66,56 @@ final case class Printer(
       val afterLastNewLineIndex = lastNewLineIndex + 1
       val start = s.substring(0, afterLastNewLineIndex)
       val end = s.substring(afterLastNewLineIndex)
-      n => start + indent * n + end
+      n => start + Predef.augmentString(indent) * n + end
     }
   }
 
   private[this] final val pieces = new Printer.MemoizedPieces {
     final def compute(i: Int): Printer.Pieces = Printer.Pieces(
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(lbraceLeft)(i),
         openBraceText,
         addIndentation(lbraceRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(rbraceLeft)(i),
         closeBraceText,
         addIndentation(rbraceRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(lbracketLeft)(i),
         openArrayText,
         addIndentation(lbracketRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(rbracketLeft)(i),
         closeArrayText,
         addIndentation(rbracketRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         openArrayText,
         addIndentation(lrbracketsEmpty)(i),
         closeArrayText
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(arrayCommaLeft)(i + 1),
         commaText,
         addIndentation(arrayCommaRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(objectCommaLeft)(i + 1),
         commaText,
         addIndentation(objectCommaRight)(i + 1)
       ),
-      "%s%s%s".format(
+      String.format(
+        "%s%s%s",
         addIndentation(colonLeft)(i + 1),
         colonText,
         addIndentation(colonRight)(i + 1)
@@ -249,7 +257,7 @@ final object Printer {
     case '\r' => "\\r"
     case '\t' => "\\t"
     case possibleUnicode => if (Character.isISOControl(possibleUnicode)) {
-      "\\u%04x".format(possibleUnicode.toInt)
+      String.format("\\u%04x", Integer.valueOf(possibleUnicode.toInt))
     } else possibleUnicode.toString
   }
 

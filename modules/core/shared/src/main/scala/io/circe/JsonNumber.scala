@@ -158,7 +158,7 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = toDouble.round
+  final def truncateToLong: Long = math.round(toDouble)
   override final def toString: String = value.toString
 }
 
@@ -191,7 +191,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
     if (asLong.toDouble == value) Some(asLong) else None
   }
 
-  final def truncateToLong: Long = value.round
+  final def truncateToLong: Long = math.round(value)
   override final def toString: String = java.lang.Double.toString(value)
 }
 
@@ -219,9 +219,9 @@ final object JsonNumber {
    */
   final def unsafeIntegral(value: String): JsonNumber =
     if (!NumberParsing.integralIsValidLong(value)) JsonDecimal(value) else {
-      val longValue = value.toLong
+      val longValue = java.lang.Long.parseLong(value)
 
-      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(value.toLong)
+      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(longValue)
     }
 
   final def fromString(value: String): Option[JsonNumber] =

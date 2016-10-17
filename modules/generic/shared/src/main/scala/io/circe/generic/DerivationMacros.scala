@@ -4,6 +4,7 @@ import io.circe.{ Decoder, Encoder }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 import macrocompat.bundle
+import scala.collection.immutable.Map
 import scala.reflect.macros.whitebox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
 import shapeless.labelled.KeyTag

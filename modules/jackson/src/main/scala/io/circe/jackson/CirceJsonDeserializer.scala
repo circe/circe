@@ -20,7 +20,7 @@ private[jackson] final case class ReadingList(content: ArrayList[Json])
 private[jackson] final case class KeyRead(content: ArrayList[(String, Json)], fieldName: String)
   extends DeserializerContext {
   def addValue(value: Json): DeserializerContext = ReadingMap {
-    content.add(fieldName -> value)
+    content.add((fieldName, value))
     content
   }
 }

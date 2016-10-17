@@ -39,7 +39,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
           F.map(
             Traverse[List].traverse(from.toList) {
               case (field, json) =>
-                F.map(if (p(field)) f(json) else F.point(json))(field -> _)
+                F.map(if (p(field)) f(json) else F.point(json))((field, _))
             }
           )(JsonObject.from(_)(catsStdInstancesForList))
     }
