@@ -1,7 +1,7 @@
 package io.circe.numbers
 
 import io.circe.testing.{ IntegralString, JsonNumberString }
-import java.math.{ BigDecimal, BigInteger }
+import java.math.BigDecimal
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
@@ -90,6 +90,26 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
         }
       }
     )
+  }
+
+  it should "agree with parseBiggerDecimalUnsafe" in forAll { (value: SBigDecimal) =>
+    assert(BiggerDecimal.fromBigDecimal(value.bigDecimal) === BiggerDecimal.parseBiggerDecimalUnsafe(value.toString))
+  }
+
+  it should "agree with parseBiggerDecimalUnsafe on multiples of ten with trailing zeros" in {
+    val bigDecimal = new BigDecimal("10.0")
+    val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
+    val fromString = BiggerDecimal.parseBiggerDecimalUnsafe(bigDecimal.toString)
+
+    assert(fromBigDecimal === fromString)
+  }
+
+  it should "work correctly on values whose string representations have exponents larger than Int.MaxValue" in {
+    val bigDecimal = new BigDecimal("-17014118346046923173168730371588410572800E+2147483647")
+    val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
+    val fromString = BiggerDecimal.parseBiggerDecimalUnsafe(bigDecimal.toString)
+
+    assert(fromBigDecimal === fromString)
   }
 
   "fromBigInteger" should "round-trip BigInteger values" in forAll { (value: BigInt) =>
