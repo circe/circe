@@ -70,7 +70,7 @@ sealed abstract class BiggerDecimal extends Serializable {
  *
  * This representation is the same as that used by `java.math.BigDecimal`, with two differences.
  * First, the scale is a `java.math.BigInteger`, not a [[scala.Int]], and the unscaled value will
- * never be an exact power of ten (in order to facilitate comparison).
+ * never be an exact multiple of ten (in order to facilitate comparison).
  */
 private[numbers] final class SigAndExp(
   val unscaled: BigInteger,
