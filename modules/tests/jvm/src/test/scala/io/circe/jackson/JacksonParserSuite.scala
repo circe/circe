@@ -6,8 +6,8 @@ import io.circe.tests.examples.glossary
 import java.io.File
 import scala.io.Source
 
-class JacksonParserSuite extends CirceSuite {
-  checkLaws("Parser", ParserTests(`package`).parser)
+class JacksonParserSuite extends CirceSuite with JacksonInstances {
+  checkLaws("Parser", ParserTests(`package`).parser(arbitraryCleanedJson))
 
   "parse" should "fail on invalid input" in forAll { (s: String) =>
     assert(parse(s"Not JSON $s").isLeft)

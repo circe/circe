@@ -2,7 +2,6 @@ package io.circe
 
 import io.circe.Json._
 import scala.scalajs.js
-import scala.scalajs.js.undefined
 import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
 import scala.util.control.NonFatal
 
