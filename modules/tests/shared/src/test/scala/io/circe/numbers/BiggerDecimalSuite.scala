@@ -92,8 +92,22 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     )
   }
 
+  /**
+   * This is a workaround for a Scala.js bug that causes `BigDecimal` values
+   * with sufficiently large exponents to be printed with negative exponents.
+   *
+   * The filter below will have no effect on JVM tests since the condition is
+   * clearly nonsense.
+   */
+  private[this] def isBadJsBigDecimal(d: SBigDecimal): Boolean =
+    d.abs > 1 && d.toString.contains("E-")
+
   it should "agree with parseBiggerDecimalUnsafe" in forAll { (value: SBigDecimal) =>
-    assert(BiggerDecimal.fromBigDecimal(value.bigDecimal) === BiggerDecimal.parseBiggerDecimalUnsafe(value.toString))
+    whenever (!isBadJsBigDecimal(value)) {
+      val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
+
+      assert(BiggerDecimal.fromBigDecimal(value.bigDecimal) === expected)
+    }
   }
 
   it should "agree with parseBiggerDecimalUnsafe on multiples of ten with trailing zeros" in {
