@@ -19,6 +19,14 @@ class OpticsSuite extends CirceSuite {
   implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
+  /**
+   * For the purposes of these tests we consider `Double.NaN` to be equal to
+   * itself.
+   */
+  implicit val doubleInstance: Equal[Double] = Equal.equal { (a, b) =>
+    (a.isNaN && b.isNaN) || scalaz.std.anyVal.doubleInstance.equal(a, b)
+  }
+
   checkLaws("Json to Unit", PrismTests(jsonNull))
   checkLaws("Json to Boolean", PrismTests(jsonBoolean))
   checkLaws("Json to BigDecimal", PrismTests(jsonBigDecimal))
