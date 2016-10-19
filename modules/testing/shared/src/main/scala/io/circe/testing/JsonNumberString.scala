@@ -8,6 +8,11 @@ import org.scalacheck.{ Arbitrary, Gen }
 final case class JsonNumberString(value: String)
 
 final object JsonNumberString {
+  private[this] val nonEmptyNumCharString: Gen[String] = for {
+    h <- Gen.numChar
+    t <- Gen.listOf(Gen.numChar)
+  } yield (h :: t).mkString
+
   implicit val arbitraryJsonNumberString: Arbitrary[JsonNumberString] = Arbitrary(
     for {
       sign <- Gen.oneOf("", "-")
@@ -20,14 +25,14 @@ final object JsonNumberString {
       )
       fractional <- Gen.oneOf(
         Gen.const(""),
-        Gen.nonEmptyListOf(Gen.numChar).map(_.mkString).map("." + _)
+        nonEmptyNumCharString.map("." + _)
       )
       exponent <- Gen.oneOf(
         Gen.const(""),
         for {
           e <- Gen.oneOf("e", "E")
           s <- Gen.oneOf("", "+", "-")
-          n <- Gen.nonEmptyListOf(Gen.numChar).map(_.mkString)
+          n <- nonEmptyNumCharString
         } yield s"$e$s$n"
       )
     } yield JsonNumberString(s"$sign$integral$fractional$exponent")

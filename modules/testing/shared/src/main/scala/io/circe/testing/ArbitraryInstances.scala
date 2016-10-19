@@ -1,12 +1,13 @@
 package io.circe.testing
 
 import cats.data.ValidatedNel
+import cats.laws.discipline.arbitrary._
 import io.circe._
 import io.circe.numbers.BiggerDecimal
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{ Arbitrary, Cogen, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
-trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with ShrinkInstances {
+trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
   /**
    * The maximum number of values in a generated JSON array.
    */
@@ -80,22 +81,19 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with ShrinkInsta
     arbitrary[String].map(DecodingFailure(_, Nil))
   )
 
-  implicit def arbitraryEncoder[A](implicit arbitraryF: Arbitrary[A => Json]): Arbitrary[Encoder[A]] = Arbitrary(
-    arbitraryF.arbitrary.map(Encoder.instance)
+  implicit def arbitraryEncoder[A: Cogen]: Arbitrary[Encoder[A]] = Arbitrary(
+    arbitrary[A => Json].map(Encoder.instance)
   )
 
-  implicit def arbitraryDecoder[A](implicit
-    arbitraryF: Arbitrary[Json => Either[DecodingFailure, A]]
-  ): Arbitrary[Decoder[A]] = Arbitrary(
-    arbitraryF.arbitrary.map(f =>
+  implicit def arbitraryDecoder[A: Arbitrary]: Arbitrary[Decoder[A]] = Arbitrary(
+    arbitrary[Json => Either[DecodingFailure, A]].map(f =>
       Decoder.instance(c => f(c.focus))
     )
   )
 
-  implicit def arbitraryAccumulatingDecoder[A](implicit
-    arbitraryF: Arbitrary[Json => ValidatedNel[DecodingFailure, A]]
-  ): Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
-    arbitraryF.arbitrary.map(f =>
+  implicit def arbitraryAccumulatingDecoder[A: Arbitrary]: Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
+    //Arbitrary.arbFunction1[Json, ValidatedNel[DecodingFailure, A]].map(f =>
+    arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
       AccumulatingDecoder.instance(c => f(c.focus))
     )
   )

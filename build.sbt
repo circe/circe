@@ -22,14 +22,14 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.7.2"
+lazy val catsVersion = "0.8.0-SNAPSHOT"
 lazy val jawnVersion = "0.10.2"
 lazy val shapelessVersion = "2.3.2"
-lazy val refinedVersion = "0.5.0"
+lazy val refinedVersion = "0.5.1-SNAPSHOT"
 
-lazy val scalaTestVersion = "3.0.0-M9"
-lazy val scalaCheckVersion = "1.12.5"
-lazy val disciplineVersion = "0.4"
+lazy val scalaTestVersion = "3.0.0"
+lazy val scalaCheckVersion = "1.13.2"
+lazy val disciplineVersion = "0.6"
 
 lazy val previousCirceVersion = "0.5.2"
 
@@ -520,9 +520,9 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-          "com.github.julien-truffaut" %%% "monocle-core" % "1.2.2",
-          "com.github.julien-truffaut" %%% "monocle-law" % "1.2.2" % "test",
-          compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.0",
+      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.0" % "test",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
   .jvmSettings(mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion))
