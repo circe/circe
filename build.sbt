@@ -57,18 +57,13 @@ lazy val baseSettings = Seq(
       case _ => true
     }
   ),
-  (scalastyleSources in Compile) <++= unmanagedSourceDirectories in Compile,
+  (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += config("compile-time").hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compile-time")),
   unmanagedClasspath in Test ++= update.value.select(configurationFilter("compile-time"))
 )
 
 lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
-
-lazy val commonJsSettings = Seq(
-  postLinkJSEnv := NodeJSEnv().value,
-  scalaJSUseRhino in Global := false
-)
 
 /**
  * We omit all Scala.js projects from Unidoc generation, as well as
@@ -193,7 +188,6 @@ lazy val numbersBase = crossProject.in(file("modules/numbers"))
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-numbers" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "numbers"))
   .jsConfigure(_.copy(id = "numbersJS"))
 
@@ -211,12 +205,11 @@ lazy val coreBase = crossProject.in(file("modules/core"))
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-core" % catsVersion
     ),
-    sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
+    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
   )
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-core" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "core"))
   .jsConfigure(_.copy(id = "coreJS"))
   .dependsOn(numbersBase)
@@ -244,7 +237,6 @@ lazy val genericBase = crossProject.in(file("modules/generic"))
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-generic" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "generic"))
   .jsConfigure(_.copy(id = "genericJS"))
   .dependsOn(coreBase)
@@ -271,7 +263,6 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("modules/l
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-literal" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "literal"))
   .jsConfigure(_.copy(id = "literalJS"))
   .dependsOn(coreBase)
@@ -292,7 +283,6 @@ lazy val refinedBase = crossProject.in(file("modules/refined"))
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-refined" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "refined"))
   .jsConfigure(_.copy(id = "refinedJS"))
   .dependsOn(coreBase)
@@ -310,7 +300,6 @@ lazy val parserBase = crossProject.in(file("modules/parser"))
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-parser" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "parser").dependsOn(jawn))
   .jsConfigure(_.copy(id = "parserJS").dependsOn(scalajs))
   .dependsOn(coreBase)
@@ -340,7 +329,6 @@ lazy val scodecBase = crossProject.in(file("modules/scodec"))
   .jvmSettings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-scodec" % previousCirceVersion)
   )
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "scodec"))
   .jsConfigure(_.copy(id = "scodecJS"))
   .dependsOn(coreBase)
@@ -389,7 +377,7 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
-    sourceGenerators in Test <+= (sourceManaged in Test).map(Boilerplate.genTests),
+    sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
       file("modules/tests") / "shared" / "src" / "main" / "resources"
   )
@@ -397,7 +385,6 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "tests").dependsOn(jawn, jackson, streaming))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
@@ -519,7 +506,6 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
     )
   )
   .jvmSettings(mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion))
-  .jsSettings(commonJsSettings: _*)
   .jvmConfigure(_.copy(id = "optics"))
   .jsConfigure(_.copy(id = "opticsJS"))
   .dependsOn(coreBase, testsBase % "test")
