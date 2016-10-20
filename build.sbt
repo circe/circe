@@ -30,7 +30,7 @@ lazy val refinedVersion = "0.5.1-SNAPSHOT"
 
 lazy val scalaTestVersion = "3.0.0"
 lazy val scalaCheckVersion = "1.13.3"
-lazy val disciplineVersion = "0.6"
+lazy val disciplineVersion = "0.7.1"
 
 lazy val previousCirceVersion = "0.5.2"
 
