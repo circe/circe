@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.Eq
-import cats.data._
+import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -115,7 +115,6 @@ class CirceCodecSuite extends CirceSuite {
 class DisjunctionCodecSuite extends CirceSuite {
   import disjunctionCodecs._
 
-  checkLaws("Codec[Xor[Int, String]]", CodecTests[Xor[Int, String]].codec)
   checkLaws("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
   checkLaws("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
 }

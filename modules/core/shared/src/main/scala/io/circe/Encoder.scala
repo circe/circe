@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data._
+import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
 import cats.functor.Contravariant
 import cats.Foldable
 import io.circe.export.Exported
@@ -269,19 +269,6 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
         case (k, v) => (ek(k), ev(v))
       }
     )
-  }
-
-  /**
-   * @group Disjunction
-   */
-  final def encodeXor[A, B](leftKey: String, rightKey: String)(implicit
-    ea: Encoder[A],
-    eb: Encoder[B]
-  ): ObjectEncoder[Xor[A, B]] = new ObjectEncoder[Xor[A, B]] {
-    final def encodeObject(a: Xor[A, B]): JsonObject = a match {
-      case Xor.Left(a) => JsonObject.singleton(leftKey, ea(a))
-      case Xor.Right(b) => JsonObject.singleton(rightKey, eb(b))
-    }
   }
 
   /**

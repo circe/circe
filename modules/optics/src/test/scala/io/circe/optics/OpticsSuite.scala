@@ -19,6 +19,14 @@ class OpticsSuite extends CirceSuite {
   implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
+  /**
+   * For the purposes of these tests we consider `Double.NaN` to be equal to
+   * itself.
+   */
+  implicit val doubleInstance: Equal[Double] = Equal.equal { (a, b) =>
+    (a.isNaN && b.isNaN) || scalaz.std.anyVal.doubleInstance.equal(a, b)
+  }
+
   checkLaws("Json to Unit", PrismTests(jsonNull))
   checkLaws("Json to Boolean", PrismTests(jsonBoolean))
   checkLaws("Json to BigDecimal", PrismTests(jsonBigDecimal))
@@ -45,7 +53,7 @@ class OpticsSuite extends CirceSuite {
   checkLaws("objectEach", EachTests[JsonObject, Json])
   checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
   checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
-  checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json](_.size < 4))
+  checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json])
 
   "jsonDouble" should "round-trip in reverse with Double.NaN" in {
     assert(jsonDouble.getOption(jsonDouble.reverseGet(Double.NaN)) === Some(Double.NaN))
