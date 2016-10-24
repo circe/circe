@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, Validated, Xor }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated, Xor }
 import cats.instances.either.catsStdInstancesForEither
 import io.circe.export.Exported
 import java.util.UUID
@@ -271,6 +271,15 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   final def instance[A](f: HCursor => Result[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = f(c)
+  }
+
+  /**
+   * Construct an instance from a [[cats.data.StateT]] value.
+   *
+   * @group Utilities
+   */
+  def fromState[A](s: StateT[Result, ACursor, A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = s.runA(c.acursor)
   }
 
   /**
@@ -761,6 +770,44 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         Try(enum.withName(str))
       }
     }
+
+  /**
+   * Helper methods for working with [[cats.data.StateT]] values that transform
+   * the [[ACursor]].
+   *
+   * @group Utilities
+   */
+  object state {
+    /**
+     * Attempt to decode a value at key `k` and remove it from the [[ACursor]].
+     */
+    def decodeField[A: Decoder](k: String): StateT[Result, ACursor, A] = StateT[Result, ACursor, A] { c =>
+      val field = c.downField(k)
+
+      field.as[A] match {
+        case Right(a) => Right((field.delete, a))
+        case l @ Left(_) => l.asInstanceOf[Result[(ACursor, A)]]
+      }
+    }
+
+    /**
+     * Require the [[ACursor]] to be empty, using the provided function to
+     * create the failure error message if it's not.
+     */
+    def requireEmptyWithMessage(createMessage: List[String] => String): StateT[Result, ACursor, Unit] =
+      StateT[Result, ACursor, Unit] { c =>
+        val fields = c.focus.flatMap(_.asObject).toList.flatMap(_.fields)
+
+        if (fields.isEmpty) Right((c, ())) else Left(DecodingFailure(createMessage(fields), c.history))
+      }
+
+    /**
+     * Require the [[ACursor]] to be empty, with a default message.
+     */
+    val requireEmpty: StateT[Result, ACursor, Unit] = requireEmptyWithMessage { keys =>
+      s"Leftover keys: ${ keys.mkString(", ") }"
+    }
+  }
 }
 
 private[circe] trait LowPriorityDecoders {
