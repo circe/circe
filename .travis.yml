@@ -9,6 +9,11 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
+matrix:
+  include:
+  - scala: 2.12.0-RC2
+    jdk: oraclejdk8
+
 cache:
   directories:
     - $HOME/.ivy2/cache
@@ -19,8 +24,11 @@ install:
 
 script:
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.11.* ]];
-    then sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
-    else echo "Skipping hygiene tests on 2.10";
+    then
+      sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
+      sbt ++$TRAVIS_SCALA_VERSION spray/test;
+      sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
+    else echo "Skipping hygiene, spray, and benchmark tests on 2.10 and 2.12";
     fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
