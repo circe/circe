@@ -259,5 +259,39 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
   }
 
+  private[this] val stateful = {
+    import Decoder.state._
+    Decoder.fromState(for {
+      a <- decodeField[String]("a")
+      b <- decodeField[String]("b")
+      _ <- requireEmpty
+    } yield a ++ b)
+  }
+
+  "a stateful Decoder with requireEmpty" should "succeed when there are no leftover fields" in {
+    val json = Json.obj(
+      "a" -> "1".asJson,
+      "b" -> "2".asJson)
+
+    assert(stateful.decodeJson(json) === Right("12"))
+  }
+
+  it should "fail when there are leftover fields" in {
+    val json = Json.obj(
+      "a" -> "1".asJson,
+      "b" -> "2".asJson,
+      "c" -> "3".asJson,
+      "d" -> "4".asJson)
+
+    assert(stateful.decodeJson(json).left.get.message === "Leftover keys: c, d")
+  }
+
+  it should "fail normally when a field is missing" in {
+    val json = Json.obj(
+      "a" -> "1".asJson)
+
+    assert(stateful.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+  }
+
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 }
