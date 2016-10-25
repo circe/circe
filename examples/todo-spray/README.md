@@ -8,7 +8,7 @@ fields and returns a completed todo value with a generated identifier.
 Note that this example requires Java 8 and Scala 2.11.
 
 To start the service locally on port 8080, run `sbt run`. If that works, you can
-test the service from your favorite HTTP client (I'll use [httpie][httpie])
+test the service from your favorite HTTP client (I'll use [httpie][httpie]
 here):
 
 ```bash
