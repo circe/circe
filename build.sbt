@@ -23,7 +23,7 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.8.0-SNAPSHOT"
+lazy val catsVersion = "0.8.0"
 lazy val jawnVersion = "0.10.2"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.0"
