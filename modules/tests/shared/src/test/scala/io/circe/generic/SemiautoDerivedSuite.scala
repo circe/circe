@@ -24,6 +24,9 @@ class SemiautoDerivedSuite extends CirceSuite {
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
   implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder
 
+  implicit val decodeCardinalDirection: Decoder[CardinalDirection] = deriveEnumerationDecoder
+  implicit val encodeCardinalDirection: Encoder[CardinalDirection] = deriveEnumerationEncoder
+
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
 
@@ -82,6 +85,7 @@ class SemiautoDerivedSuite extends CirceSuite {
   checkLaws("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
   checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  checkLaws("Codec[CardinalDirection]", CodecTests[CardinalDirection].codec)
   checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
@@ -145,5 +149,13 @@ class SemiautoDerivedSuite extends CirceSuite {
     illTyped("deriveDecoder[OvergenerationExampleInner1]")
     illTyped("deriveEncoder[OvergenerationExampleInner0]")
     illTyped("deriveEncoder[OvergenerationExampleInner1]")
+  }
+
+  "deriveEnumerationDecoder" should "not compile on an ADT with case classes" in {
+    illTyped("deriveEnumerationDecoder[ExtendedCardinalDirection]")
+  }
+
+  "deriveEnumerationEncoder" should "not compile on an ADT with case classes" in {
+    illTyped("deriveEnumerationEncoder[ExtendedCardinalDirection]")
   }
 }
