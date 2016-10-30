@@ -83,7 +83,9 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   scodecJS,
   testingJS,
   tests,
-  testsJS
+  testsJS,
+  spray,
+  benchmark
 ) ++ (
   CrossVersion.partialVersion(sv) match {
     case Some((2, 10)) => Seq[ProjectReference](generic, literal)
@@ -131,9 +133,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   optics, opticsJS,
   scalajs,
   streaming,
-  docs,
-  spray,
-  benchmark
+  docs
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
 )
