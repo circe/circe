@@ -1,8 +1,8 @@
 package io.circe.generic
 
 import io.circe.{ Decoder, Encoder }
-import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.generic.decoding.{ DerivedDecoder, ReprDecoder }
+import io.circe.generic.encoding.{ DerivedObjectEncoder, ReprObjectEncoder }
 import macrocompat.bundle
 import scala.reflect.macros.whitebox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
@@ -111,7 +111,7 @@ class DerivationMacros(val c: whitebox.Context) {
     case _ => fail(tpe)
   }
 
-  def decodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedDecoder[R]] =
+  def decodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[ReprDecoder[R]] =
     Members.fromHListType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (result, accumulatingResult)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false))
@@ -137,16 +137,16 @@ class DerivationMacros(val c: whitebox.Context) {
         )
       }
 
-      c.Expr[DerivedDecoder[R]](
+      c.Expr[ReprDecoder[R]](
         q"""
           {
-            new _root_.io.circe.generic.decoding.DerivedDecoder[$R] {
+            new _root_.io.circe.generic.decoding.ReprDecoder[$R] {
               ..$instanceDefs
               final def apply(c: _root_.io.circe.HCursor): _root_.io.circe.Decoder.Result[$R] = $result
               override final def decodeAccumulating(
                 c: _root_.io.circe.HCursor
               ): _root_.io.circe.AccumulatingDecoder.Result[$R] = $accumulatingResult
-            }: _root_.io.circe.generic.decoding.DerivedDecoder[$R]
+            }: _root_.io.circe.generic.decoding.ReprDecoder[$R]
           }
         """
       )
@@ -164,7 +164,7 @@ class DerivationMacros(val c: whitebox.Context) {
     )
   """
 
-  def decodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedDecoder[R]] =
+  def decodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[ReprDecoder[R]] =
     Members.fromCoproductType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (result, accumulatingResult)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Decoder[_]], false), (typeOf[DerivedDecoder[_]], true))
@@ -204,22 +204,22 @@ class DerivationMacros(val c: whitebox.Context) {
         )
       }
 
-      c.Expr[DerivedDecoder[R]](
+      c.Expr[ReprDecoder[R]](
         q"""
           {
-            new _root_.io.circe.generic.decoding.DerivedDecoder[$R] {
+            new _root_.io.circe.generic.decoding.ReprDecoder[$R] {
               ..$instanceDefs
               final def apply(c: _root_.io.circe.HCursor): _root_.io.circe.Decoder.Result[$R] = $result
               override final def decodeAccumulating(
                 c: _root_.io.circe.HCursor
               ): _root_.io.circe.AccumulatingDecoder.Result[$R] = $accumulatingResult
-            }: _root_.io.circe.generic.decoding.DerivedDecoder[$R]
+            }: _root_.io.circe.generic.decoding.ReprDecoder[$R]
           }
         """
       )
     }
 
-  def encodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedObjectEncoder[R]] =
+  def encodeHList[R <: HList](implicit R: c.WeakTypeTag[R]): c.Expr[ReprObjectEncoder[R]] =
     Members.fromHListType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, (pattern, fields)) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Encoder[_]], false))
@@ -232,22 +232,22 @@ class DerivationMacros(val c: whitebox.Context) {
         (pq"_root_.shapeless.::($currentName, $patternAcc)", q"($name, $instanceName.apply($currentName))" :: fieldsAcc)
       }
 
-      c.Expr[DerivedObjectEncoder[R]](
+      c.Expr[ReprObjectEncoder[R]](
         q"""
           {
-            new _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R] {
+            new _root_.io.circe.generic.encoding.ReprObjectEncoder[$R] {
               ..$instanceDefs
               final def encodeObject(a: $R): _root_.io.circe.JsonObject = a match {
                 case $pattern =>
                   _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
               }
-            }: _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R]
+            }: _root_.io.circe.generic.encoding.ReprObjectEncoder[$R]
           }
         """
       )
     }
 
-  def encodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[DerivedObjectEncoder[R]] =
+  def encodeCoproduct[R <: Coproduct](implicit R: c.WeakTypeTag[R]): c.Expr[ReprObjectEncoder[R]] =
     Members.fromCoproductType(R.tpe).fold(fail(R.tpe)) { members =>
       val (instanceDefs, patternAndCase) = members.fold(
         tpe => resolveInstance(tpe, (typeOf[Encoder[_]], false), (typeOf[DerivedObjectEncoder[_]], true))
@@ -267,16 +267,16 @@ class DerivationMacros(val c: whitebox.Context) {
         """
       }
 
-      c.Expr[DerivedObjectEncoder[R]](
+      c.Expr[ReprObjectEncoder[R]](
         q"""
           {
-            new _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R] {
+            new _root_.io.circe.generic.encoding.ReprObjectEncoder[$R] {
               ..$instanceDefs
 
               final def encodeObject(a: $R): _root_.io.circe.JsonObject = _root_.shapeless.Inr(a) match {
                 case $patternAndCase
               }
-            }: _root_.io.circe.generic.encoding.DerivedObjectEncoder[$R]
+            }: _root_.io.circe.generic.encoding.ReprObjectEncoder[$R]
           }
         """
       )
