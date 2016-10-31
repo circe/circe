@@ -76,6 +76,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   java8,
   literalJS,
   genericJS,
+  shapelessJS,
   numbersJS,
   opticsJS,
   parserJS,
@@ -119,6 +120,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   numbers, numbersJS,
   core, coreJS,
   generic, genericJS,
+  shapeless, shapelessJS,
   literal, literalJS,
   refined, refinedJS,
   parser, parserJS,
@@ -243,6 +245,24 @@ lazy val genericBase = crossProject.in(file("modules/generic"))
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
+
+lazy val shapelessBase = crossProject.crossType(CrossType.Pure).in(file("modules/shapeless"))
+  .settings(
+    description := "circe shapeless",
+    moduleName := "circe-shapeless",
+    name := "shapeless"
+  )
+  .settings(allSettings: _*)
+  .settings(macroDependencies: _*)
+  .settings(
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+  )
+  .jvmConfigure(_.copy(id = "shapeless"))
+  .jsConfigure(_.copy(id = "shapelessJS"))
+  .dependsOn(coreBase)
+
+lazy val shapeless = shapelessBase.jvm
+lazy val shapelessJS = shapelessBase.js
 
 lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("modules/literal"))
   .settings(
@@ -395,6 +415,7 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
     testingBase,
     coreBase,
     genericBase,
+    shapelessBase,
     literalBase,
     refinedBase,
     parserBase,
@@ -620,6 +641,7 @@ val jvmProjects = Seq(
   "numbers",
   "core",
   "generic",
+  "shapeless",
   "refined",
   "parser",
   "scodec",
@@ -646,6 +668,7 @@ val jsProjects = Seq(
   "numbersJS",
   "coreJS",
   "genericJS",
+  "shapelessJS",
   "opticsJS",
   "parserJS",
   "refinedJS",
