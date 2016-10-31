@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated, Xor }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
 import cats.instances.either.catsStdInstancesForEither
 import io.circe.export.Exported
 import java.util.UUID
@@ -709,15 +709,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       } else Left(DecodingFailure("[A, B]Either[A, B]", c.history))
     }
   }
-
-  /**
-   * @group Disjunction
-   */
-  final def decodeXor[A, B](leftKey: String, rightKey: String)(implicit
-    da: Decoder[A],
-    db: Decoder[B]
-  ): Decoder[Xor[A, B]] =
-    decodeEither[A, B](leftKey, rightKey).map(Xor.fromEither).withErrorMessage("[A, B]Xor[A, B]")
 
   /**
    * @group Disjunction

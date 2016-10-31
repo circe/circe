@@ -2,7 +2,6 @@ import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import com.typesafe.sbt.SbtSite.SiteKeys._
-import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 lazy val buildSettings = Seq(
   organization := "io.circe",
@@ -555,18 +554,6 @@ lazy val benchmark = project.in(file("modules/benchmark"))
   .enablePlugins(JmhPlugin)
   .dependsOn(core, generic, jawn, jackson)
 
-val removeScoverage = new RuleTransformer(
-  new RewriteRule {
-    private[this] def isGroupScoverage(child: xml.Node): Boolean =
-      child.label == "groupId" && child.text == "org.scoverage"
-
-    override def transform(node: xml.Node): Seq[xml.Node] = node match {
-      case e: xml.Elem if e.label == "dependency" && e.child.exists(isGroupScoverage) => Nil
-      case _ => Seq(node)
-    }
-  }
-)
-
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -598,8 +585,7 @@ lazy val publishSettings = Seq(
         <url>https://twitter.com/travisbrown</url>
       </developer>
     </developers>
-  ),
-  pomPostProcess := { (node: xml.Node) => removeScoverage.transform(node).head }
+  )
 )
 
 lazy val noPublishSettings = Seq(
