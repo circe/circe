@@ -124,8 +124,8 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Encoding
    */
-  implicit final val encodeUnit: Encoder[Unit] = new Encoder[Unit] {
-    final def apply(a: Unit): Json = Json.fromJsonObject(JsonObject.empty)
+  implicit final val encodeUnit: ObjectEncoder[Unit] = new ObjectEncoder[Unit] {
+    final def encodeObject(a: Unit): JsonObject = JsonObject.empty
   }
 
   /**

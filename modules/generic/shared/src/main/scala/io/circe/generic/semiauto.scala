@@ -47,6 +47,6 @@ final object semiauto {
       gen: LabelledGeneric.Aux[A, R],
       patch: PatchWithOptions.Aux[R, O],
       decode: DerivedDecoder[O]
-    ): DerivedDecoder[A => A] = DerivedDecoder.decodeCaseClassPatch[A, R, O]
+    ): Decoder[A => A] = DerivedDecoder.decodeCaseClassPatch[A, R, O]
   }
 }
