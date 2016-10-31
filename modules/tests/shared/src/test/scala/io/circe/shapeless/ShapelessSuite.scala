@@ -1,6 +1,6 @@
 package io.circe.shapeless
 
-import io.circe.Decoder
+import io.circe.{ Decoder, Encoder }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -46,6 +46,21 @@ class ShapelessSuite extends CirceSuite {
 
   it should "accumulated errors" in forAll { (foo: String, bar: Int) =>
     val result = recordDecoder.accumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
+
+    assert(result.swap.exists(_.size == 2))
+  }
+
+  val sizedDecoder = Decoder[Sized[List[Int], Nat._4]]
+
+  "A Sized decoder" should "fail if given an incorrect number of elements" in forAll { (xs: List[Int]) =>
+    val values = if (xs.size == 4) xs ++ xs else xs
+    val result = sizedDecoder.decodeJson(Encoder[List[Int]].apply(values))
+
+    assert(result.isLeft)
+  }
+
+  it should "accumulated errors" in forAll { (a: Int, b: String, c: Int, d: String) =>
+    val result = sizedDecoder.accumulating(json"""[ $a, $b, $c, $d ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
   }
