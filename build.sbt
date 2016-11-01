@@ -654,15 +654,14 @@ val jvmProjects = Seq(
   "jawn",
   "jackson"
 ) ++ (
-  if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
+  if (sys.props("java.specification.version") == "1.8") Seq("java8", "optics") else Nil
 )
 
 val jvmTestProjects = Seq(
   "numbers",
-  "tests",
-  "optics"
+  "tests"
 ) ++ (
-  if (sys.props("java.specification.version") == "1.8") Seq("java8") else Nil
+  if (sys.props("java.specification.version") == "1.8") Seq("java8", "optics") else Nil
 )
 
 val jsProjects = Seq(
