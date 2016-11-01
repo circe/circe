@@ -92,7 +92,6 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   )
 
   implicit def arbitraryAccumulatingDecoder[A: Arbitrary]: Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
-    //Arbitrary.arbFunction1[Json, ValidatedNel[DecodingFailure, A]].map(f =>
     arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
       AccumulatingDecoder.instance(c => f(c.focus))
     )
