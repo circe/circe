@@ -2,9 +2,11 @@ package io.circe
 
 import monocle.Iso
 
-package object optics {
+package optics {
   final object all extends JsonNumberOptics with JsonObjectOptics with JsonOptics
+}
 
+package object optics {
   /** Derives a [[io.circe.Decoder]][B] from a Decoder[A] and [[monocle.Iso]][A, B].
    *
    *  @tparam A the type parameter of the existent Decoder.
