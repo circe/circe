@@ -480,7 +480,7 @@ lazy val streaming = project.in(file("modules/streaming"))
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.0-SNAPSHOT",
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.0",
     mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
