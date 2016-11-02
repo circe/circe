@@ -3,7 +3,6 @@ package io.circe
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
 import cats.instances.either.catsStdInstancesForEither
-import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
@@ -801,6 +800,4 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 }
 
-private[circe] trait LowPriorityDecoders {
-  implicit def importedDecoder[A](implicit exported: Exported[Decoder[A]]): Decoder[A] = exported.instance
-}
+@export.imports[Decoder] private[circe] trait LowPriorityDecoders

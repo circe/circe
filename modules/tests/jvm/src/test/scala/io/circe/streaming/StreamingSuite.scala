@@ -37,9 +37,10 @@ class StreamingSuite extends CirceSuite {
   }
 
   "decoder" should "decode enumerated JSON values" in forAll { (fooStream: Stream[Foo], fooVector: Vector[Foo]) =>
-    val enumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
     val foos = fooStream ++ fooVector
+    val foosEnumerator = serializeFoos(enumerateFoos(fooStream, fooVector))
+    val enumerator = foosEnumerator.through(stringParser).through(decoder[Result, Foo])
 
-    assert(enumerator.through(stringParser).through(decoder[Result, Foo]).toVector.value.value === Right(foos.toVector))
+    assert(enumerator.toVector.value.value === Right(foos.toVector))
   }
 }

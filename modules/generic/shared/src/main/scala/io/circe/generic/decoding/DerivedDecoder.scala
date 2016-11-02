@@ -7,6 +7,7 @@ import shapeless.{ Coproduct, HList, LabelledGeneric, Lazy }
 
 abstract class DerivedDecoder[A] extends Decoder[A]
 
+@export.exports
 final object DerivedDecoder extends IncompleteDerivedDecoders {
   implicit def decodeHList[R <: HList]: DerivedDecoder[R] = macro DerivationMacros.decodeHList[R]
   implicit def decodeCoproduct[R <: Coproduct]: DerivedDecoder[R] = macro DerivationMacros.decodeCoproduct[R]
