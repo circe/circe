@@ -75,6 +75,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   java8,
   literalJS,
   genericJS,
+  genericExtrasJS,
   shapelessJS,
   numbersJS,
   opticsJS,
@@ -121,6 +122,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   numbers, numbersJS,
   core, coreJS,
   generic, genericJS,
+  genericExtras, genericExtrasJS,
   shapeless, shapelessJS,
   literal, literalJS,
   refined, refinedJS,
@@ -171,7 +173,7 @@ lazy val circe = project.in(file("."))
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, generic, literal, parser)
+  .dependsOn(core, genericExtras, literal, parser)
 
 lazy val numbersBase = crossProject.in(file("modules/numbers"))
   .settings(
@@ -247,6 +249,29 @@ lazy val genericBase = crossProject.in(file("modules/generic"))
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
+
+lazy val genericExtrasBase = crossProject.crossType(CrossType.Pure).in(file("modules/generic-extras"))
+  .settings(
+    description := "circe generic extras",
+    moduleName := "circe-generic-extras",
+    name := "generic-extras"
+  )
+  .settings(allSettings: _*)
+  .settings(macroDependencies: _*)
+  .settings(
+    sources in (Compile, doc) := (
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 11)) => (sources in (Compile, doc)).value
+        case _ => Nil
+      }
+    )
+  )
+  .jvmConfigure(_.copy(id = "genericExtras"))
+  .jsConfigure(_.copy(id = "genericExtrasJS"))
+  .dependsOn(genericBase)
+
+lazy val genericExtras = genericExtrasBase.jvm
+lazy val genericExtrasJS = genericExtrasBase.js
 
 lazy val shapelessBase = crossProject.crossType(CrossType.Pure).in(file("modules/shapeless"))
   .settings(
@@ -424,6 +449,7 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
     testingBase,
     coreBase,
     genericBase,
+    genericExtrasBase,
     shapelessBase,
     literalBase,
     refinedBase,
@@ -645,6 +671,7 @@ val jvmProjects = Seq(
   "numbers",
   "core",
   "generic",
+  "genericExtras",
   "shapeless",
   "refined",
   "parser",
@@ -667,6 +694,7 @@ val jsProjects = Seq(
   "numbersJS",
   "coreJS",
   "genericJS",
+  "genericExtrasJS",
   "shapelessJS",
   "opticsJS",
   "parserJS",
