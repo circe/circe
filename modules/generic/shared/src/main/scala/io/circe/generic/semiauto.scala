@@ -1,8 +1,8 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, ObjectEncoder }
-import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.generic.decoding.{ DerivedDecoder, EnumerationDecoder }
+import io.circe.generic.encoding.{ DerivedObjectEncoder, EnumerationEncoder }
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ HList, LabelledGeneric, Lazy }
 import shapeless.ops.function.FnFromProduct
@@ -29,9 +29,23 @@ import shapeless.ops.record.RemoveAll
  */
 final object semiauto {
   final def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
+  final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] = encode.value
 
-  final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] =
-    encode.value
+  /**
+   * Derive a decoder for a sealed trait hierarchy made up of case objects.
+   *
+   * Note that this differs from the usual derived decoder in that the leaves of
+   * the ADT are represented as JSON strings.
+   */
+  def deriveEnumerationDecoder[A](implicit decode: Lazy[EnumerationDecoder[A]]): Decoder[A] = decode.value
+
+  /**
+   * Derive an encoder for a sealed trait hierarchy made up of case objects.
+   *
+   * Note that this differs from the usual derived encoder in that the leaves of
+   * the ADT are represented as JSON strings.
+   */
+  def deriveEnumerationEncoder[A](implicit encode: Lazy[EnumerationEncoder[A]]): Encoder[A] = encode.value
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
