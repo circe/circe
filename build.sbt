@@ -254,7 +254,8 @@ lazy val genericExtrasBase = crossProject.crossType(CrossType.Pure).in(file("mod
   .settings(
     description := "circe generic extras",
     moduleName := "circe-generic-extras",
-    name := "generic-extras"
+    name := "generic-extras",
+    crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
   .settings(macroDependencies: _*)
@@ -277,7 +278,8 @@ lazy val shapelessBase = crossProject.crossType(CrossType.Pure).in(file("modules
   .settings(
     description := "circe shapeless",
     moduleName := "circe-shapeless",
-    name := "shapeless"
+    name := "shapeless",
+    crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
   .settings(macroDependencies: _*)
