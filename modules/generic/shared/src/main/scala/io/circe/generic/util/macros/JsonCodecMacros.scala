@@ -1,27 +1,26 @@
-package io.circe.generic
+package io.circe.generic.util.macros
 
 import io.circe.{ Decoder, Encoder, ObjectEncoder }
 import macrocompat.bundle
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
-class JsonCodec extends scala.annotation.StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro JsonCodecMacros.jsonCodecAnnotationMacro
-}
-
 @bundle
-private[generic] class JsonCodecMacros(val c: blackbox.Context) {
+abstract class JsonCodecMacros {
+  val c: blackbox.Context
+
   import c.universe._
+
+  protected[this] def semiautoObj: Symbol
 
   private[this] def isCaseClassOrSealed(clsDef: ClassDef) =
     clsDef.mods.hasFlag(Flag.CASE) || clsDef.mods.hasFlag(Flag.SEALED)
 
-  def jsonCodecAnnotationMacro(annottees: Tree*): Tree = annottees match {
+  protected[this] final def constructJsonCodec(annottees: Tree*): Tree = annottees match {
     case List(clsDef: ClassDef) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
-       object ${clsDef.name.toTermName} {
-         ..${codec(clsDef)}
+       object ${ clsDef.name.toTermName } {
+         ..${ codec(clsDef) }
        }
        """
     case List(
@@ -30,19 +29,18 @@ private[generic] class JsonCodecMacros(val c: blackbox.Context) {
     ) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
-       object $objName extends { ..$objEarlyDefs} with ..$objParents { $objSelf =>
+       object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
          ..$objDefs
-         ..${codec(clsDef)}
+         ..${ codec(clsDef) }
        }
        """
     case _ => c.abort(c.enclosingPosition,
       "Invalid annotation target: must be a case class or a sealed trait/class")
   }
 
-  private[this] val DecoderClass = symbolOf[Decoder[_]]
-  private[this] val EncoderClass = symbolOf[Encoder[_]]
-  private[this] val ObjectEncoderClass = symbolOf[ObjectEncoder[_]]
-  private[this] val semiautoObj = symbolOf[semiauto.type].asClass.module
+  private[this] val DecoderClass = typeOf[Decoder[_]].typeSymbol.asType
+  private[this] val EncoderClass = typeOf[Encoder[_]].typeSymbol.asType
+  private[this] val ObjectEncoderClass = typeOf[ObjectEncoder[_]].typeSymbol.asType
 
   private[this] def codec(clsDef: ClassDef): List[Tree] = {
     val tpname = clsDef.name
