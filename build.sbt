@@ -168,7 +168,6 @@ lazy val circe = project.in(file("."))
         |import io.circe.literal._
         |import io.circe.parser._
         |import io.circe.syntax._
-        |import cats.data.Xor
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
