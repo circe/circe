@@ -135,7 +135,10 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   optics, opticsJS,
   scalajs,
   streaming,
-  docs
+  docs,
+  spray,
+  hygiene,
+  benchmark
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
 )
@@ -466,7 +469,7 @@ lazy val hygiene = project.in(file("modules/hygiene"))
   .settings(
     description := "circe hygiene",
     moduleName := "circe-hygiene",
-    crossScalaVersions := scalaVersions
+    crossScalaVersions := scalaVersions.tail
   )
   .settings(allSettings ++ noPublishSettings)
   .settings(

@@ -1,5 +1,6 @@
-sudo: true
 language: scala
+sudo: required
+dist: trusty
 
 scala:
   - 2.10.6
@@ -23,18 +24,21 @@ install:
   - pip install --user codecov
 
 script:
-  - if [[ "$TRAVIS_SCALA_VERSION" == 2.11.* ]];
+  - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
+  - if [[ "$TRAVIS_SCALA_VERSION" != 2.10.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION hygiene/compile &&
-      sbt ++$TRAVIS_SCALA_VERSION spray/test &&
-      sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
-    else echo "Skipping hygiene, spray, and benchmark tests on 2.10 and 2.12";
+      sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
+    else echo "Skipping hygiene tests on 2.10 (see \#300)";
+    fi
+  - if [[ "$TRAVIS_SCALA_VERSION" != 2.12.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION spray/test benchmark/test coverageReport && codecov;
+    else echo "Skipping spray and benchmark tests and coverage reporting on 2.12";
     fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
-    then sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
-    else
-      sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM &&
-      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+    then
+      sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
+    else echo "Skipping Scala.js build";
     fi
 
   # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
