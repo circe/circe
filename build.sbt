@@ -568,8 +568,8 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.1",
-      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.1" % "test",
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.2",
+      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.2" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
