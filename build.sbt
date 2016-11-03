@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import com.typesafe.sbt.SbtSite.SiteKeys._
 
-val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-RC2")
+val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0")
 
 lazy val buildSettings = Seq(
   organization := "io.circe",
