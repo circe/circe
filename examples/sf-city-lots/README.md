@@ -39,6 +39,10 @@ definitions evaluated together.
 import io.circe.Decoder, io.circe.generic.auto._
 ```
 
+If we were on Scala 2.10 or 2.11, we'd also need to import `cats.syntax.either._` here since we're
+using `map` and `flatMap` on `Either` values below. This is no longer necessary on Scala 2.12, since
+`Either` is now right-biased.
+
 We'll start with a type representing a coordinate pair. We want this decoder to recognize either of
 the following formats:
 
