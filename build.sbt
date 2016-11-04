@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import com.typesafe.sbt.SbtSite.SiteKeys._
 
-val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-RC2")
+val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0")
 
 lazy val buildSettings = Seq(
   organization := "io.circe",
@@ -24,15 +24,32 @@ lazy val compilerOptions = Seq(
 )
 
 lazy val catsVersion = "0.8.0"
-lazy val jawnVersion = "0.10.2"
+lazy val jawnVersion = "0.10.3"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.0"
 
 lazy val scalaTestVersion = "3.0.0"
-lazy val scalaCheckVersion = "1.13.3"
-lazy val disciplineVersion = "0.7.1"
+lazy val scalaCheckVersion = "1.13.4"
+lazy val disciplineVersion = "0.7.2"
 
 lazy val previousCirceVersion = "0.5.2"
+
+def add2120RC2(name: String)(scalaVersion: String, isScalaJs: Boolean): String =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, 12)) => s"""${ name }_${ if (isScalaJs) "sjs0.6_" else "" }2.12.0-RC2"""
+    case Some((2, major)) => s"""${ name }_2.$major"""
+    case Some(_) => name
+    case None => name
+  }
+
+val exclude2120RC2 = Seq(
+  ExclusionRule(organization = "org.typelevel", name = "discipline_2.12.0-RC2"),
+  ExclusionRule(organization = "org.typelevel", name = "discipline_sjs0.6_2.12.0-RC2"),
+  ExclusionRule(organization = "org.typelevel", name = "macro-compat_2.12.0-RC2"),
+  ExclusionRule(organization = "org.typelevel", name = "macro-compat_sjs0.6_2.12.0-RC2"),
+  ExclusionRule(organization = "org.scala-js"),
+  ExclusionRule(organization = "org.scalacheck")
+)
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -211,7 +228,7 @@ lazy val coreBase = crossProject.in(file("modules/core"))
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core" % catsVersion
+      "org.typelevel" % add2120RC2("cats-core")(scalaVersion.value, isScalaJSProject.value) % catsVersion excludeAll(exclude2120RC2: _*)
     ),
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
   )
@@ -404,7 +421,7 @@ lazy val testingBase = crossProject.in(file("modules/testing"))
   .settings(
     libraryDependencies ++= Seq(
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.typelevel" %%% "cats-laws" % catsVersion,
+      "org.typelevel" % add2120RC2("cats-laws")(scalaVersion.value, isScalaJSProject.value) % catsVersion excludeAll(exclude2120RC2: _*),
       "org.typelevel" %%% "discipline" % disciplineVersion
     )
   )
@@ -431,8 +448,6 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.scodec" %%% "scodec-bits" % "1.1.0",
-      "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
@@ -510,7 +525,8 @@ lazy val streaming = project.in(file("modules/streaming"))
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.0",
+    libraryDependencies +=
+      "io.iteratee" % add2120RC2("iteratee-core")(scalaVersion.value, false) % "0.7.0",
     mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
@@ -568,8 +584,8 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.1",
-      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.1" % "test",
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.2",
+      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.2" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
