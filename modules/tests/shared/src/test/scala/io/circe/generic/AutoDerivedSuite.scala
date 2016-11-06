@@ -7,7 +7,7 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import shapeless.{ CNil, Witness }, shapeless.labelled.{ FieldType, field }
+import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
 class AutoDerivedSuite extends CirceSuite {
@@ -140,13 +140,5 @@ class AutoDerivedSuite extends CirceSuite {
     val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
     assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
-  }
-
-  "Decoder[CNil]" should "fail" in {
-    assert(Json.Null.as[CNil].isLeft)
-  }
-
-  "Encoder[CNil]" should "throw an exception" in {
-    intercept[RuntimeException](Encoder[CNil].apply(null: CNil))
   }
 }

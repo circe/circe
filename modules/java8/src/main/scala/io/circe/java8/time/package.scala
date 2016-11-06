@@ -1,11 +1,12 @@
 package io.circe.java8
 
 import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
-import java.time.{ Instant, LocalDate, LocalDateTime, OffsetDateTime, ZonedDateTime }
+import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, ZonedDateTime }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{
   ISO_LOCAL_DATE,
   ISO_LOCAL_DATE_TIME,
+  ISO_LOCAL_TIME,
   ISO_OFFSET_DATE_TIME,
   ISO_ZONED_DATE_TIME
 }
@@ -86,4 +87,20 @@ package object time {
 
   implicit final val decodeLocalDateDefault: Decoder[LocalDate] = decodeLocalDate(ISO_LOCAL_DATE)
   implicit final val encodeLocalDateDefault: Encoder[LocalDate] = encodeLocalDate(ISO_LOCAL_DATE)
+
+  final def decodeLocalTime(formatter: DateTimeFormatter): Decoder[LocalTime] =
+    Decoder.instance { c =>
+      c.as[String] match {
+        case Right(s) => try Right(LocalTime.parse(s, formatter)) catch {
+          case _: DateTimeParseException => Left(DecodingFailure("LocalTime", c.history))
+        }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalTime]]
+      }
+    }
+
+  final def encodeLocalTime(formatter: DateTimeFormatter): Encoder[LocalTime] =
+    Encoder.instance(time => Json.fromString(time.format(formatter)))
+
+  implicit final val decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
+  implicit final val encodeLocalTimeDefault: Encoder[LocalTime] = encodeLocalTime(ISO_LOCAL_TIME)
 }
