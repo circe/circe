@@ -55,6 +55,9 @@ final object AccumulatingDecoder {
   final val resultInstance: ApplicativeError[Result, NonEmptyList[DecodingFailure]] =
     Validated.catsDataInstancesForValidated[NonEmptyList[DecodingFailure]](failureNelInstance)
 
+  private[circe] val resultSemigroupK: SemigroupK[Result] =
+    Validated.catsDataSemigroupKForValidated[NonEmptyList[DecodingFailure]](failureNelInstance)
+
   /**
    * Return an instance for a given type.
    */

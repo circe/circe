@@ -144,6 +144,9 @@ trait Decoder[A] extends Serializable { self =>
       case r @ Right(_) => r
       case Left(_) => d(c)
     }
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[AA] =
+      AccumulatingDecoder.resultSemigroupK.combineK(self.decodeAccumulating(c), d.decodeAccumulating(c))
   }
 
   /**
@@ -242,7 +245,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
   type Result[A] = Either[DecodingFailure, A]
 
-  val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
+  val resultInstance: MonadError[Result, DecodingFailure] =
+    catsStdInstancesForEither[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
