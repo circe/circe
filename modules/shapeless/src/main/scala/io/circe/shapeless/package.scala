@@ -1,3 +1,4 @@
 package io.circe
 
-package object shapeless extends RecordInstances with LabelledCoproductInstances with SizedInstances
+package object shapeless extends LabelledHListInstances with LabelledCoproductInstances
+  with SizedInstances

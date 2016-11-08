@@ -1,17 +1,7 @@
 package io.circe.shapeless
 
 import cats.Eq
-import cats.data.{ NonEmptyList, Validated }
-import io.circe.{
-  AccumulatingDecoder,
-  Decoder,
-  DecodingFailure,
-  Encoder,
-  HCursor,
-  Json,
-  KeyDecoder,
-  KeyEncoder
-}
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder }
 import shapeless.{ :+:, Coproduct, Inl, Inr, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 
