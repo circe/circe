@@ -2,7 +2,7 @@ package io.circe
 
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
-import cats.instances.either.catsStdInstancesForEither
+import cats.instances.either.{ catsDataSemigroupKForEither, catsStdInstancesForEither }
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -144,9 +144,6 @@ trait Decoder[A] extends Serializable { self =>
       case r @ Right(_) => r
       case Left(_) => d(c)
     }
-
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[AA] =
-      AccumulatingDecoder.resultSemigroupK.combineK(self.decodeAccumulating(c), d.decodeAccumulating(c))
   }
 
   /**
@@ -245,8 +242,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
   type Result[A] = Either[DecodingFailure, A]
 
-  val resultInstance: MonadError[Result, DecodingFailure] =
-    catsStdInstancesForEither[DecodingFailure]
+  val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
+
+  private[circe] val resultSemigroupK: SemigroupK[Result] = catsDataSemigroupKForEither[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
