@@ -664,6 +664,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Decoding
    */
+  implicit final def decodeList[A: Decoder]: Decoder[List[A]] =
+    decodeCanBuildFrom[A, List].withErrorMessage("[A]List[A]")
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeVector[A: Decoder]: Decoder[Vector[A]] =
+    decodeCanBuildFrom[A, Vector].withErrorMessage("[A]Vector[A]")
+
+  /**
+   * @group Decoding
+   */
   implicit final def decodeOneAnd[A, C[_]](implicit
     da: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]

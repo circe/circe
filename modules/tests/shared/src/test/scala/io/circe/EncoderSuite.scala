@@ -26,4 +26,16 @@ class EncoderSuite extends CirceSuite {
     val decoder = Decoder.enumDecoder(WeekDay)
     assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
   }
+
+  "encodeSet" should "match sequence encoders" in forAll { (xs: Set[Int]) =>
+    assert(Encoder.encodeSet[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toSeq))
+  }
+
+  "encodeList" should "match sequence encoders" in forAll { (xs: List[Int]) =>
+    assert(Encoder.encodeList[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+  }
+
+  "encodeVector" should "match sequence encoders" in forAll { (xs: Vector[Int]) =>
+    assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+  }
 }
