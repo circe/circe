@@ -57,6 +57,7 @@ lazy val baseSettings = Seq(
       case _ => true
     }
   ),
+  coverageScalacPluginVersion := "1.3.0",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += config("compile-time").hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compile-time")),
