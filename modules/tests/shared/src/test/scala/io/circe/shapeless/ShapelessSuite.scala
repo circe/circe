@@ -4,7 +4,8 @@ import io.circe.{ Decoder, Encoder }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import shapeless.{ ::, HNil, Nat, Sized }
+import shapeless.{ :+:, ::, CNil, HNil, Nat, Sized, Witness }
+import shapeless.labelled.FieldType
 import shapeless.record.Record
 import shapeless.syntax.singleton._
 
@@ -16,6 +17,15 @@ class ShapelessSuite extends CirceSuite {
   checkLaws(
     """Codec[Record.`"a" -> Char, "b" -> Int, "c" -> Char`.T]""",
     CodecTests[Record.`"a" -> Char, "b" -> Int, "c" -> Char`.T].codec
+  )
+  checkLaws("Codec[Int :+: String :+: List[Char] :+: CNil]", CodecTests[String :+: Int :+: List[Char] :+: CNil].codec)
+  checkLaws(
+    "Codec[FieldType[Witness.`'foo`.T, Int] :+: FieldType[Witness.`'bar`.T, String] :+: CNil]",
+    CodecTests[FieldType[Witness.`'foo`.T, Int] :+: FieldType[Witness.`'bar`.T, String] :+: CNil].codec
+  )
+  checkLaws(
+    """Codec[FieldType[Witness.`"a"`.T, Int] :+: FieldType[Witness.`"b"`.T, String] :+: CNil]""",
+    CodecTests[FieldType[Witness.`"a"`.T, Int] :+: FieldType[Witness.`"b"`.T, String] :+: CNil].codec
   )
   checkLaws("Codec[Sized[List[Int], Nat._4]]", CodecTests[Sized[List[Int], Nat._4]].codec)
   checkLaws("Codec[Sized[Vector[String], Nat._10]]", CodecTests[Sized[Vector[String], Nat._10]].codec)

@@ -4,7 +4,21 @@ import cats.Eq
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable
-import shapeless.{ ::, AdditiveCollection, Generic, HList, HNil, IsTuple, Nat, Sized }
+import shapeless.{
+  :+:,
+  ::,
+  AdditiveCollection,
+  CNil,
+  Coproduct,
+  Generic,
+  HList,
+  HNil,
+  Inl,
+  Inr,
+  IsTuple,
+  Nat,
+  Sized
+}
 import shapeless.labelled.{ field, FieldType }
 import shapeless.ops.nat.ToInt
 
@@ -25,10 +39,18 @@ trait MissingInstances {
   implicit lazy val arbitrarySymbol: Arbitrary[Symbol] = Arbitrary(Arbitrary.arbitrary[String].map(Symbol(_)))
 
   implicit lazy val eqHNil: Eq[HNil] = Eq.instance((_, _) => true)
+  implicit lazy val eqCNil: Eq[CNil] = Eq.instance((_, _) => false)
 
   implicit def eqHCons[H, T <: HList](implicit eqH: Eq[H], eqT: Eq[T]): Eq[H :: T] =
     Eq.instance[H :: T] {
       case (h1 :: t1, h2 :: t2) => eqH.eqv(h1, h2) && eqT.eqv(t1, t2)
+    }
+
+  implicit def eqCCons[L, R <: Coproduct](implicit eqL: Eq[L], eqR: Eq[R]): Eq[L :+: R] =
+    Eq.instance[L :+: R] {
+      case (Inl(l1), Inl(l2)) => eqL.eqv(l1, l2)
+      case (Inr(r1), Inr(r2)) => eqR.eqv(r1, r2)
+      case (_, _) => false
     }
 
   implicit def eqTuple[P: IsTuple, L <: HList](implicit
@@ -45,6 +67,19 @@ trait MissingInstances {
         t <- T.arbitrary
       } yield h :: t
     )
+
+  implicit def arbitrarySingletonCoproduct[L](implicit L: Arbitrary[L]): Arbitrary[L :+: CNil] =
+    Arbitrary(L.arbitrary.map(Inl(_)))
+
+  implicit def arbitraryCoproduct[L, R <: Coproduct](implicit
+    L: Arbitrary[L],
+    R: Arbitrary[R]
+  ): Arbitrary[L :+: R] = Arbitrary(
+    Arbitrary.arbitrary[Either[L, R]].map {
+      case Left(l) => Inl(l)
+      case Right(r) => Inr(r)
+    }
+  )
 
   implicit def eqFieldType[K, V](implicit V: Eq[V]): Eq[FieldType[K, V]] = V.on(identity)
 

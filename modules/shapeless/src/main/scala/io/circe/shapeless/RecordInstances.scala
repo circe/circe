@@ -58,36 +58,35 @@ trait RecordInstances extends LowPriorityRecordInstances {
 
 private[shapeless] trait LowPriorityRecordInstances extends HListInstances {
   implicit final def decodeRecordCons[K, W >: K, V, T <: HList](implicit
-    widenK: Widen.Aux[K, W],
     witK: Witness.Aux[K],
+    widenK: Widen.Aux[K, W],
     eqW: Eq[W],
     decodeW: KeyDecoder[W],
     decodeV: Decoder[V],
     decodeT: Decoder[T]
   ): Decoder[FieldType[K, V] :: T] = new Decoder[FieldType[K, V] :: T] {
     private[this] val widened = widenK(witK.value)
+    private[this] val isK: String => Boolean = decodeW(_).exists(eqW.eqv(widened, _))
 
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :: T] = Decoder.resultInstance.map2(
-        c.fields.flatMap(
-          _.find(key => decodeW(key).exists(w => eqW.eqv(w, widened)))
-        ).fold[Decoder.Result[String]](Left(DecodingFailure("Record", c.history)))(Right(_)).right.flatMap(c.get[V](_)),
+        c.fields.flatMap(_.find(isK)).fold[Decoder.Result[String]](
+          Left(DecodingFailure("Record", c.history))
+        )(Right(_)).right.flatMap(c.get[V](_)),
       decodeT(c)
     )((h, t) => field[K](h) :: t)
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[FieldType[K, V] :: T] =
       AccumulatingDecoder.resultInstance.map2(
-        c.fields.flatMap(
-          _.find(key => decodeW(key).exists(w => eqW.eqv(w, widened)))
-        ).fold[AccumulatingDecoder.Result[String]](
+        c.fields.flatMap(_.find(isK)).fold[AccumulatingDecoder.Result[String]](
           Validated.invalidNel(DecodingFailure("Record", c.history))
-        )(Validated.valid(_)).andThen(k => decodeV.tryDecodeAccumulating(c.downField(k))),
+        )(Validated.valid).andThen(k => decodeV.tryDecodeAccumulating(c.downField(k))),
         decodeT.decodeAccumulating(c)
       )((h, t) => field[K](h) :: t)
   }
 
   implicit final def encodeRecordCons[K, W >: K, V, T <: HList](implicit
-    widenK: Widen.Aux[K, W],
     witK: Witness.Aux[K],
+    widenK: Widen.Aux[K, W],
     encodeW: KeyEncoder[W],
     encodeV: Encoder[V],
     encodeT: ObjectEncoder[T]
