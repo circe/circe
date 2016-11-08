@@ -294,4 +294,16 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   }
 
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
+
+  "decodeSet" should "match sequence decoders" in forAll { (xs: List[Int]) =>
+    assert(Decoder.decodeSet[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toSet).decodeJson(xs.asJson))
+  }
+
+  "decodeList" should "match sequence decoders" in forAll { (xs: List[Int]) =>
+    assert(Decoder.decodeList[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toList).decodeJson(xs.asJson))
+  }
+
+  "decodeVector" should "match sequence decoders" in forAll { (xs: List[Int]) =>
+    assert(Decoder.decodeVector[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toVector).decodeJson(xs.asJson))
+  }
 }
