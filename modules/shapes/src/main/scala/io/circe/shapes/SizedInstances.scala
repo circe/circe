@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import cats.data.Validated
 import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, Encoder, HCursor }

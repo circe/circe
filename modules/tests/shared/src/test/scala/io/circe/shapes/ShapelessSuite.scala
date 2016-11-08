@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import io.circe.{ Decoder, Encoder }
 import io.circe.literal._

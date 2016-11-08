@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json }
 import shapeless.{ :+:, CNil, Coproduct, Inl, Inr }

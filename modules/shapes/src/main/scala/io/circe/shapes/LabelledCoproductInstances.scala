@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import cats.Eq
 import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder }
@@ -30,7 +30,7 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
   }
 }
 
-private[shapeless] trait LowPriorityLabelledCoproductInstances extends CoproductInstances {
+private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductInstances {
   implicit final def decodeLabelledCCons[K, W >: K, V, R <: Coproduct](implicit
     witK: Witness.Aux[K],
     widenK: Widen.Aux[K, W],
