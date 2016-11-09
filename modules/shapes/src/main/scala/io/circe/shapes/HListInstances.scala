@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, HCursor, Json, JsonObject, ObjectEncoder }
 import shapeless.{ ::, HList, HNil }
@@ -13,7 +13,7 @@ trait HListInstances extends LowPriorityHListInstances {
     }
 }
 
-private[shapeless] trait LowPriorityHListInstances {
+private[shapes] trait LowPriorityHListInstances {
   implicit final val decodeHNil: Decoder[HNil] = Decoder.const(HNil)
   implicit final val encodeHNil: ObjectEncoder[HNil] = new ObjectEncoder[HNil] {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty

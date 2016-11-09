@@ -1,4 +1,4 @@
-package io.circe.shapeless
+package io.circe.shapes
 
 import cats.Eq
 import cats.data.Validated
@@ -56,7 +56,7 @@ trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
   }
 }
 
-private[shapeless] trait LowPriorityLabelledHListInstances extends HListInstances {
+private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
   implicit final def decodeLabelledHCons[K, W >: K, V, T <: HList](implicit
     witK: Witness.Aux[K],
     widenK: Widen.Aux[K, W],
