@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import com.typesafe.sbt.SbtSite.SiteKeys._
 
-val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-RC2")
+val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0")
 
 lazy val buildSettings = Seq(
   organization := "io.circe",
@@ -23,14 +23,14 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.8.0"
-lazy val jawnVersion = "0.10.2"
+lazy val catsVersion = "0.8.1"
+lazy val jawnVersion = "0.10.3"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.0"
 
 lazy val scalaTestVersion = "3.0.0"
-lazy val scalaCheckVersion = "1.13.3"
-lazy val disciplineVersion = "0.7.1"
+lazy val scalaCheckVersion = "1.13.4"
+lazy val disciplineVersion = "0.7.2"
 
 lazy val previousCirceVersion = "0.5.2"
 
@@ -57,6 +57,7 @@ lazy val baseSettings = Seq(
       case _ => true
     }
   ),
+  coverageScalacPluginVersion := "1.3.0",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += config("compile-time").hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compile-time")),
@@ -510,7 +511,7 @@ lazy val streaming = project.in(file("modules/streaming"))
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.0",
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1",
     mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
@@ -568,8 +569,8 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
   .settings(allSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.1",
-      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.1" % "test",
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.2",
+      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.2" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
