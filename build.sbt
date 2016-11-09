@@ -23,7 +23,7 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-lazy val catsVersion = "0.8.0"
+lazy val catsVersion = "0.8.1"
 lazy val jawnVersion = "0.10.3"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.0"
@@ -511,7 +511,7 @@ lazy val streaming = project.in(file("modules/streaming"))
   )
   .settings(allSettings)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.0",
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1",
     mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
