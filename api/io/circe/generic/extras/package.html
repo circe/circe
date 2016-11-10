@@ -1,0 +1,274 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>extras - io.circe.generic.extras</title>
+          <meta name="description" content="extras - io.circe.generic.extras" />
+          <meta name="keywords" content="extras io.circe.generic.extras" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'io.circe.generic.extras.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="io">io</a>.<a href="../../package.html" class="extype" name="io.circe">circe</a>.<a href="../package.html" class="extype" name="io.circe.generic">generic</a></p>
+        <h1>extras</h1><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">extras</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="io.circe.generic.extras.ConfigurableDeriver" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigurableDeriverextendsDerivationMacros[io.circe.generic.extras.decoding.ReprDecoder,io.circe.generic.extras.encoding.ReprObjectEncoder,io.circe.generic.extras.decoding.ConfiguredDecoder,io.circe.generic.extras.encoding.ConfiguredObjectEncoder]"></a>
+      <a id="ConfigurableDeriver:ConfigurableDeriver"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfigurableDeriver.html"><span class="name">ConfigurableDeriver</span></a><span class="result"> extends <a href="../util/macros/DerivationMacros.html" class="extype" name="io.circe.generic.util.macros.DerivationMacros">DerivationMacros</a>[<a href="decoding/ReprDecoder.html" class="extype" name="io.circe.generic.extras.decoding.ReprDecoder">ReprDecoder</a>, <a href="encoding/ReprObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>, <a href="decoding/ConfiguredDecoder.html" class="extype" name="io.circe.generic.extras.decoding.ConfiguredDecoder">ConfiguredDecoder</a>, <a href="encoding/ConfiguredObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ConfiguredObjectEncoder">ConfiguredObjectEncoder</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@ConfigurableDeriverextendsDerivationMacros[io.circe.generic.extras.decoding.ReprDecoder,io.circe.generic.extras.encoding.ReprObjectEncoder,io.circe.generic.extras.decoding.ConfiguredDecoder,io.circe.generic.extras.encoding.ConfiguredObjectEncoder]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.extras.Configuration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigurationextendsProductwithSerializable"></a>
+      <a id="Configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Configuration.html"><span class="name">Configuration</span></a><span class="params">(<span name="transformKeys">transformKeys: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="useDefaults">useDefaults: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@ConfigurationextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.extras.ConfiguredJsonCodec" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ConfiguredJsonCodecextendsAnnotationwithStaticAnnotation"></a>
+      <a id="ConfiguredJsonCodec:ConfiguredJsonCodec"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfiguredJsonCodec.html"><span class="name">ConfiguredJsonCodec</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.annotation.Annotation" class="extype" target="_top">Annotation</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.annotation.StaticAnnotation" class="extype" target="_top">StaticAnnotation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@ConfiguredJsonCodecextendsAnnotationwithStaticAnnotation" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@compileTimeOnly</span><span class="args">(<span>
+      
+      <span class="defval" name="&quot;macro annotation could not be expanded (the most common reason for that is that you need to enable the macro paradise plugin; another possibility is that you try to use macro annotation in the same compilation run that defines it)&quot;">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="io.circe.generic.extras.Configuration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Configuration"></a>
+      <a id="Configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Configuration$.html"><span class="name">Configuration</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@Configuration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.extras.auto" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="auto"></a>
+      <a id="auto:auto"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="auto$.html"><span class="name">auto</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@auto" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Fully automatic configurable codec derivation.</p><div class="fullcomment"><div class="comment cmt"><p>Fully automatic configurable codec derivation.</p><p>Importing the contents of this object provides <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../../Encoder.html" class="extype" name="io.circe.Encoder">io.circe.Encoder</a>
+instances for case classes (if all members have instances), &quot;incomplete&quot; case classes, sealed
+trait hierarchies, etc.
+</p></div></div>
+    </li><li name="io.circe.generic.extras.decoding" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="decoding"></a>
+      <a id="decoding:decoding"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="decoding/package.html"><span class="name">decoding</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@decoding" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.extras.encoding" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="encoding"></a>
+      <a id="encoding:encoding"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="encoding/package.html"><span class="name">encoding</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@encoding" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="io.circe.generic.extras.semiauto" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="semiauto"></a>
+      <a id="semiauto:semiauto"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="semiauto$.html"><span class="name">semiauto</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@semiauto" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Semi-automatic codec derivation.</p><div class="fullcomment"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">io.circe.ObjectEncoder</a>
+instances for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
+
+<span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
+
+<span class="kw">object</span> Foo {
+  <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+}</pre></div></div>
+    </li><li name="io.circe.generic.extras.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="util"></a>
+      <a id="util:util"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="util/package.html"><span class="name">util</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#io.circe.generic.extras.package@util" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

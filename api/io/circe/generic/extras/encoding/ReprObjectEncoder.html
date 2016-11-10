@@ -1,201 +1,44 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>ReprObjectEncoder - io.circe.generic.extras.encoding.ReprObjectEncoder</title>
+          <meta name="description" content="ReprObjectEncoder - io.circe.generic.extras.encoding.ReprObjectEncoder" />
+          <meta name="keywords" content="ReprObjectEncoder io.circe.generic.extras.encoding.ReprObjectEncoder" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery.panzoom.min.js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery.mousewheel.min.js"></script>
-      <script type="text/javascript" src="../../../../../lib/index.js"></script>
-      <script type="text/javascript" src="../../../../../index.js"></script>
-      <script type="text/javascript" src="../../../../../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
       
       <script type="text/javascript">
-        /* this variable can be used by the JS to determine the path to the root document */
-        var toRoot = '../../../../../';
-      </script>
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'io.circe.generic.extras.encoding.ReprObjectEncoder';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body>
-      <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
-        <span class="close-results"><span class="left">&lt;</span> Back</span>
-        <div id="textfilter">
-          <span class="input">
-            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
-            <i class="clear material-icons"></i>
-            <i id="search-icon" class="material-icons"></i>
-          </span>
-        </div>
-    </div>
-      <div id="search-results">
-        <div id="search-progress">
-          <div id="progress-fill"></div>
-        </div>
-        <div id="results-content">
-          <div id="entity-results"></div>
-          <div id="member-results"></div>
-        </div>
-      </div>
-      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
-        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
-          <div id="subpackage-spacer">
-            <div id="packages">
-              <h1>Packages</h1>
-              <ul>
-                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="_root_"></a><a id="root:_root_"></a>
-      <span class="permalink">
-      <a href="index.html#_root_" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../../../../index.html">
-              <span class="name">root</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="io"></a><a id="io:io"></a>
-      <span class="permalink">
-      <a href="index.html#io" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../../../index.html">
-              <span class="name">io</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="io.circe" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circe"></a><a id="circe:circe"></a>
-      <span class="permalink">
-      <a href="../io/index.html#circe" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../../index.html">
-              <span class="name">circe</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../index.html" class="extype" name="io">io</a></dd></dl></div>
-    </li><li name="io.circe.generic" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="generic"></a><a id="generic:generic"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#generic" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../index.html">
-              <span class="name">generic</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.generic.extras" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="extras"></a><a id="extras:extras"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/generic/index.html#extras" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../index.html">
-              <span class="name">extras</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="io.circe.generic">generic</a></dd></dl></div>
-    </li><li name="io.circe.generic.extras.encoding" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encoding"></a><a id="encoding:encoding"></a>
-      <span class="permalink">
-      <a href="../../../../io/circe/generic/extras/index.html#encoding" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="index.html">
-              <span class="name">encoding</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe.generic.extras">extras</a></dd></dl></div>
-    </li><li class="current-entities indented5">
-                        <a class="object" href="ConfiguredObjectEncoder$.html" title=""></a>
-                        <a class="class" href="ConfiguredObjectEncoder.html" title=""></a>
-                        <a href="ConfiguredObjectEncoder.html" title="">
-                          ConfiguredObjectEncoder
-                        </a>
-                      </li><li class="current-entities indented5">
-                        <a class="object" href="EnumerationEncoder$.html" title=""></a>
-                        <a class="class" href="EnumerationEncoder.html" title=""></a>
-                        <a href="EnumerationEncoder.html" title="">
-                          EnumerationEncoder
-                        </a>
-                      </li><li class="current-entities indented5">
-                        <a class="object" href="ReprObjectEncoder$.html" title=""></a>
-                        <a class="class" href="" title="An encoder for a generic representation of a case class or ADT."></a>
-                        <a href="" title="An encoder for a generic representation of a case class or ADT.">
-                          ReprObjectEncoder
-                        </a>
-                      </li>
-              </ul>
-            </div>
-          </div>
-          <div id="content">
-            <body class="class type">
+        <body class="type">
       <div id="definition">
-        <a href="ReprObjectEncoder$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
-        <p id="owner"><a href="../../../../index.html" class="extype" name="io">io</a>.<a href="../../../index.html" class="extype" name="io.circe">circe</a>.<a href="../../index.html" class="extype" name="io.circe.generic">generic</a>.<a href="../index.html" class="extype" name="io.circe.generic.extras">extras</a>.<a href="index.html" class="extype" name="io.circe.generic.extras.encoding">encoding</a></p>
-        <h1><a href="ReprObjectEncoder$.html" title="See companion object">ReprObjectEncoder</a><span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html" title="Permalink">
-        <i class="material-icons"></i>
+        <a href="ReprObjectEncoder$.html" title="See companion object"><img alt="Class/Object" src="../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="io">io</a>.<a href="../../../package.html" class="extype" name="io.circe">circe</a>.<a href="../../package.html" class="extype" name="io.circe.generic">generic</a>.<a href="../package.html" class="extype" name="io.circe.generic.extras">extras</a>.<a href="package.html" class="extype" name="io.circe.generic.extras.encoding">encoding</a></p>
+        <h1><a href="ReprObjectEncoder$.html" title="See companion object">ReprObjectEncoder</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="ReprObjectEncoder$.html" title="See companion object">object ReprObjectEncoder</a>
+            | <a href="package.html" class="extype" name="io.circe.generic.extras.encoding">package encoding</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
-    </span></h1>
-        <h3><span class="morelinks"><div>
-            Companion <a href="ReprObjectEncoder$.html" title="See companion object">object ReprObjectEncoder</a>
-          </div></span></h3>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -207,71 +50,56 @@
         <span class="name">ReprObjectEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
       </h4>
-
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An encoder for a generic representation of a case class or ADT.</p><p>Note that users typically will not work with instances of this class.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/modules/generic-extras/src/main/scala/io/circe/generic/extras/encoding/ReprObjectEncoder.scala" target="_blank">ReprObjectEncoder.scala</a></dd></dl><div class="toggleContainer block">
-          <span class="toggle">
-            Linear Supertypes
-          </span>
-          <div class="superTypes hiddenContent"><a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="../../../RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="../../../RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
       <div id="mbrsel">
-        <div class="toggle"></div>
-        <div id="memberfilter">
-          <i class="material-icons arrow"></i>
-          <span class="input">
-            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
-          </span>
-          <i class="clear material-icons"></i>
-        </div>
-        <div id="filterby">
-          <div id="order">
-            <span class="filtertype">Ordering</span>
-            <ol>
-              
-              <li class="alpha in"><span>Alphabetic</span></li>
-              <li class="inherit out"><span>By Inheritance</span></li>
-            </ol>
-          </div>
-          <div class="ancestors">
-                  <span class="filtertype">Inherited<br />
-                  </span>
-                  <ol id="linearization">
-                    <li class="in" name="io.circe.generic.extras.encoding.ReprObjectEncoder"><span>ReprObjectEncoder</span></li><li class="in" name="io.circe.ObjectEncoder"><span>ObjectEncoder</span></li><li class="in" name="io.circe.RootEncoder"><span>RootEncoder</span></li><li class="in" name="io.circe.Encoder"><span>Encoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
-                  </ol>
-                </div><div class="ancestors">
-                  <span class="filtertype">Implicitly<br />
-                  </span>
-                  <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
-                  </ol>
-                </div><div class="ancestors">
-              <span class="filtertype"></span>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
               <ol>
-                <li class="hideall out"><span>Hide All</span></li>
-                <li class="showall in"><span>Show All</span></li>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
               </ol>
             </div>
-          <div id="visbl">
-              <span class="filtertype">Visibility</span>
-              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
-            </div>
-        </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="io.circe.generic.extras.encoding.ReprObjectEncoder"><span>ReprObjectEncoder</span></li><li class="in" name="io.circe.ObjectEncoder"><span>ObjectEncoder</span></li><li class="in" name="io.circe.RootEncoder"><span>RootEncoder</span></li><li class="in" name="io.circe.Encoder"><span>Encoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+                <span class="filtertype">Implicitly<br />
+                </span>
+                <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
       </div>
 
       <div id="template">
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():io.circe.generic.extras.encoding.ReprObjectEncoder[A]"></a><a id="&lt;init&gt;:ReprObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#&lt;init&gt;():io.circe.generic.extras.encoding.ReprObjectEncoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+              <ol><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():io.circe.generic.extras.encoding.ReprObjectEncoder[A]"></a>
+      <a id="&lt;init&gt;:ReprObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
@@ -279,76 +107,79 @@
       <span class="symbol">
         <span class="name">ReprObjectEncoder</span><span class="params">()</span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@&lt;init&gt;():io.circe.generic.extras.encoding.ReprObjectEncoder[A]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
 
         
 
-        <div class="values members">
+        <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#configuredEncodeObject" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="configuredEncodeObject(a:A)(transformKeys:String=&gt;String,discriminator:Option[String]):io.circe.JsonObject"></a><a id="configuredEncodeObject(A)((String)⇒String,Option[String]):JsonObject"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#configuredEncodeObject(a:A)(transformKeys:String=&gt;String,discriminator:Option[String]):io.circe.JsonObject" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+              <ol><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#configuredEncodeObject" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="configuredEncodeObject(a:A)(transformKeys:String=&gt;String,discriminator:Option[String]):io.circe.JsonObject"></a>
+      <a id="configuredEncodeObject(A)((String)⇒String,Option[String]):JsonObject"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configuredEncodeObject</span><span class="params">(<span name="a">a: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span></span>)</span><span class="params">(<span name="transformKeys">transformKeys: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+        <span class="name">configuredEncodeObject</span><span class="params">(<span name="a">a: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span></span>)</span><span class="params">(<span name="transformKeys">transformKeys: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@configuredEncodeObject(a:A)(transformKeys:String=&gt;String,discriminator:Option[String]):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
 
-        <div class="values members">
+        <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
-              <ol>
-                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#!=(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html###():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="##():Int"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="+(other:String):String"></a><a id="+(String):String"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#+(other:String):String" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(other:String):String"></a>
+      <a id="+(String):String"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -356,19 +187,20 @@
       <span class="symbol">
         <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@+(other:String):String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
-    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="-&gt;[B](y:B):(A,B)"></a><a id="-&gt;[B](B):(ReprObjectEncoder[A],B)"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#-&gt;[B](y:B):(A,B)" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-&gt;[B](y:B):(A,B)"></a>
+      <a id="-&gt;[B](B):(ReprObjectEncoder[A],B)"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -376,8 +208,12 @@
       <span class="symbol">
         <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
             
@@ -385,45 +221,44 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#==(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#addDiscriminator" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="addDiscriminator[B](encode:io.circe.Encoder[B],value:B,name:String,discriminator:Option[String]):io.circe.JsonObject"></a><a id="addDiscriminator[B](Encoder[B],B,String,Option[String]):JsonObject"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#addDiscriminator[B](encode:io.circe.Encoder[B],value:B,name:String,discriminator:Option[String]):io.circe.JsonObject" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#addDiscriminator" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addDiscriminator[B](encode:io.circe.Encoder[B],value:B,name:String,discriminator:Option[String]):io.circe.JsonObject"></a>
+      <a id="addDiscriminator[B](Encoder[B],B,String,Option[String]):JsonObject"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addDiscriminator</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="encode">encode: <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.addDiscriminator.B">B</span>]</span>, <span name="value">value: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.addDiscriminator.B">B</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
+        <span class="name">addDiscriminator</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="encode">encode: <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.addDiscriminator.B">B</span>]</span>, <span name="value">value: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.addDiscriminator.B">B</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
-    </li><li name="io.circe.ObjectEncoder#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(a:A):io.circe.Json"></a><a id="apply(A):Json"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#apply(a:A):io.circe.Json" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@addDiscriminator[B](encode:io.circe.Encoder[B],value:B,name:String,discriminator:Option[String]):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
+    </li><li name="io.circe.ObjectEncoder#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(a:A):io.circe.Json"></a>
+      <a id="apply(A):Json"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -431,16 +266,17 @@
       <span class="symbol">
         <span class="name">apply</span><span class="params">(<span name="a">a: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span></span>)</span><span class="result">: <a href="../../../Json.html" class="extype" name="io.circe.Json">Json</a></span>
       </span>
-      
-      <p class="shortcomment cmt">Convert a value to JSON.</p><div class="fullcomment"><div class="comment cmt"><p>Convert a value to JSON.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a> → <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a></dd></dl></div>
-    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asInstanceOf[T0]:T0"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#asInstanceOf[T0]:T0" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@apply(a:A):io.circe.Json" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <p class="shortcomment cmt">Convert a value to JSON.</p><div class="fullcomment"><div class="comment cmt"><p>Convert a value to JSON.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a> → <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -448,23 +284,28 @@
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#clone():Object" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -472,13 +313,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.Encoder#contramap" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="contramap[B](f:B=&gt;A):io.circe.Encoder[B]"></a><a id="contramap[B]((B)⇒A):Encoder[B]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#contramap[B](f:B=&gt;A):io.circe.Encoder[B]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.Encoder#contramap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contramap[B](f:B=&gt;A):io.circe.Encoder[B]"></a>
+      <a id="contramap[B]((B)⇒A):Encoder[B]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -486,18 +324,19 @@
       <span class="symbol">
         <span class="name">contramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="io.circe.Encoder.contramap.B">B</span>) ⇒ <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span></span>)</span><span class="result">: <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Encoder.contramap.B">B</span>]</span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@contramap[B](f:B=&gt;A):io.circe.Encoder[B]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Create a new [Encoder]] by applying a function to a value of type <code>B</code> before encoding as an
 <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new [Encoder]] by applying a function to a value of type <code>B</code> before encoding as an
 <code>A</code>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a></dd></dl></div>
-    </li><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#encodeObject" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeObject(a:A):io.circe.JsonObject"></a><a id="encodeObject(A):JsonObject"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#encodeObject(a:A):io.circe.JsonObject" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.generic.extras.encoding.ReprObjectEncoder#encodeObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="encodeObject(a:A):io.circe.JsonObject"></a>
+      <a id="encodeObject(A):JsonObject"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -505,136 +344,147 @@
       <span class="symbol">
         <span class="name">encodeObject</span><span class="params">(<span name="a">a: <span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span></span>)</span><span class="result">: <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@encodeObject(a:A):io.circe.JsonObject" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Convert a value to a JSON object.</p><div class="fullcomment"><div class="comment cmt"><p>Convert a value to a JSON object.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a> → <a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a></dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((ReprObjectEncoder[A])⇒Boolean,⇒Any):ReprObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring((ReprObjectEncoder[A])⇒Boolean,⇒Any):ReprObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean):A"></a><a id="ensuring((ReprObjectEncoder[A])⇒Boolean):ReprObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#ensuring(cond:A=&gt;Boolean):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a>
+      <a id="ensuring((ReprObjectEncoder[A])⇒Boolean):ReprObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a><a id="ensuring(Boolean,⇒Any):ReprObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring(Boolean,⇒Any):ReprObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean):A"></a><a id="ensuring(Boolean):ReprObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#ensuring(cond:Boolean):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean):A"></a>
+      <a id="ensuring(Boolean):ReprObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#eq(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#equals(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#finalize():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -642,13 +492,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="formatted(fmtstr:String):String"></a><a id="formatted(String):String"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#formatted(fmtstr:String):String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="formatted(fmtstr:String):String"></a>
+      <a id="formatted(String):String"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -656,8 +503,12 @@
       <span class="symbol">
         <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@formatted(fmtstr:String):String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method StringFormat in scala.Predef.
             
@@ -665,13 +516,10 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#getClass():Class[_]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -679,47 +527,50 @@
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#hashCode():Int" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isInstanceOf[T0]:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#isInstanceOf[T0]:Boolean" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.Encoder#mapJson" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mapJson(f:io.circe.Json=&gt;io.circe.Json):io.circe.Encoder[A]"></a><a id="mapJson((Json)⇒Json):Encoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#mapJson(f:io.circe.Json=&gt;io.circe.Json):io.circe.Encoder[A]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.Encoder#mapJson" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mapJson(f:io.circe.Json=&gt;io.circe.Json):io.circe.Encoder[A]"></a>
+      <a id="mapJson((Json)⇒Json):Encoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -727,16 +578,17 @@
       <span class="symbol">
         <span class="name">mapJson</span><span class="params">(<span name="f">f: (<a href="../../../Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="../../../Json.html" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
-      <p class="shortcomment cmt">Create a new <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a> by applying a function to the output of this one.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a> by applying a function to the output of this one.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a></dd></dl></div>
-    </li><li name="io.circe.ObjectEncoder#mapJsonObject" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mapJsonObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.ObjectEncoder[A]"></a><a id="mapJsonObject((JsonObject)⇒JsonObject):ObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#mapJsonObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.ObjectEncoder[A]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@mapJson(f:io.circe.Json=&gt;io.circe.Json):io.circe.Encoder[A]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <p class="shortcomment cmt">Create a new <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a> by applying a function to the output of this one.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a> by applying a function to the output of this one.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a></dd></dl></div>
+    </li><li name="io.circe.ObjectEncoder#mapJsonObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mapJsonObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.ObjectEncoder[A]"></a>
+      <a id="mapJsonObject((JsonObject)⇒JsonObject):ObjectEncoder[A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -744,66 +596,70 @@
       <span class="symbol">
         <span class="name">mapJsonObject</span><span class="params">(<span name="f">f: (<a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <a href="../../../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a></span>)</span><span class="result">: <a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@mapJsonObject(f:io.circe.JsonObject=&gt;io.circe.JsonObject):io.circe.ObjectEncoder[A]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Create a new <a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a> by applying a function to the output of this
 one.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new <a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a> by applying a function to the output of this
 one.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a></dd></dl></div>
-    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#ne(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#notify():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#notifyAll():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -811,15 +667,16 @@ one.
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#toString():String" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -827,23 +684,28 @@ one.
       <span class="symbol">
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#wait():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -851,21 +713,22 @@ one.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -873,21 +736,22 @@ one.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#wait(x$1:Long):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -895,13 +759,10 @@ one.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="→[B](y:B):(A,B)"></a><a id="→[B](B):(ReprObjectEncoder[A],B)"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/encoding/ReprObjectEncoder.html#→[B](y:B):(A,B)" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(ReprObjectEncoder[A],B)"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -909,14 +770,17 @@ one.
       <span class="symbol">
         <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#io.circe.generic.extras.encoding.ReprObjectEncoder@→[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>] to
             <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
-    </li>
-              </ol>
+    </li></ol>
             </div>
 
         
@@ -932,13 +796,13 @@ one.
             </div><div class="parent" name="io.circe.Encoder">
               <h3>Inherited from <a href="../../../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder.A">A</span>]</h3>
             </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
@@ -971,9 +835,7 @@ one.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-    </body>
-          </div>
-        </div>
-      </div>
+
+
     </body>
       </html>

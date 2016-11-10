@@ -1,187 +1,42 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>JsonTraversalPath - io.circe.optics.JsonTraversalPath</title>
+          <meta name="description" content="JsonTraversalPath - io.circe.optics.JsonTraversalPath" />
+          <meta name="keywords" content="JsonTraversalPath io.circe.optics.JsonTraversalPath" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../lib/jquery.js"></script>
-      <script type="text/javascript" src="../../../lib/jquery.panzoom.min.js"></script>
-      <script type="text/javascript" src="../../../lib/jquery.mousewheel.min.js"></script>
-      <script type="text/javascript" src="../../../lib/index.js"></script>
-      <script type="text/javascript" src="../../../index.js"></script>
-      <script type="text/javascript" src="../../../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
       
       <script type="text/javascript">
-        /* this variable can be used by the JS to determine the path to the root document */
-        var toRoot = '../../../';
-      </script>
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'io.circe.optics.JsonTraversalPath';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body>
-      <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
-        <span class="close-results"><span class="left">&lt;</span> Back</span>
-        <div id="textfilter">
-          <span class="input">
-            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
-            <i class="clear material-icons"></i>
-            <i id="search-icon" class="material-icons"></i>
-          </span>
-        </div>
-    </div>
-      <div id="search-results">
-        <div id="search-progress">
-          <div id="progress-fill"></div>
-        </div>
-        <div id="results-content">
-          <div id="entity-results"></div>
-          <div id="member-results"></div>
-        </div>
-      </div>
-      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
-        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
-          <div id="subpackage-spacer">
-            <div id="packages">
-              <h1>Packages</h1>
-              <ul>
-                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="_root_"></a><a id="root:_root_"></a>
-      <span class="permalink">
-      <a href="index.html#_root_" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../../index.html">
-              <span class="name">root</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="io"></a><a id="io:io"></a>
-      <span class="permalink">
-      <a href="index.html#io" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../../index.html">
-              <span class="name">io</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="io.circe" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circe"></a><a id="circe:circe"></a>
-      <span class="permalink">
-      <a href="../io/index.html#circe" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../index.html">
-              <span class="name">circe</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="io">io</a></dd></dl></div>
-    </li><li name="io.circe.optics" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="optics"></a><a id="optics:optics"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#optics" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="index.html">
-              <span class="name">optics</span>
-            </a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="trait" href="CatsConversions.html" title=""></a>
-                        <a href="CatsConversions.html" title="">
-                          CatsConversions
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="JsonNumberOptics$.html" title=""></a>
-                        <a class="trait" href="JsonNumberOptics.html" title="Optics instances for io.circe.JsonObject."></a>
-                        <a href="JsonNumberOptics.html" title="Optics instances for io.circe.JsonObject.">
-                          JsonNumberOptics
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="JsonObjectOptics$.html" title=""></a>
-                        <a class="trait" href="JsonObjectOptics.html" title="Optics instances for io.circe.JsonObject."></a>
-                        <a href="JsonObjectOptics.html" title="Optics instances for io.circe.JsonObject.">
-                          JsonObjectOptics
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="JsonOptics$.html" title=""></a>
-                        <a class="trait" href="JsonOptics.html" title="Optics instances for io.circe.Json."></a>
-                        <a href="JsonOptics.html" title="Optics instances for io.circe.Json.">
-                          JsonOptics
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <a class="object" href="JsonPath$.html" title=""></a>
-                        <a class="class" href="JsonPath.html" title=""></a>
-                        <a href="JsonPath.html" title="">
-                          JsonPath
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="class" href="" title=""></a>
-                        <a href="" title="">
-                          JsonTraversalPath
-                        </a>
-                      </li><li class="current-entities indented3">
-                        <span class="separator"></span>
-                        <a class="object" href="all$.html" title=""></a>
-                        <a href="all$.html" title="">
-                          all
-                        </a>
-                      </li>
-              </ul>
-            </div>
-          </div>
-          <div id="content">
-            <body class="class type">
+        <body class="type">
       <div id="definition">
-        <div class="big-circle class">c</div>
-        <p id="owner"><a href="../../index.html" class="extype" name="io">io</a>.<a href="../index.html" class="extype" name="io.circe">circe</a>.<a href="index.html" class="extype" name="io.circe.optics">optics</a></p>
-        <h1>JsonTraversalPath<span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html" title="Permalink">
-        <i class="material-icons"></i>
+        <img alt="Class" src="../../../lib/class_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="io">io</a>.<a href="../package.html" class="extype" name="io.circe">circe</a>.<a href="package.html" class="extype" name="io.circe.optics">optics</a></p>
+        <h1>JsonTraversalPath</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="io.circe.optics">package optics</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
-    </span></h1>
-        <h3><span class="morelinks"></span></h3>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -190,73 +45,58 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">JsonTraversalPath</span><span class="params">(<span name="json">json: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <span class="name">JsonTraversalPath</span><span class="params">(<span name="json">json: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
-
       
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/modules/optics/src/main/scala/io/circe/optics/JsonPath.scala" target="_blank">JsonPath.scala</a></dd></dl><div class="toggleContainer block">
-          <span class="toggle">
-            Linear Supertypes
-          </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
       <div id="mbrsel">
-        <div class="toggle"></div>
-        <div id="memberfilter">
-          <i class="material-icons arrow"></i>
-          <span class="input">
-            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
-          </span>
-          <i class="clear material-icons"></i>
-        </div>
-        <div id="filterby">
-          <div id="order">
-            <span class="filtertype">Ordering</span>
-            <ol>
-              
-              <li class="alpha in"><span>Alphabetic</span></li>
-              <li class="inherit out"><span>By Inheritance</span></li>
-            </ol>
-          </div>
-          <div class="ancestors">
-                  <span class="filtertype">Inherited<br />
-                  </span>
-                  <ol id="linearization">
-                    <li class="in" name="io.circe.optics.JsonTraversalPath"><span>JsonTraversalPath</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.Dynamic"><span>Dynamic</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
-                  </ol>
-                </div><div class="ancestors">
-                  <span class="filtertype">Implicitly<br />
-                  </span>
-                  <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
-                  </ol>
-                </div><div class="ancestors">
-              <span class="filtertype"></span>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
               <ol>
-                <li class="hideall out"><span>Hide All</span></li>
-                <li class="showall in"><span>Show All</span></li>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
               </ol>
             </div>
-          <div id="visbl">
-              <span class="filtertype">Visibility</span>
-              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
-            </div>
-        </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="io.circe.optics.JsonTraversalPath"><span>JsonTraversalPath</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.Dynamic"><span>Dynamic</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+                <span class="filtertype">Implicitly<br />
+                </span>
+                <ol id="implicits"> <li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
       </div>
 
       <div id="template">
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="io.circe.optics.JsonTraversalPath#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(json:monocle.Traversal[io.circe.Json,io.circe.Json]):io.circe.optics.JsonTraversalPath"></a><a id="&lt;init&gt;:JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#&lt;init&gt;(json:monocle.Traversal[io.circe.Json,io.circe.Json]):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+              <ol><li name="io.circe.optics.JsonTraversalPath#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(json:monocle.Traversal[io.circe.Json,io.circe.Json]):io.circe.optics.JsonTraversalPath"></a>
+      <a id="&lt;init&gt;:JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
@@ -264,7 +104,11 @@
       <span class="symbol">
         <span class="name">JsonTraversalPath</span><span class="params">(<span name="json">json: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@&lt;init&gt;(json:monocle.Traversal[io.circe.Json,io.circe.Json]):io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -273,48 +117,46 @@
 
         
 
-        <div class="values members">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol>
-                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#!=(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html###():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="##():Int"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="+(other:String):String"></a><a id="+(String):String"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#+(other:String):String" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@##():Int" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Predef.any2stringadd#+" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="+(other:String):String"></a>
+      <a id="+(String):String"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -322,19 +164,20 @@
       <span class="symbol">
         <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@+(other:String):String" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
-    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="-&gt;[B](y:B):(A,B)"></a><a id="-&gt;[B](B):(JsonTraversalPath,B)"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#-&gt;[B](y:B):(A,B)" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="-&gt;[B](y:B):(A,B)"></a>
+      <a id="-&gt;[B](B):(JsonTraversalPath,B)"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -342,8 +185,12 @@
       <span class="symbol">
         <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@-&gt;[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method ArrowAssoc in scala.Predef.
             
@@ -351,29 +198,27 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#==(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#arr" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="arr:monocle.Traversal[io.circe.Json,List[io.circe.Json]]"></a><a id="arr:Traversal[Json,List[Json]]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#arr:monocle.Traversal[io.circe.Json,List[io.circe.Json]]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="io.circe.optics.JsonTraversalPath#arr" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="arr:monocle.Traversal[io.circe.Json,List[io.circe.Json]]"></a>
+      <a id="arr:Traversal[Json,List[Json]]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -381,31 +226,33 @@
       <span class="symbol">
         <span class="name">arr</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="scala.List">List</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#arrFilter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="arrFilter((Int)⇒Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@arr:monocle.Traversal[io.circe.Json,List[io.circe.Json]]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#arrFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a>
+      <a id="arrFilter((Int)⇒Boolean):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">arrFilter</span><span class="params">(<span name="p">p: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="name">arrFilter</span><span class="params">(<span name="p">p: (<a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#as" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="as[A](implicitdecode:io.circe.Decoder[A],implicitencode:io.circe.Encoder[A]):monocle.Traversal[io.circe.Json,A]"></a><a id="as[A](Decoder[A],Encoder[A]):Traversal[Json,A]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#as[A](implicitdecode:io.circe.Decoder[A],implicitencode:io.circe.Encoder[A]):monocle.Traversal[io.circe.Json,A]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#as" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="as[A](implicitdecode:io.circe.Decoder[A],implicitencode:io.circe.Encoder[A]):monocle.Traversal[io.circe.Json,A]"></a>
+      <a id="as[A](Decoder[A],Encoder[A]):Traversal[Json,A]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -413,15 +260,16 @@
       <span class="symbol">
         <span class="name">as</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="decode">decode: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.optics.JsonTraversalPath.as.A">A</span>]</span>, <span name="encode">encode: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.optics.JsonTraversalPath.as.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="io.circe.optics.JsonTraversalPath.as.A">A</span>]</span>
       </span>
-      
-      
-    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asInstanceOf[T0]:T0"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#asInstanceOf[T0]:T0" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@as[A](implicitdecode:io.circe.Decoder[A],implicitencode:io.circe.Encoder[A]):monocle.Traversal[io.circe.Json,A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -429,31 +277,33 @@
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#at" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="at(field:String):monocle.Traversal[io.circe.Json,Option[io.circe.Json]]"></a><a id="at(String):Traversal[Json,Option[Json]]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#at(field:String):monocle.Traversal[io.circe.Json,Option[io.circe.Json]]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.optics.JsonTraversalPath#at" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="at(field:String):monocle.Traversal[io.circe.Json,Option[io.circe.Json]]"></a>
+      <a id="at(String):Traversal[Json,Option[Json]]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">at</span><span class="params">(<span name="field">field: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
+        <span class="name">at</span><span class="params">(<span name="field">field: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#bigDecimal" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="bigDecimal:monocle.Traversal[io.circe.Json,BigDecimal]"></a><a id="bigDecimal:Traversal[Json,BigDecimal]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#bigDecimal:monocle.Traversal[io.circe.Json,BigDecimal]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@at(field:String):monocle.Traversal[io.circe.Json,Option[io.circe.Json]]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#bigDecimal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bigDecimal:monocle.Traversal[io.circe.Json,BigDecimal]"></a>
+      <a id="bigDecimal:Traversal[Json,BigDecimal]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -461,15 +311,16 @@
       <span class="symbol">
         <span class="name">bigDecimal</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="scala.BigDecimal">BigDecimal</span>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#bigInt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="bigInt:monocle.Traversal[io.circe.Json,BigInt]"></a><a id="bigInt:Traversal[Json,BigInt]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#bigInt:monocle.Traversal[io.circe.Json,BigInt]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@bigDecimal:monocle.Traversal[io.circe.Json,BigDecimal]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#bigInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bigInt:monocle.Traversal[io.circe.Json,BigInt]"></a>
+      <a id="bigInt:Traversal[Json,BigInt]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -477,55 +328,62 @@
       <span class="symbol">
         <span class="name">bigInt</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="scala.BigInt">BigInt</span>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#boolean" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="boolean:monocle.Traversal[io.circe.Json,Boolean]"></a><a id="boolean:Traversal[Json,Boolean]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#boolean:monocle.Traversal[io.circe.Json,Boolean]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@bigInt:monocle.Traversal[io.circe.Json,BigInt]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#boolean" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="boolean:monocle.Traversal[io.circe.Json,Boolean]"></a>
+      <a id="boolean:Traversal[Json,Boolean]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">boolean</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+        <span class="name">boolean</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#byte" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="byte:monocle.Traversal[io.circe.Json,Byte]"></a><a id="byte:Traversal[Json,Byte]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#byte:monocle.Traversal[io.circe.Json,Byte]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@boolean:monocle.Traversal[io.circe.Json,Boolean]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#byte" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="byte:monocle.Traversal[io.circe.Json,Byte]"></a>
+      <a id="byte:Traversal[Json,Byte]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byte</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Byte" class="extype" target="_top">Byte</a>]</span>
+        <span class="name">byte</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Byte" class="extype" target="_top">Byte</a>]</span>
       </span>
-      
-      
-    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#clone():Object" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@byte:monocle.Traversal[io.circe.Json,Byte]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@clone():Object" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -533,29 +391,27 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#double" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="double:monocle.Traversal[io.circe.Json,Double]"></a><a id="double:Traversal[Json,Double]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#double:monocle.Traversal[io.circe.Json,Double]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.optics.JsonTraversalPath#double" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="double:monocle.Traversal[io.circe.Json,Double]"></a>
+      <a id="double:Traversal[Json,Double]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">double</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
+        <span class="name">double</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#each" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="each:io.circe.optics.JsonTraversalPath"></a><a id="each:JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#each:io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@double:monocle.Traversal[io.circe.Json,Double]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#each" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="each:io.circe.optics.JsonTraversalPath"></a>
+      <a id="each:JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -563,119 +419,129 @@
       <span class="symbol">
         <span class="name">each</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((JsonTraversalPath)⇒Boolean,⇒Any):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@each:io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring((JsonTraversalPath)⇒Boolean,⇒Any):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean):A"></a><a id="ensuring((JsonTraversalPath)⇒Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#ensuring(cond:A=&gt;Boolean):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a>
+      <a id="ensuring((JsonTraversalPath)⇒Boolean):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@ensuring(cond:A=&gt;Boolean):A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a><a id="ensuring(Boolean,⇒Any):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
+      <a id="ensuring(Boolean,⇒Any):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean):A"></a><a id="ensuring(Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#ensuring(cond:Boolean):A" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensuring(cond:Boolean):A"></a>
+      <a id="ensuring(Boolean):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@ensuring(cond:Boolean):A" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#eq(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="finalize():Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#finalize():Unit" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -683,13 +549,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="formatted(fmtstr:String):String"></a><a id="formatted(String):String"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#formatted(fmtstr:String):String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="formatted(fmtstr:String):String"></a>
+      <a id="formatted(String):String"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -697,8 +560,12 @@
       <span class="symbol">
         <span class="implicit">formatted</span><span class="params">(<span name="fmtstr">fmtstr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@formatted(fmtstr:String):String" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method StringFormat in scala.Predef.
             
@@ -706,13 +573,10 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#getClass():Class[_]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -720,63 +584,67 @@
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#index" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="index(i:Int):io.circe.optics.JsonTraversalPath"></a><a id="index(Int):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#index(i:Int):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.optics.JsonTraversalPath#index" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="index(i:Int):io.circe.optics.JsonTraversalPath"></a>
+      <a id="index(Int):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">index</span><span class="params">(<span name="i">i: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="name">index</span><span class="params">(<span name="i">i: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#int" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="int:monocle.Traversal[io.circe.Json,Int]"></a><a id="int:Traversal[Json,Int]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#int:monocle.Traversal[io.circe.Json,Int]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@index(i:Int):io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#int" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int:monocle.Traversal[io.circe.Json,Int]"></a>
+      <a id="int:Traversal[Json,Int]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">int</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
       </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@int:monocle.Traversal[io.circe.Json,Int]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       
-      
-    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#isInstanceOf[T0]:Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#json" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="json:monocle.Traversal[io.circe.Json,io.circe.Json]"></a><a id="json:Traversal[Json,Json]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#json:monocle.Traversal[io.circe.Json,io.circe.Json]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.optics.JsonTraversalPath#json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="json:monocle.Traversal[io.circe.Json,io.circe.Json]"></a>
+      <a id="json:Traversal[Json,Json]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
@@ -784,95 +652,101 @@
       <span class="symbol">
         <span class="name">json</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#long" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="long:monocle.Traversal[io.circe.Json,Long]"></a><a id="long:Traversal[Json,Long]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#long:monocle.Traversal[io.circe.Json,Long]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@json:monocle.Traversal[io.circe.Json,io.circe.Json]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#long" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="long:monocle.Traversal[io.circe.Json,Long]"></a>
+      <a id="long:Traversal[Json,Long]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">long</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">long</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
       </span>
-      
-      
-    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#ne(x$1:AnyRef):Boolean" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@long:monocle.Traversal[io.circe.Json,Long]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#notify():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#notifyAll():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="io.circe.optics.JsonTraversalPath#null" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="null:monocle.Traversal[io.circe.Json,Unit]"></a><a id="null:Traversal[Json,Unit]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#null:monocle.Traversal[io.circe.Json,Unit]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="io.circe.optics.JsonTraversalPath#null" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="null:monocle.Traversal[io.circe.Json,Unit]"></a>
+      <a id="null:Traversal[Json,Unit]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">null</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+        <span class="name">null</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#number" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="number:monocle.Traversal[io.circe.Json,io.circe.JsonNumber]"></a><a id="number:Traversal[Json,JsonNumber]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#number:monocle.Traversal[io.circe.Json,io.circe.JsonNumber]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@null:monocle.Traversal[io.circe.Json,Unit]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#number" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="number:monocle.Traversal[io.circe.Json,io.circe.JsonNumber]"></a>
+      <a id="number:Traversal[Json,JsonNumber]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -880,15 +754,16 @@
       <span class="symbol">
         <span class="name">number</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#obj" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="obj:monocle.Traversal[io.circe.Json,io.circe.JsonObject]"></a><a id="obj:Traversal[Json,JsonObject]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#obj:monocle.Traversal[io.circe.Json,io.circe.JsonObject]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@number:monocle.Traversal[io.circe.Json,io.circe.JsonNumber]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#obj" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="obj:monocle.Traversal[io.circe.Json,io.circe.JsonObject]"></a>
+      <a id="obj:Traversal[Json,JsonObject]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -896,31 +771,33 @@
       <span class="symbol">
         <span class="name">obj</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="../JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#objFilter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="objFilter((String)⇒Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@obj:monocle.Traversal[io.circe.Json,io.circe.JsonObject]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#objFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a>
+      <a id="objFilter((String)⇒Boolean):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">objFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+        <span class="name">objFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#selectDynamic" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="selectDynamic(field:String):io.circe.optics.JsonTraversalPath"></a><a id="selectDynamic(String):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#selectDynamic(field:String):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#selectDynamic" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="selectDynamic(field:String):io.circe.optics.JsonTraversalPath"></a>
+      <a id="selectDynamic(String):JsonTraversalPath"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -928,31 +805,33 @@
       <span class="symbol">
         <span class="name">selectDynamic</span><span class="params">(<span name="field">field: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#short" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="short:monocle.Traversal[io.circe.Json,Short]"></a><a id="short:Traversal[Json,Short]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#short:monocle.Traversal[io.circe.Json,Short]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@selectDynamic(field:String):io.circe.optics.JsonTraversalPath" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#short" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="short:monocle.Traversal[io.circe.Json,Short]"></a>
+      <a id="short:Traversal[Json,Short]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">short</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Short" class="extype" target="_top">Short</a>]</span>
+        <span class="name">short</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Short" class="extype" target="_top">Short</a>]</span>
       </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#string" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="string:monocle.Traversal[io.circe.Json,String]"></a><a id="string:Traversal[Json,String]"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#string:monocle.Traversal[io.circe.Json,String]" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@short:monocle.Traversal[io.circe.Json,Short]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#string" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="string:monocle.Traversal[io.circe.Json,String]"></a>
+      <a id="string:Traversal[Json,String]"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -960,15 +839,16 @@
       <span class="symbol">
         <span class="name">string</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      
-      
-    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
-        <i class="material-icons"></i>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@string:monocle.Traversal[io.circe.Json,String]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
+      
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -976,23 +856,28 @@
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#wait():Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1000,21 +885,22 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1022,21 +908,22 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#wait(x$1:Long):Unit" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
-      
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1044,13 +931,10 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="→[B](y:B):(A,B)"></a><a id="→[B](B):(JsonTraversalPath,B)"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#→[B](y:B):(A,B)" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(JsonTraversalPath,B)"></a>
+      <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -1058,14 +942,17 @@
       <span class="symbol">
         <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
+      </h4><span class="permalink">
+      <a href="../../../index.html#io.circe.optics.JsonTraversalPath@→[B](y:B):(A,B)" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a> to
             <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a>] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
-    </li>
-              </ol>
+    </li></ol>
             </div>
 
         
@@ -1075,19 +962,19 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
             </div><div class="parent" name="scala.Dynamic">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Dynamic" class="extype" target="_top">Dynamic</a></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
@@ -1120,9 +1007,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-    </body>
-          </div>
-        </div>
-      </div>
+
+
     </body>
       </html>

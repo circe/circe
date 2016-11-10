@@ -70,7 +70,7 @@ import io.circe.optics.JsonPath._
 // import io.circe.optics.JsonPath._
 
 val _phoneNum = root.order.customer.contactDetails.phone.string
-// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@66c6dfab
+// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@3d98f75
 
 val phoneNum: Option[String] = _phoneNum.getOption(json)
 // phoneNum: Option[String] = Some(0123-456-789)
@@ -128,7 +128,7 @@ can be achieved with a small change to the code we wrote for traversal:
 ```scala
 val doubleQuantities: Json => Json = 
   root.order.items.each.quantity.int.modify(_ * 2)
-// doubleQuantities: io.circe.Json => io.circe.Json = monocle.PTraversal$$Lambda$3379/2026257443@4bddb2ab
+// doubleQuantities: io.circe.Json => io.circe.Json = monocle.PTraversal$$Lambda$27/1527168677@40553276
 
 val modifiedJson = doubleQuantities(json)
 // modifiedJson: io.circe.Json =
