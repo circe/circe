@@ -95,7 +95,8 @@ object UserCodec {
 
 It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing
 but circe-core, and if you need a custom name mapping it's currently the best solution
-(until configurable generic derivation is released in 0.6.0).
+(although 0.6.0 introduces experimental configurable generic derivation in the circe-generic-extras
+module).
 
 ## Fully automatic derivation
 
