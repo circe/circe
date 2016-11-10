@@ -38,7 +38,7 @@ val rawJson: String = """
 // "
 
 val parseResult = parse(rawJson)
-// parseResult: cats.data.Xor[io.circe.ParsingFailure,io.circe.Json] =
+// parseResult: Either[io.circe.ParsingFailure,io.circe.Json] =
 // Right({
 //   "foo" : "bar",
 //   "baz" : 123,
@@ -50,8 +50,9 @@ val parseResult = parse(rawJson)
 // })
 ```
 
-Because parsing might fail, the result is a cats [Xor][cats-xor]. In the example above, the input
-was valid JSON, so the result was a `Right` containing the corresponding JSON representation.
+Because parsing might fail, the result is an `Either` with an `io.circe.Error` on the left side.
+In the example above, the input was valid JSON, so the result was a `Right` containing the
+corresponding JSON representation.
 
 Let's see what happens when you try to parse invalid JSON:
 
@@ -60,16 +61,13 @@ val badJson: String = "yolo"
 // badJson: String = yolo
 
 parse(badJson)
-// res0: cats.data.Xor[io.circe.ParsingFailure,io.circe.Json] = Left(io.circe.ParsingFailure: expected json value got y (line 1, column 1))
+// res0: Either[io.circe.ParsingFailure,io.circe.Json] = Left(io.circe.ParsingFailure: expected json value got y (line 1, column 1))
 ```
 
-There are a number of ways to extract the parse result from the `Xor`. For example you could pattern
+There are a number of ways to extract the parse result from the `Either`. For example you could pattern
 match on it:
 
 ```scala
-import cats.data.Xor._
-// import cats.data.Xor._
-
 parse(rawJson) match {
   case Left(failure) => println("Invalid JSON :(")
   case Right(json) => println("Yay, got some JSON!")
@@ -77,9 +75,12 @@ parse(rawJson) match {
 // Yay, got some JSON!
 ```
 
-Or use `getOrElse`:
+Or use `getOrElse` (an extension method provided by Cats):
 
 ```scala
+import cats.syntax.either._
+// import cats.syntax.either._
+
 val json: Json = parse(rawJson).getOrElse(Json.Null)
 // json: io.circe.Json =
 // {
