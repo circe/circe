@@ -157,12 +157,12 @@ class Thing()
 implicit val encodeFoo: Encoder[Thing] = new Encoder[Thing] {
   final def apply(a: Thing): Json = ??? // your implementation goes here
 }
-// encodeFoo: io.circe.Encoder[Thing] = $anon$1@612ec7e7
+// encodeFoo: io.circe.Encoder[Thing] = $anon$1@9ae370
 
 implicit val decodeFoo: Decoder[Thing] = new Decoder[Thing] {
   final def apply(c: HCursor): Decoder.Result[Thing] = Left(DecodingFailure("Not implemented yet", c.history))
 }
-// decodeFoo: io.circe.Decoder[Thing] = $anon$1@4c8b44a5
+// decodeFoo: io.circe.Decoder[Thing] = $anon$1@34a4b187
 ```
 
 But in many cases you might find it more convenient to piggyback on top of the decoders that are
@@ -176,12 +176,12 @@ import java.time.Instant
 // import java.time.Instant
 
 implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](_.toString)
-// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$12@62294700
+// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$12@22bac5d1
 
 implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =>
   Either.catchNonFatal(Instant.parse(str)).leftMap(t => "Instant")
 }
-// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$21@71ee1c77
+// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$21@75f1a039
 ```
 
 ## Custom key types
@@ -201,7 +201,7 @@ case class Foo(value: String)
 implicit val fooKeyEncoder = new KeyEncoder[Foo] {
   override def apply(foo: Foo): String = foo.value
 }
-// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@1475e87f
+// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@6ba3a190
 
 val map = Map[Foo, Int](
   Foo("hello") -> 123,
@@ -219,7 +219,7 @@ val json = map.asJson
 implicit val fooKeyDecoder = new KeyDecoder[Foo] {
   override def apply(key: String): Option[Foo] = Some(Foo(key))
 }
-// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@504c95ee
+// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@5640520d
 
 json.as[Map[Foo, Int]]
 // res7: io.circe.Decoder.Result[Map[Foo,Int]] = Right(Map(Foo(hello) -> 123, Foo(world) -> 456))

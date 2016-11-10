@@ -1,136 +1,178 @@
 <!DOCTYPE html >
 <html>
         <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           <title></title>
           <meta name="description" content="" />
           <meta name="keywords" content="" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript" src="lib/jquery.js"></script>
-      <script type="text/javascript" src="lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="lib/jquery.layout.js"></script>
+      <script type="text/javascript" src="lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="lib/jquery.mousewheel.min.js"></script>
       <script type="text/javascript" src="lib/index.js"></script>
+      <script type="text/javascript" src="index.js"></script>
       <script type="text/javascript" src="lib/scheduler.js"></script>
+      <script type="text/javascript" src="lib/template.js"></script>
+      <script type="text/javascript" src="lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '';
+      </script>
     
         </head>
         <body>
-      <div id="library">
-        <img class="class icon" alt="class icon" src="lib/class.png" />
-        <img class="trait icon" alt="trait icon" src="lib/trait.png" />
-        <img class="object icon" alt="trait icon" src="lib/object.png" />
-        <img class="package icon" alt="trait icon" src="lib/package.png" />
-      </div>
-      <div id="browser" class="ui-layout-west">
-      <div class="ui-west-center">
-      <div id="filter">
-          <div id="textfilter"></div>
-          <div id="letters"><a target="template" href="index/index-_.html">#</a><a target="template" href="index/index-a.html">A</a><a target="template" href="index/index-b.html">B</a><a target="template" href="index/index-c.html">C</a><a target="template" href="index/index-d.html">D</a><a target="template" href="index/index-e.html">E</a><a target="template" href="index/index-f.html">F</a><a target="template" href="index/index-g.html">G</a><a target="template" href="index/index-h.html">H</a><a target="template" href="index/index-i.html">I</a><a target="template" href="index/index-j.html">J</a><a target="template" href="index/index-k.html">K</a><a target="template" href="index/index-l.html">L</a><a target="template" href="index/index-m.html">M</a><a target="template" href="index/index-n.html">N</a><a target="template" href="index/index-o.html">O</a><a target="template" href="index/index-p.html">P</a><span>Q</span><a target="template" href="index/index-r.html">R</a><a target="template" href="index/index-s.html">S</a><a target="template" href="index/index-t.html">T</a><a target="template" href="index/index-u.html">U</a><a target="template" href="index/index-v.html">V</a><a target="template" href="index/index-w.html">W</a><span>X</span><span>Y</span><span>Z</span> – <span>deprecated</span></div>
-      </div>
-      <div class="pack" id="tpl">
-            
-            <ol class="templates"></ol>
-            <ol class="packages"> <li class="pack" title="io">
-            <a class="tplshow" href="io/package.html" target="template">io</a>
-            <ol class="templates"></ol>
-            <ol class="packages"> <li class="pack" title="io.circe">
-            <a class="tplshow" href="io/circe/package.html" target="template">io.circe</a>
-            <ol class="templates"><li title="io.circe.AccumulatingDecoder"><a class="tplshow" href="io/circe/AccumulatingDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/AccumulatingDecoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">AccumulatingDecoder</span></a></li><li title="io.circe.ACursor"><a class="tplshow" href="io/circe/ACursor$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/ACursor.html" target="template"><span class="class">(class)</span><span class="tplLink">ACursor</span></a></li><li title="io.circe.ArrayEncoder"><a class="tplshow" href="io/circe/ArrayEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/ArrayEncoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">ArrayEncoder</span></a></li><li title="io.circe.Context"><a class="tplshow" href="io/circe/Context$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Context.html" target="template"><span class="class">(class)</span><span class="tplLink">Context</span></a></li><li title="io.circe.Cursor"><a class="tplshow" href="io/circe/Cursor$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Cursor.html" target="template"><span class="class">(class)</span><span class="tplLink">Cursor</span></a></li><li title="io.circe.CursorOp"><a class="tplshow" href="io/circe/CursorOp$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/CursorOp.html" target="template"><span class="class">(class)</span><span class="tplLink">CursorOp</span></a></li><li title="io.circe.Decoder"><a class="tplshow" href="io/circe/Decoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Decoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">Decoder</span></a></li><li title="io.circe.DecodingFailure"><a class="tplshow" href="io/circe/DecodingFailure$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/DecodingFailure.html" target="template"><span class="class">(class)</span><span class="tplLink">DecodingFailure</span></a></li><li title="io.circe.disjunctionCodecs"><a class="tplshow" href="io/circe/disjunctionCodecs$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">disjunctionCodecs</span></a></li><li title="io.circe.Encoder"><a class="tplshow" href="io/circe/Encoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Encoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">Encoder</span></a></li><li title="io.circe.Error"><a class="tplshow" href="io/circe/Error$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Error.html" target="template"><span class="class">(class)</span><span class="tplLink">Error</span></a></li><li title="io.circe.Errors"><div class="placeholder"></div><a class="tplshow" href="io/circe/Errors.html" target="template"><span class="case class">(case class)</span><span class="tplLink">Errors</span></a></li><li title="io.circe.GenericCursor"><div class="placeholder"></div><a class="tplshow" href="io/circe/GenericCursor.html" target="template"><span class="class">(class)</span><span class="tplLink">GenericCursor</span></a></li><li title="io.circe.HCursor"><a class="tplshow" href="io/circe/HCursor$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/HCursor.html" target="template"><span class="class">(class)</span><span class="tplLink">HCursor</span></a></li><li title="io.circe.HistoryOp"><a class="tplshow" href="io/circe/HistoryOp$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/HistoryOp.html" target="template"><span class="class">(class)</span><span class="tplLink">HistoryOp</span></a></li><li title="io.circe.Json"><a class="tplshow" href="io/circe/Json$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Json.html" target="template"><span class="class">(class)</span><span class="tplLink">Json</span></a></li><li title="io.circe.JsonNumber"><a class="tplshow" href="io/circe/JsonNumber$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/JsonNumber.html" target="template"><span class="class">(class)</span><span class="tplLink">JsonNumber</span></a></li><li title="io.circe.JsonObject"><a class="tplshow" href="io/circe/JsonObject$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/JsonObject.html" target="template"><span class="class">(class)</span><span class="tplLink">JsonObject</span></a></li><li title="io.circe.KeyDecoder"><a class="tplshow" href="io/circe/KeyDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/KeyDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">KeyDecoder</span></a></li><li title="io.circe.KeyEncoder"><a class="tplshow" href="io/circe/KeyEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/KeyEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">KeyEncoder</span></a></li><li title="io.circe.ObjectEncoder"><a class="tplshow" href="io/circe/ObjectEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/ObjectEncoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">ObjectEncoder</span></a></li><li title="io.circe.Parser"><div class="placeholder"></div><a class="tplshow" href="io/circe/Parser.html" target="template"><span class="trait">(trait)</span><span class="tplLink">Parser</span></a></li><li title="io.circe.ParsingFailure"><a class="tplshow" href="io/circe/ParsingFailure$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/ParsingFailure.html" target="template"><span class="case class">(case class)</span><span class="tplLink">ParsingFailure</span></a></li><li title="io.circe.Printer"><a class="tplshow" href="io/circe/Printer$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/Printer.html" target="template"><span class="case class">(case class)</span><span class="tplLink">Printer</span></a></li><li title="io.circe.RootEncoder"><a class="tplshow" href="io/circe/RootEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/RootEncoder.html" target="template"><span class="trait">(trait)</span><span class="tplLink">RootEncoder</span></a></li></ol>
-            <ol class="packages"> <li class="pack" title="io.circe.export">
-            <a class="tplshow" href="io/circe/export/package.html" target="template">io.circe.export</a>
-            <ol class="templates"><li title="io.circe.export.Exported"><div class="placeholder"></div><a class="tplshow" href="io/circe/export/Exported.html" target="template"><span class="case class">(case class)</span><span class="tplLink">Exported</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.generic">
-            <a class="tplshow" href="io/circe/generic/package.html" target="template">io.circe.generic</a>
-            <ol class="templates"><li title="io.circe.generic.auto"><a class="tplshow" href="io/circe/generic/auto$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">auto</span></a></li><li title="io.circe.generic.Deriver"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/Deriver.html" target="template"><span class="class">(class)</span><span class="tplLink">Deriver</span></a></li><li title="io.circe.generic.JsonCodec"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/JsonCodec.html" target="template"><span class="class">(class)</span><span class="tplLink">JsonCodec</span></a></li><li title="io.circe.generic.semiauto"><a class="tplshow" href="io/circe/generic/semiauto$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">semiauto</span></a></li></ol>
-            <ol class="packages"> <li class="pack" title="io.circe.generic.decoding">
-            <a class="tplshow" href="io/circe/generic/decoding/package.html" target="template">io.circe.generic.decoding</a>
-            <ol class="templates"><li title="io.circe.generic.decoding.DerivedDecoder"><a class="tplshow" href="io/circe/generic/decoding/DerivedDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/decoding/DerivedDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">DerivedDecoder</span></a></li><li title="io.circe.generic.decoding.ReprDecoder"><a class="tplshow" href="io/circe/generic/decoding/ReprDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/decoding/ReprDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ReprDecoder</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.generic.encoding">
-            <a class="tplshow" href="io/circe/generic/encoding/package.html" target="template">io.circe.generic.encoding</a>
-            <ol class="templates"><li title="io.circe.generic.encoding.DerivedObjectEncoder"><a class="tplshow" href="io/circe/generic/encoding/DerivedObjectEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/encoding/DerivedObjectEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">DerivedObjectEncoder</span></a></li><li title="io.circe.generic.encoding.ReprObjectEncoder"><a class="tplshow" href="io/circe/generic/encoding/ReprObjectEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/encoding/ReprObjectEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ReprObjectEncoder</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.generic.extras">
-            <a class="tplshow" href="io/circe/generic/extras/package.html" target="template">io.circe.generic.extras</a>
-            <ol class="templates"><li title="io.circe.generic.extras.auto"><a class="tplshow" href="io/circe/generic/extras/auto$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">auto</span></a></li><li title="io.circe.generic.extras.ConfigurableDeriver"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/extras/ConfigurableDeriver.html" target="template"><span class="class">(class)</span><span class="tplLink">ConfigurableDeriver</span></a></li><li title="io.circe.generic.extras.Configuration"><a class="tplshow" href="io/circe/generic/extras/Configuration$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/Configuration.html" target="template"><span class="case class">(case class)</span><span class="tplLink">Configuration</span></a></li><li title="io.circe.generic.extras.ConfiguredJsonCodec"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/extras/ConfiguredJsonCodec.html" target="template"><span class="class">(class)</span><span class="tplLink">ConfiguredJsonCodec</span></a></li><li title="io.circe.generic.extras.semiauto"><a class="tplshow" href="io/circe/generic/extras/semiauto$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">semiauto</span></a></li></ol>
-            <ol class="packages"> <li class="pack" title="io.circe.generic.extras.decoding">
-            <a class="tplshow" href="io/circe/generic/extras/decoding/package.html" target="template">io.circe.generic.extras.decoding</a>
-            <ol class="templates"><li title="io.circe.generic.extras.decoding.ConfiguredDecoder"><a class="tplshow" href="io/circe/generic/extras/decoding/ConfiguredDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/decoding/ConfiguredDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ConfiguredDecoder</span></a></li><li title="io.circe.generic.extras.decoding.EnumerationDecoder"><a class="tplshow" href="io/circe/generic/extras/decoding/EnumerationDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/decoding/EnumerationDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">EnumerationDecoder</span></a></li><li title="io.circe.generic.extras.decoding.ReprDecoder"><a class="tplshow" href="io/circe/generic/extras/decoding/ReprDecoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/decoding/ReprDecoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ReprDecoder</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.generic.extras.encoding">
-            <a class="tplshow" href="io/circe/generic/extras/encoding/package.html" target="template">io.circe.generic.extras.encoding</a>
-            <ol class="templates"><li title="io.circe.generic.extras.encoding.ConfiguredObjectEncoder"><a class="tplshow" href="io/circe/generic/extras/encoding/ConfiguredObjectEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/encoding/ConfiguredObjectEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ConfiguredObjectEncoder</span></a></li><li title="io.circe.generic.extras.encoding.EnumerationEncoder"><a class="tplshow" href="io/circe/generic/extras/encoding/EnumerationEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/encoding/EnumerationEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">EnumerationEncoder</span></a></li><li title="io.circe.generic.extras.encoding.ReprObjectEncoder"><a class="tplshow" href="io/circe/generic/extras/encoding/ReprObjectEncoder$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/encoding/ReprObjectEncoder.html" target="template"><span class="class">(class)</span><span class="tplLink">ReprObjectEncoder</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.generic.extras.util">
-            <a class="tplshow" href="io/circe/generic/extras/util/package.html" target="template">io.circe.generic.extras.util</a>
-            <ol class="templates"><li title="io.circe.generic.extras.util.RecordToMap"><a class="tplshow" href="io/circe/generic/extras/util/RecordToMap$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/extras/util/RecordToMap.html" target="template"><span class="class">(class)</span><span class="tplLink">RecordToMap</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li></ol>
-          </li><li class="pack" title="io.circe.generic.util">
-            <a class="tplshow" href="io/circe/generic/util/package.html" target="template">io.circe.generic.util</a>
-            <ol class="templates"><li title="io.circe.generic.util.PatchWithOptions"><a class="tplshow" href="io/circe/generic/util/PatchWithOptions$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/generic/util/PatchWithOptions.html" target="template"><span class="trait">(trait)</span><span class="tplLink">PatchWithOptions</span></a></li></ol>
-            <ol class="packages"> <li class="pack" title="io.circe.generic.util.macros">
-            <a class="tplshow" href="io/circe/generic/util/macros/package.html" target="template">io.circe.generic.util.macros</a>
-            <ol class="templates"><li title="io.circe.generic.util.macros.DerivationMacros"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/util/macros/DerivationMacros.html" target="template"><span class="class">(class)</span><span class="tplLink">DerivationMacros</span></a></li><li title="io.circe.generic.util.macros.ExportMacros"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/util/macros/ExportMacros.html" target="template"><span class="class">(class)</span><span class="tplLink">ExportMacros</span></a></li><li title="io.circe.generic.util.macros.JsonCodecMacros"><div class="placeholder"></div><a class="tplshow" href="io/circe/generic/util/macros/JsonCodecMacros.html" target="template"><span class="class">(class)</span><span class="tplLink">JsonCodecMacros</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li></ol>
-          </li></ol>
-          </li><li class="pack" title="io.circe.jackson">
-            <a class="tplshow" href="io/circe/jackson/package.html" target="template">io.circe.jackson</a>
-            <ol class="templates"><li title="io.circe.jackson.CirceJsonModule"><a class="tplshow" href="io/circe/jackson/CirceJsonModule$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">CirceJsonModule</span></a></li><li title="io.circe.jackson.JacksonParser"><div class="placeholder"></div><a class="tplshow" href="io/circe/jackson/JacksonParser.html" target="template"><span class="trait">(trait)</span><span class="tplLink">JacksonParser</span></a></li><li title="io.circe.jackson.WithJacksonMapper"><div class="placeholder"></div><a class="tplshow" href="io/circe/jackson/WithJacksonMapper.html" target="template"><span class="class">(class)</span><span class="tplLink">WithJacksonMapper</span></a></li></ol>
-            <ol class="packages"> <li class="pack" title="io.circe.jackson.syntax">
-            <a class="tplshow" href="io/circe/jackson/syntax/package.html" target="template">io.circe.jackson.syntax</a>
-            <ol class="templates"><li title="io.circe.jackson.syntax.JacksonPrintingOps"><div class="placeholder"></div><a class="tplshow" href="io/circe/jackson/syntax/package$$JacksonPrintingOps.html" target="template"><span class="class">(class)</span><span class="tplLink">JacksonPrintingOps</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li></ol>
-          </li><li class="pack" title="io.circe.jawn">
-            <a class="tplshow" href="io/circe/jawn/package.html" target="template">io.circe.jawn</a>
-            <ol class="templates"><li title="io.circe.jawn.CirceSupportParser"><a class="tplshow" href="io/circe/jawn/CirceSupportParser$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">CirceSupportParser</span></a></li><li title="io.circe.jawn.JawnParser"><div class="placeholder"></div><a class="tplshow" href="io/circe/jawn/JawnParser.html" target="template"><span class="class">(class)</span><span class="tplLink">JawnParser</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.literal">
-            <a class="tplshow" href="io/circe/literal/package.html" target="template">io.circe.literal</a>
-            <ol class="templates"><li title="io.circe.literal.JsonStringContext"><div class="placeholder"></div><a class="tplshow" href="io/circe/literal/package$$JsonStringContext.html" target="template"><span class="class">(class)</span><span class="tplLink">JsonStringContext</span></a></li><li title="io.circe.literal.LiteralMacros"><div class="placeholder"></div><a class="tplshow" href="io/circe/literal/LiteralMacros.html" target="template"><span class="class">(class)</span><span class="tplLink">LiteralMacros</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.numbers">
-            <a class="tplshow" href="io/circe/numbers/package.html" target="template">io.circe.numbers</a>
-            <ol class="templates"><li title="io.circe.numbers.BiggerDecimal"><a class="tplshow" href="io/circe/numbers/BiggerDecimal$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/numbers/BiggerDecimal.html" target="template"><span class="class">(class)</span><span class="tplLink">BiggerDecimal</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.optics">
-            <a class="tplshow" href="io/circe/optics/package.html" target="template">io.circe.optics</a>
-            <ol class="templates"><li title="io.circe.optics.all"><a class="tplshow" href="io/circe/optics/all$.html" target="template"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">all</span></a></li><li title="io.circe.optics.CatsConversions"><div class="placeholder"></div><a class="tplshow" href="io/circe/optics/CatsConversions.html" target="template"><span class="trait">(trait)</span><span class="tplLink">CatsConversions</span></a></li><li title="io.circe.optics.JsonNumberOptics"><a class="tplshow" href="io/circe/optics/JsonNumberOptics$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/optics/JsonNumberOptics.html" target="template"><span class="trait">(trait)</span><span class="tplLink">JsonNumberOptics</span></a></li><li title="io.circe.optics.JsonObjectOptics"><a class="tplshow" href="io/circe/optics/JsonObjectOptics$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/optics/JsonObjectOptics.html" target="template"><span class="trait">(trait)</span><span class="tplLink">JsonObjectOptics</span></a></li><li title="io.circe.optics.JsonOptics"><a class="tplshow" href="io/circe/optics/JsonOptics$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/optics/JsonOptics.html" target="template"><span class="trait">(trait)</span><span class="tplLink">JsonOptics</span></a></li><li title="io.circe.optics.JsonPath"><a class="tplshow" href="io/circe/optics/JsonPath$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/optics/JsonPath.html" target="template"><span class="case class">(case class)</span><span class="tplLink">JsonPath</span></a></li><li title="io.circe.optics.JsonTraversalPath"><div class="placeholder"></div><a class="tplshow" href="io/circe/optics/JsonTraversalPath.html" target="template"><span class="case class">(case class)</span><span class="tplLink">JsonTraversalPath</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.scalajs">
-            <a class="tplshow" href="io/circe/scalajs/package.html" target="template">io.circe.scalajs</a>
-            <ol class="templates"><li title="io.circe.scalajs.EncoderJsOps"><div class="placeholder"></div><a class="tplshow" href="io/circe/scalajs/package$$EncoderJsOps.html" target="template"><span class="class">(class)</span><span class="tplLink">EncoderJsOps</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.shapes">
-            <a class="tplshow" href="io/circe/shapes/package.html" target="template">io.circe.shapes</a>
-            <ol class="templates"><li title="io.circe.shapes.CoproductInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/shapes/CoproductInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">CoproductInstances</span></a></li><li title="io.circe.shapes.HListInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/shapes/HListInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">HListInstances</span></a></li><li title="io.circe.shapes.LabelledCoproductInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/shapes/LabelledCoproductInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">LabelledCoproductInstances</span></a></li><li title="io.circe.shapes.LabelledHListInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/shapes/LabelledHListInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">LabelledHListInstances</span></a></li><li title="io.circe.shapes.SizedInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/shapes/SizedInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">SizedInstances</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.syntax">
-            <a class="tplshow" href="io/circe/syntax/package.html" target="template">io.circe.syntax</a>
-            <ol class="templates"><li title="io.circe.syntax.EncoderOps"><div class="placeholder"></div><a class="tplshow" href="io/circe/syntax/package$$EncoderOps.html" target="template"><span class="class">(class)</span><span class="tplLink">EncoderOps</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li><li class="pack" title="io.circe.testing">
-            <a class="tplshow" href="io/circe/testing/package.html" target="template">io.circe.testing</a>
-            <ol class="templates"><li title="io.circe.testing.ArbitraryInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/testing/ArbitraryInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">ArbitraryInstances</span></a></li><li title="io.circe.testing.CodecLaws"><a class="tplshow" href="io/circe/testing/CodecLaws$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/CodecLaws.html" target="template"><span class="trait">(trait)</span><span class="tplLink">CodecLaws</span></a></li><li title="io.circe.testing.CodecTests"><a class="tplshow" href="io/circe/testing/CodecTests$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/CodecTests.html" target="template"><span class="trait">(trait)</span><span class="tplLink">CodecTests</span></a></li><li title="io.circe.testing.EqInstances"><div class="placeholder"></div><a class="tplshow" href="io/circe/testing/EqInstances.html" target="template"><span class="trait">(trait)</span><span class="tplLink">EqInstances</span></a></li><li title="io.circe.testing.IntegralString"><a class="tplshow" href="io/circe/testing/IntegralString$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/IntegralString.html" target="template"><span class="case class">(case class)</span><span class="tplLink">IntegralString</span></a></li><li title="io.circe.testing.JsonNumberString"><a class="tplshow" href="io/circe/testing/JsonNumberString$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/JsonNumberString.html" target="template"><span class="case class">(case class)</span><span class="tplLink">JsonNumberString</span></a></li><li title="io.circe.testing.ParserLaws"><div class="placeholder"></div><a class="tplshow" href="io/circe/testing/ParserLaws.html" target="template"><span class="case class">(case class)</span><span class="tplLink">ParserLaws</span></a></li><li title="io.circe.testing.ParserTests"><div class="placeholder"></div><a class="tplshow" href="io/circe/testing/ParserTests.html" target="template"><span class="case class">(case class)</span><span class="tplLink">ParserTests</span></a></li><li title="io.circe.testing.PrinterLaws"><a class="tplshow" href="io/circe/testing/PrinterLaws$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/PrinterLaws.html" target="template"><span class="trait">(trait)</span><span class="tplLink">PrinterLaws</span></a></li><li title="io.circe.testing.PrinterTests"><a class="tplshow" href="io/circe/testing/PrinterTests$.html" target="template"><span class="object">(object)</span></a><a class="tplshow" href="io/circe/testing/PrinterTests.html" target="template"><span class="trait">(trait)</span><span class="tplLink">PrinterTests</span></a></li></ol>
-            <ol class="packages"> </ol>
-          </li></ol>
-          </li></ol>
-          </li><li class="pack" title="scalaz">
-            <a class="tplshow" href="scalaz/package.html" target="template">scalaz</a>
-            <ol class="templates"></ol>
-            <ol class="packages"> <li class="pack" title="scalaz.syntax">
-            <a class="tplshow" href="scalaz/syntax/package.html" target="template">scalaz.syntax</a>
-            <ol class="templates"></ol>
-            <ol class="packages"> </ol>
-          </li></ol>
-          </li></ol>
-          </div></div><script src="index.js"></script>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
     </div>
-      <div id="content" class="ui-layout-center">
-        <iframe id="template" name="template" src="package.html"></iframe>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 current" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      
+      
+    </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="io"></a><a id="io:io"></a>
+      <span class="permalink">
+      <a href="index.html#io" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="io/index.html">
+              <span class="name">io</span>
+            </a>
+      </span>
+      
+      
+    </li><li name="_root_.scalaz" visbl="pub" class="indented1 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scalaz"></a><a id="scalaz:scalaz"></a>
+      <span class="permalink">
+      <a href="index.html#scalaz" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="scalaz/index.html">
+              <span class="name">scalaz</span>
+            </a>
+      </span>
+      
+      
+    </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="package value">
+      <div id="definition">
+        <div class="big-circle package">p</div>
+        
+        <h1>root package<span class="permalink">
+      <a href="index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
       </div>
     </body>
       </html>
