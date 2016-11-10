@@ -10,7 +10,7 @@ import scala.annotation.tailrec
  */
 abstract class KeyDecoder[A] extends Serializable { self =>
   /**
-   * Convert a value to String.
+   * Attempt to convert a String to a value.
    */
   def apply(key: String): Option[A]
 
