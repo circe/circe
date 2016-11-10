@@ -37,6 +37,7 @@ The following open source projects are either built on circe or provide circe su
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
+* [diffson][diffson] - A scala diff/patch library for Json
 * [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
 * [Featherbed][featherbed]: A REST client library with circe support.
 * [Finch][finch]: A library for building web services with circe support.
@@ -112,6 +113,7 @@ limitations under the License.
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
+[diffson]: https://github.com/gnieh/diffson
 [enumeratum]: https://github.com/lloydmeta/enumeratum
 [featherbed]: https://github.com/finagle/featherbed
 [finagle]: https://twitter.github.io/finagle/
