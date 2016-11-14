@@ -1,25 +1,40 @@
 package io.circe.generic.extras.decoding
 
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.extras.Configuration
-import io.circe.generic.extras.util.RecordToMap
-import shapeless.{ Coproduct, Default, HList, LabelledGeneric, Lazy }
+import io.circe.generic.extras.{Configuration, Key}
+import io.circe.generic.extras.util.{Labelling, RecordToMap}
+import shapeless.ops.hlist.ToTraversable
+import shapeless.{Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy}
+
 
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
-  implicit def decodeCaseClass[A, R <: HList, D <: HList](implicit
+  implicit def decodeCaseClass[A, R <: HList, D <: HList, K <: HList](implicit
     gen: LabelledGeneric.Aux[A, R],
     decode: Lazy[ReprDecoder[R]],
     defaults: Default.AsRecord.Aux[A, D],
     defaultMapper: RecordToMap[D],
-    config: Configuration
+    config: Configuration,
+    labels: Labelling.AsList[A],
+    keys: Annotations.Aux[Key, A, K],
+    toTraversableAuxKeys: ToTraversable.Aux[K, List, Option[Key]]
   ): ConfiguredDecoder[A] = new ConfiguredDecoder[A] {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
+    private[this] val keysAreDefined=keys().toList.flatten.nonEmpty
+    @volatile lazy val keysMap:Map[String,String]={
+      val fkeys=keys().toList
+      labels().map(_.name).zipWithIndex.map{case (v, p:Int) => v -> fkeys(p)}.filter(_._2.isDefined).map(v=> v._1 -> v._2.get.value).toMap
+    }
+
+    def keyTransformer(transformKeys: String => String)(value: String): String ={
+      keysMap.getOrElse(value, transformKeys(value))
+    }
+
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
-      config.transformKeys,
+      if (keysAreDefined) keyTransformer(config.transformKeys) else config.transformKeys,
       defaultMap,
       None
     ) match {
@@ -28,7 +43,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     }
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
-      config.transformKeys,
+        if (keysAreDefined) keyTransformer(config.transformKeys) else config.transformKeys,
       defaultMap,
       None
     ).map(gen.from)
