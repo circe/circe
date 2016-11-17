@@ -1,7 +1,6 @@
 import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
-import com.typesafe.sbt.SbtSite.SiteKeys._
 
 val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0")
 
@@ -95,9 +94,14 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   }
 )
 
-lazy val docSettings = allSettings ++ tutSettings ++ site.settings ++ ghpages.settings ++ unidocSettings ++ Seq(
-  site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "api"),
-  site.addMappingsToSiteDir(tut, "_tut"),
+val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
+val docMappingsTutDir = settingKey[String]("Subdirectory in site target directory for Tut docs")
+
+lazy val docSettings = allSettings ++ tutSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
+  docMappingsApiDir := "api",
+  docMappingsTutDir := "_tut",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docMappingsApiDir),
+  addMappingsToSiteDir(tut, docMappingsTutDir),
   ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
