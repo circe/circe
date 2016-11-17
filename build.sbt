@@ -112,7 +112,10 @@ lazy val docSettings = allSettings ++ tutSettings ++ site.settings ++ ghpages.se
 )
 
 lazy val docs = project.dependsOn(core, generic, parser, optics)
-  .settings(moduleName := "circe-docs")
+  .settings(
+    moduleName := "circe-docs",
+    name := "Circe docs"
+  )
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
@@ -183,7 +186,7 @@ lazy val numbersBase = crossProject.in(file("modules/numbers"))
   .settings(
     description := "circe numbers",
     moduleName := "circe-numbers",
-    name := "numbers",
+    name := "Circe numbers",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -206,7 +209,7 @@ lazy val coreBase = crossProject.in(file("modules/core"))
   .settings(
     description := "circe core",
     moduleName := "circe-core",
-    name := "core",
+    name := "Circe core",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -230,7 +233,7 @@ lazy val genericBase = crossProject.in(file("modules/generic"))
   .settings(
     description := "circe generic",
     moduleName := "circe-generic",
-    name := "generic",
+    name := "Circe generic",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -258,7 +261,7 @@ lazy val genericExtrasBase = crossProject.crossType(CrossType.Pure).in(file("mod
   .settings(
     description := "circe generic extras",
     moduleName := "circe-generic-extras",
-    name := "generic-extras",
+    name := "Circe generic extras",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -282,7 +285,7 @@ lazy val shapesBase = crossProject.crossType(CrossType.Pure).in(file("modules/sh
   .settings(
     description := "circe shapes",
     moduleName := "circe-shapes",
-    name := "shapes",
+    name := "Circe shapes",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -301,7 +304,7 @@ lazy val literalBase = crossProject.crossType(CrossType.Pure).in(file("modules/l
   .settings(
     description := "circe literal",
     moduleName := "circe-literal",
-    name := "literal",
+    name := "Circe literal",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -328,7 +331,7 @@ lazy val refinedBase = crossProject.in(file("modules/refined"))
   .settings(
     description := "circe refined",
     moduleName := "circe-refined",
-    name := "refined",
+    name := "Circe refined",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -349,7 +352,7 @@ lazy val parserBase = crossProject.in(file("modules/parser"))
   .settings(
     description := "circe parser",
     moduleName := "circe-parser",
-    name := "parser",
+    name := "Circe parser",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -367,6 +370,7 @@ lazy val scalajs = project.in(file("modules/scalajs"))
   .settings(
     description := "circe scalajs",
     moduleName := "circe-scalajs",
+    name := "Circe Scala.js",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings)
@@ -377,7 +381,7 @@ lazy val scodecBase = crossProject.in(file("modules/scodec"))
   .settings(
     description := "circe scodec",
     moduleName := "circe-scodec",
-    name := "scodec",
+    name := "Circe scodec",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -398,7 +402,7 @@ lazy val testingBase = crossProject.in(file("modules/testing"))
   .settings(
     description := "circe testing",
     moduleName := "circe-testing",
-    name := "testing",
+    name := "Circe testing",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -421,7 +425,7 @@ lazy val testsBase = crossProject.in(file("modules/tests"))
   .settings(
     description := "circe tests",
     moduleName := "circe-tests",
-    name := "tests",
+    name := "Circe tests",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -470,6 +474,7 @@ lazy val hygiene = project.in(file("modules/hygiene"))
   .settings(
     description := "circe hygiene",
     moduleName := "circe-hygiene",
+    name := "Circe hygiene",
     crossScalaVersions := scalaVersions.tail
   )
   .settings(allSettings ++ noPublishSettings)
@@ -482,6 +487,7 @@ lazy val jawn = project.in(file("modules/jawn"))
   .settings(
     description := "circe jawn",
     moduleName := "circe-jawn",
+    name := "Circe Jawn",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings)
@@ -495,6 +501,7 @@ lazy val java8 = project.in(file("modules/java8"))
   .settings(
     description := "circe java8",
     moduleName := "circe-java8",
+    name := "Circe Java 8",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings)
@@ -507,6 +514,7 @@ lazy val streaming = project.in(file("modules/streaming"))
   .settings(
     description := "circe streaming",
     moduleName := "circe-streaming",
+    name := "Circe streaming",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings)
@@ -520,6 +528,7 @@ lazy val jackson = project.in(file("modules/jackson"))
   .settings(
     description := "circe jackson",
     moduleName := "circe-jackson",
+    name := "Circe Jackson",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings)
@@ -536,6 +545,7 @@ lazy val spray = project.in(file("modules/spray"))
   .settings(
     description := "circe spray",
     moduleName := "circe-spray",
+    name := "Circe Spray",
     crossScalaVersions := scalaVersions.init
   )
   .settings(allSettings)
@@ -564,6 +574,7 @@ lazy val opticsBase = crossProject.crossType(CrossType.Pure).in(file("modules/op
   .settings(
     description := "circe optics",
     moduleName := "circe-optics",
+    name := "Circe optics",
     crossScalaVersions := scalaVersions
   )
   .settings(allSettings: _*)
@@ -586,6 +597,7 @@ lazy val benchmark = project.in(file("modules/benchmark"))
   .settings(
     description := "circe benchmark",
     moduleName := "circe-benchmark",
+    name := "Circe benchmark",
     crossScalaVersions := scalaVersions.init
   )
   .settings(allSettings)
