@@ -3,12 +3,13 @@ package io.circe.cursor
 import cats.Applicative
 import io.circe.{ Cursor, Json }
 
-private[circe] final case class CJson(focus: Json) extends Cursor {
+private[circe] final object CFailure extends Cursor {
+  def focus: Json = Json.Null
   def context: List[Either[Int, String]] = Nil
   def up: Cursor = CFailure
   def delete: Cursor = CFailure
-  def withFocus(f: Json => Json): Cursor = CJson(f(focus))
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[Cursor] = F.map(f(focus))(CJson.apply)
+  def withFocus(f: Json => Json): Cursor = CFailure
+  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[Cursor] = F.pure(CFailure)
 
   def lefts: Option[List[Json]] = None
   def rights: Option[List[Json]] = None

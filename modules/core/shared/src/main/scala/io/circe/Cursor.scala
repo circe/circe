@@ -1,8 +1,8 @@
 package io.circe
 
-import cats.{ Eq, Functor, Id, Show }
+import cats.{ Applicative, Eq, Id, Show }
 import cats.instances.list._
-import io.circe.cursor.{ CArray, CJson, CObject }
+import io.circe.cursor.{ CArray, CFailure, CJson, CObject }
 import scala.annotation.tailrec
 
 /**
@@ -20,8 +20,8 @@ import scala.annotation.tailrec
  */
 abstract class Cursor extends GenericCursor[Cursor] {
   type Focus[x] = Id[x]
-  type Result = Option[Cursor]
-  type M[x[_]] = Functor[x]
+  type Result = Cursor
+  type M[x[_]] = Applicative[x]
   /**
    * Return the current context of the focus.
    */
@@ -63,66 +63,66 @@ abstract class Cursor extends GenericCursor[Cursor] {
   final def fieldSet: Option[Set[String]] = focus.asObject.map(_.fieldSet)
   final def fields: Option[List[String]] = focus.asObject.map(_.fields)
 
-  final def leftN(n: Int): Option[Cursor] = if (n < 0) rightN(-n) else {
+  final def leftN(n: Int): Cursor = if (n < 0) rightN(-n) else {
     @tailrec
-    def go(i: Int, c: Option[Cursor]): Option[Cursor] = if (i == 0) c else {
-      go(i - 1, c.flatMap(_.left))
+    def go(i: Int, c: Cursor): Cursor = if (i == 0) c else {
+      go(i - 1, c.left)
     }
-    go(n, Some(this))
+    go(n, this)
   }
 
-  final def rightN(n: Int): Option[Cursor] = if (n < 0) leftN(-n) else {
+  final def rightN(n: Int): Cursor = if (n < 0) leftN(-n) else {
     @tailrec
-    def go(i: Int, c: Option[Cursor]): Option[Cursor] = if (i == 0) c else {
-      go(i - 1, c.flatMap(_.right))
+    def go(i: Int, c: Cursor): Cursor = if (i == 0) c else {
+      go(i - 1, c.right)
     }
-    go(n, Some(this))
+    go(n, this)
   }
 
-  def leftAt(p: Json => Boolean): Option[Cursor] = {
+  def leftAt(p: Json => Boolean): Cursor = {
     @tailrec
-    def go(c: Option[Cursor]): Option[Cursor] = c match {
-      case None => None
-      case Some(z) => if (p(z.focus)) Some(z) else go(z.left)
+    def go(c: Cursor): Cursor = c match {
+      case CFailure => CFailure
+      case other => if (p(other.focus)) other else go(other.left)
     }
 
     go(left)
   }
 
-  final def rightAt(p: Json => Boolean): Option[Cursor] = right.flatMap(_.find(p))
+  final def rightAt(p: Json => Boolean): Cursor = right.find(p)
 
-  final def find(p: Json => Boolean): Option[Cursor] = {
+  final def find(p: Json => Boolean): Cursor = {
     @annotation.tailrec
-    def go(c: Option[Cursor]): Option[Cursor] = c match {
-      case None => None
-      case Some(z) => if (p(z.focus)) Some(z) else go(z.right)
+    def go(c: Cursor): Cursor = c match {
+      case CFailure => CFailure
+      case other => if (p(other.focus)) other else go(other.right)
     }
 
-    go(Some(this))
+    go(this)
   }
 
-  final def downArray: Option[Cursor] = focus match {
-    case Json.JArray(h :: t) => Some(CArray(h, this, false, Nil, t))
-    case _ => None
+  final def downArray: Cursor = focus match {
+    case Json.JArray(h :: t) => CArray(h, this, false, Nil, t)
+    case _ => CFailure
   }
 
-  final def downAt(p: Json => Boolean): Option[Cursor] = downArray.flatMap(_.find(p))
+  final def downAt(p: Json => Boolean): Cursor = downArray.find(p)
 
-  final def downN(n: Int): Option[Cursor] = downArray.flatMap(_.rightN(n))
+  final def downN(n: Int): Cursor = downArray.rightN(n)
 
-  final def downField(k: String): Option[Cursor] = focus match {
+  final def downField(k: String): Cursor = focus match {
     case Json.JObject(o) =>
       val m = o.toMap
 
-      if (m.contains(k)) Some(CObject(m(k), k, this, false, o)) else None
-    case _ => None
+      if (m.contains(k)) CObject(m(k), k, this, false, o) else CFailure
+    case _ => CFailure
   }
 
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = HCursor.fromCursor(this).as[A]
   final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = HCursor.fromCursor(this).get[A](k)
 
-  final def replay(history: List[HistoryOp]): Option[Cursor] =
-    ACursor.ok(HCursor.fromCursor(this)).replay(history).success.map(_.cursor)
+  final def replay(history: List[HistoryOp]): Cursor =
+    ACursor.ok(HCursor.fromCursor(this)).replay(history).success.fold[Cursor](CFailure)(_.cursor)
 }
 
 final object Cursor {

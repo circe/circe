@@ -1,6 +1,7 @@
 package io.circe
 
-import cats.{ Eq, Functor, Id }
+import cats.{ Applicative, Eq, Id }
+import io.circe.cursor.CFailure
 
 /**
  * A cursor that tracks the history of operations performed with it.
@@ -14,7 +15,7 @@ import cats.{ Eq, Functor, Id }
 sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HCursor] { self =>
   type Focus[x] = Id[x]
   type Result = ACursor
-  type M[x[_]] = Functor[x]
+  type M[x[_]] = Applicative[x]
 
   /**
    * A work-around to allow us to keep history lazy without worrying about
@@ -42,8 +43,8 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
     final def history: List[HistoryOp] = HistoryOp.reattempt :: self.history
   }
 
-  @inline private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
-    case None => ACursor.fail(
+  @inline private[this] def toACursor(c: Cursor, e: CursorOp) = c match {
+    case CFailure => ACursor.fail(
       new HCursor(this.cursor) {
         private[this] val incorrectFocus: Boolean =
           (e.requiresObject && !self.focus.isObject) || (e.requiresArray && !self.focus.isArray)
@@ -80,8 +81,8 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
     final def history: List[HistoryOp] = self.history
   }
 
-  final def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
-    Functor[F].map(cursor.withFocusM(f))(c =>
+  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[HCursor] =
+    F.map(cursor.withFocusM(f))(c =>
       new HCursor(c) {
         protected final override val depth: Int = self.depth + 1
         final def history: List[HistoryOp] = self.history

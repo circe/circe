@@ -1,6 +1,6 @@
 package io.circe.cursor
 
-import cats.Functor
+import cats.Applicative
 import io.circe.{ Cursor, Json, JsonObject }
 
 private[circe] final case class CObject(
@@ -12,7 +12,7 @@ private[circe] final case class CObject(
 ) extends Cursor { self =>
   def context: List[Either[Int, String]] = Right(key) :: parent.context
 
-  def up: Option[Cursor] = Some {
+  def up: Cursor = {
     val newFocus = Json.fromJsonObject(if (changed) obj.add(key, focus) else obj)
 
     parent match {
@@ -22,7 +22,7 @@ private[circe] final case class CObject(
     }
   }
 
-  def delete: Option[Cursor] = Some {
+  def delete: Cursor = {
     val newFocus = Json.fromJsonObject(obj.remove(key))
 
     parent match {
@@ -33,32 +33,34 @@ private[circe] final case class CObject(
   }
 
   def withFocus(f: Json => Json): Cursor = copy(focus = f(focus), changed = true)
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Functor[F]): F[Cursor] =
+  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[Cursor] =
     F.map(f(focus))(newFocus => copy(focus = newFocus, changed = true))
 
-  def field(k: String): Option[Cursor] = obj(k).map { newFocus =>
-    copy(focus = newFocus, key = k)
+  def field(k: String): Cursor = obj(k) match {
+    case Some(newFocus) => copy(focus = newFocus, key = k)
+    case None => CFailure
   }
 
-  def deleteGoField(k: String): Option[Cursor] = obj(k).map { newFocus =>
-    copy(focus = newFocus, key = k, changed = true, obj = obj.remove(key))
+  def deleteGoField(k: String): Cursor = obj(k) match {
+    case Some(newFocus) => copy(focus = newFocus, key = k, changed = true, obj = obj.remove(key))
+    case None => CFailure
   }
 
   def lefts: Option[List[Json]] = None
   def rights: Option[List[Json]] = None
 
-  def left: Option[Cursor] = None
-  def right: Option[Cursor] = None
-  def first: Option[Cursor] = None
-  def last: Option[Cursor] = None
+  def left: Cursor = CFailure
+  def right: Cursor = CFailure
+  def first: Cursor = CFailure
+  def last: Cursor = CFailure
 
-  def deleteGoLeft: Option[Cursor] = None
-  def deleteGoRight: Option[Cursor] = None
-  def deleteGoFirst: Option[Cursor] = None
-  def deleteGoLast: Option[Cursor] = None
-  def deleteLefts: Option[Cursor] = None
-  def deleteRights: Option[Cursor] = None
+  def deleteGoLeft: Cursor = CFailure
+  def deleteGoRight: Cursor = CFailure
+  def deleteGoFirst: Cursor = CFailure
+  def deleteGoLast: Cursor = CFailure
+  def deleteLefts: Cursor = CFailure
+  def deleteRights: Cursor = CFailure
 
-  def setLefts(x: List[Json]): Option[Cursor] = None
-  def setRights(x: List[Json]): Option[Cursor] = None
+  def setLefts(x: List[Json]): Cursor = CFailure
+  def setRights(x: List[Json]): Cursor = CFailure
 }
