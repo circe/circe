@@ -1,7 +1,7 @@
 package io.circe.cursor
 
 import cats.Functor
-import io.circe.{ Context, Cursor, Json }
+import io.circe.{ Cursor, Json }
 
 private[circe] final case class CArray(
   focus: Json,
@@ -10,7 +10,7 @@ private[circe] final case class CArray(
   ls: List[Json],
   rs: List[Json]
 ) extends Cursor { self =>
-  def context: List[Context] = Context.inArray(focus, ls.length) :: parent.context
+  def context: List[Either[Int, String]] = Left(ls.length) :: parent.context
 
   def up: Option[Cursor] = Some {
     val newFocus = Json.fromValues((focus :: rs).reverse_:::(ls))

@@ -1,7 +1,7 @@
 package io.circe.cursor
 
 import cats.Functor
-import io.circe.{ Context, Cursor, Json, JsonObject }
+import io.circe.{ Cursor, Json, JsonObject }
 
 private[circe] final case class CObject(
   focus: Json,
@@ -10,7 +10,7 @@ private[circe] final case class CObject(
   changed: Boolean,
   obj: JsonObject
 ) extends Cursor { self =>
-  def context: List[Context] = Context.inObject(focus, key) :: parent.context
+  def context: List[Either[Int, String]] = Right(key) :: parent.context
 
   def up: Option[Cursor] = Some {
     val newFocus = Json.fromJsonObject(if (changed) obj.add(key, focus) else obj)

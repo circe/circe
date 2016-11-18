@@ -25,7 +25,7 @@ abstract class Cursor extends GenericCursor[Cursor] {
   /**
    * Return the current context of the focus.
    */
-  def context: List[Context]
+  def context: List[Either[Int, String]]
 
   final def top: Json = {
     @tailrec
@@ -131,9 +131,13 @@ final object Cursor {
    */
   def apply(j: Json): Cursor = CJson(j)
 
+  private[this] val printContext: Either[Int, String] => String = _ match {
+    case Right(k) => s"{$k}"
+    case Left(i) => s"[$i]"
+  }
+
   implicit final val showCursor: Show[Cursor] = Show.show { c =>
-    val sc = Show[Context]
-    s"${ c.context.map(e => sc.show(e)).mkString(", ") } ==> ${ Show[Json].show(c.focus) }"
+    s"${ c.context.map(printContext).mkString(", ") } ==> ${ Show[Json].show(c.focus) }"
   }
 
   implicit final val eqCursor: Eq[Cursor] = Eq.instance {

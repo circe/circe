@@ -1,10 +1,10 @@
 package io.circe.cursor
 
 import cats.Functor
-import io.circe.{ Context, Cursor, Json }
+import io.circe.{ Cursor, Json }
 
 private[circe] final case class CJson(focus: Json) extends Cursor {
-  def context: List[Context] = Nil
+  def context: List[Either[Int, String]] = Nil
   def up: Option[Cursor] = None
   def delete: Option[Cursor] = None
   def withFocus(f: Json => Json): Cursor = CJson(f(focus))
