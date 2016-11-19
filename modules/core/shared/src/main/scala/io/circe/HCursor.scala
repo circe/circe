@@ -20,7 +20,7 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
    * A work-around to allow us to keep history lazy without worrying about
    * overflowing the stack.
    */
-  protected def depth: Int
+  protected def depth: Int = 0
 
   def history: List[HistoryOp]
 
@@ -38,7 +38,7 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
    * If the last operation was not successful, reattempt it.
    */
   final def reattempted: HCursor = new HCursor(self.cursor) {
-    protected final def depth: Int = self.depth + 1
+    protected final override def depth: Int = self.depth + 1
     final def history: List[HistoryOp] = HistoryOp.reattempt :: self.history
   }
 
@@ -48,7 +48,7 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
         private[this] val incorrectFocus: Boolean =
           (e.requiresObject && !self.focus.isObject) || (e.requiresArray && !self.focus.isArray)
 
-        protected final def depth: Int = self.depth + 1
+        protected final override def depth: Int = self.depth + 1
         final def history: List[HistoryOp] = HistoryOp.fail(e, incorrectFocus) :: self.history
       }
     )
@@ -60,12 +60,12 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
        */
       if (self.depth >= 1024) {
         new HCursor(c) {
-          protected final val depth: Int = self.depth + 1
+          protected final override val depth: Int = self.depth + 1
           final val history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
         }
       } else {
         new HCursor(c) {
-          protected final val depth: Int = self.depth + 1
+          protected final override val depth: Int = self.depth + 1
           final def history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
         }
       }
@@ -76,14 +76,14 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
   final def top: Json = cursor.top
   final def delete: ACursor = toACursor(cursor.delete, CursorOp.DeleteGoParent)
   final def withFocus(f: Json => Json): HCursor = new HCursor(cursor.withFocus(f)) {
-    protected final val depth: Int = self.depth + 1
+    protected final override val depth: Int = self.depth + 1
     final def history: List[HistoryOp] = self.history
   }
 
   final def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
     Functor[F].map(cursor.withFocusM(f))(c =>
       new HCursor(c) {
-        protected final val depth: Int = self.depth + 1
+        protected final override val depth: Int = self.depth + 1
         final def history: List[HistoryOp] = self.history
       }
     )
@@ -131,7 +131,6 @@ final object HCursor {
    * Create an [[HCursor]] from a [[Cursor]] in order to track history.
    */
   final def fromCursor(cursor: Cursor): HCursor = new HCursor(cursor) {
-    protected final def depth: Int = 0
     final def history: List[HistoryOp] = Nil
   }
 
