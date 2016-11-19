@@ -15,7 +15,7 @@ private[circe] final class SeqDecoder[A, C[_]](
       var failed: DecodingFailure = null
 
       while (failed.eq(null) && current.succeeded) {
-        decodeA(current.any) match {
+        decodeA(current.asInstanceOf[HCursor]) match {
           case Left(e) => failed = e
           case Right(a) =>
             builder += a
@@ -25,7 +25,7 @@ private[circe] final class SeqDecoder[A, C[_]](
 
       if (failed.eq(null)) Right(builder.result) else Left(failed)
     } else {
-      if (c.focus.isArray) Right(cbf.apply.result) else {
+      if (c.value.isArray) Right(cbf.apply.result) else {
         Left(DecodingFailure("CanBuildFrom for A", c.history))
       }
     }
@@ -40,7 +40,7 @@ private[circe] final class SeqDecoder[A, C[_]](
       val failures = List.newBuilder[DecodingFailure]
 
       while (current.succeeded) {
-        decodeA.decodeAccumulating(current.any) match {
+        decodeA.decodeAccumulating(current.asInstanceOf[HCursor]) match {
           case Validated.Invalid(es) =>
             failed = true
             failures += es.head
@@ -58,7 +58,7 @@ private[circe] final class SeqDecoder[A, C[_]](
         }
       }
     } else {
-      if (c.focus.isArray) Validated.valid(cbf.apply.result) else {
+      if (c.value.isArray) Validated.valid(cbf.apply.result) else {
         Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
       }
     }
