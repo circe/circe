@@ -278,6 +278,9 @@ lazy val genericExtrasBase = crossProject.crossType(CrossType.Pure).in(file("mod
       }
     )
   )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-generic-extras" % previousCirceVersion)
+  )
   .jvmConfigure(_.copy(id = "genericExtras"))
   .jsConfigure(_.copy(id = "genericExtrasJS"))
   .dependsOn(genericBase)
@@ -296,6 +299,9 @@ lazy val shapesBase = crossProject.crossType(CrossType.Pure).in(file("modules/sh
   .settings(macroDependencies: _*)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+  )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-shapes" % previousCirceVersion)
   )
   .jvmConfigure(_.copy(id = "shapes"))
   .jsConfigure(_.copy(id = "shapesJS"))
@@ -419,6 +425,9 @@ lazy val testingBase = crossProject.in(file("modules/testing"))
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
+  )
+  .jvmSettings(
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-testing" % previousCirceVersion)
   )
   .dependsOn(coreBase)
 
