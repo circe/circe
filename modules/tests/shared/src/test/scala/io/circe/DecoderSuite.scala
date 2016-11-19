@@ -306,4 +306,12 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   "decodeVector" should "match sequence decoders" in forAll { (xs: List[Int]) =>
     assert(Decoder.decodeVector[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toVector).decodeJson(xs.asJson))
   }
+
+  "HCursor#history" should "be stack safe" in {
+    val size = 10000
+    val json = List.fill(size)(1).asJson.mapArray(_ :+ true.asJson)
+    val Left(DecodingFailure(_, history)) = Decoder[List[Int]].decodeJson(json)
+
+    assert(history.size === size + 1)
+  }
 }
