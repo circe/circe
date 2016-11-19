@@ -101,22 +101,21 @@ abstract class Cursor extends GenericCursor[Cursor] {
     go(Some(this))
   }
 
-  final def downArray: Option[Cursor] = focus.asArray match {
-    case Some(h :: t) => Some(CArray(h, this, false, Nil, t))
-    case Some(Nil) => None
-    case None => None
+  final def downArray: Option[Cursor] = focus match {
+    case Json.JArray(h :: t) => Some(CArray(h, this, false, Nil, t))
+    case _ => None
   }
 
   final def downAt(p: Json => Boolean): Option[Cursor] = downArray.flatMap(_.find(p))
 
   final def downN(n: Int): Option[Cursor] = downArray.flatMap(_.rightN(n))
 
-  final def downField(k: String): Option[Cursor] = focus.asObject match {
-    case Some(o) => o(k) match {
-      case Some(j) => Some(CObject(j, k, this, false, o))
-      case None => None
-    }
-    case None => None
+  final def downField(k: String): Option[Cursor] = focus match {
+    case Json.JObject(o) =>
+      val m = o.toMap
+
+      if (m.contains(k)) Some(CObject(m(k), k, this, false, o)) else None
+    case _ => None
   }
 
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = HCursor.fromCursor(this).as[A]

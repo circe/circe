@@ -72,15 +72,9 @@ sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACur
    */
   final def validation: Validated[HCursor, HCursor] = Validated.fromEither(either)
 
-  /**
-   * A helper method to simplify performing operations on the underlying [[HCursor]].
-   */
-  @inline private[this] def withHCursor(f: HCursor => ACursor): ACursor = if (this.succeeded) f(this.any) else this
-
   final def focus: Option[Json] = success.map(_.focus)
   final def top: Option[Json] = success.map(_.top)
 
-  final def delete: ACursor = withHCursor(_.delete)
   final def withFocus(f: Json => Json): ACursor =
     if (this.succeeded) ACursor.ok(this.any.withFocus(f)) else this
 
@@ -96,30 +90,31 @@ sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACur
   final def fieldSet: Option[Set[String]] = success.flatMap(_.fieldSet)
   final def fields: Option[List[String]]  = success.flatMap(_.fields)
 
-  final def up: ACursor                          = withHCursor(_.up)
-  final def left: ACursor                        = withHCursor(_.left)
-  final def right: ACursor                       = withHCursor(_.right)
-  final def first: ACursor                       = withHCursor(_.first)
-  final def last: ACursor                        = withHCursor(_.last)
-  final def leftN(n: Int): ACursor               = withHCursor(_.leftN(n))
-  final def rightN(n: Int): ACursor              = withHCursor(_.rightN(n))
-  final def leftAt(p: Json => Boolean): ACursor  = withHCursor(_.leftAt(p))
-  final def rightAt(p: Json => Boolean): ACursor = withHCursor(_.rightAt(p))
-  final def find(p: Json => Boolean): ACursor    = withHCursor(_.find(p))
-  final def downArray: ACursor                   = withHCursor(_.downArray)
-  final def downAt(p: Json => Boolean): ACursor  = withHCursor(_.downAt(p))
-  final def downN(n: Int): ACursor               = withHCursor(_.downN(n))
-  final def field(k: String): ACursor            = withHCursor(_.field(k))
-  final def downField(k: String): ACursor        = withHCursor(_.downField(k))
-  final def deleteGoLeft: ACursor                = withHCursor(_.deleteGoLeft)
-  final def deleteGoRight: ACursor               = withHCursor(_.deleteGoRight)
-  final def deleteGoFirst: ACursor               = withHCursor(_.deleteGoFirst)
-  final def deleteGoLast: ACursor                = withHCursor(_.deleteGoLast)
-  final def deleteLefts: ACursor                 = withHCursor(_.deleteLefts)
-  final def deleteRights: ACursor                = withHCursor(_.deleteRights)
-  final def setLefts(x: List[Json]): ACursor     = withHCursor(_.setLefts(x))
-  final def setRights(x: List[Json]): ACursor    = withHCursor(_.setRights(x))
-  final def deleteGoField(k: String): ACursor    = withHCursor(_.deleteGoField(k))
+  final def delete: ACursor                      = if (failed) this else any.delete
+  final def up: ACursor                          = if (failed) this else any.up
+  final def left: ACursor                        = if (failed) this else any.left
+  final def right: ACursor                       = if (failed) this else any.right
+  final def first: ACursor                       = if (failed) this else any.first
+  final def last: ACursor                        = if (failed) this else any.last
+  final def leftN(n: Int): ACursor               = if (failed) this else any.leftN(n)
+  final def rightN(n: Int): ACursor              = if (failed) this else any.rightN(n)
+  final def leftAt(p: Json => Boolean): ACursor  = if (failed) this else any.leftAt(p)
+  final def rightAt(p: Json => Boolean): ACursor = if (failed) this else any.rightAt(p)
+  final def find(p: Json => Boolean): ACursor    = if (failed) this else any.find(p)
+  final def downArray: ACursor                   = if (failed) this else any.downArray
+  final def downAt(p: Json => Boolean): ACursor  = if (failed) this else any.downAt(p)
+  final def downN(n: Int): ACursor               = if (failed) this else any.downN(n)
+  final def field(k: String): ACursor            = if (failed) this else any.field(k)
+  final def downField(k: String): ACursor        = if (failed) this else any.downField(k)
+  final def deleteGoLeft: ACursor                = if (failed) this else any.deleteGoLeft
+  final def deleteGoRight: ACursor               = if (failed) this else any.deleteGoRight
+  final def deleteGoFirst: ACursor               = if (failed) this else any.deleteGoFirst
+  final def deleteGoLast: ACursor                = if (failed) this else any.deleteGoLast
+  final def deleteLefts: ACursor                 = if (failed) this else any.deleteLefts
+  final def deleteRights: ACursor                = if (failed) this else any.deleteRights
+  final def setLefts(x: List[Json]): ACursor     = if (failed) this else any.setLefts(x)
+  final def setRights(x: List[Json]): ACursor    = if (failed) this else any.setRights(x)
+  final def deleteGoField(k: String): ACursor    = if (failed) this else any.deleteGoField(k)
 
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
   final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
