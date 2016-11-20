@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: home
 title:  "Home"
 section: "home"
 ---
@@ -12,12 +12,12 @@ section: "home"
 circe (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is
 a JSON library for Scala (and [Scala.js][scala-js]).
 
-circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for 
+circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for
 [a number of reasons](https://github.com/travisbrown/circe/issues/11).
 
 <a name="quick-start"></a>
 
-{% include_relative _tut/quickstart.md %}
+{% include_relative quickstart.md %}
 
 ## Why?
 
@@ -48,7 +48,7 @@ fussiest code in Argonaut. The [`jackson`][circe-jackson] subproject supports us
 circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
 with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
 
-See the [Parsing page](tut/parsing.html) for more details.
+See the [Parsing page](parsing.html) for more details.
 
 ### Lenses
 
@@ -56,12 +56,12 @@ circe doesn't use or provide lenses in the `core` project. This is related to th
 since [Monocle][monocle] has a Scalaz dependency, but we also feel that it simplifies the API. The
 0.3.0 release added [an experimental `optics` subproject][optics-pr] that provides Monocle lenses.
 
-See the [Optics page](tut/optics.html) for more details.
+See the [Optics page](optics.html) for more details.
 
 ### Codec derivation
 
 circe does not use macros or provide any kind of automatic derivation in the `core` project. Instead
-of Argonaut's limited macro-based derivation (which  does not support sealed trait hierarchies, for
+of Argonaut's limited macro-based derivation (which does not support sealed trait hierarchies, for
 example), circe includes a subproject (`generic`) that provides generic codec derivation using
 [Shapeless][shapeless].
 
@@ -70,7 +70,7 @@ example), circe includes a subproject (`generic`) that provides generic codec de
 case classes and sealed trait hierarchies. It also includes derivation of "incomplete" case class
 instances (see my recent [blog post][incompletes] for details).
 
-See the [Encoding and Decoding page](tut/codec.html) for more details.
+See the [Encoding and Decoding page](codec.html) for more details.
 
 ### Aliases
 

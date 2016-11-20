@@ -1,0 +1,11 @@
+.technologies {
+	display: none;
+}
+
+.jumbotron {
+  background-image: none;
+}
+
+.sidebar-nav > .sidebar-brand a .brand-wrapper {
+  background-size: 36px 36px !important;
+}

@@ -1,7 +1,7 @@
 ---
-layout: default
+layout: docs
 title:  "Parsing JSON"
-section: "parsing"
+position: 1
 ---
 
 # Parsing JSON
