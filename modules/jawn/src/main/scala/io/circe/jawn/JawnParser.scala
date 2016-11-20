@@ -1,6 +1,7 @@
 package io.circe.jawn
 
-import io.circe.{ Json, Parser, ParsingFailure }
+import cats.data.ValidatedNel
+import io.circe.{ Decoder, Error, Json, Parser, ParsingFailure }
 import java.io.File
 import java.nio.ByteBuffer
 import scala.util.{ Failure, Success, Try }
@@ -19,4 +20,16 @@ class JawnParser extends Parser {
 
   final def parseByteBuffer(buffer: ByteBuffer): Either[ParsingFailure, Json] =
     fromTry(CirceSupportParser.parseFromByteBuffer(buffer))
+
+  final def decodeByteBuffer[A: Decoder](buffer: ByteBuffer): Either[Error, A] =
+    finishDecode[A](parseByteBuffer(buffer))
+
+  final def decodeByteBufferAccumulating[A: Decoder](buffer: ByteBuffer): ValidatedNel[Error, A] =
+    finishDecodeAccumulating[A](parseByteBuffer(buffer))
+
+  final def decodeFile[A: Decoder](file: File): Either[Error, A] =
+    finishDecode[A](parseFile(file))
+
+  final def decodeFileAccumulating[A: Decoder](file: File): ValidatedNel[Error, A] =
+    finishDecodeAccumulating[A](parseFile(file))
 }
