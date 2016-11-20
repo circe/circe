@@ -3,7 +3,7 @@ package io.circe
 import cats.Applicative
 import scala.annotation.tailrec
 
-sealed abstract class HCursor extends ACursor { self =>
+sealed abstract class HCursor extends ACursor {
   def value: Json
 
   final def succeeded: Boolean = true
@@ -127,7 +127,7 @@ sealed abstract class HCursor extends ACursor { self =>
 final object HCursor {
   def fromJson(value: Json): HCursor = ValueCursor(value, Nil)
 
-  private[circe] final case class ValueCursor(value: Json, history: List[HistoryOp]) extends HCursor { self =>
+  private[circe] final case class ValueCursor(value: Json, history: List[HistoryOp]) extends HCursor {
     final def withFocus(f: Json => Json): ACursor = copy(value = f(value))
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
@@ -167,7 +167,7 @@ final object HCursor {
     changed: Boolean,
     ls: List[Json],
     rs: List[Json]
-  ) extends HCursor { self =>
+  ) extends HCursor {
     final def withFocus(f: Json => Json): ACursor = copy(value = f(value), changed = true)
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
@@ -175,7 +175,7 @@ final object HCursor {
 
     final def up: ACursor = {
       val newValue = Json.fromValues((value :: rs).reverse_:::(ls))
-      val newHistory = HistoryOp.ok(CursorOp.MoveUp) :: self.history
+      val newHistory = HistoryOp.ok(CursorOp.MoveUp) :: history
 
       parent match {
         case v: ValueCursor => ValueCursor(newValue, newHistory)
@@ -191,7 +191,7 @@ final object HCursor {
 
     def delete: ACursor = {
       val newValue = Json.fromValues(rs.reverse_:::(ls))
-      val newHistory = HistoryOp.ok(CursorOp.DeleteGoParent) :: self.history
+      val newHistory = HistoryOp.ok(CursorOp.DeleteGoParent) :: history
 
       parent match {
         case v: ValueCursor => v.copy(value = newValue, history = newHistory)
@@ -281,7 +281,7 @@ final object HCursor {
     changed: Boolean,
     key: String,
     obj: JsonObject
-  ) extends HCursor { self =>
+  ) extends HCursor {
     final def withFocus(f: Json => Json): ACursor = copy(value = f(value), changed = true)
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
@@ -292,7 +292,7 @@ final object HCursor {
 
     def up: ACursor = {
       val newValue = Json.fromJsonObject(if (changed) obj.add(key, value) else obj)
-      val newHistory = HistoryOp.ok(CursorOp.MoveUp) :: self.history
+      val newHistory = HistoryOp.ok(CursorOp.MoveUp) :: history
 
       parent match {
         case v: ValueCursor => v.copy(value = newValue, history = newHistory)
@@ -303,7 +303,7 @@ final object HCursor {
 
     def delete: ACursor = {
       val newValue = Json.fromJsonObject(obj.remove(key))
-      val newHistory = HistoryOp.ok(CursorOp.DeleteGoParent) :: self.history
+      val newHistory = HistoryOp.ok(CursorOp.DeleteGoParent) :: history
 
       parent match {
         case v: ValueCursor => v.copy(value = newValue, history = newHistory)
