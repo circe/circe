@@ -624,10 +624,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Left(df) if df.history.isEmpty => rightNone
         case Left(df) => Left(df)
       }
-    case c =>
-      if (!c.history.takeWhile(_.failed).exists(_.incorrectFocus)) rightNone else {
-        Left(DecodingFailure("[A]Option[A]", c.history))
-      }
+    case c: FailedCursor =>
+      if (!c.incorrectFocus) rightNone else Left(DecodingFailure("[A]Option[A]", c.history))
   }
 
   /**

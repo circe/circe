@@ -384,10 +384,9 @@ abstract class ACursor {
 }
 
 final object ACursor {
-  private[this] val eqHistoryOpList: Eq[List[HistoryOp]] = cats.instances.list.catsKernelStdEqForList[HistoryOp]
-
-  implicit final val eqACursor: Eq[ACursor] = Eq.instance {
+  implicit val eqACursor: Eq[ACursor] = Eq.instance {
     case (a: HCursor, b: HCursor) => HCursor.eqHCursor.eqv(a, b)
-    case (a, b) => eqHistoryOpList.eqv(a.history, b.history)
+    case (a: FailedCursor, b: FailedCursor) => FailedCursor.eqFailedCursor.eqv(a, b)
+    case _ => false
   }
 }
