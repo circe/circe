@@ -381,9 +381,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeUnit: Decoder[Unit] = new Decoder[Unit] {
     final def apply(c: HCursor): Result[Unit] = c.focus match {
-      case JNull => Right(())
       case JObject(obj) if obj.isEmpty => Right(())
       case JArray(arr) if arr.isEmpty => Right(())
+      case other if other.isNull => Right(())
       case _ => Left(DecodingFailure("Unit", c.history))
     }
   }
@@ -417,12 +417,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.focus match {
-      case JNull => Right(Float.NaN)
       case JNumber(number) => Right(number.toDouble.toFloat)
       case JString(string) => JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
         case Some(v) => Right(v)
         case None => fail(c)
       }
+      case other if other.isNull => Right(Float.NaN)
       case _ => fail(c)
     }
   }
@@ -438,12 +438,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
     final def apply(c: HCursor): Result[Double] = c.focus match {
-      case JNull => Right(Double.NaN)
       case JNumber(number) => Right(number.toDouble)
       case JString(string) => JsonNumber.fromString(string).map(_.toDouble) match {
         case Some(v) => Right(v)
         case None => fail(c)
       }
+      case other if other.isNull => Right(Double.NaN)
       case _ => fail(c)
     }
   }
