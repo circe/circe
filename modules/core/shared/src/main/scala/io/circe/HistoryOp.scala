@@ -37,7 +37,7 @@ final object HistoryOp {
     final def op: Option[CursorOp] = Some(o)
   }
 
-  implicit final val eqCursorOp: Eq[HistoryOp] = Eq.instance {
+  implicit final val eqHistoryOp: Eq[HistoryOp] = Eq.instance {
     case (Reattempt, Reattempt) => true
     case (El(o1, s1, c1), El(o2, s2, c2)) => Eq[CursorOp].eqv(o1, o2) && s1 == s2 && c1 == c2
     case (_, _) => false
