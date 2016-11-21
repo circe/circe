@@ -7,11 +7,11 @@ import scala.annotation.tailrec
 sealed abstract class HCursor extends ACursor {
   def value: Json
   protected def lastCursor: HCursor
-  protected def lastOp: HistoryOp
+  protected def lastOp: CursorOp
 
-  final def history: List[HistoryOp] = {
+  final def history: List[CursorOp] = {
     var next = this
-    val builder = List.newBuilder[HistoryOp]
+    val builder = List.newBuilder[CursorOp]
 
     while (next.ne(null)) {
       if (next.lastOp.ne(null)) {
@@ -89,7 +89,7 @@ sealed abstract class HCursor extends ACursor {
 final object HCursor {
   def fromJson(value: Json): HCursor = new ValueCursor(value) {
     protected def lastCursor: HCursor = null
-    protected def lastOp: HistoryOp = null
+    protected def lastOp: CursorOp = null
   }
 
   private[this] val eqJsonList: Eq[List[Json]] = cats.instances.list.catsKernelStdEqForList[Json]
@@ -97,7 +97,7 @@ final object HCursor {
   implicit val eqHCursor: Eq[HCursor] = new Eq[HCursor] {
     def eqv(a: HCursor, b: HCursor): Boolean =
       Json.eqJson.eqv(a.value, b.value) &&
-      ((a.lastOp.eq(null) && b.lastOp.eq(null)) || HistoryOp.eqHistoryOp.eqv(a.lastOp, b.lastOp)) &&
+      ((a.lastOp.eq(null) && b.lastOp.eq(null)) || CursorOp.eqCursorOp.eqv(a.lastOp, b.lastOp)) &&
       ((a.lastCursor.eq(null) && b.lastCursor.eq(null)) || eqv(a.lastCursor, b.lastCursor)) && (
         (a, b) match {
           case (_: ValueCursor, _: ValueCursor) => true
@@ -128,11 +128,11 @@ final object HCursor {
             a.parent match {
               case pv: ValueCursor => new ValueCursor(newValue) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
               case pa: ArrayCursor => new ArrayCursor(newValue, pa.parent, a.changed || pa.changed, pa.ls, pa.rs) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
               case po: ObjectCursor => new ObjectCursor(
                 newValue,
@@ -142,7 +142,7 @@ final object HCursor {
                 if (a.changed) po.obj.add(po.key, newValue) else po.obj
               ) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
             }
           )
@@ -153,11 +153,11 @@ final object HCursor {
             o.parent match {
               case pv: ValueCursor => new ValueCursor(newValue) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
               case pa: ArrayCursor => new ArrayCursor(newValue, pa.parent, o.changed || pa.changed, pa.ls, pa.rs) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
               case po: ObjectCursor => new ObjectCursor(
                 newValue,
@@ -167,7 +167,7 @@ final object HCursor {
                 po.obj
               ) {
                 protected def lastCursor: HCursor = null
-                protected def lastOp: HistoryOp = null
+                protected def lastOp: CursorOp = null
               }
             }
           )
@@ -180,7 +180,7 @@ final object HCursor {
       case Json.JArray(h :: t) =>
         new ArrayCursor(h, this, false, Nil, t) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DownArray)
+          protected def lastOp: CursorOp = CursorOp.DownArray
         }
       case _ => fail(CursorOp.DownArray)
     }
@@ -192,7 +192,7 @@ final object HCursor {
         if (!m.contains(k)) fail(CursorOp.DownField(k)) else {
           new ObjectCursor(m(k), this, false, k, o) {
             protected def lastCursor: HCursor = self
-            protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DownField(k))
+            protected def lastOp: CursorOp = CursorOp.DownField(k)
           }
         }
       case _ => fail(CursorOp.DownField(k))
@@ -200,21 +200,21 @@ final object HCursor {
 
     protected final def fail(op: CursorOp): ACursor =
       new FailedCursor((op.requiresObject && !value.isObject) || (op.requiresArray && !value.isArray)) {
-        def history: List[HistoryOp] = HistoryOp.fail(op, incorrectFocus) :: self.history
+        def history: List[CursorOp] = op :: self.history
       }
   }
 
   private[this] abstract class ValueCursor(final val value: Json) extends BaseHCursor { self =>
     final def withFocus(f: Json => Json): ACursor = new ValueCursor(f(value)) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = null
+      protected def lastOp: CursorOp = null
     }
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
       F.map(f(value))(newValue =>
         new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = null
+          protected def lastOp: CursorOp = null
         }
       )
 
@@ -252,14 +252,14 @@ final object HCursor {
   ) extends BaseHCursor { self =>
     final def withFocus(f: Json => Json): ACursor = new ArrayCursor(f(value), parent, changed = true, ls, rs) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = null
+      protected def lastOp: CursorOp = null
     }
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
       F.map(f(value))(newValue =>
         new ArrayCursor(newValue, parent, changed = true, ls, rs) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = null
+          protected def lastOp: CursorOp = null
         }
       )
 
@@ -269,11 +269,11 @@ final object HCursor {
       parent match {
         case v: ValueCursor =>  new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
         case a: ArrayCursor => new ArrayCursor(newValue, a.parent, changed || a.changed, a.ls, a.rs) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
         case o: ObjectCursor => new ObjectCursor(
           newValue,
@@ -283,7 +283,7 @@ final object HCursor {
           if (changed) o.obj.add(o.key, newValue) else o.obj
         ) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
       }
     }
@@ -294,11 +294,11 @@ final object HCursor {
       parent match {
         case v: ValueCursor => new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
         case a: ArrayCursor => new ArrayCursor(newValue, a.parent, true, a.ls, a.rs) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
         case o: ObjectCursor => new ObjectCursor(
           newValue,
@@ -308,7 +308,7 @@ final object HCursor {
           o.obj
         ) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
       }
     }
@@ -319,7 +319,7 @@ final object HCursor {
     final def left: ACursor = ls match {
       case h :: t => new ArrayCursor(h, parent, changed, t, value :: rs) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveLeft)
+        protected def lastOp: CursorOp = CursorOp.MoveLeft
       }
       case Nil => fail(CursorOp.MoveLeft)
     }
@@ -327,7 +327,7 @@ final object HCursor {
     final def right: ACursor = rs match {
       case h :: t => new ArrayCursor(h, parent, changed, value :: ls, t) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveRight)
+        protected def lastOp: CursorOp = CursorOp.MoveRight
       }
       case Nil => fail(CursorOp.MoveRight)
     }
@@ -335,7 +335,7 @@ final object HCursor {
     final def first: ACursor = (value :: rs).reverse_:::(ls) match {
       case h :: t => new ArrayCursor(h, parent, changed, Nil, t) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveFirst)
+        protected def lastOp: CursorOp = CursorOp.MoveFirst
       }
       case Nil => fail(CursorOp.MoveFirst)
     }
@@ -343,7 +343,7 @@ final object HCursor {
     final def last: ACursor = (value :: ls).reverse_:::(rs) match {
       case h :: t => new ArrayCursor(h, parent, changed, t, Nil) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveLast)
+        protected def lastOp: CursorOp = CursorOp.MoveLast
       }
       case Nil => fail(CursorOp.MoveLast)
     }
@@ -351,7 +351,7 @@ final object HCursor {
     final def deleteGoLeft: ACursor = ls match {
       case h :: t => new ArrayCursor(h, parent, true, t, rs) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoLeft)
+        protected def lastOp: CursorOp = CursorOp.DeleteGoLeft
       }
       case Nil => fail(CursorOp.DeleteGoLeft)
     }
@@ -359,7 +359,7 @@ final object HCursor {
     final def deleteGoRight: ACursor = rs match {
       case h :: t => new ArrayCursor(h, parent, true, ls, t) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoRight)
+        protected def lastOp: CursorOp = CursorOp.DeleteGoRight
       }
       case Nil => fail(CursorOp.DeleteGoRight)
     }
@@ -367,7 +367,7 @@ final object HCursor {
     final def deleteGoFirst: ACursor = rs.reverse_:::(ls) match {
       case h :: t => new ArrayCursor(h, parent, true, Nil, t) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoFirst)
+        protected def lastOp: CursorOp = CursorOp.DeleteGoFirst
       }
       case Nil => fail(CursorOp.DeleteGoFirst)
     }
@@ -375,29 +375,29 @@ final object HCursor {
     final def deleteGoLast: ACursor = ls.reverse_:::(rs) match {
       case h :: t => new ArrayCursor(h, parent, true, t, Nil) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoLast)
+        protected def lastOp: CursorOp = CursorOp.DeleteGoLast
       }
       case Nil => fail(CursorOp.DeleteGoLast)
     }
 
     final def deleteLefts: ACursor = new ArrayCursor(value, parent, true, Nil, rs) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteLefts)
+      protected def lastOp: CursorOp = CursorOp.DeleteLefts
     }
 
     final def deleteRights: ACursor = new ArrayCursor(value, parent, true, ls, Nil) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteRights)
+      protected def lastOp: CursorOp = CursorOp.DeleteRights
     }
 
     final def setLefts(js: List[Json]): ACursor = new ArrayCursor(value, parent, true, js, rs) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.SetLefts(js))
+      protected def lastOp: CursorOp = CursorOp.SetLefts(js)
     }
 
     final def setRights(js: List[Json]): ACursor = new ArrayCursor(value, parent, true, ls, js) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.SetRights(js))
+      protected def lastOp: CursorOp = CursorOp.SetRights(js)
     }
 
     final def field(k: String): ACursor = fail(CursorOp.Field(k))
@@ -413,14 +413,14 @@ final object HCursor {
   ) extends BaseHCursor { self =>
     final def withFocus(f: Json => Json): ACursor = new ObjectCursor(f(value), parent, true, key, obj) {
       protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = null
+      protected def lastOp: CursorOp = null
     }
 
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
       F.map(f(value))(newValue =>
         new ObjectCursor(newValue, parent, true, key, obj) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = null
+          protected def lastOp: CursorOp = null
         }
       )
 
@@ -433,15 +433,15 @@ final object HCursor {
       parent match {
         case v: ValueCursor => new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
         case a: ArrayCursor => new ArrayCursor(newValue, a.parent, changed || a.changed, a.ls, a.rs) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
         case o: ObjectCursor => new ObjectCursor(newValue, o.parent, changed || o.changed, o.key, o.obj) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.MoveUp)
+          protected def lastOp: CursorOp = CursorOp.MoveUp
         }
       }
     }
@@ -452,15 +452,15 @@ final object HCursor {
       parent match {
         case v: ValueCursor => new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
         case a: ArrayCursor => new ArrayCursor(newValue, a.parent, true, a.ls, a.rs) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
         case o: ObjectCursor => new ObjectCursor(newValue, o.parent, true, o.key, o.obj) {
           protected def lastCursor: HCursor = self
-          protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoParent)
+          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
       }
     }
@@ -470,7 +470,7 @@ final object HCursor {
 
       if (m.contains(k)) new ObjectCursor(m(k), parent, changed, k, obj) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.Field(k))
+        protected def lastOp: CursorOp = CursorOp.Field(k)
       } else fail(CursorOp.Field(k))
     }
 
@@ -479,7 +479,7 @@ final object HCursor {
 
       if (m.contains(k)) new ObjectCursor(m(k), parent, true, k, obj.remove(key)) {
         protected def lastCursor: HCursor = self
-        protected def lastOp: HistoryOp = HistoryOp.ok(CursorOp.DeleteGoField(k))
+        protected def lastOp: CursorOp = CursorOp.DeleteGoField(k)
       } else fail(CursorOp.DeleteGoField(k))
     }
 

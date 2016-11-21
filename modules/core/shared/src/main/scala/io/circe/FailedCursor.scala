@@ -51,5 +51,5 @@ abstract class FailedCursor(val incorrectFocus: Boolean) extends ACursor {
 
 final object FailedCursor {
   implicit val eqFailedCursor: Eq[FailedCursor] =
-    cats.instances.list.catsKernelStdEqForList[HistoryOp].on[FailedCursor](_.history)
+    cats.instances.list.catsKernelStdEqForList[CursorOp].on[FailedCursor](_.history)
 }

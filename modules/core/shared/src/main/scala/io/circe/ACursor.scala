@@ -44,7 +44,7 @@ abstract class ACursor {
    *
    * @group Decoding
    */
-  def history: List[HistoryOp]
+  def history: List[CursorOp]
 
   /**
    * Indicate whether this cursor represents the result of a successful
@@ -339,33 +339,32 @@ abstract class ACursor {
    *
    * @group Utilities
    */
-  final def replayOne(op: HistoryOp): ACursor = op.op match {
-    case Some(CursorOp.MoveLeft) => left
-    case Some(CursorOp.MoveRight) => right
-    case Some(CursorOp.MoveFirst) => first
-    case Some(CursorOp.MoveLast) => last
-    case Some(CursorOp.MoveUp) => up
-    case Some(CursorOp.LeftN(n)) => leftN(n)
-    case Some(CursorOp.RightN(n)) => rightN(n)
-    case Some(CursorOp.LeftAt(p)) => leftAt(p)
-    case Some(CursorOp.RightAt(p)) => rightAt(p)
-    case Some(CursorOp.Find(p)) => find(p)
-    case Some(CursorOp.Field(k)) => field(k)
-    case Some(CursorOp.DownField(k)) => downField(k)
-    case Some(CursorOp.DownArray) => downArray
-    case Some(CursorOp.DownAt(p)) => downAt(p)
-    case Some(CursorOp.DownN(n)) => downN(n)
-    case Some(CursorOp.DeleteGoParent) => delete
-    case Some(CursorOp.DeleteGoLeft) => deleteGoLeft
-    case Some(CursorOp.DeleteGoRight) => deleteGoRight
-    case Some(CursorOp.DeleteGoFirst) => deleteGoFirst
-    case Some(CursorOp.DeleteGoLast) => deleteGoLast
-    case Some(CursorOp.DeleteGoField(k)) => deleteGoField(k)
-    case Some(CursorOp.DeleteLefts) => deleteLefts
-    case Some(CursorOp.DeleteRights) => deleteRights
-    case Some(CursorOp.SetLefts(js)) => setLefts(js)
-    case Some(CursorOp.SetRights(js)) => setRights(js)
-    case None => this
+  final def replayOne(op: CursorOp): ACursor = op match {
+    case CursorOp.MoveLeft => left
+    case CursorOp.MoveRight => right
+    case CursorOp.MoveFirst => first
+    case CursorOp.MoveLast => last
+    case CursorOp.MoveUp => up
+    case CursorOp.LeftN(n) => leftN(n)
+    case CursorOp.RightN(n) => rightN(n)
+    case CursorOp.LeftAt(p) => leftAt(p)
+    case CursorOp.RightAt(p) => rightAt(p)
+    case CursorOp.Find(p) => find(p)
+    case CursorOp.Field(k) => field(k)
+    case CursorOp.DownField(k) => downField(k)
+    case CursorOp.DownArray => downArray
+    case CursorOp.DownAt(p) => downAt(p)
+    case CursorOp.DownN(n) => downN(n)
+    case CursorOp.DeleteGoParent => delete
+    case CursorOp.DeleteGoLeft => deleteGoLeft
+    case CursorOp.DeleteGoRight => deleteGoRight
+    case CursorOp.DeleteGoFirst => deleteGoFirst
+    case CursorOp.DeleteGoLast => deleteGoLast
+    case CursorOp.DeleteGoField(k) => deleteGoField(k)
+    case CursorOp.DeleteLefts => deleteLefts
+    case CursorOp.DeleteRights => deleteRights
+    case CursorOp.SetLefts(js) => setLefts(js)
+    case CursorOp.SetRights(js) => setRights(js)
   }
 
   /**
@@ -373,7 +372,7 @@ abstract class ACursor {
    *
    * @group Utilities
    */
-  final def replay(history: List[HistoryOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
+  final def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
 }
 
 final object ACursor {

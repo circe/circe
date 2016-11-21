@@ -23,7 +23,7 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
   }
 
   "Show[DecodingFailure]" should "produce the expected output on a small example" in {
-    val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo")).map(HistoryOp.ok)
+    val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
 
     assert(DecodingFailure("the message", ops).show === "DecodingFailure at .foo.bar[2]: the message")
   }
@@ -42,25 +42,23 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
       MoveRight,
       DownArray,
       DownField("foo")
-    ).map(HistoryOp.ok)
+    )
 
     val expected = "DecodingFailure at .foo.bar[0][2]{|<-!}: the message"
-
     assert(DecodingFailure("the message", ops).show === expected)
   }
 
   it should "display field selection" in forAll(downFields) { moves =>
-    val ops = moves.map(HistoryOp.ok)
     val selection = moves.foldRight("") {
       case (DownField(f), s) => s"$s.$f"
       case (_, s)            => s
     }
 
-    assert(DecodingFailure("the message", ops).show === s"DecodingFailure at $selection: the message")
+    assert(DecodingFailure("the message", moves).show === s"DecodingFailure at $selection: the message")
   }
 
   it should "display array indexing" in forAll(arrayMoves) { moves =>
-    val ops = (moves ++ List(DownArray)).map(HistoryOp.ok)
+    val ops = moves :+ DownArray
     val index = moves.foldLeft(0) {
       case (i, MoveLeft)  => i - 1
       case (i, MoveRight) => i + 1
