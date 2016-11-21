@@ -241,11 +241,6 @@ final object HCursor {
 
     final def field(k: String): ACursor = fail(CursorOp.Field(k))
     final def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
-
-    final def reattempt: ACursor = new ValueCursor(value) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.reattempt
-    }
   }
 
   private[this] abstract class ArrayCursor(
@@ -407,11 +402,6 @@ final object HCursor {
 
     final def field(k: String): ACursor = fail(CursorOp.Field(k))
     final def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
-
-    final def reattempt: ACursor = new ArrayCursor(value, parent, changed, rs, ls) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.reattempt
-    }
   }
 
   private[this] sealed abstract class ObjectCursor(
@@ -507,10 +497,5 @@ final object HCursor {
 
     final def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
     final def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
-
-    final def reattempt: ACursor = new ObjectCursor(value, parent, changed, key, obj) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: HistoryOp = HistoryOp.reattempt
-    }
   }
 }

@@ -47,8 +47,6 @@ abstract class FailedCursor(val incorrectFocus: Boolean) extends ACursor {
 
   final def field(k: String): ACursor = this
   final def deleteGoField(q: String): ACursor = this
-
-  final def reattempt: ACursor = this
 }
 
 final object FailedCursor {

@@ -70,13 +70,6 @@ abstract class ACursor {
   def success: Option[HCursor]
 
   /**
-   * If the last operation was not successful, reattempt it.
-   *
-   * @group Decoding
-   */
-  def reattempt: ACursor
-
-  /**
    * Return to the root of the document.
    *
    * @group Access
