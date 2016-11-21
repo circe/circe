@@ -141,6 +141,9 @@ final object JsonObject {
    */
   final def fromMap(m: Map[String, Json]): JsonObject = MapAndVectorJsonObject(m, m.keys.toVector)
 
+  private[circe] final def fromMapAndVector(m: Map[String, Json], keys: Vector[String]): JsonObject =
+    MapAndVectorJsonObject(m, keys)
+
   /**
    * Construct an empty [[JsonObject]].
    */
