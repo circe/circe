@@ -1,6 +1,7 @@
 package io.circe.jackson
 
-import io.circe.{ Json, Parser, ParsingFailure }
+import cats.data.ValidatedNel
+import io.circe.{ Decoder, Error, Json, Parser, ParsingFailure }
 import java.io.File
 import scala.util.control.NonFatal
 
@@ -22,4 +23,16 @@ trait JacksonParser extends Parser { this: WithJacksonMapper =>
   } catch {
     case NonFatal(error) => Left(ParsingFailure(error.getMessage, error))
   }
+
+  final def decodeByteArray[A: Decoder](bytes: Array[Byte]): Either[Error, A] =
+    finishDecode[A](parseByteArray(bytes))
+
+  final def decodeByteArrayAccumulating[A: Decoder](bytes: Array[Byte]): ValidatedNel[Error, A] =
+    finishDecodeAccumulating[A](parseByteArray(bytes))
+
+  final def decodeFile[A: Decoder](file: File): Either[Error, A] =
+    finishDecode[A](parseFile(file))
+
+  final def decodeFileAccumulating[A: Decoder](file: File): ValidatedNel[Error, A] =
+    finishDecodeAccumulating[A](parseFile(file))
 }
