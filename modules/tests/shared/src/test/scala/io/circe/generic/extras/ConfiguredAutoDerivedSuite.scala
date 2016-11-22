@@ -1,7 +1,8 @@
 package io.circe.generic.extras
 
 import cats.Eq
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder }
+import io.circe.ast.Json
 import io.circe.generic.extras.auto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -81,10 +82,12 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    val result = Decoder[Int => Qux[String]].decodeJson(
+      Json.obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      )
+    ).map(_(i))
 
     assert(result === Right(Qux(i, s, j)))
   }

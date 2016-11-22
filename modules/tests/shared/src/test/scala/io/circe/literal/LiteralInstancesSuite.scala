@@ -19,42 +19,42 @@ class LiteralInstancesSuite extends CirceSuite {
   "A literal String codec" should "round-trip values" in {
     val w = Witness("foo")
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Boolean codec" should "round-trip values" in {
     val w = Witness(true)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Float codec" should "round-trip values" in {
     val w = Witness(0.0F)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Double codec" should "round-trip values" in {
     val w = Witness(0.0)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Char codec" should "round-trip values" in {
     val w = Witness('a')
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Int codec" should "round-trip values" in {
     val w = Witness(0)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 
   "A literal Long codec" should "round-trip values" in {
     val w = Witness(0L)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+    assert(Decoder[w.T].decodeJson(Encoder[w.T].apply(w.value)) === Right(w.value))
   }
 }

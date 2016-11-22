@@ -1,6 +1,6 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import jawn.{ Facade, FContext, SupportParser }
 
 final object CirceSupportParser extends SupportParser[Json] {

@@ -1,4 +1,4 @@
-package io.circe
+package io.circe.ast
 
 import cats.Eq
 import io.circe.numbers.BiggerDecimal

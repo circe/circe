@@ -3,6 +3,7 @@ package io.circe
 import cats.Eq
 import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
 import cats.laws.discipline.arbitrary._
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import java.util.UUID
@@ -60,22 +61,24 @@ class StdLibCodecSuite extends CirceSuite {
     val json = Encoder[(Int, String, Char)].apply(t)
     val target = Json.arr(Json.fromInt(t._1), Json.fromString(t._2), Encoder[Char].apply(t._3))
 
-    assert(json === target && json.as[(Int, String, Char)] === Right(t))
+    assert(json === target && Decoder[(Int, String, Char)].decodeJson(json) === Right(t))
   }
 
   "A tuple decoder" should "fail if not given enough elements" in forAll { (i: Int, s: String) =>
-    assert(Json.arr(Json.fromInt(i), Json.fromString(s)).as[(Int, String, Double)].isLeft)
+    assert(Decoder[(Int, String, Double)].decodeJson(Json.arr(Json.fromInt(i), Json.fromString(s))).isLeft)
   }
 
   it should "fail if given too many elements" in forAll { (i: Int, s: String, d: Double) =>
-    assert(Json.arr(Json.fromInt(i), Json.fromString(s), Json.fromDoubleOrNull(d)).as[(Int, String)].isLeft)
+    assert(
+      Decoder[(Int, String)].decodeJson(Json.arr(Json.fromInt(i), Json.fromString(s), Json.fromDoubleOrNull(d))).isLeft
+    )
   }
 
   "A list decoder" should "not stack overflow with a large number of elements" in {
     val size = 10000
     val jsonArr = Json.arr(Seq.fill(size)(Json.fromInt(1)): _*)
 
-    val maybeList = jsonArr.as[List[Int]]
+    val maybeList = Decoder[List[Int]].decodeJson(jsonArr)
     assert(maybeList.isRight)
 
     val list = maybeList.right.getOrElse(???)
@@ -94,7 +97,7 @@ class StdLibCodecSuite extends CirceSuite {
     }
 
     val jsonArr = Json.arr(Json.fromInt(1), Json.fromString("foo"), Json.fromInt(0))
-    val result = jsonArr.as[List[Bomb]]
+    val result = Decoder[List[Bomb]].decodeJson(jsonArr)
 
     assert(result.isLeft)
   }

@@ -1,6 +1,6 @@
 package io.circe.jackson
 
-import io.circe.Json
+import io.circe.ast.Json
 import io.circe.tests.CirceSuite
 
 class JacksonPrintingSuite extends CirceSuite with JacksonInstances {

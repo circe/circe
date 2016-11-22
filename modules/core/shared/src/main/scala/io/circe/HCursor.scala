@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.{ Eq, Functor, Id }
+import io.circe.ast.Json
 
 /**
  * A cursor that tracks the history of operations performed with it.
@@ -127,6 +128,8 @@ sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HC
 }
 
 final object HCursor {
+  def fromJson(json: Json): HCursor = fromCursor(Cursor(json))
+
   /**
    * Create an [[HCursor]] from a [[Cursor]] in order to track history.
    */

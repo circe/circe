@@ -3,7 +3,7 @@ package io.circe.optics
 import cats.Eq
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import monocle.function.Plated.plate
 import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
 import monocle.law.discipline.{ PrismTests, TraversalTests }

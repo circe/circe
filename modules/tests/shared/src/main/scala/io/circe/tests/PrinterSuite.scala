@@ -1,6 +1,7 @@
 package io.circe.tests
 
-import io.circe.{ Parser, Printer }
+import io.circe.Parser
+import io.circe.ast.Printer
 import io.circe.testing.PrinterTests
 
 class PrinterSuite(printer: Printer, parser: Parser) extends CirceSuite {

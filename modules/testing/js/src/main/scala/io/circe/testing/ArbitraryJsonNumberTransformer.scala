@@ -1,6 +1,6 @@
 package io.circe.testing
 
-import io.circe.JsonNumber
+import io.circe.ast.JsonNumber
 import scala.scalajs.js.JSON
 import scala.util.Try
 

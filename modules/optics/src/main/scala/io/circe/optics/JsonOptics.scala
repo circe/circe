@@ -3,7 +3,7 @@ package io.circe.optics
 import cats.instances.list._
 import cats.syntax.functor._
 import cats.syntax.traverse._
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.JsonNumberOptics._
 import io.circe.optics.JsonObjectOptics.objectEach
 import monocle.{ Prism, Traversal }
@@ -11,7 +11,7 @@ import monocle.function.{ Each, Plated }
 import monocle.std.list._
 
 /**
- * Optics instances for [[io.circe.Json]].
+ * Optics instances for [[io.circe.ast.Json]].
  *
  * @author Sean Parsons
  * @author Travis Brown

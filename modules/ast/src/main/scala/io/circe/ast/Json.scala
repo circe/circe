@@ -1,4 +1,4 @@
-package io.circe
+package io.circe.ast
 
 import cats.{ Eq, Show }
 import io.circe.numbers.BiggerDecimal
@@ -48,16 +48,6 @@ sealed abstract class Json extends Product with Serializable {
     case JObject(o)  => jsonObject(o)
   }
 
-  /**
-   * Construct a cursor from this JSON value.
-   */
-  final def cursor: Cursor = Cursor(this)
-
-  /**
-   * Construct a cursor with history from this JSON value.
-   */
-  final def hcursor: HCursor = HCursor.fromCursor(Cursor(this))
-
   def isNull: Boolean
   def isBoolean: Boolean
   def isNumber: Boolean
@@ -95,11 +85,6 @@ sealed abstract class Json extends Product with Serializable {
       case JArray(_)   => "Array"
       case JObject(_)  => "Object"
     }
-
-  /**
-   * Attempts to decode this JSON value to another data type.
-   */
-  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(HCursor.fromCursor(cursor))
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.

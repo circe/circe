@@ -1,6 +1,6 @@
 package io.circe.jackson
 
-import io.circe.Json
+import io.circe.ast.Json
 
 /**
  * This package provides syntax for Jackson printing via enrichment classes.

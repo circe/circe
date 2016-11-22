@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.ast.{ Json, JsonObject }
 import io.circe.tests.CirceSuite
 import cats.data.Const
 

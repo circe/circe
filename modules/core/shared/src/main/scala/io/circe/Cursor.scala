@@ -2,6 +2,7 @@ package io.circe
 
 import cats.{ Eq, Functor, Id, Show }
 import cats.instances.list._
+import io.circe.ast.{ Json, JsonObject }
 import io.circe.cursor.{ CArray, CJson, CObject }
 import scala.annotation.tailrec
 

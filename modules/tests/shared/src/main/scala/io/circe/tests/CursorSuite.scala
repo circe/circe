@@ -1,7 +1,8 @@
 package io.circe.tests
 
 import cats.Eq
-import io.circe.{ GenericCursor, Json }
+import io.circe.{ Decoder, GenericCursor }
+import io.circe.ast.Json
 import io.circe.syntax._
 
 abstract class CursorSuite[C <: GenericCursor[C]](implicit
@@ -225,7 +226,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      l <- fromResult(a.leftAt(_.as[Int].right.exists(_ == 1)))
+      l <- fromResult(a.leftAt(Decoder[Int].decodeJson(_).right.exists(_ == 1)))
     } yield l
 
     assert(result.flatMap(focus) === Some(1.asJson))
@@ -234,7 +235,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      l <- fromResult(c.leftAt(_.as[Int].right.exists(_ == 1)))
+      l <- fromResult(c.leftAt(Decoder[Int].decodeJson(_).right.exists(_ == 1)))
     } yield l
 
     assert(result.flatMap(focus) === None)
@@ -244,7 +245,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
     val result = for {
       c <- fromResult(cursor.downField("a"))
       a <- fromResult(c.downN(3))
-      r <- fromResult(a.rightAt(_.as[Int].right.exists(_ == 5)))
+      r <- fromResult(a.rightAt(Decoder[Int].decodeJson(_).right.exists(_ == 5)))
     } yield r
 
     assert(result.flatMap(focus) === Some(5.asJson))
@@ -253,7 +254,7 @@ abstract class CursorSuite[C <: GenericCursor[C]](implicit
   it should "fail to select a value that doesn't exist" in {
     val result = for {
       c <- fromResult(cursor.downField("b"))
-      r <- fromResult(c.rightAt(_.as[Int].right.exists(_ == 5)))
+      r <- fromResult(c.rightAt(Decoder[Int].decodeJson(_).right.exists(_ == 5)))
     } yield r
 
     assert(result.flatMap(focus) === None)

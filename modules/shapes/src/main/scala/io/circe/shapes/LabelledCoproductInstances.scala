@@ -1,7 +1,8 @@
 package io.circe.shapes
 
 import cats.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder }
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, KeyDecoder, KeyEncoder }
+import io.circe.ast.Json
 import shapeless.{ :+:, Coproduct, Inl, Inr, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 

@@ -11,13 +11,13 @@ trait LargeNumberDecoderTests { this: CirceSuite =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
     val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Long].apply(json.hcursor) === Right(v))
+    assert(Decoder[Long].decodeJson(json) === Right(v))
   }
 
   "Decoder[BigInt]" should "succeed on whole decimal values (#83)" in forAll { (v: BigInt, n: Byte) =>
     val zeros = "0" * (math.abs(n.toInt) + 1)
     val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[BigInt].apply(json.hcursor) === Right(v))
+    assert(Decoder[BigInt].decodeJson(json) === Right(v))
   }
 }

@@ -1,10 +1,11 @@
 package io.circe
 
+import io.circe.ast.{ Json, JsonObject }
 import io.circe.export.Exported
 
 /**
  * A type class that provides a conversion from a value of type `A` to a
- * [[JsonObject]].
+ * [[io.circe.ast.JsonObject]].
  *
  * @author Travis Brown
  */

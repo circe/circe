@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.ast.{ Json, JsonNumber }
 import io.circe.testing.JsonNumberString
 import io.circe.tests.CirceSuite
 import scala.math.{ min, max }

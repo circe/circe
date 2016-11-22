@@ -4,7 +4,8 @@ import cats.Eq
 import cats.instances.option._
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Parser, Printer }
+import io.circe.{ Decoder, Encoder, Parser }
+import io.circe.ast.Printer
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws

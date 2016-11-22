@@ -5,7 +5,8 @@ import cats.ApplicativeError
 import cats.instances.either._
 import cats.instances.list._
 import cats.syntax.traverse._
-import io.circe.{ Json, ParsingFailure }
+import io.circe.ParsingFailure
+import io.circe.ast.Json
 import io.circe.jawn.CirceSupportParser
 import io.iteratee.Enumeratee
 import io.iteratee.internal.Step

@@ -1,6 +1,7 @@
 package io.circe.syntax
 
-import io.circe.{ Encoder, Json }
+import io.circe.Encoder
+import io.circe.ast.Json
 import io.circe.tests.CirceSuite
 
 class SyntaxSuite extends CirceSuite {

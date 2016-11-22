@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.instances.list._
+import io.circe.ast.Json
 import io.circe.tests.CursorSuite
 
 class BasicCursorSuite extends CursorSuite[Cursor] {
@@ -11,7 +12,7 @@ class BasicCursorSuite extends CursorSuite[Cursor] {
 }
 
 class HCursorSuite extends CursorSuite[HCursor] {
-  def fromJson(j: Json): HCursor = j.hcursor
+  def fromJson(j: Json): HCursor = HCursor.fromJson(j)
   def top(c: HCursor): Option[Json] = Some(c.top)
   def focus(c: HCursor): Option[Json] = Some(c.focus)
   def fromResult(result: ACursor): Option[HCursor] = result.success
@@ -28,7 +29,7 @@ class HCursorSuite extends CursorSuite[HCursor] {
 }
 
 class ACursorSuite extends CursorSuite[ACursor] {
-  def fromJson(j: Json): ACursor = j.hcursor.acursor
+  def fromJson(j: Json): ACursor = HCursor.fromJson(j).acursor
   def top(c: ACursor): Option[Json] = c.top
   def focus(c: ACursor): Option[Json] = c.focus
   def fromResult(result: ACursor): Option[ACursor] = result.success.map(_.acursor)

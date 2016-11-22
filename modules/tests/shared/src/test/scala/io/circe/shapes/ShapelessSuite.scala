@@ -1,6 +1,6 @@
 package io.circe.shapes
 
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Decoder, Encoder, HCursor }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -40,7 +40,7 @@ class ShapelessSuite extends CirceSuite {
   }
 
   it should "accumulated errors" in forAll { (foo: String, bar: Int, baz: List[Char]) =>
-    val result = hlistDecoder.accumulating(json"""[ $foo, $baz, $bar ]""".hcursor)
+    val result = hlistDecoder.accumulating(HCursor.fromJson(json"""[ $foo, $baz, $bar ]"""))
 
     assert(result.swap.exists(_.size == 2))
   }
@@ -55,7 +55,7 @@ class ShapelessSuite extends CirceSuite {
   }
 
   it should "accumulated errors" in forAll { (foo: String, bar: Int) =>
-    val result = recordDecoder.accumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
+    val result = recordDecoder.accumulating(HCursor.fromJson(json"""{ "foo": $bar, "bar": $foo }"""))
 
     assert(result.swap.exists(_.size == 2))
   }
@@ -70,7 +70,7 @@ class ShapelessSuite extends CirceSuite {
   }
 
   it should "accumulated errors" in forAll { (a: Int, b: String, c: Int, d: String) =>
-    val result = sizedDecoder.accumulating(json"""[ $a, $b, $c, $d ]""".hcursor)
+    val result = sizedDecoder.accumulating(HCursor.fromJson(json"""[ $a, $b, $c, $d ]"""))
 
     assert(result.swap.exists(_.size == 2))
   }

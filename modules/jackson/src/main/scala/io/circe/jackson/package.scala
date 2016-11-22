@@ -2,6 +2,7 @@ package io.circe
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.ObjectWriter
+import io.circe.ast.Json
 
 /**
  * Support for Jackson-powered parsing and printing for circe.

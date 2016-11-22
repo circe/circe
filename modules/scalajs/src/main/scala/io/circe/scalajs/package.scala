@@ -1,13 +1,14 @@
 package io.circe
 
-import io.circe.Json._
+import io.circe.ast.Json
+import io.circe.ast.Json._
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
 import scala.util.control.NonFatal
 
 package object scalajs {
   /**
-   * Attempt to convert a value to [[Json]].
+   * Attempt to convert a value to [[io.circe.ast.Json]].
    */
   private[this] def unsafeConvertAnyToJson(input: Any): Json = input match {
     case s: String => Json.fromString(s)
@@ -23,7 +24,7 @@ package object scalajs {
   }
 
   /**
-   * Convert [[scala.scalajs.js.Any]] to [[Json]].
+   * Convert [[scala.scalajs.js.Any]] to [[io.circe.ast.Json]].
    */
   final def convertJsToJson(input: js.Any): Either[Throwable, Json] =
     try Right(unsafeConvertAnyToJson(input)) catch {
@@ -40,7 +41,7 @@ package object scalajs {
     }
 
   /**
-   * Convert [[Json]] to [[scala.scalajs.js.Any]].
+   * Convert [[io.circe.ast.Json]] to [[scala.scalajs.js.Any]].
    */
   final def convertJsonToJs(input: Json): js.Any = input match {
     case JString(s) => s

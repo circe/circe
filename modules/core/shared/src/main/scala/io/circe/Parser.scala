@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated, ValidatedNel }
+import io.circe.ast.Json
 
 trait Parser extends Serializable {
   def parse(input: String): Either[ParsingFailure, Json]
@@ -15,7 +16,7 @@ trait Parser extends Serializable {
   protected[this] final def finishDecodeAccumulating[A](input: Either[ParsingFailure, Json])(implicit
     decoder: Decoder[A]
   ): ValidatedNel[Error, A] = input match {
-    case Right(json) => decoder.accumulating(json.hcursor).leftMap {
+    case Right(json) => decoder.accumulating(HCursor.fromJson(json)).leftMap {
       case NonEmptyList(h, t) => NonEmptyList(h, t)
     }
     case Left(error) => Validated.invalidNel(error)

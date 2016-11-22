@@ -261,7 +261,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       q"""
         a match {
           case $pattern =>
-            _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
+            _root_.io.circe.ast.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
         }
       """
     )
@@ -305,7 +305,8 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
         new $instanceType {
           ..$instanceDefs
 
-          final def $encodeMethodName(...${ fullEncodeMethodArgs(R.tpe) }): _root_.io.circe.JsonObject = $instanceImpl
+          final def $encodeMethodName(...${ fullEncodeMethodArgs(R.tpe) }): _root_.io.circe.ast.JsonObject =
+            $instanceImpl
         }: $instanceType
       """
     }

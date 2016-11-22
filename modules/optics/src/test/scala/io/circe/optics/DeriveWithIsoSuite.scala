@@ -1,6 +1,7 @@
 package io.circe.optics
 
 import io.circe._
+import io.circe.ast.Json
 import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite

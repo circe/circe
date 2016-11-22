@@ -1,6 +1,7 @@
 package io.circe
 
-import io.circe.Json.{JString, JArray, JNumber, JBoolean, JObject, JNull}
+import io.circe.ast.{ Json, JsonLong, JsonObject }
+import io.circe.ast.Json.{ JString, JArray, JNumber, JBoolean, JObject, JNull }
 import io.circe.tests.CirceSuite
 
 class JsonSuite extends CirceSuite {

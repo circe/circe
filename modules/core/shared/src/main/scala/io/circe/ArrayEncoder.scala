@@ -1,5 +1,7 @@
 package io.circe
 
+import io.circe.ast.Json
+
 /**
  * A type class that provides a conversion from a value of type `A` to a JSON
  * array.

@@ -3,13 +3,15 @@ package io.circe
 import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
 import cats.functor.Contravariant
 import cats.Foldable
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
 
 /**
- * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
+ * A type class that provides a conversion from a value of type `A` to a [[io.circe.ast.Json]]
+ * value.
  *
  * @author Travis Brown
  */

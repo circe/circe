@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.ast.Json
 import scala.language.experimental.macros
 
 package object literal {

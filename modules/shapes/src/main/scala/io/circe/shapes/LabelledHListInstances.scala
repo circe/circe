@@ -8,11 +8,11 @@ import io.circe.{
   DecodingFailure,
   Encoder,
   HCursor,
-  JsonObject,
   KeyDecoder,
   KeyEncoder,
   ObjectEncoder
 }
+import io.circe.ast.JsonObject
 import shapeless.{ ::, HList, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 

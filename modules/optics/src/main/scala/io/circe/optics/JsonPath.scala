@@ -1,6 +1,7 @@
 package io.circe.optics
 
-import io.circe.{ Decoder, Encoder, Json, JsonNumber, JsonObject }
+import io.circe.{ Decoder, Encoder }
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.JsonObjectOptics._
 import io.circe.optics.JsonOptics._
 import monocle.{ Optional, Prism, Traversal }

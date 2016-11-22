@@ -1,7 +1,8 @@
 package io.circe.generic
 
 import cats.Eq
-import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.ast.Json
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.semiauto._
@@ -86,22 +87,24 @@ class SemiautoDerivedSuite extends CirceSuite {
   checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    val result = Decoder[Int => Qux[String]].decodeJson(
+      Json.obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      )
+    ).map(_(i))
 
     assert(result === Right(Qux(i, s, j)))
   }
 
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
     forAll { (i: Int, s: String, j: Int) =>
-      val result = Json.obj(
-        "i" -> Json.fromInt(i),
-        "a" -> Json.fromString(s)
-      ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
-         _(field(j))
-      )
+      val result = Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]].decodeJson(
+        Json.obj(
+          "i" -> Json.fromInt(i),
+          "a" -> Json.fromString(s)
+        )
+      ).map(_(field(j)))
 
       assert(result === Right(Qux(i, s, j)))
     }
@@ -117,14 +120,14 @@ class SemiautoDerivedSuite extends CirceSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
+      assert(Decoder[Qux[String] => Qux[String]].decodeJson(json).map(_(q)) === Right(expected))
     }
   }
 
   "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
     val json = Encoder[List[Int]].apply(is)
 
-    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+    assert(json === Json.fromValues(is.map(Json.fromInt)) && Decoder[List[Int]].decodeJson(json) === Right(is))
   }
 
   it should "not come from nowhere" in {

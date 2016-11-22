@@ -51,5 +51,5 @@ class Deriver(val c: whitebox.Context)
     q"($name, $encode($value))"
 
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree =
-    q"_root_.io.circe.JsonObject.singleton($name, $encode($value))"
+    q"_root_.io.circe.ast.JsonObject.singleton($name, $encode($value))"
 }

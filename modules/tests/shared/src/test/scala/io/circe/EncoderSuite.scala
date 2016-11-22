@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.laws.discipline.ContravariantTests
+import io.circe.ast.Json
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
@@ -12,7 +13,7 @@ class EncoderSuite extends CirceSuite {
       _.withObject(obj => Json.fromJsonObject(obj.add(k, v.asJson)))
     )
 
-    assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
+    assert(Decoder[Map[String, Int]].decodeJson(newEncoder(m)) === Right(m.updated(k, v)))
   }
 
   "Encoder[Enumeration]" should "write Scala Enumerations" in {
@@ -24,7 +25,7 @@ class EncoderSuite extends CirceSuite {
     implicit val encoder = Encoder.enumEncoder(WeekDay)
     val json = WeekDay.Fri.asJson
     val decoder = Decoder.enumDecoder(WeekDay)
-    assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
+    assert(decoder.decodeJson(json) == Right(WeekDay.Fri))
   }
 
   "encodeSet" should "match sequence encoders" in forAll { (xs: Set[Int]) =>
