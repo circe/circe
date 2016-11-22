@@ -305,11 +305,9 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
     ee: Encoder[E],
     ea: Encoder[A]
-  ): ObjectEncoder[Validated[E, A]] = new ObjectEncoder[Validated[E, A]] {
-    final def encodeObject(a: Validated[E, A]): JsonObject = a match {
-      case Validated.Invalid(e) => JsonObject.singleton(failureKey, ee(e))
-      case Validated.Valid(a) => JsonObject.singleton(successKey, ea(a))
-    }
+  ): ObjectEncoder[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
+    case Validated.Invalid(e) => Left(e)
+    case Validated.Valid(a) => Right(a)
   }
 
   /**

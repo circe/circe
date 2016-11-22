@@ -3,7 +3,7 @@
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
 [akka-stream-json]: https://github.com/knutwalker/akka-stream-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
-[api]: https://circe.github.io/circe/api/io/circe/package.html
+[api]: https://circe.github.io/circe/api/io/circe/
 [archambault]: https://twitter.com/alxarchambault
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
@@ -34,7 +34,7 @@
 [fluflu]: https://github.com/tkrs/fluflu
 [generic-cursor]: https://circe.github.io/circe/api/#io.circe.GenericCursor
 [github4s]: https://github.com/47deg/github4s
-[gitter]: https://gitter.im/circe/circe
+[gitter]: https://gitter.im/travisbrown/circe
 [graphql]: http://graphql.org/docs/getting-started/
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
