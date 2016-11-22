@@ -3,7 +3,7 @@
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
 [akka-stream-json]: https://github.com/knutwalker/akka-stream-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
-[api]: https://circe.github.io/circe/api/io/circe/package.html
+[api]: https://circe.github.io/circe/api/io/circe/
 [archambault]: https://twitter.com/alxarchambault
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
