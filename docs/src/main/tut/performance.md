@@ -1,7 +1,7 @@
 ---
-layout: default
+layout: docs
 title:  "Performance"
-section: "performance"
+position: 5
 ---
 
 # Performance

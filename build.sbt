@@ -94,14 +94,27 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   }
 )
 
-val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
-val docMappingsTutDir = settingKey[String]("Subdirectory in site target directory for Tut docs")
-
-lazy val docSettings = allSettings ++ tutSettings ++ ghpages.settings ++ unidocSettings ++ Seq(
-  docMappingsApiDir := "api",
-  docMappingsTutDir := "_tut",
-  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docMappingsApiDir),
-  addMappingsToSiteDir(tut, docMappingsTutDir),
+lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
+  micrositeName := "circe",
+  micrositeDescription := "A JSON library for Scala powered by Cats",
+  micrositeAuthor := "Travis Brown",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "https://circe.github.io/circe/",
+  micrositeBaseUrl := "circe",
+  micrositeDocumentationUrl := "api",
+  micrositeGithubOwner := "circe",
+  micrositeGithubRepo := "circe",
+  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> "contributing.md"),
+  micrositePalette := Map(
+    "brand-primary" -> "#5B5988",
+    "brand-secondary" -> "#292E53",
+    "brand-tertiary" -> "#222749",
+    "gray-dark" -> "#49494B",
+    "gray" -> "#7B7B7E",
+    "gray-light" -> "#E5E5E6",
+    "gray-lighter" -> "#F4F3F4",
+    "white-color" -> "#FFFFFF"),
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
   ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
@@ -125,6 +138,7 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
   .settings(
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
+  .enablePlugins(MicrositesPlugin)
 
 lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   numbers, numbersJS,
