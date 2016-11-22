@@ -4,7 +4,8 @@ import cats.Eq
 import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder, HCursor }
+import io.circe.ast.Json
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.typelevel.discipline.Laws
@@ -14,10 +15,10 @@ trait CodecLaws[A] {
   def encode: Encoder[A]
 
   def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
-    encode(a).as(decode) <-> Right(a)
+    decode.decodeJson(encode(a)) <-> Right(a)
 
   def codecAccumulatingConsistency(json: Json): IsEq[Decoder.Result[A]] =
-    decode(json.hcursor) <-> decode.accumulating(json.hcursor).leftMap(_.head).toEither
+    decode(HCursor.fromJson(json)) <-> decode.accumulating(HCursor.fromJson(json)).leftMap(_.head).toEither
 }
 
 object CodecLaws {

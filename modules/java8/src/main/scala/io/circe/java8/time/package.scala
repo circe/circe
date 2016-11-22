@@ -1,6 +1,7 @@
 package io.circe.java8
 
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
+import io.circe.{ Decoder, DecodingFailure, Encoder }
+import io.circe.ast.Json
 import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, ZonedDateTime }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{

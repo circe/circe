@@ -1,6 +1,6 @@
 package io.circe.testing
 
-import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.ast.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
 import org.scalacheck.Shrink
 
 private[testing] trait ShrinkInstances {

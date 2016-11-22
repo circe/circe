@@ -1,6 +1,6 @@
 package io.circe.parser
 
-import io.circe.Json
+import io.circe.ast.Json
 import io.circe.testing.ParserTests
 import io.circe.tests.CirceSuite
 

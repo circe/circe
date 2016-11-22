@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.ast.Printer
 import io.circe.tests.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.concurrent.ScalaFutures

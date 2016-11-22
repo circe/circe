@@ -1,6 +1,7 @@
 package io.circe.generic.extras.encoding
 
-import io.circe.{ Encoder, Json, JsonObject, ObjectEncoder }
+import io.circe.{ Encoder, ObjectEncoder }
+import io.circe.ast.{ Json, JsonObject }
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.language.experimental.macros
 

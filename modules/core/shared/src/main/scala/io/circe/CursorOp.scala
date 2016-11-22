@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.{ Eq, Show }
+import io.circe.ast.Json
 
 sealed abstract class CursorOp extends Product with Serializable {
   /**

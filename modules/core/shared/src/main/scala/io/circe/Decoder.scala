@@ -3,6 +3,7 @@ package io.circe
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
 import cats.instances.either.{ catsDataSemigroupKForEither, catsStdInstancesForEither }
+import io.circe.ast.{ Json, JsonNumber, JsonObject }
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -37,9 +38,9 @@ trait Decoder[A] extends Serializable { self =>
     )
 
   /**
-   * Decode the given [[Json]] value.
+   * Decode the given [[io.circe.ast.Json]] value.
    */
-  final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromCursor(j.cursor))
+  final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
 
   final def accumulating: AccumulatingDecoder[A] = AccumulatingDecoder.fromDecoder(self)
 

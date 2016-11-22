@@ -1,6 +1,6 @@
 package io.circe.literal
 
-import io.circe.Json
+import io.circe.ast.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import macrocompat.bundle
@@ -25,7 +25,7 @@ class LiteralMacros(val c: whitebox.Context) {
     def toJsonKey(s: String): Tree = placeHolders.get(s).flatMap(_._2).getOrElse(q"$s")
 
     def toJsonString(s: String): Tree =
-      placeHolders.get(s).map(_._1).getOrElse(q"_root_.io.circe.Json.fromString($s)")
+      placeHolders.get(s).map(_._1).getOrElse(q"_root_.io.circe.ast.Json.fromString($s)")
 
     def asProxy(cls: Class[_]): Object =
       Proxy.newProxyInstance(getClass.getClassLoader, Array(cls), this)
@@ -55,7 +55,7 @@ class LiteralMacros(val c: whitebox.Context) {
     var values: List[Tree] = Nil
 
     val invokeWithoutArg: String => Object = {
-      case "finish" => q"_root_.io.circe.Json.arr(..$values)"
+      case "finish" => q"_root_.io.circe.ast.Json.arr(..$values)"
       case "isObj" => false: java.lang.Boolean
     }
 
@@ -75,7 +75,7 @@ class LiteralMacros(val c: whitebox.Context) {
     var fields: List[Tree] = Nil
 
     val invokeWithoutArg: String => Object = {
-      case "finish" => q"_root_.io.circe.Json.obj(..$fields)"
+      case "finish" => q"_root_.io.circe.ast.Json.obj(..$fields)"
       case "isObj" => true: java.lang.Boolean
     }
 
@@ -98,9 +98,9 @@ class LiteralMacros(val c: whitebox.Context) {
   private[this] class TreeFacadeHandler(placeHolders: Map[String, (Tree, Option[Tree])])
     extends HandlerHelpers(placeHolders) {
     val invokeWithoutArg: String => Object = {
-      case "jnull" => q"_root_.io.circe.Json.Null"
-      case "jfalse" => q"_root_.io.circe.Json.False"
-      case "jtrue" => q"_root_.io.circe.Json.True"
+      case "jnull" => q"_root_.io.circe.ast.Json.Null"
+      case "jfalse" => q"_root_.io.circe.ast.Json.False"
+      case "jtrue" => q"_root_.io.circe.ast.Json.True"
       case "singleContext" =>
         new SingleContextHandler(placeHolders).asProxy(Class.forName("jawn.FContext"))
       case "arrayContext" =>
@@ -111,13 +111,13 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
       case ("jnum", cls, arg: String) if cls == classOf[String] => q"""
-        _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromDecimalStringUnsafe($arg)
+        _root_.io.circe.ast.Json.fromJsonNumber(
+          _root_.io.circe.ast.JsonNumber.fromDecimalStringUnsafe($arg)
         )
       """
       case ("jint", cls, arg: String) if cls == classOf[String] => q"""
-        _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromIntegralStringUnsafe($arg)
+        _root_.io.circe.ast.Json.fromJsonNumber(
+          _root_.io.circe.ast.JsonNumber.fromIntegralStringUnsafe($arg)
         )
       """
       case ("jstring", cls, arg: String) if cls == classOf[String] => toJsonString(arg)

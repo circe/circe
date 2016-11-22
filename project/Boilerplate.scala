@@ -167,6 +167,8 @@ object Boilerplate {
       block"""
         |package io.circe
         |
+        |import io.circe.ast.Json
+        |
         |private[circe] trait TupleEncoders {
         -  /**
         -   * @group Tuple
@@ -268,6 +270,8 @@ object Boilerplate {
 
       block"""
         |package io.circe
+        |
+        |import io.circe.ast.JsonObject
         |
         |private[circe] trait ProductEncoders {
         -  /**

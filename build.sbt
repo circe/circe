@@ -78,6 +78,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
   genericExtrasJS,
   shapesJS,
   numbersJS,
+  astJS,
   opticsJS,
   parserJS,
   refinedJS,
@@ -128,6 +129,7 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
 
 lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   numbers, numbersJS,
+  ast, astJS,
   core, coreJS,
   generic, genericJS,
   genericExtras, genericExtrasJS,
@@ -209,6 +211,28 @@ lazy val numbersBase = crossProject.in(file("modules/numbers"))
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
 
+lazy val astBase = crossProject.crossType(CrossType.Pure).in(file("modules/ast"))
+  .settings(
+    description := "circe abstract syntax tree",
+    moduleName := "circe-ast",
+    name := "Circe AST",
+    crossScalaVersions := scalaVersions
+  )
+  .settings(allSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % "test",
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % "test",
+      "org.typelevel" %%% "cats-core" % catsVersion
+    )
+  )
+  .jvmConfigure(_.copy(id = "ast"))
+  .jsConfigure(_.copy(id = "astJS"))
+  .dependsOn(numbersBase)
+
+lazy val ast = astBase.jvm
+lazy val astJS = astBase.js
+
 lazy val coreBase = crossProject.in(file("modules/core"))
   .settings(
     description := "circe core",
@@ -218,9 +242,6 @@ lazy val coreBase = crossProject.in(file("modules/core"))
   )
   .settings(allSettings: _*)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.typelevel" %%% "cats-core" % catsVersion
-    ),
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
   )
   .jvmSettings(
@@ -228,7 +249,7 @@ lazy val coreBase = crossProject.in(file("modules/core"))
   )
   .jvmConfigure(_.copy(id = "core"))
   .jsConfigure(_.copy(id = "coreJS"))
-  .dependsOn(numbersBase)
+  .dependsOn(astBase)
 
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
@@ -700,6 +721,7 @@ credentials ++= (
 
 val jvmProjects = Seq(
   "numbers",
+  "ast",
   "core",
   "generic",
   "genericExtras",
@@ -716,6 +738,7 @@ val jvmProjects = Seq(
 
 val jvmTestProjects = Seq(
   "numbers",
+  "ast",
   "tests"
 ) ++ (
   if (sys.props("java.specification.version") == "1.8") Seq("java8", "optics") else Nil
@@ -723,6 +746,7 @@ val jvmTestProjects = Seq(
 
 val jsProjects = Seq(
   "numbersJS",
+  "astJS",
   "coreJS",
   "genericJS",
   "genericExtrasJS",

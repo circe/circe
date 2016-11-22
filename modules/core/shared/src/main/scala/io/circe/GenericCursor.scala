@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.Functor
+import io.circe.ast.Json
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.

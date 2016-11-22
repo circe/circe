@@ -1,7 +1,8 @@
 package io.circe.spray
 
 import cats.data.Validated
-import io.circe.{ Errors, Printer, RootEncoder }
+import io.circe.{ Errors, RootEncoder }
+import io.circe.ast.Printer
 import io.circe.jawn._
 import spray.http.{ ContentTypes, HttpCharsets, HttpEntity, MediaTypes }
 import spray.httpx.marshalling.Marshaller

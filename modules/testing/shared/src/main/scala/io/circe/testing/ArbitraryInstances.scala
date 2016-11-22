@@ -2,7 +2,8 @@ package io.circe.testing
 
 import cats.data.ValidatedNel
 import cats.laws.discipline.arbitrary._
-import io.circe._
+import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, Encoder }
+import io.circe.ast.{ Json, JsonBigDecimal, JsonBiggerDecimal, JsonDouble, JsonLong, JsonNumber, JsonObject }
 import io.circe.numbers.BiggerDecimal
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 import org.scalacheck.Arbitrary.arbitrary

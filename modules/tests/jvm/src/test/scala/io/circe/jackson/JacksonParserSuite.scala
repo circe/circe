@@ -1,7 +1,7 @@
 package io.circe.jackson
 
 import cats.data.Validated
-import io.circe.Json
+import io.circe.ast.Json
 import io.circe.testing.ParserTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.glossary

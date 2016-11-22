@@ -8,7 +8,8 @@ import eu.timepit.refined.numeric.{ Positive, Greater }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitraryWit
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder }
+import io.circe.ast.Json
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.syntax._

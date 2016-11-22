@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import io.circe.ast.Json
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -61,7 +62,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     )
 
     forAll { (json: Json) =>
-      val result = decoder.apply(json.hcursor)
+      val result = decoder.decodeJson(json)
 
       assert(
         json.asObject match {
@@ -98,7 +99,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     )
 
     forAll { (json: Json) =>
-      val result = decoder.apply(json.hcursor)
+      val result = decoder.decodeJson(json)
 
       assert(
         json.asArray match {
@@ -131,7 +132,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
     val exception = new Exception("Not an Int")
-    val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
+    val expected = Decoder[Int].decodeJson(json).leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
     val instance = Decoder.instanceTry(c => Try(c.as[Int].right.getOrElse(throw exception)))
 
     assert(instance.decodeJson(json) === expected)
@@ -139,14 +140,14 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
   "Decoder[Byte]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
     val json = Json.fromLong(l)
-    val result = Decoder[Byte].apply(json.hcursor)
+    val result = Decoder[Byte].decodeJson(json)
 
     assert(if (l.toByte.toLong == l) result === Right(l.toByte) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
-    val result = Decoder[Byte].apply(json.hcursor)
+    val result = Decoder[Byte].decodeJson(json)
 
     assert(d.isWhole || result.isEmpty)
   }
@@ -155,19 +156,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val zeros = "0" * (math.abs(n.toInt) + 1)
     val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Byte].apply(json.hcursor) === Right(v))
+    assert(Decoder[Byte].decodeJson(json) === Right(v))
   }
 
   "Decoder[Short]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
     val json = Json.fromLong(l)
-    val result = Decoder[Short].apply(json.hcursor)
+    val result = Decoder[Short].decodeJson(json)
 
     assert(if (l.toShort.toLong == l) result === Right(l.toShort) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
-    val result = Decoder[Short].apply(json.hcursor)
+    val result = Decoder[Short].decodeJson(json)
 
     assert(d.isWhole || result.isEmpty)
   }
@@ -176,19 +177,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val zeros = "0" * (math.abs(n.toInt) + 1)
     val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Short].apply(json.hcursor) === Right(v))
+    assert(Decoder[Short].decodeJson(json) === Right(v))
   }
 
   "Decoder[Int]" should "fail on out-of-range values (#83)" in forAll { (l: Long) =>
     val json = Json.fromLong(l)
-    val result = Decoder[Int].apply(json.hcursor)
+    val result = Decoder[Int].decodeJson(json)
 
     assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll {(d: Double) =>
     val json = Json.fromDoubleOrNull(d)
-    val result = Decoder[Int].apply(json.hcursor)
+    val result = Decoder[Int].decodeJson(json)
 
     assert(d.isWhole || result.isEmpty)
   }
@@ -197,19 +198,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val zeros = "0" * (math.abs(n.toInt) + 1)
     val Right(json) = parse(s"$v.$zeros")
 
-    assert(Decoder[Int].apply(json.hcursor) === Right(v))
+    assert(Decoder[Int].decodeJson(json) === Right(v))
   }
 
   "Decoder[Long]" should "fail on out-of-range values (#83)" in forAll { (i: BigInt) =>
     val json = Json.fromBigDecimal(BigDecimal(i))
-    val result = Decoder[Long].apply(json.hcursor)
+    val result = Decoder[Long].decodeJson(json)
 
     assert(if (BigInt(i.toLong) == i) result === Right(i.toLong) else result.isEmpty)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
-    val result = Decoder[Long].apply(json.hcursor)
+    val result = Decoder[Long].decodeJson(json)
 
     assert(d.isWhole || result.isEmpty)
   }
@@ -217,19 +218,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   "Decoder[Float]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Float) =>
     val Right(json) = parse("\"" + d.toString + "\"")
 
-    assert(Decoder[Float].apply(json.hcursor) === Right(d))
+    assert(Decoder[Float].decodeJson(json) === Right(d))
   }
 
   "Decoder[Double]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Double) =>
     val Right(json) = parse("\"" + d.toString + "\"")
 
-    assert(Decoder[Double].apply(json.hcursor) === Right(d))
+    assert(Decoder[Double].decodeJson(json) === Right(d))
   }
 
   "Decoder[BigInt]" should "fail when producing a value would be intractable" in {
     val Right(bigNumber) = parse("1e2147483647")
 
-    assert(Decoder[BigInt].apply(bigNumber.hcursor).isEmpty)
+    assert(Decoder[BigInt].decodeJson(bigNumber).isEmpty)
   }
 
   "Decoder[Enumeration]" should "parse Scala Enumerations" in {
@@ -240,7 +241,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
     val decoder = Decoder.enumDecoder(WeekDay)
     val Right(friday) = parse("\"Fri\"")
-    assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
+    assert(decoder.decodeJson(friday) == Right(WeekDay.Fri))
   }
 
   "Decoder[Enumeration]" should "fail on unknown values in Scala Enumerations" in {
@@ -252,11 +253,11 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     val decoder = Decoder.enumDecoder(WeekDay)
     val Right(friday) = parse("\"Friday\"")
 
-    assert(decoder.apply(friday.hcursor).isEmpty)
+    assert(decoder.decodeJson(friday).isEmpty)
   }
 
   "validate" should "not infinitely recurse (#396)" in forAll { (i: Int) =>
-    assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
+    assert(Decoder[Int].validate(_ => true, "whatever").decodeJson(Json.fromInt(i)) === Right(i))
   }
 
   private[this] val stateful = {

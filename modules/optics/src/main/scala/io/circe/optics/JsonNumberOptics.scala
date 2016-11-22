@@ -1,14 +1,14 @@
 package io.circe.optics
 
-import io.circe.{ JsonBigDecimal, JsonLong, JsonNumber }
+import io.circe.ast.{ JsonBigDecimal, JsonLong, JsonNumber }
 import java.math.MathContext
 import monocle.Prism
 
 /**
- * Optics instances for [[io.circe.JsonObject]].
+ * Optics instances for [[io.circe.ast.JsonObject]].
  *
- * Note that the prisms for integral types will fail on [[io.circe.JsonNumber]] values representing
- * negative zero, since this would make them unlawful.
+ * Note that the prisms for integral types will fail on [[io.circe.ast.JsonNumber]] values
+ * representing negative zero, since this would make them unlawful.
  *
  * @author Sean Parsons
  * @author Travis Brown

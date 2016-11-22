@@ -1,4 +1,4 @@
-package io.circe
+package io.circe.ast
 
 import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli

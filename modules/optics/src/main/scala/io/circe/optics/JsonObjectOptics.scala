@@ -1,14 +1,14 @@
 package io.circe.optics
 
 import cats.instances.list.catsStdInstancesForList
-import io.circe.{ Json, JsonObject }
+import io.circe.ast.{ Json, JsonObject }
 import monocle.{ Lens, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
 import scalaz.{ Applicative, Traverse }
 import scalaz.std.ListInstances
 
 /**
- * Optics instances for [[io.circe.JsonObject]].
+ * Optics instances for [[io.circe.ast.JsonObject]].
  *
  * @author Sean Parsons
  * @author Travis Brown

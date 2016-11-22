@@ -1,4 +1,4 @@
-package io.circe
+package io.circe.ast
 
 import scala.annotation.{ switch, tailrec }
 

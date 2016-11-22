@@ -1,6 +1,6 @@
 package io.circe.generic.extras.encoding
 
-import io.circe.JsonObject
+import io.circe.ast.JsonObject
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.extras.Configuration
 import shapeless.{ Coproduct, HList, LabelledGeneric, Lazy }

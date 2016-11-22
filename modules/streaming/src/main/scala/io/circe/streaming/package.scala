@@ -2,6 +2,7 @@ package io.circe
 
 import _root_.jawn.{ AsyncParser, ParseException }
 import cats.{ ApplicativeError, MonadError }
+import io.circe.ast.Json
 import io.circe.jawn.CirceSupportParser
 import io.iteratee.{ Enumeratee, Enumerator }
 
@@ -20,7 +21,7 @@ package object streaming {
 
   final def decoder[F[_], A](implicit F: MonadError[F, Throwable], decode: Decoder[A]): Enumeratee[F, Json, A] =
     Enumeratee.flatMap(json =>
-      decode(json.hcursor) match {
+      decode(HCursor.fromJson(json)) match {
         case Left(df) => Enumerator.liftM(F.raiseError(df))
         case Right(a) => Enumerator.enumOne(a)
       }

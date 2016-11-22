@@ -1,5 +1,7 @@
 package io.circe
 
+import io.circe.ast.{ Json, JsonObject }
+
 /**
  * This package provides syntax via enrichment classes.
  */

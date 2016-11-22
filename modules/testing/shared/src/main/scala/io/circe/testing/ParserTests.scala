@@ -4,7 +4,8 @@ import cats.data.{ Validated, ValidatedNel }
 import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Error, Json, Parser, ParsingFailure }
+import io.circe.{ Error, Parser, ParsingFailure }
+import io.circe.ast.Json
 import org.scalacheck.{ Arbitrary, Prop }
 import org.typelevel.discipline.Laws
 

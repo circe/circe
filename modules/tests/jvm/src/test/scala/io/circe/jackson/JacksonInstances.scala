@@ -3,7 +3,7 @@ package io.circe.jackson
 import cats.Eq
 import cats.instances.list._
 import cats.instances.map._
-import io.circe.{
+import io.circe.ast.{
   Json,
   JsonBigDecimal,
   JsonBiggerDecimal,
@@ -12,7 +12,7 @@ import io.circe.{
   JsonLong,
   JsonNumber
 }
-import io.circe.Json.{ JArray, JNumber, JObject, JString }
+import io.circe.ast.Json.{ JArray, JNumber, JObject, JString }
 import io.circe.numbers.BiggerDecimal
 import io.circe.testing.ArbitraryInstances
 import org.scalacheck.Arbitrary
