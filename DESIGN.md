@@ -153,7 +153,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
 [argonaut-shapeless-7]: https://github.com/alexarchambault/argonaut-shapeless/pull/7
 [argonaut-variance]: https://github.com/argonaut-io/argonaut/blob/28953e2dac90ab9efb2db565491e1948d581aa01/argonaut/src/main/scala/argonaut/DecodeJson.scala#L9
 [incompletes]: https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/
-[circe-codec]: https://github.com/travisbrown/circe/issues/133
+[circe-codec]: https://github.com/circe/circe/issues/133
 [metarest]: https://github.com/pathikrit/metarest
 [monocle]: https://github.com/julien-truffaut/Monocle
 [no-reflection]: https://gitter.im/travisbrown/circe?at=566effd73078c074765121ca

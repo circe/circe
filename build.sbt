@@ -122,7 +122,7 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
     "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
-  git.remoteRepo := "git@github.com:travisbrown/circe.git",
+  git.remoteRepo := "git@github.com:circe/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
     inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
@@ -646,7 +646,7 @@ lazy val benchmark = project.in(file("modules/benchmark"))
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  homepage := Some(url("https://github.com/travisbrown/circe")),
+  homepage := Some(url("https://github.com/circe/circe")),
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
@@ -659,11 +659,11 @@ lazy val publishSettings = Seq(
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   autoAPIMappings := true,
-  apiURL := Some(url("https://travisbrown.github.io/circe/api/")),
+  apiURL := Some(url("https://circe.github.io/circe/api/")),
   scmInfo := Some(
     ScmInfo(
-      url("https://github.com/travisbrown/circe"),
-      "scm:git:git@github.com:travisbrown/circe.git"
+      url("https://github.com/circe/circe"),
+      "scm:git:git@github.com:circe/circe.git"
     )
   ),
   pomExtra := (
