@@ -108,7 +108,7 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
-[circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
+[circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
