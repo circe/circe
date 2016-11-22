@@ -1,0 +1,310 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>circe</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="author" content="Travis Brown" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper" style="background:url('/circe/img/sidebar_brand.png') no-repeat"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class="">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class=" active ">Encoding and decoding</a></li> <li><a href="/circe/optics.html" class="">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h1 id="encoding-and-decoding">Encoding and decoding</h1>
+
+<p>circe uses <code class="highlighter-rouge">Encoder</code> and <code class="highlighter-rouge">Decoder</code> type classes for encoding and decoding. An <code class="highlighter-rouge">Encoder[A]</code> instance
+provides a function that will convert any <code class="highlighter-rouge">A</code> to a <code class="highlighter-rouge">JSON</code>, and a <code class="highlighter-rouge">Decoder[A]</code> takes a <code class="highlighter-rouge">Json</code> value
+to either an exception or an <code class="highlighter-rouge">A</code>. circe provides implicit instances of these type classes for many
+types from the Scala standard library, including <code class="highlighter-rouge">Int</code>, <code class="highlighter-rouge">String</code>, and <a href="https://circe.github.io/circe/api/#io.circe.Encoder$">others</a>. It also
+provides instances for <code class="highlighter-rouge">List[A]</code>, <code class="highlighter-rouge">Option[A]</code>, and other generic types, but only if <code class="highlighter-rouge">A</code> has an
+<code class="highlighter-rouge">Encoder</code> instance.</p>
+
+<p>Encoding data to <code class="highlighter-rouge">Json</code> can be done using the <code class="highlighter-rouge">.asJson</code> syntax:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.syntax._</span>
+<span class="c1">// import io.circe.syntax._
+</span>
+<span class="k">val</span> <span class="n">intsJson</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">).</span><span class="n">asJson</span>
+<span class="c1">// intsJson: io.circe.Json =
+// [
+//   1,
+//   2,
+//   3
+// ]
+</span></code></pre>
+</div>
+
+<p>Use the <code class="highlighter-rouge">.as</code> syntax for decoding data from <code class="highlighter-rouge">Json</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">intsJson</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span>
+<span class="c1">// res0: io.circe.Decoder.Result[List[Int]] = Right(List(1, 2, 3))
+</span></code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">decode</code> function from the included [parser] module can be used to directly decode
+a JSON <code class="highlighter-rouge">String</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.parser.decode</span>
+<span class="c1">// import io.circe.parser.decode
+</span>
+<span class="n">decode</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]](</span><span class="s">"[1, 2, 3]"</span><span class="o">)</span>
+<span class="c1">// res1: Either[io.circe.Error,List[Int]] = Right(List(1, 2, 3))
+</span></code></pre>
+</div>
+
+<h2 id="semi-automatic-derivation">Semi-automatic derivation</h2>
+
+<p>Sometimes it’s convenient to have an <code class="highlighter-rouge">Encoder</code> or <code class="highlighter-rouge">Decoder</code> defined in your code, and semi-automatic
+derivation can help. You’d write:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">semiauto</span><span class="o">.</span><span class="k">_</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">c</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span>
+
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">fooDecoder</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveDecoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">fooEncoder</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveEncoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span>
+</code></pre>
+</div>
+
+<p>Or simply:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fooDecoder</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveDecoder</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">fooEncoder</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveEncoder</span>
+</code></pre>
+</div>
+
+<h3 id="jsoncodec">@JsonCodec</h3>
+
+<p>The circe-generic project includes a <code class="highlighter-rouge">@JsonCodec</code> annotation that simplifies the
+use of semi-automatic generic derivation:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.JsonCodec</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import io.circe.generic.JsonCodec
+// import io.circe.syntax._
+</span>
+<span class="nd">@JsonCodec</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="c1">// defined class Bar
+// defined object Bar
+</span>
+<span class="nc">Bar</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="s">"Qux"</span><span class="o">).</span><span class="n">asJson</span>
+<span class="c1">// res4: io.circe.Json =
+// {
+//   "i" : 13,
+//   "s" : "Qux"
+// }
+</span></code></pre>
+</div>
+
+<p>This works with both case classes and sealed trait hierarchies.</p>
+
+<p>NOTE: You will need the <a href="http://docs.scala-lang.org/overviews/macros/paradise">Macro Paradise</a> plugin to use annotation macros like <code class="highlighter-rouge">@JsonCodec</code></p>
+
+<h3 id="forproductn-helper-methods">forProductN helper methods</h3>
+
+<p>It’s also possible to construct encoders and decoders for case class-like types
+in a relatively boilerplate-free way without generic derivation:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">firstName</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">lastName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+
+<span class="k">object</span> <span class="nc">UserCodec</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeUser</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">Decoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="nc">User</span><span class="o">.</span><span class="n">apply</span><span class="o">)</span>
+
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span>
+      <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">firstName</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lastName</span><span class="o">)</span>
+    <span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>It’s not as clean or as maintainable as generic derivation, but it’s less magical, it requires nothing
+but circe-core, and if you need a custom name mapping it’s currently the best solution
+(although 0.6.0 introduces experimental configurable generic derivation in the circe-generic-extras
+module).</p>
+
+<h2 id="fully-automatic-derivation">Fully automatic derivation</h2>
+
+<p>It is also possible to derive <code class="highlighter-rouge">Encoder</code>s and <code class="highlighter-rouge">Decoder</code>s for many types with no boilerplate at all.
+circe uses <a href="https://github.com/milessabin/shapeless">shapeless</a> to automatically derive the necessary type class instances:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
+<span class="c1">// import io.circe.generic.auto._
+</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="c1">// defined class Person
+</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Greeting</span><span class="o">(</span><span class="n">salutation</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">person</span><span class="k">:</span> <span class="kt">Person</span><span class="o">,</span> <span class="n">exclamationMarks</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+<span class="c1">// defined class Greeting
+</span>
+<span class="nc">Greeting</span><span class="o">(</span><span class="s">"Hey"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">(</span><span class="s">"Chris"</span><span class="o">),</span> <span class="mi">3</span><span class="o">).</span><span class="n">asJson</span>
+<span class="c1">// res6: io.circe.Json =
+// {
+//   "salutation" : "Hey",
+//   "person" : {
+//     "name" : "Chris"
+//   },
+//   "exclamationMarks" : 3
+// }
+</span></code></pre>
+</div>
+
+<h2 id="custom-encodersdecoders">Custom encoders/decoders</h2>
+
+<p>If you want to write your own codec instead of using automatic or semi-automatic derivation, you can
+do so in a couple of ways.</p>
+
+<p>Firstly, you can write a new <code class="highlighter-rouge">Encoder[A]</code> and <code class="highlighter-rouge">Decoder[A]</code> from scratch:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Thing</span><span class="o">()</span>
+<span class="c1">// defined class Thing
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeFoo</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Encoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">final</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Thing</span><span class="o">)</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="o">???</span> <span class="c1">// your implementation goes here
+</span><span class="o">}</span>
+<span class="c1">// encodeFoo: io.circe.Encoder[Thing] = $anon$1@6e555cfb
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeFoo</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">final</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">HCursor</span><span class="o">)</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Left</span><span class="o">(</span><span class="nc">DecodingFailure</span><span class="o">(</span><span class="s">"Not implemented yet"</span><span class="o">,</span> <span class="n">c</span><span class="o">.</span><span class="n">history</span><span class="o">))</span>
+<span class="o">}</span>
+<span class="c1">// decodeFoo: io.circe.Decoder[Thing] = $anon$1@4bea2bf0
+</span></code></pre>
+</div>
+
+<p>But in many cases you might find it more convenient to piggyback on top of the decoders that are
+already available. For example, a codec for <code class="highlighter-rouge">java.time.Instant</code> might look like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
+<span class="c1">// import cats.syntax.either._
+</span>
+<span class="k">import</span> <span class="nn">java.time.Instant</span>
+<span class="c1">// import java.time.Instant
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeInstant</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Instant</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Encoder</span><span class="o">.</span><span class="n">encodeString</span><span class="o">.</span><span class="n">contramap</span><span class="o">[</span><span class="kt">Instant</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
+<span class="c1">// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$12@6b1a699a
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeInstant</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Instant</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Decoder</span><span class="o">.</span><span class="n">decodeString</span><span class="o">.</span><span class="n">emap</span> <span class="o">{</span> <span class="n">str</span> <span class="k">=&gt;</span>
+  <span class="nc">Either</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="nc">Instant</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">str</span><span class="o">)).</span><span class="n">leftMap</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Instant"</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="c1">// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$21@1e0471f5
+</span></code></pre>
+</div>
+
+<h2 id="custom-key-types">Custom key types</h2>
+
+<p>If you need to encode/decode <code class="highlighter-rouge">Map[K, V]</code> where <code class="highlighter-rouge">K</code> is not <code class="highlighter-rouge">String</code> (or <code class="highlighter-rouge">Symbol</code>, <code class="highlighter-rouge">Int</code>, <code class="highlighter-rouge">Long</code>, etc.),
+you need to provide a <code class="highlighter-rouge">KeyEncoder</code> and/or <code class="highlighter-rouge">KeyDecoder</code> for your custom key type.</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.syntax._</span>
+<span class="c1">// import io.circe.syntax._
+</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">value</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="c1">// defined class Foo
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">fooKeyEncoder</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">KeyEncoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span><span class="o">)</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">value</span>
+<span class="o">}</span>
+<span class="c1">// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@3c8aed1
+</span>
+<span class="k">val</span> <span class="n">map</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">[</span><span class="kt">Foo</span>, <span class="kt">Int</span><span class="o">](</span>
+  <span class="nc">Foo</span><span class="o">(</span><span class="s">"hello"</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">123</span><span class="o">,</span>
+  <span class="nc">Foo</span><span class="o">(</span><span class="s">"world"</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">456</span>
+<span class="o">)</span>
+<span class="c1">// map: scala.collection.immutable.Map[Foo,Int] = Map(Foo(hello) -&gt; 123, Foo(world) -&gt; 456)
+</span>
+<span class="k">val</span> <span class="n">json</span> <span class="k">=</span> <span class="n">map</span><span class="o">.</span><span class="n">asJson</span>
+<span class="c1">// json: io.circe.Json =
+// {
+//   "hello" : 123,
+//   "world" : 456
+// }
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">fooKeyDecoder</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">KeyDecoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Foo</span><span class="o">(</span><span class="n">key</span><span class="o">))</span>
+<span class="o">}</span>
+<span class="c1">// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@3e0987f
+</span>
+<span class="n">json</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">Map</span><span class="o">[</span><span class="kt">Foo</span>, <span class="kt">Int</span><span class="o">]]</span>
+<span class="c1">// res7: io.circe.Decoder.Result[Map[Foo,Int]] = Right(Map(Foo(hello) -&gt; 123, Foo(world) -&gt; 456))
+</span></code></pre>
+</div>
+
+<h2 id="warnings-and-known-issues">Warnings and known issues</h2>
+
+<ol>
+  <li>
+    <p>Please note that generic derivation will not work on Scala 2.10 unless you’ve added the <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro
+Paradise</a> plugin to your build. See the <a href="/circe/index.html#quick-start">quick start section on the home page</a>
+for details.</p>
+  </li>
+  <li>
+    <p>Generic derivation may not work as expected when the type definitions that you’re trying to
+derive instances for are at the same level as the attempted derivation. For example:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>scala&gt; import io.circe.Decoder, io.circe.generic.auto._
+import io.circe.Decoder
+import io.circe.generic.auto._
+
+scala&gt; sealed trait A; case object B extends A; object X { val d = Decoder[A] }
+defined trait A
+defined object B
+defined object X
+
+scala&gt; object X { sealed trait A; case object B extends A; val d = Decoder[A] }
+&lt;console&gt;:19: error: could not find implicit value for parameter d: io.circe.Decoder[X.A]
+       object X { sealed trait A; case object B extends A; val d = Decoder[A] }
+</code></pre>
+    </div>
+
+    <p>This is unfortunately a limitation of the macro API that Shapeless uses to derive the generic
+representation of the sealed trait. You can manually define these instances, or you can arrange
+the sealed trait definition so that it is not in the same immediate scope as the attempted
+derivation (which is typically what you want, anyway).</p>
+  </li>
+  <li>
+    <p>For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
+provided by the <code class="highlighter-rouge">generic</code> subproject may stack overflow during compilation, which will result in
+the derived encoders or decoders simply not being found. Increasing the stack size available to
+the compiler (e.g. with <code class="highlighter-rouge">sbt -J-Xss64m</code> if you’re using SBT) will help in many cases, but we have
+at least <a href="http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168">one report</a> of a case where it doesn’t.</p>
+  </li>
+  <li>
+    <p>More generally, the generic derivation provided by the <code class="highlighter-rouge">generic</code> subproject works for a wide
+range of test cases, and is likely to <em>just work</em> for you, but it relies on macros (provided by
+Shapeless) that rely on compiler functionality that is not always perfectly robust
+(“<a href="https://issues.scala-lang.org/browse/SI-7046">SI-7046</a> is like <a href="https://twitter.com/li_haoyi/status/637281580847878145">playing roulette</a>”), and if you’re running into
+problems, it’s likely that they’re not your fault. Please file an issue here or ask a question on
+the <a href="https://gitter.im/travisbrown/circe">Gitter channel</a>, and we’ll do our best to figure out whether the problem is
+something we can fix.</p>
+  </li>
+  <li>
+    <p>When using the <code class="highlighter-rouge">io.circe.generic.JsonCodec</code> annotation, the following will not compile:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.JsonCodec</span>
+
+<span class="nd">@JsonCodec</span> <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">A</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">B</span><span class="o">(</span><span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="n">A</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">C</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="n">A</span>
+</code></pre>
+    </div>
+
+    <p>In cases like this it’s necessary to define a companion object for the root type <em>after</em> all of
+the leaf types:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.JsonCodec</span>
+
+<span class="nd">@JsonCodec</span> <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">A</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">B</span><span class="o">(</span><span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="n">A</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">C</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="n">A</span>
+
+<span class="k">object</span> <span class="nc">A</span>
+</code></pre>
+    </div>
+
+    <p>See <a href="https://github.com/circe/circe/issues/251">this issue</a> for additional discussion (this workaround may not be necessary in
+future versions).</p>
+  </li>
+  <li>
+    <p>circe’s representation of numbers is designed not to lose precision during decoding into integral
+or arbitrary-precision types, but precision may still be lost during parsing. This shouldn’t
+happen when using Jawn for parsing, but <code class="highlighter-rouge">scalajs.js.JSON</code> parses JSON numbers into a floating
+point representation that may lose precision (even when decoding into a type like <code class="highlighter-rouge">BigDecimal</code>;
+see <a href="https://github.com/circe/circe/issues/262">this issue</a> for an example).</p>
+  </li>
+</ol>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/circe/js/main.js"></script></body></html>

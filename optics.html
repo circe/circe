@@ -1,0 +1,185 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>circe</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="author" content="Travis Brown" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper" style="background:url('/circe/img/sidebar_brand.png') no-repeat"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class="">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class="">Encoding and decoding</a></li> <li><a href="/circe/optics.html" class=" active ">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h1 id="optics">Optics</h1>
+
+<p>Optics are a powerful tool for traversing and modifying JSON documents. They can reduce boilerplate
+considerably, especially if you are working with deeply nested JSON.</p>
+
+<p>circe provides support for optics by integrating with <a href="monocle">Monocle</a>. To use them, add a
+dependency on <code class="highlighter-rouge">circe-optics</code> to your build:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-optics"</span> <span class="o">%</span> <span class="n">circeVersion</span>
+</code></pre>
+</div>
+
+<p>Note that this will require your project to depend on both Scalaz and cats.</p>
+
+<h2 id="traversing-json">Traversing JSON</h2>
+
+<p>Suppose we have the following JSON document:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
+<span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span>
+
+<span class="k">val</span> <span class="n">json</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="n">parse</span><span class="o">(</span><span class="s">"""
+{
+  "order": {
+    "customer": {
+      "name": "Custy McCustomer",
+      "contactDetails": {
+        "address": "1 Fake Street, London, England",
+        "phone": "0123-456-789"
+      }
+    },
+    "items": [{
+      "id": 123,
+      "description": "banana",
+      "quantity": 1
+    }, {
+      "id": 456,
+      "description": "apple",
+      "quantity": 2
+    }],
+    "total": 123.45
+  }
+}
+"""</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="nc">Null</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>If we wanted to get the customer’s phone number, we could do it using a cursor as follows:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
+      <span class="n">downField</span><span class="o">(</span><span class="s">"order"</span><span class="o">).</span>
+      <span class="n">downField</span><span class="o">(</span><span class="s">"customer"</span><span class="o">).</span>
+      <span class="n">downField</span><span class="o">(</span><span class="s">"contactDetails"</span><span class="o">).</span>
+      <span class="n">get</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">"phone"</span><span class="o">).</span>
+      <span class="n">toOption</span>
+<span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
+</span></code></pre>
+</div>
+
+<p>This works, but it’s a little verbose. We could rewrite it using optics like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonPath._</span>
+<span class="c1">// import io.circe.optics.JsonPath._
+</span>
+<span class="k">val</span> <span class="nc">_phoneNum</span> <span class="k">=</span> <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">customer</span><span class="o">.</span><span class="n">contactDetails</span><span class="o">.</span><span class="n">phone</span><span class="o">.</span><span class="n">string</span>
+<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@85b5f3b
+</span>
+<span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">_phoneNum</span><span class="o">.</span><span class="n">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+<span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
+</span></code></pre>
+</div>
+
+<p>Note the difference between cursors and optics. With cursors, we start with a JSON document, get a
+cursor from it, and then use that cursor to traverse the document. With optics, on the other hand,
+we first define the traversal we want to make, then apply it to a JSON document.</p>
+
+<p>In other words, optics provide a way to separate the description of a JSON traversal from its
+execution. Consequently we can reuse the same traversal against many different documents, compose
+traversals together, and so on.</p>
+
+<p>Let’s look at a more complex example. This time we want to get the quantities of all the
+items in the order. Using a cursor it might look like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
+      <span class="n">downField</span><span class="o">(</span><span class="s">"order"</span><span class="o">).</span>
+      <span class="n">downField</span><span class="o">(</span><span class="s">"items"</span><span class="o">).</span>
+      <span class="n">focus</span><span class="o">.</span>
+      <span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">asArray</span><span class="o">).</span>
+      <span class="n">getOrElse</span><span class="o">(</span><span class="nc">Nil</span><span class="o">)</span>
+<span class="c1">// items: List[io.circe.Json] =
+// List({
+//   "id" : 123,
+//   "description" : "banana",
+//   "quantity" : 1
+// }, {
+//   "id" : 456,
+//   "description" : "apple",
+//   "quantity" : 2
+// })
+</span>
+<span class="k">val</span> <span class="n">quantities</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
+  <span class="n">items</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">get</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="s">"quantity"</span><span class="o">).</span><span class="n">toOption</span><span class="o">)</span>
+<span class="c1">// quantities: Seq[Int] = List(1, 2)
+</span></code></pre>
+</div>
+
+<p>And with optics:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
+  <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">getAll</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+<span class="c1">// items: Seq[Int] = List(1, 2)
+</span></code></pre>
+</div>
+
+<h2 id="modifying-json">Modifying JSON</h2>
+
+<p>Optics can also be used for making modifications to JSON.</p>
+
+<p>Suppose we decide to have a 2-for-1 sale, so we want to double all the quantities in the order. This
+can be achieved with a small change to the code we wrote for traversal:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
+  <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
+<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$2527/430962170@76450e26
+</span>
+<span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+<span class="c1">// modifiedJson: io.circe.Json =
+// {
+//   "order" : {
+//     "customer" : {
+//       "name" : "Custy McCustomer",
+//       "contactDetails" : {
+//         "address" : "1 Fake Street, London, England",
+//         "phone" : "0123-456-789"
+//       }
+//     },
+//     "items" : [
+//       {
+//         "id" : 123,
+//         "description" : "banana",
+//         "quantity" : 2
+//       },
+//       {
+//         "id" : 456,
+//         "description" : "apple",
+//         "quantity" : 4
+//       }
+//     ],
+//     "total" : 123.45
+//   }
+// }
+</span></code></pre>
+</div>
+
+<p>The result is a copy of the original JSON with only the <code class="highlighter-rouge">quantity</code> fields updated.</p>
+
+<h2 id="dynamic">Dynamic</h2>
+
+<p>Some of the code above may look quite magical at first glance. How are we calling methods like
+<code class="highlighter-rouge">order</code>, <code class="highlighter-rouge">items</code> and <code class="highlighter-rouge">customer</code> on circe’s <a href="https://github.com/circe/circe/blob/master/optics/src/main/scala/io/circe/optics/JsonPath.scala">JsonPath</a> class?</p>
+
+<p>The answer is that <code class="highlighter-rouge">JsonPath</code> relies on a slightly obscure feature of Scala called <code class="highlighter-rouge">Dynamic</code>. This
+means you can call methods that don’t actually exist. When you do so, the <code class="highlighter-rouge">selectDynamic</code> method is
+called, and the name of the method you wanted to call is passed as an argument.</p>
+
+<h3 id="warning">Warning</h3>
+
+<p>The use of Dynamic means that your code is not “typo-safe”. For example, if you fat-finger the previous
+example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
+  <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">itemss</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span> <span class="c1">// Note the "itemss" typo
+</span>
+<span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>This code will compile just fine, but not do what you expect. Because the JSON document doesn’t have
+an <code class="highlighter-rouge">itemss</code> field, the same document will be returned unmodified.</p>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/circe/js/main.js"></script></body></html>

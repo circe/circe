@@ -210,12 +210,12 @@ digits (inclusive).">
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ParserTests</span><span class="params">(<span name="p">p: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>)</span><span class="result"> extends <span class="extype" name="org.typelevel.discipline.Laws">Laws</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <span class="name">ParserTests</span><span class="tparams">[<span name="P">P &lt;: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>]</span><span class="params">(<span name="p">p: <span class="extype" name="io.circe.testing.ParserTests.P">P</span></span>)</span><span class="result"> extends <span class="extype" name="org.typelevel.discipline.Laws">Laws</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/modules/testing/shared/src/main/scala/io/circe/testing/ParserTests.scala" target="_blank">ParserTests.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/testing/shared/src/main/scala/io/circe/testing/ParserTests.scala" target="_blank">ParserTests.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -271,9 +271,9 @@ digits (inclusive).">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.circe.testing.ParserTests#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(p:io.circe.Parser):io.circe.testing.ParserTests"></a><a id="&lt;init&gt;:ParserTests"></a>
+      <a id="&lt;init&gt;(p:P):io.circe.testing.ParserTests[P]"></a><a id="&lt;init&gt;:ParserTests[P]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/testing/ParserTests.html#&lt;init&gt;(p:io.circe.Parser):io.circe.testing.ParserTests" title="Permalink">
+      <a href="../../../io/circe/testing/ParserTests.html#&lt;init&gt;(p:P):io.circe.testing.ParserTests[P]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -282,7 +282,7 @@ digits (inclusive).">
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ParserTests</span><span class="params">(<span name="p">p: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>)</span>
+        <span class="name">ParserTests</span><span class="params">(<span name="p">p: <span class="extype" name="io.circe.testing.ParserTests.P">P</span></span>)</span>
       </span>
       
       
@@ -411,12 +411,12 @@ digits (inclusive).">
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method any2stringadd in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="-&gt;[B](y:B):(A,B)"></a><a id="-&gt;[B](B):(ParserTests,B)"></a>
+      <a id="-&gt;[B](y:B):(A,B)"></a><a id="-&gt;[B](B):(ParserTests[P],B)"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#-&gt;[B](y:B):(A,B)" title="Permalink">
         <i class="material-icons"></i>
@@ -427,12 +427,12 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -509,7 +509,7 @@ digits (inclusive).">
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Laws</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((ParserTests)⇒Boolean,⇒Any):ParserTests"></a>
+      <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((ParserTests[P])⇒Boolean,⇒Any):ParserTests[P]"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A" title="Permalink">
         <i class="material-icons"></i>
@@ -520,16 +520,16 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:A=&gt;Boolean):A"></a><a id="ensuring((ParserTests)⇒Boolean):ParserTests"></a>
+      <a id="ensuring(cond:A=&gt;Boolean):A"></a><a id="ensuring((ParserTests[P])⇒Boolean):ParserTests[P]"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#ensuring(cond:A=&gt;Boolean):A" title="Permalink">
         <i class="material-icons"></i>
@@ -540,16 +540,16 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a><a id="ensuring(Boolean,⇒Any):ParserTests"></a>
+      <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a><a id="ensuring(Boolean,⇒Any):ParserTests[P]"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#ensuring(cond:Boolean,msg:=&gt;Any):A" title="Permalink">
         <i class="material-icons"></i>
@@ -560,16 +560,16 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ensuring(cond:Boolean):A"></a><a id="ensuring(Boolean):ParserTests"></a>
+      <a id="ensuring(cond:Boolean):A"></a><a id="ensuring(Boolean):ParserTests[P]"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#ensuring(cond:Boolean):A" title="Permalink">
         <i class="material-icons"></i>
@@ -580,12 +580,12 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -642,13 +642,45 @@ digits (inclusive).">
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method StringFormat in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method StringFormat in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.testing.ParserTests#fromFunction" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromFunction[A](name:String)(serialize:String=&gt;A,parse:P=&gt;(A=&gt;Either[io.circe.ParsingFailure,io.circe.Json]),decode:P=&gt;(A=&gt;Either[io.circe.Error,io.circe.Json]),decodeAccumulating:P=&gt;(A=&gt;cats.data.ValidatedNel[io.circe.Error,io.circe.Json]))(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet"></a><a id="fromFunction[A](String)((String)⇒A,(P)⇒(A)⇒Either[ParsingFailure,Json],(P)⇒(A)⇒Either[Error,Json],(P)⇒(A)⇒ValidatedNel[Error,Json])(Arbitrary[Json]):RuleSet"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/testing/ParserTests.html#fromFunction[A](name:String)(serialize:String=&gt;A,parse:P=&gt;(A=&gt;Either[io.circe.ParsingFailure,io.circe.Json]),decode:P=&gt;(A=&gt;Either[io.circe.Error,io.circe.Json]),decodeAccumulating:P=&gt;(A=&gt;cats.data.ValidatedNel[io.circe.Error,io.circe.Json]))(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromFunction</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="serialize">serialize: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="io.circe.testing.ParserTests.fromFunction.A">A</span></span>, <span name="parse">parse: (<span class="extype" name="io.circe.testing.ParserTests.P">P</span>) ⇒ (<span class="extype" name="io.circe.testing.ParserTests.fromFunction.A">A</span>) ⇒ <span class="extype" name="scala.Either">Either</span>[<a href="../ParsingFailure.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>, <span name="decode">decode: (<span class="extype" name="io.circe.testing.ParserTests.P">P</span>) ⇒ (<span class="extype" name="io.circe.testing.ParserTests.fromFunction.A">A</span>) ⇒ <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>, <span name="decodeAccumulating">decodeAccumulating: (<span class="extype" name="io.circe.testing.ParserTests.P">P</span>) ⇒ (<span class="extype" name="io.circe.testing.ParserTests.fromFunction.A">A</span>) ⇒ <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arbitraryJson">arbitraryJson: <span class="extype" name="org.scalacheck.Arbitrary">Arbitrary</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="#RuleSetextendsAnyRef" class="extmbr" name="io.circe.testing.ParserTests.RuleSet">RuleSet</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.testing.ParserTests#fromString" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromString(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet"></a><a id="fromString(Arbitrary[Json]):RuleSet"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/testing/ParserTests.html#fromString(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromString</span><span class="params">(<span class="implicit">implicit </span><span name="arbitraryJson">arbitraryJson: <span class="extype" name="org.scalacheck.Arbitrary">Arbitrary</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="#RuleSetextendsAnyRef" class="extmbr" name="io.circe.testing.ParserTests.RuleSet">RuleSet</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
@@ -682,9 +714,9 @@ digits (inclusive).">
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.circe.testing.ParserTests#laws" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="laws:io.circe.testing.ParserLaws"></a><a id="laws:ParserLaws"></a>
+      <a id="laws:io.circe.testing.ParserLaws[P]"></a><a id="laws:ParserLaws[P]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/testing/ParserTests.html#laws:io.circe.testing.ParserLaws" title="Permalink">
+      <a href="../../../io/circe/testing/ParserTests.html#laws:io.circe.testing.ParserLaws[P]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -693,7 +725,7 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">laws</span><span class="result">: <a href="ParserLaws.html" class="extype" name="io.circe.testing.ParserLaws">ParserLaws</a></span>
+        <span class="name">laws</span><span class="result">: <a href="ParserLaws.html" class="extype" name="io.circe.testing.ParserLaws">ParserLaws</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]</span>
       </span>
       
       
@@ -746,9 +778,9 @@ digits (inclusive).">
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="io.circe.testing.ParserTests#p" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="p:io.circe.Parser"></a><a id="p:Parser"></a>
+      <a id="p:P"></a>
       <span class="permalink">
-      <a href="../../../io/circe/testing/ParserTests.html#p:io.circe.Parser" title="Permalink">
+      <a href="../../../io/circe/testing/ParserTests.html#p:P" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -757,23 +789,7 @@ digits (inclusive).">
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">p</span><span class="result">: <a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.testing.ParserTests#parser" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="parser(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet"></a><a id="parser(Arbitrary[Json]):RuleSet"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/testing/ParserTests.html#parser(implicitarbitraryJson:org.scalacheck.Arbitrary[io.circe.Json]):ParserTests.this.RuleSet" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">parser</span><span class="params">(<span class="implicit">implicit </span><span name="arbitraryJson">arbitraryJson: <span class="extype" name="org.scalacheck.Arbitrary">Arbitrary</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="#RuleSetextendsAnyRef" class="extmbr" name="io.circe.testing.ParserTests.RuleSet">RuleSet</a></span>
+        <span class="name">p</span><span class="result">: <span class="extype" name="io.circe.testing.ParserTests.P">P</span></span>
       </span>
       
       
@@ -860,7 +876,7 @@ digits (inclusive).">
               
         </dd></dl></div>
     </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="→[B](y:B):(A,B)"></a><a id="→[B](B):(ParserTests,B)"></a>
+      <a id="→[B](y:B):(A,B)"></a><a id="→[B](B):(ParserTests[P],B)"></a>
       <span class="permalink">
       <a href="../../../io/circe/testing/ParserTests.html#→[B](y:B):(A,B)" title="Permalink">
         <i class="material-icons"></i>
@@ -871,12 +887,12 @@ digits (inclusive).">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>] performed by method ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li>
@@ -906,19 +922,19 @@ digits (inclusive).">
             </div>
         <div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>]
+                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.StringFormat">
               <h3>Inherited by implicit conversion StringFormat from
-                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>]
+                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.Ensuring">
               <h3>Inherited by implicit conversion Ensuring from
-                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>]
+                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.ArrowAssoc">
               <h3>Inherited by implicit conversion ArrowAssoc from
-                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>]
+                <a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="io.circe.testing.ParserTests">ParserTests</a>[<span class="extype" name="io.circe.testing.ParserTests.P">P</span>]]
               </h3>
             </div>
         </div>

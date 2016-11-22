@@ -349,7 +349,7 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/travisbrown/circe/tree/master/modules/jawn/src/main/scala/io/circe/jawn/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/jawn/src/main/scala/io/circe/jawn/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -527,9 +527,9 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="io.circe.Parser#decode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decode[A](input:String)(implicitdecoder:io.circe.Decoder[A]):Either[io.circe.Error,A]"></a><a id="decode[A](String)(Decoder[A]):Either[Error,A]"></a>
+      <a id="decode[A](input:String)(implicitevidence$1:io.circe.Decoder[A]):Either[io.circe.Error,A]"></a><a id="decode[A](String)(Decoder[A]):Either[Error,A]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/jawn/index.html#decode[A](input:String)(implicitdecoder:io.circe.Decoder[A]):Either[io.circe.Error,A]" title="Permalink">
+      <a href="../../../io/circe/jawn/index.html#decode[A](input:String)(implicitevidence$1:io.circe.Decoder[A]):Either[io.circe.Error,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -538,14 +538,14 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
+        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decode.A">A</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></dd></dl></div>
     </li><li name="io.circe.Parser#decodeAccumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeAccumulating[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a><a id="decodeAccumulating[A](String)(Decoder[A]):ValidatedNel[Error,A]"></a>
+      <a id="decodeAccumulating[A](input:String)(implicitevidence$2:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a><a id="decodeAccumulating[A](String)(Decoder[A]):ValidatedNel[Error,A]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/jawn/index.html#decodeAccumulating[A](input:String)(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink">
+      <a href="../../../io/circe/jawn/index.html#decodeAccumulating[A](input:String)(implicitevidence$2:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -554,10 +554,74 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>
+        <span class="name">decodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.decodeAccumulating.A">A</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></dd></dl></div>
+    </li><li name="io.circe.jawn.JawnParser#decodeByteBuffer" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeByteBuffer[A](buffer:java.nio.ByteBuffer)(implicitevidence$1:io.circe.Decoder[A]):Either[io.circe.Error,A]"></a><a id="decodeByteBuffer[A](ByteBuffer)(Decoder[A]):Either[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#decodeByteBuffer[A](buffer:java.nio.ByteBuffer)(implicitevidence$1:io.circe.Decoder[A]):Either[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeByteBuffer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="buffer">buffer: <span class="extype" name="java.nio.ByteBuffer">ByteBuffer</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.jawn.JawnParser.decodeByteBuffer.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.jawn.JawnParser.decodeByteBuffer.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JawnParser.html" class="extype" name="io.circe.jawn.JawnParser">JawnParser</a></dd></dl></div>
+    </li><li name="io.circe.jawn.JawnParser#decodeByteBufferAccumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeByteBufferAccumulating[A](buffer:java.nio.ByteBuffer)(implicitevidence$2:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a><a id="decodeByteBufferAccumulating[A](ByteBuffer)(Decoder[A]):ValidatedNel[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#decodeByteBufferAccumulating[A](buffer:java.nio.ByteBuffer)(implicitevidence$2:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeByteBufferAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="buffer">buffer: <span class="extype" name="java.nio.ByteBuffer">ByteBuffer</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.jawn.JawnParser.decodeByteBufferAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.jawn.JawnParser.decodeByteBufferAccumulating.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JawnParser.html" class="extype" name="io.circe.jawn.JawnParser">JawnParser</a></dd></dl></div>
+    </li><li name="io.circe.jawn.JawnParser#decodeFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeFile[A](file:java.io.File)(implicitevidence$3:io.circe.Decoder[A]):Either[io.circe.Error,A]"></a><a id="decodeFile[A](File)(Decoder[A]):Either[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#decodeFile[A](file:java.io.File)(implicitevidence$3:io.circe.Decoder[A]):Either[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.jawn.JawnParser.decodeFile.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.jawn.JawnParser.decodeFile.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JawnParser.html" class="extype" name="io.circe.jawn.JawnParser">JawnParser</a></dd></dl></div>
+    </li><li name="io.circe.jawn.JawnParser#decodeFileAccumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeFileAccumulating[A](file:java.io.File)(implicitevidence$4:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a><a id="decodeFileAccumulating[A](File)(Decoder[A]):ValidatedNel[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#decodeFileAccumulating[A](file:java.io.File)(implicitevidence$4:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeFileAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.jawn.JawnParser.decodeFileAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.jawn.JawnParser.decodeFileAccumulating.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="JawnParser.html" class="extype" name="io.circe.jawn.JawnParser">JawnParser</a></dd></dl></div>
     </li><li name="scala.Any#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
@@ -574,6 +638,38 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="io.circe.Parser#finishDecode" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finishDecode[A](input:Either[io.circe.ParsingFailure,io.circe.Json])(implicitdecoder:io.circe.Decoder[A]):Either[io.circe.Error,A]"></a><a id="finishDecode[A](Either[ParsingFailure,Json])(Decoder[A]):Either[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#finishDecode[A](input:Either[io.circe.ParsingFailure,io.circe.Json])(implicitdecoder:io.circe.Decoder[A]):Either[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finishDecode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Either">Either</span>[<a href="../ParsingFailure.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.finishDecode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.finishDecode.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></dd></dl></div>
+    </li><li name="io.circe.Parser#finishDecodeAccumulating" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finishDecodeAccumulating[A](input:Either[io.circe.ParsingFailure,io.circe.Json])(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]"></a><a id="finishDecodeAccumulating[A](Either[ParsingFailure,Json])(Decoder[A]):ValidatedNel[Error,A]"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/jawn/index.html#finishDecodeAccumulating[A](input:Either[io.circe.ParsingFailure,io.circe.Json])(implicitdecoder:io.circe.Decoder[A]):cats.data.ValidatedNel[io.circe.Error,A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finishDecodeAccumulating</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Either">Either</span>[<a href="../ParsingFailure.html" class="extype" name="io.circe.ParsingFailure">ParsingFailure</a>, <a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="decoder">decoder: <a href="../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Parser.finishDecodeAccumulating.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="cats.data.ValidatedNel">ValidatedNel</span>[<a href="../Error.html" class="extype" name="io.circe.Error">Error</a>, <span class="extype" name="io.circe.Parser.finishDecodeAccumulating.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../Parser.html" class="extype" name="io.circe.Parser">Parser</a></dd></dl></div>
     </li><li name="scala.Any#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">

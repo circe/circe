@@ -1,0 +1,160 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>circe</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="author" content="Travis Brown" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/circe/" class="brand"><div class="icon-wrapper"><span>circe</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/circe/circe"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="api"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">A JSON library for Scala powered by Cats</h1><h2></h2><p class="text-center"><a href="https://github.com/circe/circe" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">       <li><a class="" href="/circe/parsing.html">Parsing JSON</a></li>  <li><a class="" href="/circe/cursors.html">Traversing and modifying JSON</a></li>  <li><a class="" href="/circe/codec.html">Encoding and decoding</a></li>  <li><a class="" href="/circe/optics.html">Optics</a></li>  <li><a class="" href="/circe/performance.html">Performance</a></li>  <li><a class="" href="/circe/contributing.html">Contributing</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p><a href="https://travis-ci.org/circe/circe"><img src="https://img.shields.io/travis/circe/circe/master.svg" alt="Build status" /></a>
+<a href="https://codecov.io/github/circe/circe"><img src="https://img.shields.io/codecov/c/github/circe/circe/master.svg" alt="Coverage status" /></a>
+<a href="https://gitter.im/travisbrown/circe"><img src="https://img.shields.io/badge/gitter-join%20chat-green.svg" alt="Gitter" /></a>
+<a href="https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11"><img src="https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg" alt="Maven Central" /></a></p>
+
+<p>circe (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is
+a JSON library for Scala (and <a href="http://www.scala-js.org/">Scala.js</a>).</p>
+
+<p>circe’s working title was jfc, which stood for “JSON for <a href="https://github.com/typelevel/cats">cats</a>”. The name was changed for 
+<a href="https://github.com/circe/circe/issues/11">a number of reasons</a>.</p>
+
+<p><a name="quick-start"></a></p>
+
+<h2 id="quick-start">Quick start</h2>
+
+<p>circe is published to <a href="http://search.maven.org/">Maven Central</a> and cross-built for Scala 2.10, 2.11, and 2.12,
+so you can just add the following to your build:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">circeVersion</span> <span class="k">=</span> <span class="s">"0.6.1"</span>
+
+<span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-core"</span><span class="o">,</span>
+  <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-generic"</span><span class="o">,</span>
+  <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-parser"</span>
+<span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="o">%</span> <span class="n">circeVersion</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>If you’re using circe’s generic derivation with Scala 2.10, or <code class="highlighter-rouge">@JsonCodec</code> the macro annotation
+(with any Scala version), you’ll also need to include the <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a> compiler
+plugin in your build:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">addCompilerPlugin</span><span class="o">(</span>
+  <span class="s">"org.scalamacros"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"2.1.0"</span> <span class="n">cross</span> <span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span>
+<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Then type <code class="highlighter-rouge">sbt console</code> to start a REPL and then paste the following (this will also work from the
+root directory of this repository):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import io.circe._
+// import io.circe.generic.auto._
+// import io.circe.parser._
+// import io.circe.syntax._
+</span>
+<span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span>
+<span class="c1">// defined trait Foo
+</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">xs</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
+<span class="c1">// defined class Bar
+</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
+<span class="c1">// defined class Qux
+</span>
+<span class="k">val</span> <span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span> <span class="o">=</span> <span class="nc">Qux</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">14.0</span><span class="o">))</span>
+<span class="c1">// foo: Foo = Qux(13,Some(14.0))
+</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
+<span class="c1">// res0: String = {"Qux":{"i":13,"d":14.0}}
+</span>
+<span class="n">decode</span><span class="o">[</span><span class="kt">Foo</span><span class="o">](</span><span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">spaces4</span><span class="o">)</span>
+<span class="c1">// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
+</span></code></pre>
+</div>
+
+<p>No boilerplate, no runtime reflection.</p>
+
+<h2 id="why">Why?</h2>
+
+<p><a href="http://argonaut.io/">Argonaut</a> is a great library. It’s by far the best JSON library for Scala, and the best
+JSON library on the JVM. If you’re doing anything with JSON in Scala, you should be using Argonaut.</p>
+
+<p>circe is a fork of Argonaut with a few important differences.</p>
+
+<h3 id="dependencies-and-modularity">Dependencies and modularity</h3>
+
+<p>circe depends on <a href="https://github.com/typelevel/cats">cats</a> instead of <a href="https://github.com/scalaz/scalaz">Scalaz</a>, and the <code class="highlighter-rouge">core</code> project has only one
+dependency (cats-core).</p>
+
+<p>Other subprojects bring in dependencies on <a href="https://github.com/non/jawn">Jawn</a> (for parsing in the <a href="https://circe.github.io/circe/api/io/circe/jawn/index.html"><code class="highlighter-rouge">jawn</code></a>
+subproject), <a href="https://github.com/milessabin/shapeless">Shapeless</a> (for automatic codec derivation in <a href="https://circe.github.io/circe/api/io/circe/generic/auto$.html"><code class="highlighter-rouge">generic</code></a>),
+and <a href="https://github.com/twitter/util">Twitter Util</a> (for tools for asynchronous parsing in <code class="highlighter-rouge">async</code>), but it would be possible
+to replace the functionality provided by these subprojects with alternative implementations that use
+other libraries.</p>
+
+<h3 id="parsing">Parsing</h3>
+
+<p>circe doesn’t include a JSON parser in the <code class="highlighter-rouge">core</code> project, which is focused on the JSON AST, zippers,
+and codecs. The <a href="https://circe.github.io/circe/api/io/circe/jawn/index.html"><code class="highlighter-rouge">jawn</code></a> subproject provides support for parsing JSON via a <a href="https://github.com/non/jawn">Jawn</a>
+facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
+fussiest code in Argonaut. The <a href="https://circe.github.io/circe/api/io/circe/jackson/index.html"><code class="highlighter-rouge">jackson</code></a> subproject supports using
+<a href="https://github.com/FasterXML/jackson">Jackson</a> for both parsing and printing.</p>
+
+<p>circe also provides a <a href="https://circe.github.io/circe/api/io/circe/parser/index.html"><code class="highlighter-rouge">parser</code></a> subproject that provides parsing support for Scala.js,
+with JVM parsing provided by <code class="highlighter-rouge">io.circe.jawn</code> and JavaScript parsing from <code class="highlighter-rouge">scalajs.js.JSON</code>.</p>
+
+<p>See the <a href="parsing.html">Parsing page</a> for more details.</p>
+
+<h3 id="lenses">Lenses</h3>
+
+<p>circe doesn’t use or provide lenses in the <code class="highlighter-rouge">core</code> project. This is related to the first point above,
+since <a href="https://github.com/julien-truffaut/Monocle">Monocle</a> has a Scalaz dependency, but we also feel that it simplifies the API. The
+0.3.0 release added <a href="https://github.com/circe/circe/pull/78">an experimental <code class="highlighter-rouge">optics</code> subproject</a> that provides Monocle lenses.</p>
+
+<p>See the <a href="optics.html">Optics page</a> for more details.</p>
+
+<h3 id="codec-derivation">Codec derivation</h3>
+
+<p>circe does not use macros or provide any kind of automatic derivation in the <code class="highlighter-rouge">core</code> project. Instead
+of Argonaut’s limited macro-based derivation (which does not support sealed trait hierarchies, for
+example), circe includes a subproject (<code class="highlighter-rouge">generic</code>) that provides generic codec derivation using
+<a href="https://github.com/milessabin/shapeless">Shapeless</a>.</p>
+
+<p><a href="https://circe.github.io/circe/api/io/circe/generic/auto$.html">This subproject</a> is currently a simplified port of
+<a href="https://github.com/alexarchambault/argonaut-shapeless">argonaut-shapeless</a> that provides fully automatic derivation of instances for
+case classes and sealed trait hierarchies. It also includes derivation of “incomplete” case class
+instances (see my recent <a href="https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/">blog post</a> for details).</p>
+
+<p>See the <a href="codec.html">Encoding and Decoding page</a> for more details.</p>
+
+<h3 id="aliases">Aliases</h3>
+
+<p>circe aims to simplify Argonaut’s API by removing all operator aliases. This is largely a matter of
+personal taste, and may change in the future.</p>
+
+<h3 id="documentation">Documentation</h3>
+
+<p>The Argonaut documentation is good, but it could be better: to take just one example, it can be hard
+to tell at a glance why there are three different <code class="highlighter-rouge">Cursor</code>, <code class="highlighter-rouge">HCursor</code>, and <code class="highlighter-rouge">ACursor</code> types. In this
+particular case, circe introduces an abstraction over cursors that makes the relationship clearer and
+allows these three types to <a href="https://circe.github.io/circe/api/#io.circe.GenericCursor">share API documentation</a>.</p>
+
+<h3 id="testing">Testing</h3>
+
+<p>I’d like to provide more complete test coverage (in part via <a href="https://github.com/typelevel/discipline">Discipline</a>), but it’s
+early days for this.</p>
+
+<h3 id="performance">Performance</h3>
+
+<p>circe is developed with a focus on performance. See the <a href="performance.html">Performance</a> page for
+details.</p>
+
+<h2 id="license">License</h2>
+
+<p>circe is licensed under the <strong><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></strong> (the
+“License”); you may not use this software except in compliance with the License.</p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+
+</div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>circe is designed and developed by <a href="https://circe.github.io/circe/" target="_blank">Travis Brown</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/circe/circe"><span class="fa fa-github"></span>View on Github</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script></body></html>
