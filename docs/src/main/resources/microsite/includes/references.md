@@ -34,7 +34,7 @@
 [fluflu]: https://github.com/tkrs/fluflu
 [generic-cursor]: https://circe.github.io/circe/api/#io.circe.GenericCursor
 [github4s]: https://github.com/47deg/github4s
-[gitter]: https://gitter.im/circe/circe
+[gitter]: https://gitter.im/travisbrown/circe
 [graphql]: http://graphql.org/docs/getting-started/
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
