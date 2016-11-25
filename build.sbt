@@ -666,14 +666,9 @@ lazy val publishSettings = Seq(
       "scm:git:git@github.com:circe/circe.git"
     )
   ),
-  pomExtra := (
-    <developers>
-      <developer>
-        <id>travisbrown</id>
-        <name>Travis Brown</name>
-        <url>https://twitter.com/travisbrown</url>
-      </developer>
-    </developers>
+  developers := List(
+    Developer("travisbrown", "Travis Brown", "@travisbrown",
+      url("https://twitter.com/travisbrown"))
   )
 )
 
