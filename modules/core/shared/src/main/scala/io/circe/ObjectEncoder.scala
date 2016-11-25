@@ -1,5 +1,6 @@
 package io.circe
 
+import cats.functor.Contravariant
 import io.circe.export.Exported
 
 /**
@@ -15,6 +16,14 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
    * Convert a value to a JSON object.
    */
   def encodeObject(a: A): JsonObject
+
+  /**
+    * Create a new [ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
+    * `A`.
+    */
+  final def contramapObject[B](f: B => A): ObjectEncoder[B] = new ObjectEncoder[B] {
+    final def encodeObject(a: B) = self.encodeObject(f(a))
+  }
 
   /**
    * Create a new [[ObjectEncoder]] by applying a function to the output of this
@@ -40,6 +49,13 @@ final object ObjectEncoder extends LowPriorityObjectEncoders {
    */
   final def instance[A](f: A => JsonObject): ObjectEncoder[A] = new ObjectEncoder[A] {
     final def encodeObject(a: A): JsonObject = f(a)
+  }
+
+  /**
+    * @group Instances
+    */
+  implicit final val objectEncoderContravariant: Contravariant[ObjectEncoder] = new Contravariant[ObjectEncoder] {
+    final def contramap[A, B](e: ObjectEncoder[A])(f: B => A): ObjectEncoder[B] = e.contramapObject(f)
   }
 }
 
