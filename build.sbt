@@ -31,7 +31,7 @@ lazy val scalaTestVersion = "3.0.0"
 lazy val scalaCheckVersion = "1.13.4"
 lazy val disciplineVersion = "0.7.2"
 
-lazy val previousCirceVersion = "0.6.1"
+lazy val previousCirceVersion = Some("0.6.1")
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -75,17 +75,21 @@ def circeProject(path: String)(project: Project) = {
   )
 }
 
-def circeModule(path: String): Project = {
+def circeModule(path: String, mima: Option[String]): Project = {
   val id = path.split("-").reduce(_ + _.capitalize)
   Project(id, file(s"modules/$path"))
     .configure(circeProject(path))
+    .settings(mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet)
 }
 
-def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
+def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
   CrossProject(jvmId = id, jsId = id + "JS", file(s"modules/$path"), crossType)
     .settings(allSettings)
     .configureAll(circeProject(path))
+    .jvmSettings(
+      mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
+    )
 }
 
 /**
@@ -223,34 +227,28 @@ lazy val circe = project.in(file("."))
   .aggregate(aggregatedProjects: _*)
   .dependsOn(core, genericExtras, literal, parser)
 
-lazy val numbersBase = circeCrossModule("numbers")
+lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % "test",
       "org.scalatest" %%% "scalatest" % scalaTestVersion % "test"
     )
   )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-numbers" % previousCirceVersion)
-  )
 
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
 
-lazy val coreBase = circeCrossModule("core")
+lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
-  )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-core" % previousCirceVersion)
   )
   .dependsOn(numbersBase)
 
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
-lazy val genericBase = circeCrossModule("generic")
+lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroDependencies: _*)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
@@ -261,15 +259,12 @@ lazy val genericBase = circeCrossModule("generic")
       }
     )
   )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-generic" % previousCirceVersion)
-  )
   .dependsOn(coreBase)
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
-lazy val genericExtrasBase = circeCrossModule("generic-extras", CrossType.Pure)
+lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroDependencies: _*)
   .settings(
     sources in (Compile, doc) := (
@@ -278,29 +273,23 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", CrossType.Pure)
         case _ => Nil
       }
     )
-  )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-generic-extras" % previousCirceVersion)
   )
   .dependsOn(genericBase)
 
 lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
 
-lazy val shapesBase = circeCrossModule("shapes", CrossType.Pure)
+lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroDependencies: _*)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
-  )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-shapes" % previousCirceVersion)
   )
   .dependsOn(coreBase)
 
 lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
 
-lazy val literalBase = circeCrossModule("literal", CrossType.Pure)
+lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroDependencies: _*)
   .settings(
     sources in (Compile, doc) := (
@@ -310,30 +299,21 @@ lazy val literalBase = circeCrossModule("literal", CrossType.Pure)
       }
     )
   )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-literal" % previousCirceVersion)
-  )
   .dependsOn(coreBase)
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
 
-lazy val refinedBase = circeCrossModule("refined")
+lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "eu.timepit" %%% "refined" % refinedVersion
-  )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-refined" % previousCirceVersion)
   )
   .dependsOn(coreBase)
 
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
 
-lazy val parserBase = circeCrossModule("parser")
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-parser" % previousCirceVersion)
-  )
+lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
   .jvmConfigure(_.dependsOn(jawn))
   .jsConfigure(_.dependsOn(scalajs))
   .dependsOn(coreBase)
@@ -341,23 +321,20 @@ lazy val parserBase = circeCrossModule("parser")
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = circeModule("scalajs")
+lazy val scalajs = circeModule("scalajs", mima = None)
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(coreJS)
 
-lazy val scodecBase = circeCrossModule("scodec")
+lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.2"
-  )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-scodec" % previousCirceVersion)
   )
   .dependsOn(coreBase)
 
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
 
-lazy val testingBase = circeCrossModule("testing")
+lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
@@ -368,15 +345,12 @@ lazy val testingBase = circeCrossModule("testing")
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
   )
-  .jvmSettings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-testing" % previousCirceVersion)
-  )
   .dependsOn(coreBase)
 
 lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js
 
-lazy val testsBase = circeCrossModule("tests")
+lazy val testsBase = circeCrossModule("tests", mima = None)
   .settings(noPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
@@ -418,7 +392,7 @@ lazy val testsBase = circeCrossModule("tests")
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = circeModule("hygiene")
+lazy val hygiene = circeModule("hygiene", mima = None)
   .settings(noPublishSettings)
   .settings(
     crossScalaVersions := crossScalaVersions.value.tail,
@@ -426,37 +400,31 @@ lazy val hygiene = circeModule("hygiene")
   )
   .dependsOn(core, generic, jawn, literal)
 
-lazy val jawn = circeModule("jawn")
+lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion,
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-jawn" % previousCirceVersion)
+    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
   )
   .dependsOn(core)
 
-lazy val java8 = circeModule("java8")
-  .settings(
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-java8" % previousCirceVersion)
-  )
+lazy val java8 = circeModule("java8", mima = previousCirceVersion)
   .dependsOn(core, tests % "test")
 
-lazy val streaming = circeModule("streaming")
+lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1",
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1"
   )
   .dependsOn(core, jawn)
 
-lazy val jackson = circeModule("jackson")
+lazy val jackson = circeModule("jackson", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % "2.5.3",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.3"
-    ),
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-jackson" % previousCirceVersion)
+    )
   )
   .dependsOn(core)
 
-lazy val spray = circeModule("spray")
+lazy val spray = circeModule("spray", mima = previousCirceVersion)
   .settings(
     crossScalaVersions := crossScalaVersions.value.init,
     libraryDependencies ++= Seq(
@@ -474,12 +442,11 @@ lazy val spray = circeModule("spray")
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" % "test" cross CrossVersion.full)
-    ),
-    mimaPreviousArtifacts := Set("io.circe" %% "circe-spray" % previousCirceVersion)
+    )
   )
   .dependsOn(core, jawn, generic % "test")
 
-lazy val opticsBase = circeCrossModule("optics", CrossType.Pure)
+lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % "1.3.2",
@@ -487,13 +454,12 @@ lazy val opticsBase = circeCrossModule("optics", CrossType.Pure)
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
-  .jvmSettings(mimaPreviousArtifacts := Set("io.circe" %% "circe-optics" % previousCirceVersion))
   .dependsOn(coreBase, testsBase % "test")
 
 lazy val optics = opticsBase.jvm
 lazy val opticsJS = opticsBase.js
 
-lazy val benchmark = circeModule("benchmark")
+lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
   .settings(
     crossScalaVersions := crossScalaVersions.value.init,
