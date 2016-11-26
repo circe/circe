@@ -3,11 +3,10 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
-val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0")
-
 lazy val buildSettings = Seq(
   organization := "io.circe",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.11.8",
+  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0")
 )
 
 lazy val compilerOptions = Seq(
@@ -72,7 +71,6 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
   CrossProject(jvmId = id, jsId = id + "JS", file(s"modules/$path"), crossType)
     .settings(allSettings)
     .settings(
-      crossScalaVersions := scalaVersions,
       description := s"circe $docName",
       moduleName := s"circe-$path",
       name := s"Circe $docName"
@@ -338,8 +336,7 @@ lazy val scalajs = project.in(file("modules/scalajs"))
   .settings(
     description := "circe scalajs",
     moduleName := "circe-scalajs",
-    name := "Circe Scala.js",
-    crossScalaVersions := scalaVersions
+    name := "Circe Scala.js"
   )
   .settings(allSettings)
   .enablePlugins(ScalaJSPlugin)
@@ -423,7 +420,7 @@ lazy val hygiene = project.in(file("modules/hygiene"))
     description := "circe hygiene",
     moduleName := "circe-hygiene",
     name := "Circe hygiene",
-    crossScalaVersions := scalaVersions.tail
+    crossScalaVersions := crossScalaVersions.value.tail
   )
   .settings(allSettings ++ noPublishSettings)
   .settings(
@@ -435,8 +432,7 @@ lazy val jawn = project.in(file("modules/jawn"))
   .settings(
     description := "circe jawn",
     moduleName := "circe-jawn",
-    name := "Circe Jawn",
-    crossScalaVersions := scalaVersions
+    name := "Circe Jawn"
   )
   .settings(allSettings)
   .settings(
@@ -449,8 +445,7 @@ lazy val java8 = project.in(file("modules/java8"))
   .settings(
     description := "circe java8",
     moduleName := "circe-java8",
-    name := "Circe Java 8",
-    crossScalaVersions := scalaVersions
+    name := "Circe Java 8"
   )
   .settings(allSettings)
   .settings(
@@ -462,8 +457,7 @@ lazy val streaming = project.in(file("modules/streaming"))
   .settings(
     description := "circe streaming",
     moduleName := "circe-streaming",
-    name := "Circe streaming",
-    crossScalaVersions := scalaVersions
+    name := "Circe streaming"
   )
   .settings(allSettings)
   .settings(
@@ -476,8 +470,7 @@ lazy val jackson = project.in(file("modules/jackson"))
   .settings(
     description := "circe jackson",
     moduleName := "circe-jackson",
-    name := "Circe Jackson",
-    crossScalaVersions := scalaVersions
+    name := "Circe Jackson"
   )
   .settings(allSettings)
   .settings(
@@ -494,7 +487,7 @@ lazy val spray = project.in(file("modules/spray"))
     description := "circe spray",
     moduleName := "circe-spray",
     name := "Circe Spray",
-    crossScalaVersions := scalaVersions.init
+    crossScalaVersions := crossScalaVersions.value.init
   )
   .settings(allSettings)
   .settings(
@@ -537,7 +530,7 @@ lazy val benchmark = project.in(file("modules/benchmark"))
     description := "circe benchmark",
     moduleName := "circe-benchmark",
     name := "Circe benchmark",
-    crossScalaVersions := scalaVersions.init
+    crossScalaVersions := crossScalaVersions.value.init
   )
   .settings(allSettings)
   .settings(noPublishSettings)
