@@ -76,7 +76,7 @@ class ACursorSuite extends CirceSuite {
   it should "support adding an element to an array" in {
     val result = cursor.downField("a").success.map(
       _.withFocus(j =>
-        j.asArray.fold(j)(a => Json.fromValues(0.asJson :: a))
+        j.asArray.fold(j)(a => Json.fromValues(0.asJson +: a))
       )
     )
 

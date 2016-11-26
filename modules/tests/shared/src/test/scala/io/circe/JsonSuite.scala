@@ -56,8 +56,8 @@ class JsonSuite extends CirceSuite {
   val value3 = 42L
 
   """findAllByKey and its alias, \\"""  should "return all values matching the given key with key-value pairs at heights  0, 1, and 2." in {
-    val expected    = List(JArray(List(JString(value1))), JString(value2), JNumber(JsonLong(value3)))
-    val `0`         = (key, JArray(List(JString(value1))))
+    val expected    = List(JArray(Vector(JString(value1))), JString(value2), JNumber(JsonLong(value3)))
+    val `0`         = (key, JArray(Vector(JString(value1))))
     val `1`         = (key, JString(value2))
     val `2`         = (key, JNumber(JsonLong(value3)))
     val json        = Json.obj(`0`, "y" -> Json.obj(`1`), "z" -> Json.obj(`2`))

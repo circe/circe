@@ -87,6 +87,8 @@ final object CursorOp {
 
   implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
 
+  val eqCursorOpList: Eq[List[CursorOp]] = cats.instances.list.catsKernelStdEqForList[CursorOp]
+
   /**
    * Represents JavaScript-style selections into a JSON structure.
    */

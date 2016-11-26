@@ -5,7 +5,7 @@ import io.circe.optics.JsonObjectOptics._
 import io.circe.optics.JsonOptics._
 import monocle.{ Fold, Optional, Prism, Traversal }
 import monocle.function.{ At, FilterIndex, Index }
-import monocle.std.list._
+import monocle.std.vector._
 import scala.language.dynamics
 
 final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
@@ -20,7 +20,7 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   final def bigDecimal: Optional[Json, BigDecimal] = json composePrism jsonBigDecimal
   final def number: Optional[Json, JsonNumber] = json composePrism jsonNumber
   final def string: Optional[Json, String] = json composePrism jsonString
-  final def arr: Optional[Json, List[Json]] = json composePrism jsonArray
+  final def arr: Optional[Json, Vector[Json]] = json composePrism jsonArray
   final def obj: Optional[Json, JsonObject] = json composePrism jsonObject
 
   final def at(field: String): Optional[Json, Option[Json]] =
@@ -67,7 +67,7 @@ final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic 
   final def bigDecimal: Traversal[Json, BigDecimal] = json composePrism jsonBigDecimal
   final def number: Traversal[Json, JsonNumber] = json composePrism jsonNumber
   final def string: Traversal[Json, String] = json composePrism jsonString
-  final def arr: Traversal[Json, List[Json]] = json composePrism jsonArray
+  final def arr: Traversal[Json, Vector[Json]] = json composePrism jsonArray
   final def obj: Traversal[Json, JsonObject] = json composePrism jsonObject
 
   final def at(field: String): Traversal[Json, Option[Json]] =
@@ -110,7 +110,7 @@ final case class JsonFoldPath(json: Fold[Json, Json]) extends Dynamic {
   final def bigDecimal: Fold[Json, BigDecimal] = json composePrism jsonBigDecimal
   final def number: Fold[Json, JsonNumber] = json composePrism jsonNumber
   final def string: Fold[Json, String] = json composePrism jsonString
-  final def arr: Fold[Json, List[Json]] = json composePrism jsonArray
+  final def arr: Fold[Json, Vector[Json]] = json composePrism jsonArray
   final def obj: Fold[Json, JsonObject] = json composePrism jsonObject
 
   final def at(field: String): Fold[Json, Option[Json]] =

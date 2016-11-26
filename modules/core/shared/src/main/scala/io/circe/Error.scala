@@ -84,10 +84,8 @@ final object DecodingFailure {
       DecodingFailure(sw.toString, ops)
   }
 
-  private[this] val eqCursorOpList: Eq[List[CursorOp]] = cats.instances.list.catsKernelStdEqForList[CursorOp]
-
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
-    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && eqCursorOpList.eqv(h1, h2)
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
   }
 
   /**

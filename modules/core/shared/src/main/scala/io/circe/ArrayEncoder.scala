@@ -12,14 +12,14 @@ trait ArrayEncoder[A] extends RootEncoder[A] { self =>
   /**
    * Convert a value to a JSON array.
    */
-  def encodeArray(a: A): List[Json]
+  def encodeArray(a: A): Vector[Json]
 
   /**
    * Create a new [[ArrayEncoder]] by applying a function to the output of this
    * one.
    */
-  final def mapJsonArray(f: List[Json] => List[Json]): ArrayEncoder[A] = new ArrayEncoder[A] {
-    final def encodeArray(a: A): List[Json] = f(self.encodeArray(a))
+  final def mapJsonArray(f: Vector[Json] => Vector[Json]): ArrayEncoder[A] = new ArrayEncoder[A] {
+    final def encodeArray(a: A): Vector[Json] = f(self.encodeArray(a))
   }
 }
 
@@ -36,7 +36,7 @@ final object ArrayEncoder {
    *
    * @group Utilities
    */
-  final def instance[A](f: A => List[Json]): ArrayEncoder[A] = new ArrayEncoder[A] {
-    final def encodeArray(a: A): List[Json] = f(a)
+  final def instance[A](f: A => Vector[Json]): ArrayEncoder[A] = new ArrayEncoder[A] {
+    final def encodeArray(a: A): Vector[Json] = f(a)
   }
 }

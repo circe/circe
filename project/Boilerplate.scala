@@ -173,7 +173,7 @@ object Boilerplate {
         -   */
         -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): ArrayEncoder[${`(A..N)`}] =
         -    new ArrayEncoder[${`(A..N)`}] {
-        -      final def encodeArray(a: ${`(A..N)`}): List[Json] = List($applied)
+        -      final def encodeArray(a: ${`(A..N)`}): Vector[Json] = Vector($applied)
         -    }
         |}
       """

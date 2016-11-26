@@ -84,21 +84,21 @@ Let's look at a more complex example. This time we want to get the quantities of
 items in the order. Using a cursor it might look like this:
 
 ```tut:book
-val items: List[Json] = json.hcursor.
+val items: Vector[Json] = json.hcursor.
       downField("order").
       downField("items").
       focus.
       flatMap(_.asArray).
-      getOrElse(Nil)
+      getOrElse(Vector.empty)
 
-val quantities: Seq[Int] =
-  items.flatMap(_.cursor.get[Int]("quantity").toOption)
+val quantities: Vector[Int] =
+  items.flatMap(_.hcursor.get[Int]("quantity").toOption)
 ```
 
 And with optics:
 
 ```tut:book
-val items: Seq[Int] =
+val items: List[Int] =
   root.order.items.each.quantity.int.getAll(json)
 ```
 

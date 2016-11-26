@@ -9,7 +9,7 @@ trait HListInstances extends LowPriorityHListInstances {
 
   implicit final def encodeSingletonHList[H](implicit encodeH: Encoder[H]): ArrayEncoder[H :: HNil] =
     new ArrayEncoder[H :: HNil] {
-      def encodeArray(a: H :: HNil): List[Json] = List(encodeH(a.head))
+      def encodeArray(a: H :: HNil): Vector[Json] = Vector(encodeH(a.head))
     }
 }
 
@@ -43,6 +43,6 @@ private[shapes] trait LowPriorityHListInstances {
     encodeH: Encoder[H],
     encodeT: ArrayEncoder[T]
   ): ArrayEncoder[H :: T] = new ArrayEncoder[H :: T] {
-      def encodeArray(a: H :: T): List[Json] = encodeH(a.head) +: encodeT.encodeArray(a.tail)
+      def encodeArray(a: H :: T): Vector[Json] = encodeH(a.head) +: encodeT.encodeArray(a.tail)
   }
 }
