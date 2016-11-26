@@ -65,16 +65,27 @@ lazy val baseSettings = Seq(
 
 lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
 
+def circeProject(path: String)(project: Project) = {
+  val docName = path.split("-").mkString(" ")
+  project.settings(
+    description := s"circe $docName",
+    moduleName := s"circe-$path",
+    name := s"Circe $docName",
+    allSettings
+  )
+}
+
+def circeModule(path: String): Project = {
+  val id = path.split("-").reduce(_ + _.capitalize)
+  Project(id, file(s"modules/$path"))
+    .configure(circeProject(path))
+}
+
 def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
-  val docName = path.split("-").mkString(" ")
   CrossProject(jvmId = id, jsId = id + "JS", file(s"modules/$path"), crossType)
     .settings(allSettings)
-    .settings(
-      description := s"circe $docName",
-      moduleName := s"circe-$path",
-      name := s"Circe $docName"
-    )
+    .configureAll(circeProject(path))
 }
 
 /**
@@ -332,13 +343,7 @@ lazy val parserBase = circeCrossModule("parser")
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = project.in(file("modules/scalajs"))
-  .settings(
-    description := "circe scalajs",
-    moduleName := "circe-scalajs",
-    name := "Circe Scala.js"
-  )
-  .settings(allSettings)
+lazy val scalajs = circeModule("scalajs")
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(coreJS)
 
@@ -415,64 +420,35 @@ lazy val testsBase = circeCrossModule("tests")
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = project.in(file("modules/hygiene"))
+lazy val hygiene = circeModule("hygiene")
+  .settings(noPublishSettings)
   .settings(
-    description := "circe hygiene",
-    moduleName := "circe-hygiene",
-    name := "Circe hygiene",
-    crossScalaVersions := crossScalaVersions.value.tail
-  )
-  .settings(allSettings ++ noPublishSettings)
-  .settings(
+    crossScalaVersions := crossScalaVersions.value.tail,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(core, generic, jawn, literal)
 
-lazy val jawn = project.in(file("modules/jawn"))
-  .settings(
-    description := "circe jawn",
-    moduleName := "circe-jawn",
-    name := "Circe Jawn"
-  )
-  .settings(allSettings)
+lazy val jawn = circeModule("jawn")
   .settings(
     libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion,
     mimaPreviousArtifacts := Set("io.circe" %% "circe-jawn" % previousCirceVersion)
   )
   .dependsOn(core)
 
-lazy val java8 = project.in(file("modules/java8"))
-  .settings(
-    description := "circe java8",
-    moduleName := "circe-java8",
-    name := "Circe Java 8"
-  )
-  .settings(allSettings)
+lazy val java8 = circeModule("java8")
   .settings(
     mimaPreviousArtifacts := Set("io.circe" %% "circe-java8" % previousCirceVersion)
   )
   .dependsOn(core, tests % "test")
 
-lazy val streaming = project.in(file("modules/streaming"))
-  .settings(
-    description := "circe streaming",
-    moduleName := "circe-streaming",
-    name := "Circe streaming"
-  )
-  .settings(allSettings)
+lazy val streaming = circeModule("streaming")
   .settings(
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1",
     mimaPreviousArtifacts := Set("io.circe" %% "circe-streaming" % previousCirceVersion)
   )
   .dependsOn(core, jawn)
 
-lazy val jackson = project.in(file("modules/jackson"))
-  .settings(
-    description := "circe jackson",
-    moduleName := "circe-jackson",
-    name := "Circe Jackson"
-  )
-  .settings(allSettings)
+lazy val jackson = circeModule("jackson")
   .settings(
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % "2.5.3",
@@ -482,15 +458,9 @@ lazy val jackson = project.in(file("modules/jackson"))
   )
   .dependsOn(core)
 
-lazy val spray = project.in(file("modules/spray"))
+lazy val spray = circeModule("spray")
   .settings(
-    description := "circe spray",
-    moduleName := "circe-spray",
-    name := "Circe Spray",
-    crossScalaVersions := crossScalaVersions.value.init
-  )
-  .settings(allSettings)
-  .settings(
+    crossScalaVersions := crossScalaVersions.value.init,
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-actor" % "2.3.9",
       "io.spray" %% "spray-httpx" % "1.3.3",
@@ -525,16 +495,10 @@ lazy val opticsBase = circeCrossModule("optics", CrossType.Pure)
 lazy val optics = opticsBase.jvm
 lazy val opticsJS = opticsBase.js
 
-lazy val benchmark = project.in(file("modules/benchmark"))
-  .settings(
-    description := "circe benchmark",
-    moduleName := "circe-benchmark",
-    name := "Circe benchmark",
-    crossScalaVersions := crossScalaVersions.value.init
-  )
-  .settings(allSettings)
+lazy val benchmark = circeModule("benchmark")
   .settings(noPublishSettings)
   .settings(
+    crossScalaVersions := crossScalaVersions.value.init,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json" % "2.3.10",
       "io.argonaut" %% "argonaut" % "6.1",
