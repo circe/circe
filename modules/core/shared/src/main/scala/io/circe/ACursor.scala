@@ -536,8 +536,7 @@ final object HCursor {
           case (aa: ArrayCursor, ba: ArrayCursor) =>
             aa.changed == ba.changed &&
             eqv(aa.parent, ba.parent) &&
-            eqJsonList.eqv(aa.ls, ba.ls) &&
-            eqJsonList.eqv(aa.rs, ba.rs)
+            eqJsonList.eqv(aa.values.toList, ba.values.toList)
           case (ao: ObjectCursor, bo: ObjectCursor) =>
             ao.changed == bo.changed &&
             eqv(ao.parent, bo.parent) &&
@@ -554,7 +553,7 @@ final object HCursor {
       def go(c: HCursor): Json = c match {
         case v: ValueCursor => v.value
         case a: ArrayCursor =>
-          val newValue = Json.fromValues((a.value :: a.rs).reverse_:::(a.ls))
+          val newValue = Json.fromValues(a.values)
 
           go(
             a.parent match {
@@ -562,10 +561,7 @@ final object HCursor {
                 protected def lastCursor: HCursor = null
                 protected def lastOp: CursorOp = null
               }
-              case pa: ArrayCursor => new ArrayCursor(newValue, pa.parent, a.changed || pa.changed, pa.ls, pa.rs) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
+              case pa: ArrayCursor => if (a.changed) pa.replace(newValue, null) else pa
               case po: ObjectCursor => new ObjectCursor(
                 newValue,
                 po.parent,
@@ -587,10 +583,7 @@ final object HCursor {
                 protected def lastCursor: HCursor = null
                 protected def lastOp: CursorOp = null
               }
-              case pa: ArrayCursor => new ArrayCursor(newValue, pa.parent, o.changed || pa.changed, pa.ls, pa.rs) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
+              case pa: ArrayCursor => if (o.changed) pa.replace(newValue, null) else pa
               case po: ObjectCursor => new ObjectCursor(
                 newValue,
                 po.parent,
@@ -609,8 +602,8 @@ final object HCursor {
     }
 
     final def downArray: ACursor = value match {
-      case Json.JArray(h :: t) =>
-        new ArrayCursor(h, this, false, Nil, t) {
+      case Json.JArray(values) if !values.isEmpty =>
+        new ArrayCursor(values.toVector, 0, this, false) {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.DownArray
         }
@@ -676,37 +669,35 @@ final object HCursor {
   }
 
   private[this] abstract class ArrayCursor(
-    final val value: Json,
+    final val values: Vector[Json],
+    final val index: Int,
     final val parent: HCursor,
-    final val changed: Boolean,
-    final val ls: List[Json],
-    final val rs: List[Json]
+    final val changed: Boolean
   ) extends BaseHCursor { self =>
-    final def withFocus(f: Json => Json): ACursor = new ArrayCursor(f(value), parent, changed = true, ls, rs) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = null
-    }
+    final def value: Json = values(index)
 
+    private[this] def valuesExcept: Vector[Json] = values.take(index) ++ values.drop(index + 1)
+
+    private[circe] def replace(newValue: Json, op: CursorOp): ArrayCursor =
+      new ArrayCursor(values.updated(index, newValue), index, parent, true) {
+        protected def lastCursor: HCursor = self
+        protected def lastOp: CursorOp = op
+      }
+
+    final def withFocus(f: Json => Json): ACursor = replace(f(value), null)
     final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-      F.map(f(value))(newValue =>
-        new ArrayCursor(newValue, parent, changed = true, ls, rs) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = null
-        }
-      )
+      F.map(f(value))(replace(_, null))
 
     final def up: ACursor = {
-      val newValue = Json.fromValues((value :: rs).reverse_:::(ls))
+      val newValue = Json.fromValues(values)
 
       parent match {
         case v: ValueCursor =>  new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.MoveUp
         }
-        case a: ArrayCursor => new ArrayCursor(newValue, a.parent, changed || a.changed, a.ls, a.rs) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
+        case a: ArrayCursor =>
+          if (!changed) a else a.replace(newValue, CursorOp.MoveUp)
         case o: ObjectCursor => new ObjectCursor(
           newValue,
           o.parent,
@@ -721,17 +712,14 @@ final object HCursor {
     }
 
     final def delete: ACursor = {
-      val newValue = Json.fromValues(rs.reverse_:::(ls))
+      val newValue = Json.fromValues(valuesExcept)
 
       parent match {
         case v: ValueCursor => new ValueCursor(newValue) {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
-        case a: ArrayCursor => new ArrayCursor(newValue, a.parent, true, a.ls, a.rs) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
+        case a: ArrayCursor => a.replace(newValue, CursorOp.DeleteGoParent)
         case o: ObjectCursor => new ObjectCursor(
           newValue,
           o.parent,
@@ -745,92 +733,82 @@ final object HCursor {
       }
     }
 
-    final def lefts: Option[List[Json]] = Some(ls)
-    final def rights: Option[List[Json]] = Some(rs)
+    final def lefts: Option[List[Json]] = Some(values.take(index).reverse.toList)
+    final def rights: Option[List[Json]] = Some(values.drop(index + 1).toList)
 
-    final def left: ACursor = ls match {
-      case h :: t => new ArrayCursor(h, parent, changed, t, value :: rs) {
+    final def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft) else {
+      new ArrayCursor(values, index - 1, parent, changed) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.MoveLeft
       }
-      case Nil => fail(CursorOp.MoveLeft)
     }
 
-    final def right: ACursor = rs match {
-      case h :: t => new ArrayCursor(h, parent, changed, value :: ls, t) {
+    final def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight) else {
+      new ArrayCursor(values, index + 1, parent, changed) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.MoveRight
       }
-      case Nil => fail(CursorOp.MoveRight)
     }
 
-    final def first: ACursor = (value :: rs).reverse_:::(ls) match {
-      case h :: t => new ArrayCursor(h, parent, changed, Nil, t) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.MoveFirst
-      }
-      case Nil => fail(CursorOp.MoveFirst)
+    final def first: ACursor = new ArrayCursor(values, 0, parent, changed) {
+      protected def lastCursor: HCursor = self
+      protected def lastOp: CursorOp = CursorOp.MoveFirst
     }
 
-    final def last: ACursor = (value :: ls).reverse_:::(rs) match {
-      case h :: t => new ArrayCursor(h, parent, changed, t, Nil) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.MoveLast
-      }
-      case Nil => fail(CursorOp.MoveLast)
+    final def last: ACursor = new ArrayCursor(values, values.size - 1, parent, changed) {
+      protected def lastCursor: HCursor = self
+      protected def lastOp: CursorOp = CursorOp.MoveLast
     }
 
-    final def deleteGoLeft: ACursor = ls match {
-      case h :: t => new ArrayCursor(h, parent, true, t, rs) {
+    final def deleteGoLeft: ACursor = if (index == 0) fail(CursorOp.DeleteGoLeft) else {
+      new ArrayCursor(valuesExcept, index - 1, parent, true) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.DeleteGoLeft
       }
-      case Nil => fail(CursorOp.DeleteGoLeft)
     }
 
-    final def deleteGoRight: ACursor = rs match {
-      case h :: t => new ArrayCursor(h, parent, true, ls, t) {
+    final def deleteGoRight: ACursor = if (index == values.size - 1)fail(CursorOp.DeleteGoRight) else {
+      new ArrayCursor(valuesExcept, index, parent, true) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.DeleteGoRight
       }
-      case Nil => fail(CursorOp.DeleteGoRight)
     }
 
-    final def deleteGoFirst: ACursor = rs.reverse_:::(ls) match {
-      case h :: t => new ArrayCursor(h, parent, true, Nil, t) {
+    final def deleteGoFirst: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoFirst) else {
+      new ArrayCursor(valuesExcept, 0, parent, true) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.DeleteGoFirst
       }
-      case Nil => fail(CursorOp.DeleteGoFirst)
     }
 
-    final def deleteGoLast: ACursor = ls.reverse_:::(rs) match {
-      case h :: t => new ArrayCursor(h, parent, true, t, Nil) {
+    final def deleteGoLast: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoLast) else {
+      new ArrayCursor(valuesExcept, values.size - 2, parent, true) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.DeleteGoLast
       }
-      case Nil => fail(CursorOp.DeleteGoLast)
     }
 
-    final def deleteLefts: ACursor = new ArrayCursor(value, parent, true, Nil, rs) {
+    final def deleteLefts: ACursor = new ArrayCursor(values.drop(index), 0, parent, index != 0) {
       protected def lastCursor: HCursor = self
       protected def lastOp: CursorOp = CursorOp.DeleteLefts
     }
 
-    final def deleteRights: ACursor = new ArrayCursor(value, parent, true, ls, Nil) {
+    final def deleteRights: ACursor = new ArrayCursor(values.take(index + 1), index, parent, index < values.size) {
       protected def lastCursor: HCursor = self
       protected def lastOp: CursorOp = CursorOp.DeleteRights
     }
 
-    final def setLefts(js: List[Json]): ACursor = new ArrayCursor(value, parent, true, js, rs) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.SetLefts(js)
-    }
+    final def setLefts(js: List[Json]): ACursor =
+      new ArrayCursor(js.reverse.toVector ++ values.drop(index), js.size, parent, true) {
+        protected def lastCursor: HCursor = self
+        protected def lastOp: CursorOp = CursorOp.SetLefts(js)
+      }
 
-    final def setRights(js: List[Json]): ACursor = new ArrayCursor(value, parent, true, ls, js) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.SetRights(js)
-    }
+    final def setRights(js: List[Json]): ACursor =
+      new ArrayCursor(values.take(index + 1) ++ js, index, parent, true) {
+        protected def lastCursor: HCursor = self
+        protected def lastOp: CursorOp = CursorOp.SetRights(js)
+      }
 
     final def field(k: String): ACursor = fail(CursorOp.Field(k))
     final def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
@@ -867,10 +845,7 @@ final object HCursor {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.MoveUp
         }
-        case a: ArrayCursor => new ArrayCursor(newValue, a.parent, changed || a.changed, a.ls, a.rs) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
+        case a: ArrayCursor => if (changed) a.replace(newValue, CursorOp.MoveUp) else a
         case o: ObjectCursor => new ObjectCursor(newValue, o.parent, changed || o.changed, o.key, o.obj) {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.MoveUp
@@ -886,10 +861,7 @@ final object HCursor {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.DeleteGoParent
         }
-        case a: ArrayCursor => new ArrayCursor(newValue, a.parent, true, a.ls, a.rs) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
+        case a: ArrayCursor => a.replace(newValue, CursorOp.DeleteGoParent)
         case o: ObjectCursor => new ObjectCursor(newValue, o.parent, true, o.key, o.obj) {
           protected def lastCursor: HCursor = self
           protected def lastOp: CursorOp = CursorOp.DeleteGoParent
