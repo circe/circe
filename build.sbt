@@ -192,7 +192,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
   if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
 )
 
-lazy val macroDependencies: Seq[Setting[_]] = Seq(
+def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
     "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
@@ -205,6 +205,12 @@ lazy val macroDependencies: Seq[Setting[_]] = Seq(
       case Some((2, scalaMajor)) if scalaMajor >= 11 => Nil
       // in Scala 2.10, quasiquotes are provided by macro paradise.
       case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.0" cross CrossVersion.binary)
+    }
+  },
+  sources in (Compile, doc) := {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) if !scaladocFor210 => Nil
+      case _ => (sources in (Compile, doc)).value
     }
   }
 )
@@ -249,15 +255,9 @@ lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
-  .settings(macroDependencies: _*)
+  .settings(macroSettings(scaladocFor210 = false))
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
-    sources in (Compile, doc) := (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 11)) => (sources in (Compile, doc)).value
-        case _ => Nil
-      }
-    )
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
   .dependsOn(coreBase)
 
@@ -265,7 +265,7 @@ lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroDependencies: _*)
+  .settings(macroSettings(scaladocFor210 = true))
   .settings(
     sources in (Compile, doc) := (
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -280,7 +280,7 @@ lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
 
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroDependencies: _*)
+  .settings(macroSettings(scaladocFor210 = false))
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
@@ -290,15 +290,7 @@ lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroDependencies: _*)
-  .settings(
-    sources in (Compile, doc) := (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 11)) => (sources in (Compile, doc)).value
-        case _ => Nil
-      }
-    )
-  )
+  .settings(macroSettings(scaladocFor210 = false))
   .dependsOn(coreBase)
 
 lazy val literal = literalBase.jvm
