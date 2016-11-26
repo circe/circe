@@ -329,7 +329,7 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON array from a collection of values.
    */
-  final def fromValues(values: Iterable[Json]): Json = JArray(values.toList)
+  final def fromValues(values: Iterable[Json]): Json = JArray(values.toVector)
 
   /**
    * Create a `Json` value representing a JSON object from a [[JsonObject]].

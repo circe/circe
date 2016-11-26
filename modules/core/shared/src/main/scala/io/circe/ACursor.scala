@@ -436,10 +436,17 @@ final object FailedCursor {
     cats.instances.list.catsKernelStdEqForList[CursorOp].on[FailedCursor](_.history)
 }
 
-sealed abstract class HCursor extends ACursor {
+sealed abstract class HCursor extends ACursor { self =>
   def value: Json
   protected def lastCursor: HCursor
   protected def lastOp: CursorOp
+
+  protected def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor
+  protected def addOp(lastC: HCursor, op: CursorOp): HCursor
+
+  final def withFocus(f: Json => Json): ACursor = replace(f(value), self, null)
+  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
+    F.map(f(value))(replace(_, self, null))
 
   final def history: List[CursorOp] = {
     var next = this
@@ -549,56 +556,13 @@ final object HCursor {
 
   private[this] sealed abstract class BaseHCursor extends HCursor { self =>
     final def top: Option[Json] = {
-      @tailrec
-      def go(c: HCursor): Json = c match {
-        case v: ValueCursor => v.value
-        case a: ArrayCursor =>
-          val newValue = Json.fromValues(a.values)
+      var current: HCursor = self
 
-          go(
-            a.parent match {
-              case pv: ValueCursor => new ValueCursor(newValue) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
-              case pa: ArrayCursor => if (a.changed) pa.replace(newValue, null) else pa
-              case po: ObjectCursor => new ObjectCursor(
-                newValue,
-                po.parent,
-                a.changed || po.changed,
-                po.key,
-                if (a.changed) po.obj.add(po.key, newValue) else po.obj
-              ) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
-            }
-          )
-        case o: ObjectCursor =>
-          val newValue = Json.fromJsonObject(if (o.changed) o.obj.add(o.key, o.value) else o.obj)
-
-          go(
-            o.parent match {
-              case pv: ValueCursor => new ValueCursor(newValue) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
-              case pa: ArrayCursor => if (o.changed) pa.replace(newValue, null) else pa
-              case po: ObjectCursor => new ObjectCursor(
-                newValue,
-                po.parent,
-                o.changed || po.changed,
-                po.key,
-                po.obj
-              ) {
-                protected def lastCursor: HCursor = null
-                protected def lastOp: CursorOp = null
-              }
-            }
-          )
+      while (!current.isInstanceOf[ValueCursor]) {
+        current = current.up.asInstanceOf[HCursor]
       }
 
-      Some(go(this))
+      Some(current.asInstanceOf[ValueCursor].value)
     }
 
     final def downArray: ACursor = value match {
@@ -615,7 +579,7 @@ final object HCursor {
         val m = o.toMap
 
         if (!m.contains(k)) fail(CursorOp.DownField(k)) else {
-          new ObjectCursor(m(k), this, false, k, o) {
+          new ObjectCursor(o, k, this, false) {
             protected def lastCursor: HCursor = self
             protected def lastOp: CursorOp = CursorOp.DownField(k)
           }
@@ -630,18 +594,15 @@ final object HCursor {
   }
 
   private[this] abstract class ValueCursor(final val value: Json) extends BaseHCursor { self =>
-    final def withFocus(f: Json => Json): ACursor = new ValueCursor(f(value)) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = null
+    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor = new ValueCursor(newValue) {
+      protected def lastCursor: HCursor = lastC
+      protected def lastOp: CursorOp = op
     }
 
-    final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-      F.map(f(value))(newValue =>
-        new ValueCursor(newValue) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = null
-        }
-      )
+    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ValueCursor(value) {
+      protected def lastCursor: HCursor = lastC
+      protected def lastOp: CursorOp = op
+    }
 
     final def lefts: Option[List[Json]] = None
     final def rights: Option[List[Json]] = None
@@ -678,60 +639,21 @@ final object HCursor {
 
     private[this] def valuesExcept: Vector[Json] = values.take(index) ++ values.drop(index + 1)
 
-    private[circe] def replace(newValue: Json, op: CursorOp): ArrayCursor =
+    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor =
       new ArrayCursor(values.updated(index, newValue), index, parent, true) {
-        protected def lastCursor: HCursor = self
+        protected def lastCursor: HCursor = lastC
         protected def lastOp: CursorOp = op
       }
 
-    final def withFocus(f: Json => Json): ACursor = replace(f(value), null)
-    final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-      F.map(f(value))(replace(_, null))
-
-    final def up: ACursor = {
-      val newValue = Json.fromValues(values)
-
-      parent match {
-        case v: ValueCursor =>  new ValueCursor(newValue) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
-        case a: ArrayCursor =>
-          if (!changed) a else a.replace(newValue, CursorOp.MoveUp)
-        case o: ObjectCursor => new ObjectCursor(
-          newValue,
-          o.parent,
-          changed || o.changed,
-          o.key,
-          if (changed) o.obj.add(o.key, newValue) else o.obj
-        ) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
-      }
+    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ArrayCursor(values, index, parent, true) {
+      protected def lastCursor: HCursor = lastC
+      protected def lastOp: CursorOp = op
     }
 
-    final def delete: ACursor = {
-      val newValue = Json.fromValues(valuesExcept)
-
-      parent match {
-        case v: ValueCursor => new ValueCursor(newValue) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
-        case a: ArrayCursor => a.replace(newValue, CursorOp.DeleteGoParent)
-        case o: ObjectCursor => new ObjectCursor(
-          newValue,
-          o.parent,
-          true,
-          o.key,
-          o.obj
-        ) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
-      }
-    }
+    final def up: ACursor =
+      if (!changed) parent.addOp(self, CursorOp.MoveUp) else
+        parent.replace(Json.fromValues(values), self, CursorOp.MoveUp)
+    final def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), self, CursorOp.DeleteGoParent)
 
     final def lefts: Option[List[Json]] = Some(values.take(index).reverse.toList)
     final def rights: Option[List[Json]] = Some(values.drop(index + 1).toList)
@@ -815,64 +737,36 @@ final object HCursor {
   }
 
   private[this] sealed abstract class ObjectCursor(
-    final val value: Json,
-    final val parent: HCursor,
-    final val changed: Boolean,
+    final val obj: JsonObject,
     final val key: String,
-    final val obj: JsonObject
+    final val parent: HCursor,
+    final val changed: Boolean
   ) extends BaseHCursor { self =>
-    final def withFocus(f: Json => Json): ACursor = new ObjectCursor(f(value), parent, true, key, obj) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = null
-    }
+    final def value: Json = obj.toMap(key)
 
-    final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-      F.map(f(value))(newValue =>
-        new ObjectCursor(newValue, parent, true, key, obj) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = null
-        }
-      )
+    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor =
+      new ObjectCursor(obj.add(key, newValue), key, parent, true) {
+        protected def lastCursor: HCursor = lastC
+        protected def lastOp: CursorOp = op
+      }
+
+    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ObjectCursor(obj, key, parent, true) {
+      protected def lastCursor: HCursor = lastC
+      protected def lastOp: CursorOp = op
+    }
 
     final def lefts: Option[List[Json]] = None
     final def rights: Option[List[Json]] = None
 
-    final def up: ACursor = {
-      val newValue = Json.fromJsonObject(if (changed) obj.add(key, value) else obj)
-
-      parent match {
-        case v: ValueCursor => new ValueCursor(newValue) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
-        case a: ArrayCursor => if (changed) a.replace(newValue, CursorOp.MoveUp) else a
-        case o: ObjectCursor => new ObjectCursor(newValue, o.parent, changed || o.changed, o.key, o.obj) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.MoveUp
-        }
-      }
-    }
-
-    final def delete: ACursor = {
-      val newValue = Json.fromJsonObject(obj.remove(key))
-
-      parent match {
-        case v: ValueCursor => new ValueCursor(newValue) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
-        case a: ArrayCursor => a.replace(newValue, CursorOp.DeleteGoParent)
-        case o: ObjectCursor => new ObjectCursor(newValue, o.parent, true, o.key, o.obj) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DeleteGoParent
-        }
-      }
-    }
+    final def up: ACursor =
+      if (!changed) parent.addOp(self, CursorOp.MoveUp) else
+        parent.replace(Json.fromJsonObject(obj), self, CursorOp.MoveUp)
+    final def delete: ACursor = parent.replace(Json.fromJsonObject(obj.remove(key)), self, CursorOp.DeleteGoParent)
 
     final def field(k: String): ACursor = {
       val m = obj.toMap
 
-      if (m.contains(k)) new ObjectCursor(m(k), parent, changed, k, obj) {
+      if (m.contains(k)) new ObjectCursor(obj, k, parent, changed) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.Field(k)
       } else fail(CursorOp.Field(k))
@@ -881,7 +775,7 @@ final object HCursor {
     final def deleteGoField(k: String): ACursor = {
       val m = obj.toMap
 
-      if (m.contains(k)) new ObjectCursor(m(k), parent, true, k, obj.remove(key)) {
+      if (m.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true) {
         protected def lastCursor: HCursor = self
         protected def lastOp: CursorOp = CursorOp.DeleteGoField(k)
       } else fail(CursorOp.DeleteGoField(k))
