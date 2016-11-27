@@ -95,31 +95,17 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
 /**
  * We omit all Scala.js projects from Unidoc generation, as well as
  * circe-generic on 2.10, since Unidoc doesn't like its macros.
+ * Exclude java8 but include optics since it compiles on 1.7.
  */
-def noDocProjects(sv: String): Seq[ProjectReference] = Seq[ProjectReference](
-  coreJS,
-  hygiene,
-  java8,
-  literalJS,
-  genericJS,
-  genericExtrasJS,
-  shapesJS,
-  numbersJS,
-  opticsJS,
-  parserJS,
-  refinedJS,
-  scodecJS,
-  testingJS,
-  tests,
-  testsJS,
-  spray,
-  benchmark
-) ++ (
-  CrossVersion.partialVersion(sv) match {
-    case Some((2, 10)) => Seq[ProjectReference](generic, literal)
+def noDocProjects(sv: String): Seq[ProjectReference] = {
+  val unwanted = circeCrossModules.map(_._2) ++ circeUtilModules :+ tests
+  val scala210 = CrossVersion.partialVersion(sv) match {
+    case Some((2, 10)) => Seq(generic, literal)
     case _ => Nil
   }
-)
+
+  (unwanted ++ jvm8Only(java8) ++ scala210).map(p => p: ProjectReference)
+}
 
 lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   micrositeName := "circe",
@@ -167,30 +153,57 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
   )
   .enablePlugins(MicrositesPlugin)
 
-lazy val aggregatedProjects: Seq[ProjectReference] = Seq[ProjectReference](
-  numbers, numbersJS,
-  core, coreJS,
-  generic, genericJS,
-  genericExtras, genericExtrasJS,
-  shapes, shapesJS,
-  literal, literalJS,
-  refined, refinedJS,
-  parser, parserJS,
-  scodec, scodecJS,
-  testing, testingJS,
-  tests, testsJS,
+lazy val circeCrossModules = Seq[(Project, Project)](
+  (numbers, numbersJS),
+  (core, coreJS),
+  (generic, genericJS),
+  (genericExtras, genericExtrasJS),
+  (shapes, shapesJS),
+  (literal, literalJS),
+  (optics, opticsJS),
+  (refined, refinedJS),
+  (parser, parserJS),
+  (scodec, scodecJS),
+  (testing, testingJS),
+  (tests, testsJS)
+)
+
+lazy val circeJsModules = Seq[Project](scalajs)
+
+lazy val circeJvmModules = Seq[Project](
   jawn,
   jackson,
-  optics, opticsJS,
-  scalajs,
-  streaming,
+  java8,
+  streaming
+)
+
+lazy val circeUtilModules = Seq[Project](
   docs,
   spray,
   hygiene,
   benchmark
-) ++ (
-  if (sys.props("java.specification.version") == "1.8") Seq[ProjectReference](java8) else Nil
 )
+
+def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
+  case "1.8" => Set.empty
+  case _ => Set(projects: _*)
+}
+
+lazy val jvmProjects: Seq[Project] =
+  (circeCrossModules.map(_._1) ++ circeJvmModules).filterNot(jvm8Only(java8))
+
+lazy val jsProjects: Seq[Project] =
+  (circeCrossModules.map(_._2) ++ circeJsModules)
+
+/**
+ * Aggregation should ensure that publish works as expected on the given
+ * JVM version. The `validate` command aliases will filter out projects
+ * not supported by the given JVM.
+ */
+lazy val aggregatedProjects: Seq[ProjectReference] =
+  (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
+   circeJsModules ++ circeJvmModules ++ circeUtilModules)
+    .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
@@ -532,48 +545,14 @@ credentials ++= (
   )
 ).toSeq
 
-val jvmProjects = Seq(
-  "numbers",
-  "core",
-  "generic",
-  "genericExtras",
-  "shapes",
-  "refined",
-  "parser",
-  "scodec",
-  "tests",
-  "jawn",
-  "jackson"
-) ++ (
-  if (sys.props("java.specification.version") == "1.8") Seq("java8", "optics") else Nil
-)
+/* Only run optics tests on Java 8 since Scala 2.11 on Java 7 breaks. */
+val jvmTestProjects = Seq(numbers, tests, java8, optics).filterNot(jvm8Only(java8, optics))
 
-val jvmTestProjects = Seq(
-  "numbers",
-  "tests"
-) ++ (
-  if (sys.props("java.specification.version") == "1.8") Seq("java8", "optics") else Nil
-)
-
-val jsProjects = Seq(
-  "numbersJS",
-  "coreJS",
-  "genericJS",
-  "genericExtrasJS",
-  "shapesJS",
-  "opticsJS",
-  "parserJS",
-  "refinedJS",
-  "scalajs",
-  "scodecJS",
-  "testsJS"
-)
-
-addCommandAlias("buildJVM", jvmProjects.map(";" + _ + "/compile").mkString)
+addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
   "validateJVM",
-  ";buildJVM" + jvmTestProjects.map(";" + _ + "/test").mkString + ";scalastyle;unidoc"
+  ";buildJVM" + jvmTestProjects.map(";" + _.id + "/test").mkString + ";scalastyle;unidoc"
 )
-addCommandAlias("buildJS", jsProjects.map(";" + _ + "/compile").mkString)
+addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias("validateJS", ";buildJS;opticsJS/test;testsJS/test;scalastyle")
 addCommandAlias("validate", ";validateJVM;validateJS")
