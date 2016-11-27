@@ -33,7 +33,10 @@ import scala.annotation.tailrec
  *
  * @author Travis Brown
  */
-sealed abstract class ACursor {
+sealed abstract class ACursor(
+  private val lastCursor: HCursor,
+  private val lastOp: CursorOp
+) extends Serializable {
   /**
    * The current location in the document.
    *
@@ -46,7 +49,19 @@ sealed abstract class ACursor {
    *
    * @group Decoding
    */
-  def history: List[CursorOp]
+  final def history: List[CursorOp] = {
+    var next = this
+    val builder = List.newBuilder[CursorOp]
+
+    while (next.ne(null)) {
+      if (next.lastOp.ne(null)) {
+        builder += next.lastOp
+      }
+      next = next.lastCursor
+    }
+
+    builder.result()
+  }
 
   /**
    * Indicate whether this cursor represents the result of a successful
@@ -385,50 +400,53 @@ final object ACursor {
   }
 }
 
-sealed abstract class FailedCursor(final val incorrectFocus: Boolean) extends ACursor {
-  final def succeeded: Boolean = false
-  final def success: Option[HCursor] = None
+final class FailedCursor(val incorrectFocus: Boolean)(
+  lastCursor: HCursor,
+  lastOp: CursorOp
+) extends ACursor(lastCursor, lastOp) {
+  def succeeded: Boolean = false
+  def success: Option[HCursor] = None
 
-  final def focus: Option[Json] = None
-  final def top: Option[Json] = None
+  def focus: Option[Json] = None
+  def top: Option[Json] = None
 
-  final def withFocus(f: Json => Json): ACursor = this
-  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
+  def withFocus(f: Json => Json): ACursor = this
+  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
 
-  final def fieldSet: Option[Set[String]] = None
-  final def fields: Option[List[String]] = None
-  final def lefts: Option[List[Json]] = None
-  final def rights: Option[List[Json]] = None
+  def fieldSet: Option[Set[String]] = None
+  def fields: Option[List[String]] = None
+  def lefts: Option[List[Json]] = None
+  def rights: Option[List[Json]] = None
 
-  final def downArray: ACursor = this
-  final def downAt(p: Json => Boolean): ACursor = this
-  final def downField(k: String): ACursor = this
-  final def downN(n: Int): ACursor = this
-  final def find(p: Json => Boolean): ACursor = this
-  final def leftAt(p: Json => Boolean): ACursor = this
-  final def leftN(n: Int): ACursor = this
-  final def rightAt(p: Json => Boolean): ACursor = this
-  final def rightN(n: Int): ACursor = this
-  final def up: ACursor = this
+  def downArray: ACursor = this
+  def downAt(p: Json => Boolean): ACursor = this
+  def downField(k: String): ACursor = this
+  def downN(n: Int): ACursor = this
+  def find(p: Json => Boolean): ACursor = this
+  def leftAt(p: Json => Boolean): ACursor = this
+  def leftN(n: Int): ACursor = this
+  def rightAt(p: Json => Boolean): ACursor = this
+  def rightN(n: Int): ACursor = this
+  def up: ACursor = this
 
-  final def left: ACursor = this
-  final def right: ACursor = this
-  final def first: ACursor = this
-  final def last: ACursor = this
+  def left: ACursor = this
+  def right: ACursor = this
+  def first: ACursor = this
+  def last: ACursor = this
 
-  final def delete: ACursor = this
-  final def deleteGoLeft: ACursor = this
-  final def deleteGoRight: ACursor = this
-  final def deleteGoFirst: ACursor = this
-  final def deleteGoLast: ACursor = this
-  final def deleteLefts: ACursor = this
-  final def deleteRights: ACursor = this
+  def delete: ACursor = this
+  def deleteGoLeft: ACursor = this
+  def deleteGoRight: ACursor = this
+  def deleteGoFirst: ACursor = this
+  def deleteGoLast: ACursor = this
+  def deleteLefts: ACursor = this
+  def deleteRights: ACursor = this
 
-  final def setLefts(x: List[Json]): ACursor = this
-  final def setRights(x: List[Json]): ACursor = this
+  def setLefts(x: List[Json]): ACursor = this
+  def setRights(x: List[Json]): ACursor = this
 
-  final def field(k: String): ACursor = this
-  final def deleteGoField(q: String): ACursor = this
+  def field(k: String): ACursor = this
+  def deleteGoField(q: String): ACursor = this
 }
 
 final object FailedCursor {
@@ -436,31 +454,15 @@ final object FailedCursor {
     cats.instances.list.catsKernelStdEqForList[CursorOp].on[FailedCursor](_.history)
 }
 
-sealed abstract class HCursor extends ACursor { self =>
+sealed abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
   def value: Json
-  protected def lastCursor: HCursor
-  protected def lastOp: CursorOp
 
-  protected def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor
-  protected def addOp(lastC: HCursor, op: CursorOp): HCursor
+  protected def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor
+  protected def addOp(cursor: HCursor, op: CursorOp): HCursor
 
-  final def withFocus(f: Json => Json): ACursor = replace(f(value), self, null)
+  final def withFocus(f: Json => Json): ACursor = replace(f(value), this, null)
   final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-    F.map(f(value))(replace(_, self, null))
-
-  final def history: List[CursorOp] = {
-    var next = this
-    val builder = List.newBuilder[CursorOp]
-
-    while (next.ne(null)) {
-      if (next.lastOp.ne(null)) {
-        builder += next.lastOp
-      }
-      next = next.lastCursor
-    }
-
-    builder.result()
-  }
+    F.map(f(value))(replace(_, this, null))
 
   final def succeeded: Boolean = true
   final def success: Option[HCursor] = Some(this)
@@ -522,28 +524,25 @@ sealed abstract class HCursor extends ACursor { self =>
    *
    * @group Utilities
    */
-  protected def fail(op: CursorOp): ACursor
+  protected[this] final def fail(op: CursorOp): ACursor =
+    new FailedCursor((op.requiresObject && !value.isObject) || (op.requiresArray && !value.isArray))(this, op)
 }
 
 final object HCursor {
-  def fromJson(value: Json): HCursor = new ValueCursor(value) {
-    protected def lastCursor: HCursor = null
-    protected def lastOp: CursorOp = null
-  }
+  def fromJson(value: Json): HCursor = new ValueCursor(value)(null, null)
 
-  private[this] val eqJsonList: Eq[List[Json]] = cats.instances.list.catsKernelStdEqForList[Json]
+  private[this] val eqJsonVector: Eq[Vector[Json]] = cats.instances.vector.catsKernelStdEqForVector[Json]
 
   implicit val eqHCursor: Eq[HCursor] = new Eq[HCursor] {
     def eqv(a: HCursor, b: HCursor): Boolean =
       Json.eqJson.eqv(a.value, b.value) &&
-      ((a.lastOp.eq(null) && b.lastOp.eq(null)) || CursorOp.eqCursorOp.eqv(a.lastOp, b.lastOp)) &&
-      ((a.lastCursor.eq(null) && b.lastCursor.eq(null)) || eqv(a.lastCursor, b.lastCursor)) && (
+      CursorOp.eqCursorOpList.eqv(a.history, b.history) && (
         (a, b) match {
           case (_: ValueCursor, _: ValueCursor) => true
           case (aa: ArrayCursor, ba: ArrayCursor) =>
             aa.changed == ba.changed &&
             eqv(aa.parent, ba.parent) &&
-            eqJsonList.eqv(aa.values.toList, ba.values.toList)
+            eqJsonVector.eqv(aa.values, ba.values)
           case (ao: ObjectCursor, bo: ObjectCursor) =>
             ao.changed == bo.changed &&
             eqv(ao.parent, bo.parent) &&
@@ -554,9 +553,12 @@ final object HCursor {
       )
   }
 
-  private[this] sealed abstract class BaseHCursor extends HCursor { self =>
+  private[this] sealed abstract class BaseHCursor(
+    lastCursor: HCursor,
+    lastOp: CursorOp
+  ) extends HCursor(lastCursor, lastOp) {
     final def top: Option[Json] = {
-      var current: HCursor = self
+      var current: HCursor = this
 
       while (!current.isInstanceOf[ValueCursor]) {
         current = current.up.asInstanceOf[HCursor]
@@ -567,10 +569,7 @@ final object HCursor {
 
     final def downArray: ACursor = value match {
       case Json.JArray(values) if !values.isEmpty =>
-        new ArrayCursor(values.toVector, 0, this, false) {
-          protected def lastCursor: HCursor = self
-          protected def lastOp: CursorOp = CursorOp.DownArray
-        }
+        new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
       case _ => fail(CursorOp.DownArray)
     }
 
@@ -579,221 +578,164 @@ final object HCursor {
         val m = o.toMap
 
         if (!m.contains(k)) fail(CursorOp.DownField(k)) else {
-          new ObjectCursor(o, k, this, false) {
-            protected def lastCursor: HCursor = self
-            protected def lastOp: CursorOp = CursorOp.DownField(k)
-          }
+          new ObjectCursor(o, k, this, false)(this, CursorOp.DownField(k))
         }
       case _ => fail(CursorOp.DownField(k))
     }
-
-    protected final def fail(op: CursorOp): ACursor =
-      new FailedCursor((op.requiresObject && !value.isObject) || (op.requiresArray && !value.isArray)) {
-        def history: List[CursorOp] = op :: self.history
-      }
   }
 
-  private[this] abstract class ValueCursor(final val value: Json) extends BaseHCursor { self =>
-    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor = new ValueCursor(newValue) {
-      protected def lastCursor: HCursor = lastC
-      protected def lastOp: CursorOp = op
-    }
+  private[this] final class ValueCursor(val value: Json)(
+    lastCursor: HCursor,
+    lastOp: CursorOp
+  ) extends BaseHCursor(lastCursor, lastOp) {
+    def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor = new ValueCursor(newValue)(cursor, op)
+    def addOp(cursor: HCursor, op: CursorOp): HCursor = new ValueCursor(value)(cursor, op)
 
-    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ValueCursor(value) {
-      protected def lastCursor: HCursor = lastC
-      protected def lastOp: CursorOp = op
-    }
+    def lefts: Option[List[Json]] = None
+    def rights: Option[List[Json]] = None
 
-    final def lefts: Option[List[Json]] = None
-    final def rights: Option[List[Json]] = None
+    def up: ACursor = fail(CursorOp.MoveUp)
+    def delete: ACursor = fail(CursorOp.DeleteGoParent)
 
-    final def up: ACursor = fail(CursorOp.MoveUp)
-    final def delete: ACursor = fail(CursorOp.DeleteGoParent)
+    def left: ACursor = fail(CursorOp.MoveLeft)
+    def right: ACursor = fail(CursorOp.MoveRight)
+    def first: ACursor = fail(CursorOp.MoveFirst)
+    def last: ACursor = fail(CursorOp.MoveLast)
 
-    final def left: ACursor = fail(CursorOp.MoveLeft)
-    final def right: ACursor = fail(CursorOp.MoveRight)
-    final def first: ACursor = fail(CursorOp.MoveFirst)
-    final def last: ACursor = fail(CursorOp.MoveLast)
+    def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
+    def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
+    def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
+    def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
+    def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
+    def deleteRights: ACursor = fail(CursorOp.DeleteRights)
 
-    final def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
-    final def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
-    final def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
-    final def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
-    final def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
-    final def deleteRights: ACursor = fail(CursorOp.DeleteRights)
+    def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
+    def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
 
-    final def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
-    final def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
-
-    final def field(k: String): ACursor = fail(CursorOp.Field(k))
-    final def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
+    def field(k: String): ACursor = fail(CursorOp.Field(k))
+    def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
   }
 
-  private[this] abstract class ArrayCursor(
-    final val values: Vector[Json],
-    final val index: Int,
-    final val parent: HCursor,
-    final val changed: Boolean
-  ) extends BaseHCursor { self =>
-    final def value: Json = values(index)
+  private[this] final class ArrayCursor(
+    val values: Vector[Json],
+    val index: Int,
+    val parent: HCursor,
+    val changed: Boolean
+  )(
+    lastCursor: HCursor,
+    lastOp: CursorOp
+  ) extends BaseHCursor(lastCursor, lastOp) {
+    def value: Json = values(index)
 
     private[this] def valuesExcept: Vector[Json] = values.take(index) ++ values.drop(index + 1)
 
-    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor =
-      new ArrayCursor(values.updated(index, newValue), index, parent, true) {
-        protected def lastCursor: HCursor = lastC
-        protected def lastOp: CursorOp = op
-      }
+    def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor =
+      new ArrayCursor(values.updated(index, newValue), index, parent, true)(cursor, op)
 
-    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ArrayCursor(values, index, parent, true) {
-      protected def lastCursor: HCursor = lastC
-      protected def lastOp: CursorOp = op
+    def addOp(cursor: HCursor, op: CursorOp): HCursor =
+      new ArrayCursor(values, index, parent, true)(cursor, op)
+
+    def up: ACursor =
+      if (!changed) parent.addOp(this, CursorOp.MoveUp) else
+        parent.replace(Json.fromValues(values), this, CursorOp.MoveUp)
+    def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), this, CursorOp.DeleteGoParent)
+
+    def lefts: Option[List[Json]] = Some(values.take(index).reverse.toList)
+    def rights: Option[List[Json]] = Some(values.drop(index + 1).toList)
+
+    def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft) else {
+      new ArrayCursor(values, index - 1, parent, changed)(this, CursorOp.MoveLeft)
     }
 
-    final def up: ACursor =
-      if (!changed) parent.addOp(self, CursorOp.MoveUp) else
-        parent.replace(Json.fromValues(values), self, CursorOp.MoveUp)
-    final def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), self, CursorOp.DeleteGoParent)
-
-    final def lefts: Option[List[Json]] = Some(values.take(index).reverse.toList)
-    final def rights: Option[List[Json]] = Some(values.drop(index + 1).toList)
-
-    final def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft) else {
-      new ArrayCursor(values, index - 1, parent, changed) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.MoveLeft
-      }
+    def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight) else {
+      new ArrayCursor(values, index + 1, parent, changed)(this, CursorOp.MoveRight)
     }
 
-    final def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight) else {
-      new ArrayCursor(values, index + 1, parent, changed) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.MoveRight
-      }
+    def first: ACursor = new ArrayCursor(values, 0, parent, changed)(this, CursorOp.MoveFirst)
+    def last: ACursor = new ArrayCursor(values, values.size - 1, parent, changed)(this, CursorOp.MoveLast)
+
+    def deleteGoLeft: ACursor = if (index == 0) fail(CursorOp.DeleteGoLeft) else {
+      new ArrayCursor(valuesExcept, index - 1, parent, true)(this, CursorOp.DeleteGoLeft)
     }
 
-    final def first: ACursor = new ArrayCursor(values, 0, parent, changed) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.MoveFirst
+    def deleteGoRight: ACursor = if (index == values.size - 1) fail(CursorOp.DeleteGoRight) else {
+      new ArrayCursor(valuesExcept, index, parent, true)(this, CursorOp.DeleteGoRight)
     }
 
-    final def last: ACursor = new ArrayCursor(values, values.size - 1, parent, changed) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.MoveLast
+    def deleteGoFirst: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoFirst) else {
+      new ArrayCursor(valuesExcept, 0, parent, true)(this, CursorOp.DeleteGoFirst)
     }
 
-    final def deleteGoLeft: ACursor = if (index == 0) fail(CursorOp.DeleteGoLeft) else {
-      new ArrayCursor(valuesExcept, index - 1, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.DeleteGoLeft
-      }
+    def deleteGoLast: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoLast) else {
+      new ArrayCursor(valuesExcept, values.size - 2, parent, true)(this, CursorOp.DeleteGoLast)
     }
 
-    final def deleteGoRight: ACursor = if (index == values.size - 1)fail(CursorOp.DeleteGoRight) else {
-      new ArrayCursor(valuesExcept, index, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.DeleteGoRight
-      }
-    }
+    def deleteLefts: ACursor = new ArrayCursor(values.drop(index), 0, parent, index != 0)(this, CursorOp.DeleteLefts)
+    def deleteRights: ACursor =
+      new ArrayCursor(values.take(index + 1), index, parent, index < values.size)(this, CursorOp.DeleteRights)
 
-    final def deleteGoFirst: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoFirst) else {
-      new ArrayCursor(valuesExcept, 0, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.DeleteGoFirst
-      }
-    }
+    def setLefts(js: List[Json]): ACursor =
+      new ArrayCursor(js.reverse.toVector ++ values.drop(index), js.size, parent, true)(this, CursorOp.SetLefts(js))
 
-    final def deleteGoLast: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoLast) else {
-      new ArrayCursor(valuesExcept, values.size - 2, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.DeleteGoLast
-      }
-    }
+    def setRights(js: List[Json]): ACursor =
+      new ArrayCursor(values.take(index + 1) ++ js, index, parent, true)(this, CursorOp.SetRights(js))
 
-    final def deleteLefts: ACursor = new ArrayCursor(values.drop(index), 0, parent, index != 0) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.DeleteLefts
-    }
-
-    final def deleteRights: ACursor = new ArrayCursor(values.take(index + 1), index, parent, index < values.size) {
-      protected def lastCursor: HCursor = self
-      protected def lastOp: CursorOp = CursorOp.DeleteRights
-    }
-
-    final def setLefts(js: List[Json]): ACursor =
-      new ArrayCursor(js.reverse.toVector ++ values.drop(index), js.size, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.SetLefts(js)
-      }
-
-    final def setRights(js: List[Json]): ACursor =
-      new ArrayCursor(values.take(index + 1) ++ js, index, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.SetRights(js)
-      }
-
-    final def field(k: String): ACursor = fail(CursorOp.Field(k))
-    final def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
+    def field(k: String): ACursor = fail(CursorOp.Field(k))
+    def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
   }
 
-  private[this] sealed abstract class ObjectCursor(
-    final val obj: JsonObject,
-    final val key: String,
-    final val parent: HCursor,
-    final val changed: Boolean
-  ) extends BaseHCursor { self =>
-    final def value: Json = obj.toMap(key)
+  private[this] final class ObjectCursor(
+    val obj: JsonObject,
+    val key: String,
+    val parent: HCursor,
+    val changed: Boolean
+  )(
+    lastCursor: HCursor,
+    lastOp: CursorOp
+  ) extends BaseHCursor(lastCursor, lastOp) {
+    def value: Json = obj.toMap(key)
 
-    final def replace(newValue: Json, lastC: HCursor, op: CursorOp): HCursor =
-      new ObjectCursor(obj.add(key, newValue), key, parent, true) {
-        protected def lastCursor: HCursor = lastC
-        protected def lastOp: CursorOp = op
-      }
+    def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor =
+      new ObjectCursor(obj.add(key, newValue), key, parent, true)(cursor, op)
 
-    final def addOp(lastC: HCursor, op: CursorOp): HCursor = new ObjectCursor(obj, key, parent, true) {
-      protected def lastCursor: HCursor = lastC
-      protected def lastOp: CursorOp = op
-    }
+    def addOp(cursor: HCursor, op: CursorOp): HCursor = new ObjectCursor(obj, key, parent, true)(cursor, op)
 
-    final def lefts: Option[List[Json]] = None
-    final def rights: Option[List[Json]] = None
+    def lefts: Option[List[Json]] = None
+    def rights: Option[List[Json]] = None
 
-    final def up: ACursor =
-      if (!changed) parent.addOp(self, CursorOp.MoveUp) else
-        parent.replace(Json.fromJsonObject(obj), self, CursorOp.MoveUp)
-    final def delete: ACursor = parent.replace(Json.fromJsonObject(obj.remove(key)), self, CursorOp.DeleteGoParent)
+    def up: ACursor =
+      if (!changed) parent.addOp(this, CursorOp.MoveUp) else
+        parent.replace(Json.fromJsonObject(obj), this, CursorOp.MoveUp)
 
-    final def field(k: String): ACursor = {
+    def delete: ACursor = parent.replace(Json.fromJsonObject(obj.remove(key)), this, CursorOp.DeleteGoParent)
+
+    def field(k: String): ACursor = {
       val m = obj.toMap
 
-      if (m.contains(k)) new ObjectCursor(obj, k, parent, changed) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.Field(k)
-      } else fail(CursorOp.Field(k))
+      if (m.contains(k)) new ObjectCursor(obj, k, parent, changed)(this, CursorOp.Field(k))
+        else fail(CursorOp.Field(k))
     }
 
-    final def deleteGoField(k: String): ACursor = {
+    def deleteGoField(k: String): ACursor = {
       val m = obj.toMap
 
-      if (m.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true) {
-        protected def lastCursor: HCursor = self
-        protected def lastOp: CursorOp = CursorOp.DeleteGoField(k)
-      } else fail(CursorOp.DeleteGoField(k))
+      if (m.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true)(this, CursorOp.DeleteGoField(k))
+        else fail(CursorOp.DeleteGoField(k))
     }
 
-    final def left: ACursor = fail(CursorOp.MoveLeft)
-    final def right: ACursor = fail(CursorOp.MoveRight)
-    final def first: ACursor = fail(CursorOp.MoveFirst)
-    final def last: ACursor = fail(CursorOp.MoveLast)
+    def left: ACursor = fail(CursorOp.MoveLeft)
+    def right: ACursor = fail(CursorOp.MoveRight)
+    def first: ACursor = fail(CursorOp.MoveFirst)
+    def last: ACursor = fail(CursorOp.MoveLast)
 
-    final def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
-    final def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
-    final def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
-    final def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
-    final def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
-    final def deleteRights: ACursor = fail(CursorOp.DeleteRights)
+    def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
+    def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
+    def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
+    def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
+    def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
+    def deleteRights: ACursor = fail(CursorOp.DeleteRights)
 
-    final def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
-    final def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
+    def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
+    def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
   }
 }
