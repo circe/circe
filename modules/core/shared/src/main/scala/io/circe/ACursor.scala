@@ -393,11 +393,11 @@ sealed abstract class ACursor(
 }
 
 final object ACursor {
-  implicit val eqACursor: Eq[ACursor] = Eq.instance {
-    case (a: HCursor, b: HCursor) => HCursor.eqHCursor.eqv(a, b)
-    case (a: FailedCursor, b: FailedCursor) => FailedCursor.eqFailedCursor.eqv(a, b)
-    case _ => false
-  }
+  private[this] val jsonOptionEq: Eq[Option[Json]] = cats.kernel.instances.option.catsKernelStdEqForOption(Json.eqJson)
+
+  implicit val eqACursor: Eq[ACursor] = Eq.instance((a, b) =>
+    jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history)
+  )
 }
 
 final class FailedCursor(val incorrectFocus: Boolean)(
@@ -447,11 +447,6 @@ final class FailedCursor(val incorrectFocus: Boolean)(
 
   def field(k: String): ACursor = this
   def deleteGoField(q: String): ACursor = this
-}
-
-final object FailedCursor {
-  implicit val eqFailedCursor: Eq[FailedCursor] =
-    cats.instances.list.catsKernelStdEqForList[CursorOp].on[FailedCursor](_.history)
 }
 
 sealed abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
@@ -530,28 +525,6 @@ sealed abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACu
 
 final object HCursor {
   def fromJson(value: Json): HCursor = new ValueCursor(value)(null, null)
-
-  private[this] val eqJsonVector: Eq[Vector[Json]] = cats.instances.vector.catsKernelStdEqForVector[Json]
-
-  implicit val eqHCursor: Eq[HCursor] = new Eq[HCursor] {
-    def eqv(a: HCursor, b: HCursor): Boolean =
-      Json.eqJson.eqv(a.value, b.value) &&
-      CursorOp.eqCursorOpList.eqv(a.history, b.history) && (
-        (a, b) match {
-          case (_: ValueCursor, _: ValueCursor) => true
-          case (aa: ArrayCursor, ba: ArrayCursor) =>
-            aa.changed == ba.changed &&
-            eqv(aa.parent, ba.parent) &&
-            eqJsonVector.eqv(aa.values, ba.values)
-          case (ao: ObjectCursor, bo: ObjectCursor) =>
-            ao.changed == bo.changed &&
-            eqv(ao.parent, bo.parent) &&
-            ao.key == bo.key &&
-            JsonObject.eqJsonObject.eqv(ao.obj, bo.obj)
-          case _ => false
-        }
-      )
-  }
 
   private[this] sealed abstract class BaseHCursor(
     lastCursor: HCursor,
