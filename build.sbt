@@ -278,22 +278,14 @@ lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = true))
-  .settings(
-    sources in (Compile, doc) := (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 11)) => (sources in (Compile, doc)).value
-        case _ => Nil
-      }
-    )
-  )
+  .settings(macroSettings(scaladocFor210 = false))
   .dependsOn(genericBase)
 
 lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
 
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = false))
+  .settings(macroSettings(scaladocFor210 = true))
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
