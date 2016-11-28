@@ -18,7 +18,7 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
   def encodeObject(a: A): JsonObject
 
   /**
-    * Create a new [ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
+    * Create a new [[ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
     * `A`.
     */
   final def contramapObject[B](f: B => A): ObjectEncoder[B] = new ObjectEncoder[B] {
