@@ -1,7 +1,7 @@
 package io.circe.numbers
 
 import io.circe.testing.{ IntegralString, JsonNumberString }
-import java.math.BigDecimal
+import java.math.{ BigDecimal, BigInteger }
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
@@ -107,6 +107,18 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-9223372036854775809")
 
     assert(d.truncateToLong === Long.MinValue)
+  }
+
+  "toBigInteger" should "fail on very large values" in {
+    val Some(d) = BiggerDecimal.parseBiggerDecimal("1e262144")
+
+    assert(d.toBigInteger === None)
+  }
+
+  it should "not count the sign against the digit length" in {
+    val Some(d) = BiggerDecimal.parseBiggerDecimal("-1e262143")
+
+    assert(d.toBigInteger === Some(new BigDecimal("-1e262143").toBigInteger))
   }
 
   "fromLong and fromDouble" should "agree on Int-sized integral values" in forAll { (value: Int) =>
