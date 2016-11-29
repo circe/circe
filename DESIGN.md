@@ -156,7 +156,7 @@ lots of more-or-less well-considered personal preferences that are subject to ch
 [circe-codec]: https://github.com/circe/circe/issues/133
 [metarest]: https://github.com/pathikrit/metarest
 [monocle]: https://github.com/julien-truffaut/Monocle
-[no-reflection]: https://gitter.im/travisbrown/circe?at=566effd73078c074765121ca
+[no-reflection]: https://gitter.im/circe/circe?at=566effd73078c074765121ca
 [on-reflection]: http://stackoverflow.com/a/33580411/334519
 [slip-28]: https://github.com/scala/slip/pull/28
 [tmtowtdi]: https://en.wikipedia.org/wiki/There%27s_more_than_one_way_to_do_it
