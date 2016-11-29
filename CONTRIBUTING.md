@@ -84,7 +84,7 @@ compatibility before the next release.
 
 [beginner-friendly]: https://github.com/circe/circe/labels/beginner-friendly
 [discipline]: https://github.com/typelevel/discipline
-[gitter]: https://gitter.im/travisbrown/circe
+[gitter]: https://gitter.im/circe/circe
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests/
 [help-wanted]: https://github.com/circe/circe/labels/help%20wanted
 [issues]: https://github.com/circe/circe/issues
