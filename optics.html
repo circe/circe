@@ -63,7 +63,7 @@ dependency on <code class="highlighter-rouge">circe-optics</code> to your build:
 <span class="c1">// import io.circe.optics.JsonPath._
 </span>
 <span class="k">val</span> <span class="nc">_phoneNum</span> <span class="k">=</span> <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">customer</span><span class="o">.</span><span class="n">contactDetails</span><span class="o">.</span><span class="n">phone</span><span class="o">.</span><span class="n">string</span>
-<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@85b5f3b
+<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@64ebbd87
 </span>
 <span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">_phoneNum</span><span class="o">.</span><span class="n">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
@@ -121,7 +121,7 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
-<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$2527/430962170@76450e26
+<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$2704/1308229968@6cc97b92
 </span>
 <span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// modifiedJson: io.circe.Json =

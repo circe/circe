@@ -132,6 +132,12 @@
                           CatsConversions
                         </a>
                       </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="class" href="JsonFoldPath.html" title=""></a>
+                        <a href="JsonFoldPath.html" title="">
+                          JsonFoldPath
+                        </a>
+                      </li><li class="current-entities indented3">
                         <a class="object" href="JsonNumberOptics$.html" title=""></a>
                         <a class="trait" href="JsonNumberOptics.html" title="Optics instances for io.circe.JsonObject."></a>
                         <a href="JsonNumberOptics.html" title="Optics instances for io.circe.JsonObject.">
@@ -160,6 +166,12 @@
                         <a class="class" href="" title=""></a>
                         <a href="" title="">
                           JsonTraversalPath
+                        </a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
+                        <a class="object" href="UnsafeOptics$.html" title=""></a>
+                        <a href="UnsafeOptics$.html" title="">
+                          UnsafeOptics
                         </a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
@@ -380,22 +392,6 @@
       </span>
       <span class="symbol">
         <span class="name">arr</span><span class="result">: <span class="extype" name="monocle.Traversal">Traversal</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>, <span class="extype" name="scala.List">List</span>[<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
-      </span>
-      
-      
-    </li><li name="io.circe.optics.JsonTraversalPath#arrFilter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="arrFilter((Int)⇒Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#arrFilter(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">arrFilter</span><span class="params">(<span name="p">p: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
       </span>
       
       
@@ -661,6 +657,54 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.optics.JsonTraversalPath#filter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filter(p:io.circe.Json=&gt;Boolean):io.circe.optics.JsonFoldPath"></a><a id="filter((Json)⇒Boolean):JsonFoldPath"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/optics/JsonTraversalPath.html#filter(p:io.circe.Json=&gt;Boolean):io.circe.optics.JsonFoldPath" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filter</span><span class="params">(<span name="p">p: (<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="JsonFoldPath.html" class="extype" name="io.circe.optics.JsonFoldPath">JsonFoldPath</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#filterByField" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filterByField(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="filterByField((String)⇒Boolean):JsonTraversalPath"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/optics/JsonTraversalPath.html#filterByField(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterByField</span><span class="params">(<span name="p">p: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.optics.JsonTraversalPath#filterByIndex" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filterByIndex(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="filterByIndex((Int)⇒Boolean):JsonTraversalPath"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/optics/JsonTraversalPath.html#filterByIndex(p:Int=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterByIndex</span><span class="params">(<span name="p">p: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
@@ -898,22 +942,6 @@
       </span>
       
       
-    </li><li name="io.circe.optics.JsonTraversalPath#objFilter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="objFilter((String)⇒Boolean):JsonTraversalPath"></a>
-      <span class="permalink">
-      <a href="../../../io/circe/optics/JsonTraversalPath.html#objFilter(p:String=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">objFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
-      </span>
-      
-      
     </li><li name="io.circe.optics.JsonTraversalPath#selectDynamic" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="selectDynamic(field:String):io.circe.optics.JsonTraversalPath"></a><a id="selectDynamic(String):JsonTraversalPath"></a>
       <span class="permalink">
@@ -978,6 +1006,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="io.circe.optics.JsonTraversalPath#unsafeFilter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="unsafeFilter(p:io.circe.Json=&gt;Boolean):io.circe.optics.JsonTraversalPath"></a><a id="unsafeFilter((Json)⇒Boolean):JsonTraversalPath"></a>
+      <span class="permalink">
+      <a href="../../../io/circe/optics/JsonTraversalPath.html#unsafeFilter(p:io.circe.Json=&gt;Boolean):io.circe.optics.JsonTraversalPath" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unsafeFilter</span><span class="params">(<span name="p">p: (<a href="../Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.optics.JsonTraversalPath">JsonTraversalPath</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
