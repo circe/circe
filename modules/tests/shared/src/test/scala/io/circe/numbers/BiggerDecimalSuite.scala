@@ -73,6 +73,12 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     assert(d.toLong === Some(value))
   }
 
+  "truncateToLong" should "work on values too big to be represented exactly as doubles" in {
+    val Some(d) = BiggerDecimal.parseBiggerDecimal("16858240615609565")
+
+    assert(d.truncateToLong === 16858240615609565L)
+  }
+
   "fromLong and fromDouble" should "agree on Int-sized integral values" in forAll { (value: Int) =>
     val dl = BiggerDecimal.fromLong(value.toLong)
     val dd = BiggerDecimal.fromDouble(value.toDouble)
