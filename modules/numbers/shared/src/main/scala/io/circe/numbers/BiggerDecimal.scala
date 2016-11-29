@@ -108,7 +108,19 @@ private[numbers] final class SigAndExp(
     }
   }
 
-  def truncateToLong: Long = toDouble.round
+  def truncateToLong: Long = toLong.getOrElse {
+    toBigDecimal.map { asBigDecimal =>
+      val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP)
+
+      if (rounded.compareTo(BiggerDecimal.MaxLong) >= 0) {
+        Long.MaxValue
+      } else if (rounded.compareTo(BiggerDecimal.MinLong) <= 0) {
+        Long.MinValue
+      } else rounded.longValue
+    }.getOrElse {
+      if (scale.signum > 0) 0L else if (unscaled.signum > 0) Long.MaxValue else Long.MinValue
+    }
+  }
 
   override def equals(that: Any): Boolean = that match {
     case other: SigAndExp =>
@@ -129,6 +141,8 @@ final object BiggerDecimal {
 
   private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
   private[numbers] val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
+  private[numbers] val MaxLong: BigDecimal = new BigDecimal(Long.MaxValue)
+  private[numbers] val MinLong: BigDecimal = new BigDecimal(Long.MinValue)
 
   val NegativeZero: BiggerDecimal = new BiggerDecimal {
     final def isWhole: Boolean = true
