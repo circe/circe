@@ -87,7 +87,7 @@ private[numbers] final class SigAndExp(
 
   def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
     if (!isWhole) None else {
-      val digits = BigInteger.valueOf(unscaled.toString.length.toLong).subtract(scale)
+      val digits = BigInteger.valueOf(unscaled.abs.toString.length.toLong).subtract(scale)
 
       if (digits.compareTo(BiggerDecimal.MaxBigIntegerDigits) > 0) None else Some(
         new BigDecimal(unscaled, scale.intValue).toBigInteger
