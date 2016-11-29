@@ -9,3 +9,9 @@
 .sidebar-nav > .sidebar-brand a .brand-wrapper {
   background-size: 36px 36px !important;
 }
+
+#site-header .navbar-wrapper .brand .icon-wrapper {
+  width: 36px;
+  background-size: 100%;
+}
+
