@@ -461,10 +461,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(string.toByte)
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toByte) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
@@ -483,10 +482,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(string.toShort)
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toShort) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
@@ -505,10 +503,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(string.toInt)
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toInt) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
@@ -530,10 +527,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(string.toLong)
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toLong) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
@@ -555,10 +551,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(BigInt(string))
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toBigInt) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
@@ -583,10 +578,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
         case Some(v) => Right(v)
         case None => fail(c)
       }
-      case JString(string) => try {
-        Right(BigDecimal(string))
-      } catch {
-        case _: NumberFormatException => fail(c)
+      case JString(string) => JsonNumber.fromString(string).flatMap(_.toBigDecimal) match {
+        case Some(value) => Right(value)
+        case None => fail(c)
       }
       case _ => fail(c)
     }
