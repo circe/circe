@@ -408,7 +408,7 @@ lazy val java8 = circeModule("java8", mima = previousCirceVersion)
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.7.1"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.8.0"
   )
   .dependsOn(core, jawn)
 
