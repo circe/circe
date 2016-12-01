@@ -132,6 +132,7 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
+    "-skip-packages", "scalaz",
     "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
