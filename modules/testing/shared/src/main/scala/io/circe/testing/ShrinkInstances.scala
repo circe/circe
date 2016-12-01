@@ -27,7 +27,7 @@ private[testing] trait ShrinkInstances {
           zero #:: interleave(hs, hs.map(h => -h))
         }
 
-        ns.map(JsonBigDecimal(_))
+        ns.map(d => JsonBigDecimal(d.underlying))
       case None => Stream(jn)
     }
   }

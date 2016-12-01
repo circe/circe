@@ -22,7 +22,7 @@ private[jackson] final object CirceJsonSerializer extends JsonSerializer[Json] {
         // Workaround #3784: Same behaviour as if JsonGenerator were
         // configured with WRITE_BIGDECIMAL_AS_PLAIN, but forced as this
         // configuration is ignored when called from ObjectMapper.valueToTree
-        val raw = x.bigDecimal.stripTrailingZeros.toPlainString
+        val raw = x.stripTrailingZeros.toPlainString
 
         if (raw contains ".") json.writeTree(new DecimalNode(new JBigDecimal(raw)))
           else json.writeTree(new BigIntegerNode(new BigInteger(raw)))

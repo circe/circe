@@ -14,10 +14,6 @@ import monocle.Prism
  * @author Travis Brown
  */
 trait JsonNumberOptics {
-  final lazy val jsonNumberBigInt: Prism[JsonNumber, BigInt] = Prism[JsonNumber, BigInt](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigInt
-  )(b => JsonBigDecimal(BigDecimal(b, MathContext.UNLIMITED)))
-
   final lazy val jsonNumberLong: Prism[JsonNumber, Long] = Prism[JsonNumber, Long](jn =>
     if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toLong
   )(JsonLong(_))
@@ -37,7 +33,21 @@ trait JsonNumberOptics {
   final lazy val jsonNumberBigDecimal: Prism[JsonNumber, BigDecimal] =
     Prism[JsonNumber, BigDecimal](jn =>
       if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigDecimal
+    )(d => JsonBigDecimal(d.underlying))
+
+  final lazy val jsonNumberBigInt: Prism[JsonNumber, BigInt] = Prism[JsonNumber, BigInt](jn =>
+    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigInt
+  )(b => JsonBigDecimal(new java.math.BigDecimal(b.underlying, MathContext.UNLIMITED)))
+
+  final lazy val jsonNumberJavaBigDecimal: Prism[JsonNumber, java.math.BigDecimal] =
+    Prism[JsonNumber, java.math.BigDecimal](jn =>
+      if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toJavaBigDecimal
     )(JsonBigDecimal(_))
+
+  final lazy val jsonNumberJavaBigInteger: Prism[JsonNumber, java.math.BigInteger] =
+    Prism[JsonNumber, java.math.BigInteger](jn =>
+      if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toJavaBigInteger
+    )(b => JsonBigDecimal(new java.math.BigDecimal(b, MathContext.UNLIMITED)))
 }
 
 final object JsonNumberOptics extends JsonNumberOptics {

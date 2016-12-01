@@ -587,6 +587,59 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
+   * Decode a JSON value into a [[java.math.BigInteger]].
+   *
+   * Note that decoding will fail if the number has a large number of digits (the limit is currently
+   * `1 << 18`, or around a quarter million). Larger numbers can be decoded by mapping over a
+   * [[java.math.BigDecimal]], but be aware that the conversion to the integral form can be
+   * computationally expensive.
+   *
+   * @group Decoding
+   */
+  implicit final val decodeJavaBigInteger: Decoder[java.math.BigInteger] =
+    new DecoderWithFailure[java.math.BigInteger]("BigInteger") {
+      final def apply(c: HCursor): Result[java.math.BigInteger] = c.focus match {
+        case JNumber(number) => number.toJavaBigInteger match {
+          case Some(v) => Right(v)
+          case None => fail(c)
+        }
+        case JString(string) => JsonNumber.fromString(string).flatMap(_.toJavaBigInteger) match {
+          case Some(value) => Right(value)
+          case None => fail(c)
+        }
+        case _ => fail(c)
+      }
+    }
+
+  /**
+   * Decode a JSON value into a [[scala.math.BigDecimal]].
+   *
+   * Note that decoding will fail on some very large values that could in principle be represented
+   * as `BigDecimal`s (specifically if the `scale` is out of the range of `scala.Int` when the
+   * `unscaledValue` is adjusted to have no trailing zeros). These large values can, however, be
+   * round-tripped through `JsonNumber`, so you may wish to use [[decodeJsonNumber]] in these cases.
+   *
+   * Also note that because `scala.scalajs.js.JSON` parses JSON numbers into a floating point
+   * representation, decoding a JSON number into a `BigDecimal` on Scala.js may lose precision.
+   *
+   * @group Decoding
+   */
+  implicit final val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] =
+    new DecoderWithFailure[java.math.BigDecimal]("BigDecimal") {
+      final def apply(c: HCursor): Result[java.math.BigDecimal] = c.focus match {
+        case JNumber(number) => number.toJavaBigDecimal match {
+          case Some(v) => Right(v)
+          case None => fail(c)
+        }
+        case JString(string) => JsonNumber.fromString(string).flatMap(_.toJavaBigDecimal) match {
+          case Some(value) => Right(value)
+          case None => fail(c)
+        }
+        case _ => fail(c)
+      }
+    }
+
+  /**
    * @group Decoding
    */
   implicit final val decodeUUID: Decoder[UUID] = new Decoder[UUID] {

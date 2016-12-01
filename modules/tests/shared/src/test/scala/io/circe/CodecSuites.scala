@@ -39,9 +39,22 @@ class AnyValCodecSuite extends CirceSuite {
 class StdLibCodecSuite extends CirceSuite {
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
+  implicit val arbitraryJavaBigInteger: Arbitrary[java.math.BigInteger] = Arbitrary(
+    Arbitrary.arbitrary[BigInt].map(_.underlying)
+  )
+
+  implicit val arbitraryJavaBigDecimal: Arbitrary[java.math.BigDecimal] = Arbitrary(
+    Arbitrary.arbitrary[BigDecimal].map(_.underlying)
+  )
+
+  implicit val eqJavaBigInteger: Eq[java.math.BigInteger] = Eq.fromUniversalEquals
+  implicit val eqJavaBigDecimal: Eq[java.math.BigDecimal] = Eq.instance((a, b) => a.compareTo(b) == 0)
+
   checkLaws("Codec[String]", CodecTests[String].codec)
   checkLaws("Codec[BigInt]", CodecTests[BigInt].codec)
   checkLaws("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
+  checkLaws("Codec[java.math.BigInteger]", CodecTests[java.math.BigInteger].codec)
+  checkLaws("Codec[java.math.BigDecimal]", CodecTests[java.math.BigDecimal].codec)
   checkLaws("Codec[UUID]", CodecTests[UUID].codec)
   checkLaws("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkLaws("Codec[Some[Int]]", CodecTests[Some[Int]].codec)

@@ -53,7 +53,7 @@ private[jackson] final class CirceJsonDeserializer(factory: TypeFactory, klass: 
 
     val (maybeValue, nextContext) = (jp.getCurrentToken.id(): @switch) match {
       case JsonTokenId.ID_NUMBER_INT | JsonTokenId.ID_NUMBER_FLOAT =>
-        (Some(Json.JNumber(JsonBigDecimal(new BigDecimal(jp.getDecimalValue)))), parserContext)
+        (Some(Json.JNumber(JsonBigDecimal(jp.getDecimalValue))), parserContext)
 
       case JsonTokenId.ID_STRING => (Some(Json.JString(jp.getText)), parserContext)
       case JsonTokenId.ID_TRUE => (Some(Json.JBoolean(true)), parserContext)

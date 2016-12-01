@@ -400,7 +400,7 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
-  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
+  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
 
   private[this] def isReal(value: Double): Boolean =
     // .isNaN and .isInfinity box, we explicitly avoid that here

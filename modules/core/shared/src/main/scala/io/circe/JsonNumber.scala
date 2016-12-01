@@ -12,12 +12,22 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as a [[scala.math.BigDecimal]].
    */
-  def toBigDecimal: Option[BigDecimal]
+  final def toBigDecimal: Option[BigDecimal] = toJavaBigDecimal.map(BigDecimal(_))
 
   /**
    * Return this number as a [[scala.math.BigInt]] if it's a sufficiently small whole number.
    */
-  def toBigInt: Option[BigInt]
+  final def toBigInt: Option[BigInt] = toJavaBigInteger.map(BigInt(_))
+
+  /**
+   * Return this number as a [[java.math.BigDecimal]].
+   */
+  def toJavaBigDecimal: Option[java.math.BigDecimal]
+
+  /**
+   * Return this number as a [[java.math.BigInteger]] if it's a sufficiently small whole number.
+   */
+  def toJavaBigInteger: Option[java.math.BigInteger]
 
   /**
    * Convert this number to its best [[scala.Double]] approximation.
@@ -123,9 +133,9 @@ sealed abstract class JsonNumber extends Serializable {
   override final def hashCode: Int = toBiggerDecimal.hashCode
 }
 
-private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
-  final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
-  final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
+private[this] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
+  final def toJavaBigDecimal: Option[java.math.BigDecimal] = toBiggerDecimal.toBigDecimal
+  final def toJavaBigInteger: Option[java.math.BigInteger] = toBiggerDecimal.toBigInteger
   final def toDouble: Double = toBiggerDecimal.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = toBiggerDecimal.truncateToLong
@@ -155,11 +165,11 @@ private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal)
 /**
  * Represent a valid JSON number as a [[scala.math.BigDecimal]].
  */
-private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
-  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value.underlying)
-  final def toBigDecimal: Option[BigDecimal] = Some(value)
-  final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
-  final def toDouble: Double = value.toDouble
+private[circe] final case class JsonBigDecimal(value: java.math.BigDecimal) extends JsonNumber {
+  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value)
+  final def toJavaBigDecimal: Option[java.math.BigDecimal] = Some(value)
+  final def toJavaBigInteger: Option[java.math.BigInteger] = toBiggerDecimal.toBigInteger
+  final def toDouble: Double = value.doubleValue
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = toDouble.round
   override final def toString: String = value.toString
@@ -170,8 +180,8 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
  */
 private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromLong(value)
-  final def toBigDecimal: Option[BigDecimal] = Some(BigDecimal(value))
-  final def toBigInt: Option[BigInt] = Some(BigInt(value))
+  final def toJavaBigDecimal: Option[java.math.BigDecimal] = Some(new java.math.BigDecimal(value))
+  final def toJavaBigInteger: Option[java.math.BigInteger] = Some(java.math.BigInteger.valueOf(value))
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = Some(value)
   final def truncateToLong: Long = value
@@ -183,9 +193,9 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
  */
 private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromDouble(value)
-  final def toBigDecimal: Option[BigDecimal] = Some(BigDecimal(value))
-  final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
-    if (d.isWhole) Some(d.toBigInt) else None
+  final def toJavaBigDecimal: Option[java.math.BigDecimal] = Some(java.math.BigDecimal.valueOf(value))
+  final def toJavaBigInteger: Option[java.math.BigInteger] = toJavaBigDecimal.flatMap { d =>
+    if (d.scale <= 0 || d.stripTrailingZeros.scale <= 0) Some(d.toBigInteger) else None
   }
   final def toDouble: Double = value
 
@@ -236,12 +246,10 @@ final object JsonNumber {
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
     case (JsonBiggerDecimal(a), b) => a == b.toBiggerDecimal
     case (a, JsonBiggerDecimal(b)) => a.toBiggerDecimal == b
-    case (a @ JsonDecimal(_), b) => a.toBiggerDecimal == b.toBiggerDecimal
-    case (a, b @ JsonDecimal(_)) => a.toBiggerDecimal == b.toBiggerDecimal
     case (JsonLong(x), JsonLong(y)) => x == y
     case (JsonDouble(x), JsonLong(y)) => x == y
     case (JsonLong(x), JsonDouble(y)) => y == x
     case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
-    case (a, b) => a.toBigDecimal == b.toBigDecimal
+    case (a, b) => a.toBiggerDecimal == b.toBiggerDecimal
   }
 }
