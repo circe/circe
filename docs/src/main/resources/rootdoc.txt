@@ -1,0 +1,18 @@
+This is the Scaladoc for [[http://circe.io circe]], a JSON library for Scala
+and Scala.js.
+
+The library is divided into several modules each focusing on various aspects
+of working with JSON as well as codecs for 3rd party libraries. Noteworthy
+modules are:
+
+ - The [[io.circe core]] module, which is focused on the JSON AST, zippers,
+   and codecs.
+ - The [[io.circe.generic generic]] module for automatic and semi-automatic
+   [[https://circe.github.io/circe/codec.html derivation]] of encoders and
+   decoders.
+ - The [[io.circe.optics optics]] module providing an alternative way to
+   traverse JSON documents using lenses.
+ - The [[io.circe.shapes shapes]] module for working with Shapeless.
+
+Please refer to the [[https://circe.github.io/circe/ documentation]] for a
+detailed introduction to circe.

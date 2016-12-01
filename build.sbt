@@ -134,7 +134,8 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
     "-implicits",
     "-skip-packages", "scalaz",
     "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
+    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
+    "-doc-root-content", (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
   ),
   git.remoteRepo := "git@github.com:circe/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
