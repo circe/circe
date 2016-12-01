@@ -44,6 +44,7 @@
 [jawn]: https://github.com/non/jawn
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
+[json.parse]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
 [jsonpath]: https://github.com/circe/circe/blob/master/optics/src/main/scala/io/circe/optics/JsonPath.scala
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
