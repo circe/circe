@@ -115,7 +115,7 @@ class ACursorSuite extends CirceSuite {
       l <- a.lefts
     } yield l
 
-    assert(result === Some(List(3.asJson, 2.asJson, 1.asJson)))
+    assert(result === Some(Vector(3.asJson, 2.asJson, 1.asJson)))
   }
 
   "rights" should "return the expected values" in {
@@ -125,7 +125,7 @@ class ACursorSuite extends CirceSuite {
       l <- a.rights
     } yield l
 
-    assert(result === Some(List(5.asJson)))
+    assert(result === Some(Vector(5.asJson)))
   }
 
   "fieldSet" should "return the expected values" in {
@@ -133,7 +133,7 @@ class ACursorSuite extends CirceSuite {
   }
 
   "fields" should "return the expected values" in {
-    assert(HCursor.fromJson(j1).fields === Some(List("a", "b", "c")))
+    assert(HCursor.fromJson(j1).fields === Some(Vector("a", "b", "c")))
   }
 
   "left" should "successfully select an existing value" in {
@@ -397,7 +397,7 @@ class ACursorSuite extends CirceSuite {
     val result = for {
       c <- cursor.downField("a").success
       a <- c.downN(3).success
-      l <- a.setLefts(List(100.asJson, 101.asJson)).success
+      l <- a.setLefts(Vector(100.asJson, 101.asJson)).success
       u <- l.up.success
       lf <- l.focus
       uf <- u.focus
@@ -413,7 +413,7 @@ class ACursorSuite extends CirceSuite {
     val result = for {
       c <- cursor.downField("a").success
       a <- c.downN(3).success
-      l <- a.setRights(List(100.asJson, 101.asJson)).success
+      l <- a.setRights(Vector(100.asJson, 101.asJson)).success
       u <- l.up.success
       lf <- l.focus
       uf <- u.focus

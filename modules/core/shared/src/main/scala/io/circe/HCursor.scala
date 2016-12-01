@@ -24,7 +24,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => None
   }
 
-  final def fields: Option[List[String]] = value match {
+  final def fields: Option[Vector[String]] = value match {
     case Json.JObject(o) => Some(o.fields)
     case _ => None
   }

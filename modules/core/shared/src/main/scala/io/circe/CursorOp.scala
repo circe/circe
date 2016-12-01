@@ -54,8 +54,8 @@ final object CursorOp {
   final case class DeleteGoField(k: String) extends UnconstrainedOp
   final case object DeleteLefts extends UnconstrainedOp
   final case object DeleteRights extends UnconstrainedOp
-  final case class SetLefts(js: List[Json]) extends UnconstrainedOp
-  final case class SetRights(js: List[Json]) extends UnconstrainedOp
+  final case class SetLefts(js: Vector[Json]) extends UnconstrainedOp
+  final case class SetRights(js: Vector[Json]) extends UnconstrainedOp
 
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft => "<-"

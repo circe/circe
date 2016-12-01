@@ -60,12 +60,18 @@ sealed abstract class JsonObject extends Serializable {
   /**
    * Return the list of associations in insertion order.
    */
-  def toList: List[(String, Json)]
+  final def toList: List[(String, Json)] = toVector.toList
+
+  /**
+   * Return the list of associations in insertion order.
+   */
+  def toVector: Vector[(String, Json)]
+
 
   /**
    * Return all associated values in insertion order.
    */
-  def values: List[Json]
+  def values: Vector[Json]
 
   /**
    * Return a Kleisli arrow that gets the JSON value associated with the given field.
@@ -75,7 +81,7 @@ sealed abstract class JsonObject extends Serializable {
   /**
    * Return all association keys in insertion order.
    */
-  def fields: List[String]
+  def fields: Vector[String]
 
   /**
    * Return all association keys in an undefined order.
@@ -95,7 +101,7 @@ sealed abstract class JsonObject extends Serializable {
   /**
    * Filter by keys and values.
    */
-  final def filter(pred: ((String, Json)) => Boolean): JsonObject = JsonObject.fromIterable(toList.filter(pred))
+  final def filter(pred: ((String, Json)) => Boolean): JsonObject = JsonObject.fromIterable(toVector.filter(pred))
 
   /**
    * Filter by keys.
@@ -190,10 +196,10 @@ final object JsonObject {
     final def withJsons(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
     final def isEmpty: Boolean = fieldMap.isEmpty
     final def contains(k: String): Boolean = fieldMap.contains(k)
-    final def toList: List[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
-    final def values: List[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
+    final def toVector: Vector[(String, Json)] = orderedFields.map(k => k -> fieldMap(k))(breakOut)
+    final def values: Vector[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
     final def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldMap.get)
-    final def fields: List[String] = orderedFields.toList
+    final def fields: Vector[String] = orderedFields
     final def fieldSet: Set[String] = orderedFields.toSet
 
     final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(

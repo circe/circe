@@ -20,9 +20,9 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
 
   def fieldSet: Option[Set[String]] = None
-  def fields: Option[List[String]] = None
-  def lefts: Option[List[Json]] = None
-  def rights: Option[List[Json]] = None
+  def fields: Option[Vector[String]] = None
+  def lefts: Option[Vector[Json]] = None
+  def rights: Option[Vector[Json]] = None
 
   def downArray: ACursor = this
   def downAt(p: Json => Boolean): ACursor = this
@@ -48,8 +48,8 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def deleteLefts: ACursor = this
   def deleteRights: ACursor = this
 
-  def setLefts(x: List[Json]): ACursor = this
-  def setRights(x: List[Json]): ACursor = this
+  def setLefts(x: Vector[Json]): ACursor = this
+  def setRights(x: Vector[Json]): ACursor = this
 
   def field(k: String): ACursor = this
   def deleteGoField(q: String): ACursor = this

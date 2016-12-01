@@ -25,7 +25,7 @@ class JsonObjectSuite extends CirceSuite {
       case (j, i) => i.toString -> j
     }
 
-    assert(JsonObject.from(fields).withJsons(_ => j).values === List.fill(js.size)(j))
+    assert(JsonObject.from(fields).withJsons(_ => j).values === Vector.fill(js.size)(j))
   }
 
   "toList" should "return the appropriate list of key-value pairs" in forAll { (js: List[Json]) =>
@@ -36,7 +36,7 @@ class JsonObjectSuite extends CirceSuite {
     assert(JsonObject.from(fields).toList === fields)
   }
 
-  "values" should "return the values in the JSON object" in forAll { (js: List[Json]) =>
+  "values" should "return the values in the JSON object" in forAll { (js: Vector[Json]) =>
     val fields = js.zipWithIndex.map {
       case (j, i) => i.toString -> j
     }.reverse
@@ -55,7 +55,7 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   it should "return values in order" in forAll { json: JsonObject =>
-    assert(json.traverse[({ type L[x] = Const[List[Json], x] })#L](a => Const(List(a))).getConst === json.values)
+    assert(json.traverse[({ type L[x] = Const[Vector[Json], x] })#L](a => Const(Vector(a))).getConst === json.values)
   }
 
   "filter" should "be consistent with Map#filter" in forAll { (obj: JsonObject, pred: ((String, Json)) => Boolean) =>

@@ -9,8 +9,8 @@ private[circe] final class TopCursor(val value: Json)(
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor = new TopCursor(newValue)(cursor, op)
   def addOp(cursor: HCursor, op: CursorOp): HCursor = new TopCursor(value)(cursor, op)
 
-  def lefts: Option[List[Json]] = None
-  def rights: Option[List[Json]] = None
+  def lefts: Option[Vector[Json]] = None
+  def rights: Option[Vector[Json]] = None
 
   def up: ACursor = fail(CursorOp.MoveUp)
   def delete: ACursor = fail(CursorOp.DeleteGoParent)
@@ -27,8 +27,8 @@ private[circe] final class TopCursor(val value: Json)(
   def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
   def deleteRights: ACursor = fail(CursorOp.DeleteRights)
 
-  def setLefts(x: List[Json]): ACursor = fail(CursorOp.SetLefts(x))
-  def setRights(x: List[Json]): ACursor = fail(CursorOp.SetRights(x))
+  def setLefts(x: Vector[Json]): ACursor = fail(CursorOp.SetLefts(x))
+  def setRights(x: Vector[Json]): ACursor = fail(CursorOp.SetRights(x))
 
   def field(k: String): ACursor = fail(CursorOp.Field(k))
   def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))

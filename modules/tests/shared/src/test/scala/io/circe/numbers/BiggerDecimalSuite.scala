@@ -1,7 +1,7 @@
 package io.circe.numbers
 
 import io.circe.testing.{ IntegralString, JsonNumberString }
-import java.math.{ BigDecimal, BigInteger }
+import java.math.BigDecimal
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }

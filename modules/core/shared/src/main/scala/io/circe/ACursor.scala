@@ -115,14 +115,14 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayAccess
    */
-  def lefts: Option[List[Json]]
+  def lefts: Option[Vector[Json]]
 
   /**
    * If the focus is a JSON array, return the elements to the right.
    *
    * @group ArrayAccess
    */
-  def rights: Option[List[Json]]
+  def rights: Option[Vector[Json]]
 
   /**
    * If the focus is a JSON object, return its field names in a set.
@@ -136,7 +136,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ObjectAccess
    */
-  def fields: Option[List[String]]
+  def fields: Option[Vector[String]]
 
   /**
    * Delete the focus and move to its parent.
@@ -304,14 +304,14 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayModification
    */
-  def setLefts(x: List[Json]): ACursor
+  def setLefts(x: Vector[Json]): ACursor
 
   /**
    * Replace all values to the right of the focus in a JSON array.
    *
    * @group ArrayModification
    */
-  def setRights(x: List[Json]): ACursor
+  def setRights(x: Vector[Json]): ACursor
 
   /**
    * Delete the focus and move to the sibling with the given key in a JSON object.

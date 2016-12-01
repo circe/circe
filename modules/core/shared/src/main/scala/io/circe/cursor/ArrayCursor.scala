@@ -23,8 +23,8 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
 
   def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), this, CursorOp.DeleteGoParent)
 
-  def lefts: Option[List[Json]] = Some(values.take(index).reverse.toList)
-  def rights: Option[List[Json]] = Some(values.drop(index + 1).toList)
+  def lefts: Option[Vector[Json]] = Some(values.take(index).reverse)
+  def rights: Option[Vector[Json]] = Some(values.drop(index + 1))
 
   def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft) else {
     new ArrayCursor(values, index - 1, parent, changed)(this, CursorOp.MoveLeft)
@@ -57,10 +57,10 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
   def deleteRights: ACursor =
     new ArrayCursor(values.take(index + 1), index, parent, index < values.size)(this, CursorOp.DeleteRights)
 
-  def setLefts(js: List[Json]): ACursor =
-    new ArrayCursor(js.reverse.toVector ++ values.drop(index), js.size, parent, true)(this, CursorOp.SetLefts(js))
+  def setLefts(js: Vector[Json]): ACursor =
+    new ArrayCursor(js.reverse ++ values.drop(index), js.size, parent, true)(this, CursorOp.SetLefts(js))
 
-  def setRights(js: List[Json]): ACursor =
+  def setRights(js: Vector[Json]): ACursor =
     new ArrayCursor(values.take(index + 1) ++ js, index, parent, true)(this, CursorOp.SetRights(js))
 
   def field(k: String): ACursor = fail(CursorOp.Field(k))
