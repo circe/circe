@@ -1,6 +1,5 @@
-package io.circe.java8
+package io.circe
 
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, ZonedDateTime }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 
-package object time {
+private[circe] trait JavaTimeDecoders {
   implicit final val decodeInstant: Decoder[Instant] =
     Decoder.instance { c =>
       c.as[String] match {
@@ -21,8 +20,6 @@ package object time {
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Instant]]
       }
     }
-
-  implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time => Json.fromString(time.toString))
 
   final def decodeLocalDateTime(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
     Decoder.instance { c =>
@@ -34,11 +31,7 @@ package object time {
       }
     }
 
-  final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
-    Encoder.instance(time => Json.fromString(time.format(formatter)))
-
   implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(ISO_LOCAL_DATE_TIME)
-  implicit final val encodeLocalDateTimeDefault: Encoder[LocalDateTime] = encodeLocalDateTime(ISO_LOCAL_DATE_TIME)
 
   final def decodeZonedDateTime(formatter: DateTimeFormatter): Decoder[ZonedDateTime] =
     Decoder.instance { c =>
@@ -50,11 +43,7 @@ package object time {
       }
     }
 
-  final def encodeZonedDateTime(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
-    Encoder.instance(time => Json.fromString(time.format(formatter)))
-
   implicit final val decodeZonedDateTimeDefault: Decoder[ZonedDateTime] = decodeZonedDateTime(ISO_ZONED_DATE_TIME)
-  implicit final val encodeZonedDateTimeDefault: Encoder[ZonedDateTime] = encodeZonedDateTime(ISO_ZONED_DATE_TIME)
 
   final def decodeOffsetDateTime(formatter: DateTimeFormatter): Decoder[OffsetDateTime] =
     Decoder.instance { c =>
@@ -66,11 +55,7 @@ package object time {
       }
     }
 
-  final def encodeOffsetDateTime(formatter: DateTimeFormatter): Encoder[OffsetDateTime] =
-    Encoder.instance(time => Json.fromString(time.format(formatter)))
-
   implicit final val decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] = decodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
-  implicit final val encodeOffsetDateTimeDefault: Encoder[OffsetDateTime] = encodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
 
   final def decodeLocalDate(formatter: DateTimeFormatter): Decoder[LocalDate] =
     Decoder.instance { c =>
@@ -82,11 +67,7 @@ package object time {
       }
     }
 
-  final def encodeLocalDate(formatter: DateTimeFormatter): Encoder[LocalDate] =
-    Encoder.instance(time => Json.fromString(time.format(formatter)))
-
   implicit final val decodeLocalDateDefault: Decoder[LocalDate] = decodeLocalDate(ISO_LOCAL_DATE)
-  implicit final val encodeLocalDateDefault: Encoder[LocalDate] = encodeLocalDate(ISO_LOCAL_DATE)
 
   final def decodeLocalTime(formatter: DateTimeFormatter): Decoder[LocalTime] =
     Decoder.instance { c =>
@@ -98,9 +79,5 @@ package object time {
       }
     }
 
-  final def encodeLocalTime(formatter: DateTimeFormatter): Encoder[LocalTime] =
-    Encoder.instance(time => Json.fromString(time.format(formatter)))
-
   implicit final val decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
-  implicit final val encodeLocalTimeDefault: Encoder[LocalTime] = encodeLocalTime(ISO_LOCAL_TIME)
 }

@@ -95,7 +95,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
 /**
  * We omit all Scala.js projects from Unidoc generation, as well as
  * circe-generic on 2.10, since Unidoc doesn't like its macros.
- * Exclude java8 but include optics since it compiles on 1.7.
+ * Include optics since it compiles on 1.7.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] = {
   val unwanted = circeCrossModules.map(_._2) ++ circeUtilModules :+ tests
@@ -104,7 +104,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = {
     case _ => Nil
   }
 
-  (unwanted ++ jvm8Only(java8) ++ scala210).map(p => p: ProjectReference)
+  (unwanted ++ scala210).map(p => p: ProjectReference)
 }
 
 lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
@@ -175,7 +175,6 @@ lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](
   jawn,
   jackson,
-  java8,
   streaming
 )
 
@@ -192,7 +191,7 @@ def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.v
 }
 
 lazy val jvmProjects: Seq[Project] =
-  (circeCrossModules.map(_._1) ++ circeJvmModules).filterNot(jvm8Only(java8))
+  (circeCrossModules.map(_._1) ++ circeJvmModules)
 
 lazy val jsProjects: Seq[Project] =
   (circeCrossModules.map(_._2) ++ circeJsModules)
@@ -204,8 +203,7 @@ lazy val jsProjects: Seq[Project] =
  */
 lazy val aggregatedProjects: Seq[ProjectReference] =
   (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeUtilModules)
-    .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
+   circeJsModules ++ circeJvmModules ++ circeUtilModules).map(p => p: ProjectReference)
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
@@ -405,9 +403,6 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   )
   .dependsOn(core)
 
-lazy val java8 = circeModule("java8", mima = previousCirceVersion)
-  .dependsOn(core, tests % "test")
-
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.8.0"
@@ -540,7 +535,7 @@ credentials ++= (
 ).toSeq
 
 /* Only run optics tests on Java 8 since Scala 2.11 on Java 7 breaks. */
-val jvmTestProjects = Seq(numbers, tests, java8, optics).filterNot(jvm8Only(java8, optics))
+val jvmTestProjects = Seq(numbers, tests, optics).filterNot(jvm8Only(optics))
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(

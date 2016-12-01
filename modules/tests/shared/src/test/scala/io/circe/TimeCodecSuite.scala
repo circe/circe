@@ -1,4 +1,4 @@
-package io.circe.java8.time
+package io.circe
 
 import cats.Eq
 import io.circe.testing.CodecTests

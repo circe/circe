@@ -65,7 +65,7 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
+object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEncoders with MidPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
