@@ -499,7 +499,7 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "@travisbrown",
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com",
       url("https://twitter.com/travisbrown"))
   )
 )
