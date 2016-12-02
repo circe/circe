@@ -21,7 +21,7 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
 
         dk(field) match {
           case None =>
-            failed = MapDecoder.failure(atH.any)
+            failed = MapDecoder.failure(atH)
           case Some(k) =>
             atH.as(dv) match {
               case Left(error) =>
@@ -60,7 +60,7 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
               }
             case None =>
               failed = true
-              failures += MapDecoder.failure(atH.any)
+              failures += MapDecoder.failure(atH)
           }
         }
 
@@ -74,5 +74,5 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
 }
 
 private[circe] final object MapDecoder {
-  def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
+  def failure(c: ACursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
 }

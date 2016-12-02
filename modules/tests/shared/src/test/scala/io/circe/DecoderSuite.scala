@@ -13,8 +13,8 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
   checkLaws("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
   checkLaws("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
 
-  "prepare" should "do nothing when used with ok" in forAll { (i: Int) =>
-    assert(Decoder[Int].prepare(ACursor.ok).decodeJson(i.asJson) === Right(i))
+  "prepare" should "do nothing when used with identity" in forAll { (i: Int) =>
+    assert(Decoder[Int].prepare(identity).decodeJson(i.asJson) === Right(i))
   }
 
   it should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>

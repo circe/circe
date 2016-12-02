@@ -21,7 +21,7 @@ final object CirceSupportParser extends SupportParser[Json] {
     }
 
     final def arrayContext(): FContext[Json] = new FContext[Json] {
-      private[this] final val vs = List.newBuilder[Json]
+      private[this] final val vs = Vector.newBuilder[Json]
       final def add(s: String): Unit = { vs += jstring(s) }
       final def add(v: Json): Unit = { vs += v }
       final def finish: Json = Json.fromValues(vs.result())

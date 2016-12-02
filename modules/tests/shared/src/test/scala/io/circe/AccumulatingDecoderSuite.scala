@@ -62,7 +62,7 @@ class AccumulatingDecoderSpec extends CirceSuite {
 
   it should "return expected failures in a set" in {
     forAll { (xs: Set[Either[Int, String]]) =>
-      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.asJson.hcursor
+      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
       val invalidElems = xs.collect { case Left(e) => Some(e.asJson): Option[Json] }
       val errors = Decoder[Set[String]].accumulating(cursor).fold(_.toList, _ => Nil)
 
@@ -72,7 +72,7 @@ class AccumulatingDecoderSpec extends CirceSuite {
 
   it should "return expected failures in a non-empty list" in {
     forAll { (xs: NonEmptyList[Either[Int, String]]) =>
-      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.asJson.hcursor
+      val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
       val invalidElems = xs.toList.collect { case Left(e) => Some(e.asJson) }
       val errors = Decoder[NonEmptyList[String]].accumulating(cursor).fold(_.toList, _ => Nil)
 

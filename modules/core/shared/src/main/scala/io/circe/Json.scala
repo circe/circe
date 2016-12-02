@@ -21,14 +21,14 @@ sealed abstract class Json extends Product with Serializable {
     jsonBoolean: Boolean => X,
     jsonNumber: JsonNumber => X,
     jsonString: String => X,
-    jsonArray: List[Json] => X,
+    jsonArray: Vector[Json] => X,
     jsonObject: JsonObject => X
   ): X = this match {
     case JNull       => jsonNull
     case JBoolean(b) => jsonBoolean(b)
     case JNumber(n)  => jsonNumber(n)
     case JString(s)  => jsonString(s)
-    case JArray(a)   => jsonArray(a.toList)
+    case JArray(a)   => jsonArray(a)
     case JObject(o)  => jsonObject(o)
   }
 
@@ -37,26 +37,21 @@ sealed abstract class Json extends Product with Serializable {
    */
   final def arrayOrObject[X](
     or: => X,
-    jsonArray: List[Json] => X,
+    jsonArray: Vector[Json] => X,
     jsonObject: JsonObject => X
   ): X = this match {
     case JNull       => or
     case JBoolean(_) => or
     case JNumber(_)  => or
     case JString(_)  => or
-    case JArray(a)   => jsonArray(a.toList)
+    case JArray(a)   => jsonArray(a)
     case JObject(o)  => jsonObject(o)
   }
 
   /**
-   * Construct a cursor from this JSON value.
+   * Construct a successful cursor from this JSON value.
    */
-  final def cursor: Cursor = Cursor(this)
-
-  /**
-   * Construct a cursor with history from this JSON value.
-   */
-  final def hcursor: HCursor = HCursor.fromCursor(Cursor(this))
+  final def hcursor: HCursor = HCursor.fromJson(this)
 
   def isNull: Boolean
   def isBoolean: Boolean
@@ -68,19 +63,19 @@ sealed abstract class Json extends Product with Serializable {
   def asBoolean: Option[Boolean]
   def asNumber: Option[JsonNumber]
   def asString: Option[String]
-  def asArray: Option[List[Json]]
+  def asArray: Option[Vector[Json]]
   def asObject: Option[JsonObject]
 
   final def withBoolean(f: Boolean => Json): Json = asBoolean.fold(this)(f)
   final def withNumber(f: JsonNumber => Json): Json = asNumber.fold(this)(f)
   final def withString(f: String => Json): Json = asString.fold(this)(f)
-  final def withArray(f: List[Json] => Json): Json = asArray.fold(this)(f)
+  final def withArray(f: Vector[Json] => Json): Json = asArray.fold(this)(f)
   final def withObject(f: JsonObject => Json): Json = asObject.fold(this)(f)
 
   def mapBoolean(f: Boolean => Boolean): Json
   def mapNumber(f: JsonNumber => JsonNumber): Json
   def mapString(f: String => String): Json
-  def mapArray(f: List[Json] => List[Json]): Json
+  def mapArray(f: Vector[Json] => Vector[Json]): Json
   def mapObject(f: JsonObject => JsonObject): Json
 
   /**
@@ -99,7 +94,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Attempts to decode this JSON value to another data type.
    */
-  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(HCursor.fromCursor(cursor))
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(hcursor)
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
@@ -197,13 +192,13 @@ final object Json {
     final def asBoolean: Option[Boolean] = None
     final def asNumber: Option[JsonNumber] = None
     final def asString: Option[String] = None
-    final def asArray: Option[List[Json]] = None
+    final def asArray: Option[Vector[Json]] = None
     final def asObject: Option[JsonObject] = None
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
-    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
   }
 
@@ -218,13 +213,13 @@ final object Json {
     final def asBoolean: Option[Boolean] = Some(b)
     final def asNumber: Option[JsonNumber] = None
     final def asString: Option[String] = None
-    final def asArray: Option[List[Json]] = None
+    final def asArray: Option[Vector[Json]] = None
     final def asObject: Option[JsonObject] = None
 
     final def mapBoolean(f: Boolean => Boolean): Json = JBoolean(f(b))
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
-    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
   }
 
@@ -239,13 +234,13 @@ final object Json {
     final def asBoolean: Option[Boolean] = None
     final def asNumber: Option[JsonNumber] = Some(n)
     final def asString: Option[String] = None
-    final def asArray: Option[List[Json]] = None
+    final def asArray: Option[Vector[Json]] = None
     final def asObject: Option[JsonObject] = None
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(n))
     final def mapString(f: String => String): Json = this
-    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
   }
 
@@ -260,17 +255,17 @@ final object Json {
     final def asBoolean: Option[Boolean] = None
     final def asNumber: Option[JsonNumber] = None
     final def asString: Option[String] = Some(s)
-    final def asArray: Option[List[Json]] = None
+    final def asArray: Option[Vector[Json]] = None
     final def asObject: Option[JsonObject] = None
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = JString(f(s))
-    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
   }
 
-  private[circe] final case class JArray(a: Seq[Json]) extends Json {
+  private[circe] final case class JArray(a: Vector[Json]) extends Json {
     final def isNull: Boolean = false
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = false
@@ -281,13 +276,13 @@ final object Json {
     final def asBoolean: Option[Boolean] = None
     final def asNumber: Option[JsonNumber] = None
     final def asString: Option[String] = None
-    final def asArray: Option[List[Json]] = Some(a.toList)
+    final def asArray: Option[Vector[Json]] = Some(a)
     final def asObject: Option[JsonObject] = None
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
-    final def mapArray(f: List[Json] => List[Json]): Json = JArray(f(a.toList))
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = JArray(f(a))
     final def mapObject(f: JsonObject => JsonObject): Json = this
   }
 
@@ -302,13 +297,13 @@ final object Json {
     final def asBoolean: Option[Boolean] = None
     final def asNumber: Option[JsonNumber] = None
     final def asString: Option[String] = None
-    final def asArray: Option[List[Json]] = None
+    final def asArray: Option[Vector[Json]] = None
     final def asObject: Option[JsonObject] = Some(o)
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
-    final def mapArray(f: List[Json] => List[Json]): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = JObject(f(o))
   }
 
@@ -334,7 +329,7 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON array from a collection of values.
    */
-  final def fromValues(values: Iterable[Json]): Json = JArray(values.toList)
+  final def fromValues(values: Iterable[Json]): Json = JArray(values.toVector)
 
   /**
    * Create a `Json` value representing a JSON object from a [[JsonObject]].
