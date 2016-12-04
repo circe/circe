@@ -3,7 +3,7 @@ package io.circe.testing
 import cats.Eq
 import cats.instances.either._
 import cats.syntax.eq._
-import io.circe.{ AccumulatingDecoder, Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, ObjectEncoder }
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
@@ -26,6 +26,10 @@ trait EqInstances { this: ArbitraryInstances =>
   }
 
   implicit def eqObjectEncoder[A: Arbitrary]: Eq[ObjectEncoder[A]] = Eq.instance { (e1, e2) =>
+    arbitraryValues[A].take(codecEqualityCheckCount).forall(a => e1(a) === e2(a))
+  }
+
+  implicit def eqArrayEncoder[A: Arbitrary]: Eq[ArrayEncoder[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => e1(a) === e2(a))
   }
 
