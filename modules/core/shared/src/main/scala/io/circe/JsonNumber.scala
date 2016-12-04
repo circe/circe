@@ -30,25 +30,31 @@ sealed abstract class JsonNumber extends Serializable {
   /**
    * Return this number as a [[scala.Byte]] if it's a valid [[scala.Byte]].
    */
-  final def toByte: Option[Byte] = toLong.flatMap { n =>
-    val asByte: Byte = n.toByte
-    if (n == asByte) Some(asByte) else None
+  final def toByte: Option[Byte] = toLong match {
+    case Some(n) =>
+      val asByte: Byte = n.toByte
+      if (n == asByte) Some(asByte) else None
+    case None => None
   }
 
   /**
    * Return this number as a [[scala.Short]] if it's a valid [[scala.Short]].
    */
-  final def toShort: Option[Short] = toLong.flatMap { n =>
-    val asShort: Short = n.toShort
-    if (n == asShort) Some(asShort) else None
+  final def toShort: Option[Short] = toLong match {
+    case Some(n) =>
+      val asShort: Short = n.toShort
+      if (n == asShort) Some(asShort) else None
+    case None => None
   }
 
   /**
    * Return this number as an [[scala.Int]] if it's a valid [[scala.Int]].
    */
-  final def toInt: Option[Int] = toLong.flatMap { n =>
-    val asInt: Int = n.toInt
-    if (n == asInt) Some(asInt) else None
+  final def toInt: Option[Int] = toLong match {
+    case Some(n) =>
+      val asInt: Int = n.toInt
+      if (n == asInt) Some(asInt) else None
+    case None => None
   }
 
   /**
@@ -194,7 +200,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
     if (asLong.toDouble == value) Some(asLong) else None
   }
 
-  final def truncateToLong: Long = value.round
+  final def truncateToLong: Long = java.lang.Math.round(value)
   override final def toString: String = java.lang.Double.toString(value)
 }
 
