@@ -9,15 +9,15 @@ package object scalajs {
   /**
    * Attempt to convert a value to [[Json]].
    */
-  private[this] def unsafeConvertAnyToJson(input: Any): Json = input match {
+  private[this] def convertAnyToJsonUnsafe(input: Any): Json = input match {
     case s: String => Json.fromString(s)
     case n: Double => Json.fromDoubleOrNull(n)
     case true => Json.True
     case false => Json.False
     case null => Json.Null
-    case a: js.Array[_] => Json.fromValues(a.map(unsafeConvertAnyToJson(_: Any)))
+    case a: js.Array[_] => Json.fromValues(a.map(convertAnyToJsonUnsafe(_: Any)))
     case o: js.Object => Json.fromFields(
-      o.asInstanceOf[js.Dictionary[_]].mapValues(unsafeConvertAnyToJson).toSeq
+      o.asInstanceOf[js.Dictionary[_]].mapValues(convertAnyToJsonUnsafe).toSeq
     )
     case other if js.isUndefined(other) => Json.Null
   }
@@ -26,7 +26,7 @@ package object scalajs {
    * Convert [[scala.scalajs.js.Any]] to [[Json]].
    */
   final def convertJsToJson(input: js.Any): Either[Throwable, Json] =
-    try Right(unsafeConvertAnyToJson(input)) catch {
+    try Right(convertAnyToJsonUnsafe(input)) catch {
       case NonFatal(exception) => Left(exception)
     }
 

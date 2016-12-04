@@ -41,11 +41,11 @@ final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {
   final def filterByField(p: String => Boolean): JsonTraversalPath =
     JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
 
-  final def unsafeFilter(p: Json => Boolean): JsonPath =
+  final def filterUnsafe(p: Json => Boolean): JsonPath =
     JsonPath(json composePrism UnsafeOptics.select(p))
 
   final def filter(p: Json => Boolean): JsonFoldPath =
-    JsonFoldPath(unsafeFilter(p).json.asFold)
+    JsonFoldPath(filterUnsafe(p).json.asFold)
 
   final def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Optional[Json, A] =
     json composePrism UnsafeOptics.parse
@@ -88,11 +88,11 @@ final case class JsonTraversalPath(json: Traversal[Json, Json]) extends Dynamic 
   final def filterByField(p: String => Boolean): JsonTraversalPath =
     JsonTraversalPath(obj composeTraversal FilterIndex.filterIndex(p))
 
-  final def unsafeFilter(p: Json => Boolean): JsonTraversalPath =
+  final def filterUnsafe(p: Json => Boolean): JsonTraversalPath =
     JsonTraversalPath(json composePrism UnsafeOptics.select(p))
 
   final def filter(p: Json => Boolean): JsonFoldPath =
-    JsonFoldPath(unsafeFilter(p).json.asFold)
+    JsonFoldPath(filterUnsafe(p).json.asFold)
 
   final def as[A](implicit decode: Decoder[A], encode: Encoder[A]): Traversal[Json, A] =
     json composePrism UnsafeOptics.parse
