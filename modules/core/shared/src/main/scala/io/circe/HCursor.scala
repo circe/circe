@@ -55,6 +55,12 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => fail(CursorOp.DownField(k))
   }
 
+  final def downN(n: Int): ACursor = value match {
+    case Json.JArray(values) if n >= 0 && values.size > n =>
+      new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
+    case _ => fail(CursorOp.DownN(n))
+  }
+
   final def leftN(n: Int): ACursor = if (n < 0) rightN(-n) else {
     @tailrec
     def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
@@ -82,7 +88,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   final def rightAt(p: Json => Boolean): ACursor = right.find(p)
 
   final def find(p: Json => Boolean): ACursor = {
-    @annotation.tailrec
+    @tailrec
     def go(c: ACursor): ACursor = c match {
       case success: HCursor => if (p(success.value)) success else go(success.right)
       case other => other
@@ -92,8 +98,6 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   }
 
   final def downAt(p: Json => Boolean): ACursor = downArray.find(p)
-
-  final def downN(n: Int): ACursor = downArray.rightN(n)
 
   /**
    * Create a new cursor that has failed on the given operation.
