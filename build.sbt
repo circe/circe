@@ -463,11 +463,11 @@ lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(
     crossScalaVersions := crossScalaVersions.value.init,
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json" % "2.3.10",
-      "io.argonaut" %% "argonaut" % "6.1",
+      "com.typesafe.play" %% "play-json" % "2.5.10",
+      "io.argonaut" %% "argonaut" % "6.2-RC2",
       "io.spray" %% "spray-json" % "1.3.2",
-      "io.github.netvl.picopickle" %% "picopickle-core" % "0.2.1",
-      "io.github.netvl.picopickle" %% "picopickle-backend-jawn" % "0.2.1",
+      "io.github.netvl.picopickle" %% "picopickle-core" % "0.3.1",
+      "io.github.netvl.picopickle" %% "picopickle-backend-jawn" % "0.3.1",
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )

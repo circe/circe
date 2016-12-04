@@ -1,36 +1,14 @@
 package io.circe.benchmark
 
-import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
-import cats.Eq
-import cats.data.NonEmptyList
-import io.circe.{ Decoder, Encoder, Json => JsonC }
-import io.circe.generic.semiauto._
-import io.circe.jawn._
+import argonaut.{ Json => JsonA }
+import io.circe.{ Json => JsonC }
 import io.github.netvl.picopickle.backends.jawn.JsonPickler
 import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
-import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
+import play.api.libs.json.{ JsValue => JsValueP }
+import spray.json.{ JsValue => JsValueS }
 import spray.json.DefaultJsonProtocol._
-
-case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
-
-object Foo {
-  implicit val codecFoo: CodecJson[Foo] = CodecJson.derive[Foo]
-  implicit val playFormatFoo: Format[Foo] = JsonP.format[Foo]
-  implicit val decodeFoo: Decoder[Foo] = deriveDecoder
-  implicit val encodeFoo: Encoder[Foo] = deriveEncoder
-  implicit val sprayFormatFoo: JsonFormat[Foo] = jsonFormat5(Foo.apply)
-
-  implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals[Foo]
-}
-
-case class FooNel(s: String, d: Double, i: Int, l: Long, bs: NonEmptyList[Boolean])
-
-object FooNel {
-  implicit val encodeFooNel: Encoder[FooNel] = deriveEncoder
-}
 
 class ExampleData {
   val ints: List[Int] = (0 to 1000).toList
@@ -39,14 +17,10 @@ class ExampleData {
     ("b" * i) -> Foo("a" * i, (i + 2.0) / (i + 1.0), i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
   }.toMap
 
-  val fooNels: Map[String, FooNel] = foos.mapValues {
-    foo => FooNel(foo.s, foo.d, foo.i, foo.l, NonEmptyList(true, foo.bs))
-  }
-
-  @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
-  @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): JsonC = encode(a)
-  @inline def encodeP[A](a: A)(implicit encode: Writes[A]): JsValueP = encode.writes(a)
-  @inline def encodeS[A](a: A)(implicit encode: JsonWriter[A]): JsValueS = encode.write(a)
+  @inline def encodeA[A](a: A)(implicit encode: argonaut.EncodeJson[A]): JsonA = encode(a)
+  @inline def encodeC[A](a: A)(implicit encode: io.circe.Encoder[A]): JsonC = encode(a)
+  @inline def encodeP[A](a: A)(implicit encode: play.api.libs.json.Writes[A]): JsValueP = encode.writes(a)
+  @inline def encodeS[A](a: A)(implicit encode: spray.json.JsonWriter[A]): JsValueS = encode.write(a)
   @inline def encodePico[A](a: A)(implicit encode: JsonPickler.Writer[A]): backend.BValue = write(a)(encode)
 
   val intsC: JsonC = encodeC(ints)
@@ -56,7 +30,6 @@ class ExampleData {
   val intsPico: backend.BValue = encodePico(ints)
 
   val foosC: JsonC = encodeC(foos)
-  val fooNelsC: JsonC = encodeC(fooNels)
   val foosA: JsonA = encodeA(foos)
   val foosP: JsValueP = encodeP(foos)
   val foosS: JsValueS = encodeS(foos)
@@ -104,8 +77,6 @@ class EncodingBenchmark extends ExampleData {
   @Benchmark
   def encodeFoosS: JsValueS = encodeS(foos)
 
-  def encodeFooNelsC: JsonC = encodeC(fooNels)
-
   @Benchmark
   def encodeFoosPico: backend.BValue = encodePico(foos)
 }
@@ -125,7 +96,7 @@ class DecodingBenchmark extends ExampleData {
   def decodeIntsC: List[Int] = intsC.as[List[Int]].right.getOrElse(throw new Exception)
 
   @Benchmark
-  def decodeIntsA: List[Int] = intsA.as[List[Int]].result.getOrElse(throw new Exception)
+  def decodeIntsA: List[Int] = intsA.as[List[Int]].result.right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeIntsP: List[Int] = intsP.as[List[Int]]
@@ -142,7 +113,7 @@ class DecodingBenchmark extends ExampleData {
 
   @Benchmark
   def decodeFoosA: Map[String, Foo] =
-    foosA.as[Map[String, Foo]].result.getOrElse(throw new Exception)
+    foosA.as[Map[String, Foo]].result.right.getOrElse(throw new Exception)
 
   @Benchmark
   def decodeFoosP: Map[String, Foo] = foosP.as[Map[String, Foo]]
@@ -166,37 +137,37 @@ class DecodingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class ParsingBenchmark extends ExampleData {
   @Benchmark
-  def parseIntsC: JsonC = parse(intsJson).right.getOrElse(throw new Exception)
+  def parseIntsC: JsonC = io.circe.jawn.parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseIntsCJ: JsonC = io.circe.jackson.parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
+  def parseIntsA: JsonA = argonaut.Parse.parse(intsJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseIntsP: JsValueP = JsonP.parse(intsJson)
+  def parseIntsP: JsValueP = play.api.libs.json.Json.parse(intsJson)
 
   @Benchmark
-  def parseIntsS: JsValueS = JsonParserS(intsJson)
+  def parseIntsS: JsValueS = spray.json.JsonParser(intsJson)
 
   @Benchmark
   def parseIntsPico: backend.BValue = readAst(intsJson)
 
   @Benchmark
-  def parseFoosC: JsonC = parse(foosJson).right.getOrElse(throw new Exception)
+  def parseFoosC: JsonC = io.circe.jawn.parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
   def parseFoosCJ: JsonC = io.circe.jackson.parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)
+  def parseFoosA: JsonA = argonaut.Parse.parse(foosJson).right.getOrElse(throw new Exception)
 
   @Benchmark
-  def parseFoosP: JsValueP = JsonP.parse(foosJson)
+  def parseFoosP: JsValueP = play.api.libs.json.Json.parse(foosJson)
 
   @Benchmark
-  def parseFoosS: JsValueS = JsonParserS(foosJson)
+  def parseFoosS: JsValueS = spray.json.JsonParser(foosJson)
 
   @Benchmark
   def parseFoosPico: backend.BValue = readAst(foosJson)
@@ -223,7 +194,7 @@ class PrintingBenchmark extends ExampleData {
   def printIntsA: String = intsA.nospaces
 
   @Benchmark
-  def printIntsP: String = JsonP.stringify(intsP)
+  def printIntsP: String = play.api.libs.json.Json.stringify(intsP)
 
   @Benchmark
   def printIntsS: String = intsS.compactPrint
@@ -241,7 +212,7 @@ class PrintingBenchmark extends ExampleData {
   def printFoosA: String = foosA.nospaces
 
   @Benchmark
-  def printFoosP: String = JsonP.stringify(foosP)
+  def printFoosP: String = play.api.libs.json.Json.stringify(foosP)
 
   @Benchmark
   def printFoosS: String = foosS.compactPrint
@@ -262,29 +233,13 @@ class PrintingBenchmark extends ExampleData {
 @OutputTimeUnit(TimeUnit.SECONDS)
 class CirceDerivationBenchmark {
   import io.circe._
+  import io.circe.generic.semiauto._
 
   private[this] val derivedDecoder: Decoder[Foo] = deriveDecoder
   private[this] val derivedEncoder: Encoder[Foo] = deriveEncoder
 
-  private[this] val nonDerivedDecoder: Decoder[Foo] = new Decoder[Foo] {
-    def apply(c: HCursor): Decoder.Result[Foo] = for {
-      s <- c.get[String]("s").right
-      d <- c.get[Double]("d").right
-      i <- c.get[Int]("i").right
-      l <- c.get[Long]("l").right
-      bs <- c.get[List[Boolean]]("bs").right
-    } yield Foo(s, d, i, l, bs)
-  }
-
-  private[this] val nonDerivedEncoder: Encoder[Foo] = new Encoder[Foo] {
-    def apply(foo: Foo): Json = Json.obj(
-      "s" -> Encoder[String].apply(foo.s),
-      "d" -> Encoder[Double].apply(foo.d),
-      "i" -> Encoder[Int].apply(foo.i),
-      "l" -> Encoder[Long].apply(foo.l),
-      "bs" -> Encoder[List[Boolean]].apply(foo.bs)
-    )
-  }
+  private[this] val nonDerivedDecoder: Decoder[Foo] = Foo.circeDecodeFoo
+  private[this] val nonDerivedEncoder: Encoder[Foo] = Foo.circeEncodeFoo
 
   val exampleFoo: Foo = Foo(
     "abcdefghijklmnopqrstuvwxyz",
