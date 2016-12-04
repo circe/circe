@@ -28,12 +28,17 @@ script:
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.10.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
-    else echo "Skipping hygiene tests on 2.10 (see \#300)";
+    else echo "Skipping hygiene on 2.10 (see \#300)";
     fi
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.12.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION spray/test benchmark/test coverageReport && codecov;
-    else echo "Skipping spray and benchmark tests and coverage reporting on 2.12";
+      if [[ "$TRAVIS_SCALA_VERSION" != 2.10.* ]] && [[ "$TRAVIS_JDK_VERSION" == *jdk8* ]];
+      then
+        sbt ++$TRAVIS_SCALA_VERSION spray/test benchmark/test coverageReport && codecov;
+      else
+        sbt ++$TRAVIS_SCALA_VERSION spray/test;
+      fi;
+    else echo "Skipping Spray tests on 2.12";
     fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then

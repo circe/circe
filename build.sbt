@@ -461,7 +461,7 @@ lazy val opticsJS = opticsBase.js
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
   .settings(
-    crossScalaVersions := crossScalaVersions.value.init,
+    crossScalaVersions := crossScalaVersions.value.tail.init,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json" % "2.5.10",
       "io.argonaut" %% "argonaut" % "6.2-RC2",
