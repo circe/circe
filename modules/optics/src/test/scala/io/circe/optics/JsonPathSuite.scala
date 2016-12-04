@@ -71,7 +71,7 @@ class JsonPathSuite extends CirceSuite {
 
   it should "support an unsafe filtering by value" in {
     assert(
-      root.cars.each.unsafeFilter(root.maxSpeed.int.asFold.exist(_ > 100)(_)).model.string.set("new")(john) ===
+      root.cars.each.filterUnsafe(root.maxSpeed.int.asFold.exist(_ > 100)(_)).model.string.set("new")(john) ===
         Json.obj(
           "first_name" -> "John".asJson,
           "last_name"  -> "Doe".asJson,
