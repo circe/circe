@@ -6,7 +6,7 @@ import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 lazy val buildSettings = Seq(
   organization := "io.circe",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0")
+  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1")
 )
 
 lazy val compilerOptions = Seq(
