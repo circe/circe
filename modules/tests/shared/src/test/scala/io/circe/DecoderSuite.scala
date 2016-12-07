@@ -314,4 +314,24 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
 
     assert(history.size === size + 1)
   }
+
+  "singletonCases" should "choose a decoder using the given PartialFunction" in {
+    sealed trait A
+    case class B(b: Int) extends A
+    case class C(c: String) extends A
+
+    val decodeB = Decoder.decodeInt.map(B.apply)
+    val decodeC = Decoder.decodeString.map(C.apply)
+
+    val decodeA = Decoder.singletonCases {
+      case "b" => decodeB.widen[A]
+      case "c" => decodeC.widen[A]
+    }
+
+    assert(decodeA.decodeJson(Json.obj("b" -> Json.fromInt(22))) === Right(B(22)))
+    assert(decodeA.decodeJson(Json.obj("c" -> Json.fromString("twenty two"))) === Right(C("twenty two")))
+    assert(decodeA.decodeJson(Json.obj("b" -> Json.fromString("twenty two"))).isLeft)
+    assert(decodeA.decodeJson(Json.obj("c" -> Json.fromInt(22))).isLeft)
+
+  }
 }
