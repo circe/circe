@@ -328,8 +328,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
       case "c" => decodeC.widen[A]
     }
 
-    assert(decodeA.decodeJson(Json.obj("b" -> Json.fromInt(22))) === Right(B(22)))
-    assert(decodeA.decodeJson(Json.obj("c" -> Json.fromString("twenty two"))) === Right(C("twenty two")))
+    implicit val eqA = cats.Eq.instance[A](_ == _)
+
+    assert(decodeA.decodeJson(Json.obj("b" -> Json.fromInt(22))) === Right(B(22):A))
+    assert(decodeA.decodeJson(Json.obj("c" -> Json.fromString("twenty two"))) === Right(C("twenty two"):A))
     assert(decodeA.decodeJson(Json.obj("b" -> Json.fromString("twenty two"))).isLeft)
     assert(decodeA.decodeJson(Json.obj("c" -> Json.fromInt(22))).isLeft)
 
