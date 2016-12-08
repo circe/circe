@@ -154,7 +154,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Run one or another decoder.
    */
-  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = _ match {
+  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = {
     case Left(c) => self(c) match {
       case Right(v) => Right(Left(v))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
