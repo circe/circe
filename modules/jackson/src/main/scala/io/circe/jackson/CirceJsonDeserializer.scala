@@ -38,7 +38,7 @@ private[jackson] final class CirceJsonDeserializer(factory: TypeFactory, klass: 
 
   override final def deserialize(jp: JsonParser, ctxt: DeserializationContext): Json = {
     val value = deserialize(jp, ctxt, List())
-    if (!klass.isAssignableFrom(value.getClass)) throw ctxt.mappingException(klass)
+    if (!klass.isAssignableFrom(value.getClass)) ctxt.handleUnexpectedToken(klass, jp)
 
     value
   }
