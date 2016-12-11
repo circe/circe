@@ -3,11 +3,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
-lazy val buildSettings = Seq(
-  organization := "io.circe",
-  scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1")
-)
+organization in ThisBuild := "io.circe"
 
 lazy val compilerOptions = Seq(
   "-deprecation",
@@ -63,7 +59,7 @@ lazy val baseSettings = Seq(
   unmanagedClasspath in Test ++= update.value.select(configurationFilter("compile-time"))
 )
 
-lazy val allSettings = buildSettings ++ baseSettings ++ publishSettings
+lazy val allSettings = baseSettings ++ publishSettings
 
 def circeProject(path: String)(project: Project) = {
   val docName = path.split("-").mkString(" ")
