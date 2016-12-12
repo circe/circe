@@ -25,6 +25,9 @@ install:
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.11.* ]];
+    then sbt update;
+    fi
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.10.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
