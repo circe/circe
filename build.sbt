@@ -3,6 +3,7 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
+scalaVersion in ThisBuild := "2.11.8"
 organization in ThisBuild := "io.circe"
 
 lazy val compilerOptions = Seq(
