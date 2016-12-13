@@ -20,7 +20,7 @@ trait Encoder[A] extends Serializable { self =>
   def apply(a: A): Json
 
   /**
-   * Create a new [Encoder]] by applying a function to a value of type `B` before encoding as an
+   * Create a new [[Encoder]] by applying a function to a value of type `B` before encoding as an
    * `A`.
    */
   final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
