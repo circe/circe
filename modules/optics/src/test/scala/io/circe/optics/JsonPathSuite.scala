@@ -42,6 +42,11 @@ class JsonPathSuite extends CirceSuite {
     assert(root.cars(1).model.string.getOption(john) === Some("suv"))
   }
 
+  it should "support traversal by array index using apply on the root" in {
+    val jsonArray = List("first".asJson, "second".asJson).asJson
+    assert(root(0).string.getOption(jsonArray) === Some("first"))
+  }
+
   it should "support insertion and deletion" in {
     assert(root.at("first_name").setOption(None)(john) === john.asObject.map(_.remove("first_name").asJson))
     assert(root.at("foo").set(Some(true.asJson))(john).asObject.flatMap(_.apply("foo")) === Some(Json.True))
