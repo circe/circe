@@ -10,11 +10,11 @@ import scala.language.experimental.macros
 /**
  * Fully automatic codec derivation.
  *
- * Importing the contents of this object provides [[io.circe.Decoder]] and [[io.circe.Encoder]]
+ * Extending this trait provides [[io.circe.Decoder]] and [[io.circe.Encoder]]
  * instances for case classes (if all members have instances), "incomplete" case classes, sealed
  * trait hierarchies, etc.
  */
-final object auto {
+trait AutoDerivation {
   implicit def exportDecoder[A]: Exported[Decoder[A]] = macro ExportMacros.exportDecoder[DerivedDecoder, A]
   implicit def exportEncoder[A]: Exported[ObjectEncoder[A]] = macro ExportMacros.exportEncoder[DerivedObjectEncoder, A]
 }
