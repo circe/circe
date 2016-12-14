@@ -414,8 +414,8 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
 lazy val jackson = circeModule("jackson", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "com.fasterxml.jackson.core" % "jackson-core" % "2.5.3",
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.3"
+      "com.fasterxml.jackson.core" % "jackson-core" % "2.8.5",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.5"
     )
   )
   .dependsOn(core)

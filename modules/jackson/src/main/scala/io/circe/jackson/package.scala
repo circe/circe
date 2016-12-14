@@ -1,7 +1,6 @@
 package io.circe
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
-import com.fasterxml.jackson.databind.ObjectWriter
 
 /**
  * Support for Jackson-powered parsing and printing for circe.
@@ -20,7 +19,7 @@ package object jackson extends WithJacksonMapper with JacksonParser {
     val gen = stringJsonGenerator(sw).setPrettyPrinter(
       new DefaultPrettyPrinter()
     )
-    val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter[ObjectWriter]()
+    val writer = mapper.writerWithDefaultPrettyPrinter()
     writer.writeValue(gen, json)
     sw.flush()
     sw.getBuffer.toString
