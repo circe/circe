@@ -787,7 +787,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   object state {
     /**
-     * Attempt to decode a value at key `k` and remove it from the [ACursor]].
+     * Attempt to decode a value at key `k` and remove it from the [[ACursor]].
      */
     def decodeField[A: Decoder](k: String): StateT[Result, ACursor, A] = StateT[Result, ACursor, A] { c =>
       val field = c.downField(k)
