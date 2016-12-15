@@ -24,6 +24,15 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [The Guardian](https://www.theguardian.com)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
 
+### Other circe organization projects
+
+Please get in touch on [Gitter][gitter] if you have a circe-related project that you'd like to discuss hosting under the
+[circe organization][circe-org] on GitHub.
+
+* [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
+* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
+  into circe's `Json`.
+
 ### Related projects
 
 The following open source projects are either built on circe or provide circe support:
@@ -33,12 +42,10 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [akka-stream-json][akka-stream-json]: A library that provides Json support for stream based applications using jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
-* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
-  into circe's `Json`.
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
-* [diffson][diffson]: A Scala diff / patch library for Json
+* [diffson][diffson]: A Scala diff / patch library for JSON.
 * [elastic4s][elastic4s]: A Scala client for [Elasticsearch][elasticsearch] with circe support.
 * [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
 * [Featherbed][featherbed]: A REST client library with circe support.
@@ -109,6 +116,8 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
+[circe-jackson]: https://github.com/circe/circe-jackson
+[circe-org]: https://github.com/circe
 [circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: http://typelevel.org/conduct.html
@@ -126,9 +135,11 @@ limitations under the License.
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
 [github4s]: https://github.com/47deg/github4s
+[gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
 [iglu]: https://github.com/snowplow/iglu
+[jackson]: https://github.com/FasterXML/jackson
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32

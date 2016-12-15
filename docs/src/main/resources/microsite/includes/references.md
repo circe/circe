@@ -15,7 +15,7 @@
 [circe-251]: https://github.com/circe/circe/issues/251
 [circe-262]: https://github.com/circe/circe/issues/262
 [circe-generic]: https://circe.github.io/circe/api/io/circe/generic/auto$.html
-[circe-jackson]: https://circe.github.io/circe/api/io/circe/jackson/index.html
+[circe-jackson]: https://github.com/circe/circe-jackson
 [circe-jawn]: https://circe.github.io/circe/api/io/circe/jawn/index.html
 [circe-parser]: https://circe.github.io/circe/api/io/circe/parser/index.html
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml

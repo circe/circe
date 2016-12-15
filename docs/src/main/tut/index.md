@@ -42,7 +42,7 @@ other libraries.
 circe doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
 and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
 facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
-fussiest code in Argonaut. The [`jackson`][circe-jackson] subproject supports using
+fussiest code in Argonaut. The [circe-jackson][circe-jackson] project supports using
 [Jackson][jackson] for both parsing and printing.
 
 circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
