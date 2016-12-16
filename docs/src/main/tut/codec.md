@@ -7,7 +7,7 @@ position: 3
 # Encoding and decoding
 
 circe uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
-provides a function that will convert any `A` to a `JSON`, and a `Decoder[A]` takes a `Json` value
+provides a function that will convert any `A` to a `Json`, and a `Decoder[A]` takes a `Json` value
 to either an exception or an `A`. circe provides implicit instances of these type classes for many
 types from the Scala standard library, including `Int`, `String`, and [others][encoder]. It also
 provides instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an
