@@ -5,7 +5,6 @@ import io.circe.optics.JsonObjectOptics._
 import io.circe.optics.JsonOptics._
 import monocle.{ Fold, Optional, Prism, Traversal }
 import monocle.function.{ At, FilterIndex, Index }
-import monocle.std.vector._
 import scala.language.dynamics
 
 final case class JsonPath(json: Optional[Json, Json]) extends Dynamic {

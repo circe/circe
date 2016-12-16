@@ -8,7 +8,6 @@ import io.circe.optics.JsonNumberOptics._
 import io.circe.optics.JsonObjectOptics.objectEach
 import monocle.{ Prism, Traversal }
 import monocle.function.{ Each, Plated }
-import monocle.std.vector._
 
 /**
  * Optics instances for [[io.circe.Json]].
