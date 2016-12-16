@@ -171,7 +171,6 @@ lazy val circeJsModules = Seq[Project](scalajs)
 
 lazy val circeJvmModules = Seq[Project](
   jawn,
-  jackson,
   java8,
   streaming
 )
@@ -367,7 +366,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .jvmConfigure(_.dependsOn(jawn, jackson, streaming))
+  .jvmConfigure(_.dependsOn(jawn, streaming))
   .jsConfigure(
     _.settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
@@ -410,15 +409,6 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.8.0"
   )
   .dependsOn(core, jawn)
-
-lazy val jackson = circeModule("jackson", mima = previousCirceVersion)
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.fasterxml.jackson.core" % "jackson-core" % "2.8.5",
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.5"
-    )
-  )
-  .dependsOn(core)
 
 lazy val spray = circeModule("spray", mima = previousCirceVersion)
   .settings(
@@ -470,7 +460,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn, jackson)
+  .dependsOn(core, generic, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
