@@ -32,6 +32,8 @@ Please get in touch on [Gitter][gitter] if you have a circe-related project that
 * [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
+* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using
+  circe.
 
 ### Related projects
 
@@ -118,6 +120,7 @@ limitations under the License.
 [argus]: https://github.com/aishfenton/Argus
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-org]: https://github.com/circe
+[circe-spray]: https://github.com/circe/circe-spray
 [circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: http://typelevel.org/conduct.html
@@ -161,6 +164,7 @@ limitations under the License.
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
+[spray]: http://spray.io/
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
 [todoist]: https://developer.todoist.com/

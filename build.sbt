@@ -3,7 +3,6 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
-scalaVersion in ThisBuild := "2.11.8"
 organization in ThisBuild := "io.circe"
 
 lazy val compilerOptions = Seq(
@@ -175,12 +174,9 @@ lazy val circeJvmModules = Seq[Project](
   streaming
 )
 
-lazy val circeUtilModules = Seq[Project](
-  docs,
-  spray,
-  hygiene,
-  benchmark
-)
+lazy val circeDocsModules = Seq[Project](docs)
+
+lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
   case "1.8" => Set.empty
@@ -200,7 +196,7 @@ lazy val jsProjects: Seq[Project] =
  */
 lazy val aggregatedProjects: Seq[ProjectReference] =
   (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeUtilModules)
+   circeJsModules ++ circeJvmModules ++ circeDocsModules)
     .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
@@ -227,7 +223,6 @@ def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
 )
 
 lazy val circe = project.in(file("."))
-  .enablePlugins(CrossPerProjectPlugin)
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
@@ -409,28 +404,6 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.8.0"
   )
   .dependsOn(core, jawn)
-
-lazy val spray = circeModule("spray", mima = previousCirceVersion)
-  .settings(
-    crossScalaVersions := crossScalaVersions.value.init,
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-actor" % "2.3.9",
-      "io.spray" %% "spray-httpx" % "1.3.3",
-      /**
-       * spray-routing-shapeless2 depends on Shapeless 2.1, which uses a
-       * different suffix for Scala 2.10 than Shapeless 2.3 (the version brought
-       * in by circe-generic). Since this is only a test dependency, we simply
-       * exclude the transitive Shapeless 2.1 dependency to avoid conflicting
-       * cross-version suffixes on 2.10.
-       */
-      "io.spray" %% "spray-routing-shapeless2" % "1.3.3" % "test" exclude("com.chuusai", "shapeless_2.10.4"),
-      "io.spray" %% "spray-testkit" % "1.3.3" % "test",
-      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
-      "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" % "test" cross CrossVersion.full)
-    )
-  )
-  .dependsOn(core, jawn, generic % "test")
 
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
