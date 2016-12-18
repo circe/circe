@@ -30,7 +30,7 @@ contribute a fix or implementation for your issue to be appreciated.
 
 ## Write code
 
-The [design principles document](DESIGN.md) outlines some of the practices followed in the circe
+The [design principles document][design-principles] outlines some of the practices followed in the circe
 codebase. In general the public API should be purely functional, but the implementation is free to
 use non-functional constructions for the sake of performance—we want correctness, of course, but
 internally we're willing to have this correctness verified by tests rather than the compiler when
@@ -83,6 +83,7 @@ compatibility before the next release.
   tests get added.
 
 [beginner-friendly]: https://github.com/circe/circe/labels/beginner-friendly
+[design-principles]: https://github.com/circe/circe/blob/master/DESIGN.md
 [discipline]: https://github.com/typelevel/discipline
 [gitter]: https://gitter.im/circe/circe
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests/
