@@ -35,8 +35,8 @@ script:
     fi
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.12.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION spray/test benchmark/test coverageReport && codecov;
-    else echo "Skipping spray and benchmark tests and coverage reporting on 2.12";
+      sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
+    else echo "Skipping benchmark tests and coverage reporting on 2.12";
     fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
