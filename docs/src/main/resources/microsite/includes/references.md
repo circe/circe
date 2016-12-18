@@ -9,7 +9,7 @@
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [argus]: https://github.com/aishfenton/Argus
-[benchmarks]: https://github.com/circe/circe/blob/master/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
+[benchmarks]: https://github.com/circe/circe/blob/master/modules/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
 [cats-xor]: http://typelevel.org/cats/tut/xor.html
 [circe-251]: https://github.com/circe/circe/issues/251
@@ -45,7 +45,7 @@
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [json.parse]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
-[jsonpath]: https://github.com/circe/circe/blob/master/optics/src/main/scala/io/circe/optics/JsonPath.scala
+[jsonpath]: https://github.com/circe/circe/blob/master/modules/optics/src/main/scala/io/circe/optics/JsonPath.scala
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
 [kadai-log]: https://bitbucket.org/atlassian/kadai-log
