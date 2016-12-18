@@ -3,7 +3,6 @@ import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
-scalaVersion in ThisBuild := "2.11.8"
 organization in ThisBuild := "io.circe"
 
 lazy val compilerOptions = Seq(
@@ -175,11 +174,9 @@ lazy val circeJvmModules = Seq[Project](
   streaming
 )
 
-lazy val circeUtilModules = Seq[Project](
-  docs,
-  hygiene,
-  benchmark
-)
+lazy val circeDocsModules = Seq[Project](docs)
+
+lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
   case "1.8" => Set.empty
@@ -199,7 +196,7 @@ lazy val jsProjects: Seq[Project] =
  */
 lazy val aggregatedProjects: Seq[ProjectReference] =
   (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeUtilModules)
+   circeJsModules ++ circeJvmModules ++ circeDocsModules)
     .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
@@ -226,7 +223,6 @@ def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
 )
 
 lazy val circe = project.in(file("."))
-  .enablePlugins(CrossPerProjectPlugin)
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
