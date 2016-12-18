@@ -69,7 +69,7 @@ The following open source projects are either built on circe or provide circe su
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
-* [Zenith][zenith]: Functional HTTP library built on [Unfiltered][unfiltered] and circe.
+* [Zenith][zenith]: Functional HTTP library built on circe.
 
 ### Examples
 
@@ -167,7 +167,6 @@ limitations under the License.
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
-[unfiltered]: http://unfiltered.databinder.net/Unfiltered.html
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
 [zenith]: https://github.com/sungiant/zenith
