@@ -82,7 +82,6 @@
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
 [unfiltered]: http://unfiltered.databinder.net/Unfiltered.html
-[util]: https://github.com/twitter/util
 [very-large-adt]: http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k

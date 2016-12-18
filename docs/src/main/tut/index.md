@@ -33,9 +33,8 @@ dependency (cats-core).
 
 Other subprojects bring in dependencies on [Jawn][jawn] (for parsing in the [`jawn`][circe-jawn]
 subproject), [Shapeless][shapeless] (for automatic codec derivation in [`generic`][circe-generic]),
-and [Twitter Util][util] (for tools for asynchronous parsing in `async`), but it would be possible
-to replace the functionality provided by these subprojects with alternative implementations that use
-other libraries.
+but it would be possible to replace the functionality provided by these subprojects with alternative
+implementations that use other libraries.
 
 ### Parsing
 
