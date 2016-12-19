@@ -3,7 +3,6 @@
 [akka-http-json]: https://github.com/hseeberger/akka-http-json
 [akka-stream-json]: https://github.com/knutwalker/akka-stream-json
 [apache]: http://www.apache.org/licenses/LICENSE-2.0
-[api]: https://circe.github.io/circe/api/io/circe/
 [archambault]: https://twitter.com/alxarchambault
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
@@ -11,7 +10,6 @@
 [argus]: https://github.com/aishfenton/Argus
 [benchmarks]: https://github.com/circe/circe/blob/master/modules/benchmark/src/main/scala/io/circe/benchmark/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
-[cats-xor]: http://typelevel.org/cats/tut/xor.html
 [circe-251]: https://github.com/circe/circe/issues/251
 [circe-262]: https://github.com/circe/circe/issues/262
 [circe-generic]: https://circe.github.io/circe/api/io/circe/generic/auto$.html
@@ -73,7 +71,6 @@
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
-[spool]: https://twitter.github.io/util/docs/index.html#com.twitter.concurrent.Spool
 [spray-json]: https://github.com/spray/spray-json
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
@@ -81,7 +78,6 @@
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
-[unfiltered]: http://unfiltered.databinder.net/Unfiltered.html
 [very-large-adt]: http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
