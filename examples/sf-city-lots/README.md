@@ -128,7 +128,7 @@ Unfortunately the JSON we actually have looks like this:
 }
 ```
 
-Defining our our decoder for `Geometry` isn't too bad, though.
+Defining our decoder for `Geometry` isn't too bad, though.
 
 Finally we can write our decoder for the top-level type representing a city lot:
 
@@ -215,7 +215,7 @@ few lines from the file, or if we run into decoding or I/O errors during the pro
 
 [cats]: https://github.com/typelevel/cats
 [cats-32]: https://github.com/typelevel/cats/issues/32
-[circe-streaming]: ../../streaming/
+[circe-streaming]: ../../modules/streaming/
 [error-accumulation]: https://meta.plasm.us/posts/2015/12/17/error-accumulating-decoders-in-circe/
 [jawn]: https://github.com/non/jawn
 [generic-derivation]: https://meta.plasm.us/posts/2015/11/08/type-classes-and-generic-derivation/
