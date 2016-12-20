@@ -15,7 +15,7 @@
 [circe-generic]: https://circe.github.io/circe/api/io/circe/generic/auto$.html
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-jawn]: https://circe.github.io/circe/api/io/circe/jawn/index.html
-[circe-parser]: https://circe.github.io/circe/api/io/circe/Parser.html
+[circe-parser]: https://github.com/circe/circe/tree/master/modules/parser
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
