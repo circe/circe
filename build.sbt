@@ -408,8 +408,8 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.3.2",
-      "com.github.julien-truffaut" %%% "monocle-law" % "1.3.2" % "test",
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0-M1",
+      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M1" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
