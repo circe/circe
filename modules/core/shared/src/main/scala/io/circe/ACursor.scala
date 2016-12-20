@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Applicative
 import cats.kernel.Eq
+import scala.collection.immutable.Set
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.

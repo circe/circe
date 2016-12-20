@@ -170,5 +170,5 @@ object UnsafeOptics {
     * However `select(_.a > 10) composeLens b` is safe because once we zoom into `b`, we cannot change `a` anymore.
     */
   def select[A](p: A => Boolean): Prism[A, A] =
-    Prism[A, A](a => if (p(a)) Some(a) else None)(identity)
+    Prism[A, A](a => if (p(a)) Some(a) else None)(Predef.identity)
 }
