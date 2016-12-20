@@ -15,14 +15,14 @@
 [circe-generic]: https://circe.github.io/circe/api/io/circe/generic/auto$.html
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-jawn]: https://circe.github.io/circe/api/io/circe/jawn/index.html
-[circe-parser]: https://circe.github.io/circe/api/io/circe/parser/index.html
+[circe-parser]: https://github.com/circe/circe/tree/master/modules/parser
 [circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
 [discipline]: https://github.com/typelevel/discipline
-[encoder]: https://circe.github.io/circe/api/#io.circe.Encoder$
+[encoder]: https://circe.github.io/circe/api/io/circe/Encoder$.html
 [enumeratum]: https://github.com/lloydmeta/enumeratum
 [featherbed]: https://github.com/finagle/featherbed
 [finagle]: https://twitter.github.io/finagle/
@@ -30,7 +30,7 @@
 [fintrospect]: https://github.com/daviddenton/fintrospect
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
-[generic-cursor]: https://circe.github.io/circe/api/#io.circe.GenericCursor
+[generic-cursor]: https://circe.github.io/circe/api/io/circe/GenericCursor.html
 [github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/circe/circe
 [graphql]: http://graphql.org/docs/getting-started/
