@@ -23,10 +23,6 @@ class ParsingBenchmarkSpec extends FlatSpec {
     assert(parseIntsS === intsS)
   }
 
-  it should "correctly parse integers using Picopickle" in {
-    assert(parseIntsPico === intsPico)
-  }
-
   it should "correctly parse case classes using Circe" in {
     assert(parseFoosC === foosC)
   }
@@ -41,9 +37,5 @@ class ParsingBenchmarkSpec extends FlatSpec {
 
   it should "correctly parse case classes using Spray JSON" in {
     assert(parseFoosS === foosS)
-  }
-
-  it should "correctly parse case classes using Picopickle" in {
-    assert(parseFoosPico === foosPico)
   }
 }

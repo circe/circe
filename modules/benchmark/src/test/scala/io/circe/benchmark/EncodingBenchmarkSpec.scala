@@ -3,7 +3,6 @@ package io.circe.benchmark
 import argonaut.Parse, argonaut.Argonaut._
 import org.scalatest.FlatSpec
 import play.api.libs.json.{ Json => JsonP }
-import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 
 class EncodingBenchmarkSpec extends FlatSpec {
   val benchmark: EncodingBenchmark = new EncodingBenchmark
@@ -32,10 +31,6 @@ class EncodingBenchmarkSpec extends FlatSpec {
     assert(decodeInts(encodeIntsS.compactPrint) === Some(ints))
   }
 
-  it should "correctly encode integers using Picopickle" in {
-    assert(decodeInts(writeAst(encodeIntsPico)) === Some(ints))
-  }
-
   it should "correctly encode case classes using Circe" in {
     assert(decodeFoos(encodeFoosC.noSpaces) === Some(foos))
   }
@@ -50,9 +45,5 @@ class EncodingBenchmarkSpec extends FlatSpec {
 
   it should "correctly encode case classes using Spray JSON" in {
     assert(decodeFoos(encodeFoosS.compactPrint) === Some(foos))
-  }
-
-  it should "correctly encode case classes using Picopickle" in {
-    assert(decodeFoos(writeAst(encodeFoosPico)) === Some(foos))
   }
 }
