@@ -1,27 +1,17 @@
 package io.circe.benchmark
 
-import argonaut.{ Json => JsonA, _ }, argonaut.Argonaut._
 import cats.Eq
 import cats.data.NonEmptyList
-import io.circe.{ Decoder, Encoder, Json => JsonC }
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.semiauto._
-import io.circe.jawn._
-import io.github.netvl.picopickle.backends.jawn.JsonPickler
-import io.github.netvl.picopickle.backends.jawn.JsonPickler._
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
-import play.api.libs.json.{ Format, Json => JsonP, JsValue => JsValueP, Writes }
-import spray.json.{ JsonFormat, JsonParser => JsonParserS, JsonWriter, JsValue => JsValueS }
-import spray.json.DefaultJsonProtocol._
 
 case class Foo(s: String, d: Double, i: Int, l: Long, bs: List[Boolean])
 
 object Foo {
-  implicit val codecFoo: CodecJson[Foo] = CodecJson.derive[Foo]
-  implicit val playFormatFoo: Format[Foo] = JsonP.format[Foo]
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
   implicit val encodeFoo: Encoder[Foo] = deriveEncoder
-  implicit val sprayFormatFoo: JsonFormat[Foo] = jsonFormat5(Foo.apply)
 
   implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals[Foo]
 }
@@ -43,200 +33,17 @@ class ExampleData {
     foo => FooNel(foo.s, foo.d, foo.i, foo.l, NonEmptyList(true, foo.bs))
   }
 
-  @inline def encodeA[A](a: A)(implicit encode: EncodeJson[A]): JsonA = encode(a)
-  @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): JsonC = encode(a)
-  @inline def encodeP[A](a: A)(implicit encode: Writes[A]): JsValueP = encode.writes(a)
-  @inline def encodeS[A](a: A)(implicit encode: JsonWriter[A]): JsValueS = encode.write(a)
-  @inline def encodePico[A](a: A)(implicit encode: JsonPickler.Writer[A]): backend.BValue = write(a)(encode)
+  @inline def encodeC[A](a: A)(implicit encode: Encoder[A]): Json = encode(a)
 
-  val intsC: JsonC = encodeC(ints)
-  val intsA: JsonA = encodeA(ints)
-  val intsP: JsValueP = encodeP(ints)
-  val intsS: JsValueS = encodeS(ints)
-  val intsPico: backend.BValue = encodePico(ints)
+  val intsC: Json = encodeC(ints)
 
-  val foosC: JsonC = encodeC(foos)
-  val fooNelsC: JsonC = encodeC(fooNels)
-  val foosA: JsonA = encodeA(foos)
-  val foosP: JsValueP = encodeP(foos)
-  val foosS: JsValueS = encodeS(foos)
-  val foosPico: backend.BValue = encodePico(foos)
+  val foosC: Json = encodeC(foos)
+  val fooNelsC: Json = encodeC(fooNels)
 
   val intsJson: String = intsC.noSpaces
   val foosJson: String = foosC.noSpaces
 }
 
-/**
- * Compare the performance of encoding operations.
- *
- * The following command will run the benchmarks with reasonable settings:
- *
- * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.EncodingBenchmark"
- */
-@State(Scope.Thread)
-@BenchmarkMode(Array(Mode.Throughput))
-@OutputTimeUnit(TimeUnit.SECONDS)
-class EncodingBenchmark extends ExampleData {
-  @Benchmark
-  def encodeIntsC: JsonC = encodeC(ints)
-
-  @Benchmark
-  def encodeIntsA: JsonA = encodeA(ints)
-
-  @Benchmark
-  def encodeIntsP: JsValueP = encodeP(ints)
-
-  @Benchmark
-  def encodeIntsS: JsValueS = encodeS(ints)
-
-  @Benchmark
-  def encodeIntsPico: backend.BValue = encodePico(ints)
-
-  @Benchmark
-  def encodeFoosC: JsonC = encodeC(foos)
-
-  @Benchmark
-  def encodeFoosA: JsonA = encodeA(foos)
-
-  @Benchmark
-  def encodeFoosP: JsValueP = encodeP(foos)
-
-  @Benchmark
-  def encodeFoosS: JsValueS = encodeS(foos)
-
-  def encodeFooNelsC: JsonC = encodeC(fooNels)
-
-  @Benchmark
-  def encodeFoosPico: backend.BValue = encodePico(foos)
-}
-
-/**
- * Compare the performance of decoding operations.
- *
- * The following command will run the benchmarks with reasonable settings:
- *
- * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.DecodingBenchmark"
- */
-@State(Scope.Thread)
-@BenchmarkMode(Array(Mode.Throughput))
-@OutputTimeUnit(TimeUnit.SECONDS)
-class DecodingBenchmark extends ExampleData {
-  @Benchmark
-  def decodeIntsC: List[Int] = intsC.as[List[Int]].right.getOrElse(throw new Exception)
-
-  @Benchmark
-  def decodeIntsA: List[Int] = intsA.as[List[Int]].result.getOrElse(throw new Exception)
-
-  @Benchmark
-  def decodeIntsP: List[Int] = intsP.as[List[Int]]
-
-  @Benchmark
-  def decodeIntsS: List[Int] = intsS.convertTo[List[Int]]
-
-  @Benchmark
-  def decodeIntsPico: List[Int] = read[List[Int]](intsPico)
-
-  @Benchmark
-  def decodeFoosC: Map[String, Foo] =
-    foosC.as[Map[String, Foo]].right.getOrElse(throw new Exception)
-
-  @Benchmark
-  def decodeFoosA: Map[String, Foo] =
-    foosA.as[Map[String, Foo]].result.getOrElse(throw new Exception)
-
-  @Benchmark
-  def decodeFoosP: Map[String, Foo] = foosP.as[Map[String, Foo]]
-
-  @Benchmark
-  def decodeFoosS: Map[String, Foo] = foosS.convertTo[Map[String, Foo]]
-
-  @Benchmark
-  def decodeFoosPico: Map[String, Foo] = read[Map[String, Foo]](foosPico)
-}
-
-/**
- * Compare the performance of parsing operations.
- *
- * The following command will run the benchmarks with reasonable settings:
- *
- * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.ParsingBenchmark"
- */
-@State(Scope.Thread)
-@BenchmarkMode(Array(Mode.Throughput))
-@OutputTimeUnit(TimeUnit.SECONDS)
-class ParsingBenchmark extends ExampleData {
-  @Benchmark
-  def parseIntsC: JsonC = parse(intsJson).right.getOrElse(throw new Exception)
-
-  @Benchmark
-  def parseIntsA: JsonA = Parse.parse(intsJson).getOrElse(throw new Exception)
-
-  @Benchmark
-  def parseIntsP: JsValueP = JsonP.parse(intsJson)
-
-  @Benchmark
-  def parseIntsS: JsValueS = JsonParserS(intsJson)
-
-  @Benchmark
-  def parseIntsPico: backend.BValue = readAst(intsJson)
-
-  @Benchmark
-  def parseFoosC: JsonC = parse(foosJson).right.getOrElse(throw new Exception)
-
-  @Benchmark
-  def parseFoosA: JsonA = Parse.parse(foosJson).getOrElse(throw new Exception)
-
-  @Benchmark
-  def parseFoosP: JsValueP = JsonP.parse(foosJson)
-
-  @Benchmark
-  def parseFoosS: JsValueS = JsonParserS(foosJson)
-
-  @Benchmark
-  def parseFoosPico: backend.BValue = readAst(foosJson)
-}
-
-/**
- * Compare the performance of printing operations.
- *
- * The following command will run the benchmarks with reasonable settings:
- *
- * > sbt "benchmark/jmh:run -i 10 -wi 10 -f 2 -t 1 io.circe.benchmark.PrintingBenchmark"
- */
-@State(Scope.Thread)
-@BenchmarkMode(Array(Mode.Throughput))
-@OutputTimeUnit(TimeUnit.SECONDS)
-class PrintingBenchmark extends ExampleData {
-  @Benchmark
-  def printIntsC: String = intsC.noSpaces
-
-  @Benchmark
-  def printIntsA: String = intsA.nospaces
-
-  @Benchmark
-  def printIntsP: String = JsonP.stringify(intsP)
-
-  @Benchmark
-  def printIntsS: String = intsS.compactPrint
-
-  @Benchmark
-  def printIntsPico: String = writeAst(intsPico)
-
-  @Benchmark
-  def printFoosC: String = foosC.noSpaces
-
-  @Benchmark
-  def printFoosA: String = foosA.nospaces
-
-  @Benchmark
-  def printFoosP: String = JsonP.stringify(foosP)
-
-  @Benchmark
-  def printFoosS: String = foosS.compactPrint
-
-  @Benchmark
-  def printFoosPico: String = writeAst(foosPico)
-}
 
 /**
  * Compare the performance of derived and non-derived codecs.
