@@ -179,7 +179,8 @@ lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](
   jawn,
   java8,
-  streaming
+  streaming,
+  fs2
 )
 
 lazy val circeDocsModules = Seq[Project](docs)
@@ -375,7 +376,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .jvmConfigure(_.dependsOn(jawn, streaming))
+  .jvmConfigure(_.dependsOn(jawn, streaming, fs2))
   .jsConfigure(
     _.settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
@@ -416,6 +417,13 @@ lazy val java8 = circeModule("java8", mima = previousCirceVersion)
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.9.0"
+  )
+  .dependsOn(core, jawn)
+
+lazy val fs2 = circeModule("fs2", mima = previousCirceVersion)
+  .settings(
+    crossScalaVersions := crossScalaVersions.value.tail,
+    libraryDependencies += "co.fs2" %% "fs2-core" % "0.9.2"
   )
   .dependsOn(core, jawn)
 
