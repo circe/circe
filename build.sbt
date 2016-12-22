@@ -1,6 +1,7 @@
 import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
+import microsites.ExtraMdFileConfig
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
 organization in ThisBuild := "io.circe"
@@ -113,7 +114,7 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
   micrositeDocumentationUrl := "api",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> "contributing.md"),
+  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
   micrositePalette := Map(
     "brand-primary" -> "#5B5988",
     "brand-secondary" -> "#292E53",
