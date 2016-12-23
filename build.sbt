@@ -92,7 +92,6 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
 /**
  * We omit all Scala.js projects from Unidoc generation, as well as
  * circe-generic on 2.10, since Unidoc doesn't like its macros.
- * Exclude java8 but include optics since it compiles on 1.7.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] = {
   val unwanted = circeCrossModules.map(_._2) ++ circeUtilModules :+ tests
@@ -409,8 +408,8 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0-M1",
-      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M1" % "test",
+      "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0-M2",
+      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M2" % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
@@ -495,8 +494,7 @@ credentials ++= (
   )
 ).toSeq
 
-/* Only run optics tests on Java 8 since Scala 2.11 on Java 7 breaks. */
-val jvmTestProjects = Seq(numbers, tests, java8, optics).filterNot(jvm8Only(java8, optics))
+val jvmTestProjects = Seq(numbers, tests, java8, optics).filterNot(jvm8Only(java8))
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
