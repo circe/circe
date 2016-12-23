@@ -32,8 +32,8 @@ Please get in touch on [Gitter][gitter] if you have a circe-related project that
 * [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
-* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using
-  circe.
+* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
+* [circe-benchmarks][circe-benchmarks]: Benchmarks for comparing the performance of circe and other JSON libraries for the JVM.
 
 ### Related projects
 
@@ -118,6 +118,7 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
+[circe-benchmarks]: https://github.com/circe/circe-benchmarks
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
