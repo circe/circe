@@ -246,7 +246,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.value.asNumber.map(_.toDouble).exists(_ == $lit)) {
+            if (c.value.asNumber.map(_.toNearestDouble).exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -264,7 +264,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.value.asNumber.map(_.toDouble).exists(s => s.toFloat == $lit)) {
+            if (c.value.asNumber.map(_.toNearestDouble).exists(s => s.toFloat == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(

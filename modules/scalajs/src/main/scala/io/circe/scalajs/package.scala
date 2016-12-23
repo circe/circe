@@ -44,7 +44,7 @@ package object scalajs {
    */
   final def convertJsonToJs(input: Json): js.Any = input match {
     case JString(s) => s
-    case JNumber(n) => n.toDouble
+    case JNumber(n) => n.toNearestDouble
     case JBoolean(b) => b
     case JArray(arr) => arr.map(convertJsonToJs).toJSArray
     case JNull => null

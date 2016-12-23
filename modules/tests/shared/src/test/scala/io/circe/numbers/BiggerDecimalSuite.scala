@@ -25,7 +25,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     val d = BiggerDecimal.fromDouble(value)
 
     assert(
-      doubleEqv(d.toDouble, value) && d.toBigDecimal.exists { roundTripped =>
+      doubleEqv(d.toNearestDouble, value) && d.toBigDecimal.exists { roundTripped =>
         doubleEqv(roundTripped.doubleValue, value)
       }
     )
@@ -34,7 +34,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   it should "round-trip negative zero" in {
     val d = BiggerDecimal.fromDouble(-0.0)
 
-    assert(doubleEqv(d.toDouble, -0.0))
+    assert(doubleEqv(d.toNearestDouble, -0.0))
   }
 
   "signum" should "agree with BigInteger" in forAll { (value: BigInt) =>
@@ -73,40 +73,40 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     assert(d.toLong === Some(value))
   }
 
-  "truncateToLong" should "work on values too big to be represented exactly as doubles" in {
+  "toNearestLong" should "work on values too big to be represented exactly as doubles" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("16858240615609565")
 
-    assert(d.truncateToLong === 16858240615609565L)
+    assert(d.toNearestLong === 16858240615609565L)
   }
 
   it should "work on negative values too big to be represented exactly as doubles" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-16858240615609565")
 
-    assert(d.truncateToLong === -16858240615609565L)
+    assert(d.toNearestLong === -16858240615609565L)
   }
 
   it should "work on values too small to be parsed as BigDecimals" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("1e-16858240615609565")
 
-    assert(d.truncateToLong === 0L)
+    assert(d.toNearestLong === 0L)
   }
 
   it should "work on negative values too small to be parsed as BigDecimals" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-1e-16858240615609565")
 
-    assert(d.truncateToLong === 0L)
+    assert(d.toNearestLong === 0L)
   }
 
   it should "work on values larger than Long.MaxValue" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("9223372036854775808")
 
-    assert(d.truncateToLong === Long.MaxValue)
+    assert(d.toNearestLong === Long.MaxValue)
   }
 
   it should "work on negative values smaller than Long.MinValue" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-9223372036854775809")
 
-    assert(d.truncateToLong === Long.MinValue)
+    assert(d.toNearestLong === Long.MinValue)
   }
 
   "toBigInteger" should "fail on very large values" in {

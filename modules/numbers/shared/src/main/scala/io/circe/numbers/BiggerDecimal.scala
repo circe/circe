@@ -52,7 +52,7 @@ sealed abstract class BiggerDecimal extends Serializable {
   /**
    * Convert to the nearest [[scala.Double]].
    */
-  def toDouble: Double
+  def toNearestDouble: Double
 
   /**
    * Convert to a [[scala.Long]] if this is a valid `Long` value.
@@ -62,7 +62,7 @@ sealed abstract class BiggerDecimal extends Serializable {
   /**
    * Convert to the nearest [[scala.Long]].
    */
-  def truncateToLong: Long
+  def toNearestLong: Long
 }
 
 /**
@@ -94,9 +94,10 @@ private[numbers] final class SigAndExp(
       )
     }
 
-  def toDouble: Double = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
-    new BigDecimal(unscaled, scale.intValue).doubleValue
-  } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
+  def toNearestDouble: Double =
+    if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
+      new BigDecimal(unscaled, scale.intValue).doubleValue
+    } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
 
   def toLong: Option[Long] = if (!this.isWhole) None else {
     toBigInteger match {
@@ -108,7 +109,7 @@ private[numbers] final class SigAndExp(
     }
   }
 
-  def truncateToLong: Long = toLong.getOrElse {
+  def toNearestLong: Long = toLong.getOrElse {
     toBigDecimal.map { asBigDecimal =>
       val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP)
 
@@ -147,13 +148,13 @@ final object BiggerDecimal {
     final def signum: Int = 0
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
     final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
-    final val toLong: Option[Long] = Some(truncateToLong)
-    final def truncateToLong: Long = 0L
+    final val toLong: Option[Long] = Some(toNearestLong)
+    final def toNearestLong: Long = 0L
   }
 
   private[this] val UnsignedZero: BiggerDecimal = new Zero {
     final def isNegativeZero: Boolean = false
-    final def toDouble: Double = 0.0
+    final def toNearestDouble: Double = 0.0
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => !other.isNegativeZero
@@ -165,7 +166,7 @@ final object BiggerDecimal {
 
   val NegativeZero: BiggerDecimal = new Zero {
     final def isNegativeZero: Boolean = true
-    final def toDouble: Double = -0.0
+    final def toNearestDouble: Double = -0.0
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => other.isNegativeZero

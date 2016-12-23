@@ -47,22 +47,22 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(l.toString).flatMap(_.toInt).isEmpty === invalid)
   }
 
-  "truncateToByte" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Byte = min(Byte.MaxValue, max(Byte.MinValue, l)).toByte
+  "toNearestByte" should "return the nearest value" in forAll { (l: Long) =>
+    val nearest: Byte = min(Byte.MaxValue, max(Byte.MinValue, l)).toByte
 
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToByte) === Some(truncated))
+    assert(JsonNumber.fromString(l.toString).map(_.toNearestByte) === Some(nearest))
   }
 
-  "truncateToShort" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Short = min(Short.MaxValue, max(Short.MinValue, l)).toShort
+  "toNearestShort" should "return the nearest value" in forAll { (l: Long) =>
+    val nearest: Short = min(Short.MaxValue, max(Short.MinValue, l)).toShort
 
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToShort) === Some(truncated))
+    assert(JsonNumber.fromString(l.toString).map(_.toNearestShort) === Some(nearest))
   }
 
-  "truncateToInt" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Int = min(Int.MaxValue, max(Int.MinValue, l)).toInt
+  "toNearestInt" should "return the nearest value" in forAll { (l: Long) =>
+    val nearest: Int = min(Int.MaxValue, max(Int.MinValue, l)).toInt
 
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToInt) === Some(truncated))
+    assert(JsonNumber.fromString(l.toString).map(_.toNearestInt) === Some(nearest))
   }
 
   "Eq[JsonNumber]" should "distinguish negative and positive zeros" in {

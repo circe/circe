@@ -33,7 +33,7 @@ trait JsonOptics extends CatsConversions {
     Prism[Json, Double] {
       case Json.JNull => Some(Double.NaN)
       case Json.JNumber(number) =>
-        val d = number.toDouble
+        val d = number.toNearestDouble
 
         if (java.lang.Double.isInfinite(d)) None else {
           if (Json.fromDouble(d).flatMap(_.asNumber).exists(JsonNumber.eqJsonNumber.eqv(number, _))) Some(d) else None

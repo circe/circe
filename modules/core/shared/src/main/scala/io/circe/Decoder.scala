@@ -421,8 +421,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.value match {
-      case JNumber(number) => Right(number.toDouble.toFloat)
-      case JString(string) => JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
+      case JNumber(number) => Right(number.toNearestDouble.toFloat)
+      case JString(string) => JsonNumber.fromString(string).map(_.toNearestDouble.toFloat) match {
         case Some(v) => Right(v)
         case None => fail(c)
       }
@@ -442,8 +442,8 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    */
   implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
     final def apply(c: HCursor): Result[Double] = c.value match {
-      case JNumber(number) => Right(number.toDouble)
-      case JString(string) => JsonNumber.fromString(string).map(_.toDouble) match {
+      case JNumber(number) => Right(number.toNearestDouble)
+      case JString(string) => JsonNumber.fromString(string).map(_.toNearestDouble) match {
         case Some(v) => Right(v)
         case None => fail(c)
       }

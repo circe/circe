@@ -25,7 +25,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Anything over `Double.MaxValue` will be rounded to `Double.PositiveInfinity` and anything below
    * `Double.MinValue` is rounded to `Double.NegativeInfinity`.
    */
-  def toDouble: Double
+  def toNearestDouble: Double
 
   /**
    * Return this number as a [[scala.Byte]] if it's a valid [[scala.Byte]].
@@ -63,13 +63,13 @@ sealed abstract class JsonNumber extends Serializable {
   def toLong: Option[Long]
 
   /**
-   * Truncate the number to a [[scala.Byte]].
+   * Return the nearest [[scala.Byte]].
    *
-   * Truncation means that we round toward zero to the closest valid [[scala.Byte]]. If the number
+   * "Nearest" means that we round toward zero to the closest valid [[scala.Byte]]. If the number
    * is `1e99`, for example, this will return `Byte.MaxValue`.
    */
-  final def truncateToByte: Byte = {
-    val asLong: Long = truncateToLong
+  final def toNearestByte: Byte = {
+    val asLong: Long = toNearestLong
     if (asLong > Byte.MaxValue) {
       Byte.MaxValue
     } else if (asLong < Byte.MinValue) {
@@ -78,13 +78,13 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Truncate the number to a [[scala.Short]].
+   * Return the nearest [[scala.Short]].
    *
-   * Truncation means that we round toward zero to the closest valid [[scala.Short]]. If the number
+   * "Nearest" means that we round toward zero to the closest valid [[scala.Short]]. If the number
    * is `1e99`, for example, this will return `Short.MaxValue`.
    */
-  final def truncateToShort: Short = {
-    val asLong: Long = truncateToLong
+  final def toNearestShort: Short = {
+    val asLong: Long = toNearestLong
     if (asLong > Short.MaxValue) {
       Short.MaxValue
     } else if (asLong < Short.MinValue) {
@@ -93,13 +93,13 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Truncate the number to an [[scala.Int]].
+   * Return the nearest [[scala.Int]].
    *
-   * Truncation means that we round toward zero to the closest valid [[scala.Int]]. If the number is
+   * "Nearest" means that we round toward zero to the closest valid [[scala.Int]]. If the number is
    * `1e99`, for example, this will return `Int.MaxValue`.
    */
-  final def truncateToInt: Int = {
-    val asLong: Long = truncateToLong
+  final def toNearestInt: Int = {
+    val asLong: Long = toNearestLong
     if (asLong > Int.MaxValue) {
       Int.MaxValue
     } else if (asLong < Int.MinValue) {
@@ -108,12 +108,12 @@ sealed abstract class JsonNumber extends Serializable {
   }
 
   /**
-   * Truncate the number to a [[scala.Long]].
+   * Return the nearest [[scala.Long]].
    *
-   * Truncation means that we round toward zero to the closest valid [[scala.Long]]. If the number
+   * "Nearest" means that we round toward zero to the closest valid [[scala.Long]]. If the number
    * is `1e99`, for example, this will return `Long.MaxValue`.
    */
-  def truncateToLong: Long
+  def toNearestLong: Long
 
   /**
    * Universal equality derived from our type-safe equality.
@@ -132,9 +132,9 @@ sealed abstract class JsonNumber extends Serializable {
 private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
-  final def toDouble: Double = toBiggerDecimal.toDouble
+  final def toNearestDouble: Double = toBiggerDecimal.toNearestDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = toBiggerDecimal.truncateToLong
+  final def toNearestLong: Long = toBiggerDecimal.toNearestLong
 }
 
 /**
@@ -165,9 +165,9 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value.underlying)
   final def toBigDecimal: Option[BigDecimal] = Some(value)
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
-  final def toDouble: Double = value.toDouble
+  final def toNearestDouble: Double = value.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = toDouble.round
+  final def toNearestLong: Long = toNearestDouble.round
   override final def toString: String = value.toString
 }
 
@@ -178,9 +178,9 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromLong(value)
   final def toBigDecimal: Option[BigDecimal] = Some(BigDecimal(value))
   final def toBigInt: Option[BigInt] = Some(BigInt(value))
-  final def toDouble: Double = value.toDouble
+  final def toNearestDouble: Double = value.toDouble
   final def toLong: Option[Long] = Some(value)
-  final def truncateToLong: Long = value
+  final def toNearestLong: Long = value
   override final def toString: String = java.lang.Long.toString(value)
 }
 
@@ -193,14 +193,14 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
     if (d.isWhole) Some(d.toBigInt) else None
   }
-  final def toDouble: Double = value
+  final def toNearestDouble: Double = value
 
   final def toLong: Option[Long] = {
     val asLong: Long = value.toLong
     if (asLong.toDouble == value) Some(asLong) else None
   }
 
-  final def truncateToLong: Long = java.lang.Math.round(value)
+  final def toNearestLong: Long = java.lang.Math.round(value)
   override final def toString: String = java.lang.Double.toString(value)
 }
 
