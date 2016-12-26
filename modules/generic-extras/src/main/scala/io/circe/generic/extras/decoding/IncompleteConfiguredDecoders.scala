@@ -4,6 +4,7 @@ import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
 import io.circe.generic.extras.Configuration
 import io.circe.generic.extras.util.RecordToMap
 import io.circe.generic.util.PatchWithOptions
+import scala.collection.immutable.Map
 import shapeless.{ Default, HList, LabelledGeneric }
 import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll

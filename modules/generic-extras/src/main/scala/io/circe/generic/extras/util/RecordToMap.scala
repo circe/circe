@@ -1,5 +1,6 @@
 package io.circe.generic.extras.util
 
+import scala.collection.immutable.Map
 import shapeless.{ ::, HList, HNil, Witness }
 import shapeless.labelled.FieldType
 

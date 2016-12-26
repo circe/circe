@@ -16,7 +16,8 @@ lazy val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Xfuture"
+  "-Xfuture",
+  "-Yno-predef"
 )
 
 lazy val catsVersion = "0.8.1"
@@ -38,10 +39,13 @@ lazy val baseSettings = Seq(
     }
   ),
   scalacOptions in (Compile, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
   scalacOptions in (Test, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
+  },
+  scalacOptions in Test ~= {
+    _.filterNot(Set("-Yno-predef"))
   },
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
@@ -133,6 +137,9 @@ lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
     "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
     "-doc-root-content", (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
   ),
+  scalacOptions ~= {
+    _.filterNot(Set("-Yno-predef"))
+  },
   git.remoteRepo := "git@github.com:circe/circe.git",
   unidocProjectFilter in (ScalaUnidoc, unidoc) :=
     inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
@@ -326,6 +333,9 @@ lazy val scodecJS = scodecBase.js
 
 lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
   .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
     libraryDependencies ++= Seq(
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
@@ -343,6 +353,9 @@ lazy val testingJS = testingBase.js
 lazy val testsBase = circeCrossModule("tests", mima = None)
   .settings(noPublishSettings: _*)
   .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
@@ -422,6 +435,9 @@ lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
   .settings(
     crossScalaVersions := crossScalaVersions.value.init,
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)

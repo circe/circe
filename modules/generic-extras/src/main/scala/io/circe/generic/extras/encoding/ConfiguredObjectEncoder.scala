@@ -23,6 +23,6 @@ final object ConfiguredObjectEncoder {
     config: Configuration
   ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
     final def encodeObject(a: A): JsonObject =
-      encode.value.configuredEncodeObject(gen.to(a))(identity, config.discriminator)
+      encode.value.configuredEncodeObject(gen.to(a))(Predef.identity, config.discriminator)
   }
 }

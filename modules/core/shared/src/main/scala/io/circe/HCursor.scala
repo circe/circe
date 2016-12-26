@@ -3,6 +3,7 @@ package io.circe
 import cats.Applicative
 import io.circe.cursor.{ ArrayCursor, ObjectCursor, TopCursor }
 import scala.annotation.tailrec
+import scala.collection.immutable.Set
 
 abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
   def value: Json

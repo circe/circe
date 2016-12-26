@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.Applicative
+import scala.collection.immutable.Set
 
 final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
   /**

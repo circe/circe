@@ -7,6 +7,7 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable.{ Map, Set }
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>

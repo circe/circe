@@ -25,7 +25,7 @@ abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
     }
   }
 
-  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(identity, None)
+  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, None)
 }
 
 final object ReprObjectEncoder {
