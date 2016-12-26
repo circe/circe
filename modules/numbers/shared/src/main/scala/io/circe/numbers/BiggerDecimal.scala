@@ -110,7 +110,7 @@ private[numbers] final class SigAndExp(
 
   def truncateToLong: Long = toLong.getOrElse {
     toBigDecimal.map { asBigDecimal =>
-      val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP)
+      val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_DOWN)
 
       if (rounded.compareTo(BiggerDecimal.MaxLong) >= 0) {
         Long.MaxValue
