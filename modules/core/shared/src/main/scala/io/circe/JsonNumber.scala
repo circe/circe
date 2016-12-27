@@ -167,7 +167,7 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = math.round(toDouble)
+  final def truncateToLong: Long = value.underlying.setScale(0, java.math.BigDecimal.ROUND_DOWN).longValue
   override final def toString: String = value.toString
 }
 
@@ -200,7 +200,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
     if (asLong.toDouble == value) Some(asLong) else None
   }
 
-  final def truncateToLong: Long = java.lang.Math.round(value)
+  final def truncateToLong: Long = value.toLong
   override final def toString: String = java.lang.Double.toString(value)
 }
 
