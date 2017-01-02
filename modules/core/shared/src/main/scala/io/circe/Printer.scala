@@ -70,52 +70,47 @@ final case class Printer(
     }
   }
 
+  private[this] final def concat(left: String, text: String, right: String): String =
+    left.concat(text).concat(right)
+
   private[this] final val pieces = new Printer.MemoizedPieces {
     final def compute(i: Int): Printer.Pieces = Printer.Pieces(
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(lbraceLeft)(i),
         openBraceText,
         addIndentation(lbraceRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(rbraceLeft)(i),
         closeBraceText,
         addIndentation(rbraceRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(lbracketLeft)(i),
         openArrayText,
         addIndentation(lbracketRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(rbracketLeft)(i),
         closeArrayText,
         addIndentation(rbracketRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         openArrayText,
         addIndentation(lrbracketsEmpty)(i),
         closeArrayText
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(arrayCommaLeft)(i + 1),
         commaText,
         addIndentation(arrayCommaRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(objectCommaLeft)(i + 1),
         commaText,
         addIndentation(objectCommaRight)(i + 1)
       ),
-      String.format(
-        "%s%s%s",
+      concat(
         addIndentation(colonLeft)(i + 1),
         colonText,
         addIndentation(colonRight)(i + 1)

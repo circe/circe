@@ -211,12 +211,10 @@ final object JsonObject {
 
     final def size: Int = fieldMap.size
 
-    override final def toString: String = String.format(
-      "object[%s]",
+    override final def toString: String =
       fieldMap.map {
         case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
-      }.mkString(",")
-    )
+      }.mkString("object[", ",", "]")
 
     /**
      * Universal equality derived from our type-safe equality.
