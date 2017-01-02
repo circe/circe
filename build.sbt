@@ -208,8 +208,8 @@ lazy val aggregatedProjects: Seq[ProjectReference] =
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
-    "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value % Provided,
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
     "org.typelevel" %%% "macro-compat" % "1.1.1",
     compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   ),
@@ -249,8 +249,8 @@ lazy val circe = project.in(file("."))
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % "test",
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % "test"
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
     )
   )
 
@@ -410,7 +410,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .dependsOn(core)
 
 lazy val java8 = circeModule("java8", mima = previousCirceVersion)
-  .dependsOn(core, tests % "test")
+  .dependsOn(core, tests % Test)
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
@@ -422,11 +422,11 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
   .settings(
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0-M2",
-      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M2" % "test",
+      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M2" % Test,
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
-  .dependsOn(coreBase, testsBase % "test")
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val optics = opticsBase.jvm
 lazy val opticsJS = opticsBase.js
@@ -439,7 +439,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
