@@ -126,6 +126,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def rights: Option[Vector[Json]]
 
   /**
+   * If the focus is a JSON array, return its elements.
+   *
+   * @group ObjectAccess
+   */
+  def values: Option[Vector[Json]]
+
+  /**
    * If the focus is a JSON object, return its field names in a set.
    *
    * @group ObjectAccess

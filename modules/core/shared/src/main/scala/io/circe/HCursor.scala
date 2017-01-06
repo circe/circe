@@ -20,6 +20,11 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
   final def focus: Option[Json] = Some(value)
 
+  final def values: Option[Vector[Json]] = value match {
+    case Json.JArray(vs) => Some(vs)
+    case _ => None
+  }
+
   final def fieldSet: Option[Set[String]] = value match {
     case Json.JObject(o) => Some(o.fieldSet)
     case _ => None
