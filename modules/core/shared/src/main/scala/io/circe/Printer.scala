@@ -2,6 +2,7 @@ package io.circe
 
 import java.io.{ BufferedWriter, ByteArrayOutputStream, OutputStreamWriter }
 import java.lang.StringBuilder
+import java.nio.ByteBuffer
 import scala.annotation.switch
 
 /**
@@ -209,14 +210,18 @@ final case class Printer(
     writer.toString
   }
 
-  final def prettyBytes(json: Json): Array[Byte] = {
-    val bytes = new ByteArrayOutputStream()
+  private[this] class EnhancedByteArrayOutputStream extends ByteArrayOutputStream {
+    def toByteBuffer: ByteBuffer = ByteBuffer.wrap(this.buf, 0, this.size)
+  }
+
+  final def prettyByteBuffer(json: Json): ByteBuffer = {
+    val bytes = new EnhancedByteArrayOutputStream
     val writer = new BufferedWriter(new OutputStreamWriter(bytes, "UTF-8"))
 
     printJsonAtDepth(writer)(json, 0)
 
     writer.close()
-    bytes.toByteArray
+    bytes.toByteBuffer
   }
 }
 
