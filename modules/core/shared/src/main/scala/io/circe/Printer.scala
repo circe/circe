@@ -1,6 +1,9 @@
 package io.circe
 
-import scala.annotation.{ switch, tailrec }
+import java.io.{ BufferedWriter, ByteArrayOutputStream, OutputStreamWriter }
+import java.lang.StringBuilder
+import java.nio.ByteBuffer
+import scala.annotation.switch
 
 /**
  * A pretty-printer for JSON values.
@@ -54,9 +57,6 @@ final case class Printer(
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
   private[this] final val nullText = "null"
-  private[this] final val trueText = "true"
-  private[this] final val falseText = "false"
-  private[this] final val stringEnclosureText = "\""
 
   private[this] final def addIndentation(s: String): Int => String = {
     val lastNewLineIndex = s.lastIndexOf("\n")
@@ -118,89 +118,110 @@ final case class Printer(
     )
   }
 
+  private[this] final def printEscapedChar(writer: Appendable)(c: Char): Unit = {
+    writer.append('\\')
+    (c: @switch) match {
+      case '\\' => writer.append('\\')
+      case '"'  => writer.append('"')
+      case '\b' => writer.append('b')
+      case '\f' => writer.append('f')
+      case '\n' => writer.append('n')
+      case '\r' => writer.append('r')
+      case '\t' => writer.append('t')
+      case possibleUnicode =>
+        writer.append('u').append(String.format("%04x", Integer.valueOf(possibleUnicode.toInt)))
+    }
+  }
+
+  private[this] def printJsonString(writer: Appendable)(jsonString: String): Unit = {
+    writer.append('"')
+
+    var i = 0
+    var offset = 0
+
+    while (i < jsonString.length) {
+      val c = jsonString.charAt(i)
+      if (!Printer.isNormalChar(c)) {
+        writer.append(jsonString, offset, i)
+        printEscapedChar(writer)(c)
+        offset = i + 1
+      }
+
+      i += 1
+    }
+
+    if (offset < i) writer.append(jsonString, offset, i)
+    writer.append('"')
+  }
+
+  private[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit = {
+    if (json.isNull) writer.append(nullText) else (json: @unchecked) match {
+      case Json.JString(s) => printJsonString(writer)(s)
+      case Json.JNumber(n) => writer.append(n.toString)
+      case Json.JBoolean(b) => if (b) writer.append("true") else writer.append("false")
+      case Json.JObject(o) =>
+        val p = pieces(depth)
+        writer.append(p.lBraces)
+        val items = if (preserveOrder) o.toList else o.toMap
+        var first = true
+
+        val fieldIterator = items.iterator
+
+        while (fieldIterator.hasNext) {
+          val (key, value) = fieldIterator.next()
+          if (!dropNullKeys || !value.isNull) {
+            if (!first) writer.append(p.objectCommas)
+            printJsonString(writer)(key)
+            writer.append(p.colons)
+            printJsonAtDepth(writer)(value, depth + 1)
+            first = false
+          }
+        }
+        writer.append(p.rBraces)
+      case Json.JArray(a) =>
+        val p = pieces(depth)
+        val len = a.length
+
+        if (len == 0) writer.append(p.lrEmptyBrackets) else {
+          writer.append(p.lBrackets)
+          printJsonAtDepth(writer)(a(0), depth + 1)
+
+          var i = 1
+
+          while (i < len) {
+            writer.append(p.arrayCommas)
+            printJsonAtDepth(writer)(a(i), depth + 1)
+            i += 1
+          }
+
+          writer.append(p.rBrackets)
+        }
+    }
+  }
+
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
-  final def pretty(j: Json): String = {
-    val builder = new java.lang.StringBuilder()
+  final def pretty(json: Json): String = {
+    val writer = new StringBuilder()
 
-    @tailrec
-    def appendJsonString(
-      jsonString: String,
-      normalChars: Boolean,
-      offset: Int
-    ): Unit = if (normalChars) {
-      var i = offset
+    printJsonAtDepth(writer)(json, 0)
 
-      while (i < jsonString.length && Printer.isNormalChar(jsonString.charAt(i))) {
-        i += 1
-      }
+    writer.toString
+  }
 
-      builder.append(jsonString, offset, i)
+  private[this] class EnhancedByteArrayOutputStream extends ByteArrayOutputStream {
+    def toByteBuffer: ByteBuffer = ByteBuffer.wrap(this.buf, 0, this.size)
+  }
 
-      if (i < jsonString.length) appendJsonString(jsonString, false, i)
-    } else {
-      var i = offset
+  final def prettyByteBuffer(json: Json): ByteBuffer = {
+    val bytes = new EnhancedByteArrayOutputStream
+    val writer = new BufferedWriter(new OutputStreamWriter(bytes, "UTF-8"))
 
-      while (i < jsonString.length && !Printer.isNormalChar(jsonString.charAt(i))) {
-        builder.append(Printer.escape(jsonString.charAt(i)))
-        i += 1
-      }
+    printJsonAtDepth(writer)(json, 0)
 
-      if (i < jsonString.length) appendJsonString(jsonString, true, i)
-    }
-
-    def encloseJsonString(jsonString: String): Unit = {
-      builder.append(stringEnclosureText)
-      appendJsonString(jsonString, true, 0)
-      builder.append(stringEnclosureText)
-    }
-
-    def trav(depth: Int, k: Json): Unit = {
-      val p = pieces(depth)
-
-      k match {
-        case Json.JObject(o) =>
-          builder.append(p.lBraces)
-          val items = if (preserveOrder) o.toList else o.toMap
-          var first = true
-
-          val itemIterator = items.iterator
-
-          while (itemIterator.hasNext) {
-            val (key, value) = itemIterator.next()
-            if (!dropNullKeys || !value.isNull) {
-              if (!first) {
-                builder.append(p.objectCommas)
-              }
-              encloseJsonString(key)
-              builder.append(p.colons)
-              trav(depth + 1, value)
-              first = false
-            }
-          }
-          builder.append(p.rBraces)
-        case Json.JString(s) => encloseJsonString(s)
-        case Json.JNumber(n) => builder.append(n.toString)
-        case Json.JBoolean(b) => builder.append(if (b) trueText else falseText)
-        case Json.JArray(arr) =>
-          val arrIterator = arr.iterator
-          if (!arrIterator.hasNext) builder.append(p.lrEmptyBrackets) else {
-            builder.append(p.lBrackets)
-            trav(depth + 1, arrIterator.next)
-
-            while (arrIterator.hasNext) {
-              builder.append(p.arrayCommas)
-              trav(depth + 1, arrIterator.next())
-            }
-            builder.append(p.rBrackets)
-          }
-        case Json.JNull => builder.append(nullText)
-      }
-    }
-
-    trav(0, j)
-    builder.toString
+    writer.close()
+    bytes.toByteBuffer
   }
 }
 
@@ -243,22 +264,9 @@ final object Printer {
    */
   final val spaces4: Printer = indented("    ")
 
-  private[circe] final def escape(c: Char): String = (c: @switch) match {
-    case '\\' => "\\\\"
-    case '"' => "\\\""
-    case '\b' => "\\b"
-    case '\f' => "\\f"
-    case '\n' => "\\n"
-    case '\r' => "\\r"
-    case '\t' => "\\t"
-    case possibleUnicode => if (Character.isISOControl(possibleUnicode)) {
-      String.format("\\u%04x", Integer.valueOf(possibleUnicode.toInt))
-    } else possibleUnicode.toString
-  }
-
   private[circe] final def isNormalChar(c: Char): Boolean = (c: @switch) match {
     case '\\' => false
-    case '"' => false
+    case '"'  => false
     case '\b' => false
     case '\f' => false
     case '\n' => false
