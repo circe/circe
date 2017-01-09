@@ -1,8 +1,6 @@
 package io.circe
 
-import java.io.{ BufferedWriter, ByteArrayOutputStream, OutputStreamWriter }
 import java.lang.StringBuilder
-import java.nio.ByteBuffer
 import scala.annotation.switch
 
 /**
@@ -49,7 +47,7 @@ final case class Printer(
   objectCommaRight: String = "",
   colonLeft: String = "",
   colonRight: String = ""
-) extends Serializable {
+) extends PlatformSpecificPrinting {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
   private[this] final val openArrayText = "["
@@ -154,7 +152,7 @@ final case class Printer(
     writer.append('"')
   }
 
-  private[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit = {
+  protected[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit = {
     if (json.isNull) writer.append(nullText) else (json: @unchecked) match {
       case Json.JString(s) => printJsonString(writer)(s)
       case Json.JNumber(n) => writer.append(n.toString)
@@ -208,20 +206,6 @@ final case class Printer(
     printJsonAtDepth(writer)(json, 0)
 
     writer.toString
-  }
-
-  private[this] class EnhancedByteArrayOutputStream extends ByteArrayOutputStream {
-    def toByteBuffer: ByteBuffer = ByteBuffer.wrap(this.buf, 0, this.size)
-  }
-
-  final def prettyByteBuffer(json: Json): ByteBuffer = {
-    val bytes = new EnhancedByteArrayOutputStream
-    val writer = new BufferedWriter(new OutputStreamWriter(bytes, "UTF-8"))
-
-    printJsonAtDepth(writer)(json, 0)
-
-    writer.close()
-    bytes.toByteBuffer
   }
 }
 
