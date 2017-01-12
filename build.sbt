@@ -23,11 +23,11 @@ lazy val compilerOptions = Seq(
 lazy val catsVersion = "0.8.1"
 lazy val jawnVersion = "0.10.4"
 lazy val shapelessVersion = "2.3.2"
-lazy val refinedVersion = "0.6.0"
+lazy val refinedVersion = "0.6.2"
 
-lazy val scalaTestVersion = "3.0.0"
+lazy val scalaTestVersion = "3.0.1"
 lazy val scalaCheckVersion = "1.13.4"
-lazy val disciplineVersion = "0.7.2"
+lazy val disciplineVersion = "0.7.3"
 
 lazy val previousCirceVersion = Some("0.6.1")
 
@@ -324,7 +324,7 @@ lazy val scalajs = circeModule("scalajs", mima = None)
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.2"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.4"
   )
   .dependsOn(coreBase)
 
@@ -360,7 +360,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scodec" %%% "scodec-bits" % "1.1.0",
+      "org.scodec" %%% "scodec-bits" % "1.1.4",
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
