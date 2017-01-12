@@ -178,18 +178,16 @@ final case class Printer(
         writer.append(p.rBraces)
       case Json.JArray(a) =>
         val p = pieces(depth)
-        val len = a.length
 
-        if (len == 0) writer.append(p.lrEmptyBrackets) else {
+        if (a.isEmpty) writer.append(p.lrEmptyBrackets) else {
+          val iterator = a.iterator
+
           writer.append(p.lBrackets)
-          printJsonAtDepth(writer)(a(0), depth + 1)
+          printJsonAtDepth(writer)(iterator.next(), depth + 1)
 
-          var i = 1
-
-          while (i < len) {
+          while (iterator.hasNext) {
             writer.append(p.arrayCommas)
-            printJsonAtDepth(writer)(a(i), depth + 1)
-            i += 1
+            printJsonAtDepth(writer)(iterator.next(), depth + 1)
           }
 
           writer.append(p.rBrackets)
