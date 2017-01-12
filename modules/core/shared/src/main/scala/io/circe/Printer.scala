@@ -159,14 +159,16 @@ final case class Printer(
       case Json.JBoolean(b) => if (b) writer.append("true") else writer.append("false")
       case Json.JObject(o) =>
         val p = pieces(depth)
+        val m = o.toMap
         writer.append(p.lBraces)
-        val items = if (preserveOrder) o.toList else o.toMap
+        val fields = if (preserveOrder) o.fields else o.fieldSet
         var first = true
 
-        val fieldIterator = items.iterator
+        val fieldIterator = fields.iterator
 
         while (fieldIterator.hasNext) {
-          val (key, value) = fieldIterator.next()
+          val key = fieldIterator.next()
+          val value = m(key)
           if (!dropNullKeys || !value.isNull) {
             if (!first) writer.append(p.objectCommas)
             printJsonString(writer)(key)
