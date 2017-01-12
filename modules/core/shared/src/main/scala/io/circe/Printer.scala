@@ -54,17 +54,23 @@ final case class Printer(
   private[this] final val closeArrayText = "]"
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
-  private[this] final val nullText = "null"
 
-  private[this] final def addIndentation(s: String): Int => String = {
-    val lastNewLineIndex = s.lastIndexOf("\n")
-    if (lastNewLineIndex < 0) {
-      _ => s
-    } else {
-      val afterLastNewLineIndex = lastNewLineIndex + 1
-      val start = s.substring(0, afterLastNewLineIndex)
-      val end = s.substring(afterLastNewLineIndex)
-      n => start + Predef.augmentString(indent) * n + end
+  private[this] final def addIndentation(s: String, depth: Int): String = {
+    val lastNewLineIndex = s.lastIndexOf('\n')
+
+    if (lastNewLineIndex == -1) s else {
+      val builder = new StringBuilder()
+      builder.append(s, 0, lastNewLineIndex + 1)
+
+      var i = 0
+
+      while (i < depth) {
+        builder.append(indent)
+        i += 1
+      }
+
+      builder.append(s, lastNewLineIndex + 1, s.length)
+      builder.toString
     }
   }
 
@@ -74,44 +80,44 @@ final case class Printer(
   private[this] final val pieces = new Printer.MemoizedPieces {
     final def compute(i: Int): Printer.Pieces = Printer.Pieces(
       concat(
-        addIndentation(lbraceLeft)(i),
+        addIndentation(lbraceLeft, i),
         openBraceText,
-        addIndentation(lbraceRight)(i + 1)
+        addIndentation(lbraceRight, i + 1)
       ),
       concat(
-        addIndentation(rbraceLeft)(i),
+        addIndentation(rbraceLeft, i),
         closeBraceText,
-        addIndentation(rbraceRight)(i + 1)
+        addIndentation(rbraceRight, i + 1)
       ),
       concat(
-        addIndentation(lbracketLeft)(i),
+        addIndentation(lbracketLeft, i),
         openArrayText,
-        addIndentation(lbracketRight)(i + 1)
+        addIndentation(lbracketRight, i + 1)
       ),
       concat(
-        addIndentation(rbracketLeft)(i),
+        addIndentation(rbracketLeft, i),
         closeArrayText,
-        addIndentation(rbracketRight)(i + 1)
+        addIndentation(rbracketRight, i + 1)
       ),
       concat(
         openArrayText,
-        addIndentation(lrbracketsEmpty)(i),
+        addIndentation(lrbracketsEmpty, i),
         closeArrayText
       ),
       concat(
-        addIndentation(arrayCommaLeft)(i + 1),
+        addIndentation(arrayCommaLeft, i + 1),
         commaText,
-        addIndentation(arrayCommaRight)(i + 1)
+        addIndentation(arrayCommaRight, i + 1)
       ),
       concat(
-        addIndentation(objectCommaLeft)(i + 1),
+        addIndentation(objectCommaLeft, i + 1),
         commaText,
-        addIndentation(objectCommaRight)(i + 1)
+        addIndentation(objectCommaRight, i + 1)
       ),
       concat(
-        addIndentation(colonLeft)(i + 1),
+        addIndentation(colonLeft, i + 1),
         colonText,
-        addIndentation(colonRight)(i + 1)
+        addIndentation(colonRight, i + 1)
       )
     )
   }
@@ -153,7 +159,7 @@ final case class Printer(
   }
 
   protected[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit = {
-    if (json.isNull) writer.append(nullText) else (json: @unchecked) match {
+    if (json.isNull) writer.append("null") else (json: @unchecked) match {
       case Json.JString(s) => printJsonString(writer)(s)
       case Json.JNumber(n) => writer.append(n.toString)
       case Json.JBoolean(b) => if (b) writer.append("true") else writer.append("false")
@@ -282,7 +288,7 @@ final object Printer {
     final def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i) else {
       val res = known.get(i)
 
-      if (res != null) res else {
+      if (res.ne(null)) res else {
         val tmp = compute(i)
         known.set(i, tmp)
         tmp
