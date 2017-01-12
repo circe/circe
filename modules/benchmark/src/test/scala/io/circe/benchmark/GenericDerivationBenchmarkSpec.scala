@@ -2,8 +2,8 @@ package io.circe.benchmark
 
 import org.scalatest.FlatSpec
 
-class CirceDerivationBenchmarkSpec extends FlatSpec {
-  val benchmark: CirceDerivationBenchmark = new CirceDerivationBenchmark
+class GenericDerivationBenchmarkSpec extends FlatSpec {
+  val benchmark: GenericDerivationBenchmark = new GenericDerivationBenchmark
 
   import benchmark._
 
