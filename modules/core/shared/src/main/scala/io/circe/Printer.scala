@@ -77,8 +77,21 @@ final case class Printer(
   private[this] final def concat(left: String, text: String, right: String): String =
     left.concat(text).concat(right)
 
-  private[this] final val pieces = new Printer.MemoizedPieces {
-    final def compute(i: Int): Printer.Pieces = Printer.Pieces(
+  private[this] final val pieces: Int => Printer.Pieces = if (indent.isEmpty) new Function1[Int, Printer.Pieces] {
+    private[this] val p = new Printer.Pieces(
+      concat(lbraceLeft, openBraceText, lbraceRight),
+      concat(rbraceRight, closeBraceText, rbraceLeft),
+      concat(lbracketLeft, openArrayText, lbracketRight),
+      concat(rbracketLeft, closeArrayText, rbracketRight),
+      concat(openArrayText, lrbracketsEmpty, closeArrayText),
+      concat(arrayCommaLeft, commaText, arrayCommaRight),
+      concat(objectCommaLeft, commaText, objectCommaRight),
+      concat(colonLeft, colonText, colonRight)
+    )
+
+    final def apply(i: Int): Printer.Pieces = p
+  } else new Printer.MemoizedPieces {
+    final def compute(i: Int): Printer.Pieces = new Printer.Pieces(
       concat(
         addIndentation(lbraceLeft, i),
         openBraceText,
@@ -132,9 +145,20 @@ final case class Printer(
       case '\n' => writer.append('n')
       case '\r' => writer.append('r')
       case '\t' => writer.append('t')
-      case possibleUnicode =>
-        writer.append('u').append(String.format("%04x", Integer.valueOf(possibleUnicode.toInt)))
+      case control =>
+        writer.append(String.format("u%04x", Integer.valueOf(control.toInt)))
     }
+  }
+
+  private[this] final def isNormalChar(c: Char): Boolean = (c: @switch) match {
+    case '\\' => false
+    case '"'  => false
+    case '\b' => false
+    case '\f' => false
+    case '\n' => false
+    case '\r' => false
+    case '\t' => false
+    case possibleControl => !Character.isISOControl(possibleControl)
   }
 
   private[this] def printJsonString(writer: Appendable)(jsonString: String): Unit = {
@@ -145,7 +169,7 @@ final case class Printer(
 
     while (i < jsonString.length) {
       val c = jsonString.charAt(i)
-      if (!Printer.isNormalChar(c)) {
+      if (!isNormalChar(c)) {
         writer.append(jsonString, offset, i)
         printEscapedChar(writer)(c)
         offset = i + 1
@@ -158,50 +182,56 @@ final case class Printer(
     writer.append('"')
   }
 
-  protected[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit = {
+  protected[this] final def printJsonObjectAtDepth(writer: Appendable)(obj: JsonObject, depth: Int): Unit = {
+    val p = pieces(depth)
+    val m = obj.toMap
+
+    writer.append(p.lBraces)
+    val fields = if (preserveOrder) obj.fields else obj.fieldSet
+    var first = true
+
+    val fieldIterator = fields.iterator
+
+    while (fieldIterator.hasNext) {
+      val key = fieldIterator.next()
+      val value = m(key)
+      if (!dropNullKeys || !value.isNull) {
+        if (!first) writer.append(p.objectCommas)
+        printJsonString(writer)(key)
+        writer.append(p.colons)
+        printJsonAtDepth(writer)(value, depth + 1)
+        first = false
+      }
+    }
+    writer.append(p.rBraces)
+  }
+
+  protected[this] final def printJsonArrayAtDepth(writer: Appendable)(arr: Vector[Json], depth: Int): Unit = {
+    val p = pieces(depth)
+
+    if (arr.isEmpty) writer.append(p.lrEmptyBrackets) else {
+      val iterator = arr.iterator
+
+      writer.append(p.lBrackets)
+      printJsonAtDepth(writer)(iterator.next(), depth + 1)
+
+      while (iterator.hasNext) {
+        writer.append(p.arrayCommas)
+        printJsonAtDepth(writer)(iterator.next(), depth + 1)
+      }
+
+      writer.append(p.rBrackets)
+    }
+  }
+
+  protected[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit =
     if (json.isNull) writer.append("null") else (json: @unchecked) match {
       case Json.JString(s) => printJsonString(writer)(s)
       case Json.JNumber(n) => writer.append(n.toString)
       case Json.JBoolean(b) => if (b) writer.append("true") else writer.append("false")
-      case Json.JObject(o) =>
-        val p = pieces(depth)
-        val m = o.toMap
-        writer.append(p.lBraces)
-        val fields = if (preserveOrder) o.fields else o.fieldSet
-        var first = true
-
-        val fieldIterator = fields.iterator
-
-        while (fieldIterator.hasNext) {
-          val key = fieldIterator.next()
-          val value = m(key)
-          if (!dropNullKeys || !value.isNull) {
-            if (!first) writer.append(p.objectCommas)
-            printJsonString(writer)(key)
-            writer.append(p.colons)
-            printJsonAtDepth(writer)(value, depth + 1)
-            first = false
-          }
-        }
-        writer.append(p.rBraces)
-      case Json.JArray(a) =>
-        val p = pieces(depth)
-
-        if (a.isEmpty) writer.append(p.lrEmptyBrackets) else {
-          val iterator = a.iterator
-
-          writer.append(p.lBrackets)
-          printJsonAtDepth(writer)(iterator.next(), depth + 1)
-
-          while (iterator.hasNext) {
-            writer.append(p.arrayCommas)
-            printJsonAtDepth(writer)(iterator.next(), depth + 1)
-          }
-
-          writer.append(p.rBrackets)
-        }
+      case Json.JObject(o) => printJsonObjectAtDepth(writer)(o, depth)
+      case Json.JArray(a) => printJsonArrayAtDepth(writer)(a, depth)
     }
-  }
 
   /**
    * Returns a string representation of a pretty-printed JSON value.
@@ -254,31 +284,20 @@ final object Printer {
    */
   final val spaces4: Printer = indented("    ")
 
-  private[circe] final def isNormalChar(c: Char): Boolean = (c: @switch) match {
-    case '\\' => false
-    case '"'  => false
-    case '\b' => false
-    case '\f' => false
-    case '\n' => false
-    case '\r' => false
-    case '\t' => false
-    case possibleUnicode => !Character.isISOControl(possibleUnicode)
-  }
-
-  private[circe] final case class Pieces(
-    lBraces: String,
-    rBraces: String,
-    lBrackets: String,
-    rBrackets: String,
-    lrEmptyBrackets: String,
-    arrayCommas: String,
-    objectCommas: String,
-    colons: String
+  private[circe] final class Pieces(
+    val lBraces: String,
+    val rBraces: String,
+    val lBrackets: String,
+    val rBrackets: String,
+    val lrEmptyBrackets: String,
+    val arrayCommas: String,
+    val objectCommas: String,
+    val colons: String
   ) extends Serializable
 
   private[this] final val maxMemoizationDepth = 128
 
-  private[circe] abstract class MemoizedPieces extends Serializable {
+  private[circe] abstract class MemoizedPieces extends Function1[Int, Pieces] with Serializable {
     def compute(i: Int): Pieces
 
     private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces](
