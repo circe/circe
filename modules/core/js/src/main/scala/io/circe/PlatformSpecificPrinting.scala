@@ -1,3 +1,7 @@
 package io.circe
 
-abstract class PlatformSpecificPrinting
+import java.io.Writer
+
+abstract class PlatformSpecificPrinting {
+  def bufferWriter(writer: Writer): Writer = writer
+}

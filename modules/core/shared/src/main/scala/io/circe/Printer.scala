@@ -1,6 +1,9 @@
 package io.circe
 
+import java.io.{ ByteArrayOutputStream, OutputStreamWriter }
 import java.lang.StringBuilder
+import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 
@@ -181,7 +184,7 @@ final case class Printer(
     writer.append('"')
   }
 
-  protected[this] final def printJsonObjectAtDepth(writer: Appendable)(obj: JsonObject, depth: Int): Unit = {
+  private[this] final def printJsonObjectAtDepth(writer: Appendable)(obj: JsonObject, depth: Int): Unit = {
     val p = pieces(depth)
     val m = obj.toMap
 
@@ -205,7 +208,7 @@ final case class Printer(
     writer.append(p.rBraces)
   }
 
-  protected[this] final def printJsonArrayAtDepth(writer: Appendable)(arr: Vector[Json], depth: Int): Unit = {
+  private[this] final def printJsonArrayAtDepth(writer: Appendable)(arr: Vector[Json], depth: Int): Unit = {
     val p = pieces(depth)
 
     if (arr.isEmpty) writer.append(p.lrEmptyBrackets) else {
@@ -223,7 +226,7 @@ final case class Printer(
     }
   }
 
-  protected[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit =
+  private[this] final def printJsonAtDepth(writer: Appendable)(json: Json, depth: Int): Unit =
     if (json.isNull) writer.append("null") else (json: @unchecked) match {
       case Json.JString(s) => printJsonString(writer)(s)
       case Json.JNumber(n) => writer.append(n.toString)
@@ -241,6 +244,20 @@ final case class Printer(
     printJsonAtDepth(writer)(json, 0)
 
     writer.toString
+  }
+
+  private[this] class EnhancedByteArrayOutputStream extends ByteArrayOutputStream {
+    def toByteBuffer: ByteBuffer = ByteBuffer.wrap(this.buf, 0, this.size)
+  }
+
+  final def prettyByteBuffer(json: Json): ByteBuffer = {
+    val bytes = new EnhancedByteArrayOutputStream
+    val writer = bufferWriter(new OutputStreamWriter(bytes, UTF_8))
+
+    printJsonAtDepth(writer)(json, 0)
+
+    writer.close()
+    bytes.toByteBuffer
   }
 }
 
