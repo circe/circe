@@ -1,6 +1,7 @@
 package io.circe
 
 import java.lang.StringBuilder
+import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 
 /**
@@ -77,8 +78,8 @@ final case class Printer(
   private[this] final def concat(left: String, text: String, right: String): String =
     left.concat(text).concat(right)
 
-  private[this] final val pieces: Int => Printer.Pieces = if (indent.isEmpty) new Function1[Int, Printer.Pieces] {
-    private[this] val p = new Printer.Pieces(
+  private[this] final val pieces: Printer.PiecesAtDepth = if (indent.isEmpty) new Printer.ConstantPieces(
+    Printer.Pieces(
       concat(lbraceLeft, openBraceText, lbraceRight),
       concat(rbraceRight, closeBraceText, rbraceLeft),
       concat(lbracketLeft, openArrayText, lbracketRight),
@@ -88,10 +89,8 @@ final case class Printer(
       concat(objectCommaLeft, commaText, objectCommaRight),
       concat(colonLeft, colonText, colonRight)
     )
-
-    final def apply(i: Int): Printer.Pieces = p
-  } else new Printer.MemoizedPieces {
-    final def compute(i: Int): Printer.Pieces = new Printer.Pieces(
+  ) else new Printer.MemoizedPieces {
+    final def compute(i: Int): Printer.Pieces = Printer.Pieces(
       concat(
         addIndentation(lbraceLeft, i),
         openBraceText,
@@ -284,23 +283,31 @@ final object Printer {
    */
   final val spaces4: Printer = indented("    ")
 
-  private[circe] final class Pieces(
-    val lBraces: String,
-    val rBraces: String,
-    val lBrackets: String,
-    val rBrackets: String,
-    val lrEmptyBrackets: String,
-    val arrayCommas: String,
-    val objectCommas: String,
-    val colons: String
+  private[circe] final case class Pieces(
+    lBraces: String,
+    rBraces: String,
+    lBrackets: String,
+    rBrackets: String,
+    lrEmptyBrackets: String,
+    arrayCommas: String,
+    objectCommas: String,
+    colons: String
   ) extends Serializable
 
   private[this] final val maxMemoizationDepth = 128
 
-  private[circe] abstract class MemoizedPieces extends Function1[Int, Pieces] with Serializable {
+  private[circe] abstract class PiecesAtDepth extends Serializable {
+    def apply(i: Int): Pieces
+  }
+
+  private[circe] final class ConstantPieces(pieces: Pieces) extends PiecesAtDepth {
+    def apply(i: Int): Pieces = pieces
+  }
+
+  private[circe] abstract class MemoizedPieces extends PiecesAtDepth {
     def compute(i: Int): Pieces
 
-    private[this] final val known = new java.util.concurrent.CopyOnWriteArrayList[Pieces](
+    private[this] final val known = new CopyOnWriteArrayList[Pieces](
       new Array[Pieces](maxMemoizationDepth)
     )
 
