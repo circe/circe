@@ -1,6 +1,6 @@
 package io.circe
 
-import java.io.{ ByteArrayOutputStream, OutputStreamWriter }
+import java.io.OutputStreamWriter
 import java.lang.StringBuilder
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
@@ -244,10 +244,6 @@ final case class Printer(
     printJsonAtDepth(writer)(json, 0)
 
     writer.toString
-  }
-
-  private[this] class EnhancedByteArrayOutputStream extends ByteArrayOutputStream {
-    def toByteBuffer: ByteBuffer = ByteBuffer.wrap(this.buf, 0, this.size)
   }
 
   final def prettyByteBuffer(json: Json): ByteBuffer = {
