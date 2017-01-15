@@ -24,6 +24,7 @@ lazy val catsVersion = "0.8.1"
 lazy val jawnVersion = "0.10.4"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.2"
+lazy val monocleVersion = "1.4.0"
 
 lazy val scalaTestVersion = "3.0.1"
 lazy val scalaCheckVersion = "1.13.4"
@@ -421,8 +422,8 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
     libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0-M2",
-      "com.github.julien-truffaut" %%% "monocle-law"  % "1.4.0-M2" % Test,
+      "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
