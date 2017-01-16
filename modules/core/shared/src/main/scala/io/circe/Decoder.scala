@@ -3,6 +3,7 @@ package io.circe
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
 import cats.instances.either.{ catsDataSemigroupKForEither, catsStdInstancesForEither }
+import cats.syntax.either._
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -211,6 +212,13 @@ trait Decoder[A] extends Serializable { self =>
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
       }
   }
+
+  /**
+    * Widen this decoder to a supertype
+    * @tparam B The supertype of [[A]]
+    * @return This decoder, widened to the supertype [[B]]
+    */
+  final def widen[B >: A]: Decoder[B] = map(a => a:B)
 }
 
 /**
@@ -336,6 +344,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    * @group Utilities
    */
   final def failedWithMessage[A](message: String): Decoder[A] = failed(DecodingFailure(message, Nil))
+
+  /**
+    * Given a [[PartialFunction]] from String => Decoder[A], construct a Decoder[A] over singleton objects
+    * of the given keys which delegates to the specified decoder for each key.
+    *
+    * @param pf A [[PartialFunction]] which defines a Decoder for each singleton key
+    * @tparam A The type to which all cases should decode
+    * @return A decoder over singleton objects which decodes to [[A]]
+    */
+  final def singletonCases[A](pf: PartialFunction[String, Decoder[A]]): Decoder[A] = Decoder.instance {
+    cursor =>
+      def fail(err: String) = DecodingFailure(err, cursor.history)
+      for {
+        focus        <- cursor.focus.toRight(fail("Attempt to decode on empty focus"))
+        obj          <- focus.asObject.toRight(fail("Not an object"))
+        singleton    <- if (obj.size == 1) Right(obj) else Left(fail("Not a singleton"))
+        (key, inner) = singleton.toList.head
+        decoder      <- pf.lift.apply(key).toRight(fail(s"$key is not a valid case"))
+        decoded      <- decoder.decodeJson(inner)
+      } yield decoded
+  }
 
   /**
    * @group Decoding
