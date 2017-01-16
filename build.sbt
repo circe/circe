@@ -20,7 +20,7 @@ lazy val compilerOptions = Seq(
   "-Yno-predef"
 )
 
-lazy val catsVersion = "0.8.1"
+lazy val catsVersion = "0.9.0"
 lazy val jawnVersion = "0.10.4"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.6.2"
@@ -415,7 +415,7 @@ lazy val java8 = circeModule("java8", mima = previousCirceVersion)
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.8.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.9.0"
   )
   .dependsOn(core, jawn)
 
