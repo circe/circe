@@ -2,7 +2,7 @@ package io.circe
 
 import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
-import cats.instances.either.{ catsDataSemigroupKForEither, catsStdInstancesForEither }
+import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
@@ -250,7 +250,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
 
   val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
 
-  private[circe] val resultSemigroupK: SemigroupK[Result] = catsDataSemigroupKForEither[DecodingFailure]
+  private[circe] val resultSemigroupK: SemigroupK[Result] = catsStdSemigroupKForEither[DecodingFailure]
 
   private[this] abstract class DecoderWithFailure[A](name: String) extends Decoder[A] {
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
