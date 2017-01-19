@@ -80,7 +80,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/alanphillips78/akka-http-microservice-blueprint
 * https://github.com/bneil/fcs_boilerplate
 * https://github.com/gvolpe/simple-http4s-api
-* https://github.com/notvitor/akka-http-circe-json-template
+* https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
 
 ## Contributors and participation
