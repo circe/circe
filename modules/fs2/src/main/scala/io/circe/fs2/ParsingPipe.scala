@@ -5,7 +5,7 @@ import _root_.jawn.{ AsyncParser, ParseException }
 import io.circe.{ Json, ParsingFailure }
 import io.circe.jawn.CirceSupportParser
 
-private[fs2] abstract class ParsingEnumeratee[F[_], S] extends Pipe[F, S, Json] {
+private[fs2] abstract class ParsingPipe[F[_], S] extends Pipe[F, S, Json] {
   protected[this] def parseWith(parser: AsyncParser[Json])(in: S): Either[ParseException, Seq[Json]]
 
   private[this] final def makeParser: AsyncParser[Json] = CirceSupportParser.async(mode = AsyncParser.UnwrapArray)

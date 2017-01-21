@@ -5,17 +5,15 @@ import _root_.jawn.{ AsyncParser, ParseException }
 import io.circe.jawn.CirceSupportParser
 
 package object fs2 {
-  final def stringParser[F[_]]: Pipe[F, String, Json] =
-    new ParsingEnumeratee[F, String] {
-      protected[this] final def parseWith(p: AsyncParser[Json])(in: String): Either[ParseException, Seq[Json]] =
-        p.absorb(in)(CirceSupportParser.facade)
-    }
+  final def stringParser[F[_]]: Pipe[F, String, Json] = new ParsingPipe[F, String] {
+    protected[this] final def parseWith(p: AsyncParser[Json])(in: String): Either[ParseException, Seq[Json]] =
+      p.absorb(in)(CirceSupportParser.facade)
+  }
 
-  final def byteParser[F[_]]: Pipe[F, Chunk[Byte], Json] =
-    new ParsingEnumeratee[F, Chunk[Byte]] {
-      protected[this] final def parseWith(p: AsyncParser[Json])(in: Chunk[Byte]): Either[ParseException, Seq[Json]] =
-        p.absorb(in.toArray)(CirceSupportParser.facade)
-    }
+  final def byteParser[F[_]]: Pipe[F, Chunk[Byte], Json] = new ParsingPipe[F, Chunk[Byte]] {
+    protected[this] final def parseWith(p: AsyncParser[Json])(in: Chunk[Byte]): Either[ParseException, Seq[Json]] =
+      p.absorb(in.toArray)(CirceSupportParser.facade)
+  }
 
   final def decoder[F[_], A](implicit decode: Decoder[A]): Pipe[F, Json, A] =
     _.flatMap { json =>
