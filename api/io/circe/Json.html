@@ -65,12 +65,31 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../../index.html">
+        <a title="This is the API documentation for Link(http://circe.io,Text(circe)), a JSON library for
+Scala and Scala.js." href="../../index.html">
               <span class="name">root</span>
             </a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><div class="fullcomment"><div class="comment cmt"><p>This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><p>The library is divided into a number of modules that either provide core
+functionality, support additional features via third-party dependencies, or
+facilitate integration with other libraries or frameworks.</p><ul><li><a href="numbers/index.html" class="extype" name="io.circe.numbers">numbers</a>: core facilities for representing and parsing
+   JSON numbers.</li><li><a href="index.html" class="extype" name="io.circe">core</a>: our JSON abstract syntax tree, our zipper-like cursor
+   types, and our encoding and decoding type classes (and instances).</li><li><a href="https://github.com/circe/circe/blob/master/modules/parser/jvm/src/main/scala/io/circe/parser/package.scala" target="_blank">parser</a>: JSON parsing support for both the Java Virtual
+   Machine (using Jawn) and Scala.js (using the native JavaScript JSON parser).</li><li><a href="testing/index.html" class="extype" name="io.circe.testing">testing</a>: ScalaCheck <code>Arbitrary</code> instances for circe's
+   JSON AST and other types, as well as other useful testing tools.</li><li><a href="literal/index.html" class="extype" name="io.circe.literal">literal</a>: JSON string interpolation and encoder and
+   decoder instances for literal types.</li><li><a href="generic/index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
+   <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
+   classes and sealed trait hierarchies.</li><li><a href="generic/extras/index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
+   derivation functionality (including some configurability).</li><li><a href="https://github.com/circe/circe/blob/master/modules/streaming/src/main/scala/io/circe/streaming/package.scala" target="_blank">streaming</a>: streaming JSON parsing via
+   <a href="https://github.com/travisbrown/iteratee" target="_blank">iteratees</a>.</li><li><a href="optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
+   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
+   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
+   <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
+detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="io"></a><a id="io:io"></a>
       <span class="permalink">
@@ -143,10 +162,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.jackson" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jackson"></a><a id="jackson:jackson"></a>
+    </li><li name="io.circe.java8" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="java8"></a><a id="java8:java8"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#jackson" title="Permalink">
+      <a href="../../io/circe/index.html#java8" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -155,16 +174,13 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Support for Jackson-powered parsing and printing for circe." href="jackson/index.html">
-              <span class="name">jackson</span>
+        <a title="Codecs for Java standard library types that were introduced in Java 8." href="java8/index.html">
+              <span class="name">java8</span>
             </a>
       </span>
       
-      <p class="shortcomment cmt">Support for Jackson-powered parsing and printing for circe.</p><div class="fullcomment"><div class="comment cmt"><p>Support for Jackson-powered parsing and printing for circe.</p><p>Note that not all guarantees that hold for Jawn-based parsing and the default
-printer will hold for the Jackson-based versions. Jackson's handling of
-numbers in particular differs significantly: it doesn't distinguish positive
-and negative zeros, it may truncate large JSON numbers or simply fail to
-parse them, it may print large numbers as strings, etc.</p><p>The implementation is ported with minimal changes from Play JSON.
+      <p class="shortcomment cmt">Codecs for Java standard library types that were introduced in Java 8.</p><div class="fullcomment"><div class="comment cmt"><p>Codecs for Java standard library types that were introduced in Java 8.</p><p>Once circe drops support for earlier Java versions, this module will be
+merged into core.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.jawn" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="jawn"></a><a id="jawn:jawn"></a>
@@ -313,8 +329,8 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li class="current-entities indented2">
                         <a class="object" href="ACursor$.html" title=""></a>
-                        <a class="class" href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure."></a>
-                        <a href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure.">
+                        <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
+                        <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
                           ACursor
                         </a>
                       </li><li class="current-entities indented2">
@@ -330,20 +346,6 @@ array."></a>
                         <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON
 array.">
                           ArrayEncoder
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Context$.html" title=""></a>
-                        <a class="class" href="Context.html" title=""></a>
-                        <a href="Context.html" title="">
-                          Context
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Cursor$.html" title=""></a>
-                        <a class="class" href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value."></a>
-                        <a href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value.">
-                          Cursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
@@ -387,21 +389,15 @@ errors.">
                         </a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
-                        <a href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
-                          GenericCursor
+                        <a class="class" href="FailedCursor.html" title=""></a>
+                        <a href="FailedCursor.html" title="">
+                          FailedCursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="HCursor$.html" title=""></a>
-                        <a class="class" href="HCursor.html" title="A cursor that tracks the history of operations performed with it."></a>
-                        <a href="HCursor.html" title="A cursor that tracks the history of operations performed with it.">
+                        <a class="class" href="HCursor.html" title=""></a>
+                        <a href="HCursor.html" title="">
                           HCursor
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="HistoryOp$.html" title=""></a>
-                        <a class="class" href="HistoryOp.html" title=""></a>
-                        <a href="HistoryOp.html" title="">
-                          HistoryOp
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Json$.html" title=""></a>
@@ -458,6 +454,12 @@ provided by the parsing library.">
                           ParsingFailure
                         </a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="PlatformSpecificPrinting.html" title=""></a>
+                        <a href="PlatformSpecificPrinting.html" title="">
+                          PlatformSpecificPrinting
+                        </a>
+                      </li><li class="current-entities indented2">
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">
@@ -502,7 +504,7 @@ either a JSON array or an object.">
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Json</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <span class="name">Json</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
 
@@ -512,7 +514,7 @@ either a JSON array or an object.">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -568,9 +570,9 @@ either a JSON array or an object.">
         <div class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="io.circe.Json#asArray" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="asArray:Option[List[io.circe.Json]]"></a><a id="asArray:Option[List[Json]]"></a>
+      <a id="asArray:Option[Vector[io.circe.Json]]"></a><a id="asArray:Option[Vector[Json]]"></a>
       <span class="permalink">
-      <a href="../../io/circe/Json.html#asArray:Option[List[io.circe.Json]]" title="Permalink">
+      <a href="../../io/circe/Json.html#asArray:Option[Vector[io.circe.Json]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -579,7 +581,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]]</span>
+        <span class="name">asArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]]</span>
       </span>
       
       
@@ -595,7 +597,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+        <span class="name">asBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
       </span>
       
       
@@ -611,7 +613,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>]</span>
+        <span class="name">asNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>]</span>
       </span>
       
       
@@ -627,7 +629,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
+        <span class="name">asObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>]</span>
       </span>
       
       
@@ -643,7 +645,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">asString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       
@@ -659,7 +661,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">canEqual</span><span class="params">(<span name="that">that: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">canEqual</span><span class="params">(<span name="that">that: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Equals</dd></dl></div>
@@ -675,7 +677,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isArray</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
@@ -691,7 +693,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isBoolean</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
@@ -707,7 +709,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isNull</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isNull</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
@@ -723,7 +725,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isNumber</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
@@ -739,7 +741,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isObject</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
@@ -755,14 +757,14 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isString</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       
     </li><li name="io.circe.Json#mapArray" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json"></a><a id="mapArray((List[Json])⇒List[Json]):Json"></a>
+      <a id="mapArray(f:Vector[io.circe.Json]=&gt;Vector[io.circe.Json]):io.circe.Json"></a><a id="mapArray((Vector[Json])⇒Vector[Json]):Json"></a>
       <span class="permalink">
-      <a href="../../io/circe/Json.html#mapArray(f:List[io.circe.Json]=&gt;List[io.circe.Json]):io.circe.Json" title="Permalink">
+      <a href="../../io/circe/Json.html#mapArray(f:Vector[io.circe.Json]=&gt;Vector[io.circe.Json]):io.circe.Json" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -771,7 +773,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mapArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="name">mapArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       
@@ -787,7 +789,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mapBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="name">mapBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       
@@ -851,7 +853,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">productArity</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">productArity</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
@@ -867,7 +869,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">productElement</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>
+        <span class="name">productElement</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
@@ -889,7 +891,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -905,7 +907,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -964,7 +966,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -985,9 +987,9 @@ either a JSON array or an object.">
       
       
     </li><li name="io.circe.Json#arrayOrObject" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="arrayOrObject[X](or:=&gt;X,jsonArray:List[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X"></a><a id="arrayOrObject[X](⇒X,(List[Json])⇒X,(JsonObject)⇒X):X"></a>
+      <a id="arrayOrObject[X](or:=&gt;X,jsonArray:Vector[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X"></a><a id="arrayOrObject[X](⇒X,(Vector[Json])⇒X,(JsonObject)⇒X):X"></a>
       <span class="permalink">
-      <a href="../../io/circe/Json.html#arrayOrObject[X](or:=&gt;X,jsonArray:List[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X" title="Permalink">
+      <a href="../../io/circe/Json.html#arrayOrObject[X](or:=&gt;X,jsonArray:Vector[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -996,7 +998,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">arrayOrObject</span><span class="tparams">[<span name="X">X</span>]</span><span class="params">(<span name="or">or: ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>, <span name="jsonArray">jsonArray: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>, <span name="jsonObject">jsonObject: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>)</span><span class="result">: <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>
+        <span class="name">arrayOrObject</span><span class="tparams">[<span name="X">X</span>]</span><span class="params">(<span name="or">or: ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>, <span name="jsonArray">jsonArray: (<span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>, <span name="jsonObject">jsonObject: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>)</span><span class="result">: <span class="extype" name="io.circe.Json.arrayOrObject.X">X</span></span>
       </span>
       
       <p class="shortcomment cmt">Run on an array or object or return the given default.</p>
@@ -1044,7 +1046,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1054,22 +1056,6 @@ either a JSON array or an object.">
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.Json#cursor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="cursor:io.circe.Cursor"></a><a id="cursor:Cursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/Json.html#cursor:io.circe.Cursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cursor</span><span class="result">: <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Construct a cursor from this JSON value.</p>
     </li><li name="io.circe.Json#deepMerge" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="deepMerge(that:io.circe.Json):io.circe.Json"></a><a id="deepMerge(Json):Json"></a>
       <span class="permalink">
@@ -1103,7 +1089,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
@@ -1123,7 +1109,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
@@ -1143,7 +1129,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
@@ -1163,7 +1149,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit</dt><dd>
@@ -1183,7 +1169,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1199,7 +1185,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="that">that: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="that">that: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <p class="shortcomment cmt">Universal equality derived from our type-safe equality.</p><div class="fullcomment"><div class="comment cmt"><p>Universal equality derived from our type-safe equality.
@@ -1216,7 +1202,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1245,9 +1231,9 @@ from this JSON.
   &quot;Lookup for fieldName in the current object and all descendants.&quot;
 </p></div></div>
     </li><li name="io.circe.Json#fold" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="fold[X](jsonNull:=&gt;X,jsonBoolean:Boolean=&gt;X,jsonNumber:io.circe.JsonNumber=&gt;X,jsonString:String=&gt;X,jsonArray:List[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X"></a><a id="fold[X](⇒X,(Boolean)⇒X,(JsonNumber)⇒X,(String)⇒X,(List[Json])⇒X,(JsonObject)⇒X):X"></a>
+      <a id="fold[X](jsonNull:=&gt;X,jsonBoolean:Boolean=&gt;X,jsonNumber:io.circe.JsonNumber=&gt;X,jsonString:String=&gt;X,jsonArray:Vector[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X"></a><a id="fold[X](⇒X,(Boolean)⇒X,(JsonNumber)⇒X,(String)⇒X,(Vector[Json])⇒X,(JsonObject)⇒X):X"></a>
       <span class="permalink">
-      <a href="../../io/circe/Json.html#fold[X](jsonNull:=&gt;X,jsonBoolean:Boolean=&gt;X,jsonNumber:io.circe.JsonNumber=&gt;X,jsonString:String=&gt;X,jsonArray:List[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X" title="Permalink">
+      <a href="../../io/circe/Json.html#fold[X](jsonNull:=&gt;X,jsonBoolean:Boolean=&gt;X,jsonNumber:io.circe.JsonNumber=&gt;X,jsonString:String=&gt;X,jsonArray:Vector[io.circe.Json]=&gt;X,jsonObject:io.circe.JsonObject=&gt;X):X" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1256,7 +1242,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fold</span><span class="tparams">[<span name="X">X</span>]</span><span class="params">(<span name="jsonNull">jsonNull: ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonBoolean">jsonBoolean: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonNumber">jsonNumber: (<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonString">jsonString: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonArray">jsonArray: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonObject">jsonObject: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>)</span><span class="result">: <span class="extype" name="io.circe.Json.fold.X">X</span></span>
+        <span class="name">fold</span><span class="tparams">[<span name="X">X</span>]</span><span class="params">(<span name="jsonNull">jsonNull: ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonBoolean">jsonBoolean: (<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonNumber">jsonNumber: (<a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonString">jsonString: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonArray">jsonArray: (<span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>, <span name="jsonObject">jsonObject: (<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>) ⇒ <span class="extype" name="io.circe.Json.fold.X">X</span></span>)</span><span class="result">: <span class="extype" name="io.circe.Json.fold.X">X</span></span>
       </span>
       
       <p class="shortcomment cmt">The catamorphism for the JSON value data type.</p>
@@ -1311,7 +1297,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -1330,7 +1316,7 @@ from this JSON.
         <span class="name">hcursor</span><span class="result">: <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>
       </span>
       
-      <p class="shortcomment cmt">Construct a cursor with history from this JSON value.</p>
+      <p class="shortcomment cmt">Construct a successful cursor from this JSON value.</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
@@ -1343,7 +1329,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -1375,7 +1361,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1407,7 +1393,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1423,7 +1409,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1455,7 +1441,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">productIterator</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a>]</span>
+        <span class="name">productIterator</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
@@ -1552,7 +1538,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1574,7 +1560,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1596,7 +1582,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1607,9 +1593,9 @@ from this JSON.
               
         </dd></dl></div>
     </li><li name="io.circe.Json#withArray" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="withArray(f:List[io.circe.Json]=&gt;io.circe.Json):io.circe.Json"></a><a id="withArray((List[Json])⇒Json):Json"></a>
+      <a id="withArray(f:Vector[io.circe.Json]=&gt;io.circe.Json):io.circe.Json"></a><a id="withArray((Vector[Json])⇒Json):Json"></a>
       <span class="permalink">
-      <a href="../../io/circe/Json.html#withArray(f:List[io.circe.Json]=&gt;io.circe.Json):io.circe.Json" title="Permalink">
+      <a href="../../io/circe/Json.html#withArray(f:Vector[io.circe.Json]=&gt;io.circe.Json):io.circe.Json" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1618,7 +1604,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.List">List</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <a href="" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="name">withArray</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Vector">Vector</span>[<a href="" class="extype" name="io.circe.Json">Json</a>]) ⇒ <a href="" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       
@@ -1634,7 +1620,7 @@ from this JSON.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+        <span class="name">withBoolean</span><span class="params">(<span name="f">f: (<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>) ⇒ <a href="" class="extype" name="io.circe.Json">Json</a></span>)</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
       </span>
       
       
@@ -1717,17 +1703,17 @@ from this JSON.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from

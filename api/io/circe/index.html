@@ -65,12 +65,31 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../../index.html">
+        <a title="This is the API documentation for Link(http://circe.io,Text(circe)), a JSON library for
+Scala and Scala.js." href="../../index.html">
               <span class="name">root</span>
             </a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><div class="fullcomment"><div class="comment cmt"><p>This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><p>The library is divided into a number of modules that either provide core
+functionality, support additional features via third-party dependencies, or
+facilitate integration with other libraries or frameworks.</p><ul><li><a href="numbers/index.html" class="extype" name="io.circe.numbers">numbers</a>: core facilities for representing and parsing
+   JSON numbers.</li><li><a href="" class="extype" name="io.circe">core</a>: our JSON abstract syntax tree, our zipper-like cursor
+   types, and our encoding and decoding type classes (and instances).</li><li><a href="https://github.com/circe/circe/blob/master/modules/parser/jvm/src/main/scala/io/circe/parser/package.scala" target="_blank">parser</a>: JSON parsing support for both the Java Virtual
+   Machine (using Jawn) and Scala.js (using the native JavaScript JSON parser).</li><li><a href="testing/index.html" class="extype" name="io.circe.testing">testing</a>: ScalaCheck <code>Arbitrary</code> instances for circe's
+   JSON AST and other types, as well as other useful testing tools.</li><li><a href="literal/index.html" class="extype" name="io.circe.literal">literal</a>: JSON string interpolation and encoder and
+   decoder instances for literal types.</li><li><a href="generic/index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
+   <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
+   classes and sealed trait hierarchies.</li><li><a href="generic/extras/index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
+   derivation functionality (including some configurability).</li><li><a href="https://github.com/circe/circe/blob/master/modules/streaming/src/main/scala/io/circe/streaming/package.scala" target="_blank">streaming</a>: streaming JSON parsing via
+   <a href="https://github.com/travisbrown/iteratee" target="_blank">iteratees</a>.</li><li><a href="optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
+   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
+   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
+   <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
+detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="io"></a><a id="io:io"></a>
       <span class="permalink">
@@ -141,10 +160,10 @@
       </span>
       
       
-    </li><li name="io.circe.jackson" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jackson"></a><a id="jackson:jackson"></a>
+    </li><li name="io.circe.java8" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="java8"></a><a id="java8:java8"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#jackson" title="Permalink">
+      <a href="../../io/circe/index.html#java8" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -153,16 +172,13 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Support for Jackson-powered parsing and printing for circe." href="jackson/index.html">
-              <span class="name">jackson</span>
+        <a title="Codecs for Java standard library types that were introduced in Java 8." href="java8/index.html">
+              <span class="name">java8</span>
             </a>
       </span>
       
-      <p class="shortcomment cmt">Support for Jackson-powered parsing and printing for circe.</p><div class="fullcomment"><div class="comment cmt"><p>Support for Jackson-powered parsing and printing for circe.</p><p>Note that not all guarantees that hold for Jawn-based parsing and the default
-printer will hold for the Jackson-based versions. Jackson's handling of
-numbers in particular differs significantly: it doesn't distinguish positive
-and negative zeros, it may truncate large JSON numbers or simply fail to
-parse them, it may print large numbers as strings, etc.</p><p>The implementation is ported with minimal changes from Play JSON.
+      <p class="shortcomment cmt">Codecs for Java standard library types that were introduced in Java 8.</p><div class="fullcomment"><div class="comment cmt"><p>Codecs for Java standard library types that were introduced in Java 8.</p><p>Once circe drops support for earlier Java versions, this module will be
+merged into core.
 </p></div></div>
     </li><li name="io.circe.jawn" visbl="pub" class="indented3 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="jawn"></a><a id="jawn:jawn"></a>
@@ -310,8 +326,8 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       
     </li><li class="current-entities indented2">
                         <a class="object" href="ACursor$.html" title=""></a>
-                        <a class="class" href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure."></a>
-                        <a href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure.">
+                        <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
+                        <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
                           ACursor
                         </a>
                       </li><li class="current-entities indented2">
@@ -327,20 +343,6 @@ array."></a>
                         <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON
 array.">
                           ArrayEncoder
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Context$.html" title=""></a>
-                        <a class="class" href="Context.html" title=""></a>
-                        <a href="Context.html" title="">
-                          Context
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Cursor$.html" title=""></a>
-                        <a class="class" href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value."></a>
-                        <a href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value.">
-                          Cursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
@@ -384,21 +386,15 @@ errors.">
                         </a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
-                        <a href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
-                          GenericCursor
+                        <a class="class" href="FailedCursor.html" title=""></a>
+                        <a href="FailedCursor.html" title="">
+                          FailedCursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="HCursor$.html" title=""></a>
-                        <a class="class" href="HCursor.html" title="A cursor that tracks the history of operations performed with it."></a>
-                        <a href="HCursor.html" title="A cursor that tracks the history of operations performed with it.">
+                        <a class="class" href="HCursor.html" title=""></a>
+                        <a href="HCursor.html" title="">
                           HCursor
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="HistoryOp$.html" title=""></a>
-                        <a class="class" href="HistoryOp.html" title=""></a>
-                        <a href="HistoryOp.html" title="">
-                          HistoryOp
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Json$.html" title=""></a>
@@ -455,6 +451,12 @@ provided by the parsing library.">
                           ParsingFailure
                         </a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="PlatformSpecificPrinting.html" title=""></a>
+                        <a href="PlatformSpecificPrinting.html" title="">
+                          PlatformSpecificPrinting
+                        </a>
+                      </li><li class="current-entities indented2">
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">
@@ -506,7 +508,7 @@ either a JSON array or an object.">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -555,24 +557,25 @@ either a JSON array or an object.">
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="io.circe.ACursor" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ACursorextendsGenericCursor[io.circe.ACursor]"></a><a id="ACursor:ACursor"></a>
+      <a id="ACursorextendsSerializable"></a><a id="ACursor:ACursor"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#ACursorextendsGenericCursor[io.circe.ACursor]" title="Permalink">
+      <a href="../../io/circe/index.html#ACursorextendsSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
+        <span class="modifier">abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="A cursor that tracks history and represents the possibility of failure." href="ACursor.html">
+        <a title="A zipper that represents a position in a JSON document and supports navigation and modification." href="ACursor.html">
               <span class="name">ACursor</span>
-            </a><span class="result"> extends <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a>]</span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
-      <p class="shortcomment cmt">A cursor that tracks history and represents the possibility of failure.</p><div class="fullcomment"><div class="comment cmt"><p>A cursor that tracks history and represents the possibility of failure.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl></div>
+      <p class="shortcomment cmt">A zipper that represents a position in a JSON document and supports navigation and modification.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON document and supports navigation and modification.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated with <code>withFocus</code> or
+changed using navigation methods like <code>left</code> and <code>right</code>.
+</p></div></div>
     </li><li name="io.circe.AccumulatingDecoder" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="AccumulatingDecoder[A]extendsSerializable"></a><a id="AccumulatingDecoder[A]:AccumulatingDecoder[A]"></a>
       <span class="permalink">
@@ -587,7 +590,7 @@ either a JSON array or an object.">
       <span class="symbol">
         <a title="" href="AccumulatingDecoder.html">
               <span class="name">AccumulatingDecoder</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -611,47 +614,6 @@ array." href="ArrayEncoder.html">
       
       <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a JSON
 array.</p>
-    </li><li name="io.circe.Context" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ContextextendsSerializable"></a><a id="Context:Context"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#ContextextendsSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="Context.html">
-              <span class="name">Context</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.Cursor" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="CursorextendsGenericCursor[io.circe.Cursor]"></a><a id="Cursor:Cursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#CursorextendsGenericCursor[io.circe.Cursor]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value." href="Cursor.html">
-              <span class="name">Cursor</span>
-            </a><span class="result"> extends <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">A zipper that represents a position in a JSON value and supports navigation around the JSON
-value.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON value and supports navigation around the JSON
-value.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated with <code>withFocus</code> or
-changed using the navigation methods <code>left</code>, <code>right</code>, etc.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl></div>
     </li><li name="io.circe.CursorOp" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="CursorOpextendsProductwithSerializable"></a><a id="CursorOp:CursorOp"></a>
       <span class="permalink">
@@ -666,7 +628,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <span class="symbol">
         <a title="" href="CursorOp.html">
               <span class="name">CursorOp</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -684,7 +646,7 @@ changed using the navigation methods <code>left</code>, <code>right</code>, etc.
       <span class="symbol">
         <a title="" href="Decoder.html">
               <span class="name">Decoder</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -722,7 +684,7 @@ decoding history resulting in the failure.</p>
       <span class="symbol">
         <a title="A type class that provides a conversion from a value of type A to a Json value." href="Encoder.html">
               <span class="name">Encoder</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a <a href="Json.html" class="extype" name="io.circe.Json">Json</a> value.</p>
@@ -759,15 +721,33 @@ decoding history resulting in the failure.</p>
         <a title="A convenience exception type for aggregating one or more decoding or parsing
 errors." href="Errors.html">
               <span class="name">Errors</span>
-            </a><span class="params">(<span name="errors">errors: <a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="params">(<span name="errors">errors: <a href="http://typelevel.org/cats/api/index.html#cats.data.NonEmptyList" class="extype" target="_top">NonEmptyList</a>[<a href="Error.html" class="extype" name="io.circe.Error">Error</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A convenience exception type for aggregating one or more decoding or parsing
 errors.</p>
-    </li><li name="io.circe.GenericCursor" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="GenericCursor[C&lt;:io.circe.GenericCursor[C]]extendsSerializable"></a><a id="GenericCursor[C&lt;:GenericCursor[C]]:GenericCursor[C]"></a>
+    </li><li name="io.circe.FailedCursor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FailedCursorextendsACursor"></a><a id="FailedCursor:FailedCursor"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#GenericCursor[C&lt;:io.circe.GenericCursor[C]]extendsSerializable" title="Permalink">
+      <a href="../../io/circe/index.html#FailedCursorextendsACursor" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="FailedCursor.html">
+              <span class="name">FailedCursor</span>
+            </a><span class="result"> extends <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.HCursor" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HCursorextendsACursor"></a><a id="HCursor:HCursor"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#HCursorextendsACursor" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -776,57 +756,9 @@ errors.</p>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="A zipper that represents a position in a JSON document and supports navigation and modification." href="GenericCursor.html">
-              <span class="name">GenericCursor</span>
-            </a><span class="tparams">[<span name="C">C &lt;: <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<span class="extype" name="io.circe.GenericCursor.C">C</span>]</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">A zipper that represents a position in a JSON document and supports navigation and modification.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON document and supports navigation and modification.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated with <code>withFocus</code> or
-changed using navigation methods like <code>left</code> and <code>right</code>.</p><p>circe includes three kinds of cursors. <a href="Cursor.html" class="extype" name="io.circe.Cursor">Cursor</a> is the simplest: it doesn't keep track of its
-history. <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> is a cursor that does keep track of its history, but does not represent the
-possibility that a navigation or modification operation has failed. <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a> is the richest
-cursor, since it both tracks history through an underlying <a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a> and can represent failed
-operations.</p><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a> is an abstraction over these three types, and it has several abstract type
-members that are required in order to represent the different roles of the three cursor types.
-<code>Self</code> is simply the specific type of the cursor, <code>Focus</code> is a type constructor that represents
-the context in which the focus is available, <code>Result</code> is the type that is returned by all
-navigation and modification operations, and <code>M</code> is a type class that includes the operations that
-we need for <code>withFocusM</code>.
-</p></div></div>
-    </li><li name="io.circe.HCursor" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="HCursorextendsGenericCursor[io.circe.HCursor]"></a><a id="HCursor:HCursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#HCursorextendsGenericCursor[io.circe.HCursor]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="A cursor that tracks the history of operations performed with it." href="HCursor.html">
+        <a title="" href="HCursor.html">
               <span class="name">HCursor</span>
-            </a><span class="result"> extends <a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a>[<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">A cursor that tracks the history of operations performed with it.</p><div class="fullcomment"><div class="comment cmt"><p>A cursor that tracks the history of operations performed with it.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GenericCursor.html" class="extype" name="io.circe.GenericCursor">GenericCursor</a></p></span></dd></dl></div>
-    </li><li name="io.circe.HistoryOp" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HistoryOpextendsProductwithSerializable"></a><a id="HistoryOp:HistoryOp"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#HistoryOpextendsProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="HistoryOp.html">
-              <span class="name">HistoryOp</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
       </span>
       
       
@@ -844,7 +776,7 @@ we need for <code>withFocusM</code>.
       <span class="symbol">
         <a title="A data type representing possible JSON values." href="Json.html">
               <span class="name">Json</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A data type representing possible JSON values.</p>
@@ -862,7 +794,7 @@ we need for <code>withFocusM</code>.
       <span class="symbol">
         <a title="A JSON number with optimization by cases." href="JsonNumber.html">
               <span class="name">JsonNumber</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A JSON number with optimization by cases.</p>
@@ -880,7 +812,7 @@ we need for <code>withFocusM</code>.
       <span class="symbol">
         <a title="A mapping from keys to JSON values that maintains insertion order." href="JsonObject.html">
               <span class="name">JsonObject</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A mapping from keys to JSON values that maintains insertion order.</p>
@@ -899,7 +831,7 @@ we need for <code>withFocusM</code>.
         <a title="A type class that provides a conversion from a string used as a JSON key to a
 value of type A." href="KeyDecoder.html">
               <span class="name">KeyDecoder</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A type class that provides a conversion from a string used as a JSON key to a
@@ -918,7 +850,7 @@ value of type <code>A</code>.</p>
       <span class="symbol">
         <a title="A type class that provides a conversion from a value of type A to a string." href="KeyEncoder.html">
               <span class="name">KeyEncoder</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a string.</p><div class="fullcomment"><div class="comment cmt"><p>A type class that provides a conversion from a value of type <code>A</code> to a string.</p><p>This type class will be used to create strings for JSON keys when encoding
@@ -959,7 +891,7 @@ JsonObject." href="ObjectEncoder.html">
       <span class="symbol">
         <a title="" href="Parser.html">
               <span class="name">Parser</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -978,15 +910,33 @@ JsonObject." href="ObjectEncoder.html">
         <a title="An exception representing a parsing failure and wrapping the exception
 provided by the parsing library." href="ParsingFailure.html">
               <span class="name">ParsingFailure</span>
-            </a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="underlying">underlying: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result"> extends <a href="Error.html" class="extype" name="io.circe.Error">Error</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="underlying">underlying: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result"> extends <a href="Error.html" class="extype" name="io.circe.Error">Error</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">An exception representing a parsing failure and wrapping the exception
 provided by the parsing library.</p>
-    </li><li name="io.circe.Printer" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="PrinterextendsSerializablewithProduct"></a><a id="Printer:Printer"></a>
+    </li><li name="io.circe.PlatformSpecificPrinting" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PlatformSpecificPrintingextendsAnyRef"></a><a id="PlatformSpecificPrinting:PlatformSpecificPrinting"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#PrinterextendsSerializablewithProduct" title="Permalink">
+      <a href="../../io/circe/index.html#PlatformSpecificPrintingextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="PlatformSpecificPrinting.html">
+              <span class="name">PlatformSpecificPrinting</span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.Printer" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PrinterextendsPlatformSpecificPrintingwithProductwithSerializable"></a><a id="Printer:Printer"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#PrinterextendsPlatformSpecificPrintingwithProductwithSerializable" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -997,7 +947,7 @@ provided by the parsing library.</p>
       <span class="symbol">
         <a title="A pretty-printer for JSON values." href="Printer.html">
               <span class="name">Printer</span>
-            </a><span class="params">(<span name="preserveOrder">preserveOrder: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="dropNullKeys">dropNullKeys: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="indent">indent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lbraceLeft">lbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbraceRight">lbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceLeft">rbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceRight">rbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketLeft">lbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketRight">lbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketLeft">rbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketRight">rbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lrbracketsEmpty">lrbracketsEmpty: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaLeft">arrayCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaRight">arrayCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaLeft">objectCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaRight">objectCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonLeft">colonLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonRight">colonRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Product" class="extype" target="_top">Product</a></span>
+            </a><span class="params">(<span name="preserveOrder">preserveOrder: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="dropNullKeys">dropNullKeys: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="indent">indent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lbraceLeft">lbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbraceRight">lbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceLeft">rbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceRight">rbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketLeft">lbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketRight">lbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketLeft">rbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketRight">rbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lrbracketsEmpty">lrbracketsEmpty: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaLeft">arrayCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaRight">arrayCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaLeft">objectCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaRight">objectCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonLeft">colonLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonRight">colonRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result"> extends <a href="PlatformSpecificPrinting.html" class="extype" name="io.circe.PlatformSpecificPrinting">PlatformSpecificPrinting</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A pretty-printer for JSON values.</p><div class="fullcomment"><div class="comment cmt"><p>A pretty-printer for JSON values.
@@ -1044,7 +994,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="ACursor$.html">
               <span class="name">ACursor</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1062,7 +1012,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="AccumulatingDecoder$.html">
               <span class="name">AccumulatingDecoder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1080,43 +1030,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="ArrayEncoder$.html">
               <span class="name">ArrayEncoder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.Context" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Context"></a><a id="Context:Context"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#Context" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="Context$.html">
-              <span class="name">Context</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.Cursor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Cursor"></a><a id="Cursor:Cursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#Cursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="Cursor$.html">
-              <span class="name">Cursor</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1134,7 +1048,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="CursorOp$.html">
               <span class="name">CursorOp</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1152,7 +1066,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="Utilities and instances for Decoder." href="Decoder$.html">
               <span class="name">Decoder</span>
-            </a><span class="result"> extends <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Utilities and instances for <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>.</p>
@@ -1170,7 +1084,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="DecodingFailure$.html">
               <span class="name">DecodingFailure</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1188,7 +1102,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="Utilities and instances for Encoder." href="Encoder$.html">
               <span class="name">Encoder</span>
-            </a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.MidPriorityEncoders">MidPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.MidPriorityEncoders">MidPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Utilities and instances for <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>.</p>
@@ -1206,7 +1120,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="Error$.html">
               <span class="name">Error</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1224,25 +1138,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="HCursor$.html">
               <span class="name">HCursor</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.HistoryOp" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="HistoryOp"></a><a id="HistoryOp:HistoryOp"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#HistoryOp" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="HistoryOp$.html">
-              <span class="name">HistoryOp</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1260,7 +1156,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="Json$.html">
               <span class="name">Json</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1278,7 +1174,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="Constructors, type class instances, and other utilities for JsonNumber." href="JsonNumber$.html">
               <span class="name">JsonNumber</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Constructors, type class instances, and other utilities for <a href="JsonNumber.html" class="extype" name="io.circe.JsonNumber">JsonNumber</a>.</p>
@@ -1296,7 +1192,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="Constructors, type class instances, and other utilities for JsonObject." href="JsonObject$.html">
               <span class="name">JsonObject</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Constructors, type class instances, and other utilities for <a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
@@ -1314,7 +1210,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="KeyDecoder$.html">
               <span class="name">KeyDecoder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1332,7 +1228,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="KeyEncoder$.html">
               <span class="name">KeyEncoder</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1350,7 +1246,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="ObjectEncoder$.html">
               <span class="name">ObjectEncoder</span>
-            </a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityObjectEncoders">LowPriorityObjectEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityObjectEncoders">LowPriorityObjectEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1368,7 +1264,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="ParsingFailure$.html">
               <span class="name">ParsingFailure</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1386,7 +1282,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="Printer$.html">
               <span class="name">Printer</span>
-            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1404,7 +1300,7 @@ either a JSON array or an object.</p>
       <span class="symbol">
         <a title="" href="RootEncoder$.html">
               <span class="name">RootEncoder</span>
-            </a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityRootEncoders">LowPriorityRootEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+            </a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityRootEncoders">LowPriorityRootEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       
       
@@ -1437,9 +1333,9 @@ either a JSON array or an object.</p>
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>

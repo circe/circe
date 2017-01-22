@@ -65,12 +65,31 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../../index.html">
+        <a title="This is the API documentation for Link(http://circe.io,Text(circe)), a JSON library for
+Scala and Scala.js." href="../../index.html">
               <span class="name">root</span>
             </a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><div class="fullcomment"><div class="comment cmt"><p>This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><p>The library is divided into a number of modules that either provide core
+functionality, support additional features via third-party dependencies, or
+facilitate integration with other libraries or frameworks.</p><ul><li><a href="numbers/index.html" class="extype" name="io.circe.numbers">numbers</a>: core facilities for representing and parsing
+   JSON numbers.</li><li><a href="index.html" class="extype" name="io.circe">core</a>: our JSON abstract syntax tree, our zipper-like cursor
+   types, and our encoding and decoding type classes (and instances).</li><li><a href="https://github.com/circe/circe/blob/master/modules/parser/jvm/src/main/scala/io/circe/parser/package.scala" target="_blank">parser</a>: JSON parsing support for both the Java Virtual
+   Machine (using Jawn) and Scala.js (using the native JavaScript JSON parser).</li><li><a href="testing/index.html" class="extype" name="io.circe.testing">testing</a>: ScalaCheck <code>Arbitrary</code> instances for circe's
+   JSON AST and other types, as well as other useful testing tools.</li><li><a href="literal/index.html" class="extype" name="io.circe.literal">literal</a>: JSON string interpolation and encoder and
+   decoder instances for literal types.</li><li><a href="generic/index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
+   <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
+   classes and sealed trait hierarchies.</li><li><a href="generic/extras/index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
+   derivation functionality (including some configurability).</li><li><a href="https://github.com/circe/circe/blob/master/modules/streaming/src/main/scala/io/circe/streaming/package.scala" target="_blank">streaming</a>: streaming JSON parsing via
+   <a href="https://github.com/travisbrown/iteratee" target="_blank">iteratees</a>.</li><li><a href="optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
+   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
+   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
+   <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
+detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="io"></a><a id="io:io"></a>
       <span class="permalink">
@@ -143,10 +162,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.jackson" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jackson"></a><a id="jackson:jackson"></a>
+    </li><li name="io.circe.java8" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="java8"></a><a id="java8:java8"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#jackson" title="Permalink">
+      <a href="../../io/circe/index.html#java8" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -155,16 +174,13 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Support for Jackson-powered parsing and printing for circe." href="jackson/index.html">
-              <span class="name">jackson</span>
+        <a title="Codecs for Java standard library types that were introduced in Java 8." href="java8/index.html">
+              <span class="name">java8</span>
             </a>
       </span>
       
-      <p class="shortcomment cmt">Support for Jackson-powered parsing and printing for circe.</p><div class="fullcomment"><div class="comment cmt"><p>Support for Jackson-powered parsing and printing for circe.</p><p>Note that not all guarantees that hold for Jawn-based parsing and the default
-printer will hold for the Jackson-based versions. Jackson's handling of
-numbers in particular differs significantly: it doesn't distinguish positive
-and negative zeros, it may truncate large JSON numbers or simply fail to
-parse them, it may print large numbers as strings, etc.</p><p>The implementation is ported with minimal changes from Play JSON.
+      <p class="shortcomment cmt">Codecs for Java standard library types that were introduced in Java 8.</p><div class="fullcomment"><div class="comment cmt"><p>Codecs for Java standard library types that were introduced in Java 8.</p><p>Once circe drops support for earlier Java versions, this module will be
+merged into core.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.jawn" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="jawn"></a><a id="jawn:jawn"></a>
@@ -313,8 +329,8 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li class="current-entities indented2">
                         <a class="object" href="ACursor$.html" title=""></a>
-                        <a class="class" href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure."></a>
-                        <a href="ACursor.html" title="A cursor that tracks history and represents the possibility of failure.">
+                        <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
+                        <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
                           ACursor
                         </a>
                       </li><li class="current-entities indented2">
@@ -330,20 +346,6 @@ array."></a>
                         <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON
 array.">
                           ArrayEncoder
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Context$.html" title=""></a>
-                        <a class="class" href="Context.html" title=""></a>
-                        <a href="Context.html" title="">
-                          Context
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="Cursor$.html" title=""></a>
-                        <a class="class" href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value."></a>
-                        <a href="Cursor.html" title="A zipper that represents a position in a JSON value and supports navigation around the JSON
-value.">
-                          Cursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
@@ -387,21 +389,15 @@ errors.">
                         </a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
-                        <a class="class" href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
-                        <a href="GenericCursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">
-                          GenericCursor
+                        <a class="class" href="FailedCursor.html" title=""></a>
+                        <a href="FailedCursor.html" title="">
+                          FailedCursor
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="HCursor$.html" title=""></a>
-                        <a class="class" href="HCursor.html" title="A cursor that tracks the history of operations performed with it."></a>
-                        <a href="HCursor.html" title="A cursor that tracks the history of operations performed with it.">
+                        <a class="class" href="HCursor.html" title=""></a>
+                        <a href="HCursor.html" title="">
                           HCursor
-                        </a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="HistoryOp$.html" title=""></a>
-                        <a class="class" href="HistoryOp.html" title=""></a>
-                        <a href="HistoryOp.html" title="">
-                          HistoryOp
                         </a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Json$.html" title=""></a>
@@ -458,6 +454,12 @@ provided by the parsing library.">
                           ParsingFailure
                         </a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="PlatformSpecificPrinting.html" title=""></a>
+                        <a href="PlatformSpecificPrinting.html" title="">
+                          PlatformSpecificPrinting
+                        </a>
+                      </li><li class="current-entities indented2">
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">
@@ -502,7 +504,7 @@ either a JSON array or an object.">
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Decoder</span><span class="result"> extends <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <span class="name">Decoder</span><span class="result"> extends <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
 
@@ -512,7 +514,7 @@ either a JSON array or an object.">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span>, <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span>, <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span>, <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span>, <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -572,7 +574,7 @@ either a JSON array or an object.">
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.util.Either" class="extype" target="_top">Either</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.Result.A">A</span>]</span>
+        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.util.Either" class="extype" target="_top">Either</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>, <span class="extype" name="io.circe.Decoder.Result.A">A</span>]</span>
       </span>
       
       
@@ -596,7 +598,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -612,7 +614,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -628,7 +630,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -676,7 +678,7 @@ either a JSON array or an object.">
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -718,7 +720,7 @@ either a JSON array or an object.">
         <span class="name">decodeBigDecimal</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="scala.BigDecimal">BigDecimal</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><p>Note that decoding will fail on some very large values that could in principle be represented
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>.</p><p>Note that decoding will fail on some very large values that could in principle be represented
 as <code>BigDecimal</code>s (specifically if the <code>scale</code> is out of the range of <code>scala.Int</code> when the
 <code>unscaledValue</code> is adjusted to have no trailing zeros). These large values can, however, be
 round-tripped through <code>JsonNumber</code>, so you may wish to use <a href="#decodeJsonNumber:io.circe.Decoder[io.circe.JsonNumber]" class="extmbr" name="io.circe.Decoder#decodeJsonNumber">decodeJsonNumber</a> in these cases.</p><p>Also note that because <code>scala.scalajs.js.JSON</code> parses JSON numbers into a floating point
@@ -739,9 +741,9 @@ representation, decoding a JSON number into a <code>BigDecimal</code> on Scala.j
         <span class="name">decodeBigInt</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="scala.BigInt">BigInt</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><p>Note that decoding will fail if the number has a large number of digits (the limit is currently
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.math.BigInt" class="extype" target="_top">scala.math.BigInt</a>.</p><p>Note that decoding will fail if the number has a large number of digits (the limit is currently
 <code>1 &lt;&lt; 18</code>, or around a quarter million). Larger numbers can be decoded by mapping over a
-<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>, but be aware that the conversion to the integral form can be
+<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.math.BigDecimal" class="extype" target="_top">scala.math.BigDecimal</a>, but be aware that the conversion to the integral form can be
 computationally expensive.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeBoolean" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
@@ -756,7 +758,7 @@ computationally expensive.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeBoolean</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+        <span class="name">decodeBoolean</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -772,10 +774,10 @@ computationally expensive.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeByte</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Byte" class="extype" target="_top">Byte</a>]</span>
+        <span class="name">decodeByte</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Byte" class="extype" target="_top">Byte</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Byte" class="extype" target="_top">scala.Byte</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeCanBuildFrom" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeCanBuildFrom[A,C[_]](implicitd:io.circe.Decoder[A],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,C[A]]):io.circe.Decoder[C[A]]"></a><a id="decodeCanBuildFrom[A,C[_]](Decoder[A],CanBuildFrom[Nothing,A,C[A]]):Decoder[C[A]]"></a>
@@ -789,7 +791,7 @@ computationally expensive.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeCanBuildFrom</span><span class="tparams">[<span name="A">A</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, <span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]]</span>
+        <span class="name">decodeCanBuildFrom</span><span class="tparams">[<span name="A">A</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, <span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeCanBuildFrom.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -805,7 +807,7 @@ computationally expensive.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeChar</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Char" class="extype" target="_top">Char</a>]</span>
+        <span class="name">decodeChar</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Char" class="extype" target="_top">Char</a>]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -821,10 +823,10 @@ computationally expensive.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeDouble</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
+        <span class="name">decodeDouble</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><p>Unlike the integral decoders provided here, this decoder will accept values that are too large
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Double" class="extype" target="_top">scala.Double</a>.</p><p>Unlike the integral decoders provided here, this decoder will accept values that are too large
 to be represented and will return them as <code>PositiveInfinity</code> or <code>NegativeInfinity</code>, and it may
 lose precision.
 </p></div></div>
@@ -856,10 +858,10 @@ lose precision.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeFloat</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Float" class="extype" target="_top">Float</a>]</span>
+        <span class="name">decodeFloat</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Float" class="extype" target="_top">Float</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><p>See <a href="#decodeDouble:io.circe.Decoder[Double]" class="extmbr" name="io.circe.Decoder#decodeDouble">decodeDouble</a> for discussion of the approach taken for floating-point decoding.
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Float" class="extype" target="_top">scala.Float</a>.</p><p>See <a href="#decodeDouble:io.circe.Decoder[Double]" class="extmbr" name="io.circe.Decoder#decodeDouble">decodeDouble</a> for discussion of the approach taken for floating-point decoding.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeHCursor" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeHCursor:io.circe.Decoder[io.circe.HCursor]"></a><a id="decodeHCursor:Decoder[HCursor]"></a>
@@ -889,10 +891,10 @@ lose precision.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeInt</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">decodeInt</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">scala.Int</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeJson" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeJson:io.circe.Decoder[io.circe.Json]"></a><a id="decodeJson:Decoder[Json]"></a>
@@ -970,18 +972,18 @@ lose precision.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeLong</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">decodeLong</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><p>Decoding will fail if the value doesn't represent a whole number within the range of the target
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">scala.Long</a>.</p><p>Decoding will fail if the value doesn't represent a whole number within the range of the target
 type (although it can have a decimal part: e.g. <code>10.0</code> will be successfully decoded, but
 <code>10.01</code> will not). If the value is a JSON string, the decoder will attempt to parse it as a
 number.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeMapLike" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
-      <a id="decodeMapLike[M[K,+V]&lt;:Map[K,V],K,V](implicitdk:io.circe.KeyDecoder[K],implicitdv:io.circe.Decoder[V],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,(K,V),M[K,V]]):io.circe.Decoder[M[K,V]]"></a><a id="decodeMapLike[M[K,+V]&lt;:Map[K,V],K,V](KeyDecoder[K],Decoder[V],CanBuildFrom[Nothing,(K,V),M[K,V]]):Decoder[M[K,V]]"></a>
+      <a id="decodeMapLike[M[K,+V]&lt;:scala.collection.immutable.Map[K,V],K,V](implicitdk:io.circe.KeyDecoder[K],implicitdv:io.circe.Decoder[V],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,(K,V),M[K,V]]):io.circe.Decoder[M[K,V]]"></a><a id="decodeMapLike[M[K,+V]&lt;:Map[K,V],K,V](KeyDecoder[K],Decoder[V],CanBuildFrom[Nothing,(K,V),M[K,V]]):Decoder[M[K,V]]"></a>
       <span class="permalink">
-      <a href="../../io/circe/Decoder$.html#decodeMapLike[M[K,+V]&lt;:Map[K,V],K,V](implicitdk:io.circe.KeyDecoder[K],implicitdv:io.circe.Decoder[V],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,(K,V),M[K,V]]):io.circe.Decoder[M[K,V]]" title="Permalink">
+      <a href="../../io/circe/Decoder$.html#decodeMapLike[M[K,+V]&lt;:scala.collection.immutable.Map[K,V],K,V](implicitdk:io.circe.KeyDecoder[K],implicitdv:io.circe.Decoder[V],implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,(K,V),M[K,V]]):io.circe.Decoder[M[K,V]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -990,7 +992,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeMapLike</span><span class="tparams">[<span name="M">M<span class="tparams">[<span name="K">K</span>, <span name="V">+V</span>]</span> &lt;: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="io.circe.Decoder.decodeMapLike.M.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.M.V">V</span>]</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="dk">dk: <a href="KeyDecoder.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>]</span>, <span name="dv">dv: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, (<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>), <span class="extype" name="io.circe.Decoder.decodeMapLike.M">M</span>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.M">M</span>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]]</span>
+        <span class="name">decodeMapLike</span><span class="tparams">[<span name="M">M<span class="tparams">[<span name="K">K</span>, <span name="V">+V</span>]</span> &lt;: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.collection.immutable.Map" class="extype" target="_top">Map</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.M.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.M.V">V</span>]</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="dk">dk: <a href="KeyDecoder.html" class="extype" name="io.circe.KeyDecoder">KeyDecoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>]</span>, <span name="dv">dv: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, (<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>), <span class="extype" name="io.circe.Decoder.decodeMapLike.M">M</span>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeMapLike.M">M</span>[<span class="extype" name="io.circe.Decoder.decodeMapLike.K">K</span>, <span class="extype" name="io.circe.Decoder.decodeMapLike.V">V</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1038,7 +1040,7 @@ number.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeNone</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.None" class="extype" target="_top">None</a>.type]</span>
+        <span class="name">decodeNone</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.None" class="extype" target="_top">None</a>.type]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1054,7 +1056,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeOneAnd</span><span class="tparams">[<span name="A">A</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.OneAnd" class="extype" target="_top">OneAnd</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>
+        <span class="name">decodeOneAnd</span><span class="tparams">[<span name="A">A</span>, <span name="C">C<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]</span>, <span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Nothing" class="extype" target="_top">Nothing</a>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/index.html#cats.data.OneAnd" class="extype" target="_top">OneAnd</a>[<span class="extype" name="io.circe.Decoder.decodeOneAnd.C">C</span>, <span class="extype" name="io.circe.Decoder.decodeOneAnd.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1070,14 +1072,14 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeOption</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeOption.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="io.circe.Decoder.decodeOption.A">A</span>]]</span>
+        <span class="name">decodeOption</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeOption.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="io.circe.Decoder.decodeOption.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
     </li><li name="io.circe.Decoder#decodeSet" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
-      <a id="decodeSet[A](implicitevidence$1:io.circe.Decoder[A]):io.circe.Decoder[Set[A]]"></a><a id="decodeSet[A](Decoder[A]):Decoder[Set[A]]"></a>
+      <a id="decodeSet[A](implicitevidence$1:io.circe.Decoder[A]):io.circe.Decoder[scala.collection.immutable.Set[A]]"></a><a id="decodeSet[A](Decoder[A]):Decoder[Set[A]]"></a>
       <span class="permalink">
-      <a href="../../io/circe/Decoder$.html#decodeSet[A](implicitevidence$1:io.circe.Decoder[A]):io.circe.Decoder[Set[A]]" title="Permalink">
+      <a href="../../io/circe/Decoder$.html#decodeSet[A](implicitevidence$1:io.circe.Decoder[A]):io.circe.Decoder[scala.collection.immutable.Set[A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1086,7 +1088,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeSet</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeSet.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="io.circe.Decoder.decodeSet.A">A</span>]]</span>
+        <span class="name">decodeSet</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeSet.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.collection.immutable.Set" class="extype" target="_top">Set</a>[<span class="extype" name="io.circe.Decoder.decodeSet.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1102,10 +1104,10 @@ number.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeShort</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Short" class="extype" target="_top">Short</a>]</span>
+        <span class="name">decodeShort</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Short" class="extype" target="_top">Short</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
+      <p class="shortcomment cmt">Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Decode a JSON value into a <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Short" class="extype" target="_top">scala.Short</a>.</p><p>See <a href="#decodeLong:io.circe.Decoder[Long]" class="extmbr" name="io.circe.Decoder#decodeLong">decodeLong</a> for discussion of the approach taken for integral decoding.
 </p></div></div>
     </li><li name="io.circe.Decoder#decodeSome" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Decoding">
       <a id="decodeSome[A](implicitd:io.circe.Decoder[A]):io.circe.Decoder[Some[A]]"></a><a id="decodeSome[A](Decoder[A]):Decoder[Some[A]]"></a>
@@ -1119,7 +1121,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeSome</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeSome.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Some" class="extype" target="_top">Some</a>[<span class="extype" name="io.circe.Decoder.decodeSome.A">A</span>]]</span>
+        <span class="name">decodeSome</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.decodeSome.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Some" class="extype" target="_top">Some</a>[<span class="extype" name="io.circe.Decoder.decodeSome.A">A</span>]]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1519,7 +1521,7 @@ number.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeUnit</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+        <span class="name">decodeUnit</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1583,7 +1585,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">enumDecoder</span><span class="tparams">[<span name="E">E &lt;: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Enumeration" class="extype" target="_top">Enumeration</a></span>]</span><span class="params">(<span name="enum">enum: <span class="extype" name="io.circe.Decoder.enumDecoder.E">E</span></span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="scala.Enumeration.Value">Decoder.enumDecoder.E.Value</span>]</span>
+        <span class="name">enumDecoder</span><span class="tparams">[<span name="E">E &lt;: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Enumeration" class="extype" target="_top">Enumeration</a></span>]</span><span class="params">(<span name="enum">enum: <span class="extype" name="io.circe.Decoder.enumDecoder.E">E</span></span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="scala.Enumeration.Value">Decoder.enumDecoder.E.Value</span>]</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -1599,7 +1601,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1615,7 +1617,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -1663,7 +1665,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -2069,7 +2071,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -2117,7 +2119,7 @@ number.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">instanceTry</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.util.Try" class="extype" target="_top">Try</a>[<span class="extype" name="io.circe.Decoder.instanceTry.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.instanceTry.A">A</span>]</span>
+        <span class="name">instanceTry</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.util.Try" class="extype" target="_top">Try</a>[<span class="extype" name="io.circe.Decoder.instanceTry.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Decoder.instanceTry.A">A</span>]</span>
       </span>
       
       <p class="shortcomment cmt">This is for easier interop with code that already returns Try.</p><div class="fullcomment"><div class="comment cmt"><p>This is for easier interop with code that already returns Try. You should
@@ -2135,7 +2137,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -2151,7 +2153,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -2167,7 +2169,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -2183,7 +2185,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -2247,7 +2249,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -2269,7 +2271,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -2291,7 +2293,7 @@ prefer instance for any new code.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -2348,7 +2350,7 @@ the <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a>.</
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="io.circe.LowPriorityDecoders">
@@ -2358,9 +2360,9 @@ the <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a>.</
             </div><div class="parent" name="io.circe.TupleDecoders">
               <h3>Inherited from <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>

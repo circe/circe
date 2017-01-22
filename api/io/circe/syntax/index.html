@@ -65,12 +65,31 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../../../index.html">
+        <a title="This is the API documentation for Link(http://circe.io,Text(circe)), a JSON library for
+Scala and Scala.js." href="../../../index.html">
               <span class="name">root</span>
             </a>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><div class="fullcomment"><div class="comment cmt"><p>This is the API documentation for <a href="http://circe.io" target="_blank">circe</a>, a JSON library for
+Scala and Scala.js.</p><p>The library is divided into a number of modules that either provide core
+functionality, support additional features via third-party dependencies, or
+facilitate integration with other libraries or frameworks.</p><ul><li><a href="../numbers/index.html" class="extype" name="io.circe.numbers">numbers</a>: core facilities for representing and parsing
+   JSON numbers.</li><li><a href="../index.html" class="extype" name="io.circe">core</a>: our JSON abstract syntax tree, our zipper-like cursor
+   types, and our encoding and decoding type classes (and instances).</li><li><a href="https://github.com/circe/circe/blob/master/modules/parser/jvm/src/main/scala/io/circe/parser/package.scala" target="_blank">parser</a>: JSON parsing support for both the Java Virtual
+   Machine (using Jawn) and Scala.js (using the native JavaScript JSON parser).</li><li><a href="../testing/index.html" class="extype" name="io.circe.testing">testing</a>: ScalaCheck <code>Arbitrary</code> instances for circe's
+   JSON AST and other types, as well as other useful testing tools.</li><li><a href="../literal/index.html" class="extype" name="io.circe.literal">literal</a>: JSON string interpolation and encoder and
+   decoder instances for literal types.</li><li><a href="../generic/index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
+   <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
+   classes and sealed trait hierarchies.</li><li><a href="../generic/extras/index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
+   derivation functionality (including some configurability).</li><li><a href="https://github.com/circe/circe/blob/master/modules/streaming/src/main/scala/io/circe/streaming/package.scala" target="_blank">streaming</a>: streaming JSON parsing via
+   <a href="https://github.com/travisbrown/iteratee" target="_blank">iteratees</a>.</li><li><a href="../optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
+   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
+   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="../shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
+   <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
+detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li><li name="_root_.io" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="io"></a><a id="io:io"></a>
       <span class="permalink">
@@ -143,10 +162,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.jackson" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jackson"></a><a id="jackson:jackson"></a>
+    </li><li name="io.circe.java8" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="java8"></a><a id="java8:java8"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#jackson" title="Permalink">
+      <a href="../../io/circe/index.html#java8" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -155,16 +174,13 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Support for Jackson-powered parsing and printing for circe." href="../jackson/index.html">
-              <span class="name">jackson</span>
+        <a title="Codecs for Java standard library types that were introduced in Java 8." href="../java8/index.html">
+              <span class="name">java8</span>
             </a>
       </span>
       
-      <p class="shortcomment cmt">Support for Jackson-powered parsing and printing for circe.</p><div class="fullcomment"><div class="comment cmt"><p>Support for Jackson-powered parsing and printing for circe.</p><p>Note that not all guarantees that hold for Jawn-based parsing and the default
-printer will hold for the Jackson-based versions. Jackson's handling of
-numbers in particular differs significantly: it doesn't distinguish positive
-and negative zeros, it may truncate large JSON numbers or simply fail to
-parse them, it may print large numbers as strings, etc.</p><p>The implementation is ported with minimal changes from Play JSON.
+      <p class="shortcomment cmt">Codecs for Java standard library types that were introduced in Java 8.</p><div class="fullcomment"><div class="comment cmt"><p>Codecs for Java standard library types that were introduced in Java 8.</p><p>Once circe drops support for earlier Java versions, this module will be
+merged into core.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.jawn" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="jawn"></a><a id="jawn:jawn"></a>
@@ -348,7 +364,7 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -374,7 +390,7 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
       <span class="symbol">
         <a title="" href="package$$EncoderOps.html">
               <span class="name">EncoderOps</span>
-            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
+            </a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
       </span>
       
       
@@ -392,9 +408,9 @@ parse them, it may print large numbers as strings, etc.</p><p>The implementation
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.0/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.1/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>
