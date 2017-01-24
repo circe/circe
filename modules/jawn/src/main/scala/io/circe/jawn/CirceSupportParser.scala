@@ -34,7 +34,7 @@ final object CirceSupportParser extends SupportParser[Json] {
       private[this] final val keys = Vector.newBuilder[String]
 
       final def add(s: String): Unit =
-        if (key == null) { key = s } else {
+        if (key.eq(null)) { key = s } else {
           if (!m.contains(key)) keys += key
           m(key) = jstring(s)
           key = null

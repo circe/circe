@@ -83,7 +83,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
       case ("add", cls, arg: String) if cls == classOf[String] =>
-        if (key == null) {
+        if (key.eq(null)) {
           key = arg
         } else {
           fields = fields :+ q"(${ toJsonKey(key) }, ${ toJsonString(arg) })"
