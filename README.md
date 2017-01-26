@@ -23,6 +23,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [The Guardian](https://www.theguardian.com)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
+* [Sigma](https://thesigma.com)
 
 ### Other circe organization projects
 
