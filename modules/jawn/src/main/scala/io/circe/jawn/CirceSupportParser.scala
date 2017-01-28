@@ -1,8 +1,7 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonNumber }
+import io.circe.{ Json, JsonNumber, JsonObject }
 import jawn.{ Facade, FContext, SupportParser }
-import scala.collection.mutable.ArrayBuffer
 
 final object CirceSupportParser extends SupportParser[Json] {
   implicit final val facade: Facade[Json] = new Facade[Json] {
@@ -22,20 +21,30 @@ final object CirceSupportParser extends SupportParser[Json] {
     }
 
     final def arrayContext(): FContext[Json] = new FContext[Json] {
-      private[this] val vs = ArrayBuffer.empty[Json]
+      private[this] final val vs = Vector.newBuilder[Json]
       final def add(s: String): Unit = { vs += jstring(s) }
       final def add(v: Json): Unit = { vs += v }
-      final def finish: Json = Json.fromValues(vs)
+      final def finish: Json = Json.fromValues(vs.result())
       final def isObj: Boolean = false
     }
 
     def objectContext(): FContext[Json] = new FContext[Json] {
       private[this] final var key: String = null
-      private[this] final val vs = ArrayBuffer.empty[(String, Json)]
+      private[this] final val m = scala.collection.mutable.Map.empty[String, Json]
+      private[this] final val keys = Vector.newBuilder[String]
+
       final def add(s: String): Unit =
-        if (key == null) { key = s } else { vs += (key -> jstring(s)); key = null }
-      final def add(v: Json): Unit = { vs += (key -> v); key = null }
-      final def finish: Json = Json.fromFields(vs)
+        if (key == null) { key = s } else {
+          if (!m.contains(key)) keys += key
+          m(key) = jstring(s)
+          key = null
+        }
+      final def add(v: Json): Unit = {
+        if (!m.contains(key)) keys += key
+        m(key) = v
+        key = null
+      }
+      final def finish: Json = Json.fromJsonObject(JsonObject.fromMapAndVector(m.toMap, keys.result()))
       final def isObj: Boolean = true
     }
   }

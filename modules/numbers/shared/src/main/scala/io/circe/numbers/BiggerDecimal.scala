@@ -1,7 +1,7 @@
 package io.circe.numbers
 
 import java.math.{ BigDecimal, BigInteger }
-import scala.annotation.{ switch, tailrec }
+import scala.annotation.switch
 
 /**
  * Represents a large decimal number.
@@ -76,7 +76,7 @@ private[numbers] final class SigAndExp(
   val unscaled: BigInteger,
   val scale: BigInteger
 ) extends BiggerDecimal {
-  def isWhole: Boolean = scale.signum != 1
+  def isWhole: Boolean = scale.signum < 1
   def isNegativeZero: Boolean = false
   def signum: Int = unscaled.signum
 
@@ -87,7 +87,7 @@ private[numbers] final class SigAndExp(
 
   def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
     if (!isWhole) None else {
-      val digits = BigInteger.valueOf(unscaled.toString.length.toLong).subtract(scale)
+      val digits = BigInteger.valueOf(unscaled.abs.toString.length.toLong).subtract(scale)
 
       if (digits.compareTo(BiggerDecimal.MaxBigIntegerDigits) > 0) None else Some(
         new BigDecimal(unscaled, scale.intValue).toBigInteger
@@ -108,16 +108,26 @@ private[numbers] final class SigAndExp(
     }
   }
 
-  def truncateToLong: Long = toDouble.round
+  def truncateToLong: Long = toLong.getOrElse {
+    toBigDecimal.map { asBigDecimal =>
+      val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_DOWN)
+
+      if (rounded.compareTo(BiggerDecimal.MaxLong) >= 0) {
+        Long.MaxValue
+      } else if (rounded.compareTo(BiggerDecimal.MinLong) <= 0) {
+        Long.MinValue
+      } else rounded.longValue
+    }.getOrElse {
+      if (scale.signum > 0) 0L else if (unscaled.signum > 0) Long.MaxValue else Long.MinValue
+    }
+  }
 
   override def equals(that: Any): Boolean = that match {
-    case other: SigAndExp =>
-      (unscaled == BigInteger.ZERO && other.unscaled == BigInteger.ZERO) ||
-      (unscaled == other.unscaled && scale == other.scale)
+    case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
     case _ => false
   }
 
-  override def hashCode: Int = if (unscaled == BigInteger.ZERO) 0 else scale.hashCode + unscaled.hashCode
+  override def hashCode: Int = scale.hashCode + unscaled.hashCode
 
   override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString else {
     s"${ unscaled }e${ scale.negate }"
@@ -129,53 +139,62 @@ final object BiggerDecimal {
 
   private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
   private[numbers] val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
+  private[numbers] val MaxLong: BigDecimal = new BigDecimal(Long.MaxValue)
+  private[numbers] val MinLong: BigDecimal = new BigDecimal(Long.MinValue)
 
-  val NegativeZero: BiggerDecimal = new BiggerDecimal {
+  private[this] abstract class Zero extends BiggerDecimal {
     final def isWhole: Boolean = true
-    final def isNegativeZero: Boolean = true
     final def signum: Int = 0
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
-    final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
-      Some(BigInteger.ZERO)
-    final def toDouble: Double = -0.0
+    final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
     final val toLong: Option[Long] = Some(truncateToLong)
     final def truncateToLong: Long = 0L
+  }
+
+  private[this] val UnsignedZero: BiggerDecimal = new Zero {
+    final def isNegativeZero: Boolean = false
+    final def toDouble: Double = 0.0
 
     final override def equals(that: Any): Boolean = that match {
-      case other: BiggerDecimal => other.isNegativeZero
+      case other: Zero => !other.isNegativeZero
+      case _ => false
+    }
+    final override def hashCode: Int = (0.0).hashCode
+    final override def toString: String = "0"
+  }
+
+  val NegativeZero: BiggerDecimal = new Zero {
+    final def isNegativeZero: Boolean = true
+    final def toDouble: Double = -0.0
+
+    final override def equals(that: Any): Boolean = that match {
+      case other: Zero => other.isNegativeZero
       case _ => false
     }
     final override def hashCode: Int = (-0.0).hashCode
     final override def toString: String = "-0"
   }
 
-  @tailrec
-  private[this] def removeTrailingZeros(d: BigInteger, depth: Long): SigAndExp = if (d == BigInteger.ZERO) {
-    new SigAndExp(d, BigInteger.ZERO)
-  } else {
-    val divAndRem = d.divideAndRemainder(BigInteger.TEN)
+  private[this] def fromUnscaledAndScale(unscaled: BigInteger, scale: Long): BiggerDecimal =
+    if (unscaled == BigInteger.ZERO) UnsignedZero else {
+      var current = unscaled
+      var depth = scale
 
-    if (divAndRem(1) == BigInteger.ZERO) removeTrailingZeros(divAndRem(0), depth + 1L) else {
-      new SigAndExp(d, BigInteger.valueOf(-depth))
+      var divAndRem = current.divideAndRemainder(BigInteger.TEN)
+
+      while (divAndRem(1) == BigInteger.ZERO) {
+        current = divAndRem(0)
+        depth -= 1L
+        divAndRem = current.divideAndRemainder(BigInteger.TEN)
+      }
+
+      new SigAndExp(current, BigInteger.valueOf(depth))
     }
-  }
 
-  def fromBigInteger(i: BigInteger): BiggerDecimal = removeTrailingZeros(i, 0L)
+  def fromBigInteger(i: BigInteger): BiggerDecimal = fromUnscaledAndScale(i, 0L)
+  def fromBigDecimal(d: BigDecimal): BiggerDecimal = fromUnscaledAndScale(d.unscaledValue, d.scale.toLong)
+  def fromLong(d: Long): BiggerDecimal = fromUnscaledAndScale(BigInteger.valueOf(d), 0L)
 
-  def fromBigDecimal(d: BigDecimal): BiggerDecimal = try {
-    val noZeros = d.stripTrailingZeros
-    new SigAndExp(noZeros.unscaledValue, BigInteger.valueOf(noZeros.scale.toLong))
-  } catch {
-    case _: ArithmeticException =>
-      val unscaledAndZeros = removeTrailingZeros(d.unscaledValue, 0L)
-
-      new SigAndExp(
-        unscaledAndZeros.unscaled,
-        BigInteger.valueOf(d.scale.toLong).add(unscaledAndZeros.scale)
-      )
-  }
-
-  def fromLong(d: Long): BiggerDecimal = fromBigDecimal(BigDecimal.valueOf(d))
   def fromDouble(d: Double): BiggerDecimal = if (java.lang.Double.compare(d, -0.0) == 0) {
     NegativeZero
   } else fromBigDecimal(BigDecimal.valueOf(d))
@@ -324,18 +343,16 @@ final object BiggerDecimal {
 
         val unscaledString = integral + fractional
         val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
-        val rescale = BigInteger.valueOf(fractional.length.toLong - zeros)
-        val exponent = if (expIndex == -1) BigInteger.ZERO else {
-          new BigInteger(input.substring(expIndex + 1))
-        }
 
-        if (input.charAt(0) == '-' && unscaled == BigInteger.ZERO) {
-          BiggerDecimal.NegativeZero
+        if (unscaled == BigInteger.ZERO) {
+          if (input.charAt(0) == '-') NegativeZero else UnsignedZero
         } else {
-          new SigAndExp(
-            unscaled,
-            if (unscaled == BigInteger.ZERO) BigInteger.ZERO else rescale.subtract(exponent)
-          )
+          val rescale = BigInteger.valueOf((fractional.length - zeros).toLong)
+          val scale = if (expIndex == -1) rescale else {
+            rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
+          }
+
+          new SigAndExp(unscaled, scale)
         }
       }
     }

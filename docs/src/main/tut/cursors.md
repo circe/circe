@@ -1,7 +1,7 @@
 ---
-layout: default
+layout: docs
 title:  "Traversing and modifying JSON"
-section: "cursors"
+position: 2
 ---
 
 # Traversing and modifying JSON
@@ -57,7 +57,7 @@ val secondQux: Decoder.Result[String] =
 
 ## Transforming data
 
-We can also use a cursor to modify JSON. 
+We can also use a cursor to modify JSON.
 
 ```tut:silent
 val reversedNameCursor: ACursor =

@@ -1,13 +1,13 @@
 # circe
 
-[![Build status](https://img.shields.io/travis/travisbrown/circe/master.svg)](https://travis-ci.org/travisbrown/circe)
-[![Coverage status](https://img.shields.io/codecov/c/github/travisbrown/circe/master.svg)](https://codecov.io/github/travisbrown/circe)
-[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/travisbrown/circe)
+[![Build status](https://img.shields.io/travis/circe/circe/master.svg)](https://travis-ci.org/circe/circe)
+[![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
+[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/circe/circe)
 [![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11)
 
 circe is a JSON library for Scala (and [Scala.js][scala-js]).
 
-Please see the [guide](https://travisbrown.github.io/circe/) for more information
+Please see the [guide](https://circe.github.io/circe/) for more information
 about why circe exists and how to use it.
 
 ## Community
@@ -22,6 +22,19 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [The Guardian](https://www.theguardian.com)
+* [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
+* [Sigma](https://thesigma.com)
+
+### Other circe organization projects
+
+Please get in touch on [Gitter][gitter] if you have a circe-related project that you'd like to discuss hosting under the
+[circe organization][circe-org] on GitHub.
+
+* [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
+* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
+  into circe's `Json`.
+* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
+* [circe-benchmarks][circe-benchmarks]: Benchmarks for comparing the performance of circe and other JSON libraries for the JVM.
 
 ### Related projects
 
@@ -32,11 +45,11 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [akka-stream-json][akka-stream-json]: A library that provides Json support for stream based applications using jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
-* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
-  into circe's `Json`.
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
+* [diffson][diffson]: A Scala diff / patch library for JSON.
+* [elastic4s][elastic4s]: A Scala client for [Elasticsearch][elasticsearch] with circe support.
 * [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
 * [Featherbed][featherbed]: A REST client library with circe support.
 * [Finch][finch]: A library for building web services with circe support.
@@ -57,9 +70,10 @@ The following open source projects are either built on circe or provide circe su
   implementation.
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
+* [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
-* [Zenith][zenith]: Functional HTTP library built on [Unfiltered][unfiltered] and circe.
+* [Zenith][zenith]: Functional HTTP library built on circe.
 
 ### Examples
 
@@ -68,7 +82,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/alanphillips78/akka-http-microservice-blueprint
 * https://github.com/bneil/fcs_boilerplate
 * https://github.com/gvolpe/simple-http4s-api
-* https://github.com/notvitor/akka-http-circe-json-template
+* https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
 
 ## Contributors and participation
@@ -106,12 +120,19 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
-[circe-yaml]: https://github.com/jeremyrsmith/circe-yaml
+[circe-benchmarks]: https://github.com/circe/circe-benchmarks
+[circe-jackson]: https://github.com/circe/circe-jackson
+[circe-org]: https://github.com/circe
+[circe-spray]: https://github.com/circe/circe-spray
+[circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: http://typelevel.org/conduct.html
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
+[diffson]: https://github.com/gnieh/diffson
+[elastic4s]: https://github.com/sksamuel/elastic4s
+[elasticsearch]: https://www.elastic.co/
 [enumeratum]: https://github.com/lloydmeta/enumeratum
 [featherbed]: https://github.com/finagle/featherbed
 [finagle]: https://twitter.github.io/finagle/
@@ -120,9 +141,11 @@ limitations under the License.
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
 [github4s]: https://github.com/47deg/github4s
+[gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
 [iglu]: https://github.com/snowplow/iglu
+[jackson]: https://github.com/FasterXML/jackson
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
@@ -141,16 +164,17 @@ limitations under the License.
 [scala-js]: http://www.scala-js.org/
 [scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scalist]: https://github.com/vpavkin/scalist
+[seals]: https://github.com/durban/seals/
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
+[spray]: http://spray.io/
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
 [todoist]: https://developer.todoist.com/
 [tonymorris]: https://github.com/tonymorris
 [travisbrown]: https://twitter.com/travisbrown
 [typelevel]: http://typelevel.org/
-[unfiltered]: http://unfiltered.databinder.net/Unfiltered.html
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
 [zenith]: https://github.com/sungiant/zenith

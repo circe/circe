@@ -13,6 +13,7 @@ import scalaz.std.math.bigDecimal._
 import scalaz.std.math.bigInt._
 import scalaz.std.option._
 import scalaz.std.string._
+import scalaz.std.vector._
 
 class OpticsSuite extends CirceSuite {
   implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
@@ -39,7 +40,7 @@ class OpticsSuite extends CirceSuite {
   checkLaws("Json to String", PrismTests(jsonString))
   checkLaws("Json to JsonNumber", PrismTests(jsonNumber))
   checkLaws("Json to JsonObject", PrismTests(jsonObject))
-  checkLaws("Json to List[Json]", PrismTests(jsonArray))
+  checkLaws("Json to Vector[Json]", PrismTests(jsonArray))
 
   checkLaws("JsonNumber to BigDecimal", PrismTests(jsonNumberBigDecimal))
   checkLaws("JsonNumber to BigInt", PrismTests(jsonNumberBigInt))

@@ -47,6 +47,15 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(l.toString).flatMap(_.toInt).isEmpty === invalid)
   }
 
+  "truncateToLong" should "round toward zero" in {
+    assert(JsonNumber.fromString("1.5").map(_.truncateToLong) === Some(1L))
+    assert(JsonNumber.fromString("-1.5").map(_.truncateToLong) === Some(-1L))
+    assert(Json.fromDouble(1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(1L))
+    assert(Json.fromDouble(-1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(-1L))
+    assert(Json.fromBigDecimal(BigDecimal(1.5)).asNumber.map(_.truncateToLong) === Some(1L))
+    assert(Json.fromBigDecimal(BigDecimal(-1.5)).asNumber.map(_.truncateToLong) === Some(-1L))
+  }
+
   "truncateToByte" should "return the truncated value" in forAll { (l: Long) =>
     val truncated: Byte = min(Byte.MaxValue, max(Byte.MinValue, l)).toByte
 

@@ -7,6 +7,8 @@ import io.circe.export.Exported
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce
+import scala.collection.immutable.{ Map, Set }
+import scala.Predef._
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -20,7 +22,7 @@ trait Encoder[A] extends Serializable { self =>
   def apply(a: A): Json
 
   /**
-   * Create a new [Encoder]] by applying a function to a value of type `B` before encoding as an
+   * Create a new [[Encoder]] by applying a function to a value of type `B` before encoding as an
    * `A`.
    */
   final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
@@ -89,8 +91,8 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
    */
   final def encodeFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): ArrayEncoder[F[A]] =
     new ArrayEncoder[F[A]] {
-      final def encodeArray(a: F[A]): List[Json] =
-        F.foldLeft(a, List.empty[Json])((list, v) => e(v) :: list).reverse
+      final def encodeArray(a: F[A]): Vector[Json] =
+        F.foldLeft(a, Vector.empty[Json])((list, v) => e(v) +: list).reverse
     }
 
   /**
@@ -230,9 +232,24 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Encoding
    */
+  implicit final def encodeSet[A: Encoder]: Encoder[Set[A]] = encodeTraversableOnce[A, Set]
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeList[A: Encoder]: Encoder[List[A]] = encodeTraversableOnce[A, List]
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeVector[A: Encoder]: Encoder[Vector[A]] = encodeTraversableOnce[A, Vector]
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeNonEmptyList[A](implicit e: Encoder[A]): Encoder[NonEmptyList[A]] =
     new ArrayEncoder[NonEmptyList[A]] {
-      final def encodeArray(a: NonEmptyList[A]): List[Json] = a.toList.map(e(_))
+      final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(e(_))
     }
 
   /**
@@ -240,7 +257,7 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
    */
   implicit final def encodeNonEmptyVector[A](implicit e: Encoder[A]): Encoder[NonEmptyVector[A]] =
     new ArrayEncoder[NonEmptyVector[A]] {
-      final def encodeArray(a: NonEmptyVector[A]): List[Json] = a.toVector.toList.map(e(_))
+      final def encodeArray(a: NonEmptyVector[A]): Vector[Json] = a.toVector.map(e(_))
     }
 
   /**
@@ -252,8 +269,8 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   ): ArrayEncoder[OneAnd[C, A0]] = new ArrayEncoder[OneAnd[C, A0]] {
     private[this] val encoder = encodeTraversableOnce[A0, GenSeq]
 
-    final def encodeArray(a: OneAnd[C, A0]): List[Json] = encoder.encodeArray(
-      a.head :: is.conversion(a.tail).toList
+    final def encodeArray(a: OneAnd[C, A0]): Vector[Json] = encoder.encodeArray(
+      a.head +: is.conversion(a.tail).toVector
     )
   }
 
@@ -290,11 +307,9 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
     ee: Encoder[E],
     ea: Encoder[A]
-  ): ObjectEncoder[Validated[E, A]] = new ObjectEncoder[Validated[E, A]] {
-    final def encodeObject(a: Validated[E, A]): JsonObject = a match {
-      case Validated.Invalid(e) => JsonObject.singleton(failureKey, ee(e))
-      case Validated.Valid(a) => JsonObject.singleton(successKey, ea(a))
-    }
+  ): ObjectEncoder[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
+    case Validated.Invalid(e) => Left(e)
+    case Validated.Valid(a) => Right(a)
   }
 
   /**
@@ -324,8 +339,8 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
     e: Encoder[A0],
     is: IsTraversableOnce[C[A0]] { type A = A0 }
   ): ArrayEncoder[C[A0]] = new ArrayEncoder[C[A0]] {
-    final def encodeArray(a: C[A0]): List[Json] = {
-      val items = List.newBuilder[Json]
+    final def encodeArray(a: C[A0]): Vector[Json] = {
+      val items = Vector.newBuilder[Json]
 
       val it = is.conversion(a).toIterator
 
@@ -333,7 +348,7 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
         items += e(it.next())
       }
 
-      items.result
+      items.result()
     }
   }
 }

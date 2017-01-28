@@ -39,13 +39,13 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
           F.map(
             Traverse[List].traverse(from.toList) {
               case (field, json) =>
-                F.map(if (p(field)) f(json) else F.point(json))(field -> _)
+                F.map(if (p(field)) f(json) else F.point(json))((field, _))
             }
           )(JsonObject.from(_)(catsStdInstancesForList))
     }
   }
 
-  implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.atIndex
+  implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.fromAt
 }
 
 final object JsonObjectOptics extends JsonObjectOptics

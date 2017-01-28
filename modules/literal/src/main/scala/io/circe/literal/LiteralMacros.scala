@@ -4,6 +4,8 @@ import io.circe.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import macrocompat.bundle
+import scala.Predef.classOf
+import scala.collection.immutable.Map
 import scala.reflect.macros.whitebox
 import scala.util.control.NonFatal
 
@@ -37,7 +39,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => value
-      case "isObj" => false: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.FALSE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
@@ -56,7 +58,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => q"_root_.io.circe.Json.arr(..$values)"
-      case "isObj" => false: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.FALSE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
@@ -76,7 +78,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
     val invokeWithoutArg: String => Object = {
       case "finish" => q"_root_.io.circe.Json.obj(..$fields)"
-      case "isObj" => true: java.lang.Boolean
+      case "isObj" => java.lang.Boolean.TRUE
     }
 
     val invokeWithArg: (String, Class[_], Object) => Object = {
@@ -210,7 +212,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asString.exists(_ == $lit)) {
+            if (c.value.asString.exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -228,7 +230,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asBoolean.exists(_ == $lit)) {
+            if (c.value.asBoolean.exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -246,7 +248,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asNumber.map(_.toDouble).exists(_ == $lit)) {
+            if (c.value.asNumber.map(_.toDouble).exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -264,7 +266,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asNumber.map(_.toDouble).exists(s => s.toFloat == $lit)) {
+            if (c.value.asNumber.map(_.toDouble).exists(s => s.toFloat == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -282,7 +284,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asNumber.flatMap(_.toLong).exists(_ == $lit)) {
+            if (c.value.asNumber.flatMap(_.toLong).exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -300,7 +302,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asNumber.flatMap(_.toInt).exists(_ == $lit)) {
+            if (c.value.asNumber.flatMap(_.toInt).exists(_ == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
@@ -318,7 +320,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
         q"""
           _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.focus.asString.exists(s => s.length == 1 && s.charAt(0) == $lit)) {
+            if (c.value.asString.exists(s => s.length == 1 && s.charAt(0) == $lit)) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(

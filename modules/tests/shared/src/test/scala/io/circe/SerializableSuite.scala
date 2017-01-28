@@ -9,16 +9,8 @@ class SerializableSuite extends CirceSuite {
     SerializableLaws.serializable(j); ()
   }
 
-  "Cursor" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(j.cursor); ()
-  }
-
   "HCursor" should "be serializable" in forAll { (j: Json) =>
     SerializableLaws.serializable(j.hcursor); ()
-  }
-
-  "ACursor" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(ACursor.ok(j.hcursor)); ()
   }
 
   checkLaws("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))

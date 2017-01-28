@@ -54,8 +54,8 @@ final object CursorOp {
   final case class DeleteGoField(k: String) extends UnconstrainedOp
   final case object DeleteLefts extends UnconstrainedOp
   final case object DeleteRights extends UnconstrainedOp
-  final case class SetLefts(js: List[Json]) extends UnconstrainedOp
-  final case class SetRights(js: List[Json]) extends UnconstrainedOp
+  final case class SetLefts(js: Vector[Json]) extends UnconstrainedOp
+  final case class SetRights(js: Vector[Json]) extends UnconstrainedOp
 
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft => "<-"
@@ -86,4 +86,36 @@ final object CursorOp {
   }
 
   implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
+
+  val eqCursorOpList: Eq[List[CursorOp]] = cats.instances.list.catsKernelStdEqForList[CursorOp]
+
+  /**
+   * Represents JavaScript-style selections into a JSON structure.
+   */
+  private[this] sealed trait Selection
+  private[this] case class SelectField(field: String) extends Selection
+  private[this] case class SelectIndex(index: Int) extends Selection
+  private[this] case class Op(op: CursorOp) extends Selection
+
+  /** Shows history as JS style selections, i.e. ".foo.bar[3]" */
+  def opsToPath(history: List[CursorOp]): String = {
+
+    // Fold into sequence of selections (reducing array ops etc. into single selections)
+    val selections = history.foldRight(List.empty[Selection]) {
+      case (DownField(k), acc)                 => SelectField(k) :: acc
+      case (DownArray, acc)                    => SelectIndex(0) :: acc
+      case (MoveUp, _ :: tail)                 => tail
+      case (MoveRight, SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
+      case (MoveLeft, SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
+      case (RightN(n), SelectIndex(i) :: tail) => SelectIndex(i + n) :: tail
+      case (LeftN(n), SelectIndex(i) :: tail)  => SelectIndex(i - n) :: tail
+      case (op, acc)                           => Op(op) :: acc
+    }
+
+    selections.foldLeft("") {
+      case (str, SelectField(f)) => s".$f$str"
+      case (str, SelectIndex(i)) => s"[$i]$str"
+      case (str, Op(op))         => s"{${ Show[CursorOp].show(op) }}$str"
+    }
+  }
 }

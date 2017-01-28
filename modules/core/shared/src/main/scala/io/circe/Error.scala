@@ -2,7 +2,6 @@ package io.circe
 
 import cats.{ Eq, Show }
 import cats.data.NonEmptyList
-import cats.instances.list._
 
 /**
  * The base exception type for both decoding and parsing errors.
@@ -44,14 +43,15 @@ final object ParsingFailure {
  * decoding history resulting in the failure.
  */
 sealed abstract class DecodingFailure(val message: String) extends Error {
-  def history: List[HistoryOp]
+  def history: List[CursorOp]
+
   final override def getMessage: String =
     if (history.isEmpty) message else s"$message: ${ history.mkString(",") }"
 
-  final def copy(message: String = message, history: => List[HistoryOp] = history): DecodingFailure = {
+  final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure = {
     def newHistory = history
     new DecodingFailure(message) {
-      final lazy val history: List[HistoryOp] = newHistory
+      final lazy val history: List[CursorOp] = newHistory
     }
   }
 
@@ -66,16 +66,16 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
 }
 
 final object DecodingFailure {
-  def apply(message: String, ops: => List[HistoryOp]): DecodingFailure = new DecodingFailure(message) {
-    final lazy val history: List[HistoryOp] = ops
+  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(message) {
+    final lazy val history: List[CursorOp] = ops
   }
 
-  def unapply(error: Error): Option[(String, List[HistoryOp])] = error match {
+  def unapply(error: Error): Option[(String, List[CursorOp])] = error match {
     case ParsingFailure(_, _) => None
     case other: DecodingFailure => Some((other.message, other.history))
   }
 
-  def fromThrowable(t: Throwable, ops: => List[HistoryOp]): DecodingFailure = t match {
+  def fromThrowable(t: Throwable, ops: => List[CursorOp]): DecodingFailure = t match {
     case (d: DecodingFailure) => d
     case other =>
       val sw = new java.io.StringWriter
@@ -85,8 +85,7 @@ final object DecodingFailure {
   }
 
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
-    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) =>
-      m1 == m2 && Eq[List[HistoryOp]].eqv(h1, h2)
+    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
   }
 
   /**
@@ -94,7 +93,7 @@ final object DecodingFailure {
     * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
     */
   implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { failure =>
-    val path = HistoryOp.opsToPath(failure.history)
+    val path = CursorOp.opsToPath(failure.history)
     s"DecodingFailure at ${path}: ${failure.message}"
   }
 
@@ -103,8 +102,7 @@ final object DecodingFailure {
 final object Error {
   implicit final val eqError: Eq[Error] = Eq.instance {
     case (pf1: ParsingFailure, pf2: ParsingFailure) => ParsingFailure.eqParsingFailure.eqv(pf1, pf2)
-    case (df1: DecodingFailure, df2: DecodingFailure) =>
-      DecodingFailure.eqDecodingFailure.eqv(df1, df2)
+    case (df1: DecodingFailure, df2: DecodingFailure) => DecodingFailure.eqDecodingFailure.eqv(df1, df2)
     case (_, _) => false
   }
 

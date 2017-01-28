@@ -3,6 +3,7 @@ package io.circe.generic.extras.decoding
 import cats.data.Validated
 import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
 import io.circe.generic.extras.ConfigurableDeriver
+import scala.collection.immutable.Map
 import scala.language.experimental.macros
 import shapeless.HNil
 
@@ -81,15 +82,15 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     case Some(disc) =>
       c.get[String](disc) match {
         case Right(leafType) if leafType == name =>
-          Some(decode.tryDecodeAccumulating(c.acursor))
+          Some(decode.tryDecodeAccumulating(c))
         case Right(_) => None
         case Left(err) => Some(Validated.invalidNel(err))
     }
   }
 
-  final def apply(c: HCursor): Decoder.Result[A] = configuredDecode(c)(identity, Map.empty, None)
+  final def apply(c: HCursor): Decoder.Result[A] = configuredDecode(c)(Predef.identity, Map.empty, None)
   final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-    configuredDecodeAccumulating(c)(identity, Map.empty, None)
+    configuredDecodeAccumulating(c)(Predef.identity, Map.empty, None)
 }
 
 final object ReprDecoder {

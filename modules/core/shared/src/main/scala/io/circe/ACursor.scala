@@ -1,167 +1,405 @@
 package io.circe
 
-import cats.{ Applicative, Eq }
-import cats.data.Validated
-import cats.instances.either._
+import cats.Applicative
+import cats.kernel.Eq
+import scala.collection.immutable.Set
 
 /**
- * A cursor that tracks history and represents the possibility of failure.
+ * A zipper that represents a position in a JSON document and supports navigation and modification.
  *
- * @groupname Ungrouped ACursor fields and operations
- * @groupprio Ungrouped 1
+ * The `focus` represents the current position of the cursor; it may be updated with `withFocus` or
+ * changed using navigation methods like `left` and `right`.
  *
- * @see [[GenericCursor]]
+ * @groupname Utilities Miscellaneous utilities
+ * @groupprio Utilities 0
+ * @groupname Access Access and navigation
+ * @groupprio Access 1
+ * @groupname Modification Modification
+ * @groupprio Modification 2
+ * @groupname ArrayAccess Array access
+ * @groupprio ArrayAccess 3
+ * @groupname ObjectAccess Object access
+ * @groupprio ObjectAccess 4
+ * @groupname ArrayNavigation Array navigation
+ * @groupprio ArrayNavigation 5
+ * @groupname ObjectNavigation Object navigation
+ * @groupprio ObjectNavigation 6
+ * @groupname ArrayModification Array modification
+ * @groupprio ArrayModification 7
+ * @groupname ObjectModification Object modification
+ * @groupprio ObjectModification 8
+ * @groupname Decoding Decoding
+ * @groupprio Decoding 9
+ *
  * @author Travis Brown
  */
-sealed abstract class ACursor(final val any: HCursor) extends GenericCursor[ACursor] {
-  type Focus[x] = Option[x]
-  type Result = ACursor
-  type M[x[_]] = Applicative[x]
-
-  final def either: Either[HCursor, HCursor] = if (succeeded) Right(any) else Left(any)
+abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
+  /**
+   * The current location in the document.
+   *
+   * @group Access
+   */
+  def focus: Option[Json]
 
   /**
-   * Return the current [[HCursor]] if we are in a success state.
+   * The operations that have been performed so far.
+   *
+   * @group Decoding
    */
-  final def success: Option[HCursor] = if (succeeded) Some(any) else None
+  final def history: List[CursorOp] = {
+    var next = this
+    val builder = List.newBuilder[CursorOp]
 
-  /**
-   * Return the failed [[HCursor]] if we are in a failure state.
-   */
-  final def failure: Option[HCursor] = if (succeeded) None else Some(any)
+    while (next.ne(null)) {
+      if (next.lastOp.ne(null)) {
+        builder += next.lastOp
+      }
+      next = next.lastCursor
+    }
+
+    builder.result()
+  }
 
   /**
    * Indicate whether this cursor represents the result of a successful
    * operation.
+   *
+   * @group Decoding
    */
   def succeeded: Boolean
 
   /**
    * Indicate whether this cursor represents the result of an unsuccessful
    * operation.
+   *
+   * @group Decoding
    */
   final def failed: Boolean = !succeeded
 
   /**
-   * Return the underlying cursor if successful.
+   * Return the cursor as an [[HCursor]] if it was successful.
+   *
+   * @group Decoding
    */
-  final def cursor: Option[Cursor] = success.map(_.cursor)
+  def success: Option[HCursor]
 
   /**
-   * Return the underlying cursor's history.
+   * Return to the root of the document.
+   *
+   * @group Access
    */
-  final def history: List[HistoryOp] = any.history
+  def top: Option[Json]
 
   /**
-   * If the last operation was not successful, reattempt it.
+   * Modify the focus using the given function.
+   *
+   * @group Modification
    */
-  final def reattempt: ACursor = if (succeeded) this else ACursor.ok(any.reattempted)
+  def withFocus(f: Json => Json): ACursor
 
   /**
-   * Return the previous focus, if and only if we didn't succeed.
+   * Modify the focus in a context using the given function.
+   *
+   * @group Modification
    */
-  final def failureFocus: Option[Json] = failure.map(_.focus)
+  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor]
 
   /**
-   * Return the current cursor or the given one if this one isn't successful.
+   * Replace the focus.
+   *
+   * @group Modification
    */
-  final def or(c: => ACursor): ACursor = if (succeeded) this else c
+  final def set(j: Json): ACursor = withFocus(_ => j)
 
   /**
-   * Return a [[cats.data.Validated]] of the underlying cursor.
+   * If the focus is a JSON array, return the elements to the left.
+   *
+   * @group ArrayAccess
    */
-  final def validation: Validated[HCursor, HCursor] = Validated.fromEither(either)
+  def lefts: Option[Vector[Json]]
 
   /**
-   * A helper method to simplify performing operations on the underlying [[HCursor]].
+   * If the focus is a JSON array, return the elements to the right.
+   *
+   * @group ArrayAccess
    */
-  @inline private[this] def withHCursor(f: HCursor => ACursor): ACursor = if (this.succeeded) f(this.any) else this
+  def rights: Option[Vector[Json]]
 
-  final def focus: Option[Json] = success.map(_.focus)
-  final def top: Option[Json] = success.map(_.top)
+  /**
+   * If the focus is a JSON array, return its elements.
+   *
+   * @group ObjectAccess
+   */
+  def values: Option[Vector[Json]]
 
-  final def delete: ACursor = withHCursor(_.delete)
-  final def withFocus(f: Json => Json): ACursor =
-    if (this.succeeded) ACursor.ok(this.any.withFocus(f)) else this
+  /**
+   * If the focus is a JSON object, return its field names in a set.
+   *
+   * @group ObjectAccess
+   */
+  def fieldSet: Option[Set[String]]
 
-  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-    either.fold(
-      _ => F.pure(this),
-      valid => F.map(valid.withFocusM(f))(ACursor.ok)
-    )
+  /**
+   * If the focus is a JSON object, return its field names in their original order.
+   *
+   * @group ObjectAccess
+   */
+  def fields: Option[Vector[String]]
 
-  final def lefts: Option[List[Json]]     = success.flatMap(_.lefts)
-  final def rights: Option[List[Json]]    = success.flatMap(_.rights)
+  /**
+   * Delete the focus and move to its parent.
+   *
+   * @group Modification
+   */
+  def delete: ACursor
 
-  final def fieldSet: Option[Set[String]] = success.flatMap(_.fieldSet)
-  final def fields: Option[List[String]]  = success.flatMap(_.fields)
+  /**
+   * Move the focus to the parent.
+   *
+   * @group Access
+   */
+  def up: ACursor
 
-  final def up: ACursor                          = withHCursor(_.up)
-  final def left: ACursor                        = withHCursor(_.left)
-  final def right: ACursor                       = withHCursor(_.right)
-  final def first: ACursor                       = withHCursor(_.first)
-  final def last: ACursor                        = withHCursor(_.last)
-  final def leftN(n: Int): ACursor               = withHCursor(_.leftN(n))
-  final def rightN(n: Int): ACursor              = withHCursor(_.rightN(n))
-  final def leftAt(p: Json => Boolean): ACursor  = withHCursor(_.leftAt(p))
-  final def rightAt(p: Json => Boolean): ACursor = withHCursor(_.rightAt(p))
-  final def find(p: Json => Boolean): ACursor    = withHCursor(_.find(p))
-  final def downArray: ACursor                   = withHCursor(_.downArray)
-  final def downAt(p: Json => Boolean): ACursor  = withHCursor(_.downAt(p))
-  final def downN(n: Int): ACursor               = withHCursor(_.downN(n))
-  final def field(k: String): ACursor            = withHCursor(_.field(k))
-  final def downField(k: String): ACursor        = withHCursor(_.downField(k))
-  final def deleteGoLeft: ACursor                = withHCursor(_.deleteGoLeft)
-  final def deleteGoRight: ACursor               = withHCursor(_.deleteGoRight)
-  final def deleteGoFirst: ACursor               = withHCursor(_.deleteGoFirst)
-  final def deleteGoLast: ACursor                = withHCursor(_.deleteGoLast)
-  final def deleteLefts: ACursor                 = withHCursor(_.deleteLefts)
-  final def deleteRights: ACursor                = withHCursor(_.deleteRights)
-  final def setLefts(x: List[Json]): ACursor     = withHCursor(_.setLefts(x))
-  final def setRights(x: List[Json]): ACursor    = withHCursor(_.setRights(x))
-  final def deleteGoField(k: String): ACursor    = withHCursor(_.deleteGoField(k))
+  /**
+   * If the focus is an element in a JSON array, move to the left.
+   *
+   * @group ArrayNavigation
+   */
+  def left: ACursor
 
+  /**
+   * If the focus is an element in a JSON array, move to the right.
+   *
+   * @group ArrayNavigation
+   */
+  def right: ACursor
+
+  /**
+   * If the focus is an element in a JSON array, move to the first element.
+   *
+   * @group ArrayNavigation
+   */
+  def first: ACursor
+
+  /**
+   * If the focus is an element in a JSON array, move to the last element.
+   *
+   * @group ArrayNavigation
+   */
+  def last: ACursor
+
+  /**
+   * If the focus is an element in JSON array, move to the left the given number of times.
+   *
+   * A negative value will move the cursor right.
+   *
+   * @group ArrayNavigation
+   */
+  def leftN(n: Int): ACursor
+
+  /**
+   * If the focus is an element in JSON array, move to the right the given number of times.
+   *
+   * A negative value will move the cursor left.
+   *
+   * @group ArrayNavigation
+   */
+  def rightN(n: Int): ACursor
+
+  /**
+   * If the focus is an element in a JSON array, move to the left until the given predicate matches
+   * the new focus.
+   *
+   * @group ArrayNavigation
+   */
+  def leftAt(p: Json => Boolean): ACursor
+
+  /**
+   * If the focus is an element in a JSON array, move to the right until the given predicate matches
+   * the new focus.
+   *
+   * @group ArrayNavigation
+   */
+  def rightAt(p: Json => Boolean): ACursor
+
+  /**
+   * If the focus is an element in a JSON array, find the first element at or to its right that
+   * matches the given predicate.
+   *
+   * @group ArrayNavigation
+   */
+  def find(p: Json => Boolean): ACursor
+
+  /**
+   * If the focus is a JSON array, move to its first element.
+   *
+   * @group ArrayNavigation
+   */
+  def downArray: ACursor
+
+  /**
+   * If the focus is a JSON array, move to the first element that satisfies the given predicate.
+   *
+   * @group ArrayNavigation
+   */
+  def downAt(p: Json => Boolean): ACursor
+
+  /**
+   * If the focus is a JSON array, move to the element at the given index.
+   *
+   * @group ArrayNavigation
+   */
+  def downN(n: Int): ACursor
+
+  /**
+   * If the focus is a value in a JSON object, move to a sibling with the given key.
+   *
+   * @group ObjectNavigation
+   */
+  def field(k: String): ACursor
+
+  /**
+   * If the focus is a JSON object, move to the value of the given key.
+   *
+   * @group ObjectNavigation
+   */
+  def downField(k: String): ACursor
+
+  /**
+   * Delete the focus and move to the left in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteGoLeft: ACursor
+
+  /**
+   * Delete the focus and move to the right in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteGoRight: ACursor
+
+  /**
+   * Delete the focus and move to the first element in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteGoFirst: ACursor
+
+  /**
+   * Delete the focus and move to the last element in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteGoLast: ACursor
+
+  /**
+   * Delete all values to the left of the focus in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteLefts: ACursor
+
+  /**
+   * Delete all values to the right of the focus in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def deleteRights: ACursor
+
+  /**
+   * Replace all values to the left of the focus in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def setLefts(x: Vector[Json]): ACursor
+
+  /**
+   * Replace all values to the right of the focus in a JSON array.
+   *
+   * @group ArrayModification
+   */
+  def setRights(x: Vector[Json]): ACursor
+
+  /**
+   * Delete the focus and move to the sibling with the given key in a JSON object.
+   *
+   * @group ObjectModification
+   */
+  def deleteGoField(k: String): ACursor
+
+  /**
+   * Attempt to decode the focus as an `A`.
+   *
+   * @group Decoding
+   */
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   *
+   * @group Decoding
+   */
   final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
 
-  final def replay(history: List[HistoryOp]): ACursor = history.map(_.op).foldRight(this) {
-    case (Some(CursorOp.MoveLeft), acc) => acc.left
-    case (Some(CursorOp.MoveRight), acc) => acc.right
-    case (Some(CursorOp.MoveFirst), acc) => acc.first
-    case (Some(CursorOp.MoveLast), acc) => acc.last
-    case (Some(CursorOp.MoveUp), acc) => acc.up
-    case (Some(CursorOp.LeftN(n)), acc) => acc.leftN(n)
-    case (Some(CursorOp.RightN(n)), acc) => acc.rightN(n)
-    case (Some(CursorOp.LeftAt(p)), acc) => acc.leftAt(p)
-    case (Some(CursorOp.RightAt(p)), acc) => acc.rightAt(p)
-    case (Some(CursorOp.Find(p)), acc) => acc.find(p)
-    case (Some(CursorOp.Field(k)), acc) => acc.field(k)
-    case (Some(CursorOp.DownField(k)), acc) => acc.downField(k)
-    case (Some(CursorOp.DownArray), acc) => acc.downArray
-    case (Some(CursorOp.DownAt(p)), acc) => acc.downAt(p)
-    case (Some(CursorOp.DownN(n)), acc) => acc.downN(n)
-    case (Some(CursorOp.DeleteGoParent), acc) => acc.delete
-    case (Some(CursorOp.DeleteGoLeft), acc) => acc.deleteGoLeft
-    case (Some(CursorOp.DeleteGoRight), acc) => acc.deleteGoRight
-    case (Some(CursorOp.DeleteGoFirst), acc) => acc.deleteGoFirst
-    case (Some(CursorOp.DeleteGoLast), acc) => acc.deleteGoLast
-    case (Some(CursorOp.DeleteGoField(k)), acc) => acc.deleteGoField(k)
-    case (Some(CursorOp.DeleteLefts), acc) => acc.deleteLefts
-    case (Some(CursorOp.DeleteRights), acc) => acc.deleteRights
-    case (Some(CursorOp.SetLefts(js)), acc) => acc.setLefts(js)
-    case (Some(CursorOp.SetRights(js)), acc) => acc.setRights(js)
-    case (None, acc) => acc
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   * If the field `k` is missing, then use the `fallback` instead.
+   *
+   * @group Decoding
+   */
+  final def getOrElse[A](k: String)(fallback: => A)(implicit d: Decoder[A]): Decoder.Result[A] =
+    get[Option[A]](k) match {
+      case Right(Some(a)) => Right(a)
+      case Right(None) => Right(fallback)
+      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
+    }
+
+  /**
+   * Replay an operation against this cursor.
+   *
+   * @group Utilities
+   */
+  final def replayOne(op: CursorOp): ACursor = op match {
+    case CursorOp.MoveLeft => left
+    case CursorOp.MoveRight => right
+    case CursorOp.MoveFirst => first
+    case CursorOp.MoveLast => last
+    case CursorOp.MoveUp => up
+    case CursorOp.LeftN(n) => leftN(n)
+    case CursorOp.RightN(n) => rightN(n)
+    case CursorOp.LeftAt(p) => leftAt(p)
+    case CursorOp.RightAt(p) => rightAt(p)
+    case CursorOp.Find(p) => find(p)
+    case CursorOp.Field(k) => field(k)
+    case CursorOp.DownField(k) => downField(k)
+    case CursorOp.DownArray => downArray
+    case CursorOp.DownAt(p) => downAt(p)
+    case CursorOp.DownN(n) => downN(n)
+    case CursorOp.DeleteGoParent => delete
+    case CursorOp.DeleteGoLeft => deleteGoLeft
+    case CursorOp.DeleteGoRight => deleteGoRight
+    case CursorOp.DeleteGoFirst => deleteGoFirst
+    case CursorOp.DeleteGoLast => deleteGoLast
+    case CursorOp.DeleteGoField(k) => deleteGoField(k)
+    case CursorOp.DeleteLefts => deleteLefts
+    case CursorOp.DeleteRights => deleteRights
+    case CursorOp.SetLefts(js) => setLefts(js)
+    case CursorOp.SetRights(js) => setRights(js)
   }
+
+  /**
+   * Replay history (a list of operations in reverse "chronological" order) against this cursor.
+   *
+   * @group Utilities
+   */
+  final def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
 }
 
 final object ACursor {
-  final def ok(cursor: HCursor): ACursor = new ACursor(cursor) {
-    def succeeded: Boolean = true
-  }
+  private[this] val jsonOptionEq: Eq[Option[Json]] = cats.kernel.instances.option.catsKernelStdEqForOption(Json.eqJson)
 
-  final def fail(cursor: HCursor): ACursor = new ACursor(cursor) {
-    def succeeded: Boolean = false
-  }
-
-  implicit final val eqACursor: Eq[ACursor] = Eq.by(_.either)
+  implicit val eqACursor: Eq[ACursor] = Eq.instance((a, b) =>
+    jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history)
+  )
 }

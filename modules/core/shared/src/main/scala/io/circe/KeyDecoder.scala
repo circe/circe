@@ -10,7 +10,7 @@ import scala.annotation.tailrec
  */
 abstract class KeyDecoder[A] extends Serializable { self =>
   /**
-   * Convert a value to String.
+   * Attempt to convert a String to a value.
    */
   def apply(key: String): Option[A]
 
@@ -59,10 +59,10 @@ final object KeyDecoder {
     } else None
   }
 
-  implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(_.toByte)
-  implicit val decodeKeyShort: KeyDecoder[Short] = numberInstance(_.toShort)
-  implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(_.toInt)
-  implicit val decodeKeyLong: KeyDecoder[Long] = numberInstance(_.toLong)
+  implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(java.lang.Byte.parseByte)
+  implicit val decodeKeyShort: KeyDecoder[Short] = numberInstance(java.lang.Short.parseShort)
+  implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(java.lang.Integer.parseInt)
+  implicit val decodeKeyLong: KeyDecoder[Long] = numberInstance(java.lang.Long.parseLong)
 
   implicit val keyDecoderInstances: MonadError[KeyDecoder, Unit] = new MonadError[KeyDecoder, Unit] {
     final def pure[A](a: A): KeyDecoder[A] = new KeyDecoder[A] {

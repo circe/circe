@@ -1,12 +1,12 @@
 ---
-layout: default
+layout: docs
 title:  "Optics"
-section: "optics"
+position: 4
 ---
 
 # Optics
 
-Optics are a powerful tool for traversing and modifying JSON documents. They can reduce boilerplate 
+Optics are a powerful tool for traversing and modifying JSON documents. They can reduce boilerplate
 considerably, especially if you are working with deeply nested JSON.
 
 circe provides support for optics by integrating with [Monocle](monocle). To use them, add a
@@ -72,8 +72,8 @@ val _phoneNum = root.order.customer.contactDetails.phone.string
 val phoneNum: Option[String] = _phoneNum.getOption(json)
 ```
 
-Note the difference between cursors and optics. With cursors, we start with a JSON document, get a 
-cursor from it, and then use that cursor to traverse the document. With optics, on the other hand, 
+Note the difference between cursors and optics. With cursors, we start with a JSON document, get a
+cursor from it, and then use that cursor to traverse the document. With optics, on the other hand,
 we first define the traversal we want to make, then apply it to a JSON document.
 
 In other words, optics provide a way to separate the description of a JSON traversal from its
@@ -84,21 +84,21 @@ Let's look at a more complex example. This time we want to get the quantities of
 items in the order. Using a cursor it might look like this:
 
 ```tut:book
-val items: List[Json] = json.hcursor.
+val items: Vector[Json] = json.hcursor.
       downField("order").
       downField("items").
       focus.
       flatMap(_.asArray).
-      getOrElse(Nil)
+      getOrElse(Vector.empty)
 
-val quantities: Seq[Int] =
-  items.flatMap(_.cursor.get[Int]("quantity").toOption)
+val quantities: Vector[Int] =
+  items.flatMap(_.hcursor.get[Int]("quantity").toOption)
 ```
 
 And with optics:
 
 ```tut:book
-val items: Seq[Int] = 
+val items: List[Int] =
   root.order.items.each.quantity.int.getAll(json)
 ```
 
@@ -110,9 +110,9 @@ Suppose we decide to have a 2-for-1 sale, so we want to double all the quantitie
 can be achieved with a small change to the code we wrote for traversal:
 
 ```tut:book
-val doubleQuantities: Json => Json = 
+val doubleQuantities: Json => Json =
   root.order.items.each.quantity.int.modify(_ * 2)
- 
+
 val modifiedJson = doubleQuantities(json)
 ```
 
