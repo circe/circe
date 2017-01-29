@@ -10,7 +10,7 @@ final case class Configuration(transformKeys: String => String, useDefaults: Boo
 }
 
 final object Configuration {
-  implicit val default: Configuration = Configuration(identity, false, None)
+  implicit val default: Configuration = Configuration(Predef.identity, false, None)
 
   val snakeCaseTransformation: String => String = _.replaceAll(
     "([A-Z]+)([A-Z][a-z])",

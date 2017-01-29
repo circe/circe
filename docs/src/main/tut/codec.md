@@ -1,13 +1,13 @@
 ---
-layout: default
+layout: docs
 title:  "Encoding and decoding"
-section: "codec"
+position: 3
 ---
 
 # Encoding and decoding
 
 circe uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
-provides a function that will convert any `A` to a `JSON`, and a `Decoder[A]` takes a `Json` value
+provides a function that will convert any `A` to a `Json`, and a `Decoder[A]` takes a `Json` value
 to either an exception or an `A`. circe provides implicit instances of these type classes for many
 types from the Scala standard library, including `Int`, `String`, and [others][encoder]. It also
 provides instances for `List[A]`, `Option[A]`, and other generic types, but only if `A` has an
@@ -38,7 +38,7 @@ decode[List[Int]]("[1, 2, 3]")
 
 ## Semi-automatic derivation
 
-Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic 
+Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic
 derivation can help. You'd write:
 
 ```tut:silent
@@ -76,7 +76,7 @@ NOTE: You will need the [Macro Paradise](http://docs.scala-lang.org/overviews/ma
 
 ### forProductN helper methods
 
-It's also possible to construct encoders and decoders for case class-like types 
+It's also possible to construct encoders and decoders for case class-like types
 in a relatively boilerplate-free way without generic derivation:
 
 ```tut:silent
@@ -147,7 +147,7 @@ implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =
 
 ## Custom key types
 
-If you need to encode/decode `Map[K, V]` where `K` is not `String` (or `Symbol`, `Int`, `Long`, etc.), 
+If you need to encode/decode `Map[K, V]` where `K` is not `String` (or `Symbol`, `Int`, `Long`, etc.),
 you need to provide a `KeyEncoder` and/or `KeyDecoder` for your custom key type.
 
 For example:
@@ -177,7 +177,7 @@ json.as[Map[Foo, Int]]
 ## Warnings and known issues
 
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
-   Paradise][paradise] plugin to your build. See the [quick start section on the home page]({{ site.baseurl }}/index.html#quick-start) 
+   Paradise][paradise] plugin to your build. See the [quick start section on the home page]({{ site.baseurl }}/index.html#quick-start)
    for details.
 
 2. Generic derivation may not work as expected when the type definitions that you're trying to

@@ -1,12 +1,12 @@
 ---
-layout: default
+layout: docs
 title:  "Parsing JSON"
-section: "parsing"
+position: 1
 ---
 
 # Parsing JSON
 
-Circe includes a parsing module, which is a wrapper around the [Jawn][jawn] JSON parser.
+Circe includes a parsing module, which on the JVM is a wrapper around the [Jawn][jawn] JSON parser and for JavaScript uses the built-in [`JSON.parse`][json.parse].
 
 Parsing is not part of the `circe-core` module, so you will need to include a dependency on the `circe-parser` module in your build:
 
@@ -59,5 +59,17 @@ import cats.syntax.either._
 
 val json: Json = parse(rawJson).getOrElse(Json.Null)
 ```
+
+## Warnings and known issues
+
+When using the Scala.js version of circe, numerical values like `Long` may [lose
+precision][#393] when decoded. For example `decode[Long]("767946224062369796")`
+will return `Right(767946224062369792L)`. This is not a limitation of how
+Scala.js represents `scala.Long`s nor circe's decoders for numerical values but
+due to [`JSON.parse`][json.parse] converting numerical values to JavaScript
+numbers. If precision is required consider representing numerical values as
+strings and convert them to their final value via the JSON AST.
+
+ [#393]: https://github.com/circe/circe/issues/393
 
 {% include references.md %}

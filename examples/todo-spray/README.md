@@ -1,6 +1,6 @@
 # Web services with Spray and circe
 
-The circe-spray module makes it easy to create web services with [Spray][spray]
+The [circe-spray][circe-spray] project makes it easy to create web services with [Spray][spray]
 that use circe for JSON serialization. This project demonstrates a simple web
 service with a single endpoint that accepts a posted "todo" object with three
 fields and returns a completed todo value with a generated identifier.
@@ -49,5 +49,6 @@ Server: spray-can/1.3.3
 This all works without us having to write a single line of code describing how
 to decode or encode our `Todo` type as JSON.
 
+[circe-spray]: https://github.com/circe/circe-spray
 [httpie]: https://github.com/jkbrzt/httpie
 [spray]: http://spray.io/

@@ -1,116 +1,118 @@
 package io.circe
 
-import cats.{ Eq, Functor, Id }
+import cats.Applicative
+import io.circe.cursor.{ ArrayCursor, ObjectCursor, TopCursor }
+import scala.annotation.tailrec
+import scala.collection.immutable.Set
 
-/**
- * A cursor that tracks the history of operations performed with it.
- *
- * @groupname Ungrouped HCursor fields and operations
- * @groupprio Ungrouped 1
- *
- * @see [[GenericCursor]]
- * @author Travis Brown
- */
-sealed abstract class HCursor(final val cursor: Cursor) extends GenericCursor[HCursor] { self =>
-  type Focus[x] = Id[x]
-  type Result = ACursor
-  type M[x[_]] = Functor[x]
+abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
+  def value: Json
 
-  def history: List[HistoryOp]
+  def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor
+  def addOp(cursor: HCursor, op: CursorOp): HCursor
 
-  /**
-   * Create an [[ACursor]] for this cursor.
-   */
-  final def acursor: ACursor = ACursor.ok(this)
+  final def withFocus(f: Json => Json): ACursor = replace(f(value), this, null)
+  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
+    F.map(f(value))(replace(_, this, null))
 
-  /**
-   * Create a failed [[ACursor]] for this cursor.
-   */
-  final def failedACursor: ACursor = ACursor.fail(this)
+  final def succeeded: Boolean = true
+  final def success: Option[HCursor] = Some(this)
 
-  /**
-   * If the last operation was not successful, reattempt it.
-   */
-  final def reattempted: HCursor = new HCursor(self.cursor) {
-    final def history: List[HistoryOp] = HistoryOp.reattempt :: self.history
+  final def focus: Option[Json] = Some(value)
+
+  final def values: Option[Vector[Json]] = value match {
+    case Json.JArray(vs) => Some(vs)
+    case _ => None
   }
 
-  @inline private[this] def toACursor(oc: Option[Cursor], e: CursorOp) = oc match {
-    case None => ACursor.fail(
-      new HCursor(this.cursor) {
-        private[this] val incorrectFocus: Boolean =
-          (e.requiresObject && !self.focus.isObject) || (e.requiresArray && !self.focus.isArray)
-        final def history: List[HistoryOp] = HistoryOp.fail(e, incorrectFocus) :: self.history
-      }
-    )
-    case Some(c) => ACursor.ok(
-      new HCursor(c) {
-        final def history: List[HistoryOp] = HistoryOp.ok(e) :: self.history
-      }
-    )
+  final def fieldSet: Option[Set[String]] = value match {
+    case Json.JObject(o) => Some(o.fieldSet)
+    case _ => None
   }
 
-  final def focus: Json = cursor.focus
-  final def top: Json = cursor.top
-  final def delete: ACursor = toACursor(cursor.delete, CursorOp.DeleteGoParent)
-  final def withFocus(f: Json => Json): HCursor = new HCursor(cursor.withFocus(f)) {
-    final def history: List[HistoryOp] = self.history
+  final def fields: Option[Vector[String]] = value match {
+    case Json.JObject(o) => Some(o.fields)
+    case _ => None
   }
 
-  final def withFocusM[F[_]: Functor](f: Json => F[Json]): F[HCursor] =
-    Functor[F].map(cursor.withFocusM(f))(c =>
-      new HCursor(c) {
-        final def history: List[HistoryOp] = self.history
+  final def top: Option[Json] = {
+    var current: HCursor = this
+
+    while (!current.isInstanceOf[TopCursor]) {
+      current = current.up.asInstanceOf[HCursor]
+    }
+
+    Some(current.asInstanceOf[TopCursor].value)
+  }
+
+  final def downArray: ACursor = value match {
+    case Json.JArray(values) if !values.isEmpty =>
+      new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
+    case _ => fail(CursorOp.DownArray)
+  }
+
+  final def downField(k: String): ACursor = value match {
+    case Json.JObject(o) =>
+      val m = o.toMap
+
+      if (!m.contains(k)) fail(CursorOp.DownField(k)) else {
+        new ObjectCursor(o, k, this, false)(this, CursorOp.DownField(k))
       }
-    )
+    case _ => fail(CursorOp.DownField(k))
+  }
 
+  final def downN(n: Int): ACursor = value match {
+    case Json.JArray(values) if n >= 0 && values.size > n =>
+      new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
+    case _ => fail(CursorOp.DownN(n))
+  }
 
-  final def lefts: Option[List[Json]]     = cursor.lefts
-  final def rights: Option[List[Json]]    = cursor.rights
-  final def fieldSet: Option[Set[String]] = cursor.fieldSet
-  final def fields: Option[List[String]]  = cursor.fields
+  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n) else {
+    @tailrec
+    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
 
-  final def up: ACursor                          = toACursor(cursor.up, CursorOp.MoveUp)
-  final def left: ACursor                        = toACursor(cursor.left, CursorOp.MoveLeft)
-  final def right: ACursor                       = toACursor(cursor.right, CursorOp.MoveRight)
-  final def first: ACursor                       = toACursor(cursor.first, CursorOp.MoveFirst)
-  final def last: ACursor                        = toACursor(cursor.last, CursorOp.MoveLast)
-  final def leftN(n: Int): ACursor               = toACursor(cursor.leftN(n), CursorOp.LeftN(n))
-  final def rightN(n: Int): ACursor              = toACursor(cursor.rightN(n), CursorOp.RightN(n))
-  final def leftAt(p: Json => Boolean): ACursor  = toACursor(cursor.leftAt(p), CursorOp.LeftAt(p))
-  final def rightAt(p: Json => Boolean): ACursor = toACursor(cursor.rightAt(p), CursorOp.RightAt(p))
-  final def find(p: Json => Boolean): ACursor    = toACursor(cursor.find(p), CursorOp.Find(p))
-  final def downArray: ACursor                   = toACursor(cursor.downArray, CursorOp.DownArray)
-  final def downAt(p: Json => Boolean): ACursor  = toACursor(cursor.downAt(p), CursorOp.DownAt(p))
-  final def downN(n: Int): ACursor               = toACursor(cursor.downN(n), CursorOp.DownN(n))
-  final def field(k: String): ACursor            = toACursor(cursor.field(k), CursorOp.Field(k))
-  final def downField(k: String): ACursor        = toACursor(cursor.downField(k), CursorOp.DownField(k))
-  final def deleteGoLeft: ACursor                = toACursor(cursor.deleteGoLeft, CursorOp.DeleteGoLeft)
-  final def deleteGoRight: ACursor               = toACursor(cursor.deleteGoRight, CursorOp.DeleteGoRight)
-  final def deleteGoFirst: ACursor               = toACursor(cursor.deleteGoFirst, CursorOp.DeleteGoFirst)
-  final def deleteGoLast: ACursor                = toACursor(cursor.deleteGoLast, CursorOp.DeleteGoLast)
-  final def deleteLefts: ACursor                 = toACursor(cursor.deleteLefts, CursorOp.DeleteLefts)
-  final def deleteRights: ACursor                = toACursor(cursor.deleteRights, CursorOp.DeleteRights)
-  final def setLefts(js: List[Json]): ACursor    = toACursor(cursor.setLefts(js), CursorOp.SetLefts(js))
-  final def setRights(js: List[Json]): ACursor   = toACursor(cursor.setRights(js), CursorOp.SetRights(js))
-  final def deleteGoField(k: String): ACursor
-    = toACursor(cursor.deleteGoField(k), CursorOp.DeleteGoField(k))
+    go(n, this)
+  }
 
-  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(this)
-  final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
+  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n) else {
+    @tailrec
+    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.right)
 
-  final def replay(history: List[HistoryOp]): ACursor = ACursor.ok(this).replay(history)
+    go(n, this)
+  }
+
+  final def leftAt(p: Json => Boolean): ACursor = {
+    @tailrec
+    def go(c: ACursor): ACursor = c match {
+      case success: HCursor => if (p(success.value)) success else go(success.left)
+      case other => other
+    }
+
+    go(left)
+  }
+
+  final def rightAt(p: Json => Boolean): ACursor = right.find(p)
+
+  final def find(p: Json => Boolean): ACursor = {
+    @tailrec
+    def go(c: ACursor): ACursor = c match {
+      case success: HCursor => if (p(success.value)) success else go(success.right)
+      case other => other
+    }
+
+    go(this)
+  }
+
+  final def downAt(p: Json => Boolean): ACursor = downArray.find(p)
+
+  /**
+   * Create a new cursor that has failed on the given operation.
+   *
+   * @group Utilities
+   */
+  protected[this] final def fail(op: CursorOp): ACursor = new FailedCursor(this, op)
 }
 
 final object HCursor {
-  /**
-   * Create an [[HCursor]] from a [[Cursor]] in order to track history.
-   */
-  final def fromCursor(cursor: Cursor): HCursor = new HCursor(cursor) {
-    final def history: List[HistoryOp] = Nil
-  }
-
-  implicit final val eqHCursor: Eq[HCursor] = Eq.instance {
-    case (hc1, hc2) => Eq[Cursor].eqv(hc1.cursor, hc2.cursor) && (hc1.history == hc2.history)
-  }
+  def fromJson(value: Json): HCursor = new TopCursor(value)(null, null)
 }

@@ -42,7 +42,7 @@ private[testing] trait ShrinkInstances {
       _ => Stream.empty,
       n => shrinkJsonNumber.shrink(n).map(Json.fromJsonNumber),
       s => Shrink.shrinkString.shrink(s).map(Json.fromString),
-      a => Shrink.shrinkContainer[List, Json].shrink(a).map(Json.fromValues),
+      a => Shrink.shrinkContainer[Vector, Json].shrink(a).map(Json.fromValues),
       o => shrinkJsonObject.shrink(o).map(Json.fromJsonObject)
     )
   )

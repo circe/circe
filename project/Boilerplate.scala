@@ -106,11 +106,11 @@ object Boilerplate {
 
       val instances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
       val applied = synTypes.zipWithIndex.map {
-        case (tpe, n) => s"decode$tpe(js($n))"
+        case (tpe, n) => s"decode$tpe.tryDecode(c.downN($n))"
       }.mkString(", ")
 
       val accumulatingApplied = synTypes.zipWithIndex.map {
-        case (tpe, n) => s"decode$tpe.decodeAccumulating(js($n))"
+        case (tpe, n) => s"decode$tpe.tryDecodeAccumulating(c.downN($n))"
       }.mkString(", ")
 
       val result =
@@ -131,20 +131,15 @@ object Boilerplate {
         -   */
         -  implicit final def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
         -    new Decoder[${`(A..N)`}] {
-        -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.as[Vector[HCursor]] match {
-        -        case Right(js) => if (js.size == $arity) {
-        -          $result
-        -        } else Left(DecodingFailure("${`(A..N)`}", c.history))
-        -        case l @ Left(_) => l.asInstanceOf[Decoder.Result[${`(A..N)`}]]
+        -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.value match {
+        -        case Json.JArray(values) if values.size == $arity => $result
+        -        case _ => Left(DecodingFailure("${`(A..N)`}", c.history))
         -      }
         -
-        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] =
-        -        c.as[Vector[HCursor]] match {
-        -          case Right(js) => if (js.size == $arity) {
-        -            $accumulatingResult
-        -          } else Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
-        -          case Left(e) => Validated.invalidNel(e)
-        -        }
+        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] = c.value match {
+        -        case Json.JArray(values) if values.size == $arity => $accumulatingResult
+        -        case _ => Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
+        -      }
         -    }
         |}
       """
@@ -173,7 +168,7 @@ object Boilerplate {
         -   */
         -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): ArrayEncoder[${`(A..N)`}] =
         -    new ArrayEncoder[${`(A..N)`}] {
-        -      final def encodeArray(a: ${`(A..N)`}): List[Json] = List($applied)
+        -      final def encodeArray(a: ${`(A..N)`}): Vector[Json] = Vector($applied)
         -    }
         |}
       """

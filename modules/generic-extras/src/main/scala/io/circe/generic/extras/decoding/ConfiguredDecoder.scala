@@ -2,11 +2,10 @@ package io.circe.generic.extras.decoding
 
 import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.extras.{Configuration, Key}
-import io.circe.generic.extras.util.{Labelling, RecordToMap}
-import shapeless.ops.hlist.ToTraversable
-import shapeless.{Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy}
-
+import io.circe.generic.extras.Configuration
+import io.circe.generic.extras.util.RecordToMap
+import scala.collection.immutable.Map
+import shapeless.{ Coproduct, Default, HList, LabelledGeneric, Lazy }
 
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 
@@ -55,7 +54,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     config: Configuration
   ): ConfiguredDecoder[A] = new ConfiguredDecoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
-      identity,
+      Predef.identity,
       Map.empty,
       config.discriminator
     ) match {
@@ -64,7 +63,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     }
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
-        identity,
+        Predef.identity,
         Map.empty,
         config.discriminator
       ).map(gen.from)

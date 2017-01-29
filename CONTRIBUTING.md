@@ -1,3 +1,9 @@
+---
+layout: docs
+title:  "Contributing"
+position: 6
+---
+
 # Guide for contributors
 
 This project follows a standard [fork and pull][fork-and-pull] model for accepting contributions via
@@ -24,7 +30,7 @@ contribute a fix or implementation for your issue to be appreciated.
 
 ## Write code
 
-The [design principles document](DESIGN.md) outlines some of the practices followed in the circe
+The [design principles document][design-principles] outlines some of the practices followed in the circe
 codebase. In general the public API should be purely functional, but the implementation is free to
 use non-functional constructions for the sake of performance—we want correctness, of course, but
 internally we're willing to have this correctness verified by tests rather than the compiler when
@@ -76,12 +82,13 @@ compatibility before the next release.
 * If a pull request decreases code coverage more than by 2%, please file an issue to make sure that
   tests get added.
 
-[beginner-friendly]: https://github.com/travisbrown/circe/labels/beginner-friendly
+[beginner-friendly]: https://github.com/circe/circe/labels/beginner-friendly
+[design-principles]: https://github.com/circe/circe/blob/master/DESIGN.md
 [discipline]: https://github.com/typelevel/discipline
-[gitter]: https://gitter.im/travisbrown/circe
+[gitter]: https://gitter.im/circe/circe
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests/
-[help-wanted]: https://github.com/travisbrown/circe/labels/help%20wanted
-[issues]: https://github.com/travisbrown/circe/issues
+[help-wanted]: https://github.com/circe/circe/labels/help%20wanted
+[issues]: https://github.com/circe/circe/issues
 [scalacheck]: https://www.scalacheck.org/
 [scalatest]: http://www.scalatest.org/
 [squash]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html

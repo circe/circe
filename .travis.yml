@@ -12,7 +12,7 @@ jdk:
 
 matrix:
   include:
-  - scala: 2.12.0
+  - scala: 2.12.1
     jdk: oraclejdk8
 
 cache:
@@ -25,16 +25,15 @@ install:
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.11.* ]];
+    then sbt update;
+    fi
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.10.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION hygiene/compile;
     else echo "Skipping hygiene tests on 2.10 (see \#300)";
     fi
-  - if [[ "$TRAVIS_SCALA_VERSION" != 2.12.* ]];
-    then
-      sbt ++$TRAVIS_SCALA_VERSION spray/test benchmark/test coverageReport && codecov;
-    else echo "Skipping spray and benchmark tests and coverage reporting on 2.12";
-    fi
+  - sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION clean validateJS;

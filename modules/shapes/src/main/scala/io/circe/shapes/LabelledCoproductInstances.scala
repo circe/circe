@@ -24,7 +24,7 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
     encodeR: Encoder[R]
   ): Encoder[FieldType[K, V] :+: R] = new Encoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
-      case Inl(l) => Json.obj(witK.value.name -> encodeV(l))
+      case Inl(l) => Json.obj((witK.value.name, encodeV(l)))
       case Inr(r) => encodeR(r)
     }
   }
@@ -59,7 +59,7 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
     encodeR: Encoder[R]
   ): Encoder[FieldType[K, V] :+: R] = new Encoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
-      case Inl(l) => Json.obj(encodeW(witK.value) -> encodeV(l))
+      case Inl(l) => Json.obj((encodeW(witK.value), encodeV(l)))
       case Inr(r) => encodeR(r)
     }
   }
