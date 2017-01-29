@@ -23,6 +23,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [The Guardian](https://www.theguardian.com)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
+* [Sigma](https://thesigma.com)
 
 ### Other circe organization projects
 
@@ -69,6 +70,7 @@ The following open source projects are either built on circe or provide circe su
   implementation.
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
+* [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on circe.
@@ -80,7 +82,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/alanphillips78/akka-http-microservice-blueprint
 * https://github.com/bneil/fcs_boilerplate
 * https://github.com/gvolpe/simple-http4s-api
-* https://github.com/notvitor/akka-http-circe-json-template
+* https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
 
 ## Contributors and participation
@@ -162,6 +164,7 @@ limitations under the License.
 [scala-js]: http://www.scala-js.org/
 [scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scalist]: https://github.com/vpavkin/scalist
+[seals]: https://github.com/durban/seals/
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml

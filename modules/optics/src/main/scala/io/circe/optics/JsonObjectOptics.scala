@@ -45,7 +45,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.atIndex
+  implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.fromAt
 }
 
 final object JsonObjectOptics extends JsonObjectOptics
