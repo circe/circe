@@ -170,6 +170,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (refined, refinedJS),
   (parser, parserJS),
   (scodec, scodecJS),
+  (java8, java8JS),
   (testing, testingJS),
   (tests, testsJS)
 )
@@ -178,7 +179,6 @@ lazy val circeJsModules = Seq[Project](scalajs)
 
 lazy val circeJvmModules = Seq[Project](
   jawn,
-  java8,
   streaming
 )
 
@@ -410,8 +410,14 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   )
   .dependsOn(core)
 
-lazy val java8 = circeModule("java8", mima = previousCirceVersion)
-  .dependsOn(core, tests % Test)
+lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
+  .dependsOn(coreBase, testsBase % Test)
+  .jsSettings(
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M9"
+  )
+
+lazy val java8 = java8Base.jvm
+lazy val java8JS = java8Base.js
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
