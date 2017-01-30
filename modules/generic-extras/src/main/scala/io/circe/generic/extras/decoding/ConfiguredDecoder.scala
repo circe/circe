@@ -26,7 +26,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     private[this] val keysAreDefined=keys().toList.flatten.nonEmpty
     @volatile lazy val keysMap:Map[String,String]={
       val fkeys=keys().toList
-      labels().map(_.name).zipWithIndex.map{case (v, p:Int) => v -> fkeys(p)}.filter(_._2.isDefined).map(v=> v._1 -> v._2.get.value).toMap
+      labels().map(_.name).zipWithIndex.map{v => Tuple2(v._1, fkeys(v._2))}.filter(_._2.isDefined).map(v=> Tuple2(v._1, v._2.get.value)).toMap
     }
 
     def keyTransformer(transformKeys: String => String)(value: String): String ={
