@@ -26,6 +26,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Sigma](https://thesigma.com)
 * [Zalando](https://zalando.de)
 * [Stripe](https://stripe.com)
+* [Datalogue](https://datalogue.io)
 
 ### Other circe organization projects
 
