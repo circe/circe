@@ -25,6 +25,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
 * [Sigma](https://thesigma.com)
 * [Zalando](https://zalando.de)
+* [Datalogue](https://datalogue.io)
 
 ### Other circe organization projects
 
