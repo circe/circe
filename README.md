@@ -16,17 +16,17 @@ about why circe exists and how to use it.
 
 Are you using circe? Please consider opening a pull request to list your organization here:
 
+* [Datalogue](https://datalogue.io)
+* [The Guardian](https://www.theguardian.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
+* [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
 * [Reonomy](https://reonomy.com/)
+* [Sigma](https://thesigma.com)
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
+* [Stripe](https://stripe.com)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
-* [The Guardian](https://www.theguardian.com)
-* [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
-* [Sigma](https://thesigma.com)
 * [Zalando](https://zalando.de)
-* [Stripe](https://stripe.com)
-* [Datalogue](https://datalogue.io)
 
 ### Other circe organization projects
 
