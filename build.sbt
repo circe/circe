@@ -1,4 +1,3 @@
-import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import microsites.ExtraMdFileConfig
@@ -108,7 +107,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = {
   (unwanted ++ jvm8Only(java8) ++ scala210).map(p => p: ProjectReference)
 }
 
-lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
+lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
   micrositeDescription := "A JSON library for Scala powered by Cats",
   micrositeAuthor := "Travis Brown",
@@ -158,6 +157,7 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
   .enablePlugins(MicrositesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val circeCrossModules = Seq[(Project, Project)](
   (numbers, numbersJS),
