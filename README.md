@@ -16,6 +16,7 @@ about why circe exists and how to use it.
 
 Are you using circe? Please consider opening a pull request to list your organization here:
 
+* [Anduin Transactions](https://anduintransact.com/)
 * [Datalogue](https://datalogue.io)
 * [The Guardian](https://www.theguardian.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
