@@ -1,3 +1,5 @@
 package io.circe.generic.extras
 
-final case class Key(value: String)
+import scala.annotation.StaticAnnotation
+
+final case class Key(value: String) extends StaticAnnotation
