@@ -209,8 +209,8 @@ lazy val aggregatedProjects: Seq[ProjectReference] =
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value % Provided,
-    "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+    scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
+    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
     "org.typelevel" %%% "macro-compat" % "1.1.1",
     compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
   ),
