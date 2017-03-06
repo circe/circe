@@ -1,31 +1,64 @@
 package io.circe
 
+import cats.Eq
+import cats.data.Validated
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import io.circe.Json.JObject
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.WrappedOptionalField
+import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
-class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
+class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDrivenPropertyChecks {
   checkLaws("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
   checkLaws("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
 
-  "prepare" should "do nothing when used with identity" in forAll { (i: Int) =>
-    assert(Decoder[Int].prepare(identity).decodeJson(i.asJson) === Right(i))
+  private[this] def transformations[T] = Table[Decoder[T] => Decoder[T]](
+    "transformation",
+    _.prepare(identity),
+    _.map(identity),
+    _.emap(Right(_)),
+    _.emapTry(Success(_))
+  )
+
+  "transformations" should "do nothing when used with identity" in forAll(transformations[Int]) { transformation =>
+    val decoder = transformation(Decoder[Int])
+    forAll { (i: Int) =>
+      assert(decoder.decodeJson(i.asJson) === Right(i))
+      assert(decoder.accumulating(i.asJson.hcursor) === Validated.valid(i))
+    }
   }
 
-  it should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
+  "transformations" should "fail when called on failed decoder" in forAll(transformations[Int]) { transformation =>
+    val decoder = transformation(Decoder.failedWithMessage("Some message"))
+    val failure = DecodingFailure("Some message", Nil)
+    forAll { (i: Int) =>
+      assert(decoder.decodeJson(i.asJson) === Left(failure))
+      assert(decoder.accumulating(i.asJson.hcursor) === Validated.invalidNel(failure))
+    }
+  }
+
+  "transformations" should "not break derived decoders when called on Decoder[Option[T]]" in
+    forAll(transformations[Option[String]]) { transformation =>
+      import io.circe.generic.semiauto._
+      implicit val decodeOptionString = transformation(Decoder.decodeOption(Decoder.decodeString))
+      case class Test(a: Option[String])
+      implicit val eqTest: Eq[Test] = Eq.fromUniversalEquals[Test]
+      val decoder = deriveDecoder[Test]
+      val emptyJsonObject = JObject(JsonObject.empty)
+      assert(decoder.decodeJson(emptyJsonObject) === Right(Test(None)))
+      assert(decoder.accumulating(emptyJsonObject.hcursor) === Validated.valid(Test(None)))
+    }
+
+  "prepare" should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
     assert(Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Right(i))
   }
 
-  "emap" should "do nothing when used with right" in forAll { (i: Int) =>
-    assert(Decoder[Int].emap(Right(_)).decodeJson(i.asJson) === Right(i))
-  }
-
-  it should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
+  "emap" should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
     assert(Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
 
@@ -36,11 +69,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests {
     assert(decoder.decodeJson(i.asJson) === expected)
   }
 
-  "emapTry" should "do nothing when used with Success" in forAll { (i: Int) =>
-    assert(Decoder[Int].emapTry(Success(_)).decodeJson(i.asJson) === Right(i))
-  }
-
-  it should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
+  "emapTry" should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
     assert(Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
 
