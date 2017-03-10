@@ -2,7 +2,7 @@ package io.circe.optics
 
 import cats.instances.list.catsStdInstancesForList
 import io.circe.{ Json, JsonObject }
-import monocle.{ Lens, Traversal }
+import monocle.{ Iso, Lens, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
 import scalaz.{ Applicative, Traverse }
 import scalaz.std.ListInstances
@@ -46,6 +46,15 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
   }
 
   implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.fromAt
+
+  final lazy val jsonObjectIso: Iso[JsonObject, List[(String, Json)]] =
+    Iso((_: JsonObject).toList)(JsonObject.fromIterable)
+
+  final lazy val jsonObjectFields: Traversal[JsonObject, (String, Json)] =
+    jsonObjectIso.composeTraversal(Traversal.fromTraverse[List, (String, Json)])
+
+  final lazy val jsonFields: Traversal[Json, (String, Json)] =
+    JsonOptics.jsonObject.composeTraversal(jsonObjectFields)
 }
 
 final object JsonObjectOptics extends JsonObjectOptics
