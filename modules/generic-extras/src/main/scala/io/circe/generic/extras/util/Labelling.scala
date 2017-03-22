@@ -1,7 +1,6 @@
 package io.circe.generic.extras.util
 
-import shapeless.{DefaultSymbolicLabelling, HList}
-import shapeless.ops
+import shapeless.{DefaultSymbolicLabelling, HList, ops}
 
 object Labelling {
 
@@ -21,5 +20,4 @@ object Labelling {
         def apply() = default().toList[Symbol]
       }
   }
-
 }
