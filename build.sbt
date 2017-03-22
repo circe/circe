@@ -1,4 +1,3 @@
-import sbtunidoc.Plugin.UnidocKeys._
 import ReleaseTransformations._
 import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import microsites.ExtraMdFileConfig
@@ -23,11 +22,11 @@ lazy val compilerOptions = Seq(
 lazy val catsVersion = "0.9.0"
 lazy val jawnVersion = "0.10.4"
 lazy val shapelessVersion = "2.3.2"
-lazy val refinedVersion = "0.6.2"
+lazy val refinedVersion = "0.8.0"
 lazy val monocleVersion = "1.4.0"
 
 lazy val scalaTestVersion = "3.0.1"
-lazy val scalaCheckVersion = "1.13.4"
+lazy val scalaCheckVersion = "1.13.5"
 lazy val disciplineVersion = "0.7.3"
 
 lazy val previousCirceVersion = Some("0.6.1")
@@ -108,7 +107,7 @@ def noDocProjects(sv: String): Seq[ProjectReference] = {
   (unwanted ++ jvm8Only(java8) ++ scala210).map(p => p: ProjectReference)
 }
 
-lazy val docSettings = allSettings ++ unidocSettings ++ Seq(
+lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
   micrositeDescription := "A JSON library for Scala powered by Cats",
   micrositeAuthor := "Travis Brown",
@@ -155,9 +154,10 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
   )
   .enablePlugins(MicrositesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val circeCrossModules = Seq[(Project, Project)](
   (numbers, numbersJS),
@@ -209,10 +209,10 @@ lazy val aggregatedProjects: Seq[ProjectReference] =
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
-    "org.scala-lang" % "scala-compiler" % scalaVersion.value % Provided,
-    "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+    scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
+    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
     "org.typelevel" %%% "macro-compat" % "1.1.1",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
   ),
   libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -234,7 +234,7 @@ lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch),
     initialCommands in console :=
       """
         |import io.circe._
@@ -365,7 +365,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
@@ -424,7 +424,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
     )
   )
   .dependsOn(coreBase, testsBase % Test)
@@ -441,7 +441,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     },
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
     )
   )
   .enablePlugins(JmhPlugin)
