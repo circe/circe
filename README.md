@@ -18,6 +18,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 
 * [Anduin Transactions](https://anduintransact.com/)
 * [BBC](http://www.bbc.co.uk)
+* [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
 * [Datalogue](https://datalogue.io)
 * [The Guardian](https://www.theguardian.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
