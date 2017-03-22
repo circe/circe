@@ -120,14 +120,23 @@ do so in a couple of ways.
 Firstly, you can write a new `Encoder[A]` and `Decoder[A]` from scratch:
 
 ```tut:book
-class Thing()
+class Thing(val foo: String, val bar: Int)
 
 implicit val encodeFoo: Encoder[Thing] = new Encoder[Thing] {
-  final def apply(a: Thing): Json = ??? // your implementation goes here
+  final def apply(a: Thing): Json = Json.obj(
+    ("foo", Json.fromString(a.foo)),
+    ("bar", Json.fromInt(a.bar))
+  )
 }
 
 implicit val decodeFoo: Decoder[Thing] = new Decoder[Thing] {
-  final def apply(c: HCursor): Decoder.Result[Thing] = Left(DecodingFailure("Not implemented yet", c.history))
+  final def apply(c: HCursor): Decoder.Result[Thing] =
+    for {
+      foo <- c.downField("foo").as[String]
+      bar <- c.downField("bar").as[Int]
+    } yield {
+      new Thing(foo, bar)
+    }
 }
 ```
 
