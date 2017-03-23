@@ -5,8 +5,8 @@ import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{ Configuration, Key }
 import io.circe.generic.extras.util.{ Labelling, RecordToMap }
 import scala.collection.immutable.Map
-import shapeless.ops.hlist.ToTraversable
 import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy }
+import shapeless.ops.hlist.ToTraversable
 
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 

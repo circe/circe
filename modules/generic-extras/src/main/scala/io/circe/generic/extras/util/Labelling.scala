@@ -1,6 +1,6 @@
 package io.circe.generic.extras.util
 
-import shapeless.{DefaultSymbolicLabelling, HList, ops}
+import shapeless._
 
 object Labelling {
 
