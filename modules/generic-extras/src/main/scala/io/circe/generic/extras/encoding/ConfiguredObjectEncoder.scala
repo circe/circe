@@ -2,11 +2,11 @@ package io.circe.generic.extras.encoding
 
 import io.circe.JsonObject
 import io.circe.generic.encoding.DerivedObjectEncoder
-import io.circe.generic.extras.util.Labelling
 import io.circe.generic.extras.{Configuration, Key}
-import shapeless.ops.hlist.ToTraversable
-import shapeless.{Annotations, Coproduct, HList, LabelledGeneric, Lazy}
+import io.circe.generic.extras.util.Labelling
 import scala.collection.immutable.Map
+import shapeless.{Annotations, Coproduct, HList, LabelledGeneric, Lazy}
+import shapeless.ops.hlist.ToTraversable
 
 abstract class ConfiguredObjectEncoder[A] extends DerivedObjectEncoder[A]
 

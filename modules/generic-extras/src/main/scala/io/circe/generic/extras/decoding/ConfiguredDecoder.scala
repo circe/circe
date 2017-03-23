@@ -4,10 +4,9 @@ import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{Configuration, Key}
 import io.circe.generic.extras.util.{Labelling, RecordToMap}
-import shapeless.ops.hlist._
-
 import scala.collection.immutable.Map
 import shapeless.{Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy}
+import shapeless.ops.hlist._
 
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 
