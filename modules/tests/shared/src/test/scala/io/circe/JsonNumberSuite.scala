@@ -13,6 +13,10 @@ class JsonNumberSuite extends CirceSuite {
     assert(Json.fromDouble(d).flatMap(_.asNumber) === JsonNumber.fromString(d.toString))
   }
 
+  it should "match Json.fromFloat" in forAll { (f: Float) =>
+    assert(Json.fromFloat(f).flatMap(_.asNumber) === JsonNumber.fromString(f.toString))
+  }
+
   it should "round-trip Byte" in forAll { (b: Byte) =>
     assert(JsonNumber.fromString(b.toString).flatMap(_.toByte) === Some(b))
   }
@@ -52,6 +56,8 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString("-1.5").map(_.truncateToLong) === Some(-1L))
     assert(Json.fromDouble(1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(1L))
     assert(Json.fromDouble(-1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(-1L))
+    assert(Json.fromFloat(1.5f).flatMap(_.asNumber).map(_.truncateToLong) === Some(1L))
+    assert(Json.fromFloat(-1.5f).flatMap(_.asNumber).map(_.truncateToLong) === Some(-1L))
     assert(Json.fromBigDecimal(BigDecimal(1.5)).asNumber.map(_.truncateToLong) === Some(1L))
     assert(Json.fromBigDecimal(BigDecimal(-1.5)).asNumber.map(_.truncateToLong) === Some(-1L))
   }
@@ -92,5 +98,46 @@ class JsonNumberSuite extends CirceSuite {
 
   it should "fail on Double.NegativeInfinity" in {
     assert(Json.fromDouble(Double.NegativeInfinity) === None)
+  }
+
+  "fromFloat" should "fail on Float.NaN" in {
+    assert(Json.fromFloat(Float.NaN) === None)
+  }
+
+  it should "fail on Float.PositiveInfinity" in {
+    assert(Json.fromFloat(Float.PositiveInfinity) === None)
+  }
+
+  it should "fail on Float.NegativeInfinity" in {
+    assert(Json.fromFloat(Float.NegativeInfinity) === None)
+  }
+
+  "fromFloatOrNull" should "return Null on Float.NaN" in {
+    assert(Json.fromFloatOrNull(Float.NaN) === Json.Null)
+  }
+
+  it should "return Null on Float.PositiveInfinity" in {
+    assert(Json.fromFloatOrNull(Float.PositiveInfinity) === Json.Null)
+  }
+
+  it should "return NUll on Float.NegativeInfinity" in {
+    assert(Json.fromFloatOrNull(Float.NegativeInfinity) === Json.Null)
+  }
+
+  "fromFloatOrString" should "return String on Float.NaN" in {
+    assert(Json.fromFloatOrString(Float.NaN) === Json.JString("NaN"))
+  }
+
+  it should "return String on Float.PositiveInfinity" in {
+    assert(Json.fromFloatOrString(Float.PositiveInfinity) === Json.JString("Infinity"))
+  }
+
+  it should "return String on Float.NegativeInfinity" in {
+    assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.JString("-Infinity"))
+  }
+
+  it should "return JNumber for valid Floats" in {
+    assert(Json.fromFloatOrString(1.1f) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
+    assert(Json.fromFloatOrString(-1.2f) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
   }
 }
