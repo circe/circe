@@ -148,7 +148,7 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
    * @group Encoding
    */
   implicit final val encodeFloat: Encoder[Float] = new Encoder[Float] {
-    final def apply(a: Float): Json = Json.fromDoubleOrNull(a.toDouble)
+    final def apply(a: Float): Json = Json.fromFloatOrNull(a)
   }
 
   /**

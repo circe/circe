@@ -371,12 +371,27 @@ final object Json {
   final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
 
   /**
+   * Try to create a `Json` value representing a JSON number from a `Float`.
+   *
+   * The result is empty if the argument cannot be represented as a JSON number.
+   */
+  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(jsonFloat(value))) else None
+
+  /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
    *
    * The result is a JSON null if the argument cannot be represented as a JSON
    * number.
    */
   final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JNumber(JsonDouble(value)) else Null
+
+  /**
+   * Create a `Json` value representing a JSON number or null from a `Float`.
+   *
+   * The result is a JSON null if the argument cannot be represented as a JSON
+   * number.
+   */
+  final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(jsonFloat(value)) else Null
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -388,6 +403,15 @@ final object Json {
     if (isReal(value)) JNumber(JsonDouble(value)) else fromString(value.toString)
 
   /**
+   * Create a `Json` value representing a JSON number or string from a `Float`.
+   *
+   * The result is a JSON string if the argument cannot be represented as a JSON
+   * number.
+   */
+  final def fromFloatOrString(value: Float): Json =
+    if (isReal(value)) JNumber(jsonFloat(value)) else fromString(value.toString)
+
+  /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
    */
   final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
@@ -397,9 +421,19 @@ final object Json {
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
 
+  /**
+   * Convert a Float to a JsonDouble whilst avoiding float point errors.
+   * e.g. 1.1f.toDouble == 1.100000023841858
+   */
+  private[this] def jsonFloat(value: Float) = JsonDouble(java.lang.Double.parseDouble(java.lang.Float.toString(value)))
+
   private[this] def isReal(value: Double): Boolean =
     // .isNaN and .isInfinity box, we explicitly avoid that here
     (!java.lang.Double.isNaN(value)) && (!java.lang.Double.isInfinite(value))
+
+  private[this] def isReal(value: Float): Boolean =
+    // .isNaN and .isInfinity box, we explicitly avoid that here
+    (!java.lang.Float.isNaN(value)) && (!java.lang.Float.isInfinite(value))
 
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
