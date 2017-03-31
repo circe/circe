@@ -17,3 +17,7 @@ final object Configuration {
     "$1_$2"
   ).replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase
 }
+
+final object DefaultConfiguration {
+  implicit val default: Configuration = Configuration.default
+}
