@@ -145,6 +145,10 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   }
 
   /**
+   * Note that on Scala.js the encoding of `Float` values is subject to the
+   * usual limitations of `Float#toString` on that platform (e.g. `1.1f` will be
+   * encoded as a [[Json]] value that will be printed as `"1.100000023841858"`).
+   *
    * @group Encoding
    */
   implicit final val encodeFloat: Encoder[Float] = new Encoder[Float] {
