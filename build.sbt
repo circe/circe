@@ -30,7 +30,7 @@ lazy val scalaTestVersion = "3.0.1"
 lazy val scalaCheckVersion = "1.13.4"
 lazy val disciplineVersion = "0.7.3"
 
-lazy val previousCirceVersion = Some("0.6.1")
+lazy val previousCirceVersion = Some("0.7.0")
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
