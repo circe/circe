@@ -221,7 +221,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   it should "fail on bad input" in {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x")
+    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input) === None)
