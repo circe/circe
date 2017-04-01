@@ -3,7 +3,7 @@ package io.circe
 import io.circe.Json.{JString, JArray, JNumber, JBoolean, JObject, JNull}
 import io.circe.tests.CirceSuite
 
-class JsonSuite extends CirceSuite {
+class JsonSuite extends CirceSuite with FloatJsonTests {
   "deepMerge" should "preserve argument order" in forAll { (js: List[Json]) =>
     val fields = js.zipWithIndex.map {
       case (j, i) => i.toString -> j
@@ -65,5 +65,82 @@ class JsonSuite extends CirceSuite {
     val resultAlias = json \\ key
 
     assert(result === expected && resultAlias === expected)
+  }
+
+  "fromDouble" should "fail on Double.NaN" in {
+    assert(Json.fromDouble(Double.NaN) === None)
+  }
+
+  it should "fail on Double.PositiveInfinity" in {
+    assert(Json.fromDouble(Double.PositiveInfinity) === None)
+  }
+
+  it should "fail on Double.NegativeInfinity" in {
+    assert(Json.fromDouble(Double.NegativeInfinity) === None)
+  }
+
+  "fromDoubleOrNull" should "return Null on Double.NaN" in {
+    assert(Json.fromDoubleOrNull(Double.NaN) === Json.Null)
+  }
+
+  it should "return Null on Double.PositiveInfinity" in {
+    assert(Json.fromDoubleOrNull(Double.PositiveInfinity) === Json.Null)
+  }
+
+  it should "return Null on Double.NegativeInfinity" in {
+    assert(Json.fromDoubleOrNull(Double.NegativeInfinity) === Json.Null)
+  }
+
+  "fromDoubleOrString" should "return String on Double.NaN" in {
+    assert(Json.fromDoubleOrString(Double.NaN) === Json.JString("NaN"))
+  }
+
+  it should "return String on Double.PositiveInfinity" in {
+    assert(Json.fromDoubleOrString(Double.PositiveInfinity) === Json.JString("Infinity"))
+  }
+
+  it should "return String on Double.NegativeInfinity" in {
+    assert(Json.fromDoubleOrString(Double.NegativeInfinity) === Json.JString("-Infinity"))
+  }
+
+  it should "return JNumber for valid Doubles" in {
+    assert(Json.fromDoubleOrString(1.1) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
+    assert(Json.fromDoubleOrString(-1.2) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
+  }
+
+  "fromFloat" should "fail on Float.NaN" in {
+    assert(Json.fromFloat(Float.NaN) === None)
+  }
+
+  it should "fail on Float.PositiveInfinity" in {
+    assert(Json.fromFloat(Float.PositiveInfinity) === None)
+  }
+
+  it should "fail on Float.NegativeInfinity" in {
+    assert(Json.fromFloat(Float.NegativeInfinity) === None)
+  }
+
+  "fromFloatOrNull" should "return Null on Float.NaN" in {
+    assert(Json.fromFloatOrNull(Float.NaN) === Json.Null)
+  }
+
+  it should "return Null on Float.PositiveInfinity" in {
+    assert(Json.fromFloatOrNull(Float.PositiveInfinity) === Json.Null)
+  }
+
+  it should "return Null on Float.NegativeInfinity" in {
+    assert(Json.fromFloatOrNull(Float.NegativeInfinity) === Json.Null)
+  }
+
+  "fromFloatOrString" should "return String on Float.NaN" in {
+    assert(Json.fromFloatOrString(Float.NaN) === Json.JString("NaN"))
+  }
+
+  it should "return String on Float.PositiveInfinity" in {
+    assert(Json.fromFloatOrString(Float.PositiveInfinity) === Json.JString("Infinity"))
+  }
+
+  it should "return String on Float.NegativeInfinity" in {
+    assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.JString("-Infinity"))
   }
 }
