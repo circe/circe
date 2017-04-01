@@ -328,7 +328,7 @@ final object BiggerDecimal {
         i += 1
       }
 
-      if (state == FAILED) null else {
+      if (state == FAILED || state == AFTER_DOT || state == AFTER_E || state == AFTER_EXP_SIGN) null else {
         val integral = if (decIndex >= 0) input.substring(0, decIndex) else {
           if (expIndex == -1) input else {
             input.substring(0, expIndex)
