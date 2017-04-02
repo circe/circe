@@ -205,6 +205,30 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
 }
 
 /**
+ * Represent a valid JSON number as a [[scala.Float]].
+ */
+private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
+  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(toJavaBigDecimal)
+  private[circe] def toJavaBigDecimal = new java.math.BigDecimal(java.lang.Float.toString(value))
+  final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)
+  final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
+    val bigInt = d.toBigInt
+    if (bigInt.floatValue() == value) Some(bigInt) else None
+  }
+
+  // Don't use value.toFloat due to floating point errors.
+  final def toDouble: Double = toJavaBigDecimal.doubleValue()
+
+  final def toLong: Option[Long] = {
+    val asLong: Long = value.toLong
+    if (asLong.toFloat == value) Some(asLong) else None
+  }
+
+  final def truncateToLong: Long = value.toLong
+  override final def toString: String = java.lang.Float.toString(value)
+}
+
+/**
  * Constructors, type class instances, and other utilities for [[JsonNumber]].
  */
 final object JsonNumber {
@@ -245,9 +269,14 @@ final object JsonNumber {
     case (a @ JsonDecimal(_), b) => a.toBiggerDecimal == b.toBiggerDecimal
     case (a, b @ JsonDecimal(_)) => a.toBiggerDecimal == b.toBiggerDecimal
     case (JsonLong(x), JsonLong(y)) => x == y
+    case (JsonFloat(x), JsonLong(y)) => x == y
     case (JsonDouble(x), JsonLong(y)) => x == y
     case (JsonLong(x), JsonDouble(y)) => y == x
+    case (JsonFloat(x), JsonDouble(y)) => y == x
     case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
+    case (JsonLong(x), JsonFloat(y)) => x == y
+    case (JsonFloat(x), JsonFloat(y)) => java.lang.Float.compare(x, y) == 0
+    case (JsonDouble(x), JsonFloat(y)) => x == y
     case (a, b) => a.toBigDecimal == b.toBigDecimal
   }
 }
