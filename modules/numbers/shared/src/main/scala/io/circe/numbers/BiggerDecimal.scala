@@ -199,6 +199,10 @@ final object BiggerDecimal {
     NegativeZero
   } else fromBigDecimal(BigDecimal.valueOf(d))
 
+  def fromFloat(f: Float): BiggerDecimal = if (java.lang.Float.compare(f, -0.0f) == 0) {
+    NegativeZero
+  } else fromBigDecimal(new BigDecimal(java.lang.Float.toString(f)))
+
   private[this] final val MaxLongString = "9223372036854775807"
   private[this] final val MinLongString = "-9223372036854775808"
 
