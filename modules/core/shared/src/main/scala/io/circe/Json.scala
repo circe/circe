@@ -422,12 +422,18 @@ final object Json {
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
 
+  /**
+   * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
+   * explicitly avoid that here.
+   */
   private[this] def isReal(value: Double): Boolean =
-    // .isNaN and .isInfinity box, we explicitly avoid that here
     (!java.lang.Double.isNaN(value)) && (!java.lang.Double.isInfinite(value))
 
+  /**
+   * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
+   * explicitly avoid that here.
+   */
   private[this] def isReal(value: Float): Boolean =
-    // .isNaN and .isInfinity box, we explicitly avoid that here
     (!java.lang.Float.isNaN(value)) && (!java.lang.Float.isInfinite(value))
 
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
