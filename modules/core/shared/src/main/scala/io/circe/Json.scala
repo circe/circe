@@ -375,7 +375,7 @@ final object Json {
    *
    * The result is empty if the argument cannot be represented as a JSON number.
    */
-  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(floatToJsonDouble(value))) else None
+  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
 
   /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
@@ -391,7 +391,8 @@ final object Json {
    * The result is a JSON null if the argument cannot be represented as a JSON
    * number.
    */
-  final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(floatToJsonDouble(value)) else Null
+  final def fromFloatOrNull(value: Float): Json =
+    if (isReal(value)) JNumber(JsonFloat(value)) else Null
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -409,7 +410,7 @@ final object Json {
    * number.
    */
   final def fromFloatOrString(value: Float): Json =
-    if (isReal(value)) JNumber(floatToJsonDouble(value)) else fromString(java.lang.Float.toString(value))
+    if (isReal(value)) JNumber(JsonFloat(value)) else fromString(java.lang.Float.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
@@ -420,13 +421,6 @@ final object Json {
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
-
-  /**
-   * Convert a `Float` to a [[JsonDouble]] while avoiding errors resulting from
-   * the difference in the precision (e.g. 1.1f.toDouble == 1.100000023841858).
-   */
-  private[this] def floatToJsonDouble(value: Float) =
-    JsonDouble(java.lang.Double.parseDouble(java.lang.Float.toString(value)))
 
   /**
    * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
