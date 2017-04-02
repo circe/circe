@@ -401,7 +401,7 @@ final object Json {
    * number.
    */
   final def fromDoubleOrString(value: Double): Json =
-    if (isReal(value)) JNumber(JsonDouble(value)) else fromString(value.toString)
+    if (isReal(value)) JNumber(JsonDouble(value)) else fromString(java.lang.Double.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Float`.
@@ -410,7 +410,7 @@ final object Json {
    * number.
    */
   final def fromFloatOrString(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else fromString(value.toString)
+    if (isReal(value)) JNumber(JsonFloat(value)) else fromString(java.lang.Float.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
