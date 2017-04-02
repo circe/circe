@@ -208,8 +208,9 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
  * Represent a valid JSON number as a [[scala.Float]].
  */
 private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
+  private[this] def toJavaBigDecimal = new java.math.BigDecimal(java.lang.Float.toString(value))
+
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromFloat(value)
-  private[circe] def toJavaBigDecimal = new java.math.BigDecimal(java.lang.Float.toString(value))
   final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)
   final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
     val bigInt = d.toBigInt
