@@ -21,6 +21,12 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(f.toString) === expected)
   }
 
+  it should "match Json.fromFloat for Floats that don't have the same toString when Double-ed" in {
+    val value = -4.9913575E19F
+
+    assert(Json.fromFloat(value).flatMap(_.asNumber) === JsonNumber.fromString(value.toString))
+  }
+
   it should "round-trip Byte" in forAll { (b: Byte) =>
     assert(JsonNumber.fromString(b.toString).flatMap(_.toByte) === Some(b))
   }
