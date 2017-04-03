@@ -265,19 +265,10 @@ final object JsonNumber {
   }
 
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
-    case (JsonBiggerDecimal(a), b) => a == b.toBiggerDecimal
-    case (a, JsonBiggerDecimal(b)) => a.toBiggerDecimal == b
-    case (a @ JsonDecimal(_), b) => a.toBiggerDecimal == b.toBiggerDecimal
-    case (a, b @ JsonDecimal(_)) => a.toBiggerDecimal == b.toBiggerDecimal
     case (JsonLong(x), JsonLong(y)) => x == y
-    case (JsonFloat(x), JsonLong(y)) => x == y
-    case (JsonDouble(x), JsonLong(y)) => x == y
-    case (JsonLong(x), JsonDouble(y)) => y == x
-    case (JsonFloat(x), JsonDouble(y)) => y == x
     case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
-    case (JsonLong(x), JsonFloat(y)) => x == y
     case (JsonFloat(x), JsonFloat(y)) => java.lang.Float.compare(x, y) == 0
-    case (JsonDouble(x), JsonFloat(y)) => x == y
-    case (a, b) => a.toBigDecimal == b.toBigDecimal
+    case (JsonBigDecimal(x), JsonBigDecimal(y)) => x == y
+    case (a, b) => a.toBiggerDecimal == b.toBiggerDecimal
   }
 }
