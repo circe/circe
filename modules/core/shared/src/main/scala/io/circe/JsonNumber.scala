@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Eq
 import io.circe.numbers.BiggerDecimal
+import java.math.{ BigDecimal => JavaBigDecimal }
 
 /**
  * A JSON number with optimization by cases.
@@ -189,15 +190,21 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
  */
 private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromDouble(value)
-  final def toBigDecimal: Option[BigDecimal] = Some(BigDecimal(value))
-  final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
-    if (d.isWhole) Some(d.toBigInt) else None
+  private[this] def toJavaBigDecimal = JavaBigDecimal.valueOf(value)
+
+  final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)
+  final def toBigInt: Option[BigInt] = {
+    val asBigDecimal = toJavaBigDecimal
+
+    if (JsonNumber.bigDecimalIsWhole(asBigDecimal)) Some(new BigInt(asBigDecimal.toBigInteger)) else None
   }
+
   final def toDouble: Double = value
 
   final def toLong: Option[Long] = {
-    val asLong: Long = value.toLong
-    if (asLong.toDouble == value) Some(asLong) else None
+    val asBigDecimal = toJavaBigDecimal
+
+    if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
   }
 
   final def truncateToLong: Long = value.toLong
@@ -208,21 +215,23 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
  * Represent a valid JSON number as a [[scala.Float]].
  */
 private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
-  private[this] def toJavaBigDecimal = new java.math.BigDecimal(java.lang.Float.toString(value))
-
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromFloat(value)
+  private[this] def toJavaBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
   final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)
-  final def toBigInt: Option[BigInt] = toBigDecimal.flatMap { d =>
-    val bigInt = d.toBigInt
-    if (bigInt.floatValue() == value) Some(bigInt) else None
+  final def toBigInt: Option[BigInt] = {
+    val asBigDecimal = toJavaBigDecimal
+
+    if (JsonNumber.bigDecimalIsWhole(asBigDecimal)) Some(new BigInt(asBigDecimal.toBigInteger)) else None
   }
 
-  // Don't use value.toFloat due to floating point errors.
-  final def toDouble: Double = toJavaBigDecimal.doubleValue()
+  // Don't use `value.toFloat` due to floating point errors.
+  final def toDouble: Double = toJavaBigDecimal.doubleValue
 
   final def toLong: Option[Long] = {
-    val asLong: Long = value.toLong
-    if (asLong.toFloat == value) Some(asLong) else None
+    val asBigDecimal = toJavaBigDecimal
+
+    if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
   }
 
   final def truncateToLong: Long = value.toLong
@@ -264,20 +273,20 @@ final object JsonNumber {
     if (result.eq(null)) None else Some(JsonBiggerDecimal(result))
   }
 
+  private[this] val bigDecimalMinLong: JavaBigDecimal = new JavaBigDecimal(Long.MinValue)
+  private[this] val bigDecimalMaxLong: JavaBigDecimal = new JavaBigDecimal(Long.MaxValue)
+
+  private[circe] def bigDecimalIsWhole(value: JavaBigDecimal): Boolean =
+    value.signum == 0 || value.scale <= 0 || value.stripTrailingZeros.scale <= 0
+
+  private[circe] def bigDecimalIsValidLong(value: JavaBigDecimal): Boolean =
+    bigDecimalIsWhole(value) && value.compareTo(bigDecimalMinLong) >= 0 && value.compareTo(bigDecimalMaxLong) <= 0
+
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
-    case (JsonBiggerDecimal(a), b) => a == b.toBiggerDecimal
-    case (a, JsonBiggerDecimal(b)) => a.toBiggerDecimal == b
-    case (a @ JsonDecimal(_), b) => a.toBiggerDecimal == b.toBiggerDecimal
-    case (a, b @ JsonDecimal(_)) => a.toBiggerDecimal == b.toBiggerDecimal
     case (JsonLong(x), JsonLong(y)) => x == y
-    case (JsonFloat(x), JsonLong(y)) => x == y
-    case (JsonDouble(x), JsonLong(y)) => x == y
-    case (JsonLong(x), JsonDouble(y)) => y == x
-    case (JsonFloat(x), JsonDouble(y)) => y == x
     case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
-    case (JsonLong(x), JsonFloat(y)) => x == y
     case (JsonFloat(x), JsonFloat(y)) => java.lang.Float.compare(x, y) == 0
-    case (JsonDouble(x), JsonFloat(y)) => x == y
-    case (a, b) => a.toBigDecimal == b.toBigDecimal
+    case (JsonBigDecimal(x), JsonBigDecimal(y)) => x == y
+    case (a, b) => a.toBiggerDecimal == b.toBiggerDecimal
   }
 }

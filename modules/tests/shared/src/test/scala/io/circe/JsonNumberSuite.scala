@@ -67,14 +67,6 @@ class JsonNumberSuite extends CirceSuite {
     }
   }
 
-  "JsonFloat.toLong" should "return None if it loses precision" in forAll { (f: Float) =>
-    if (f.toLong.toFloat == f) {
-      assert(JsonFloat(f).toLong === Some(f.toLong))
-    } else {
-      assert(JsonFloat(f).toLong === None)
-    }
-  }
-
   "JsonFloat.toBigInt" should "return None if it loses precision" in forAll { (f: Float) =>
     val j = JsonFloat(f)
     val expected = j.toBiggerDecimal match {
@@ -113,12 +105,45 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(l.toString).map(_.truncateToInt) === Some(truncated))
   }
 
+  val positiveZeros: List[JsonNumber] = List(
+    JsonNumber.fromIntegralStringUnsafe("0"),
+    JsonNumber.fromDecimalStringUnsafe("0.0"),
+    Json.fromDouble(0.0).flatMap(_.asNumber).get,
+    Json.fromFloat(0.0f).flatMap(_.asNumber).get,
+    Json.fromLong(0).asNumber.get,
+    Json.fromBigInt(BigInt(0)).asNumber.get,
+    Json.fromBigDecimal(BigDecimal(0)).asNumber.get
+  )
+
+  val negativeZeros: List[JsonNumber] = List(
+    JsonNumber.fromIntegralStringUnsafe("-0"),
+    JsonNumber.fromDecimalStringUnsafe("-0.0"),
+    Json.fromDouble(-0.0).flatMap(_.asNumber).get,
+    Json.fromFloat(-0.0f).flatMap(_.asNumber).get
+  )
+
   "Eq[JsonNumber]" should "distinguish negative and positive zeros" in {
-    assert(JsonNumber.fromIntegralStringUnsafe("-0") =!= JsonNumber.fromIntegralStringUnsafe("0"))
+    positiveZeros.foreach { pz =>
+      negativeZeros.foreach { nz =>
+        assert(pz =!= nz)
+      }
+    }
   }
 
-  it should "distinguishes negative and positive zeros with fractional parts" in {
-    assert(JsonNumber.fromDecimalStringUnsafe("-0.0") =!= JsonNumber.fromDecimalStringUnsafe("0.0"))
+  it should "not distinguish any positive zeros" in {
+    positiveZeros.foreach { pz1 =>
+      positiveZeros.foreach { pz2 =>
+        assert(pz1 === pz2)
+      }
+    }
+  }
+
+  it should "not distinguish any negative zeros" in {
+    negativeZeros.foreach { nz1 =>
+      negativeZeros.foreach { nz2 =>
+        assert(nz1 === nz2)
+      }
+    }
   }
 
   it should "compare Float and Long" in forAll { (f: Float, l: Long) =>
