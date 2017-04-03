@@ -67,14 +67,6 @@ class JsonNumberSuite extends CirceSuite {
     }
   }
 
-  "JsonFloat.toLong" should "return None if it loses precision" in forAll { (f: Float) =>
-    if (f.toLong.toFloat == f) {
-      assert(JsonFloat(f).toLong === Some(f.toLong))
-    } else {
-      assert(JsonFloat(f).toLong === None)
-    }
-  }
-
   "JsonFloat.toBigInt" should "return None if it loses precision" in forAll { (f: Float) =>
     val j = JsonFloat(f)
     val expected = j.toBiggerDecimal match {
