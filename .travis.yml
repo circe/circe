@@ -19,6 +19,7 @@ cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt/boot
+    - $HOME/.coursier
 
 install:
   - pip install --user codecov
