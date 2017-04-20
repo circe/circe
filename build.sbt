@@ -1,5 +1,4 @@
 import ReleaseTransformations._
-import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import microsites.ExtraMdFileConfig
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 
@@ -156,6 +155,7 @@ lazy val docs = project.dependsOn(core, generic, parser, optics)
   .settings(
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
   )
+  .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
 
