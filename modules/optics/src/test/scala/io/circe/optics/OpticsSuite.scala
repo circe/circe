@@ -14,6 +14,7 @@ import scalaz.std.math.bigInt._
 import scalaz.std.option._
 import scalaz.std.string._
 import scalaz.std.vector._
+import scalaz.std.tuple._
 
 class OpticsSuite extends CirceSuite {
   implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
@@ -52,6 +53,7 @@ class OpticsSuite extends CirceSuite {
   checkLaws("plated Json", TraversalTests(plate[Json]))
 
   checkLaws("objectEach", EachTests[JsonObject, Json])
+  checkLaws("objectEachKV", EachTests[JsonObject, (String, Json)])
   checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
   checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
   checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json])

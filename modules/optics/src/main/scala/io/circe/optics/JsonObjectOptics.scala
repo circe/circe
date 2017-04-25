@@ -22,6 +22,17 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
+  implicit final lazy val objectEachKV: Each[JsonObject, (String, Json)] = new Each[JsonObject, (String, Json)] {
+    final def each: Traversal[JsonObject, (String, Json)] = new Traversal[JsonObject, (String, Json)] {
+      final def modifyF[F[_]](f: ((String, Json)) => F[(String, Json)])(from: JsonObject)(implicit
+        F: Applicative[F]
+      ): F[JsonObject] =
+        F.map(from.toList.reverse.foldLeft(F.pure(List.empty[(String, Json)])) {
+          case (acc, kv) => F.apply2(acc, f(kv)){case (list, elem) => elem :: list}
+        })(JsonObject.from(_))
+    }
+  }
+
   implicit final lazy val objectAt: At[JsonObject, String, Option[Json]] =
     new At[JsonObject, String, Option[Json]] {
       final def at(field: String): Lens[JsonObject, Option[Json]] =
