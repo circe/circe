@@ -17,6 +17,7 @@ about why circe exists and how to use it.
 Are you using circe? Please consider opening a pull request to list your organization here:
 
 * [Anduin Transactions](https://anduintransact.com/)
+* [AutoScout24](https://www.autoscout24.com/)
 * [BBC](http://www.bbc.co.uk)
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
 * [Datalogue](https://datalogue.io)
