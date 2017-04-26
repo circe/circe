@@ -76,7 +76,7 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
   }
 
   {
-    import DefaultConfiguration._
+    import defaults._
     checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
     checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
     checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
