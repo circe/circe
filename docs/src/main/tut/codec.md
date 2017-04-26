@@ -225,7 +225,7 @@ Since this is a common use case, we also support for mapping member names via an
 ```tut:book
 import io.circe.generic.extras._, io.circe.syntax._
 
-@ConfiguredJsonCodec case class Bar(@Key("my-int") i: Int, s: String)
+@ConfiguredJsonCodec case class Bar(@JsonKey("my-int") i: Int, s: String)
 
 Bar(13, "Qux").asJson
 ```

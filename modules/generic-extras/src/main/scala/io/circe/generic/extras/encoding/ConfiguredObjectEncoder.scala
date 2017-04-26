@@ -2,7 +2,7 @@ package io.circe.generic.extras.encoding
 
 import io.circe.JsonObject
 import io.circe.generic.encoding.DerivedObjectEncoder
-import io.circe.generic.extras.{ Configuration, Key }
+import io.circe.generic.extras.{ Configuration, JsonKey }
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
@@ -17,10 +17,10 @@ final object ConfiguredObjectEncoder {
     config: Configuration,
     fields: Keys.Aux[R, F],
     fieldsToList: ToTraversable.Aux[F, List, Symbol],
-    keys: Annotations.Aux[Key, A, K],
-    keysToList: ToTraversable.Aux[K, List, Option[Key]]
+    keys: Annotations.Aux[JsonKey, A, K],
+    keysToList: ToTraversable.Aux[K, List, Option[JsonKey]]
   ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
-    private[this] val keyAnnotations: List[Option[Key]] = keysToList(keys())
+    private[this] val keyAnnotations: List[Option[JsonKey]] = keysToList(keys())
     private[this] val hasKeyAnnotations: Boolean = keyAnnotations.exists(_.nonEmpty)
 
     private[this] val keyAnnotationMap: Map[String, String] =

@@ -2,7 +2,7 @@ package io.circe.generic.extras.decoding
 
 import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.extras.{ Configuration, Key }
+import io.circe.generic.extras.{ Configuration, JsonKey }
 import io.circe.generic.extras.util.RecordToMap
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy }
@@ -20,13 +20,13 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     config: Configuration,
     fields: Keys.Aux[R, F],
     fieldsToList: ToTraversable.Aux[F, List, Symbol],
-    keys: Annotations.Aux[Key, A, K],
-    keysToList: ToTraversable.Aux[K, List, Option[Key]]
+    keys: Annotations.Aux[JsonKey, A, K],
+    keysToList: ToTraversable.Aux[K, List, Option[JsonKey]]
   ): ConfiguredDecoder[A] = new ConfiguredDecoder[A] {
     private[this] val defaultMap: Map[String, Any] =
       if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
-    private[this] val keyAnnotations: List[Option[Key]] = keysToList(keys())
+    private[this] val keyAnnotations: List[Option[JsonKey]] = keysToList(keys())
     private[this] val hasKeyAnnotations: Boolean = keyAnnotations.exists(_.nonEmpty)
 
     private[this] val keyAnnotationMap: Map[String, String] =

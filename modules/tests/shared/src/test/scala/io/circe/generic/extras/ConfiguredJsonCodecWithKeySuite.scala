@@ -15,7 +15,7 @@ class ConfiguredJsonCodecWithKeySuite extends CirceSuite {
   object examples {
     @ConfiguredJsonCodec
     sealed trait ConfigExampleBase
-    case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, @Key("myField") b: Double) extends ConfigExampleBase
+    case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, @JsonKey("myField") b: Double) extends ConfigExampleBase
 
     object ConfigExampleFoo {
       implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
