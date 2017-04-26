@@ -1,9 +1,9 @@
 package io.circe.generic.extras
 
 import cats.Eq
+import io.circe.{ Decoder, Encoder }
 import io.circe.literal._
 import io.circe.tests.CirceSuite
-import io.circe.{Decoder, Encoder}
 
 class ConfiguredJsonCodecWithKeySuite extends CirceSuite {
   implicit val customConfig: Configuration =
