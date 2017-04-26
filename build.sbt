@@ -24,7 +24,7 @@ lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.8.0"
 lazy val monocleVersion = "1.4.0"
 
-lazy val scalaTestVersion = "3.0.1"
+lazy val scalaTestVersion = "3.0.3"
 lazy val scalaCheckVersion = "1.13.5"
 lazy val disciplineVersion = "0.7.3"
 
