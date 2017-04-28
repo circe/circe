@@ -27,6 +27,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Reonomy](https://reonomy.com/)
 * [Sigma](https://thesigma.com)
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
+* [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
 * [Stripe](https://stripe.com)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
@@ -77,6 +78,7 @@ The following open source projects are either built on circe or provide circe su
   implementation.
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
+* [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
@@ -171,6 +173,7 @@ limitations under the License.
 [scala-js]: http://www.scala-js.org/
 [scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scalist]: https://github.com/vpavkin/scalist
+[scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
