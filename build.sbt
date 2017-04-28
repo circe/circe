@@ -279,7 +279,10 @@ lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = false))
+  .settings(
+    macroSettings(scaladocFor210 = false),
+    libraryDependencies += "org.typelevel" %% "kittens" % "1.0.0-M9"
+  )
   .dependsOn(genericBase)
 
 lazy val genericExtras = genericExtrasBase.jvm
