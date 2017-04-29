@@ -23,6 +23,12 @@ class PrintingBenchmark extends ExampleData {
   def printFoosToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(foosJson)
 
   @Benchmark
+  def printHelloWorldToString: String = Printer.noSpaces.pretty(helloWorldJson)
+
+  @Benchmark
+  def printHelloWorldToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(helloWorldJson)
+
+  @Benchmark
   def printBooleansToString: String = Printer.noSpaces.pretty(booleansJson)
 
   @Benchmark
