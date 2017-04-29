@@ -1,9 +1,8 @@
 package io.circe
 
-import java.io.OutputStreamWriter
 import java.lang.StringBuilder
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets.UTF_8
+import java.nio.{ByteBuffer, CharBuffer}
+import java.nio.charset.{Charset, StandardCharsets}
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 
@@ -51,7 +50,7 @@ final case class Printer(
   objectCommaRight: String = "",
   colonLeft: String = "",
   colonRight: String = ""
-) extends PlatformSpecificPrinting {
+) {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
   private[this] final val openArrayText = "["
@@ -246,15 +245,16 @@ final case class Printer(
     writer.toString
   }
 
-  final def prettyByteBuffer(json: Json): ByteBuffer = {
-    val bytes = new EnhancedByteArrayOutputStream
-    val writer = bufferWriter(new OutputStreamWriter(bytes, UTF_8))
+  final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = {
+    val writer = new Printer.AppendableByteBuffer(cs)
 
     printJsonAtDepth(writer)(json, 0)
 
-    writer.close()
-    bytes.toByteBuffer
+    writer.toByteBuffer
   }
+
+  final def prettyByteBuffer(json: Json): ByteBuffer =
+    prettyByteBuffer(json, StandardCharsets.UTF_8)
 }
 
 
@@ -333,5 +333,52 @@ final object Printer {
         tmp
       }
     }
+  }
+
+  /**
+   * Very bare-bones and fast [[Appendable]] that can produce a [[ByteBuffer]].
+   *
+   * The implementation is pretty much a regular growing char buffer that assumes all given
+   * [[CharSequence]]s are just [[String]]s so both `toString` and `charAt` methods are cheap.
+   */
+  private[circe] final class AppendableByteBuffer(cs: Charset) extends Appendable {
+    private[this] var index = 0
+    private[this] var chars = new Array[Char](32)
+
+    private[this] def ensureToFit(n: Int): Unit = {
+      val required = index + n
+      if (required > chars.length) {
+        val copy = new Array[Char](math.max(required, chars.length * 2))
+        System.arraycopy(chars, 0, copy, 0, index)
+        chars = copy
+      }
+    }
+
+    def append(csq: CharSequence): Appendable = {
+      ensureToFit(csq.length)
+      csq.toString.getChars(0, csq.length, chars, index)
+      index += csq.length
+      this
+    }
+
+    def append(csq: CharSequence, start: Int, end: Int): Appendable = {
+      ensureToFit(end - start)
+      var j = start
+      while (j < end) {
+        chars(index) = csq.charAt(j)
+        j += 1
+        index += 1
+      }
+      this
+    }
+
+    def append(c: Char): Appendable = {
+      ensureToFit(1)
+      chars(index) = c
+      index += 1
+      this
+    }
+
+    def toByteBuffer: ByteBuffer = cs.encode(CharBuffer.wrap(chars, 0, index))
   }
 }

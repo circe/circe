@@ -14,4 +14,5 @@ class ExampleData {
   val intsJson: Json = ints.asJson
   val booleansJson: Json = booleans.asJson
   val foosJson: Json = foos.asJson
+  val helloWorldJson: Json = Json.obj("message" -> Json.fromString("Hello, World!"))
 }
