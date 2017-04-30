@@ -183,6 +183,22 @@ implicit val fooKeyDecoder = new KeyDecoder[Foo] {
 json.as[Map[Foo, Int]]
 ```
 
+## Custom key types via Key annotation
+
+During the wrapping external API and general in real world there are a lot of key values in JSON that contain 
+custom values such as "@timestamp", "my-wonderful-field" and so on.
+Via the annotation Key is possible to define a string that will be used in de/serialize the object keys.
+
+For example:
+
+```tut:book
+import io.circe.generic.JsonCodec, io.circe.syntax._, io.circe.generic.extras._
+
+@JsonCodec case class Bar(@Key("my-int") i: Int, s: String)
+
+Bar(13, "Qux").asJson
+```
+
 ## Warnings and known issues
 
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
