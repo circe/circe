@@ -1,14 +1,14 @@
 package io.circe.scodec
 
-import _root_.scodec.bits._
 import cats.Eq
-import io.circe.{Decoder, Json}
+import io.circe.{ Decoder, Json }
 import io.circe.parser.parse
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import org.scalacheck.Arbitrary
 import org.scalatest.Matchers
-import org.scalatest.matchers.{MatchResult, Matcher}
+import org.scalatest.matchers.{ MatchResult, Matcher }
+import _root_.scodec.bits._
 
 class ScodecSuite extends CirceSuite with Matchers with BitVectorMatchers {
   implicit val arbitraryBitVector: Arbitrary[BitVector] =
@@ -17,14 +17,10 @@ class ScodecSuite extends CirceSuite with Matchers with BitVectorMatchers {
   implicit val arbitraryByteVector: Arbitrary[ByteVector] =
     Arbitrary(Arbitrary.arbitrary[Array[Byte]].map(ByteVector.view))
 
-  implicit val eqBitVector: Eq[BitVector] =
-    Eq.fromUniversalEquals
-
-  implicit val eqByteVector: Eq[ByteVector] =
-    Eq.fromUniversalEquals
+  implicit val eqBitVector: Eq[BitVector] = Eq.fromUniversalEquals
+  implicit val eqByteVector: Eq[ByteVector] = Eq.fromUniversalEquals
 
   checkLaws("Codec[BitVector]", CodecTests[BitVector].codec)
-
   checkLaws("Codec[ByteVector]", CodecTests[ByteVector].codec)
 
   "Codec[ByteVector]" should "return failure for Json String" in {
