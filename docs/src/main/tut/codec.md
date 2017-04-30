@@ -183,6 +183,75 @@ implicit val fooKeyDecoder = new KeyDecoder[Foo] {
 json.as[Map[Foo, Int]]
 ```
 
+## Custom key mappings via annotations
+
+It's often necessary to work with keys in your JSON objects that aren't idiomatic case class member
+names in Scala. While the standard generic derivation doesn't support this use case, the
+experimental circe-generic-extras module does provide two ways to transform your case class member
+names during encoding and decoding.
+
+In many cases the transformation is as simple as going from camel case to snake case, in which case
+all you need is a custom implicit configuration:
+
+```tut:book
+import io.circe.generic.extras._, io.circe.syntax._
+
+implicit val config: Configuration = Configuration.default.withSnakeCaseKeys
+
+@ConfiguredJsonCodec case class User(firstName: String, lastName: String)
+
+User("Foo", "McBar").asJson
+```
+
+In other cases you may need more complex mappings. These can be provided as a function:
+
+```tut:book
+import io.circe.generic.extras._, io.circe.syntax._
+
+implicit val config: Configuration = Configuration.default.copy(
+  transformKeys = {
+    case "i" => "my-int"
+    case other => other
+  }
+)
+
+@ConfiguredJsonCodec case class Bar(i: Int, s: String)
+
+Bar(13, "Qux").asJson
+```
+
+Since this is a common use case, we also support for mapping member names via an annotation:
+
+```tut:book
+import io.circe.generic.extras._, io.circe.syntax._
+
+@ConfiguredJsonCodec case class Bar(@JsonKey("my-int") i: Int, s: String)
+
+Bar(13, "Qux").asJson
+```
+
+It's worth noting that if you don't want to use the experimental generic-extras module, the
+completely unmagical `forProductN` version isn't really that much of a burden:
+
+```tut:book
+import io.circe.Encoder, io.circe.syntax._
+
+case class User(firstName: String, lastName: String)
+case class Bar(i: Int, s: String)
+
+implicit val encodeUser: Encoder[User] =
+  Encoder.forProduct2("first_name", "last_name")(u => (u.firstName, u.lastName))
+
+implicit val encodeBar: Encoder[Bar] =
+  Encoder.forProduct2("my-int", "s")(b => (b.i, b.s))
+
+User("Foo", "McBar").asJson
+Bar(13, "Qux").asJson
+```
+
+While this version does involve a bit of boilerplate, it only requires circe-core, and may have
+slightly better runtime performance in some cases.
+
 ## Warnings and known issues
 
 1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
