@@ -75,17 +75,20 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
-  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
-  checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
-  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  {
+    import defaults._
+    checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+    checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+    checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+    checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
-  "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
+      val result = Json.obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      ).as[Int => Qux[String]].map(_(i))
 
-    assert(result === Right(Qux(i, s, j)))
+      assert(result === Right(Qux(i, s, j)))
+    }
   }
 }
