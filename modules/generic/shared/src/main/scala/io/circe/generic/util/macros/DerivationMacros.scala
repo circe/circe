@@ -109,7 +109,14 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     case class Entry(label: String, keyType: Type, valueType: Type)
 
     object Entry {
+      // We need this import for the `RefinedType` constructor in Scala 2.12.
+      import compat._
+
       def unapply(tpe: Type): Option[(String, Type, Type)] = tpe.dealias match {
+        /**
+         * Before Scala 2.12 the `RefinedType` extractor returns the field type
+         * (including any refinements) as the first result in the list.
+         */
         case RefinedType(List(fieldType, TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType))), _)
           if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
             tagType.dealias match {
@@ -118,6 +125,21 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
                   Some((fieldKey, tagType, fieldType))
               case _ => None
             }
+        /**
+         * In Scala 2.12 the `RefinedType` extractor returns a refined type with
+         * each individual refinement as a separate element in the list.
+         */
+        case RefinedType(parents, scope) => parents.reverse match {
+          case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
+            if lt =:= ShapelessLabelledType && RefinedType(refs.reverse, scope) =:= taggedFieldType =>
+              tagType.dealias match {
+                case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+                  if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
+                    Some((fieldKey, tagType, taggedFieldType))
+                case _ => None
+              }
+          case _ => None
+        }
         case _ => None
       }
     }
