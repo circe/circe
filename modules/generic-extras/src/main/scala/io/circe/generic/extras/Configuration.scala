@@ -19,5 +19,5 @@ final object Configuration {
 }
 
 final object defaults {
-  implicit val defaults: Configuration = Configuration.default
+  implicit val defaultGenericConfiguration: Configuration = Configuration.default
 }
