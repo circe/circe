@@ -439,10 +439,7 @@ final object Json {
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
     val it1 = y.iterator
-    while (it0.hasNext && it1.hasNext) {
-      if (Json.eqJson.neqv(it0.next, it1.next)) return false
-    }
-    it0.hasNext == it1.hasNext
+    it0.zip(it1).forall((Json.eqJson.eqv _).tupled) && !it0.hasNext && !it1.hasNext
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {
