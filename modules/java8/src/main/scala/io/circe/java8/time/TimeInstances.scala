@@ -1,7 +1,7 @@
 package io.circe.java8.time
 
 import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
-import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, ZonedDateTime }
+import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, YearMonth, ZonedDateTime }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{
 ISO_LOCAL_DATE,
@@ -116,4 +116,24 @@ trait TimeInstances {
   implicit final val encodePeriod: Encoder[Period] = Encoder.instance { period =>
     Json.fromString(period.toString)
   }
+
+  final def decodeYearMonth(formatter: DateTimeFormatter): Decoder[YearMonth] =
+    Decoder.instance { c =>
+      c.as[String] match {
+        case Right(s) =>
+          try Right(YearMonth.parse(s, formatter))
+          catch {
+            case _: DateTimeParseException => Left(DecodingFailure("YearMonth", c.history))
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[YearMonth]]
+      }
+    }
+
+  final def encodeYearMonth(formatter: DateTimeFormatter): Encoder[YearMonth] =
+    Encoder.instance(time => Json.fromString(time.format(formatter)))
+
+  private final val yearMonthFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
+
+  implicit final val decodeYearMonthDefault: Decoder[YearMonth] = decodeYearMonth(yearMonthFormatter)
+  implicit final val encodeYearMonthDefault: Encoder[YearMonth] = encodeYearMonth(yearMonthFormatter)
 }

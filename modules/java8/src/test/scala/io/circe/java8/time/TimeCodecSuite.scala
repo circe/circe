@@ -3,7 +3,7 @@ package io.circe.java8.time
 import cats.Eq
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, ZonedDateTime, ZoneId }
+import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, YearMonth, ZonedDateTime, ZoneId }
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
@@ -53,6 +53,9 @@ class LocalDateTimeCodecSuite extends CirceSuite {
 
   implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
 
+  implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(arbitrary[LocalDateTime].map(
+    ldt => YearMonth.of(ldt.getYear, ldt.getMonth)))
+
   implicit val eqInstant: Eq[Instant] = Eq.fromUniversalEquals
   implicit val eqLocalDateTime: Eq[LocalDateTime] = Eq.fromUniversalEquals
   implicit val eqZonedDateTime: Eq[ZonedDateTime] = Eq.fromUniversalEquals
@@ -60,6 +63,7 @@ class LocalDateTimeCodecSuite extends CirceSuite {
   implicit val eqLocalDate: Eq[LocalDate] = Eq.fromUniversalEquals
   implicit val eqLocalTime: Eq[LocalTime] = Eq.fromUniversalEquals
   implicit val eqPeriod: Eq[Period] = Eq.fromUniversalEquals
+  implicit val eqYearMonth: Eq[YearMonth] = Eq.fromUniversalEquals
 
   checkLaws("Codec[Instant]", CodecTests[Instant].codec)
   checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].codec)
@@ -68,4 +72,5 @@ class LocalDateTimeCodecSuite extends CirceSuite {
   checkLaws("Codec[LocalDate]", CodecTests[LocalDate].codec)
   checkLaws("Codec[LocalTime]", CodecTests[LocalTime].codec)
   checkLaws("Codec[Period]", CodecTests[Period].codec)
+  checkLaws("Codec[YearMonth]", CodecTests[YearMonth].codec)
 }
