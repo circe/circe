@@ -1,11 +1,11 @@
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.2"
 
 scalacOptions += "-deprecation"
 
-val circeVersion = "0.7.0"
+val circeVersion = "0.8.0"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-streaming" % circeVersion,
-  "io.iteratee" %% "iteratee-scalaz" % "0.9.0"
+  "io.iteratee" %% "iteratee-scalaz" % "0.11.0"
 )
