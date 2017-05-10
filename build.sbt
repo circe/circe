@@ -145,7 +145,7 @@ lazy val docSettings = allSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
-lazy val docs = project.dependsOn(core, generic, parser, optics)
+lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs"
