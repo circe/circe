@@ -28,7 +28,7 @@ lazy val scalaTestVersion = "3.0.3"
 lazy val scalaCheckVersion = "1.13.5"
 lazy val disciplineVersion = "0.7.3"
 
-lazy val previousCirceVersion = Some("0.6.1")
+lazy val previousCirceVersion = Some("0.8.0")
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -145,7 +145,7 @@ lazy val docSettings = allSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
-lazy val docs = project.dependsOn(core, generic, parser, optics)
+lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs"
