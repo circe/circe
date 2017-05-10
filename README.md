@@ -33,6 +33,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Threat Stack](https://www.threatstack.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [Zalando](https://zalando.de)
+* [Datalogue](https://datalogue.io)
 
 ### Other circe organization projects
 
