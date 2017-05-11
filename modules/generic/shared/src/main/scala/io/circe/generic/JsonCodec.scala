@@ -5,7 +5,10 @@ import macrocompat.bundle
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
-class JsonCodec extends scala.annotation.StaticAnnotation {
+class JsonCodec(
+  encodeOnly: Boolean = false,
+  decodeOnly: Boolean = false
+) extends scala.annotation.StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro GenericJsonCodecMacros.jsonCodecAnnotationMacro
 }
 

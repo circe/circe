@@ -42,14 +42,30 @@ abstract class JsonCodecMacros {
   private[this] val EncoderClass = typeOf[Encoder[_]].typeSymbol.asType
   private[this] val ObjectEncoderClass = typeOf[ObjectEncoder[_]].typeSymbol.asType
 
+  private[this] val macroName: Tree = {
+    c.prefix.tree match {
+      case Apply(Select(New(name), _), _) => name
+      case _ => c.abort(c.enclosingPosition, "Unexpected macro application")
+    }
+  }
+
+  private[this] val codecType: JsonCodecType = {
+    c.prefix.tree match {
+      case q"new ${`macroName`}()" => JsonCodecType.Both
+      case q"new ${`macroName`}(encodeOnly = true)" => JsonCodecType.EncodeOnly
+      case q"new ${`macroName`}(decodeOnly = true)" => JsonCodecType.DecodeOnly
+      case _ => c.abort(c.enclosingPosition, s"Unsupported arguments supplied to @$macroName")
+    }
+  }
+
   private[this] def codec(clsDef: ClassDef): List[Tree] = {
     val tpname = clsDef.name
     val tparams = clsDef.tparams
     val decodeNme = TermName("decode" + tpname.decodedName)
     val encodeNme = TermName("encode" + tpname.decodedName)
-    if (tparams.isEmpty) {
+    val (decoder, encoder) = if (tparams.isEmpty) {
       val Type = tpname
-      List(
+      (
         q"""implicit val $decodeNme: $DecoderClass[$Type] = $semiautoObj.deriveDecoder[$Type]""",
         q"""implicit val $encodeNme: $ObjectEncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]"""
       )
@@ -64,12 +80,24 @@ abstract class JsonCodecMacros {
       val decodeParams = mkImplicitParams(DecoderClass)
       val encodeParams = mkImplicitParams(EncoderClass)
       val Type = tq"$tpname[..$tparamNames]"
-      List(
+      (
         q"""implicit def $decodeNme[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
            $semiautoObj.deriveDecoder[$Type]""",
         q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): $ObjectEncoderClass[$Type] =
            $semiautoObj.deriveEncoder[$Type]"""
       )
     }
+    codecType match {
+      case JsonCodecType.Both => List(decoder, encoder)
+      case JsonCodecType.DecodeOnly => List(decoder)
+      case JsonCodecType.EncodeOnly => List(encoder)
+    }
   }
+}
+
+private sealed trait JsonCodecType
+private object JsonCodecType {
+  case object Both extends JsonCodecType
+  case object DecodeOnly extends JsonCodecType
+  case object EncodeOnly extends JsonCodecType
 }
