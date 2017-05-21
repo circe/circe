@@ -4,6 +4,14 @@ import io.circe.tests.CirceSuite
 import cats.data.Const
 
 class JsonObjectSuite extends CirceSuite {
+  "apply" should "match fromIterable" in { (fields: Vector[(String, Json)]) =>
+    assert(JsonObject(fields: _*) === JsonObject.fromIterable(fields))
+  }
+
+  "from" should "match fromIterable" in { (fields: Vector[(String, Json)]) =>
+    assert(JsonObject.from(fields) === JsonObject.fromIterable(fields))
+  }
+
   "+:" should "replace existing fields with the same key" in forAll { (j: Json, h: Json, t: List[Json]) =>
     val fields = (h :: t).zipWithIndex.map {
       case (j, i) => i.toString -> j
