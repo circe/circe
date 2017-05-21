@@ -117,6 +117,11 @@ sealed abstract class JsonObject extends Serializable {
  */
 final object JsonObject {
   /**
+   * Construct a [[JsonObject]] from the given key-value pairs.
+   */
+  def apply(fields: (String, Json)*): JsonObject = fromIterable(fields)
+
+  /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
   final def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
