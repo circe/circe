@@ -1,6 +1,7 @@
 package io.circe
 
 import io.circe.Json.{JString, JArray, JNumber, JBoolean, JObject, JNull}
+import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class JsonSuite extends CirceSuite with FloatJsonTests {
@@ -142,5 +143,19 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
 
   it should "return String on Float.NegativeInfinity" in {
     assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.JString("-Infinity"))
+  }
+
+  "obj" should "create object fluently" in {
+    val actual = Json.obj(
+      "a" := 1,
+      "b" := "asdf",
+      "c" := Seq(1, 2, 3)
+    )
+    val expected = JObject(JsonObject(
+      ("a", JNumber(JsonLong(1))),
+      ("b", JString("asdf")),
+      ("c", JArray(Vector(JNumber(JsonLong(1)), JNumber(JsonLong(2)), JNumber(JsonLong(3)))))
+    ))
+    assert(actual === expected)
   }
 }
