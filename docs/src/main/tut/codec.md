@@ -327,4 +327,60 @@ slightly better runtime performance in some cases.
    point representation that may lose precision (even when decoding into a type like `BigDecimal`;
    see [this issue][circe-262] for an example).
 
+### `knownDirectSubclasses` error
+
+While using fully automatic derivation, you may have run into an error that looks like this:
+
+```scala
+knownDirectSubclasses of <class> observed before subclass <class> registered
+```
+
+This is a known issue ([#434](https://github.com/circe/circe/issues/434), [#659](https://github.com/circe/circe/issues/639))
+that stems from the way fully automatic derivation relies on Shapeless, which in turn conditionally
+calls a Scala Reflect named called `knownDirectSubclasses`. This method has been known to fail depending
+on how the types that it interacts with are declared in your codebase.
+
+Here is a collection workarounds found by other users that you can try:
+
+  1. Rename your files/directories so that the files containing types that get encoded/decoded come
+     alphabetically before the files that `import io.circe.generic.auto._` and turn values of those
+     types into JSON.
+  2. If you've got a sealed trait (e.g. `sealed trait MyEnum`) and it has subclasses that are declared
+     in its companion object, try adding a `import MyEnum._` statement before any calls that force the
+     materialising of an encoder/decoder.
+
+     ```scala
+     import io.circe.syntax._
+     import io.circe.generic.auto._
+     val person = Person("hello", Role.User)
+     import Role._
+     val asJson = person.asJson
+     ```
+
+     * Alternatively, if you are OK with losing namespacing for your enum members you can try moving
+       the subclasses out of the parent trait's companion object and into the same namespace space
+       as the parent trait:
+
+       ```scala
+       // Modify this
+       sealed trait ShirtSize
+
+       object ShirtSize {
+         case object Small  extends ShirtSize
+         case object Medium extends ShirtSize
+         case object Large  extends ShirtSize
+       }
+
+       // into this
+       sealed trait ShirtSizes
+
+       case object Small  extends ShirtSizes
+       case object Medium extends ShirtSizes
+       case object Large  extends ShirtSizes
+       ```
+   3. Try using Scala 2.11.8, the last known version of Scala that did not exhibit this problem.
+
+If none of these workarounds are desirable for your use case, it might be a good idea to try semi-auto
+derivation instead.
+
 {% include references.md %}
