@@ -7,6 +7,8 @@ import io.circe.{ Json, JsonNumber, JsonObject }
 import monocle.function.Plated.plate
 import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
 import monocle.law.discipline.{ PrismTests, TraversalTests }
+import monocle.syntax.all._
+
 import scalaz.Equal
 import scalaz.std.anyVal._
 import scalaz.std.math.bigDecimal._
@@ -64,5 +66,9 @@ class OpticsSuite extends CirceSuite {
     val json = Json.fromJsonNumber(JsonNumber.fromString((BigDecimal(Double.MaxValue) + 1).toString).get)
 
     assert(jsonDouble.getOrModify(json).fold(identity, jsonDouble.reverseGet) === json)
+  }
+
+  "objectFoldKV" should "fold over all fields" in forAll { (obj: JsonObject) =>
+    assert(obj.applyFold(JsonObjectOptics.objectFoldKV).foldMap(List(_)) === obj.toList)
   }
 }
