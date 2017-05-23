@@ -10,7 +10,11 @@ import scala.language.experimental.macros
  * Note that users typically will not work with instances of this class.
  */
 abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
-  def configuredEncodeObject(a: A)(transformKeys: String => String, discriminator: Option[String]): JsonObject
+  def configuredEncodeObject(a: A)(
+    transformKeys: String => String,
+    discriminator: Option[String],
+    transformDiscriminator: String => String
+  ): JsonObject
 
   final protected[this] def addDiscriminator[B](
     encode: Encoder[B],
@@ -25,7 +29,7 @@ abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
     }
   }
 
-  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, None)
+  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, None, Predef.identity)
 }
 
 final object ReprObjectEncoder {

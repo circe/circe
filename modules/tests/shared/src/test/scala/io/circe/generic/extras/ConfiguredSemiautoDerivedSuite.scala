@@ -30,7 +30,7 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
   import examples._
 
   implicit val customConfig: Configuration =
-    Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type")
+    Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type").withSnakeCaseDiscriminators
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
@@ -45,8 +45,8 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
 
   "Semi-automatic derivation" should "support configuration" in forAll { (f: String, b: Double) =>
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)
-    val json = json"""{ "type": "ConfigExampleFoo", "this_is_a_field": $f, "b": $b}"""
-    val expected = json"""{ "type": "ConfigExampleFoo", "this_is_a_field": $f, "a": 0, "b": $b}"""
+    val json = json"""{ "type": "config_example_foo", "this_is_a_field": $f, "b": $b}"""
+    val expected = json"""{ "type": "config_example_foo", "this_is_a_field": $f, "a": 0, "b": $b}"""
 
     assert(Encoder[ConfigExampleBase].apply(foo) === expected)
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))

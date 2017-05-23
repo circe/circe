@@ -18,13 +18,15 @@ abstract class ReprDecoder[A] extends Decoder[A] {
   def configuredDecode(c: HCursor)(
     transformKeys: String => String,
     defaults: Map[String, Any],
-    discriminator: Option[String]
+    discriminator: Option[String],
+    transformDiscriminators: String => String
   ): Decoder.Result[A]
 
   def configuredDecodeAccumulating(c: HCursor)(
     transformKeys: String => String,
     defaults: Map[String, Any],
-    discriminator: Option[String]
+    discriminator: Option[String],
+    transformDiscriminators: String => String
   ): AccumulatingDecoder.Result[A]
 
   final protected[this] def orDefault[B](
@@ -88,9 +90,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     }
   }
 
-  final def apply(c: HCursor): Decoder.Result[A] = configuredDecode(c)(Predef.identity, Map.empty, None)
+  final def apply(c: HCursor): Decoder.Result[A] =
+    configuredDecode(c)(Predef.identity, Map.empty, None, Predef.identity)
+
   final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-    configuredDecodeAccumulating(c)(Predef.identity, Map.empty, None)
+    configuredDecodeAccumulating(c)(Predef.identity, Map.empty, None, Predef.identity)
 }
 
 final object ReprDecoder {
@@ -100,13 +104,15 @@ final object ReprDecoder {
     def configuredDecode(c: HCursor)(
       transformKeys: String => String,
       defaults: Map[String, Any],
-      discriminator: Option[String]
+      discriminator: Option[String],
+      transformDiscriminators: String => String
     ): Decoder.Result[HNil] = Right(HNil)
 
     def configuredDecodeAccumulating(c: HCursor)(
       transformKeys: String => String,
       defaults: Map[String, Any],
-      discriminator: Option[String]
+      discriminator: Option[String],
+      transformDiscriminators: String => String
     ): AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)
   }
 }

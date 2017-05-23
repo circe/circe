@@ -40,7 +40,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
       defaultMap,
-      None
+      None,
+      config.transformDiscriminators
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -50,7 +51,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
       decode.value.configuredDecodeAccumulating(c)(
         if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
         defaultMap,
-        None
+        None,
+        config.transformDiscriminators
       ).map(gen.from)
   }
 
@@ -62,7 +64,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       Predef.identity,
       Map.empty,
-      config.discriminator
+      config.discriminator,
+      config.transformDiscriminators
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -72,7 +75,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
       decode.value.configuredDecodeAccumulating(c)(
         Predef.identity,
         Map.empty,
-        config.discriminator
+        config.discriminator,
+        config.transformDiscriminators
       ).map(gen.from)
   }
 }
