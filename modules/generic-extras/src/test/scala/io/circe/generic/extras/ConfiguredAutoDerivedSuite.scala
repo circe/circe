@@ -63,6 +63,16 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     }
   }
 
+  "Configuration#transformDiscrimators" should "support discriminator transformation" in forAll { (f: String, a: Int, b: Double) =>
+    implicit val snakeCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withSnakeCaseDiscriminators
+
+    val foo: ConfigExampleBase = ConfigExampleFoo(f, a, b)
+    val json = json"""{ "type": "config_example_foo", "thisIsAField": $f, "a": $a, "b": $b}"""
+
+    assert(Encoder[ConfigExampleBase].apply(foo) === json)
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+  }
+
   "Configuration options" should "work together" in forAll { (f: String, b: Double) =>
     implicit val customConfig: Configuration =
       Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type")
