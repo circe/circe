@@ -6,7 +6,7 @@ import io.circe.tests.CirceSuite
 import io.circe.{ Json, JsonNumber, JsonObject }
 import monocle.function.Plated.plate
 import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
-import monocle.law.discipline.{ PrismTests, TraversalTests }
+import monocle.law.discipline.{ IsoTests, PrismTests, TraversalTests }
 import scalaz.Equal
 import scalaz.std.anyVal._
 import scalaz.std.math.bigDecimal._
@@ -14,6 +14,8 @@ import scalaz.std.math.bigInt._
 import scalaz.std.option._
 import scalaz.std.string._
 import scalaz.std.vector._
+import scalaz.std.list.listEqual
+import scalaz.std.tuple._
 
 class OpticsSuite extends CirceSuite {
   implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
@@ -27,6 +29,8 @@ class OpticsSuite extends CirceSuite {
   implicit val doubleInstance: Equal[Double] = Equal.equal { (a, b) =>
     (a.isNaN && b.isNaN) || scalaz.std.anyVal.doubleInstance.equal(a, b)
   }
+
+  checkLaws("JsonObject Iso List[(String, Json)]", IsoTests(jsonObjectIso))
 
   checkLaws("Json to Unit", PrismTests(jsonNull))
   checkLaws("Json to Boolean", PrismTests(jsonBoolean))
