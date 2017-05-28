@@ -413,7 +413,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M10"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M11"
   )
 
 lazy val java8 = java8Base.jvm
@@ -421,7 +421,7 @@ lazy val java8JS = java8Base.js
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.11.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.12.0"
   )
   .dependsOn(core, jawn)
 
