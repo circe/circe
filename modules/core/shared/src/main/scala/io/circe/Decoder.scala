@@ -364,7 +364,11 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Utilities
    */
-  final def failedWithMessage[A](message: String): Decoder[A] = failed(DecodingFailure(message, Nil))
+  final def failedWithMessage[A](message: String): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = Left(DecodingFailure(message, c.history))
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      Validated.invalidNel(DecodingFailure(message, c.history))
+  }
 
   /**
    * @group Decoding
