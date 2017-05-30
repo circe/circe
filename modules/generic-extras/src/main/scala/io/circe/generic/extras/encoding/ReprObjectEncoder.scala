@@ -11,7 +11,7 @@ import scala.language.experimental.macros
  */
 abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
   def configuredEncodeObject(a: A)(
-    transformKeys: String => String,
+    transformMemberNames: String => String,
     discriminator: Option[String],
     transformDiscriminator: String => String
   ): JsonObject

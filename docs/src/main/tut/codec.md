@@ -196,7 +196,7 @@ all you need is a custom implicit configuration:
 ```tut:book
 import io.circe.generic.extras._, io.circe.syntax._
 
-implicit val config: Configuration = Configuration.default.withSnakeCaseKeys
+implicit val config: Configuration = Configuration.default.withSnakeCaseMemberNames
 
 @ConfiguredJsonCodec case class User(firstName: String, lastName: String)
 
@@ -209,7 +209,7 @@ In other cases you may need more complex mappings. These can be provided as a fu
 import io.circe.generic.extras._, io.circe.syntax._
 
 implicit val config: Configuration = Configuration.default.copy(
-  transformKeys = {
+  transformMemberNames = {
     case "i" => "my-int"
     case other => other
   }

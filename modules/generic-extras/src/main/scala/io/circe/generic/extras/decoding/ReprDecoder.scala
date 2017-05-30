@@ -16,17 +16,17 @@ import shapeless.HNil
  */
 abstract class ReprDecoder[A] extends Decoder[A] {
   def configuredDecode(c: HCursor)(
-    transformKeys: String => String,
+    transformMemberNames: String => String,
     defaults: Map[String, Any],
     discriminator: Option[String],
-    transformDiscriminators: String => String
+    transformConstructorNames: String => String
   ): Decoder.Result[A]
 
   def configuredDecodeAccumulating(c: HCursor)(
-    transformKeys: String => String,
+    transformMemberNames: String => String,
     defaults: Map[String, Any],
     discriminator: Option[String],
-    transformDiscriminators: String => String
+    transformConstructorNames: String => String
   ): AccumulatingDecoder.Result[A]
 
   final protected[this] def orDefault[B](
@@ -102,17 +102,17 @@ final object ReprDecoder {
 
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def configuredDecode(c: HCursor)(
-      transformKeys: String => String,
+      transformMemberNames: String => String,
       defaults: Map[String, Any],
       discriminator: Option[String],
-      transformDiscriminators: String => String
+      transformConstructorNames: String => String
     ): Decoder.Result[HNil] = Right(HNil)
 
     def configuredDecodeAccumulating(c: HCursor)(
-      transformKeys: String => String,
+      transformMemberNames: String => String,
       defaults: Map[String, Any],
       discriminator: Option[String],
-      transformDiscriminators: String => String
+      transformConstructorNames: String => String
     ): AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)
   }
 }

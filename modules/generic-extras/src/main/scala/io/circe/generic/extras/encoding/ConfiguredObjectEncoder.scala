@@ -28,14 +28,14 @@ final object ConfiguredObjectEncoder {
         case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
       }.toMap
 
-    private[this] def keyTransformer(transformKeys: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformKeys(value))
+    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
+      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
 
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
-        if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
+        if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
         None,
-        config.transformDiscriminators
+        config.transformConstructorNames
       )
   }
 
@@ -48,7 +48,7 @@ final object ConfiguredObjectEncoder {
       encode.value.configuredEncodeObject(gen.to(a))(
         Predef.identity,
         config.discriminator,
-        config.transformDiscriminators
+        config.transformConstructorNames
       )
   }
 }
