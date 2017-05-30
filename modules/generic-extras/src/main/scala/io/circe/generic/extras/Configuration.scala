@@ -4,24 +4,29 @@ package io.circe.generic.extras
   * Configuration allowing customisation of the JSON produced when encoding, or expected when decoding. Can be used
   * with the [[ConfiguredJsonCodec]] annotation to allow customisation of the semi-automatic derivation.
   *
-  * @param transformKeys Transforms the names of the keys in the JSON allowing, for example, formatting or case changes.
-  * @param useDefaults Whether to allow default values as specified in any case-classes/ADT fields.
-  * @param discriminator Optional key name that, when given, will be used to store the name of the type of an ADT in a
-  *                      nested field with this name. If not given, the type is instead stored as a key under which the
-  *                      contents of the ADT are stored as an object.
-  * @param transformDiscriminators Transforms the value of the discriminator in the JSON allowing, for example,
-  *                                formatting or case changes.
+  * @param transformMemberNames Transforms the names of any case class members in the JSON allowing, for example,
+  *                             formatting or case changes.
+  * @param useDefaults Whether to allow default values as specified for any case-class members.
+  * @param discriminator Optional key name that, when given, will be used to store the name of the constructor of an ADT
+  *                      in a nested field with this name. If not given, the name is instead stored as a key under which
+  *                      the contents of the ADT are stored as an object.
+  * @param transformConstructorNames Transforms the value of any constructor names in the JSON allowing, for example,
+  *                                  formatting or case changes.
   */
-final case class Configuration(transformKeys: String => String,
+final case class Configuration(transformMemberNames: String => String,
                                useDefaults: Boolean,
                                discriminator: Option[String],
-                               transformDiscriminators: String => String) {
-  def withSnakeCaseKeys: Configuration = copy(
-    transformKeys = Configuration.snakeCaseTransformation
+                               transformConstructorNames: String => String) {
+
+  def withSnakeCaseMemberNames: Configuration = copy(
+    transformMemberNames = Configuration.snakeCaseTransformation
   )
 
-  def withSnakeCaseDiscriminators: Configuration = copy(
-    transformDiscriminators = Configuration.snakeCaseTransformation
+  @deprecated("Use withSnakeCaseMemberNames instead", "0.9.0")
+  def withSnakeCaseKeys: Configuration = withSnakeCaseMemberNames
+
+  def withSnakeCaseConstructorNames: Configuration = copy(
+    transformConstructorNames = Configuration.snakeCaseTransformation
   )
 
   def withDefaults: Configuration = copy(useDefaults = true)

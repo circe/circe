@@ -25,22 +25,22 @@ class ConfigurableDeriver(val c: whitebox.Context)
   protected[this] val decodeAccumulatingMethodName: TermName = TermName("configuredDecodeAccumulating")
 
   protected[this] override def decodeMethodArgs: List[Tree] = List(
-    q"transformKeys: (_root_.java.lang.String => _root_.java.lang.String)",
+    q"transformMemberNames: (_root_.java.lang.String => _root_.java.lang.String)",
     q"defaults: _root_.scala.collection.immutable.Map[_root_.java.lang.String, _root_.scala.Any]",
     q"discriminator: _root_.scala.Option[_root_.java.lang.String]",
-    q"transformDiscriminators: (_root_.java.lang.String => _root_.java.lang.String)"
+    q"transformConstructorNames: (_root_.java.lang.String => _root_.java.lang.String)"
   )
 
   protected[this] def encodeMethodName: TermName = TermName("configuredEncodeObject")
   protected[this] override def encodeMethodArgs: List[Tree] = List(
-    q"transformKeys: (_root_.java.lang.String => _root_.java.lang.String)",
+    q"transformMemberNames: (_root_.java.lang.String => _root_.java.lang.String)",
     q"discriminator: _root_.scala.Option[_root_.java.lang.String]",
-    q"transformDiscriminators: (_root_.java.lang.String => _root_.java.lang.String)"
+    q"transformConstructorNames: (_root_.java.lang.String => _root_.java.lang.String)"
   )
 
   protected[this] def decodeField(name: String, decode: TermName): Tree = q"""
     orDefault(
-      $decode.tryDecode(c.downField(transformKeys($name))),
+      $decode.tryDecode(c.downField(transformMemberNames($name))),
       $name,
       defaults
     )
@@ -48,7 +48,7 @@ class ConfigurableDeriver(val c: whitebox.Context)
 
   protected[this] def decodeFieldAccumulating(name: String, decode: TermName): Tree = q"""
     orDefaultAccumulating(
-      $decode.tryDecodeAccumulating(c.downField(transformKeys($name))),
+      $decode.tryDecodeAccumulating(c.downField(transformMemberNames($name))),
       $name,
       defaults
     )
@@ -58,7 +58,7 @@ class ConfigurableDeriver(val c: whitebox.Context)
     withDiscriminator(
       $decode,
       c,
-      transformDiscriminators($name),
+      transformConstructorNames($name),
       discriminator
     )
   """
@@ -67,14 +67,14 @@ class ConfigurableDeriver(val c: whitebox.Context)
     withDiscriminatorAccumulating(
       $decode,
       c,
-      transformDiscriminators($name),
+      transformConstructorNames($name),
       discriminator
     )
   """
 
   protected[this] def encodeField(name: String, encode: TermName, value: TermName): Tree =
-    q"(transformKeys($name), $encode($value))"
+    q"(transformMemberNames($name), $encode($value))"
 
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree =
-    q"addDiscriminator($encode, $value, transformDiscriminators($name), discriminator)"
+    q"addDiscriminator($encode, $value, transformConstructorNames($name), discriminator)"
 }

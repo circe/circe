@@ -7,7 +7,7 @@ import io.circe.tests.CirceSuite
 
 class ConfiguredJsonCodecWithKeySuite extends CirceSuite {
   implicit val customConfig: Configuration =
-    Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type").withSnakeCaseDiscriminators
+    Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
   /**
    * This nesting is necessary on 2.10 (possibly related to SI-7406).

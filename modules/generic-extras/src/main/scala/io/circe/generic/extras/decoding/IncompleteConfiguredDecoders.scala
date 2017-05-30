@@ -22,10 +22,10 @@ private[circe] trait IncompleteConfiguredDecoders {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[F] = decode.configuredDecode(c)(
-      config.transformKeys,
+      config.transformMemberNames,
       defaultMap,
       None,
-      config.transformDiscriminators
+      config.transformConstructorNames
     ) match {
       case Right(r) => Right(ffp(p => gen.from(removeAll.reinsert((p, r)))))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[F]]
@@ -33,10 +33,10 @@ private[circe] trait IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
       decode.configuredDecodeAccumulating(c)(
-        config.transformKeys,
+        config.transformMemberNames,
         defaultMap,
         None,
-        config.transformDiscriminators
+        config.transformConstructorNames
       ).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
   }
 
@@ -51,10 +51,10 @@ private[circe] trait IncompleteConfiguredDecoders {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[A => A] = decode.configuredDecode(c)(
-      config.transformKeys,
+      config.transformMemberNames,
       defaultMap,
       None,
-      config.transformDiscriminators
+      config.transformConstructorNames
     ) match {
       case Right(o) => Right(a => gen.from(patch(gen.to(a), o)))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A => A]]
@@ -62,10 +62,10 @@ private[circe] trait IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
       decode.configuredDecodeAccumulating(c)(
-        config.transformKeys,
+        config.transformMemberNames,
         defaultMap,
         None,
-        config.transformDiscriminators
+        config.transformConstructorNames
       ).map(o => a => gen.from(patch(gen.to(a), o)))
   }
 }

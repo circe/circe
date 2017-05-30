@@ -30,7 +30,7 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
   import examples._
 
   implicit val customConfig: Configuration =
-    Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type").withSnakeCaseDiscriminators
+    Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
