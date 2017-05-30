@@ -25,7 +25,9 @@ object Boilerplate {
     GenTupleDecoders,
     GenTupleEncoders,
     GenProductDecoders,
-    GenProductEncoders
+    GenProductEncoders,
+    GenSumDecoders,
+    GenSumEncoders
   )
 
   val testTemplates: Seq[Template] = Seq(
@@ -245,6 +247,103 @@ object Boilerplate {
     }
   }
 
+  object GenSumDecoders extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "SumDecoders.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val instances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
+      val evs = synTypes.map(tpe => s"ev$tpe: $tpe <:< Target").mkString(", ")
+      val pairs = synTypes.map(tpe => s"(name$tpe, decode$tpe.map(ev$tpe))").mkString(", ")
+      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
+
+      block"""
+        |package io.circe
+        |
+        |import cats.data.Validated
+        |import scala.Predef.<:<
+        |import scala.collection.immutable.Map
+        |
+        |private[circe] trait SumDecoders {
+        |  private[this] abstract class SumDecoder[Target] extends Decoder[Target] {
+        |    protected[this] def nameMap: Map[String, Decoder[Target]]
+        |  }
+        |        
+        |  private[this] abstract class TypeFieldSumDecoder[Target](typeField: String) extends SumDecoder[Target] {
+        |    private[this] def failure(name: String, c: HCursor): DecodingFailure =
+        |      DecodingFailure(s"Unknown name in $$typeField: $$name", c.history)
+        |
+        |    final def apply(c: HCursor): Decoder.Result[Target] = c.get[String](typeField) match {
+        |      case Right(tv) => nameMap.get(tv) match {
+        |        case Some(d) => d.apply(c)
+        |        case None => Left(failure(tv, c))
+        |      }
+        |      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Target]]
+        |    }
+        |    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Target] = {
+        |      Decoder.decodeString.tryDecodeAccumulating(c.downField(typeField)) match {
+        |        case Validated.Valid(tv) => nameMap.get(tv) match {
+        |          case Some(d) => d.decodeAccumulating(c)
+        |          case None => Validated.invalidNel(failure(tv, c))
+        |        }
+        |        case i @ Validated.Invalid(_) => i
+        |      }
+        |    }
+        |  }
+        |
+        |  private[this] abstract class WrapperSumDecoder[Target] extends SumDecoder[Target] {
+        |    private[this] def failure(name: String, c: HCursor): DecodingFailure =
+        |      DecodingFailure("Unknown name: $$name", c.history)
+        |    private[this] def wrapperFailure(c: HCursor): DecodingFailure = DecodingFailure("Invalid wrapper", c.history)
+        |
+        |    final def apply(c: HCursor): Decoder.Result[Target] = c.focus match {
+        |      case Some(f) if f.isObject =>
+        |        val fs = f.asInstanceOf[Json.JObject].value.keys
+        |        if (fs.size == 1) {
+        |          val fv = fs.head
+        |          nameMap.get(fv) match {
+        |            case Some(d) => c.get(fv)(d)
+        |            case None => Left(failure(fv, c))
+        |          }
+        |        } else Left(wrapperFailure(c))
+        |      case _ => Left(wrapperFailure(c))
+        |    }
+        |    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Target] = c.focus match {
+        |      case Some(f) if f.isObject =>
+        |        val fs = f.asInstanceOf[Json.JObject].value.keys
+        |        if (fs.size == 1) {
+        |          val fv = fs.head
+        |          nameMap.get(fv) match {
+        |            case Some(d) => d.tryDecodeAccumulating(c.downField(fv))
+        |            case None => Validated.invalidNel(failure(fv, c))
+        |          }
+        |        } else Validated.invalidNel(wrapperFailure(c))
+        |      case _ => Validated.invalidNel(wrapperFailure(c))
+        |    }
+        |  }
+        |
+        -  /**
+        -   * @group Sum
+        -   */
+        -  final def forSum$arity[Target, ${`A..N`}](typeField: Option[String])($memberNames)(implicit
+        -    $instances,
+        -    $evs
+        -  ): Decoder[Target] = typeField match {
+        -    case Some(tf) => new TypeFieldSumDecoder[Target](tf) {
+        -      protected[this] final val nameMap: Map[String, Decoder[Target]] = Map($pairs)
+        -    }
+        -    case None => new WrapperSumDecoder[Target] {
+        -      protected[this] final val nameMap: Map[String, Decoder[Target]] = Map($pairs)
+        -    }
+        -  }
+        |}
+      """
+    }
+  }
+
   object GenProductEncoders extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
@@ -278,6 +377,52 @@ object Boilerplate {
         -        JsonObject.fromIterable(Vector($kvs))
         -      }
         -    }
+        |}
+      """
+    }
+  }
+
+  object GenSumEncoders extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "SumEncoders.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val instances = synTypes.map(tpe => s"encode$tpe: ObjectEncoder[$tpe]").mkString(", ")
+      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
+      val deconstructors = synTypes.map(tpe => s"deconstruct$tpe: PartialFunction[Source, $tpe]").mkString(", ")
+      val findConstructor = synTypes.tail.foldLeft(
+        s"deconstruct${ synTypes.head }.andThen(t => (name${ synTypes.head }, encode${ synTypes.head }.encodeObject(t)))"
+      ) {
+        case (acc, tpe) =>
+          s"$acc.orElse(deconstruct$tpe.andThen(t => (name$tpe, encode$tpe.encodeObject(t))))"
+      }
+
+      block"""
+        |package io.circe
+        |
+        |private[circe] trait SumEncoders {
+        -  /**
+        -   * @group Sum
+        -   */
+        -  final def forSum$arity[Source, ${`A..N`}](typeField: Option[String])($memberNames)($deconstructors)(implicit
+        -    $instances
+        -  ): ObjectEncoder[Source] = typeField match {
+        -    case Some(tf) => new ObjectEncoder[Source] {
+        -      final def encodeObject(a: Source): JsonObject = $findConstructor.lift(a) match {
+        -        case Some((name, o)) => (tf, Json.fromString(name)) +: o
+        -        case None => JsonObject.empty
+        -      }
+        -    }
+        -    case None => new ObjectEncoder[Source] {
+        -      final def encodeObject(a: Source): JsonObject = $findConstructor.lift(a) match {
+        -        case Some((name, o)) => JsonObject.singleton(name, Json.fromJsonObject(o))
+        -        case None => JsonObject.empty
+        -      }
+        -    }
+        -  }
         |}
       """
     }

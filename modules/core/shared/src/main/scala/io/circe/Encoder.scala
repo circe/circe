@@ -67,15 +67,19 @@ trait Encoder[A] extends Serializable { self =>
  * @groupname Product Case class and other product instances
  * @groupprio Product 7
  *
+ * @groupname Sum Sealed trait hierarchy and other sum instances
+ * @groupprio Sum 8
+ *
  * @groupname Time Java date and time instances
- * @groupprio Time 8
+ * @groupprio Time 9
  *
  * @groupname Prioritization Instance prioritization
  * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
-final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEncoders with MidPriorityEncoders {
+final object Encoder extends TupleEncoders with ProductEncoders with SumEncoders
+    with JavaTimeEncoders with MidPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
