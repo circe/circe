@@ -3,6 +3,7 @@ package io.circe
 import cats.Eq
 import cats.data.Validated
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import io.circe.CursorOp.DownArray
 import io.circe.Json.JObject
 import io.circe.parser.parse
 import io.circe.syntax._
@@ -23,6 +24,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     _.map(identity),
     _.emap(Right(_)),
     _.emapTry(Success(_))
+  )
+
+  private[this] def containerDecoders[T: Decoder] = Table[Decoder[_]](
+    "decoder",
+    Decoder[Set[T]],
+    Decoder[List[T]],
+    Decoder[Vector[T]]
   )
 
   "transformations" should "do nothing when used with identity" in forAll(transformations[Int]) { transformation =>
@@ -342,5 +350,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val Left(DecodingFailure(_, history)) = Decoder[List[Int]].decodeJson(json)
 
     assert(history.size === size + 1)
+  }
+
+  case class NotDecodable(a: Int)
+  implicit val decodeNotDecodable: Decoder[NotDecodable] = Decoder.failedWithMessage("Some message")
+
+  "container decoder" should "pass through error message from item" in forAll(containerDecoders[NotDecodable]) { decoder =>
+    val json = Json.arr(Json.obj("a" -> 1.asJson))
+    assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
   }
 }
