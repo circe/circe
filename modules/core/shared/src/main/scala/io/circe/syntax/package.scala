@@ -9,4 +9,7 @@ package object syntax {
     final def asJsonObject(implicit encoder: ObjectEncoder[A]): JsonObject =
       encoder.encodeObject(wrappedEncodeable)
   }
+  implicit final class StringOps(val value: String) extends AnyVal {
+    final def :=[A: Encoder](a: A): (String, Json) = (value, a.asJson)
+  }
 }
