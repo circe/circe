@@ -5,6 +5,28 @@ import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class JsonSuite extends CirceSuite with FloatJsonTests {
+  "foldWith" should "give the same value as fold" in forAll { (json: Json) =>
+    val z: Int = 0
+    val b: Boolean => Int = if (_) 1 else 2
+    val n: JsonNumber => Int = _.truncateToInt
+    val s: String => Int = _.length
+    val a: Vector[Json] => Int = _.size
+    val o: JsonObject => Int = _.fields.size
+
+    val result = json.foldWith(
+      new Json.Folder[Int] {
+        def onNull: Int = z
+        def onBoolean(value: Boolean): Int = b(value)
+        def onNumber(value: JsonNumber): Int = n(value)
+        def onString(value: String): Int = s(value)
+        def onArray(value: Vector[Json]): Int = a(value)
+        def onObject(value: JsonObject): Int = o(value)
+      }
+    )
+
+    assert(result === json.fold(z, b, n, s, a, o))
+  }
+
   "deepMerge" should "preserve argument order" in forAll { (js: List[Json]) =>
     val fields = js.zipWithIndex.map {
       case (j, i) => i.toString -> j

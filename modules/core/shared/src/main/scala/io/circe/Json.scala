@@ -13,6 +13,12 @@ import io.circe.numbers.BiggerDecimal
  */
 sealed abstract class Json extends Product with Serializable {
   import Json._
+
+  /**
+   * Reduce this JSON value with the given [[Json.Folder]].
+   */
+  def foldWith[X](folder: Json.Folder[X]): X
+
   /**
    * The catamorphism for the JSON value data type.
    */
@@ -181,7 +187,21 @@ sealed abstract class Json extends Product with Serializable {
 }
 
 final object Json {
+  /**
+   * Represents a set of operations for reducing a [[Json]] instance to a value.
+   */
+  trait Folder[X] extends Serializable {
+    def onNull: X
+    def onBoolean(value: Boolean): X
+    def onNumber(value: JsonNumber): X
+    def onString(value: String): X
+    def onArray(value: Vector[Json]): X
+    def onObject(value: JsonObject): X
+  }
+
   private[circe] final case object JNull extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onNull
+
     final def isNull: Boolean = true
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = false
@@ -203,6 +223,8 @@ final object Json {
   }
 
   private[circe] final case class JBoolean(value: Boolean) extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onBoolean(value)
+
     final def isNull: Boolean = false
     final def isBoolean: Boolean = true
     final def isNumber: Boolean = false
@@ -224,6 +246,8 @@ final object Json {
   }
 
   private[circe] final case class JNumber(value: JsonNumber) extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onNumber(value)
+
     final def isNull: Boolean = false
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = true
@@ -245,6 +269,8 @@ final object Json {
   }
 
   private[circe] final case class JString(value: String) extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onString(value)
+
     final def isNull: Boolean = false
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = false
@@ -266,6 +292,8 @@ final object Json {
   }
 
   private[circe] final case class JArray(value: Vector[Json]) extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onArray(value)
+
     final def isNull: Boolean = false
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = false
@@ -287,6 +315,8 @@ final object Json {
   }
 
   private[circe] final case class JObject(value: JsonObject) extends Json {
+    final def foldWith[X](folder: Folder[X]): X = folder.onObject(value)
+
     final def isNull: Boolean = false
     final def isBoolean: Boolean = false
     final def isNumber: Boolean = false
