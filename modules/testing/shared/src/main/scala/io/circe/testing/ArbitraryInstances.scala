@@ -4,6 +4,7 @@ import cats.data.ValidatedNel
 import cats.laws.discipline.arbitrary._
 import io.circe._
 import io.circe.numbers.BiggerDecimal
+import io.circe.numbers.testing.JsonNumberString
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 

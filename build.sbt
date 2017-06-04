@@ -160,6 +160,7 @@ lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .enablePlugins(ScalaUnidocPlugin)
 
 lazy val circeCrossModules = Seq[(Project, Project)](
+  (numbersTesting, numbersTestingJS),
   (numbers, numbersJS),
   (core, coreJS),
   (generic, genericJS),
@@ -247,13 +248,25 @@ lazy val circe = project.in(file("."))
   .aggregate(aggregatedProjects: _*)
   .dependsOn(core, genericExtras, literal, parser)
 
+lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure)
+  .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+    coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
+  )
+
+lazy val numbersTesting = numbersTestingBase.jvm
+lazy val numbersTestingJS = numbersTestingBase.js
+
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
     )
-  )
+  ).dependsOn(numbersTestingBase % Test)
 
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
@@ -346,7 +359,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
   )
-  .dependsOn(coreBase)
+  .dependsOn(coreBase, numbersTestingBase)
 
 lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js

@@ -1,4 +1,4 @@
-package io.circe.testing
+package io.circe.numbers.testing
 
 import org.scalacheck.{ Arbitrary, Gen }
 
