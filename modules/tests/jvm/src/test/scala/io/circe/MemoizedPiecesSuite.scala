@@ -18,7 +18,7 @@ class MemoizedPiecesSuite extends CirceSuite with ScalaFutures {
     )
   }
 
-  def makePieces: Printer.MemoizedPieces = new Printer.MemoizedPieces {
+  def makePieces: Printer.MemoizedPieces = new Printer.MemoizedPieces(" ") {
     def compute(i: Int): Printer.Pieces = new Printer.Pieces(
       "%s%s%s".format(" " * i, "a", " " * (i + 1)),
       "%s%s%s".format(" " * i, "b", " " * (i + 1)),
