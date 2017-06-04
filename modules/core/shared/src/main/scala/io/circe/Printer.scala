@@ -30,6 +30,8 @@ import scala.annotation.switch
  * @param colonRight Spaces to insert to right of a colon.
  * @param preserveOrder Determines if field ordering should be preserved.
  * @param dropNullKeys Determines if object fields with values of null are dropped from the output.
+ * @param reuseWriters Determines whether the printer will reuse Appendables via thread-local
+ *        storage.
  */
 final case class Printer(
   preserveOrder: Boolean,
@@ -49,7 +51,8 @@ final case class Printer(
   objectCommaLeft: String = "",
   objectCommaRight: String = "",
   colonLeft: String = "",
-  colonRight: String = ""
+  colonRight: String = "",
+  reuseWriters: Boolean = false
 ) {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
@@ -242,11 +245,21 @@ final case class Printer(
     }
   }
 
+  @transient
+  private[this] final val stringWriter: ThreadLocal[StringBuilder] = new ThreadLocal[StringBuilder] {
+    override final def initialValue: StringBuilder = new StringBuilder()
+  }
+
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
   final def pretty(json: Json): String = {
-    val writer = new StringBuilder()
+    val writer = if (reuseWriters) {
+      val w = stringWriter.get()
+      w.setLength(0)
+      w
+    } else new StringBuilder()
+
     val folder = new PrintingFolder(writer)
 
     json.foldWith(folder)
