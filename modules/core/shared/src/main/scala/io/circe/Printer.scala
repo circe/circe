@@ -242,11 +242,17 @@ final case class Printer(
     }
   }
 
+  @transient
+  private[this] final val stringWriter: ThreadLocal[StringBuilder] = new ThreadLocal[StringBuilder] {
+    final override def initialValue: StringBuilder = new StringBuilder()
+  }
+
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
   final def pretty(json: Json): String = {
-    val writer = new StringBuilder()
+    val writer = stringWriter.get()
+    writer.setLength(0)
     val folder = new PrintingFolder(writer)
 
     json.foldWith(folder)
