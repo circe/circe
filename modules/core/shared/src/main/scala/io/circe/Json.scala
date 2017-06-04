@@ -123,16 +123,16 @@ sealed abstract class Json extends Product with Serializable {
   final def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
-    * Perform a deep merge of this JSON value with another JSON value.
-    *
-    * Objects are merged by key, values from the argument JSON take
-    * precedence over values from this JSON. Nested objects are
-    * recursed.
-    *
-    * Null, Array, Boolean, String and Number are treated as values,
-    * and values from the argument JSON completely replace values
-    * from this JSON.
-    */
+   * Perform a deep merge of this JSON value with another JSON value.
+   *
+   * Objects are merged by key, values from the argument JSON take
+   * precedence over values from this JSON. Nested objects are
+   * recursed.
+   *
+   * Null, Array, Boolean, String and Number are treated as values,
+   * and values from the argument JSON completely replace values
+   * from this JSON.
+   */
   def deepMerge(that: Json): Json =
     (asObject, that.asObject) match {
       case (Some(lhs), Some(rhs)) =>
@@ -167,11 +167,11 @@ sealed abstract class Json extends Product with Serializable {
   final def \\(key: String): List[Json] = findAllByKey(key)
 
   /**
-    * Recursively return all values matching the specified `key`.
-    *
-    * The Play docs, from which this method was inspired, reads:
-    *   "Lookup for fieldName in the current object and all descendants."
-    */
+   * Recursively return all values matching the specified `key`.
+   *
+   * The Play docs, from which this method was inspired, reads:
+   *   "Lookup for fieldName in the current object and all descendants."
+   */
   final def findAllByKey(key: String): List[Json] = keyValues(this).collect {
     case (k, v) if (k == key) => v
   }
