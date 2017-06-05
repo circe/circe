@@ -89,7 +89,7 @@ private[numbers] final class SigAndExp(
     if (!isWhole) None else {
       val digits = BigInteger.valueOf(unscaled.abs.toString.length.toLong).subtract(scale)
 
-      if (digits.compareTo(BiggerDecimal.MaxBigIntegerDigits) > 0) None else Some(
+      if (digits.compareTo(maxDigits) > 0) None else Some(
         new BigDecimal(unscaled, scale.intValue).toBigInteger
       )
     }
