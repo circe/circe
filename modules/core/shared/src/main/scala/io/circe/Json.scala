@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ Eq, Show }
-import io.circe.numbers.BiggerDecimal
+import io.circe.numbers.JsonNumber
 
 /**
  * A data type representing possible JSON values.
@@ -29,14 +29,19 @@ sealed abstract class Json extends Product with Serializable {
     jsonString: String => X,
     jsonArray: Vector[Json] => X,
     jsonObject: JsonObject => X
-  ): X = this match {
-    case JNull       => jsonNull
-    case JBoolean(b) => jsonBoolean(b)
-    case JNumber(n)  => jsonNumber(n)
-    case JString(s)  => jsonString(s)
-    case JArray(a)   => jsonArray(a)
-    case JObject(o)  => jsonObject(o)
-  }
+  ): X = foldWith(
+    new Json.Folder[X] {
+      def onNull: X = jsonNull
+      def onBoolean(value: Boolean): X = jsonBoolean(value)
+      def onNumber(value: JsonNumber): X = jsonNumber(value)
+      def onDouble(value: Double): X = jsonNumber(JsonNumber.fromDouble(value))
+      def onFloat(value: Float): X = jsonNumber(JsonNumber.fromFloat(value))
+      def onLong(value: Long): X = jsonNumber(JsonNumber.fromLong(value))
+      def onString(value: String): X = jsonString(value)
+      def onArray(value: Vector[Json]): X = jsonArray(value)
+      def onObject(value: JsonObject): X = jsonObject(value)
+    }
+  )
 
   /**
    * Run on an array or object or return the given default.
@@ -45,14 +50,19 @@ sealed abstract class Json extends Product with Serializable {
     or: => X,
     jsonArray: Vector[Json] => X,
     jsonObject: JsonObject => X
-  ): X = this match {
-    case JNull       => or
-    case JBoolean(_) => or
-    case JNumber(_)  => or
-    case JString(_)  => or
-    case JArray(a)   => jsonArray(a)
-    case JObject(o)  => jsonObject(o)
-  }
+  ): X = foldWith(
+    new Json.Folder[X] {
+      def onNull: X = or
+      def onBoolean(value: Boolean): X = or
+      def onNumber(value: JsonNumber): X = or
+      def onDouble(value: Double): X = or
+      def onFloat(value: Float): X = or
+      def onLong(value: Long): X = or
+      def onString(value: String): X = or
+      def onArray(value: Vector[Json]): X = jsonArray(value)
+      def onObject(value: JsonObject): X = jsonObject(value)
+    }
+  )
 
   /**
    * Construct a successful cursor from this JSON value.
@@ -187,10 +197,13 @@ sealed abstract class Json extends Product with Serializable {
 }
 
 final object Json {
-  abstract class Folder[Z] extends Serializable {
+  trait Folder[Z] extends Serializable {
     def onNull: Z
     def onBoolean(value: Boolean): Z
     def onNumber(value: JsonNumber): Z
+    def onDouble(value: Double): Z
+    def onFloat(value: Float): Z
+    def onLong(value: Long): Z
     def onString(value: String): Z
     def onArray(value: Vector[Json]): Z
     def onObject(value: JsonObject): Z
@@ -260,6 +273,75 @@ final object Json {
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(value))
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
+  }
+
+  private[circe] final case class JDouble(value: Double) extends Json {
+    final def foldWith[Z](folder: Folder[Z]): Z = folder.onDouble(value)
+
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = true
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = Some(JsonNumber.fromDouble(value))
+    final def asString: Option[String] = None
+    final def asArray: Option[Vector[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(JsonNumber.fromDouble(value)))
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
+  }
+
+  private[circe] final case class JFloat(value: Float) extends Json {
+    final def foldWith[Z](folder: Folder[Z]): Z = folder.onFloat(value)
+
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = true
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = Some(JsonNumber.fromFloat(value))
+    final def asString: Option[String] = None
+    final def asArray: Option[Vector[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(JsonNumber.fromFloat(value)))
+    final def mapString(f: String => String): Json = this
+    final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
+    final def mapObject(f: JsonObject => JsonObject): Json = this
+  }
+
+  private[circe] final case class JLong(value: Long) extends Json {
+    final def foldWith[Z](folder: Folder[Z]): Z = folder.onLong(value)
+
+    final def isNull: Boolean = false
+    final def isBoolean: Boolean = false
+    final def isNumber: Boolean = true
+    final def isString: Boolean = false
+    final def isArray: Boolean = false
+    final def isObject: Boolean = false
+
+    final def asBoolean: Option[Boolean] = None
+    final def asNumber: Option[JsonNumber] = Some(JsonNumber.fromLong(value))
+    final def asString: Option[String] = None
+    final def asArray: Option[Vector[Json]] = None
+    final def asObject: Option[JsonObject] = None
+
+    final def mapBoolean(f: Boolean => Boolean): Json = this
+    final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(JsonNumber.fromLong(value)))
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
@@ -383,26 +465,26 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
    */
-  final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
+  final def fromInt(value: Int): Json = JLong(value.toLong)
 
   /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
-  final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+  final def fromLong(value: Long): Json = JLong(value)
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Double`.
    *
    * The result is empty if the argument cannot be represented as a JSON number.
    */
-  final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
+  final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JDouble(value)) else None
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Float`.
    *
    * The result is empty if the argument cannot be represented as a JSON number.
    */
-  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
+  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JFloat(value)) else None
 
   /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
@@ -410,7 +492,7 @@ final object Json {
    * The result is a JSON null if the argument cannot be represented as a JSON
    * number.
    */
-  final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JNumber(JsonDouble(value)) else Null
+  final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JDouble(value) else Null
 
   /**
    * Create a `Json` value representing a JSON number or null from a `Float`.
@@ -419,7 +501,7 @@ final object Json {
    * number.
    */
   final def fromFloatOrNull(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else Null
+    if (isReal(value)) JFloat(value) else Null
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -428,7 +510,7 @@ final object Json {
    * number.
    */
   final def fromDoubleOrString(value: Double): Json =
-    if (isReal(value)) JNumber(JsonDouble(value)) else fromString(java.lang.Double.toString(value))
+    if (isReal(value)) JDouble(value) else fromString(java.lang.Double.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Float`.
@@ -437,17 +519,17 @@ final object Json {
    * number.
    */
   final def fromFloatOrString(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else fromString(java.lang.Float.toString(value))
+    if (isReal(value)) JFloat(value) else fromString(java.lang.Float.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
    */
-  final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
+  final def fromBigInt(value: BigInt): Json = JNumber(JsonNumber.fromBigInteger(value.underlying))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
-  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
+  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonNumber.fromBigDecimal(value.underlying))
 
   /**
    * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
@@ -473,12 +555,17 @@ final object Json {
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {
+    case (          x,           y) if x.isNull && y.isNull => true
     case ( JObject(a),  JObject(b)) => JsonObject.eqJsonObject.eqv(a, b)
     case ( JString(a),  JString(b)) => a == b
-    case ( JNumber(a),  JNumber(b)) => JsonNumber.eqJsonNumber.eqv(a, b)
     case (JBoolean(a), JBoolean(b)) => a == b
     case (  JArray(a),   JArray(b)) => arrayEq(a, b)
-    case (          x,           y) => x.isNull && y.isNull
+    case ( JNumber(a),  JNumber(b)) => a == b
+    case ( JDouble(a),  JDouble(b)) => a == b
+    case (  JFloat(a),   JFloat(b)) => a == b
+    case (   JLong(a),    JLong(b)) => a == b
+    case (          a,           b) if a.isNumber && b.isNumber => a.asNumber.get == b.asNumber.get
+    case (          _,           _) => false
   }
 
   implicit final val showJson: Show[Json] = Show.fromToString[Json]

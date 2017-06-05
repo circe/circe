@@ -3,7 +3,7 @@ package io.circe.testing
 import cats.data.ValidatedNel
 import cats.laws.discipline.arbitrary._
 import io.circe._
-import io.circe.numbers.BiggerDecimal
+import io.circe.numbers.JsonNumber
 import io.circe.numbers.testing.JsonNumberString
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,32 +24,28 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
    */
   protected def maxJsonObjectSize: Int = 10
 
-  implicit val arbitraryBiggerDecimal: Arbitrary[BiggerDecimal] = Arbitrary(
-    Gen.oneOf(
-      Arbitrary.arbitrary[JsonNumberString].map(s => BiggerDecimal.parseBiggerDecimalUnsafe(s.value)),
-      Arbitrary.arbitrary[Long].map(BiggerDecimal.fromLong),
-      Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDouble),
-      Arbitrary.arbitrary[BigInt].map(_.bigInteger).map(BiggerDecimal.fromBigInteger),
-      Arbitrary.arbitrary[BigDecimal].map(_.bigDecimal).map(BiggerDecimal.fromBigDecimal),
-      Gen.const(BiggerDecimal.NegativeZero)
-    )
-  )
-
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
-      arbitrary[JsonNumberString].map(jns => JsonNumber.fromDecimalStringUnsafe(jns.value)),
-      arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
-      arbitrary[BigDecimal].map(JsonBigDecimal(_)),
-      arbitrary[Long].map(JsonLong(_)),
-      arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d)),
-      arbitrary[Float].map(f => if (f.isNaN || f.isInfinity) JsonFloat(0.0f) else JsonFloat(f))
+      arbitrary[JsonNumberString].map(jns => JsonNumber.lazyJsonNumberUnsafe(jns.value)),
+      arbitrary[JsonNumberString].map(jns => JsonNumber.parseJsonNumberUnsafe(jns.value)),
+      arbitrary[BigInt].map(_.bigInteger).map(JsonNumber.fromBigInteger),
+      arbitrary[BigDecimal].map(_.bigDecimal).map(JsonNumber.fromBigDecimal),
+      arbitrary[Long].map(JsonNumber.fromLong),
+      arbitrary[Double].map(d => JsonNumber.fromDouble(if (d.isNaN || d.isInfinity) 0.0 else d)),
+      arbitrary[Float].map(f => JsonNumber.fromFloat(if (f.isNaN || f.isInfinity) 0.0f else f)),
+      Gen.const(JsonNumber.NegativeZero)
     ).map(transformJsonNumber)
   )
 
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
   private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
   private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
-  private[this] val genNumber: Gen[Json] = Arbitrary.arbitrary[JsonNumber].map(Json.fromJsonNumber)
+  private[this] val genNumber: Gen[Json] = Gen.oneOf(
+    arbitrary[JsonNumber].map(Json.fromJsonNumber),
+    arbitrary[Double].map(Json.fromDoubleOrNull),
+    arbitrary[Float].map(Json.fromFloatOrNull),
+    arbitrary[Long].map(Json.fromLong)
+  )
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
     Gen.listOfN(

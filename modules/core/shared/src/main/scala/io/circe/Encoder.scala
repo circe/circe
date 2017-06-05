@@ -4,6 +4,7 @@ import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
 import cats.functor.Contravariant
 import cats.Foldable
 import io.circe.export.Exported
+import io.circe.numbers.JsonNumber
 import java.util.UUID
 import scala.collection.GenSeq
 import scala.collection.generic.IsTraversableOnce

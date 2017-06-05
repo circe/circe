@@ -5,6 +5,8 @@ import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Valida
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import io.circe.export.Exported
+import io.circe.numbers.JsonNumber
+import java.math.{ BigDecimal => JavaBigDecimal, BigInteger }
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
@@ -285,6 +287,13 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
   }
 
+  private[this] abstract class FoldDecoder[A](name: String) extends Decoder[A] with Json.Folder[Option[A]] {
+    final def apply(c: HCursor): Decoder.Result[A] = c.value.foldWith(this) match {
+      case Some(value) => Right(value)
+      case None => Left(DecodingFailure(name, c.history))
+    }
+  }
+
   /**
    * Return an instance for a given type.
    *
@@ -453,16 +462,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
-    final def apply(c: HCursor): Result[Float] = c.value match {
-      case JNumber(number) => Right(number.toDouble.toFloat)
-      case JString(string) => JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case other if other.isNull => Right(Float.NaN)
-      case _ => fail(c)
+  implicit final val decodeFloat: Decoder[Float] = new FoldDecoder[Float]("Float") {
+    def onNull: Option[Float] = None
+    def onBoolean(value: Boolean): Option[Float] = None
+    def onNumber(value: JsonNumber): Option[Float] = Some(value.toDouble.toFloat)
+    def onDouble(value: Double): Option[Float] = Some(value.toFloat)
+    def onFloat(value: Float): Option[Float] = Some(value)
+    def onLong(value: Long): Option[Float] = Some(value.toFloat)
+    def onString(value: String): Option[Float] = try Some(java.lang.Float.parseFloat(value)) catch {
+      case _: NumberFormatException => None
     }
+    def onArray(value: Vector[Json]): Option[Float] = None
+    def onObject(value: JsonObject): Option[Float] = None
   }
 
   /**
@@ -474,16 +485,18 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
-    final def apply(c: HCursor): Result[Double] = c.value match {
-      case JNumber(number) => Right(number.toDouble)
-      case JString(string) => JsonNumber.fromString(string).map(_.toDouble) match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case other if other.isNull => Right(Double.NaN)
-      case _ => fail(c)
+  implicit final val decodeDouble: Decoder[Double] = new FoldDecoder[Double]("Double") {
+    def onNull: Option[Double] = None
+    def onBoolean(value: Boolean): Option[Double] = None
+    def onNumber(value: JsonNumber): Option[Double] = Some(value.toDouble)
+    def onDouble(value: Double): Option[Double] = Some(value)
+    def onFloat(value: Float): Option[Double] = Some(value.toDouble)
+    def onLong(value: Long): Option[Double] = Some(value.toDouble)
+    def onString(value: String): Option[Double] = try Some(java.lang.Double.parseDouble(value)) catch {
+      case _: NumberFormatException => None
     }
+    def onArray(value: Vector[Json]): Option[Double] = None
+    def onObject(value: JsonObject): Option[Double] = None
   }
 
   /**
@@ -493,18 +506,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
-    final def apply(c: HCursor): Result[Byte] = c.value match {
-      case JNumber(number) => number.toByte match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toByte) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
+  implicit final val decodeByte: Decoder[Byte] = new FoldDecoder[Byte]("Byte") {
+    def onNull: Option[Byte] = None
+    def onBoolean(value: Boolean): Option[Byte] = None
+    def onNumber(value: JsonNumber): Option[Byte] = value.toByte
+    def onDouble(value: Double): Option[Byte] = {
+      val asBigDecimal = JavaBigDecimal.valueOf(value)
+
+      if (JsonNumber.bigDecimalIsValidByte(asBigDecimal)) Some(asBigDecimal.byteValue) else None
     }
+    def onFloat(value: Float): Option[Byte] = {
+      val asBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
+      if (JsonNumber.bigDecimalIsValidByte(asBigDecimal)) Some(asBigDecimal.byteValue) else None
+    }
+    def onLong(value: Long): Option[Byte] =
+      if (value >= Byte.MinValue && value <= Byte.MaxValue) Some(value.toByte) else None
+    def onString(value: String): Option[Byte] = try Some(java.lang.Byte.parseByte(value)) catch {
+      case _: NumberFormatException => None
+    }
+    def onArray(value: Vector[Json]): Option[Byte] = None
+    def onObject(value: JsonObject): Option[Byte] = None
   }
 
   /**
@@ -514,18 +536,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
-    final def apply(c: HCursor): Result[Short] = c.value match {
-      case JNumber(number) => number.toShort match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toShort) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
+  implicit final val decodeShort: Decoder[Short] = new FoldDecoder[Short]("Short") {
+    def onNull: Option[Short] = None
+    def onBoolean(value: Boolean): Option[Short] = None
+    def onNumber(value: JsonNumber): Option[Short] = value.toShort
+    def onDouble(value: Double): Option[Short] = {
+      val asBigDecimal = JavaBigDecimal.valueOf(value)
+
+      if (JsonNumber.bigDecimalIsValidShort(asBigDecimal)) Some(asBigDecimal.shortValue) else None
     }
+    def onFloat(value: Float): Option[Short] = {
+      val asBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
+      if (JsonNumber.bigDecimalIsValidShort(asBigDecimal)) Some(asBigDecimal.shortValue) else None
+    }
+    def onLong(value: Long): Option[Short] =
+      if (value >= Short.MinValue && value <= Short.MaxValue) Some(value.toShort) else None
+    def onString(value: String): Option[Short] = try Some(java.lang.Short.parseShort(value)) catch {
+      case _: NumberFormatException => None
+    }
+    def onArray(value: Vector[Json]): Option[Short] = None
+    def onObject(value: JsonObject): Option[Short] = None
   }
 
   /**
@@ -535,18 +566,27 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
-    final def apply(c: HCursor): Result[Int] = c.value match {
-      case JNumber(number) => number.toInt match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toInt) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
+  implicit final val decodeInt: Decoder[Int] = new FoldDecoder[Int]("Int") {
+    def onNull: Option[Int] = None
+    def onBoolean(value: Boolean): Option[Int] = None
+    def onNumber(value: JsonNumber): Option[Int] = value.toInt
+    def onDouble(value: Double): Option[Int] = {
+      val asBigDecimal = JavaBigDecimal.valueOf(value)
+
+      if (JsonNumber.bigDecimalIsValidInt(asBigDecimal)) Some(asBigDecimal.intValue) else None
     }
+    def onFloat(value: Float): Option[Int] = {
+      val asBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
+      if (JsonNumber.bigDecimalIsValidInt(asBigDecimal)) Some(asBigDecimal.intValue) else None
+    }
+    def onLong(value: Long): Option[Int] =
+      if (value >= Int.MinValue && value <= Int.MaxValue) Some(value.toInt) else None
+    def onString(value: String): Option[Int] = try Some(java.lang.Integer.parseInt(value)) catch {
+      case _: NumberFormatException => None
+    }
+    def onArray(value: Vector[Json]): Option[Int] = None
+    def onObject(value: JsonObject): Option[Int] = None
   }
 
   /**
@@ -559,18 +599,26 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
-    final def apply(c: HCursor): Result[Long] = c.value match {
-      case JNumber(number) => number.toLong match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toLong) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
+  implicit final val decodeLong: Decoder[Long] = new FoldDecoder[Long]("Long") {
+    def onNull: Option[Long] = None
+    def onBoolean(value: Boolean): Option[Long] = None
+    def onNumber(value: JsonNumber): Option[Long] = value.toLong
+    def onDouble(value: Double): Option[Long] = {
+      val asBigDecimal = JavaBigDecimal.valueOf(value)
+
+      if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
     }
+    def onFloat(value: Float): Option[Long] = {
+      val asBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
+      if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
+    }
+    def onLong(value: Long): Option[Long] = Some(value)
+    def onString(value: String): Option[Long] = try Some(java.lang.Long.parseLong(value)) catch {
+      case _: NumberFormatException => None
+    }
+    def onArray(value: Vector[Json]): Option[Long] = None
+    def onObject(value: JsonObject): Option[Long] = None
   }
 
   /**
@@ -583,18 +631,28 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
-    final def apply(c: HCursor): Result[BigInt] = c.value match {
-      case JNumber(number) => number.toBigInt match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toBigInt) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
+  implicit final val decodeBigInt: Decoder[BigInt] = new FoldDecoder[BigInt]("BigInt") {
+    private[this] final val fromBigInteger: BigInteger => BigInt = new BigInt(_)
+    private[this] final val fromJsonNumber: JsonNumber => Option[BigInteger] = _.toBigInteger
+
+    def onNull: Option[BigInt] = None
+    def onBoolean(value: Boolean): Option[BigInt] = None
+    def onNumber(value: JsonNumber): Option[BigInt] = value.toBigInteger.map(fromBigInteger)
+    def onDouble(value: Double): Option[BigInt] = {
+      val asBigDecimal = JavaBigDecimal.valueOf(value)
+
+      if (JsonNumber.bigDecimalIsWhole(asBigDecimal)) Some(BigInt(asBigDecimal.toBigInteger)) else None
     }
+    def onFloat(value: Float): Option[BigInt] = {
+      val asBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
+
+      if (JsonNumber.bigDecimalIsWhole(asBigDecimal)) Some(BigInt(asBigDecimal.toBigInteger)) else None
+    }
+    def onLong(value: Long): Option[BigInt] = Some(BigInt(value))
+    def onString(value: String): Option[BigInt] =
+      JsonNumber.parseJsonNumber(value).flatMap(fromJsonNumber).map(fromBigInteger)
+    def onArray(value: Vector[Json]): Option[BigInt] = None
+    def onObject(value: JsonObject): Option[BigInt] = None
   }
 
   /**
@@ -610,18 +668,20 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *
    * @group Decoding
    */
-  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
-    final def apply(c: HCursor): Result[BigDecimal] = c.value match {
-      case JNumber(number) => number.toBigDecimal match {
-        case Some(v) => Right(v)
-        case None => fail(c)
-      }
-      case JString(string) => JsonNumber.fromString(string).flatMap(_.toBigDecimal) match {
-        case Some(value) => Right(value)
-        case None => fail(c)
-      }
-      case _ => fail(c)
-    }
+  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new FoldDecoder[BigDecimal]("BigDecimal") {
+    private[this] final val fromBigDecimal: JavaBigDecimal => BigDecimal = new BigDecimal(_)
+    private[this] final val fromJsonNumber: JsonNumber => Option[JavaBigDecimal] = _.toBigDecimal
+
+    def onNull: Option[BigDecimal] = None
+    def onBoolean(value: Boolean): Option[BigDecimal] = None
+    def onNumber(value: JsonNumber): Option[BigDecimal] = value.toBigDecimal.map(fromBigDecimal)
+    def onDouble(value: Double): Option[BigDecimal] = Some(BigDecimal(value))
+    def onFloat(value: Float): Option[BigDecimal] = Some(new JavaBigDecimal(java.lang.Float.toString(value)))
+    def onLong(value: Long): Option[BigDecimal] = Some(BigDecimal(value))
+    def onString(value: String): Option[BigDecimal] =
+      JsonNumber.parseJsonNumber(value).flatMap(fromJsonNumber).map(fromBigDecimal)
+    def onArray(value: Vector[Json]): Option[BigDecimal] = None
+    def onObject(value: JsonObject): Option[BigDecimal] = None
   }
 
   /**

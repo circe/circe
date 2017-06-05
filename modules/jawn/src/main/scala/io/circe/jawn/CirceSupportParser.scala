@@ -1,6 +1,7 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonObject }
+import io.circe.numbers.JsonNumber
 import jawn.{ Facade, FContext, SupportParser }
 
 final object CirceSupportParser extends SupportParser[Json] {
@@ -8,8 +9,16 @@ final object CirceSupportParser extends SupportParser[Json] {
     final def jnull(): Json = Json.Null
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
-    final def jnum(s: String): Json = Json.JNumber(JsonNumber.fromDecimalStringUnsafe(s))
-    final def jint(s: String): Json = Json.JNumber(JsonNumber.fromIntegralStringUnsafe(s))
+    final def jnum(s: String): Json = Json.JNumber(JsonNumber.lazyJsonNumberUnsafe(s))
+    final def jint(s: String): Json =
+      if (JsonNumber.integralIsValidLong(s)) {
+        val longValue = java.lang.Long.parseLong(s)
+
+        if (s.charAt(0) == '-' && longValue == 0L) {
+          Json.JNumber(JsonNumber.NegativeZero)
+        } else Json.JLong(longValue)
+      } else Json.JNumber(JsonNumber.lazyJsonNumberUnsafe(s))
+
     final def jstring(s: String): Json = Json.fromString(s)
 
     final def singleContext(): FContext[Json] = new FContext[Json] {

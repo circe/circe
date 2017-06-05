@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.numbers.JsonNumber
 import java.lang.StringBuilder
 import java.nio.{ ByteBuffer, CharBuffer }
 import java.nio.charset.{ Charset, StandardCharsets }
@@ -64,6 +65,9 @@ final case class Printer(
     final def onNull: Unit = writer.append("null")
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
+    final def onDouble(value: Double): Unit = writer.append(java.lang.Double.toString(value))
+    final def onFloat(value: Float): Unit = writer.append(java.lang.Float.toString(value))
+    final def onLong(value: Long): Unit = writer.append(java.lang.Long.toString(value))
 
     final def onString(value: String): Unit = {
       writer.append('"')

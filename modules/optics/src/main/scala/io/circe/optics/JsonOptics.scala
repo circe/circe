@@ -3,7 +3,8 @@ package io.circe.optics
 import cats.instances.vector._
 import cats.syntax.functor._
 import cats.syntax.traverse._
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonObject }
+import io.circe.numbers.JsonNumber
 import io.circe.optics.JsonNumberOptics._
 import io.circe.optics.JsonObjectOptics.objectEach
 import monocle.{ Prism, Traversal }
@@ -36,8 +37,11 @@ trait JsonOptics extends CatsConversions {
         val d = number.toDouble
 
         if (java.lang.Double.isInfinite(d)) None else {
-          if (Json.fromDouble(d).flatMap(_.asNumber).exists(JsonNumber.eqJsonNumber.eqv(number, _))) Some(d) else None
+          if (Json.fromDouble(d).flatMap(_.asNumber).exists(number == _)) Some(d) else None
         }
+      case Json.JDouble(value) => Some(value)
+      case Json.JFloat(value) => Some(value.toDouble)
+      case Json.JLong(value) => Some(value.toDouble)
       case _ => None
     }(Json.fromDoubleOrNull)
 

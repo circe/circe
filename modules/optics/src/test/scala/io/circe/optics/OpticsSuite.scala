@@ -3,7 +3,8 @@ package io.circe.optics
 import cats.Eq
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonObject }
+import io.circe.numbers.JsonNumber
 import monocle.function.Plated.plate
 import monocle.law.discipline.function.{ AtTests, EachTests, FilterIndexTests, IndexTests }
 import monocle.law.discipline.{ PrismTests, TraversalTests }
@@ -17,7 +18,7 @@ import scalaz.std.vector._
 
 class OpticsSuite extends CirceSuite {
   implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
-  implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
+  implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(_.equals(_))
   implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
   /**
@@ -61,7 +62,7 @@ class OpticsSuite extends CirceSuite {
   }
 
   it should "partial round-trip with numbers larger than Double.MaxValue" in {
-    val json = Json.fromJsonNumber(JsonNumber.fromString((BigDecimal(Double.MaxValue) + 1).toString).get)
+    val json = Json.fromJsonNumber(JsonNumber.parseJsonNumber((BigDecimal(Double.MaxValue) + 1).toString).get)
 
     assert(jsonDouble.getOrModify(json).fold(identity, jsonDouble.reverseGet) === json)
   }

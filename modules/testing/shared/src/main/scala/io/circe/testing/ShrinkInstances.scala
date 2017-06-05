@@ -1,6 +1,7 @@
 package io.circe.testing
 
-import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonObject }
+import io.circe.numbers.JsonNumber
 import org.scalacheck.Shrink
 
 private[testing] trait ShrinkInstances {
@@ -20,14 +21,14 @@ private[testing] trait ShrinkInstances {
     def halfs(n: BigDecimal): Stream[BigDecimal] =
       if (n < minNumberShrink) Stream.empty else n #:: halfs(n / two)
 
-    jn.toBigDecimal match {
+    jn.toBigDecimal.map(BigDecimal(_)) match {
       case Some(n) =>
         val ns = if (n == zero) Stream.empty else {
           val hs = halfs(n / two).map(n - _)
           zero #:: interleave(hs, hs.map(h => -h))
         }
 
-        ns.map(JsonBigDecimal(_))
+        ns.map(n => JsonNumber.fromBigDecimal(n.underlying))
       case None => Stream(jn)
     }
   }

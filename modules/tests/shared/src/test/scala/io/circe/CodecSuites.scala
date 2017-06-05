@@ -3,6 +3,7 @@ package io.circe
 import cats.Eq
 import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
 import cats.laws.discipline.arbitrary._
+import io.circe.numbers.JsonNumber
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import java.util.UUID

@@ -4,6 +4,7 @@ import cats.Eq
 import cats.instances.either._
 import cats.syntax.eq._
 import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.numbers.JsonNumber
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
@@ -16,6 +17,8 @@ trait EqInstances { this: ArbitraryInstances =>
   private[this] def arbitraryValues[A](implicit A: Arbitrary[A]): Stream[A] = Stream.continually(
     A.arbitrary.sample
   ).flatten
+
+  implicit def eqJsonNumber: Eq[JsonNumber] = Eq.fromUniversalEquals
 
   implicit def eqEncoder[A: Arbitrary]: Eq[Encoder[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => e1(a) === e2(a))

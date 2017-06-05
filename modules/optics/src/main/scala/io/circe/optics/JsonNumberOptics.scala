@@ -1,7 +1,6 @@
 package io.circe.optics
 
-import io.circe.{ JsonBigDecimal, JsonLong, JsonNumber }
-import java.math.MathContext
+import io.circe.numbers.JsonNumber
 import monocle.Prism
 
 /**
@@ -14,32 +13,29 @@ import monocle.Prism
  * @author Travis Brown
  */
 trait JsonNumberOptics {
+  final lazy val jsonNumberBigDecimal: Prism[JsonNumber, BigDecimal] = Prism[JsonNumber, BigDecimal](jn =>
+    if (jn.isNegativeZero) None else jn.toBigDecimal.map(new BigDecimal(_))
+  )(b => JsonNumber.fromBigDecimal(b.underlying))
+
   final lazy val jsonNumberBigInt: Prism[JsonNumber, BigInt] = Prism[JsonNumber, BigInt](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigInt
-  )(b => JsonBigDecimal(BigDecimal(b, MathContext.UNLIMITED)))
+    if (jn.isNegativeZero) None else jn.toBigInteger.map(new BigInt(_))
+  )(b => JsonNumber.fromBigInteger(b.underlying))
 
   final lazy val jsonNumberLong: Prism[JsonNumber, Long] = Prism[JsonNumber, Long](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toLong
-  )(JsonLong(_))
+    if (jn.isNegativeZero) None else jn.toLong
+  )(JsonNumber.fromLong)
 
   final lazy val jsonNumberInt: Prism[JsonNumber, Int] = Prism[JsonNumber, Int](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toInt
-  )(i => JsonLong(i.toLong))
+    if (jn.isNegativeZero) None else jn.toInt
+  )(i => JsonNumber.fromLong(i.toLong))
 
   final lazy val jsonNumberShort: Prism[JsonNumber, Short] = Prism[JsonNumber, Short](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toShort
-  )(s => JsonLong(s.toLong))
+    if (jn.isNegativeZero) None else jn.toShort
+  )(s => JsonNumber.fromLong(s.toLong))
 
   final lazy val jsonNumberByte: Prism[JsonNumber, Byte] = Prism[JsonNumber, Byte](jn =>
-    if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toByte
-  )(b => JsonLong(b.toLong))
-
-  final lazy val jsonNumberBigDecimal: Prism[JsonNumber, BigDecimal] =
-    Prism[JsonNumber, BigDecimal](jn =>
-      if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigDecimal
-    )(JsonBigDecimal(_))
+    if (jn.isNegativeZero) None else jn.toByte
+  )(b => JsonNumber.fromLong(b.toLong))
 }
 
-final object JsonNumberOptics extends JsonNumberOptics {
-  private[optics] def isNegativeZero(jn: JsonNumber): Boolean = jn.toBiggerDecimal.isNegativeZero
-}
+object JsonNumberOptics extends JsonNumberOptics
