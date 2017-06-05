@@ -1,7 +1,7 @@
 package io.circe.numbers
 
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
-import java.math.BigDecimal
+import java.math.{ BigDecimal, BigInteger }
 import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
@@ -119,6 +119,18 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-1e262143")
 
     assert(d.toBigInteger === Some(new BigDecimal("-1e262143").toBigInteger))
+  }
+
+  "toBigIntegerWithMaxDigits" should "fail on values whose representation is too large" in {
+    val Some(d) = BiggerDecimal.parseBiggerDecimal("123456789")
+
+    assert(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(8L)) === None)
+  }
+
+  it should "succeed when the representation is exactly the maximum size" in {
+    val Some(d) = BiggerDecimal.parseBiggerDecimal("123456789")
+
+    assert(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(9L)) === d.toBigInteger)
   }
 
   "fromLong and fromDouble" should "agree on Int-sized integral values" in forAll { (value: Int) =>
