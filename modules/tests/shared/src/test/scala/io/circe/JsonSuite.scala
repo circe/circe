@@ -5,7 +5,7 @@ import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
 class JsonSuite extends CirceSuite with FloatJsonTests {
-  "foldWith" should "give the same value as fold" in forAll { (json: Json) =>
+  "foldWith" should "give the same result as fold" in forAll { (json: Json) =>
     val z: Int = 0
     val b: Boolean => Int = if (_) 1 else 2
     val n: JsonNumber => Int = _.truncateToInt
@@ -25,6 +25,54 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     )
 
     assert(result === json.fold(z, b, n, s, a, o))
+  }
+
+  "asNull" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asNull === json.fold(Some(()), _ => None, _ => None, _ => None, _ => None, _ => None))
+  }
+
+  "asBoolean" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asBoolean === json.fold(None, Some(_), _ => None, _ => None, _ => None, _ => None))
+  }
+
+  "asNumber" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asNumber === json.fold(None, _ => None, Some(_), _ => None, _ => None, _ => None))
+  }
+
+  "asString" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asString === json.fold(None, _ => None, _ => None, Some(_), _ => None, _ => None))
+  }
+
+  "asArray" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asArray === json.fold(None, _ => None, _ => None, _ => None, Some(_), _ => None))
+  }
+
+  "asObject" should "give the same result as fold" in forAll { (json: Json) =>
+    assert(json.asObject === json.fold(None, _ => None, _ => None, _ => None, _ => None, Some(_)))
+  }
+
+  "withNull" should "be identity with Json.Null" in forAll { (json: Json) =>
+    assert(json.withNull(Json.Null) === json)
+  }
+
+  "withBoolean" should "be identity with Json.fromBoolean" in forAll { (json: Json) =>
+    assert(json.withBoolean(Json.fromBoolean) === json)
+  }
+
+  "withNumber" should "be identity with Json.fromJsonNumber" in forAll { (json: Json) =>
+    assert(json.withNumber(Json.fromJsonNumber) === json)
+  }
+
+  "withString" should "be identity with Json.fromString" in forAll { (json: Json) =>
+    assert(json.withString(Json.fromString) === json)
+  }
+
+  "withArray" should "be identity with Json.fromValues" in forAll { (json: Json) =>
+    assert(json.withArray(Json.fromValues) === json)
+  }
+
+  "withObject" should "be identity with Json.fromJsonObject" in forAll { (json: Json) =>
+    assert(json.withObject(Json.fromJsonObject) === json)
   }
 
   "deepMerge" should "preserve argument order" in forAll { (js: List[Json]) =>
