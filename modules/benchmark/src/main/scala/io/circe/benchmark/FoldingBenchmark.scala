@@ -19,15 +19,15 @@ class FoldingBenchmark extends ExampleData {
 
   @Benchmark
   def withFoldWith: Int = doc.foldWith(
-    new Json.Folder[Int] {
-      private[this] val accumulate: (Int, Json) => Int = _ + _.foldWith(this)
+    new Json.Folder[Int] with ((Int, Json) => Int) {
+      def apply(i: Int, j: Json): Int = i + j.foldWith(this)
 
       def onNull: Int = 0
       def onBoolean(value: Boolean): Int = if (value) 1 else 0
       def onNumber(value: JsonNumber): Int = value.truncateToInt
       def onString(value: String): Int = value.length
-      def onArray(value: Vector[Json]): Int = value.foldLeft(0)(accumulate)
-      def onObject(value: JsonObject): Int = value.values.foldLeft(0)(accumulate)
+      def onArray(value: Vector[Json]): Int = value.foldLeft(0)(this)
+      def onObject(value: JsonObject): Int = value.values.foldLeft(0)(this)
     }
   )
 
