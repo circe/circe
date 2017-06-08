@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Eq
 import io.circe.numbers.BiggerDecimal
+import java.lang.StringBuilder
 import java.math.{ BigDecimal => JavaBigDecimal }
 
 /**
@@ -128,6 +129,8 @@ sealed abstract class JsonNumber extends Serializable {
    * Hashing that is consistent with our universal equality.
    */
   override final def hashCode: Int = toBiggerDecimal.hashCode
+
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
 }
 
 private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
@@ -151,12 +154,14 @@ private[circe] final case class JsonDecimal(value: String) extends BiggerDecimal
   }
 
   override def toString: String = value
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal)
   extends BiggerDecimalJsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = value
   override def toString: String = value.toString
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = value.appendToStringBuilder(builder)
 }
 
 /**
@@ -170,6 +175,7 @@ private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNu
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   final def truncateToLong: Long = value.underlying.setScale(0, java.math.BigDecimal.ROUND_DOWN).longValue
   override final def toString: String = value.toString
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
 }
 
 /**
@@ -183,6 +189,7 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toLong: Option[Long] = Some(value)
   final def truncateToLong: Long = value
   override final def toString: String = java.lang.Long.toString(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 /**
@@ -209,6 +216,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
 
   final def truncateToLong: Long = value.toLong
   override final def toString: String = java.lang.Double.toString(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 /**
@@ -236,6 +244,7 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 
   final def truncateToLong: Long = value.toLong
   override final def toString: String = java.lang.Float.toString(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 /**

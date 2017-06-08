@@ -61,12 +61,22 @@ final case class Printer(
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
 
-  private[this] final class PrintingFolder(writer: Appendable) extends Json.Folder[Unit] {
+  private[this] final class StringBuilderFolder(writer: StringBuilder) extends PrintingFolder(writer) {
+    final def onBoolean(value: Boolean): Unit = writer.append(value)
+    final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
+  }
+
+  private[this] final class AppendableByteBufferFolder(
+    writer: Printer.AppendableByteBuffer
+  ) extends PrintingFolder(writer) {
+    final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
+    final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
+  }
+
+  private[this] abstract class PrintingFolder(writer: Appendable) extends Json.Folder[Unit] {
     private[this] var depth: Int = 0
 
     final def onNull: Unit = writer.append("null")
-    final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
-    final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
 
     final def onString(value: String): Unit = {
       writer.append('"')
@@ -260,7 +270,7 @@ final case class Printer(
       w
     } else new StringBuilder()
 
-    val folder = new PrintingFolder(writer)
+    val folder = new StringBuilderFolder(writer)
 
     json.foldWith(folder)
 
@@ -269,7 +279,7 @@ final case class Printer(
 
   final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = {
     val writer = new Printer.AppendableByteBuffer(cs)
-    val folder = new PrintingFolder(writer)
+    val folder = new AppendableByteBufferFolder(writer)
 
     json.foldWith(folder)
 

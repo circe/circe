@@ -1,5 +1,6 @@
 package io.circe.numbers
 
+import java.lang.StringBuilder
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.switch
 
@@ -63,6 +64,8 @@ sealed abstract class BiggerDecimal extends Serializable {
    * Convert to the nearest [[scala.Long]].
    */
   def truncateToLong: Long
+
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
 }
 
 /**
@@ -132,6 +135,15 @@ private[numbers] final class SigAndExp(
   override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString else {
     s"${ unscaled }e${ scale.negate }"
   }
+
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
+    builder.append(unscaled)
+
+    if (scale != BigInteger.ZERO) {
+      builder.append('e')
+      builder.append(scale.negate)
+    }
+  }
 }
 
 final object BiggerDecimal {
@@ -149,6 +161,10 @@ final object BiggerDecimal {
     final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
     final val toLong: Option[Long] = Some(truncateToLong)
     final def truncateToLong: Long = 0L
+
+    private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
+      builder.append(toDouble)
+    }
   }
 
   private[this] val UnsignedZero: BiggerDecimal = new Zero {
