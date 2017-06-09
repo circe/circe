@@ -426,7 +426,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M11"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M12"
   )
 
 lazy val java8 = java8Base.jvm
@@ -499,23 +499,6 @@ lazy val noPublishSettings = Seq(
   publish := (),
   publishLocal := (),
   publishArtifact := false
-)
-
-lazy val sharedReleaseProcess = Seq(
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    publishArtifacts,
-    setNextVersion,
-    commitNextVersion,
-    ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
-    pushChanges
-  )
 )
 
 credentials ++= (
