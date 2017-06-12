@@ -236,6 +236,11 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Encoding
    */
+  implicit final def encodeSeq[A: Encoder]: Encoder[Seq[A]] = encodeTraversableOnce[A, Seq]
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeSet[A: Encoder]: Encoder[Set[A]] = encodeTraversableOnce[A, Set]
 
   /**
