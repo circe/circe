@@ -1,11 +1,11 @@
 package io.circe.generic.extras
 
-import io.circe.{ Decoder, Encoder, ObjectEncoder }
-import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder }
-import io.circe.generic.extras.encoding.{ ConfiguredObjectEncoder, EnumerationEncoder }
+import io.circe.{Decoder, Encoder, ObjectEncoder}
+import io.circe.generic.extras.decoding.{ConfiguredDecoder, EnumerationDecoder, ReprDecoder, ValueClassDecoder}
+import io.circe.generic.extras.encoding.{ConfiguredObjectEncoder, EnumerationEncoder, ValueClassEncoder}
 import io.circe.generic.extras.util.RecordToMap
 import io.circe.generic.util.PatchWithOptions
-import shapeless.{ Default, HList, LabelledGeneric, Lazy }
+import shapeless.{Default, HList, LabelledGeneric, Lazy}
 import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll
 
@@ -49,6 +49,16 @@ final object semiauto {
    * the ADT are represented as JSON strings.
    */
   def deriveEnumerationEncoder[A](implicit encode: Lazy[EnumerationEncoder[A]]): Encoder[A] = encode.value
+
+  /**
+    * Derive a decoder for a value class.
+    */
+  def deriveValueClassDecoder[A](implicit decode: Lazy[ValueClassDecoder[A]]): Decoder[A] = decode.value
+
+  /**
+    * Derive an encoder for a value class.
+    */
+  def deriveValueClassEncoder[A](implicit encode: Lazy[ValueClassEncoder[A]]): Encoder[A] = encode.value
 
   final class DerivationHelper[A] {
     final def incomplete[P <: HList, C, D <: HList, T <: HList, R <: HList](implicit
