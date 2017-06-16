@@ -688,6 +688,12 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   /**
    * @group Decoding
    */
+  implicit final def decodeSeq[A: Decoder]: Decoder[Seq[A]] =
+    decodeCanBuildFrom[A, Seq]
+
+  /**
+   * @group Decoding
+   */
   implicit final def decodeSet[A: Decoder]: Decoder[Set[A]] =
     decodeCanBuildFrom[A, List].map(_.toSet)
 

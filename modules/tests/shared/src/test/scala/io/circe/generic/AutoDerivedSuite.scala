@@ -166,4 +166,22 @@ class AutoDerivedSuite extends CirceSuite {
   }
 
   checkLaws("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
+
+  trait Tag
+  case class WithSeqOfTagged(s: Seq[String @@ Tag])
+
+  implicit val encodeStringTag: Encoder[String @@ Tag] = Encoder[String].narrow
+  implicit val decodeStringTag: Decoder[String @@ Tag] = Decoder[String].map(tag[Tag](_))
+
+  object WithSeqOfTagged {
+    implicit val eqSeqOfWithSeqOfTagged: Eq[Seq[WithSeqOfTagged]] = Eq.fromUniversalEquals
+
+    implicit val arbitraryWithSeqOfTagged: Arbitrary[WithSeqOfTagged] = Arbitrary(
+      for {
+        s <- Arbitrary.arbitrary[List[String]]
+      } yield WithSeqOfTagged(s.map(tag[Tag](_)))
+    )
+  }
+
+  checkLaws("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)
 }
