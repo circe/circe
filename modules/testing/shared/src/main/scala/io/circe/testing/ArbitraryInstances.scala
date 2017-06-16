@@ -37,7 +37,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
 
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
-      arbitrary[JsonNumberString].map(jns => JsonNumber.fromDecimalStringUnsafe(jns.value)),
+      arbitrary[JsonNumberString].map(jns => JsonNumber.fromString(jns.value).get),
       arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
       arbitrary[BigDecimal].map(value => JsonBigDecimal(value.underlying)),
       arbitrary[Long].map(JsonLong(_)),
