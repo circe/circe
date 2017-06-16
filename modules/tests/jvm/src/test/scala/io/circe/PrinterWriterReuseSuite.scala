@@ -10,7 +10,7 @@ class PrinterWriterReuseSuite extends CirceSuite with ScalaFutures {
   implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(1000, Millis))
 
   implicit override val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
-    sizeRange = 1000
+    sizeRange = 100
   )
 
   "Printer#reuseWriters" should "not change the behavior of pretty" in forAll { (values: List[Json]) =>
