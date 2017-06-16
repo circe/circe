@@ -163,7 +163,7 @@ final object BiggerDecimal {
     final def truncateToLong: Long = 0L
 
     private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
-      builder.append(toDouble)
+      builder.append(toString)
     }
   }
 
