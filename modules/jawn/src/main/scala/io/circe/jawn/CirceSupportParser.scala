@@ -1,20 +1,29 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonBigDecimal, JsonBiggerDecimal, JsonObject }
+import io.circe.numbers.{ BiggerDecimal, JsonNumberParser }
+import java.math.{ BigDecimal, BigInteger }
 import java.util.LinkedHashMap
 import jawn.{ Facade, FContext, SupportParser }
 
 final object CirceSupportParser extends SupportParser[Json] {
+  private[this] val jsonNumberParser: JsonNumberParser[Json] = new JsonNumberParser[Json] {
+    def createNegativeZeroValue: Json = Json.JNumber(JsonBiggerDecimal(BiggerDecimal.fromDoubleUnsafe(-0.0)))
+    def createUnsignedZeroValue: Json = Json.fromLong(0)
+    def createLongValue(value: Long): Json = Json.fromLong(value)
+    def createBigDecimalValue(unscaled: BigInteger, scale: Int): Json =
+      Json.JNumber(JsonBigDecimal(new BigDecimal(unscaled, scale)))
+    def createBiggerDecimalValue(unscaled: BigInteger, scale: BigInteger): Json =
+      Json.JNumber(JsonBiggerDecimal(BiggerDecimal(unscaled, scale)))
+    def failureValue: Json = null
+  }
+
   implicit final val facade: Facade[Json] = new Facade[Json] {
     final def jnull(): Json = Json.Null
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
     final def jnum(s: CharSequence, decIndex: Int, expIndex: Int): Json =
-      if (decIndex < 0 && expIndex < 0) {
-        Json.fromJsonNumber(JsonNumber.fromIntegralStringUnsafe(s.toString))
-      } else {
-        Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe(s.toString))
-      }
+      jsonNumberParser.parseUnsafeWithIndices(s, decIndex, expIndex)
     final def jstring(s: CharSequence): Json = Json.fromString(s.toString)
 
     final def singleContext(): FContext[Json] = new FContext[Json] {

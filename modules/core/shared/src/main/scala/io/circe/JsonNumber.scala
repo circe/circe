@@ -224,7 +224,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
  * Represent a valid JSON number as a [[scala.Float]].
  */
 private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
-  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromFloat(value)
+  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromFloatUnsafe(value)
   private[this] def toJavaBigDecimal = new JavaBigDecimal(java.lang.Float.toString(value))
 
   final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)
@@ -260,6 +260,7 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
+  @deprecated("Use fromString", "0.9.0")
   final def fromDecimalStringUnsafe(value: String): JsonNumber = JsonDecimal(value)
 
   /**
@@ -270,12 +271,13 @@ final object JsonNumber {
    * undefined. This operation is provided for use in situations where the validity of the input has
    * already been verified.
    */
-  final def fromIntegralStringUnsafe(value: String): JsonNumber =
-    if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value) else {
-      val longValue = java.lang.Long.parseLong(value)
+  @deprecated("Use fromString", "0.9.0")
+  final def fromIntegralStringUnsafe(value: String): JsonNumber = {
+    val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)
 
-      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(longValue)
-    }
+    if (result.eq(null)) null else JsonBiggerDecimal(result)
+
+  }
 
   final def fromString(value: String): Option[JsonNumber] = {
     val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)

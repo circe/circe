@@ -7,7 +7,7 @@ import io.circe.tests.CirceSuite
  */
 trait FloatJsonTests { this: CirceSuite =>
   "fromFloatOrString" should "return a Json number for valid Floats" in {
-    assert(Json.fromFloatOrString(1.1f) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
-    assert(Json.fromFloatOrString(-1.2f) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
+    assert(Json.fromFloatOrString(1.1f) === Json.fromJsonNumber(JsonNumber.fromString("1.1").get))
+    assert(Json.fromFloatOrString(-1.2f) === Json.fromJsonNumber(JsonNumber.fromString("-1.2").get))
   }
 }

@@ -3,12 +3,12 @@ package io.circe.numbers.testing
 import org.scalacheck.{ Arbitrary, Gen }
 
 /**
- * An arbitrary JSON number, represented as a string.
+ * A JSON number represented as a string.
  */
 final case class JsonNumberString(value: String)
 
 final object JsonNumberString {
-  implicit val arbitraryJsonNumberString: Arbitrary[JsonNumberString] = Arbitrary(
+  implicit final val arbitraryJsonNumberString: Arbitrary[JsonNumberString] = Arbitrary(
     for {
       sign <- Gen.oneOf("", "-")
       integral <- Gen.oneOf(

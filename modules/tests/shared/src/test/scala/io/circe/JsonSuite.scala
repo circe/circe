@@ -174,8 +174,8 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   }
 
   it should "return JsonNumber Json values for valid Doubles" in {
-    assert(Json.fromDoubleOrString(1.1) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
-    assert(Json.fromDoubleOrString(-1.2) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
+    assert(Json.fromDoubleOrString(1.1) === Json.fromJsonNumber(JsonNumber.fromString("1.1").get))
+    assert(Json.fromDoubleOrString(-1.2) === Json.fromJsonNumber(JsonNumber.fromString("-1.2").get))
   }
 
   "fromFloat" should "fail on Float.NaN" in {
