@@ -500,7 +500,7 @@ final object Json {
   /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
-  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value))
+  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
 
   /**
    * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we

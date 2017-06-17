@@ -167,13 +167,13 @@ private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal)
 /**
  * Represent a valid JSON number as a [[scala.math.BigDecimal]].
  */
-private[circe] final case class JsonBigDecimal(value: BigDecimal) extends JsonNumber {
-  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value.underlying)
-  final def toBigDecimal: Option[BigDecimal] = Some(value)
+private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends JsonNumber {
+  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value)
+  final def toBigDecimal: Option[BigDecimal] = Some(new BigDecimal(value))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
-  final def toDouble: Double = value.toDouble
+  final def toDouble: Double = value.doubleValue
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = value.underlying.setScale(0, java.math.BigDecimal.ROUND_DOWN).longValue
+  final def truncateToLong: Long = value.setScale(0, java.math.BigDecimal.ROUND_DOWN).longValue
   override final def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
 }
@@ -295,7 +295,7 @@ final object JsonNumber {
     case (JsonLong(x), JsonLong(y)) => x == y
     case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
     case (JsonFloat(x), JsonFloat(y)) => java.lang.Float.compare(x, y) == 0
-    case (JsonBigDecimal(x), JsonBigDecimal(y)) => x == y
+    case (JsonBigDecimal(x), JsonBigDecimal(y)) => x.compareTo(y) == 0
     case (a, b) => a.toBiggerDecimal == b.toBiggerDecimal
   }
 }

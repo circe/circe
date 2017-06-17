@@ -1,7 +1,7 @@
 package io.circe.optics
 
 import io.circe.{ JsonBigDecimal, JsonLong, JsonNumber }
-import java.math.MathContext
+import java.math.{ BigDecimal => JavaBigDecimal, MathContext }
 import monocle.Prism
 
 /**
@@ -16,7 +16,7 @@ import monocle.Prism
 trait JsonNumberOptics {
   final lazy val jsonNumberBigInt: Prism[JsonNumber, BigInt] = Prism[JsonNumber, BigInt](jn =>
     if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigInt
-  )(b => JsonBigDecimal(BigDecimal(b, MathContext.UNLIMITED)))
+  )(b => JsonBigDecimal(new JavaBigDecimal(b.underlying, MathContext.UNLIMITED)))
 
   final lazy val jsonNumberLong: Prism[JsonNumber, Long] = Prism[JsonNumber, Long](jn =>
     if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toLong
@@ -37,7 +37,7 @@ trait JsonNumberOptics {
   final lazy val jsonNumberBigDecimal: Prism[JsonNumber, BigDecimal] =
     Prism[JsonNumber, BigDecimal](jn =>
       if (JsonNumberOptics.isNegativeZero(jn)) None else jn.toBigDecimal
-    )(JsonBigDecimal(_))
+    )(b => JsonBigDecimal(b.underlying))
 }
 
 final object JsonNumberOptics extends JsonNumberOptics {
