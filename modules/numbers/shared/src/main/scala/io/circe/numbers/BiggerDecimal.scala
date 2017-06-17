@@ -211,7 +211,13 @@ final object BiggerDecimal {
   def fromBigDecimal(d: BigDecimal): BiggerDecimal = fromUnscaledAndScale(d.unscaledValue, d.scale.toLong)
   def fromLong(d: Long): BiggerDecimal = fromUnscaledAndScale(BigInteger.valueOf(d), 0L)
 
-  def fromDouble(d: Double): BiggerDecimal = if (java.lang.Double.compare(d, -0.0) == 0) {
+  /**
+   * Convert a [[scala.Double]] into a [[BiggerDecimal]].
+   *
+   * @note This method assumes that the input is not `NaN` or infinite, and will throw a
+   *       `NumberFormatException` if that assumption does not hold.
+   */
+  def fromDoubleUnsafe(d: Double): BiggerDecimal = if (java.lang.Double.compare(d, -0.0) == 0) {
     NegativeZero
   } else fromBigDecimal(BigDecimal.valueOf(d))
 

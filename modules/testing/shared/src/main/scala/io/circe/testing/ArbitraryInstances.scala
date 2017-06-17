@@ -28,7 +28,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Gen.oneOf(
       Arbitrary.arbitrary[JsonNumberString].map(s => BiggerDecimal.parseBiggerDecimalUnsafe(s.value)),
       Arbitrary.arbitrary[Long].map(BiggerDecimal.fromLong),
-      Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDouble),
+      Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDoubleUnsafe),
       Arbitrary.arbitrary[BigInt].map(_.bigInteger).map(BiggerDecimal.fromBigInteger),
       Arbitrary.arbitrary[BigDecimal].map(_.bigDecimal).map(BiggerDecimal.fromBigDecimal),
       Gen.const(BiggerDecimal.NegativeZero)
