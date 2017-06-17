@@ -5,7 +5,7 @@ import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Error, Json, Parser, ParsingFailure }
-import org.scalacheck.{ Arbitrary, Prop }
+import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
 
 case class ParserLaws[P <: Parser](parser: P) {
@@ -28,7 +28,7 @@ case class ParserLaws[P <: Parser](parser: P) {
 case class ParserTests[P <: Parser](p: P) extends Laws {
   def laws: ParserLaws[P] = ParserLaws(p)
 
-  def fromString(implicit arbitraryJson: Arbitrary[Json]): RuleSet =
+  def fromString(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet =
     fromFunction[String]("fromString")(
       identity, _.parse, _.decode[Json], _.decodeAccumulating[Json]
     )
@@ -38,7 +38,7 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
     parse: P => A => Either[ParsingFailure, Json],
     decode: P => A => Either[Error, Json],
     decodeAccumulating: P => A => ValidatedNel[Error, Json]
-  )(implicit arbitraryJson: Arbitrary[Json]): RuleSet = new DefaultRuleSet(
+  )(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet = new DefaultRuleSet(
     name = s"parser[$name]",
     parent = None,
     "parsingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
@@ -53,11 +53,11 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
     "decodingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingRoundTrip[A](json)(json => serialize(json.spaces2), decode)
     },
-    "decodingAccumualtingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
+    "decodingAccumulatingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingAccumulatingRoundTrip[A](json)(json =>
         serialize(json.noSpaces), decodeAccumulating)
     },
-    "decodingAccumualtingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
+    "decodingAccumulatingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingAccumulatingRoundTrip[A](json)(json =>
         serialize(json.spaces2), decodeAccumulating)
     }

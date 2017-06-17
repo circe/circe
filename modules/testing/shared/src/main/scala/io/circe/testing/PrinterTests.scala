@@ -5,8 +5,7 @@ import cats.instances.option._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Parser, Printer }
-import org.scalacheck.Arbitrary
-import org.scalacheck.Prop
+import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
 
 trait PrinterLaws[A] {
@@ -18,10 +17,10 @@ trait PrinterLaws[A] {
 }
 
 object PrinterLaws {
-  def apply[A](implicit d: Decoder[A], e: Encoder[A]): PrinterLaws[A] =
+  def apply[A](implicit decodeA: Decoder[A], encodeA: Encoder[A]): PrinterLaws[A] =
     new PrinterLaws[A] {
-      val decode: Decoder[A] = d
-      val encode: Encoder[A] = e
+      val decode: Decoder[A] = decodeA
+      val encode: Encoder[A] = encodeA
     }
 }
 
@@ -29,8 +28,9 @@ trait PrinterTests[A] extends Laws {
   def laws: PrinterLaws[A]
 
   def printer(printer: Printer, parser: Parser)(implicit
-    A: Arbitrary[A],
-    eq: Eq[A]
+    arbitraryA: Arbitrary[A],
+    shrinkA: Shrink[A],
+    eqA: Eq[A]
   ): RuleSet =
     new DefaultRuleSet(
       name = "printer",
@@ -42,7 +42,7 @@ trait PrinterTests[A] extends Laws {
 }
 
 object PrinterTests {
-  def apply[A: Decoder: Encoder]: PrinterTests[A] =
+  def apply[A](implicit decodeA: Decoder[A], encodeA: Encoder[A]): PrinterTests[A] =
     new PrinterTests[A] {
       val laws: PrinterLaws[A] = PrinterLaws[A]
     }

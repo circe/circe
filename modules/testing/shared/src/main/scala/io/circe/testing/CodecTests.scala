@@ -5,8 +5,7 @@ import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Json }
-import org.scalacheck.Arbitrary
-import org.scalacheck.Prop
+import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
 
 trait CodecLaws[A] {
@@ -21,16 +20,22 @@ trait CodecLaws[A] {
 }
 
 object CodecLaws {
-  def apply[A](implicit d: Decoder[A], e: Encoder[A]): CodecLaws[A] = new CodecLaws[A] {
-    val decode: Decoder[A] = d
-    val encode: Encoder[A] = e
+  def apply[A](implicit decodeA: Decoder[A], encodeA: Encoder[A]): CodecLaws[A] = new CodecLaws[A] {
+    val decode: Decoder[A] = decodeA
+    val encode: Encoder[A] = encodeA
   }
 }
 
-trait CodecTests[A] extends Laws with ArbitraryInstances {
+trait CodecTests[A] extends Laws {
   def laws: CodecLaws[A]
 
-  def codec(implicit A: Arbitrary[A], eq: Eq[A]): RuleSet = new DefaultRuleSet(
+  def codec(implicit
+    arbitraryA: Arbitrary[A],
+    shrinkA: Shrink[A],
+    eqA: Eq[A],
+    arbitraryJson: Arbitrary[Json],
+    shrinkJson: Shrink[Json]
+  ): RuleSet = new DefaultRuleSet(
     name = "codec",
     parent = None,
     "roundTrip" -> Prop.forAll { (a: A) =>
