@@ -196,7 +196,7 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
  * Represent a valid JSON number as a [[scala.Double]].
  */
 private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
-  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromDouble(value)
+  private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromDoubleUnsafe(value)
   private[this] def toJavaBigDecimal = JavaBigDecimal.valueOf(value)
 
   final def toBigDecimal: Option[BigDecimal] = Some(toJavaBigDecimal)

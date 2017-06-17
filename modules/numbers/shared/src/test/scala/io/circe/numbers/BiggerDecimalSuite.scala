@@ -17,12 +17,12 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   private[this] def trailingZeros(i: BigInt): Int = i.toString.reverse.takeWhile(_ == '0').size
   private[this] def significantDigits(i: BigInt): Int = i.toString.size - trailingZeros(i)
 
-  "fromDouble(0)" should "equal fromBigDecimal(ZERO) (#348)" in {
-    assert(BiggerDecimal.fromDouble(0) === BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
+  "fromDoubleUnsafe(0)" should "equal fromBigDecimal(ZERO) (#348)" in {
+    assert(BiggerDecimal.fromDoubleUnsafe(0) === BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
   }
 
-  "fromDouble" should "round-trip Double values" in forAll { (value: Double) =>
-    val d = BiggerDecimal.fromDouble(value)
+  "fromDoubleUnsafe" should "round-trip Double values" in forAll { (value: Double) =>
+    val d = BiggerDecimal.fromDoubleUnsafe(value)
 
     assert(
       doubleEqv(d.toDouble, value) && d.toBigDecimal.exists { roundTripped =>
@@ -32,7 +32,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   it should "round-trip negative zero" in {
-    val d = BiggerDecimal.fromDouble(-0.0)
+    val d = BiggerDecimal.fromDoubleUnsafe(-0.0)
 
     assert(doubleEqv(d.toDouble, -0.0))
   }
@@ -56,7 +56,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   it should "agree with Double" in forAll { (value: Double) =>
-    val d = BiggerDecimal.fromDouble(value)
+    val d = BiggerDecimal.fromDoubleUnsafe(value)
 
     assert(d.signum == value.signum)
   }
@@ -133,9 +133,9 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     assert(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(9L)) === d.toBigInteger)
   }
 
-  "fromLong and fromDouble" should "agree on Int-sized integral values" in forAll { (value: Int) =>
+  "fromLong and fromDoubleUnsafe" should "agree on Int-sized integral values" in forAll { (value: Int) =>
     val dl = BiggerDecimal.fromLong(value.toLong)
-    val dd = BiggerDecimal.fromDouble(value.toDouble)
+    val dd = BiggerDecimal.fromDoubleUnsafe(value.toDouble)
 
     assert(dl === dd)
   }
