@@ -264,7 +264,7 @@ final case class Printer(
    * Returns a string representation of a pretty-printed JSON value.
    */
   final def pretty(json: Json): String = {
-    val writer = if (reuseWriters) {
+    val writer = if (reuseWriters && stringWriter.ne(null)) {
       val w = stringWriter.get()
       w.setLength(0)
       w
