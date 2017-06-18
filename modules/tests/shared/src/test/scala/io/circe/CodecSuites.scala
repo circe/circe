@@ -56,6 +56,7 @@ class StdLibCodecSuite extends CirceSuite {
   checkLaws("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
   checkLaws("Codec[Map[Long, Int]]", CodecTests[Map[Long, Int]].codec)
   checkLaws("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
+  checkLaws("Codec[Array[String]]", CodecTests[Array[String]].codec)
 
   "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
