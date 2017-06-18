@@ -33,7 +33,7 @@ trait MissingInstances {
   implicit def arbitrarySome[A](implicit A: Arbitrary[A]): Arbitrary[Some[A]] = Arbitrary(A.arbitrary.map(Some(_)))
   implicit lazy val arbitraryNone: Arbitrary[None.type] = Arbitrary(Gen.const(None))
 
-  implicit def eqSome[A](implicit A: Eq[A]): Eq[Some[A]] = Eq.by(_.x)
+  implicit def eqSome[A](implicit A: Eq[A]): Eq[Some[A]] = Eq.by(_.get)
   implicit lazy val eqNone: Eq[None.type] = Eq.instance((_, _) => true)
 
   implicit lazy val arbitrarySymbol: Arbitrary[Symbol] = Arbitrary(Arbitrary.arbitrary[String].map(Symbol(_)))
