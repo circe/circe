@@ -7,7 +7,7 @@ import io.circe.tests.CirceSuite
 
 class ConfiguredJsonCodecSuite extends CirceSuite {
   implicit val customConfig: Configuration =
-    Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type")
+    Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
   /**
    * This nesting is necessary on 2.10 (possibly related to SI-7406).
@@ -30,8 +30,8 @@ class ConfiguredJsonCodecSuite extends CirceSuite {
 
   "ConfiguredJsonCodec" should "support configuration" in forAll { (f: String, b: Double) =>
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)
-    val json = json"""{ "type": "ConfigExampleFoo", "this_is_a_field": $f, "b": $b}"""
-    val expected = json"""{ "type": "ConfigExampleFoo", "this_is_a_field": $f, "a": 0, "b": $b}"""
+    val json = json"""{ "type": "config_example_foo", "this_is_a_field": $f, "b": $b}"""
+    val expected = json"""{ "type": "config_example_foo", "this_is_a_field": $f, "a": 0, "b": $b}"""
 
     assert(Encoder[ConfigExampleBase].apply(foo) === expected)
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))

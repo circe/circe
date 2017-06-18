@@ -34,13 +34,14 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
         case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
       }.toMap
 
-    private[this] def keyTransformer(transformKeys: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformKeys(value))
+    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
+      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
 
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
-      if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
+      if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
       defaultMap,
-      None
+      None,
+      config.transformConstructorNames
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -48,9 +49,10 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
-        if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
+        if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
         defaultMap,
-        None
+        None,
+        config.transformConstructorNames
       ).map(gen.from)
   }
 
@@ -62,7 +64,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       Predef.identity,
       Map.empty,
-      config.discriminator
+      config.discriminator,
+      config.transformConstructorNames
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -72,7 +75,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
       decode.value.configuredDecodeAccumulating(c)(
         Predef.identity,
         Map.empty,
-        config.discriminator
+        config.discriminator,
+        config.transformConstructorNames
       ).map(gen.from)
   }
 }
