@@ -1,6 +1,7 @@
 package io.circe.scalajs
 
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Decoder, Encoder, Json }
+import io.circe.syntax._
 import io.circe.tests.CirceSuite
 import scala.scalajs.js
 import scalajs.js.Dynamic
@@ -18,8 +19,8 @@ case class UndefOrExample(name: js.UndefOr[String])
 
 object UndefOrExample {
   implicit val decodeUndefOrExample: Decoder[UndefOrExample] = Decoder.forProduct1("name")(UndefOrExample.apply)
-  implicit val encodeUndefOrExample: Encoder[UndefOrExample] = Encoder.forProduct1("name") {
-    case UndefOrExample(name) => Tuple1(name)
+  implicit val encodeUndefOrExample: Encoder[UndefOrExample] = Encoder.instance {
+    case UndefOrExample(name) => Json.obj("name" -> name.asJson)
   }
 }
 
