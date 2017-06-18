@@ -3,10 +3,8 @@ package io.circe
 import cats.data.NonEmptyList
 import cats.laws.discipline.{ ApplicativeErrorTests, SemigroupKTests }
 import cats.laws.discipline.arbitrary._
-import io.circe.generic.semiauto._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
-import io.circe.tests.examples.Qux
 
 class AccumulatingDecoderSpec extends CirceSuite {
   checkLaws(
@@ -19,15 +17,19 @@ class AccumulatingDecoderSpec extends CirceSuite {
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
   private object BadSample {
-    implicit val decodeBadSample: Decoder[BadSample] = deriveDecoder
-    implicit val encodeBadSample: Encoder[BadSample] = deriveEncoder
+    implicit val decodeBadSample: Decoder[BadSample] = Decoder.forProduct3("a", "b", "c")(BadSample.apply)
+    implicit val encodeBadSample: Encoder[BadSample] = Encoder.forProduct3("a", "b", "c") {
+      case BadSample(a, b, c) => (a, b, c)
+    }
   }
 
   private case class Sample(a: String, b: String, c: String)
 
   private object Sample {
-    implicit val decodeSample: Decoder[Sample] = deriveDecoder
-    implicit val encodeSample: Encoder[Sample] = deriveEncoder
+    implicit val decodeSample: Decoder[Sample] = Decoder.forProduct3("a", "b", "c")(Sample.apply)
+    implicit val encodeSample: Encoder[Sample] = Encoder.forProduct3("a", "b", "c") {
+      case Sample(a, b, c) => (a, b, c)
+    }
   }
 
   "accumulating" should "return as many errors as invalid elements in a list" in {
@@ -108,9 +110,4 @@ class AccumulatingDecoderSpec extends CirceSuite {
     }
   }
 
-  it should "return as many errors as invalid elements in a partial case class" in {
-    val decoded = deriveFor[Int => Qux[String]].incomplete.accumulating(Json.fromJsonObject(JsonObject.empty).hcursor)
-
-    assert(decoded.fold(_.tail.size + 1, _ => 0) === 2)
-  }
 }

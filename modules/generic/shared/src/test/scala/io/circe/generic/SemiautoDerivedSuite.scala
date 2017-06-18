@@ -94,6 +94,12 @@ class SemiautoDerivedSuite extends CirceSuite {
     assert(result === Right(Qux(i, s, j)))
   }
 
+  it should "return as many errors as invalid elements in a partial case class" in {
+    val decoded = deriveFor[Int => Qux[String]].incomplete.accumulating(Json.obj().hcursor)
+
+    assert(decoded.fold(_.tail.size + 1, _ => 0) === 2)
+  }
+
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
     forAll { (i: Int, s: String, j: Int) =>
       val result = Json.obj(

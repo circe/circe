@@ -69,6 +69,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).up
+
+    assert(result.failed && result.history === List(CursorOp.MoveUp))
+  }
+
   "withFocus" should "have no effect when given the identity function" in forAll { (j: Json) =>
     assert(HCursor.fromJson(j).withFocus(identity).focus === Some(j))
   }
@@ -102,6 +108,12 @@ class ACursorSuite extends CirceSuite {
     assert(result.flatMap(_.focus) === Some(Json.fromValues(t)))
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).delete
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoParent))
+  }
+
   "set" should "replace an element" in {
     val result = cursor.downField("b").success.map(_.set(10.asJson))
 
@@ -118,6 +130,10 @@ class ACursorSuite extends CirceSuite {
     assert(result === Some(Vector(3.asJson, 2.asJson, 1.asJson)))
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    assert(HCursor.fromJson(j).lefts === None)
+  }
+
   "rights" should "return the expected values" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -126,6 +142,10 @@ class ACursorSuite extends CirceSuite {
     } yield l
 
     assert(result === Some(Vector(5.asJson)))
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    assert(HCursor.fromJson(j).rights === None)
   }
 
   "values" should "return the expected values" in {
@@ -159,6 +179,12 @@ class ACursorSuite extends CirceSuite {
     assert(result.flatMap(_.focus) === None)
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).left
+
+    assert(result.failed && result.history === List(CursorOp.MoveLeft))
+  }
+
   "right" should "successfully select an existing value" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -176,6 +202,12 @@ class ACursorSuite extends CirceSuite {
     } yield r
 
     assert(result.flatMap(_.focus) === None)
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).right
+
+    assert(result.failed && result.history === List(CursorOp.MoveRight))
   }
 
   "first" should "successfully select an existing value" in {
@@ -197,6 +229,12 @@ class ACursorSuite extends CirceSuite {
     assert(result.flatMap(_.focus) === None)
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).first
+
+    assert(result.failed && result.history === List(CursorOp.MoveFirst))
+  }
+
   "last" should "successfully select an existing value" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -214,6 +252,12 @@ class ACursorSuite extends CirceSuite {
     } yield l
 
     assert(result.flatMap(_.focus) === None)
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).last
+
+    assert(result.failed && result.history === List(CursorOp.MoveLast))
   }
 
   "leftAt" should "successfully select an existing value" in {
@@ -301,6 +345,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteGoLeft
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoLeft))
+  }
+
   "deleteGoRight" should "remove the current value and move appropriately" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -315,6 +365,12 @@ class ACursorSuite extends CirceSuite {
       result.map(_._1) === Some(5.asJson) &&
       result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
     )
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteGoRight
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoRight))
   }
 
   "deleteGoFirst" should "remove the current value and move appropriately" in {
@@ -333,6 +389,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteGoFirst
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoFirst))
+  }
+
   "deleteGoLast" should "remove the current value and move appropriately" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -347,6 +409,12 @@ class ACursorSuite extends CirceSuite {
       result.map(_._1) === Some(5.asJson) &&
       result.map(_._2) === Some(List(1, 2, 4, 5).asJson)
     )
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteGoLast
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoLast))
   }
 
   "deleteLefts" should "remove the specified values" in {
@@ -365,6 +433,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteLefts
+
+    assert(result.failed && result.history === List(CursorOp.DeleteLefts))
+  }
+
   "deleteRights" should "remove the specified values" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -379,6 +453,12 @@ class ACursorSuite extends CirceSuite {
       result.map(_._1) === Some(4.asJson) &&
       result.map(_._2) === Some(List(1, 2, 3, 4).asJson)
     )
+  }
+
+  it should "fail at the top" in forAll { (j: Json) =>
+    val result = HCursor.fromJson(j).deleteRights
+
+    assert(result.failed && result.history === List(CursorOp.DeleteRights))
   }
 
   "deleteGoField" should "remove the current value and move appropriately" in {
@@ -397,6 +477,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json, k: String) =>
+    val result = HCursor.fromJson(j).deleteGoField(k)
+
+    assert(result.failed && result.history === List(CursorOp.DeleteGoField(k)))
+  }
+
   "setLefts" should "replace the specified values" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -413,6 +499,12 @@ class ACursorSuite extends CirceSuite {
     )
   }
 
+  it should "fail at the top" in forAll { (j: Json, js: Vector[Json]) =>
+    val result = HCursor.fromJson(j).setLefts(js)
+
+    assert(result.failed && result.history === List(CursorOp.SetLefts(js)))
+  }
+
   "setRights" should "replace the specified values" in {
     val result = for {
       c <- cursor.downField("a").success
@@ -427,6 +519,12 @@ class ACursorSuite extends CirceSuite {
       result.map(_._1) === Some(4.asJson) &&
       result.map(_._2) === Some(List(1, 2, 3, 4, 100, 101).asJson)
     )
+  }
+
+  it should "fail at the top" in forAll { (j: Json, js: Vector[Json]) =>
+    val result = HCursor.fromJson(j).setRights(js)
+
+    assert(result.failed && result.history === List(CursorOp.SetRights(js)))
   }
 
   "replay" should "replay history" in {

@@ -1,6 +1,8 @@
 import ReleaseTransformations._
 import microsites.ExtraMdFileConfig
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
+import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
+import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
 
@@ -286,14 +288,16 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
-  .dependsOn(coreBase)
+  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings(scaladocFor210 = false))
-  .dependsOn(genericBase)
+  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .dependsOn(genericBase, testsBase % Test, literalBase % Test)
 
 lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
@@ -303,23 +307,28 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
-  .dependsOn(coreBase)
+  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings(scaladocFor210 = false))
-  .dependsOn(coreBase)
+  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
 
 lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "eu.timepit" %%% "refined" % refinedVersion
+    libraryDependencies ++= Seq(
+      "eu.timepit" %%% "refined" % refinedVersion,
+      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
+    )
   )
-  .dependsOn(coreBase)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
@@ -340,7 +349,7 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.4"
   )
-  .dependsOn(coreBase)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
@@ -351,6 +360,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion
@@ -374,11 +384,8 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scodec" %%% "scodec-bits" % "1.1.4",
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersion,
-      "eu.timepit" %%% "refined-scalacheck" % refinedVersion,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+      "org.typelevel" %%% "discipline" % disciplineVersion
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
@@ -388,23 +395,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .jvmConfigure(_.dependsOn(jawn, streaming))
-  .jsConfigure(
-    _.settings(
-      libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % "compile-time"
-    ).dependsOn(scalajs)
-  )
-  .dependsOn(
-    testingBase,
-    coreBase,
-    genericBase,
-    genericExtrasBase,
-    shapesBase,
-    literalBase,
-    refinedBase,
-    parserBase,
-    scodecBase
-  )
+  .dependsOn(coreBase, parserBase, testingBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -436,7 +427,7 @@ lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.12.0"
   )
-  .dependsOn(core, jawn)
+  .dependsOn(core, jawn, tests % Test)
 
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
@@ -446,7 +437,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
     )
   )
-  .dependsOn(coreBase, testsBase % Test)
+  .dependsOn(coreBase, genericBase % Test, testsBase % Test)
 
 lazy val optics = opticsBase.jvm
 lazy val opticsJS = opticsBase.js
@@ -492,7 +483,20 @@ lazy val publishSettings = Seq(
   developers := List(
     Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com",
       url("https://twitter.com/travisbrown"))
-  )
+  ),
+  pomPostProcess := { (node: XmlNode) =>
+    new RuleTransformer(
+      new RewriteRule {
+        private def isTestScope(elem: Elem): Boolean =
+          elem.label == "dependency" && elem.child.exists(child => child.label == "scope" && child.text == "test")
+
+        override def transform(node: XmlNode): XmlNodeSeq = node match {
+          case elem: Elem if isTestScope(elem) => Nil
+          case _ => node
+        }
+      }
+    ).transform(node).head
+  }
 )
 
 lazy val noPublishSettings = Seq(
@@ -513,7 +517,8 @@ credentials ++= (
   )
 ).toSeq
 
-val jvmTestProjects = Seq(numbers, tests, java8, optics).filterNot(jvm8Only(java8))
+val jvmTestProjects = jvmProjects.filterNot(Set(core, jawn, parser))
+val jsTestProjects = jsProjects.filterNot(Set(core, parser, scalajs))
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
@@ -521,5 +526,8 @@ addCommandAlias(
   ";buildJVM" + jvmTestProjects.map(";" + _.id + "/test").mkString + ";scalastyle;unidoc"
 )
 addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
-addCommandAlias("validateJS", ";buildJS;opticsJS/test;testsJS/test;scalastyle")
+addCommandAlias(
+  "validateJS",
+  ";buildJS" + jsTestProjects.map(";" + _.id + "/test").mkString + ";scalastyle"
+)
 addCommandAlias("validate", ";validateJVM;validateJS")
