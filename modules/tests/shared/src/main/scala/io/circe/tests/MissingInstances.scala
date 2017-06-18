@@ -28,6 +28,7 @@ trait MissingInstances {
   implicit lazy val eqUUID: Eq[UUID] = Eq.fromUniversalEquals
   implicit def eqRefArray[A <: AnyRef: Eq]: Eq[Array[A]] =
     cats.kernel.instances.vector.catsKernelStdEqForVector[A].on(value => Predef.wrapRefArray(value).toVector)
+  implicit def eqSeq[A: Eq]: Eq[Seq[A]] = cats.kernel.instances.vector.catsKernelStdEqForVector[A].on(_.toVector)
 
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
