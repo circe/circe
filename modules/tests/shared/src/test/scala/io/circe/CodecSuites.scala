@@ -5,6 +5,7 @@ import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
+import io.circe.tests.examples.Foo
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 
@@ -84,14 +85,14 @@ class StdLibCodecSuite extends CirceSuite {
   }
 
   it should "stop after first failure" in {
-    case class Bomb(i: Int)
-
     object Bomb {
       implicit val decodeBomb: Decoder[Bomb] = Decoder[Int].map {
         case 0 => throw new Exception("You shouldn't have tried to decode this")
         case i => Bomb(i)
       }
     }
+
+    case class Bomb(i: Int)
 
     val jsonArr = Json.arr(Json.fromInt(1), Json.fromString("foo"), Json.fromInt(0))
     val result = jsonArr.as[List[Bomb]]
@@ -110,6 +111,7 @@ class CirceCodecSuite extends CirceSuite {
   checkLaws("Codec[Json]", CodecTests[Json].codec)
   checkLaws("Codec[JsonObject]", CodecTests[JsonObject].codec)
   checkLaws("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
+  checkLaws("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
 }
 
 class DisjunctionCodecSuite extends CirceSuite {

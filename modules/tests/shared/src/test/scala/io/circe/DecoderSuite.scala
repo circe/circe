@@ -4,7 +4,6 @@ import cats.Eq
 import cats.data.Validated
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.DownArray
-import io.circe.Json.JObject
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -52,14 +51,18 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "transformations" should "not break derived decoders when called on Decoder[Option[T]]" in
     forAll(transformations[Option[String]]) { transformation =>
-      import io.circe.generic.semiauto._
-      implicit val decodeOptionString = transformation(Decoder.decodeOption(Decoder.decodeString))
+      implicit val decodeOptionString: Decoder[Option[String]] =
+        transformation(Decoder.decodeOption(Decoder.decodeString))
+
+      object Test {
+        implicit val eqTest: Eq[Test] = Eq.fromUniversalEquals
+        implicit val decodeTest: Decoder[Test] = Decoder.forProduct1("a")(Test.apply)
+      }
+
       case class Test(a: Option[String])
-      implicit val eqTest: Eq[Test] = Eq.fromUniversalEquals[Test]
-      val decoder = deriveDecoder[Test]
-      val emptyJsonObject = JObject(JsonObject.empty)
-      assert(decoder.decodeJson(emptyJsonObject) === Right(Test(None)))
-      assert(decoder.accumulating(emptyJsonObject.hcursor) === Validated.valid(Test(None)))
+
+      assert(Decoder[Test].decodeJson(Json.obj()) === Right(Test(None)))
+      assert(Decoder[Test].accumulating(Json.obj().hcursor) === Validated.valid(Test(None)))
     }
 
   "prepare" should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>

@@ -49,8 +49,6 @@ class RefinedSuite extends CirceSuite {
 }
 
 class RefinedFieldsSuite extends CirceSuite {
-  import io.circe.generic.semiauto._
-
   case class RefinedFields(
     i: Int Refined Positive,
     s: String Refined NonEmpty,
@@ -73,8 +71,10 @@ class RefinedFieldsSuite extends CirceSuite {
       )
     )
 
-    implicit val decodeRefinedFields: Decoder[RefinedFields] = deriveDecoder
-    implicit val encodeRefinedFields: Encoder[RefinedFields] = deriveEncoder
+    implicit val decodeRefinedFields: Decoder[RefinedFields] = Decoder.forProduct3("i", "s", "l")(RefinedFields.apply)
+    implicit val encodeRefinedFields: Encoder[RefinedFields] = Encoder.forProduct3("i", "s", "l") {
+      case RefinedFields(i, s, l) => (i, s, l)
+    }
   }
 
   checkLaws("Codec[RefinedFields]", CodecTests[RefinedFields].codec)

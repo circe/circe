@@ -2,7 +2,7 @@ package io.circe.streaming
 
 import cats.Eval
 import cats.data.EitherT
-import io.circe.generic.auto._
+import io.circe.{ Decoder, Encoder }
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
@@ -11,6 +11,9 @@ import io.iteratee.modules.eitherT._
 
 class StreamingSuite extends CirceSuite {
   type Result[A] = EitherT[Eval, Throwable, A]
+
+  implicit val decodeFoo: Decoder[Foo] = Foo.decodeFoo
+  implicit val encodeFoo: Encoder[Foo] = Foo.encodeFoo
 
   def enumerateFoos(fooStream: Stream[Foo], fooVector: Vector[Foo]): Enumerator[Result, Foo] =
     enumStream(fooStream).append(enumVector(fooVector))
