@@ -207,7 +207,7 @@ lazy val jsProjects: Seq[Project] =
  */
 lazy val aggregatedProjects: Seq[ProjectReference] =
   (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeDocsModules)
+   circeJsModules ++ circeJvmModules ++ circeDocsModules ++ circeUtilModules)
     .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
 
 def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
