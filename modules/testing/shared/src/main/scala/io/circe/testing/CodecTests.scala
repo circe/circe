@@ -43,7 +43,9 @@ trait CodecTests[A] extends Laws {
     },
     "consistency with accumulating" -> Prop.forAll { (json: Json) =>
       laws.codecAccumulatingConsistency(json)
-    }
+    },
+    "decoder serializability" -> SerializableLaws.serializable(laws.decode),
+    "encoder serializability" -> SerializableLaws.serializable(laws.encode)
   )
 }
 
