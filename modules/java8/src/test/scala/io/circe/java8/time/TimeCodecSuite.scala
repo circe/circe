@@ -1,6 +1,7 @@
 package io.circe.java8.time
 
 import cats.Eq
+import io.circe.{ Decoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import java.time.{ Duration, Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, YearMonth, ZonedDateTime, ZoneId }
@@ -82,4 +83,42 @@ class TimeCodecSuite extends CirceSuite {
   checkLaws("Codec[Period]", CodecTests[Period].codec)
   checkLaws("Codec[YearMonth]", CodecTests[YearMonth].codec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
+
+  val invalidJson: Json = Json.fromString("abc")
+
+  "Decoder[Instant]" should "fail on invalid values" in {
+    assert(Decoder[Instant].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[LocalDateTime]" should "fail on invalid values" in {
+    assert(Decoder[LocalDateTime].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[ZonedDateTime]" should "fail on invalid values" in {
+    assert(Decoder[ZonedDateTime].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[OffsetDateTime]" should "fail on invalid values" in {
+    assert(Decoder[OffsetDateTime].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[LocalDate]" should "fail on invalid values" in {
+    assert(Decoder[LocalDate].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[LocalTime]" should "fail on invalid values" in {
+    assert(Decoder[LocalTime].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[Period]" should "fail on invalid values" in {
+    assert(Decoder[Period].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[YearMonth]" should "fail on invalid values" in {
+    assert(Decoder[YearMonth].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[Duration]" should "fail on invalid values" in {
+    assert(Decoder[Duration].apply(invalidJson.hcursor).isLeft)
+  }
 }
