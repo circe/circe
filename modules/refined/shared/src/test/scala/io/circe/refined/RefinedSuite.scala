@@ -48,7 +48,7 @@ class RefinedSuite extends CirceSuite {
   }
 }
 
-class RefinedFieldsSuite extends CirceSuite {
+object RefinedFieldsSuite {
   case class RefinedFields(
     i: Int Refined Positive,
     s: String Refined NonEmpty,
@@ -76,6 +76,10 @@ class RefinedFieldsSuite extends CirceSuite {
       case RefinedFields(i, s, l) => (i, s, l)
     }
   }
+}
+
+class RefinedFieldsSuite extends CirceSuite {
+  import RefinedFieldsSuite._
 
   checkLaws("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
 

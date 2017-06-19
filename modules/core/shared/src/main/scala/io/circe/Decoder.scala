@@ -7,8 +7,10 @@ import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEi
 import io.circe.export.Exported
 import java.util.UUID
 import scala.annotation.tailrec
+import scala.collection.Map
 import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable.{ Map, Set }
+import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
@@ -638,14 +640,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     }
   }
 
-  /**
-   * @group Decoding
-   */
-  implicit final def decodeCanBuildFrom[A, C[_]](implicit
-    d: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[C[A]] = new SeqDecoder[A, C](d, cbf)
-
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
   /**
@@ -677,61 +671,94 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
    * @group Decoding
    */
-  implicit final def decodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
-    dk: KeyDecoder[K],
-    dv: Decoder[V],
+  implicit final def decodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+    decodeK: KeyDecoder[K],
+    decodeV: Decoder[V],
     cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
-  ): Decoder[M[K, V]] = new MapDecoder[M, K, V]
+  ): Decoder[M[K, V]] = new MapDecoder[K, V, M](decodeK, decodeV) {
+    final protected def createBuilder(): Builder[(K, V), M[K, V]] = cbf()
+  }
+
+  /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
+   * @group Decoding
+   */
+  implicit final def decodeCanBuildFrom[A, C[_]](implicit
+    decodeA: Decoder[A],
+    cbf: CanBuildFrom[Nothing, A, C[A]]
+  ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
+    final protected def createBuilder(): Builder[A, C[A]] = cbf.apply()
+  }
+
+  implicit final def decodeMap[K, V](implicit
+    decodeK: KeyDecoder[K],
+    decodeV: Decoder[V]
+  ): Decoder[ImmutableMap[K, V]] = new MapDecoder[K, V, ImmutableMap](decodeK, decodeV) {
+    final protected def createBuilder(): Builder[(K, V), ImmutableMap[K, V]] = ImmutableMap.newBuilder[K, V]
+  }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeSeq[A: Decoder]: Decoder[Seq[A]] =
-    decodeCanBuildFrom[A, Seq]
+  implicit final def decodeSeq[A](implicit decodeA: Decoder[A]): Decoder[Seq[A]] = new SeqDecoder[A, Seq](decodeA) {
+    final protected def createBuilder(): Builder[A, Seq[A]] = Seq.newBuilder[A]
+  }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeSet[A: Decoder]: Decoder[Set[A]] =
-    decodeCanBuildFrom[A, List].map(_.toSet)
+  implicit final def decodeSet[A](implicit decodeA: Decoder[A]): Decoder[Set[A]] = new SeqDecoder[A, Set](decodeA) {
+    final protected def createBuilder(): Builder[A, Set[A]] = Set.newBuilder[A]
+  }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeList[A: Decoder]: Decoder[List[A]] =
-    decodeCanBuildFrom[A, List]
+  implicit final def decodeList[A](implicit decodeA: Decoder[A]): Decoder[List[A]] = new SeqDecoder[A, List](decodeA) {
+    final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+  }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeVector[A: Decoder]: Decoder[Vector[A]] =
-    decodeCanBuildFrom[A, Vector]
+  implicit final def decodeVector[A](implicit decodeA: Decoder[A]): Decoder[Vector[A]] =
+    new SeqDecoder[A, Vector](decodeA) {
+      final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
+    }
 
   /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
    * @group Decoding
    */
   implicit final def decodeOneAnd[A, C[_]](implicit
-    da: Decoder[A],
+    decodeA: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]] {
+  ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]](decodeA) {
+    final protected def createBuilder(): Builder[A, C[A]] = cbf()
     final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeNonEmptyList[A](implicit da: Decoder[A]): Decoder[NonEmptyList[A]] =
-    new NonEmptySeqDecoder[A, List, NonEmptyList[A]] {
+  implicit final def decodeNonEmptyList[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyList[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptyList[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
       final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
     }
 
   /**
    * @group Decoding
    */
-  implicit final def decodeNonEmptyVector[A](implicit da: Decoder[A]): Decoder[NonEmptyVector[A]] =
-    new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]] {
+  implicit final def decodeNonEmptyVector[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyVector[A]] =
+    new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
       final protected val create: (A, Vector[A]) => NonEmptyVector[A] = (h, t) => NonEmptyVector(h, t)
     }
 

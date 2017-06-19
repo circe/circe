@@ -1,13 +1,13 @@
 package io.circe
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Builder
 
-private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](implicit
-  decodeA: Decoder[A],
-  cbf: CanBuildFrom[Nothing, A, C[A]]
-) extends Decoder[S] {
+private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](decodeA: Decoder[A]) extends Decoder[S] { self =>
+  protected def createBuilder(): Builder[A, C[A]]
   protected def create: (A, C[A]) => S
-  private[this] final val decodeCA: Decoder[C[A]] = Decoder.decodeCanBuildFrom[A, C](decodeA, cbf)
+  private[this] final val decodeCA: Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
+    protected final def createBuilder(): Builder[A, C[A]] = self.createBuilder()
+  }
 
   final def apply(c: HCursor): Decoder.Result[S] = {
     val arr = c.downArray
@@ -22,9 +22,7 @@ private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](implicit
     }
   }
 
-  override final private[circe] def decodeAccumulating(
-    c: HCursor
-  ): AccumulatingDecoder.Result[S] = {
+  private[circe] final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[S] = {
     val arr = c.downArray
 
     AccumulatingDecoder.resultInstance.map2(

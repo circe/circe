@@ -2,20 +2,23 @@ package io.circe.java8.time
 
 import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import java.time.{
-Duration,
-Instant, LocalDate,
-LocalDateTime, LocalTime,
-OffsetDateTime,
-Period, YearMonth,
-ZonedDateTime
+  Duration,
+  Instant,
+  LocalDate,
+  LocalDateTime,
+  LocalTime,
+  OffsetDateTime,
+  Period,
+  YearMonth,
+  ZonedDateTime
 }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{
-ISO_LOCAL_DATE,
-ISO_LOCAL_DATE_TIME,
-ISO_LOCAL_TIME,
-ISO_OFFSET_DATE_TIME,
-ISO_ZONED_DATE_TIME
+  ISO_LOCAL_DATE,
+  ISO_LOCAL_DATE_TIME,
+  ISO_LOCAL_TIME,
+  ISO_OFFSET_DATE_TIME,
+  ISO_ZONED_DATE_TIME
 }
 
 trait TimeInstances {

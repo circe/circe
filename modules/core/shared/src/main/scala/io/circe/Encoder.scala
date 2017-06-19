@@ -5,9 +5,8 @@ import cats.functor.Contravariant
 import cats.Foldable
 import io.circe.export.Exported
 import java.util.UUID
-import scala.collection.GenSeq
-import scala.collection.generic.IsTraversableOnce
-import scala.collection.immutable.{ Map, Set }
+import scala.collection.Map
+import scala.collection.immutable.{ Map => ImmutableMap, Set }
 import scala.Predef._
 
 /**
@@ -67,7 +66,7 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
+final object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
   /**
    * Return an instance for a given type `A`.
    *
@@ -236,65 +235,86 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   /**
    * @group Encoding
    */
-  implicit final def encodeSeq[A: Encoder]: Encoder[Seq[A]] = encodeTraversableOnce[A, Seq]
+  implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): ArrayEncoder[Seq[A]] =
+    new IterableArrayEncoder[A, Seq](encodeA) {
+      final protected def toIterator(a: Seq[A]): Iterator[A] = a.iterator
+    }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeSet[A: Encoder]: Encoder[Set[A]] = encodeTraversableOnce[A, Set]
+  implicit final def encodeSet[A](implicit encodeA: Encoder[A]): ArrayEncoder[Set[A]] =
+    new IterableArrayEncoder[A, Set](encodeA) {
+      final protected def toIterator(a: Set[A]): Iterator[A] = a.iterator
+    }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeList[A: Encoder]: Encoder[List[A]] = encodeTraversableOnce[A, List]
+  implicit final def encodeList[A](implicit encodeA: Encoder[A]): ArrayEncoder[List[A]] =
+    new IterableArrayEncoder[A, List](encodeA) {
+      final protected def toIterator(a: List[A]): Iterator[A] = a.iterator
+    }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeVector[A: Encoder]: Encoder[Vector[A]] = encodeTraversableOnce[A, Vector]
+  implicit final def encodeVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[Vector[A]] =
+    new IterableArrayEncoder[A, Vector](encodeA) {
+      final protected def toIterator(a: Vector[A]): Iterator[A] = a.iterator
+    }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeNonEmptyList[A](implicit e: Encoder[A]): Encoder[NonEmptyList[A]] =
+  implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyList[A]] =
     new ArrayEncoder[NonEmptyList[A]] {
-      final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(e(_))
+      final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
     }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeNonEmptyVector[A](implicit e: Encoder[A]): Encoder[NonEmptyVector[A]] =
+  implicit final def encodeNonEmptyVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyVector[A]] =
     new ArrayEncoder[NonEmptyVector[A]] {
-      final def encodeArray(a: NonEmptyVector[A]): Vector[Json] = a.toVector.map(e(_))
+      final def encodeArray(a: NonEmptyVector[A]): Vector[Json] = a.toVector.map(encodeA(_))
     }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeOneAnd[A0, C[_]](
-    implicit ea: Encoder[A0],
-    is: IsTraversableOnce[C[A0]] { type A = A0 }
-  ): ArrayEncoder[OneAnd[C, A0]] = new ArrayEncoder[OneAnd[C, A0]] {
-    private[this] val encoder = encodeTraversableOnce[A0, GenSeq]
+  implicit final def encodeOneAnd[A, C[_]](implicit
+    encodeA: Encoder[A],
+    ev: C[A] => Iterable[A]
+  ): ArrayEncoder[OneAnd[C, A]] = new ArrayEncoder[OneAnd[C, A]] {
+    private[this] val encoder: ArrayEncoder[Vector[A]] = encodeVector[A]
 
-    final def encodeArray(a: OneAnd[C, A0]): Vector[Json] = encoder.encodeArray(
-      a.head +: is.conversion(a.tail).toVector
+    final def encodeArray(a: OneAnd[C, A]): Vector[Json] = encoder.encodeArray(a.head +: ev(a.tail).toVector)
+  }
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeMap[K, V](implicit
+    encodeK: KeyEncoder[K],
+    encodeV: Encoder[V]
+  ): ObjectEncoder[ImmutableMap[K, V]] = new ObjectEncoder[ImmutableMap[K, V]] {
+    final def encodeObject(a: ImmutableMap[K, V]): JsonObject = JsonObject.fromMap(
+      a.map {
+        case (k, v) => (encodeK(k), encodeV(v))
+      }
     )
   }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeMapLike[M[K, +V] <: Map[K, V], K, V](implicit
-    ek: KeyEncoder[K],
-    ev: Encoder[V]
-  ): ObjectEncoder[M[K, V]] = new ObjectEncoder[M[K, V]] {
-    final def encodeObject(a: M[K, V]): JsonObject = JsonObject.fromMap(
-      a.map {
-        case (k, v) => (ek(k), ev(v))
-      }
-    )
+  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+    encodeK: KeyEncoder[K],
+    encodeV: Encoder[V],
+    ev: M[K, V] => Iterable[(K, V)]
+  ): ObjectEncoder[M[K, V]] = new IterableObjectEncoder[K, V, M](encodeK, encodeV) {
+    final protected def toIterator(a: M[K, V]): Iterator[(K, V)] = ev(a).iterator
   }
 
   /**
@@ -338,26 +358,50 @@ object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncode
   final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
     override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
   }
+
+  private[this] abstract class IterableObjectEncoder[K, V, M[_, _]](
+    encodeK: KeyEncoder[K],
+    encodeV: Encoder[V]
+  ) extends ObjectEncoder[M[K, V]] {
+    protected def toIterator(a: M[K, V]): Iterator[(K, V)]
+
+    final def encodeObject(a: M[K, V]): JsonObject = {
+      val builder = ImmutableMap.newBuilder[String, Json]
+      val iterator = toIterator(a)
+
+      while (iterator.hasNext) {
+        val next = iterator.next()
+        builder += ((encodeK(next._1), encodeV(next._2)))
+      }
+
+      JsonObject.fromMap(builder.result())
+    }
+  }
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
   /**
    * @group Encoding
    */
-  implicit final def encodeTraversableOnce[A0, C[_]](implicit
-    e: Encoder[A0],
-    is: IsTraversableOnce[C[A0]] { type A = A0 }
-  ): ArrayEncoder[C[A0]] = new ArrayEncoder[C[A0]] {
-    final def encodeArray(a: C[A0]): Vector[Json] = {
-      val items = Vector.newBuilder[Json]
+  implicit final def encodeIterable[A, C[_]](implicit
+    encodeA: Encoder[A],
+    ev: C[A] => Iterable[A]
+  ): ArrayEncoder[C[A]] = new IterableArrayEncoder[A, C](encodeA) {
+    final protected def toIterator(a: C[A]): Iterator[A] = ev(a).iterator
+  }
 
-      val it = is.conversion(a).toIterator
+  protected[this] abstract class IterableArrayEncoder[A, C[_]](encodeA: Encoder[A]) extends ArrayEncoder[C[A]] {
+    protected def toIterator(a: C[A]): Iterator[A]
 
-      while (it.hasNext) {
-        items += e(it.next())
+    final def encodeArray(a: C[A]): Vector[Json] = {
+      val builder = Vector.newBuilder[Json]
+      val iterator = toIterator(a)
+
+      while (iterator.hasNext) {
+        builder += encodeA(iterator.next())
       }
 
-      items.result()
+      builder.result()
     }
   }
 }

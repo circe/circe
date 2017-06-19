@@ -3,6 +3,7 @@ package io.circe.testing
 import cats.data.ValidatedNel
 import cats.laws.discipline.arbitrary._
 import io.circe._
+import io.circe.export.Exported
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.JsonNumberString
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
@@ -113,5 +114,9 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
       AccumulatingDecoder.instance(c => f(c.value))
     )
+  )
+
+  implicit def arbitraryExported[A: Arbitrary]: Arbitrary[Exported[A]] = Arbitrary(
+    arbitrary[A].map(Exported.apply)
   )
 }

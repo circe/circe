@@ -2,6 +2,7 @@ package io.circe
 
 import cats.laws.SerializableLaws
 import cats.laws.discipline.SerializableTests
+import io.circe.export.Exported
 import io.circe.tests.CirceSuite
 
 class SerializableSuite extends CirceSuite {
@@ -11,6 +12,10 @@ class SerializableSuite extends CirceSuite {
 
   "HCursor" should "be serializable" in forAll { (j: Json) =>
     SerializableLaws.serializable(j.hcursor); ()
+  }
+
+  "Exported" should "be serializable" in forAll { (value: String) =>
+    SerializableLaws.serializable(Exported(value)); ()
   }
 
   checkLaws("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))

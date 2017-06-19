@@ -47,6 +47,23 @@ trait CodecTests[A] extends Laws {
     "decoder serializability" -> SerializableLaws.serializable(laws.decode),
     "encoder serializability" -> SerializableLaws.serializable(laws.encode)
   )
+
+  def unserializableCodec(implicit
+    arbitraryA: Arbitrary[A],
+    shrinkA: Shrink[A],
+    eqA: Eq[A],
+    arbitraryJson: Arbitrary[Json],
+    shrinkJson: Shrink[Json]
+  ): RuleSet = new DefaultRuleSet(
+    name = "codec",
+    parent = None,
+    "roundTrip" -> Prop.forAll { (a: A) =>
+      laws.codecRoundTrip(a)
+    },
+    "consistency with accumulating" -> Prop.forAll { (json: Json) =>
+      laws.codecAccumulatingConsistency(json)
+    }
+  )
 }
 
 object CodecTests {
