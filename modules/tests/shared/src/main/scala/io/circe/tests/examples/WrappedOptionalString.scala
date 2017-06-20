@@ -34,7 +34,7 @@ object WrappedOptionalField {
     Decoder.forProduct1("f")(WrappedOptionalField.apply)
 
   implicit val encodeWrappedOptionalField: Encoder[WrappedOptionalField] =
-    Encoder.forProduct1("f")(_.f)
+    Encoder.forProduct1("f")(e => Option(e.f))
 
   implicit val eqWrappedOptionalField: Eq[WrappedOptionalField] =
     Eq.fromUniversalEquals

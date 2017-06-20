@@ -18,18 +18,14 @@ class AccumulatingDecoderSpec extends CirceSuite {
 
   private object BadSample {
     implicit val decodeBadSample: Decoder[BadSample] = Decoder.forProduct3("a", "b", "c")(BadSample.apply)
-    implicit val encodeBadSample: Encoder[BadSample] = Encoder.forProduct3("a", "b", "c") {
-      case BadSample(a, b, c) => (a, b, c)
-    }
+    implicit val encodeBadSample: Encoder[BadSample] = Encoder.forProduct3("a", "b", "c")(BadSample.unapply)
   }
 
   private case class Sample(a: String, b: String, c: String)
 
   private object Sample {
     implicit val decodeSample: Decoder[Sample] = Decoder.forProduct3("a", "b", "c")(Sample.apply)
-    implicit val encodeSample: Encoder[Sample] = Encoder.forProduct3("a", "b", "c") {
-      case Sample(a, b, c) => (a, b, c)
-    }
+    implicit val encodeSample: Encoder[Sample] = Encoder.forProduct3("a", "b", "c")(Sample.unapply)
   }
 
   "accumulating" should "return as many errors as invalid elements in a list" in {
