@@ -255,9 +255,9 @@ object Boilerplate {
 
       val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
-      val kvs = if (arity == 1) s"members.map(m => (name${ synTypes.head }, encode${ synTypes.head }(m)))" else {
+      val kvs = if (arity == 1) s"(name${ synTypes.head }, encode${ synTypes.head }(members))" else {
         synTypes.zipWithIndex.map {
-          case (tpe, i) => s"members.map(m => (name$tpe, encode$tpe(m._${ i + 1 })))"
+          case (tpe, i) => s"(name$tpe, encode$tpe(members._${ i + 1 }))"
         }.mkString(", ")
       }
       val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
@@ -269,13 +269,13 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[${`A..N`}, Source]($memberNames)(f: Source => Option[$outputType])(implicit
+        -  final def forProduct$arity[${`A..N`}, Source]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
         -  ): ObjectEncoder[Source] =
         -    new ObjectEncoder[Source] {
         -      final def encodeObject(a: Source): JsonObject = {
         -        val members = f(a)
-        -        JsonObject.fromIterable(Vector($kvs).flatten)
+        -        JsonObject.fromIterable(Vector($kvs))
         -      }
         -    }
         |}
@@ -313,7 +313,7 @@ object Boilerplate {
         -      for { $memberArbitraryItems } yield Cc$arity($memberVariableNames)
         -    )
         -    implicit val encodeCc$arity: Encoder[Cc$arity] =
-        -      Encoder.forProduct$arity($memberNames)(Cc$arity.unapply)
+        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
         -  }

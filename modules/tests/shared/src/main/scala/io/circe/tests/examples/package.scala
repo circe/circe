@@ -82,7 +82,9 @@ package examples {
     )
 
     val decodeBar: Decoder[Bar] = Decoder.forProduct2("i", "s")(Bar.apply)
-    val encodeBar: Encoder[Bar] = Encoder.forProduct2("i", "s")(Bar.unapply)
+    val encodeBar: Encoder[Bar] = Encoder.forProduct2("i", "s") {
+      case Bar(i, s) => (i, s)
+    }
   }
 
   object Baz {
@@ -107,7 +109,9 @@ package examples {
     )
 
     val decodeBam: Decoder[Bam] = Decoder.forProduct2("w", "d")(Bam.apply)(Wub.decodeWub, implicitly)
-    val encodeBam: Encoder[Bam] = Encoder.forProduct2[Wub, Double, Bam]("w", "d")(Bam.unapply)(Wub.encodeWub, implicitly)
+    val encodeBam: Encoder[Bam] = Encoder.forProduct2[Wub, Double, Bam]("w", "d") {
+      case Bam(w, d) => (w, d)
+    }(Wub.encodeWub, implicitly)
   }
 
   object Foo {

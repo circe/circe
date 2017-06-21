@@ -10,7 +10,9 @@ case class Example(name: String)
 
 object Example {
   implicit val decodeExample: Decoder[Example] = Decoder.forProduct1("name")(Example.apply)
-  implicit val encodeExample: Encoder[Example] = Encoder.forProduct1("name")(Example.unapply)
+  implicit val encodeExample: Encoder[Example] = Encoder.forProduct1("name") {
+    case Example(name) => Tuple1(name)
+  }
 }
 
 case class UndefOrExample(name: js.UndefOr[String])
