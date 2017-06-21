@@ -1,6 +1,5 @@
 package io.circe
 
-import io.circe.Json._
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
 import scala.util.control.NonFatal
@@ -39,17 +38,21 @@ package object scalajs {
       case l @ Left(_) => l.asInstanceOf[Either[Throwable, A]]
     }
 
-  /**
-   * Convert [[Json]] to [[scala.scalajs.js.Any]].
-   */
-  final def convertJsonToJs(input: Json): js.Any = input match {
-    case JString(s) => s
-    case JNumber(n) => n.toDouble
-    case JBoolean(b) => b
-    case JArray(arr) => arr.map(convertJsonToJs).toJSArray
-    case JNull => null
-    case JObject(obj) => obj.toMap.mapValues(convertJsonToJs).toJSDictionary
+  private[this] val toJsAnyFolder: Json.Folder[js.Any] = new Json.Folder[js.Any] with Function1[Json, js.Any] {
+    def apply(value: Json): js.Any = value.foldWith(this)
+
+    def onNull: js.Any = null
+    def onBoolean(value: Boolean): js.Any = value
+    def onNumber(value: JsonNumber): js.Any = value.toDouble
+    def onString(value: String): js.Any = value
+    def onArray(value: Vector[Json]): js.Any = value.map(this).toJSArray
+    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toJSDictionary
   }
+
+   /**
+    * Convert [[Json]] to [[scala.scalajs.js.Any]].
+    */
+  final def convertJsonToJs(input: Json): js.Any = input.foldWith(toJsAnyFolder)
 
   implicit final class EncoderJsOps[A](val wrappedEncodeable: A) extends AnyVal {
     def asJsAny(implicit encoder: Encoder[A]): js.Any = convertJsonToJs(encoder(wrappedEncodeable))

@@ -8,8 +8,8 @@ final object CirceSupportParser extends SupportParser[Json] {
     final def jnull(): Json = Json.Null
     final def jfalse(): Json = Json.False
     final def jtrue(): Json = Json.True
-    final def jnum(s: String): Json = Json.JNumber(JsonNumber.fromDecimalStringUnsafe(s))
-    final def jint(s: String): Json = Json.JNumber(JsonNumber.fromIntegralStringUnsafe(s))
+    final def jnum(s: String): Json = Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe(s))
+    final def jint(s: String): Json = Json.fromJsonNumber(JsonNumber.fromIntegralStringUnsafe(s))
     final def jstring(s: String): Json = Json.fromString(s)
 
     final def singleContext(): FContext[Json] = new FContext[Json] {
