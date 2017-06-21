@@ -83,6 +83,14 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     arbitrary[String].map(DecodingFailure(_, Nil))
   )
 
+  implicit def arbitraryKeyEncoder[A: Cogen]: Arbitrary[KeyEncoder[A]] = Arbitrary(
+    arbitrary[A => String].map(KeyEncoder.instance)
+  )
+
+  implicit def arbitraryKeyDecoder[A: Arbitrary]: Arbitrary[KeyDecoder[A]] = Arbitrary(
+    arbitrary[String => Option[A]].map(KeyDecoder.instance)
+  )
+
   implicit def arbitraryEncoder[A: Cogen]: Arbitrary[Encoder[A]] = Arbitrary(
     arbitrary[A => Json].map(Encoder.instance)
   )

@@ -78,7 +78,7 @@ final object KeyDecoder {
     }
 
     final def handleErrorWith[A](fa: KeyDecoder[A])(f: Unit => KeyDecoder[A]): KeyDecoder[A] = new KeyDecoder[A] {
-      final def apply(key: String): Option[A] = f(())(key)
+      final def apply(key: String): Option[A] = fa(key).orElse(f(())(key))
     }
 
     final def tailRecM[A, B](a: A)(f: A => KeyDecoder[Either[A, B]]): KeyDecoder[B] = new KeyDecoder[B] {

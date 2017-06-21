@@ -2,8 +2,9 @@ package io.circe.testing
 
 import cats.Eq
 import cats.instances.either._
+import cats.instances.option._
 import cats.syntax.eq._
-import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, KeyDecoder, KeyEncoder, ObjectEncoder }
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
@@ -16,6 +17,14 @@ trait EqInstances { this: ArbitraryInstances =>
   private[this] def arbitraryValues[A](implicit A: Arbitrary[A]): Stream[A] = Stream.continually(
     A.arbitrary.sample
   ).flatten
+
+  implicit def eqKeyEncoder[A: Arbitrary]: Eq[KeyEncoder[A]] = Eq.instance { (e1, e2) =>
+    arbitraryValues[A].take(codecEqualityCheckCount).forall(a => e1(a) == e2(a))
+  }
+
+  implicit def eqKeyDecoder[A: Eq]: Eq[KeyDecoder[A]] = Eq.instance { (d1, d2) =>
+    arbitraryValues[String].take(codecEqualityCheckCount).forall(s => d1(s) === d2(s))
+  }
 
   implicit def eqEncoder[A: Arbitrary]: Eq[Encoder[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => e1(a) === e2(a))
