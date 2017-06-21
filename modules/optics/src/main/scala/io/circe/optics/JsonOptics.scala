@@ -29,17 +29,24 @@ trait JsonOptics extends CatsConversions {
   final lazy val jsonNumber: Prism[Json, JsonNumber] = Prism[Json, JsonNumber](_.asNumber)(Json.fromJsonNumber)
   final lazy val jsonObject: Prism[Json, JsonObject] = Prism[Json, JsonObject](_.asObject)(Json.fromJsonObject)
   final lazy val jsonArray: Prism[Json, Vector[Json]] = Prism[Json, Vector[Json]](_.asArray)(Json.fromValues)
-  final lazy val jsonDouble: Prism[Json, Double] =
-    Prism[Json, Double] {
-      case Json.JNull => Some(Double.NaN)
-      case Json.JNumber(number) =>
-        val d = number.toDouble
+  final lazy val jsonDouble: Prism[Json, Double] = Prism[Json, Double](
+    _.foldWith(
+      new Json.Folder[Option[Double]] {
+        def onNull: Option[Double] = Some(Double.NaN)
+        def onBoolean(value: Boolean): Option[Double] = None
+        def onNumber(value: JsonNumber): Option[Double] = {
+          val d = value.toDouble
 
-        if (java.lang.Double.isInfinite(d)) None else {
-          if (Json.fromDouble(d).flatMap(_.asNumber).exists(JsonNumber.eqJsonNumber.eqv(number, _))) Some(d) else None
+          if (java.lang.Double.isInfinite(d)) None else {
+            if (Json.fromDouble(d).flatMap(_.asNumber).exists(JsonNumber.eqJsonNumber.eqv(value, _))) Some(d) else None
+          }
         }
-      case _ => None
-    }(Json.fromDoubleOrNull)
+        def onString(value: String): Option[Double] = None
+        def onArray(value: Vector[Json]): Option[Double] = None
+        def onObject(value: JsonObject): Option[Double] = None
+      }
+    )
+  )(Json.fromDoubleOrNull)
 
   /** points to all values of a JsonObject or JsonList */
   final lazy val jsonDescendants: Traversal[Json, Json] = new Traversal[Json, Json]{

@@ -1,6 +1,5 @@
 package io.circe
 
-import io.circe.Json.{JString, JArray, JNumber, JBoolean, JObject, JNull}
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
@@ -91,10 +90,10 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   val value2 = "foobar"
 
   """findAllByKey and its alias, \\"""  should "return all values matching the given key with key-value pairs at heights 0 and 1." in {
-    val expected = List(JString(value1), JString(value2), JNull)
-    val at0         = (key, JString(value1))
-    val at1         = (key, JString(value2))
-    val at1_2       = (key, JNull)
+    val expected = List(Json.fromString(value1), Json.fromString(value2), Json.Null)
+    val at0         = (key, Json.fromString(value1))
+    val at1         = (key, Json.fromString(value2))
+    val at1_2       = (key, Json.Null)
     val json        = Json.obj(at0, "y" -> Json.obj(at1), "z" -> Json.obj(at1_2))
     val result      = json.findAllByKey(key)
     val resultAlias = json \\ key
@@ -102,9 +101,9 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
-  """findAllByKey and its alias, \\"""  should "return a List of a single, empty `JObject` for a `Json` with only that (key, value) matching." in {
-    val expected    = List(JObject(JsonObject.empty))
-    val emptyJson   = (key, JObject(JsonObject.empty))
+  """findAllByKey and its alias, \\"""  should "return a List of a single, empty object for a Json value with only that (key, value) matching." in {
+    val expected    = List(Json.fromJsonObject(JsonObject.empty))
+    val emptyJson   = (key, Json.fromJsonObject(JsonObject.empty))
     val json        = Json.obj(emptyJson)
     val result      = json.findAllByKey(key)
     val resultAlias = json \\ key
@@ -112,11 +111,11 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
-  """findAllByKey and its alias, \\"""  should "return an empty List when used on a `Json` that's not a `JArray` or `JObject`" in {
-    val number  = JNumber(JsonLong(42L))
-    val string  = JString("foobar")
-    val boolean = JBoolean(true)
-    val `null`  = JNull
+  """findAllByKey and its alias, \\"""  should "return an empty List when used on a Json that's not an array or object" in {
+    val number  = Json.fromLong(42L)
+    val string  = Json.fromString("foobar")
+    val boolean = Json.fromBoolean(true)
+    val `null`  = Json.Null
 
     val results      = List(number, string, boolean, `null`).map(json => json.findAllByKey("meaninglesskey"))
     val resultsAlias = List(number, string, boolean, `null`).map(json => json.\\("meaninglesskey"))
@@ -127,10 +126,10 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   val value3 = 42L
 
   """findAllByKey and its alias, \\"""  should "return all values matching the given key with key-value pairs at heights  0, 1, and 2." in {
-    val expected    = List(JArray(Vector(JString(value1))), JString(value2), JNumber(JsonLong(value3)))
-    val `0`         = (key, JArray(Vector(JString(value1))))
-    val `1`         = (key, JString(value2))
-    val `2`         = (key, JNumber(JsonLong(value3)))
+    val expected    = List(Json.arr(Json.fromString(value1)), Json.fromString(value2), Json.fromLong(value3))
+    val `0`         = (key, Json.arr(Json.fromString(value1)))
+    val `1`         = (key, Json.fromString(value2))
+    val `2`         = (key, Json.fromLong(value3))
     val json        = Json.obj(`0`, "y" -> Json.obj(`1`), "z" -> Json.obj(`2`))
     val result      = json.findAllByKey(key)
     val resultAlias = json \\ key
@@ -163,20 +162,20 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   }
 
   "fromDoubleOrString" should "return String on Double.NaN" in {
-    assert(Json.fromDoubleOrString(Double.NaN) === Json.JString("NaN"))
+    assert(Json.fromDoubleOrString(Double.NaN) === Json.fromString("NaN"))
   }
 
   it should "return String on Double.PositiveInfinity" in {
-    assert(Json.fromDoubleOrString(Double.PositiveInfinity) === Json.JString("Infinity"))
+    assert(Json.fromDoubleOrString(Double.PositiveInfinity) === Json.fromString("Infinity"))
   }
 
   it should "return String on Double.NegativeInfinity" in {
-    assert(Json.fromDoubleOrString(Double.NegativeInfinity) === Json.JString("-Infinity"))
+    assert(Json.fromDoubleOrString(Double.NegativeInfinity) === Json.fromString("-Infinity"))
   }
 
-  it should "return JNumber for valid Doubles" in {
-    assert(Json.fromDoubleOrString(1.1) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
-    assert(Json.fromDoubleOrString(-1.2) === Json.JNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
+  it should "return JsonNumber Json values for valid Doubles" in {
+    assert(Json.fromDoubleOrString(1.1) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
+    assert(Json.fromDoubleOrString(-1.2) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
   }
 
   "fromFloat" should "fail on Float.NaN" in {
@@ -204,28 +203,30 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   }
 
   "fromFloatOrString" should "return String on Float.NaN" in {
-    assert(Json.fromFloatOrString(Float.NaN) === Json.JString("NaN"))
+    assert(Json.fromFloatOrString(Float.NaN) === Json.fromString("NaN"))
   }
 
   it should "return String on Float.PositiveInfinity" in {
-    assert(Json.fromFloatOrString(Float.PositiveInfinity) === Json.JString("Infinity"))
+    assert(Json.fromFloatOrString(Float.PositiveInfinity) === Json.fromString("Infinity"))
   }
 
   it should "return String on Float.NegativeInfinity" in {
-    assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.JString("-Infinity"))
+    assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.fromString("-Infinity"))
   }
 
   "obj" should "create object fluently" in {
     val actual = Json.obj(
-      "a" := 1,
+      "a" := 1L,
       "b" := "asdf",
-      "c" := Seq(1, 2, 3)
+      "c" := Seq(1L, 2L, 3L)
     )
-    val expected = JObject(JsonObject(
-      ("a", JNumber(JsonLong(1))),
-      ("b", JString("asdf")),
-      ("c", JArray(Vector(JNumber(JsonLong(1)), JNumber(JsonLong(2)), JNumber(JsonLong(3)))))
-    ))
+    val expected = Json.fromJsonObject(
+      JsonObject(
+        ("a", Json.fromLong(1)),
+        ("b", Json.fromString("asdf")),
+        ("c", Json.arr(Json.fromLong(1L), Json.fromLong(2L), Json.fromLong(3L)))
+      )
+    )
     assert(actual === expected)
   }
 }

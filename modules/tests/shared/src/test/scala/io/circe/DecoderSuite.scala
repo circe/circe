@@ -60,7 +60,6 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       }
 
       case class Test(a: Option[String])
-
       assert(Decoder[Test].decodeJson(Json.obj()) === Right(Test(None)))
       assert(Decoder[Test].accumulating(Json.obj().hcursor) === Validated.valid(Test(None)))
     }

@@ -9,7 +9,7 @@ import cats.functor.Contravariant
  * @author Travis Brown
  */
 trait ArrayEncoder[A] extends RootEncoder[A] { self =>
-  final def apply(a: A): Json = Json.JArray(encodeArray(a))
+  final def apply(a: A): Json = Json.fromValues(encodeArray(a))
 
   /**
    * Convert a value to a JSON array.

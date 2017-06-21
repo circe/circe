@@ -10,7 +10,7 @@ import io.circe.export.Exported
  * @author Travis Brown
  */
 trait ObjectEncoder[A] extends RootEncoder[A] { self =>
-  final def apply(a: A): Json = Json.JObject(encodeObject(a))
+  final def apply(a: A): Json = Json.fromJsonObject(encodeObject(a))
 
   /**
    * Convert a value to a JSON object.
