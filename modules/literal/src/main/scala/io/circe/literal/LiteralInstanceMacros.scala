@@ -25,24 +25,6 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
         """
     }
 
-  final def decodeLiteralBoolean[S <: Boolean: c.WeakTypeTag]: Tree =
-    weakTypeOf[S].dealias match {
-      case sType @ ConstantType(Constant(lit: Boolean)) =>
-        val name = s"""Boolean($lit)"""
-
-        q"""
-          _root_.io.circe.Decoder.instance[$sType] { c =>
-            if (c.value.asBoolean.exists(_ == $lit)) {
-              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
-            } else {
-              _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
-              )
-            }
-          }
-        """
-    }
-
   final def decodeLiteralDouble[S <: Double: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Double)) =>
@@ -133,16 +115,28 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
         """
     }
 
+  final def decodeLiteralBoolean[S <: Boolean: c.WeakTypeTag]: Tree =
+    weakTypeOf[S].dealias match {
+      case sType @ ConstantType(Constant(lit: Boolean)) =>
+        val name = s"""Boolean($lit)"""
+
+        q"""
+          _root_.io.circe.Decoder.instance[$sType] { c =>
+            if (c.value.asBoolean.exists(_ == $lit)) {
+              _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
+            } else {
+              _root_.scala.util.Left(
+                _root_.io.circe.DecodingFailure($name, c.history)
+              )
+            }
+          }
+        """
+    }
+
   final def encodeLiteralString[S <: String: c.WeakTypeTag]: Tree =
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: String)) =>
         q"_root_.io.circe.Encoder.apply[_root_.java.lang.String].contramap[$sType](_root_.scala.Predef.identity)"
-    }
-
-  final def encodeLiteralBoolean[S <: Boolean: c.WeakTypeTag]: Tree =
-    weakTypeOf[S].dealias match {
-      case sType @ ConstantType(Constant(lit: Boolean)) =>
-        q"_root_.io.circe.Encoder.apply[_root_.scala.Boolean].contramap[$sType](_root_.scala.Predef.identity)"
     }
 
   final def encodeLiteralDouble[S <: Double: c.WeakTypeTag]: Tree =
@@ -173,5 +167,11 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
     weakTypeOf[S].dealias match {
       case sType @ ConstantType(Constant(lit: Char)) =>
         q"_root_.io.circe.Encoder.apply[_root_.scala.Char].contramap[$sType](_root_.scala.Predef.identity)"
+    }
+
+  final def encodeLiteralBoolean[S <: Boolean: c.WeakTypeTag]: Tree =
+    weakTypeOf[S].dealias match {
+      case sType @ ConstantType(Constant(lit: Boolean)) =>
+        q"_root_.io.circe.Encoder.apply[_root_.scala.Boolean].contramap[$sType](_root_.scala.Predef.identity)"
     }
 }
