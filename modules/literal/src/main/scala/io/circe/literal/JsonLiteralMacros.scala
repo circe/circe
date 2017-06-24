@@ -15,7 +15,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   /**
    * Represents an interpolated expression that we've replaced with a unique string during parsing.
    */
-  private[this] class Replacement(val placeHolder: String, argument: Tree) {
+  private[this] class Replacement(val placeholder: String, argument: Tree) {
     private[this] val argumentType = c.typecheck(argument).tpe
 
     def asJson: Tree = q"_root_.io.circe.Encoder[${ argumentType.widen }].apply($argument)"
@@ -23,17 +23,17 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   }
 
   private[this] object Replacement {
-    private[this] final def generatePlaceHolder(): String = UUID.randomUUID().toString
+    private[this] final def generatePlaceholder(): String = UUID.randomUUID().toString
 
     def apply(stringParts: Seq[String], argument: Tree): Replacement = {
       /**
        * Generate a unique string that doesn't appear in the JSON literal.
        */
-      val placeHolder = Stream.continually(generatePlaceHolder()).distinct.dropWhile(s =>
+      val placeholder = Stream.continually(generatePlaceholder()).distinct.dropWhile(s =>
         stringParts.exists(_.contains(s))
       ).head
 
-      new Replacement(placeHolder, argument)
+      new Replacement(placeholder, argument)
     }
   }
 
@@ -48,10 +48,10 @@ class JsonLiteralMacros(val c: blackbox.Context) {
       }
 
     final def toJsonKey(s: String): Tree =
-      replacements.find(_.placeHolder == s).fold(q"$s")(_.asKey)
+      replacements.find(_.placeholder == s).fold(q"$s")(_.asKey)
 
     final def toJsonString(s: String): Tree =
-      replacements.find(_.placeHolder == s).fold(q"_root_.io.circe.Json.fromString($s)")(_.asJson)
+      replacements.find(_.placeholder == s).fold(q"_root_.io.circe.Json.fromString($s)")(_.asJson)
 
     final def asProxy(cls: Class[_]): Object = Proxy.newProxyInstance(getClass.getClassLoader, Array(cls), this)
   }
@@ -178,11 +178,11 @@ class JsonLiteralMacros(val c: blackbox.Context) {
         c.enclosingPosition,
         "Invalid arguments for the json interpolator"
       ) else {
-        val jsonString = stringParts.zip(replacements.map(_.placeHolder)).foldLeft("") {
-          case (acc, (part, placeHolder)) =>
+        val jsonString = stringParts.zip(replacements.map(_.placeholder)).foldLeft("") {
+          case (acc, (part, placeholder)) =>
             val qm = "\""
 
-            s"$acc$part$qm$placeHolder$qm"
+            s"$acc$part$qm$placeholder$qm"
         } + stringParts.last
 
         c.Expr[Json](
