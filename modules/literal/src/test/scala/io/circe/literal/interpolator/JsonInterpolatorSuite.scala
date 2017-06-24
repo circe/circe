@@ -1,6 +1,6 @@
 package io.circe.literal.interpolator
 
-import io.circe.Json
+import io.circe.{ Encoder, Json }
 import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
@@ -79,8 +79,8 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
       it("should work with interpolated string variables") {
         forAll { (key: String, value: Json) =>
           val interpolated = json"{ $key: $value }"
-          val escapedKey = key.replaceAll("\"", "\\\"")
-          val parsed = parse(s"""{ "$escapedKey": ${ value.noSpaces } }""")
+          val escapedKey = Encoder[String].apply(key).noSpaces
+          val parsed = parse(s"{ $escapedKey: ${ value.noSpaces } }")
 
           parsed shouldBe Right(interpolated)
         }
