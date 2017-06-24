@@ -179,14 +179,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 )
 
 lazy val circeJsModules = Seq[Project](scalajs)
-
-lazy val circeJvmModules = Seq[Project](
-  jawn,
-  streaming
-)
-
+lazy val circeJvmModules = Seq[Project](jawn, streaming)
 lazy val circeDocsModules = Seq[Project](docs)
-
 lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
@@ -315,8 +309,9 @@ lazy val shapesJS = shapesBase.js
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings(scaladocFor210 = false))
+  .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
-  .dependsOn(coreBase, testsBase % Test)
+  .dependsOn(coreBase, parserBase % Test, testingBase % Test)
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js

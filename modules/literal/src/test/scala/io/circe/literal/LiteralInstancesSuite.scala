@@ -1,60 +1,63 @@
 package io.circe.literal
 
-import cats.Eq
 import io.circe.{ Decoder, Encoder }
-import io.circe.tests.CirceSuite
+import org.scalatest.{ FunSpec, Matchers }
 import shapeless.Witness
 
-class LiteralInstancesSuite extends CirceSuite {
-  def eqSingleton[S <: V with Singleton, V: Eq]: Eq[S] = Eq.by[S, V](identity)
+class LiteralInstancesSuite extends FunSpec with Matchers {
+  describe("A literal String codec") {
+    it("should round-trip values") {
+      val w = Witness("foo")
 
-  implicit def eqSingletonString[S <: String with Singleton]: Eq[S] = eqSingleton[S, String]
-  implicit def eqSingletonBoolean[S <: Boolean with Singleton]: Eq[S] = eqSingleton[S, Boolean]
-  implicit def eqSingletonDouble[S <: Double with Singleton]: Eq[S] = eqSingleton[S, Double]
-  implicit def eqSingletonFloat[S <: Float with Singleton]: Eq[S] = eqSingleton[S, Float]
-  implicit def eqSingletonLong[S <: Long with Singleton]: Eq[S] = eqSingleton[S, Long]
-  implicit def eqSingletonInt[S <: Int with Singleton]: Eq[S] = eqSingleton[S, Int]
-  implicit def eqSingletonChar[S <: Char with Singleton]: Eq[S] = eqSingleton[S, Char]
-
-  "A literal String codec" should "round-trip values" in {
-    val w = Witness("foo")
-
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Boolean codec" should "round-trip values" in {
-    val w = Witness(true)
+  describe("A literal Double codec") {
+    it("should round-trip values") {
+      val w = Witness(0.0)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Float codec" should "round-trip values" in {
-    val w = Witness(0.0F)
+  describe("A literal Float codec") {
+    it("should round-trip values") {
+      val w = Witness(0.0F)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Double codec" should "round-trip values" in {
-    val w = Witness(0.0)
+  describe("A literal Long codec") {
+    it("should round-trip values") {
+      val w = Witness(0L)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Char codec" should "round-trip values" in {
-    val w = Witness('a')
+  describe("A literal Int codec") {
+    it("should round-trip values") {
+      val w = Witness(0)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Int codec" should "round-trip values" in {
-    val w = Witness(0)
+  describe("A literal Char codec") {
+    it("should round-trip values") {
+      val w = Witness('a')
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 
-  "A literal Long codec" should "round-trip values" in {
-    val w = Witness(0L)
+  describe("A literal Boolean codec") {
+    it("should round-trip values") {
+      val w = Witness(true)
 
-    assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
+      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+    }
   }
 }
