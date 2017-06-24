@@ -1,6 +1,7 @@
-package io.circe.literal
+package io.circe.literal.interpolator
 
 import io.circe.Json
+import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 import shapeless.test.illTyped
@@ -53,12 +54,17 @@ class JsonInterpolatorSuite extends CirceSuite {
     assert(parsed === Right(interpolated))
   }
 
-  it should "work with interpolated strings as keys" in {
-    val key = "foo"
+  it should "work with interpolated literals" in {
+    val interpolated = json"""{ "k": ${ 1 } }"""
+    val parsed = parse(s"""{ "k": 1 }""")
 
-    val interpolated = json"{ $key: 1 }"
+    assert(parsed === Right(interpolated))
+  }
 
-    val parsed = parse("""{ "foo": 1 }""")
+  it should "work with interpolated strings as keys" in forAll { (key: String, value: Json) =>
+    val interpolated = json"{ $key: $value }"
+    val escapedKey = key.replaceAll("\"", "\\\"")
+    val parsed = parse(s"""{ "$escapedKey": ${ value.noSpaces } }""")
 
     assert(parsed === Right(interpolated))
   }
@@ -66,6 +72,13 @@ class JsonInterpolatorSuite extends CirceSuite {
   it should "work with interpolated non-strings as keys" in forAll { (key: Int, value: Json) =>
     val interpolated = json"{ $key: $value }"
     val parsed = parse(s"""{ "${ key.toString }": ${ value.noSpaces } }""")
+
+    assert(parsed === Right(interpolated))
+  }
+
+  it should "work with interpolated literals as keys" in {
+    val interpolated = json"""{ ${ 1 }: "v" }"""
+    val parsed = parse(s"""{ "1": "v" }""")
 
     assert(parsed === Right(interpolated))
   }

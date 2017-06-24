@@ -18,8 +18,8 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   private[this] class Replacement(val placeHolder: String, argument: Tree) {
     private[this] val argumentType = c.typecheck(argument).tpe
 
-    def asJson: Tree = q"_root_.io.circe.Encoder[$argumentType].apply($argument)"
-    def asKey: Tree = q"_root_.io.circe.KeyEncoder[$argumentType].apply($argument)"
+    def asJson: Tree = q"_root_.io.circe.Encoder[${ argumentType.widen }].apply($argument)"
+    def asKey: Tree = q"_root_.io.circe.KeyEncoder[${ argumentType.widen }].apply($argument)"
   }
 
   private[this] object Replacement {
