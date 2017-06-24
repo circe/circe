@@ -1,5 +1,6 @@
 package io.circe.literal
 
+import io.circe.Json
 import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 import shapeless.test.illTyped
@@ -58,6 +59,13 @@ class JsonInterpolatorSuite extends CirceSuite {
     val interpolated = json"{ $key: 1 }"
 
     val parsed = parse("""{ "foo": 1 }""")
+
+    assert(parsed === Right(interpolated))
+  }
+
+  it should "work with interpolated non-strings as keys" in forAll { (key: Int, value: Json) =>
+    val interpolated = json"{ $key: $value }"
+    val parsed = parse(s"""{ "${ key.toString }": ${ value.noSpaces } }""")
 
     assert(parsed === Right(interpolated))
   }
