@@ -13,7 +13,7 @@ import scala.util.control.NonFatal
 class LiteralMacros(val c: whitebox.Context) {
   import c.universe._
 
-  private[this] abstract class HandlerHelpers(placeHolders: Map[String, (Tree, Option[Tree])])
+  private[this] abstract class HandlerHelpers(placeHolders: Map[String, (Tree, Tree)])
     extends InvocationHandler {
     final def invoke(proxy: Object, method: Method, args: Array[Object]): Object =
       (args, method.getParameterTypes) match {
@@ -24,7 +24,7 @@ class LiteralMacros(val c: whitebox.Context) {
     def invokeWithoutArg: String => Object
     def invokeWithArg: (String, Class[_], Object) => Object
 
-    def toJsonKey(s: String): Tree = placeHolders.get(s).flatMap(_._2).getOrElse(q"$s")
+    def toJsonKey(s: String): Tree = placeHolders.get(s).map(_._2).getOrElse(q"$s")
 
     def toJsonString(s: String): Tree =
       placeHolders.get(s).map(_._1).getOrElse(q"_root_.io.circe.Json.fromString($s)")
@@ -33,7 +33,7 @@ class LiteralMacros(val c: whitebox.Context) {
       Proxy.newProxyInstance(getClass.getClassLoader, Array(cls), this)
   }
 
-  private[this] class SingleContextHandler(placeHolders: Map[String, (Tree, Option[Tree])])
+  private[this] class SingleContextHandler(placeHolders: Map[String, (Tree, Tree)])
     extends HandlerHelpers(placeHolders) {
     var value: Tree = null
 
@@ -52,7 +52,7 @@ class LiteralMacros(val c: whitebox.Context) {
     }
   }
 
-  private[this] class ArrayContextHandler(placeHolders: Map[String, (Tree, Option[Tree])])
+  private[this] class ArrayContextHandler(placeHolders: Map[String, (Tree, Tree)])
     extends HandlerHelpers(placeHolders) {
     var values: List[Tree] = Nil
 
@@ -71,7 +71,7 @@ class LiteralMacros(val c: whitebox.Context) {
     }
   }
 
-  private[this] class ObjectContextHandler(placeHolders: Map[String, (Tree, Option[Tree])])
+  private[this] class ObjectContextHandler(placeHolders: Map[String, (Tree, Tree)])
     extends HandlerHelpers(placeHolders) {
     var key: String = null
     var fields: List[Tree] = Nil
@@ -97,7 +97,7 @@ class LiteralMacros(val c: whitebox.Context) {
     }
   }
 
-  private[this] class TreeFacadeHandler(placeHolders: Map[String, (Tree, Option[Tree])])
+  private[this] class TreeFacadeHandler(placeHolders: Map[String, (Tree, Tree)])
     extends HandlerHelpers(placeHolders) {
     val invokeWithoutArg: String => Object = {
       case "jnull" => q"_root_.io.circe.Json.Null"
@@ -128,7 +128,7 @@ class LiteralMacros(val c: whitebox.Context) {
 
   final def parse(
     jsonString: String,
-    placeHolders: Map[String, (Tree, Option[Tree])]
+    placeHolders: Map[String, (Tree, Tree)]
   ): Either[Throwable, Tree] =
     try Right {
       val jawnParserClass = Class.forName("jawn.Parser$")
@@ -160,7 +160,7 @@ class LiteralMacros(val c: whitebox.Context) {
         )
       }
 
-      val encodedArgs: Seq[(String, (Tree, Option[Tree]))] = args.map { arg =>
+      val encodedArgs: Seq[(String, (Tree, Tree))] = args.map { arg =>
         val tpe = c.typecheck(arg.tree).tpe
         val placeHolder = Stream.continually(randomPlaceHolder()).distinct.dropWhile(s =>
           stringParts.exists(_.contains(s))
@@ -170,7 +170,7 @@ class LiteralMacros(val c: whitebox.Context) {
           placeHolder,
           (
             q"_root_.io.circe.Encoder[$tpe].apply($arg)",
-            if (tpe =:= typeOf[String]) Some(q"$arg") else None
+            q"_root_.io.circe.KeyEncoder[$tpe].apply($arg)"
           )
         )
       }
