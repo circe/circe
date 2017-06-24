@@ -76,7 +76,7 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
     }
 
     describe("with interpolation in JSON key positions") {
-      it("should work with interpolated strings") {
+      it("should work with interpolated string variables") {
         forAll { (key: String, value: Json) =>
           val interpolated = json"{ $key: $value }"
           val escapedKey = key.replaceAll("\"", "\\\"")
@@ -86,7 +86,7 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
         }
       }
 
-      it("should work with interpolated non-strings") {
+      it("should work with interpolated non-string variables") {
         forAll { (key: Int, value: Json) =>
           val interpolated = json"{ $key: $value }"
           val parsed = parse(s"""{ "${ key.toString }": ${ value.noSpaces } }""")
@@ -95,7 +95,7 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
         }
       }
 
-      it("should work with interpolated literals as keys") {
+      it("should work with interpolated literals") {
         val interpolated = json"""{ ${ 1 }: "v" }"""
         val parsed = parse(s"""{ "1": "v" }""")
 
