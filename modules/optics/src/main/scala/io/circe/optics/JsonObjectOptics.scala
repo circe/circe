@@ -14,16 +14,16 @@ import scalaz.std.ListInstances
  * @author Travis Brown
  */
 trait JsonObjectOptics extends CatsConversions with ListInstances {
+  final lazy val jsonObjectFields: Fold[JsonObject, (String, Json)] = new Fold[JsonObject, (String, Json)] {
+    def foldMap[M: Monoid](f: ((String, Json)) => M)(obj: JsonObject): M = scalaz.Foldable[List].foldMap(obj.toList)(f)
+  }
+
   implicit final lazy val objectEach: Each[JsonObject, Json] = new Each[JsonObject, Json] {
     final def each: Traversal[JsonObject, Json] = new Traversal[JsonObject, Json] {
       final def modifyF[F[_]](f: Json => F[Json])(from: JsonObject)(implicit
         F: Applicative[F]
       ): F[JsonObject] = from.traverse(f)(csApplicative(F))
     }
-  }
-
-  implicit final lazy val objectFoldKV: Fold[JsonObject, (String, Json)] = new Fold[JsonObject, (String, Json)] {
-    def foldMap[M: Monoid](f: ((String, Json)) => M)(obj: JsonObject): M = scalaz.Foldable[List].foldMap(obj.toList)(f)
   }
 
   implicit final lazy val objectAt: At[JsonObject, String, Option[Json]] =

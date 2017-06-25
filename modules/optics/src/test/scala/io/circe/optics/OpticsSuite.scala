@@ -68,7 +68,7 @@ class OpticsSuite extends CirceSuite {
     assert(jsonDouble.getOrModify(json).fold(identity, jsonDouble.reverseGet) === json)
   }
 
-  "objectFoldKV" should "fold over all fields" in forAll { (obj: JsonObject) =>
-    assert(obj.applyFold(JsonObjectOptics.objectFoldKV).foldMap(List(_)) === obj.toList)
+  "jsonObjectFields" should "fold over all fields" in forAll { (obj: JsonObject) =>
+    assert(obj.applyFold(JsonObjectOptics.jsonObjectFields).foldMap(List(_)) === obj.toList)
   }
 }
