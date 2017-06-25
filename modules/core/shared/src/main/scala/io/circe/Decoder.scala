@@ -5,6 +5,7 @@ import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Valida
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import io.circe.export.Exported
+import java.io.Serializable
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.Map

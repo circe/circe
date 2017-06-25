@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.functor.Contravariant
+import java.io.Serializable
 import java.util.UUID
 
 /**

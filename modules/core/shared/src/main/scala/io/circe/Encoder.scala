@@ -4,6 +4,7 @@ import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
 import cats.functor.Contravariant
 import cats.Foldable
 import io.circe.export.Exported
+import java.io.Serializable
 import java.util.UUID
 import scala.collection.Map
 import scala.collection.immutable.{ Map => ImmutableMap, Set }

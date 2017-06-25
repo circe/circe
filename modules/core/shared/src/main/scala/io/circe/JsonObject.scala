@@ -3,6 +3,7 @@ package io.circe
 import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
 import cats.instances.map._
+import java.io.Serializable
 import scala.collection.breakOut
 import scala.collection.immutable.{ Map, Set }
 

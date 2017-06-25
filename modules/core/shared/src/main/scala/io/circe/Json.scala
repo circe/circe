@@ -2,6 +2,7 @@ package io.circe
 
 import cats.{ Eq, Show }
 import io.circe.numbers.BiggerDecimal
+import java.io.Serializable
 
 /**
  * A data type representing possible JSON values.

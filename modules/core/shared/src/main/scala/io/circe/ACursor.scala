@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Applicative
 import cats.kernel.Eq
+import java.io.Serializable
 import scala.collection.immutable.Set
 
 /**

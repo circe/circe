@@ -1,5 +1,6 @@
 package io.circe
 
+import java.io.Serializable
 import java.lang.StringBuilder
 import java.nio.{ ByteBuffer, CharBuffer }
 import java.nio.charset.{ Charset, StandardCharsets }
