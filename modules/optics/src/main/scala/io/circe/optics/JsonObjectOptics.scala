@@ -2,9 +2,9 @@ package io.circe.optics
 
 import cats.instances.list.catsStdInstancesForList
 import io.circe.{ Json, JsonObject }
-import monocle.{ Lens, Traversal }
+import monocle.{ Fold, Lens, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
-import scalaz.{ Applicative, Traverse }
+import scalaz.{ Applicative, Monoid, Traverse }
 import scalaz.std.ListInstances
 
 /**
@@ -20,6 +20,10 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
         F: Applicative[F]
       ): F[JsonObject] = from.traverse(f)(csApplicative(F))
     }
+  }
+
+  implicit final lazy val objectFoldKV: Fold[JsonObject, (String, Json)] = new Fold[JsonObject, (String, Json)] {
+    def foldMap[M: Monoid](f: ((String, Json)) => M)(obj: JsonObject): M = scalaz.Foldable[List].foldMap(obj.toList)(f)
   }
 
   implicit final lazy val objectAt: At[JsonObject, String, Option[Json]] =
