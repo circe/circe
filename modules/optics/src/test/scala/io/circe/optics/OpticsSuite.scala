@@ -53,10 +53,10 @@ class OpticsSuite extends CirceSuite {
 
   checkLaws("plated Json", TraversalTests(plate[Json]))
 
-  checkLaws("objectEach", EachTests[JsonObject, Json])
-  checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
-  checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
-  checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json])
+  checkLaws("jsonObjectEach", EachTests[JsonObject, Json])
+  checkLaws("jsonObjectAt", AtTests[JsonObject, String, Option[Json]])
+  checkLaws("jsonObjectIndex", IndexTests[JsonObject, String, Json])
+  checkLaws("jsonObjectFilterIndex", FilterIndexTests[JsonObject, String, Json])
 
   "jsonDouble" should "round-trip in reverse with Double.NaN" in {
     assert(jsonDouble.getOption(jsonDouble.reverseGet(Double.NaN)) === Some(Double.NaN))

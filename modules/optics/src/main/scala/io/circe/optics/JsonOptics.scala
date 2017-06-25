@@ -5,7 +5,7 @@ import cats.syntax.functor._
 import cats.syntax.traverse._
 import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.JsonNumberOptics._
-import io.circe.optics.JsonObjectOptics.objectEach
+import io.circe.optics.JsonObjectOptics.jsonObjectEach
 import monocle.{ Prism, Traversal }
 import monocle.function.{ Each, Plated }
 
