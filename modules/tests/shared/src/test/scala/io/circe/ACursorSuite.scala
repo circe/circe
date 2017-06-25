@@ -308,6 +308,12 @@ class ACursorSuite extends CirceSuite {
     assert(result.flatMap(_.focus) === Some(200.2.asJson))
   }
 
+  it should "fail at the top" in forAll { (j: Json, key: String) =>
+    val result = HCursor.fromJson(j).field(key)
+
+    assert(result.failed && result.history === List(CursorOp.Field(key)))
+  }
+
   "getOrElse" should "successfully decode an existing field" in {
     val result = for {
       b <- cursor.downField("b").success
