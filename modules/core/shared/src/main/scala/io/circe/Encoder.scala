@@ -40,11 +40,14 @@ trait Encoder[A] extends Serializable { self =>
 /**
  * Utilities and instances for [[Encoder]].
  *
- * @groupname Utilities Miscellaneous utilities
+ * @groupname Utilities Defining encoders
  * @groupprio Utilities 0
  *
- * @groupname Encoding Encoder instances
+ * @groupname Encoding General encoder instances
  * @groupprio Encoding 1
+ *
+ * @groupname Collection Collection instances
+ * @groupprio Collection 2
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
@@ -54,16 +57,19 @@ trait Encoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 2
+ * @groupprio Disjunction 3
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 3
+ * @groupprio Instances 4
  *
  * @groupname Tuple Tuple instances
- * @groupprio Tuple 4
+ * @groupprio Tuple 5
  *
  * @groupname Product Case class and other product instances
- * @groupprio Product 5
+ * @groupprio Product 6
+ *
+ * @groupname Prioritization Instance prioritization
+ * @groupprio Prioritization 9
  *
  * @author Travis Brown
  */
@@ -234,7 +240,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): ArrayEncoder[Seq[A]] =
     new IterableArrayEncoder[A, Seq](encodeA) {
@@ -242,7 +248,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeSet[A](implicit encodeA: Encoder[A]): ArrayEncoder[Set[A]] =
     new IterableArrayEncoder[A, Set](encodeA) {
@@ -250,7 +256,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeList[A](implicit encodeA: Encoder[A]): ArrayEncoder[List[A]] =
     new IterableArrayEncoder[A, List](encodeA) {
@@ -258,7 +264,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[Vector[A]] =
     new IterableArrayEncoder[A, Vector](encodeA) {
@@ -266,7 +272,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyList[A]] =
     new ArrayEncoder[NonEmptyList[A]] {
@@ -274,7 +280,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeNonEmptyVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyVector[A]] =
     new ArrayEncoder[NonEmptyVector[A]] {
@@ -282,7 +288,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeOneAnd[A, C[_]](implicit
     encodeA: Encoder[A],
@@ -294,7 +300,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeMap[K, V](implicit
     encodeK: KeyEncoder[K],
@@ -308,7 +314,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
     encodeK: KeyEncoder[K],
@@ -350,12 +356,12 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Enumeration
-    * {{{
-    *   object WeekDay extends Enumeration { ... }
-    *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
-    * }}}
-    */
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
+   * }}}
+   * @group Utilities
+   */
   final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
     override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
   }
@@ -382,7 +388,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
   /**
-   * @group Encoding
+   * @group Collection
    */
   implicit final def encodeIterable[A, C[_]](implicit
     encodeA: Encoder[A],
@@ -408,5 +414,8 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
 }
 
 private[circe] trait LowPriorityEncoders {
+  /**
+   * @group Prioritization
+   */
   implicit final def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
 }
