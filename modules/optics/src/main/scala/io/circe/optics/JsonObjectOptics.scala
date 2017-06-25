@@ -14,7 +14,11 @@ import scalaz.std.ListInstances
  * @author Travis Brown
  */
 trait JsonObjectOptics extends CatsConversions with ListInstances {
-  implicit final lazy val objectEach: Each[JsonObject, Json] = new Each[JsonObject, Json] {
+  final lazy val jsonObjectFields: Fold[JsonObject, (String, Json)] = new Fold[JsonObject, (String, Json)] {
+    def foldMap[M: Monoid](f: ((String, Json)) => M)(obj: JsonObject): M = scalaz.Foldable[List].foldMap(obj.toList)(f)
+  }
+
+  implicit final lazy val jsonObjectEach: Each[JsonObject, Json] = new Each[JsonObject, Json] {
     final def each: Traversal[JsonObject, Json] = new Traversal[JsonObject, Json] {
       final def modifyF[F[_]](f: Json => F[Json])(from: JsonObject)(implicit
         F: Applicative[F]
@@ -22,11 +26,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit final lazy val objectFoldKV: Fold[JsonObject, (String, Json)] = new Fold[JsonObject, (String, Json)] {
-    def foldMap[M: Monoid](f: ((String, Json)) => M)(obj: JsonObject): M = scalaz.Foldable[List].foldMap(obj.toList)(f)
-  }
-
-  implicit final lazy val objectAt: At[JsonObject, String, Option[Json]] =
+  implicit final lazy val jsonObjectAt: At[JsonObject, String, Option[Json]] =
     new At[JsonObject, String, Option[Json]] {
       final def at(field: String): Lens[JsonObject, Option[Json]] =
         Lens[JsonObject, Option[Json]](_.apply(field))(optVal =>
@@ -34,7 +34,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
         )
     }
 
-  implicit final lazy val objectFilterIndex: FilterIndex[JsonObject, String, Json] =
+  implicit final lazy val jsonObjectFilterIndex: FilterIndex[JsonObject, String, Json] =
     new FilterIndex[JsonObject, String, Json] {
       final def filterIndex(p: String => Boolean) = new Traversal[JsonObject, Json] {
         final def modifyF[F[_]](f: Json => F[Json])(from: JsonObject)(implicit
@@ -49,7 +49,7 @@ trait JsonObjectOptics extends CatsConversions with ListInstances {
     }
   }
 
-  implicit final lazy val objectIndex: Index[JsonObject, String, Json] = Index.fromAt
+  implicit final lazy val jsonObjectIndex: Index[JsonObject, String, Json] = Index.fromAt
 }
 
 final object JsonObjectOptics extends JsonObjectOptics

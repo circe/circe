@@ -53,10 +53,10 @@ class OpticsSuite extends CirceSuite {
 
   checkLaws("plated Json", TraversalTests(plate[Json]))
 
-  checkLaws("objectEach", EachTests[JsonObject, Json])
-  checkLaws("objectAt", AtTests[JsonObject, String, Option[Json]])
-  checkLaws("objectIndex", IndexTests[JsonObject, String, Json])
-  checkLaws("objectFilterIndex", FilterIndexTests[JsonObject, String, Json])
+  checkLaws("jsonObjectEach", EachTests[JsonObject, Json])
+  checkLaws("jsonObjectAt", AtTests[JsonObject, String, Option[Json]])
+  checkLaws("jsonObjectIndex", IndexTests[JsonObject, String, Json])
+  checkLaws("jsonObjectFilterIndex", FilterIndexTests[JsonObject, String, Json])
 
   "jsonDouble" should "round-trip in reverse with Double.NaN" in {
     assert(jsonDouble.getOption(jsonDouble.reverseGet(Double.NaN)) === Some(Double.NaN))
@@ -68,7 +68,7 @@ class OpticsSuite extends CirceSuite {
     assert(jsonDouble.getOrModify(json).fold(identity, jsonDouble.reverseGet) === json)
   }
 
-  "objectFoldKV" should "fold over all fields" in forAll { (obj: JsonObject) =>
-    assert(obj.applyFold(JsonObjectOptics.objectFoldKV).foldMap(List(_)) === obj.toList)
+  "jsonObjectFields" should "fold over all fields" in forAll { (obj: JsonObject) =>
+    assert(obj.applyFold(JsonObjectOptics.jsonObjectFields).foldMap(List(_)) === obj.toList)
   }
 }
