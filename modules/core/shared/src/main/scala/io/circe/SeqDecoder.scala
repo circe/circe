@@ -1,17 +1,16 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
-import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Builder
 
-private[circe] final class SeqDecoder[A, C[_]](
-  decodeA: Decoder[A],
-  cbf: CanBuildFrom[Nothing, A, C[A]]
-) extends Decoder[C[A]] {
+private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends Decoder[C[A]] {
+  protected def createBuilder(): Builder[A, C[A]]
+
   def apply(c: HCursor): Decoder.Result[C[A]] = {
     var current = c.downArray
 
     if (current.succeeded) {
-      val builder = cbf.apply
+      val builder = createBuilder()
       var failed: DecodingFailure = null
 
       while (failed.eq(null) && current.succeeded) {
@@ -25,7 +24,7 @@ private[circe] final class SeqDecoder[A, C[_]](
 
       if (failed.eq(null)) Right(builder.result) else Left(failed)
     } else {
-      if (c.value.isArray) Right(cbf.apply.result) else {
+      if (c.value.isArray) Right(createBuilder().result) else {
         Left(DecodingFailure("CanBuildFrom for A", c.history))
       }
     }
@@ -35,7 +34,7 @@ private[circe] final class SeqDecoder[A, C[_]](
     var current = c.downArray
 
     if (current.succeeded) {
-      val builder = cbf.apply
+      val builder = createBuilder()
       var failed = false
       val failures = List.newBuilder[DecodingFailure]
 
@@ -58,7 +57,7 @@ private[circe] final class SeqDecoder[A, C[_]](
         }
       }
     } else {
-      if (c.value.isArray) Validated.valid(cbf.apply.result) else {
+      if (c.value.isArray) Validated.valid(createBuilder().result) else {
         Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
       }
     }

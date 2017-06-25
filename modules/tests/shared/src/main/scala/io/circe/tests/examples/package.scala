@@ -76,7 +76,7 @@ package examples {
     implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
     implicit val arbitraryBar: Arbitrary[Bar] = Arbitrary(
       for {
-       i <- Arbitrary.arbitrary[Int]
+        i <- Arbitrary.arbitrary[Int]
         s <- Arbitrary.arbitrary[String]
       } yield Bar(i, s)
     )

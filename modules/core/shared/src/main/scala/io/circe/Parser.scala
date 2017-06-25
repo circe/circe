@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated, ValidatedNel }
+import java.io.Serializable
 
 trait Parser extends Serializable {
   def parse(input: String): Either[ParsingFailure, Json]

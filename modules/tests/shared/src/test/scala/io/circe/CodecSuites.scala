@@ -8,6 +8,10 @@ import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
+import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable.SortedMap
+import scala.collection.mutable.{ ArrayBuilder, Builder, HashMap }
+import scala.reflect.ClassTag
 
 class AnyValCodecSuite extends CirceSuite {
   /**
@@ -38,6 +42,18 @@ class AnyValCodecSuite extends CirceSuite {
 }
 
 class StdLibCodecSuite extends CirceSuite {
+  /**
+   * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
+   */
+  implicit def canBuildFromRefArraySerializable[A <: AnyRef: ClassTag]: CanBuildFrom[Array[A], A, Array[A]] =
+    new CanBuildFrom[Array[A], A, Array[A]] with Serializable {
+      def apply(from: Array[A]): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
+      def apply(): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
+    }
+
+  implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
+  implicit def eqSortedMap[Long, Int]: Eq[SortedMap[Long, Int]] = Eq.fromUniversalEquals
+
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
   checkLaws("Codec[String]", CodecTests[String].codec)
@@ -48,6 +64,7 @@ class StdLibCodecSuite extends CirceSuite {
   checkLaws("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
   checkLaws("Codec[None.type]", CodecTests[None.type].codec)
   checkLaws("Codec[List[Int]]", CodecTests[List[Int]].codec)
+  checkLaws("Codec[Seq[Int]]", CodecTests[Seq[Int]].codec)
   checkLaws("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkLaws("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
   checkLaws("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
@@ -55,7 +72,10 @@ class StdLibCodecSuite extends CirceSuite {
   checkLaws("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
   checkLaws("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
   checkLaws("Codec[Map[Long, Int]]", CodecTests[Map[Long, Int]].codec)
+  checkLaws("Codec[HashMap[Long, Int]]", CodecTests[HashMap[Long, Int]].unserializableCodec)
+  checkLaws("Codec[SortedMap[Long, Int]]", CodecTests[SortedMap[Long, Int]].unserializableCodec)
   checkLaws("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
+  checkLaws("Codec[Array[String]]", CodecTests[Array[String]].codec)
 
   "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
@@ -102,6 +122,15 @@ class StdLibCodecSuite extends CirceSuite {
 }
 
 class CatsCodecSuite extends CirceSuite {
+  /**
+   * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
+   */
+  implicit def canBuildFromStreamSerializable[A]: CanBuildFrom[Stream[A], A, Stream[A]] =
+    new CanBuildFrom[Stream[A], A, Stream[A]] with Serializable {
+      def apply(from: Stream[A]): Builder[A, Stream[A]] = Stream.newBuilder[A]
+      def apply(): Builder[A, Stream[A]] = Stream.newBuilder[A]
+    }
+
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)

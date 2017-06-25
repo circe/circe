@@ -60,6 +60,7 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
     "decodingAccumulatingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingAccumulatingRoundTrip[A](json)(json =>
         serialize(json.spaces2), decodeAccumulating)
-    }
+    },
+    "parser serializability" -> SerializableLaws.serializable(p)
   )
 }

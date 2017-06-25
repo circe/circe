@@ -1,30 +1,31 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
-import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable.Map
+import scala.collection.Map
+import scala.collection.mutable.Builder
 
-private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
-  dk: KeyDecoder[K],
-  dv: Decoder[V],
-  cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
+private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
+  decodeK: KeyDecoder[K],
+  decodeV: Decoder[V]
 ) extends Decoder[M[K, V]] {
+  protected def createBuilder(): Builder[(K, V), M[K, V]]
+
   def apply(c: HCursor): Decoder.Result[M[K, V]] = c.fields match {
     case None => Left[DecodingFailure, M[K, V]](MapDecoder.failure(c))
     case Some(fields) =>
       val it = fields.iterator
-      val builder = cbf.apply
+      val builder = createBuilder()
       var failed: DecodingFailure = null
 
       while (failed.eq(null) && it.hasNext) {
         val field = it.next
         val atH = c.downField(field)
 
-        dk(field) match {
+        decodeK(field) match {
           case None =>
             failed = MapDecoder.failure(atH)
           case Some(k) =>
-            atH.as(dv) match {
+            atH.as(decodeV) match {
               case Left(error) =>
                 failed = error
               case Right(value) =>
@@ -41,7 +42,7 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
       case None => Validated.invalidNel[DecodingFailure, M[K, V]](MapDecoder.failure(c))
       case Some(fields) =>
         val it = fields.iterator
-        val builder = cbf.apply
+        val builder = createBuilder()
         var failed = false
         val failures = List.newBuilder[DecodingFailure]
 
@@ -49,9 +50,9 @@ private[circe] final class MapDecoder[M[K, +V] <: Map[K, V], K, V](implicit
           val field = it.next
           val atH = c.downField(field)
 
-          dk(field) match {
+          decodeK(field) match {
             case Some(k) =>
-              dv.tryDecodeAccumulating(atH) match {
+              decodeV.tryDecodeAccumulating(atH) match {
                 case Validated.Invalid(es) =>
                   failed = true
                   failures += es.head

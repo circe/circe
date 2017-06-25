@@ -2,6 +2,7 @@ package io.circe
 
 import cats.{ ApplicativeError, Semigroup, SemigroupK }
 import cats.data.{ NonEmptyList, Validated, ValidatedNel }
+import java.io.Serializable
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
   /**

@@ -75,13 +75,13 @@ class TimeCodecSuite extends CirceSuite {
   implicit val eqDuration: Eq[Duration] = Eq.fromUniversalEquals
 
   checkLaws("Codec[Instant]", CodecTests[Instant].codec)
-  checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].codec)
-  checkLaws("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].codec)
-  checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].codec)
-  checkLaws("Codec[LocalDate]", CodecTests[LocalDate].codec)
-  checkLaws("Codec[LocalTime]", CodecTests[LocalTime].codec)
+  checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].unserializableCodec)
+  checkLaws("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].unserializableCodec)
+  checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].unserializableCodec)
+  checkLaws("Codec[LocalDate]", CodecTests[LocalDate].unserializableCodec)
+  checkLaws("Codec[LocalTime]", CodecTests[LocalTime].unserializableCodec)
   checkLaws("Codec[Period]", CodecTests[Period].codec)
-  checkLaws("Codec[YearMonth]", CodecTests[YearMonth].codec)
+  checkLaws("Codec[YearMonth]", CodecTests[YearMonth].unserializableCodec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
 
   val invalidJson: Json = Json.fromString("abc")

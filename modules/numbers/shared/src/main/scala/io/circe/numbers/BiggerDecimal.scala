@@ -1,5 +1,6 @@
 package io.circe.numbers
 
+import java.io.Serializable
 import java.lang.StringBuilder
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.switch

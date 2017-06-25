@@ -317,7 +317,7 @@ object Boilerplate {
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
         -  }
-        -  checkLaws("Codec[Cc$arity]", CodecTests[Cc$arity].codec)
+        -  checkLaws("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
         |}
       """
     }

@@ -37,7 +37,8 @@ trait PrinterTests[A] extends Laws {
       parent = None,
       "roundTrip" -> Prop.forAll { (a: A) =>
         laws.printerRoundTrip(printer, parser, a)
-      }
+      },
+      "printer serializability" -> SerializableLaws.serializable(printer)
     )
 }
 

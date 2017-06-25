@@ -12,7 +12,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
-class SemiautoDerivedSuite extends CirceSuite {
+object SemiautoDerivedSuite {
   implicit def decodeBox[A: Decoder]: Decoder[Box[A]] = deriveDecoder
   implicit def encodeBox[A: Encoder]: Encoder[Box[A]] = deriveEncoder
 
@@ -76,11 +76,17 @@ class SemiautoDerivedSuite extends CirceSuite {
   case class OvergenerationExampleInner(i: Int)
   case class OvergenerationExampleOuter0(i: OvergenerationExampleInner)
   case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
+}
+
+class SemiautoDerivedSuite extends CirceSuite {
+  import SemiautoDerivedSuite._
 
   checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkLaws("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
   checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkLaws("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
+  checkLaws("Codec[Baz]", CodecTests[Baz].codec)
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
   checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)

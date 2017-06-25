@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Eq
 import io.circe.numbers.BiggerDecimal
+import java.io.Serializable
 import java.lang.StringBuilder
 import java.math.{ BigDecimal => JavaBigDecimal }
 
