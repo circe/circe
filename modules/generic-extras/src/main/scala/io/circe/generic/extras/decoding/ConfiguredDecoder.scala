@@ -39,9 +39,9 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
+      config.transformConstructorNames,
       defaultMap,
-      None,
-      config.transformConstructorNames
+      None
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -50,9 +50,9 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
         if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
+        config.transformConstructorNames,
         defaultMap,
-        None,
-        config.transformConstructorNames
+        None
       ).map(gen.from)
   }
 
@@ -63,9 +63,9 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   ): ConfiguredDecoder[A] = new ConfiguredDecoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       Predef.identity,
+      config.transformConstructorNames,
       Map.empty,
-      config.discriminator,
-      config.transformConstructorNames
+      config.discriminator
     ) match {
       case Right(r) => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
@@ -74,9 +74,9 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
         Predef.identity,
+        config.transformConstructorNames,
         Map.empty,
-        config.discriminator,
-        config.transformConstructorNames
+        config.discriminator
       ).map(gen.from)
   }
 }

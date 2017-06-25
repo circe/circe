@@ -13,11 +13,12 @@ package io.circe.generic.extras
   * @param transformConstructorNames Transforms the value of any constructor names in the JSON allowing, for example,
   *                                  formatting or case changes.
   */
-final case class Configuration(transformMemberNames: String => String,
-                               useDefaults: Boolean,
-                               discriminator: Option[String],
-                               transformConstructorNames: String => String) {
-
+final case class Configuration(
+  transformMemberNames: String => String,
+  transformConstructorNames: String => String,
+  useDefaults: Boolean,
+  discriminator: Option[String]
+) {
   def withSnakeCaseMemberNames: Configuration = copy(
     transformMemberNames = Configuration.snakeCaseTransformation
   )
@@ -34,7 +35,7 @@ final case class Configuration(transformMemberNames: String => String,
 }
 
 final object Configuration {
-  val default: Configuration = Configuration(Predef.identity, false, None, Predef.identity)
+  val default: Configuration = Configuration(Predef.identity, Predef.identity, false, None)
 
   val snakeCaseTransformation: String => String = _.replaceAll(
     "([A-Z]+)([A-Z][a-z])",

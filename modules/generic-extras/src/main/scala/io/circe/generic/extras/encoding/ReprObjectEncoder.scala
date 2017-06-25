@@ -12,8 +12,8 @@ import scala.language.experimental.macros
 abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
   def configuredEncodeObject(a: A)(
     transformMemberNames: String => String,
-    discriminator: Option[String],
-    transformDiscriminator: String => String
+    transformDiscriminator: String => String,
+    discriminator: Option[String]
   ): JsonObject
 
   final protected[this] def addDiscriminator[B](
@@ -29,7 +29,7 @@ abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
     }
   }
 
-  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, None, Predef.identity)
+  final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, Predef.identity, None)
 }
 
 final object ReprObjectEncoder {

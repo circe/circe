@@ -17,16 +17,16 @@ import shapeless.HNil
 abstract class ReprDecoder[A] extends Decoder[A] {
   def configuredDecode(c: HCursor)(
     transformMemberNames: String => String,
+    transformConstructorNames: String => String,
     defaults: Map[String, Any],
-    discriminator: Option[String],
-    transformConstructorNames: String => String
+    discriminator: Option[String]
   ): Decoder.Result[A]
 
   def configuredDecodeAccumulating(c: HCursor)(
     transformMemberNames: String => String,
+    transformConstructorNames: String => String,
     defaults: Map[String, Any],
-    discriminator: Option[String],
-    transformConstructorNames: String => String
+    discriminator: Option[String]
   ): AccumulatingDecoder.Result[A]
 
   final protected[this] def orDefault[B](
@@ -91,10 +91,10 @@ abstract class ReprDecoder[A] extends Decoder[A] {
   }
 
   final def apply(c: HCursor): Decoder.Result[A] =
-    configuredDecode(c)(Predef.identity, Map.empty, None, Predef.identity)
+    configuredDecode(c)(Predef.identity, Predef.identity, Map.empty, None)
 
   final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-    configuredDecodeAccumulating(c)(Predef.identity, Map.empty, None, Predef.identity)
+    configuredDecodeAccumulating(c)(Predef.identity, Predef.identity, Map.empty, None)
 }
 
 final object ReprDecoder {
@@ -103,16 +103,16 @@ final object ReprDecoder {
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def configuredDecode(c: HCursor)(
       transformMemberNames: String => String,
+      transformConstructorNames: String => String,
       defaults: Map[String, Any],
-      discriminator: Option[String],
-      transformConstructorNames: String => String
+      discriminator: Option[String]
     ): Decoder.Result[HNil] = Right(HNil)
 
     def configuredDecodeAccumulating(c: HCursor)(
       transformMemberNames: String => String,
+      transformConstructorNames: String => String,
       defaults: Map[String, Any],
-      discriminator: Option[String],
-      transformConstructorNames: String => String
+      discriminator: Option[String]
     ): AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)
   }
 }

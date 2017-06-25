@@ -34,8 +34,8 @@ final object ConfiguredObjectEncoder {
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
         if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
-        None,
-        config.transformConstructorNames
+        config.transformConstructorNames,
+        None
       )
   }
 
@@ -47,8 +47,8 @@ final object ConfiguredObjectEncoder {
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
         Predef.identity,
-        config.discriminator,
-        config.transformConstructorNames
+        config.transformConstructorNames,
+        config.discriminator
       )
   }
 }
