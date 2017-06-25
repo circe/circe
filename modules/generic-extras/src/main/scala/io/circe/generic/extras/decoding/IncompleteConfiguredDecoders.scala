@@ -22,7 +22,8 @@ private[circe] trait IncompleteConfiguredDecoders {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[F] = decode.configuredDecode(c)(
-      config.transformKeys,
+      config.transformMemberNames,
+      config.transformConstructorNames,
       defaultMap,
       None
     ) match {
@@ -32,7 +33,8 @@ private[circe] trait IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
       decode.configuredDecodeAccumulating(c)(
-        config.transformKeys,
+        config.transformMemberNames,
+        config.transformConstructorNames,
         defaultMap,
         None
       ).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
@@ -49,7 +51,8 @@ private[circe] trait IncompleteConfiguredDecoders {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[A => A] = decode.configuredDecode(c)(
-      config.transformKeys,
+      config.transformMemberNames,
+      config.transformConstructorNames,
       defaultMap,
       None
     ) match {
@@ -59,7 +62,8 @@ private[circe] trait IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
       decode.configuredDecodeAccumulating(c)(
-        config.transformKeys,
+        config.transformMemberNames,
+        config.transformConstructorNames,
         defaultMap,
         None
       ).map(o => a => gen.from(patch(gen.to(a), o)))

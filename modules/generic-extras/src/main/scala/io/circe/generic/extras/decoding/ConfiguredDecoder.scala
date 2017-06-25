@@ -34,11 +34,12 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
         case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
       }.toMap
 
-    private[this] def keyTransformer(transformKeys: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformKeys(value))
+    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
+      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
 
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
-      if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
+      if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
+      config.transformConstructorNames,
       defaultMap,
       None
     ) match {
@@ -48,7 +49,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
-        if (hasKeyAnnotations) keyTransformer(config.transformKeys) else config.transformKeys,
+        if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
+        config.transformConstructorNames,
         defaultMap,
         None
       ).map(gen.from)
@@ -61,6 +63,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   ): ConfiguredDecoder[A] = new ConfiguredDecoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = decode.value.configuredDecode(c)(
       Predef.identity,
+      config.transformConstructorNames,
       Map.empty,
       config.discriminator
     ) match {
@@ -71,6 +74,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decode.value.configuredDecodeAccumulating(c)(
         Predef.identity,
+        config.transformConstructorNames,
         Map.empty,
         config.discriminator
       ).map(gen.from)

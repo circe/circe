@@ -16,13 +16,15 @@ import shapeless.HNil
  */
 abstract class ReprDecoder[A] extends Decoder[A] {
   def configuredDecode(c: HCursor)(
-    transformKeys: String => String,
+    transformMemberNames: String => String,
+    transformConstructorNames: String => String,
     defaults: Map[String, Any],
     discriminator: Option[String]
   ): Decoder.Result[A]
 
   def configuredDecodeAccumulating(c: HCursor)(
-    transformKeys: String => String,
+    transformMemberNames: String => String,
+    transformConstructorNames: String => String,
     defaults: Map[String, Any],
     discriminator: Option[String]
   ): AccumulatingDecoder.Result[A]
@@ -88,9 +90,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     }
   }
 
-  final def apply(c: HCursor): Decoder.Result[A] = configuredDecode(c)(Predef.identity, Map.empty, None)
+  final def apply(c: HCursor): Decoder.Result[A] =
+    configuredDecode(c)(Predef.identity, Predef.identity, Map.empty, None)
+
   final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-    configuredDecodeAccumulating(c)(Predef.identity, Map.empty, None)
+    configuredDecodeAccumulating(c)(Predef.identity, Predef.identity, Map.empty, None)
 }
 
 final object ReprDecoder {
@@ -98,13 +102,15 @@ final object ReprDecoder {
 
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def configuredDecode(c: HCursor)(
-      transformKeys: String => String,
+      transformMemberNames: String => String,
+      transformConstructorNames: String => String,
       defaults: Map[String, Any],
       discriminator: Option[String]
     ): Decoder.Result[HNil] = Right(HNil)
 
     def configuredDecodeAccumulating(c: HCursor)(
-      transformKeys: String => String,
+      transformMemberNames: String => String,
+      transformConstructorNames: String => String,
       defaults: Map[String, Any],
       discriminator: Option[String]
     ): AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)

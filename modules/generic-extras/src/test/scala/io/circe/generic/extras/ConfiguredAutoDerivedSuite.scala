@@ -28,8 +28,8 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
 
   import examples._
 
-  "Configuration#transformKeys" should "support key transformation" in forAll { (f: String, a: Int, b: Double) =>
-    implicit val snakeCaseConfig: Configuration = Configuration.default.withSnakeCaseKeys
+  "Configuration#transformMemberNames" should "support member name transformation" in forAll { (f: String, a: Int, b: Double) =>
+    implicit val snakeCaseConfig: Configuration = Configuration.default.withSnakeCaseMemberNames
 
     val foo: ConfigExampleFoo = ConfigExampleFoo(f, a, b)
     val json = json"""{ "this_is_a_field": $f, "a": $a, "b": $b}"""
@@ -63,9 +63,19 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     }
   }
 
+  "Configuration#transformConstructorNames" should "support constructor name transformation" in forAll { (f: String, a: Int, b: Double) =>
+    implicit val snakeCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withSnakeCaseConstructorNames
+
+    val foo: ConfigExampleBase = ConfigExampleFoo(f, a, b)
+    val json = json"""{ "type": "config_example_foo", "thisIsAField": $f, "a": $a, "b": $b}"""
+
+    assert(Encoder[ConfigExampleBase].apply(foo) === json)
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+  }
+
   "Configuration options" should "work together" in forAll { (f: String, b: Double) =>
     implicit val customConfig: Configuration =
-      Configuration.default.withSnakeCaseKeys.withDefaults.withDiscriminator("type")
+      Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type")
 
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)
     val json = json"""{ "type": "ConfigExampleFoo", "this_is_a_field": $f, "b": $b}"""
