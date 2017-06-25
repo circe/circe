@@ -76,10 +76,11 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
      * of some type class for each.
      */
     def fold[Z](resolver: Type => Tree)(init: Z)(f: (Member, TermName, Z) => Z): (List[Tree], Z) = {
-      val (instanceMap, result) = underlying.foldRight((Map.empty[Type, (TermName, Tree)], init)) {
+      val (instanceMap, result) = underlying.foldRight((Map.empty[Symbol, (TermName, Tree)], init)) {
         case (member @ Member(_, _, valueType, _, _), (instanceMap, acc)) =>
-          val (instanceName, instance) = instanceMap.getOrElse(valueType, (TermName(c.freshName), resolver(valueType)))
-          val newInstances = instanceMap.updated(valueType, (instanceName, instance))
+          val (instanceName, instance) =
+            instanceMap.getOrElse(valueType.typeSymbol, (TermName(c.freshName), resolver(valueType)))
+          val newInstances = instanceMap.updated(valueType.typeSymbol, (instanceName, instance))
 
           (newInstances, f(member, instanceName, acc))
       }
