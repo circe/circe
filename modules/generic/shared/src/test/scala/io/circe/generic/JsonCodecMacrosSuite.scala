@@ -2,7 +2,7 @@ package io.circe.generic
 
 import cats.Eq
 import cats.instances.AllInstances
-import io.circe.ObjectEncoder
+import io.circe.{Decoder, Encoder, ObjectEncoder}
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceSuite, MissingInstances }
@@ -155,5 +155,27 @@ class JsonCodecMacrosSuite extends CirceSuite {
     ObjectEncoder[Hierarchy]
     ObjectEncoder[RecursiveHierarchy]
     ObjectEncoder[SelfRecursiveWithOption]
+  }
+
+  it should "allow only one, named argument set to true" in {
+    // Can't supply both
+    assertDoesNotCompile("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)")
+    // Must specify the argument name
+    assertDoesNotCompile("@JsonCodec(true) case class X(a: Int)")
+    // Can't specify false
+    assertDoesNotCompile("@JsonCodec(encodeOnly = false) case class X(a: Int)")
+  }
+
+  "@JsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
+    @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
+    Encoder[CaseClassEncodeOnly]
+    ObjectEncoder[CaseClassEncodeOnly]
+    assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
+  }
+
+  "@JsonCodec(decodeOnly = true)" should "provide Decoder instances" in {
+    @JsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
+    Decoder[CaseClassDecodeOnly]
+    assertDoesNotCompile("Encoder[CaseClassDecodeOnly]")
   }
 }
