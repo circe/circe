@@ -38,13 +38,13 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   "signum" should "agree with BigInteger" in forAll { (value: BigInt) =>
-    val d = BiggerDecimal.fromBigInteger(value.bigInteger)
+    val d = BiggerDecimal.fromBigInteger(value.underlying)
 
     assert(d.signum == value.signum)
   }
 
   it should "agree with BigDecimal" in forAll { (value: SBigDecimal) =>
-    val d = BiggerDecimal.fromBigDecimal(value.bigDecimal)
+    val d = BiggerDecimal.fromBigDecimal(value.underlying)
 
     assert(d.signum == value.signum)
   }
@@ -166,8 +166,15 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     whenever (!isBadJsBigDecimal(value)) {
       val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
 
-      assert(BiggerDecimal.fromBigDecimal(value.bigDecimal) === expected)
+      assert(BiggerDecimal.fromBigDecimal(value.underlying) === expected)
     }
+  }
+
+  it should "agree with parseBiggerDecimalUnsafe on 0.000" in {
+    val value = "0.000"
+    val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value)
+
+    assert(BiggerDecimal.fromBigDecimal(new BigDecimal(value)) === expected)
   }
 
   it should "agree with parseBiggerDecimalUnsafe on multiples of ten with trailing zeros" in {
@@ -230,6 +237,10 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
 
   it should "parse JSON numbers" in forAll { (jns: JsonNumberString) =>
     assert(BiggerDecimal.parseBiggerDecimal(jns.value).nonEmpty)
+  }
+
+  it should "parse integral JSON numbers" in forAll { (is: IntegralString) =>
+    assert(BiggerDecimal.parseBiggerDecimal(is.value) === Some(BiggerDecimal.fromBigInteger(new BigInteger(is.value))))
   }
 
   it should "fail on bad input" in {
