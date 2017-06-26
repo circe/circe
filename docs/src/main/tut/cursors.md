@@ -40,7 +40,7 @@ root:
 val cursor: HCursor = doc.hcursor
 ```
 
-We can then use [various operations][generic-cursor] to move the focus of the cursor around the
+We can then use [various operations][circe-cursor] to move the focus of the cursor around the
 document and extract data from it:
 
 ```tut:book

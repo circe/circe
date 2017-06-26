@@ -12,6 +12,7 @@
 [cats]: https://github.com/typelevel/cats
 [circe-251]: https://github.com/circe/circe/issues/251
 [circe-262]: https://github.com/circe/circe/issues/262
+[circe-cursor]: https://circe.github.io/circe/api/io/circe/ACursor.html
 [circe-generic]: https://circe.github.io/circe/api/io/circe/generic/auto$.html
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-jawn]: https://circe.github.io/circe/api/io/circe/jawn/index.html
@@ -30,7 +31,6 @@
 [fintrospect]: https://github.com/daviddenton/fintrospect
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
-[generic-cursor]: https://circe.github.io/circe/api/io/circe/GenericCursor.html
 [github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/circe/circe
 [graphql]: http://graphql.org/docs/getting-started/
