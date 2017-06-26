@@ -80,6 +80,8 @@ It's also possible to construct encoders and decoders for case class-like types
 in a relatively boilerplate-free way without generic derivation:
 
 ```tut:silent
+import io.circe.{ Decoder, Encoder }
+
 case class User(id: Long, firstName: String, lastName: String)
 
 object UserCodec {
@@ -104,7 +106,7 @@ It is also possible to derive `Encoder`s and `Decoder`s for many types with no b
 circe uses [shapeless][shapeless] to automatically derive the necessary type class instances:
 
 ```tut:book
-import io.circe.generic.auto._
+import io.circe.generic.auto._, io.circe.syntax._
 
 case class Person(name: String)
 case class Greeting(salutation: String, person: Person, exclamationMarks: Int)
@@ -120,6 +122,8 @@ do so in a couple of ways.
 Firstly, you can write a new `Encoder[A]` and `Decoder[A]` from scratch:
 
 ```tut:book
+import io.circe.{ Decoder, Encoder, HCursor }
+
 class Thing(val foo: String, val bar: Int)
 
 implicit val encodeFoo: Encoder[Thing] = new Encoder[Thing] {
@@ -145,6 +149,7 @@ already available. For example, a codec for `java.time.Instant` might look like 
 
 ```tut:book
 import cats.syntax.either._
+import io.circe.{ Decoder, Encoder }
 import java.time.Instant
 
 implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](_.toString)
@@ -162,11 +167,11 @@ you need to provide a `KeyEncoder` and/or `KeyDecoder` for your custom key type.
 For example:
 
 ```tut:book
-import io.circe.syntax._
+import io.circe._, io.circe.syntax._
 
 case class Foo(value: String)
 
-implicit val fooKeyEncoder = new KeyEncoder[Foo] {
+implicit val fooKeyEncoder: KeyEncoder[Foo] = new KeyEncoder[Foo] {
   override def apply(foo: Foo): String = foo.value
 }
 val map = Map[Foo, Int](
@@ -176,7 +181,7 @@ val map = Map[Foo, Int](
 
 val json = map.asJson
 
-implicit val fooKeyDecoder = new KeyDecoder[Foo] {
+implicit val fooKeyDecoder: KeyDecoder[Foo] = new KeyDecoder[Foo] {
   override def apply(key: String): Option[Foo] = Some(Foo(key))
 }
 

@@ -76,13 +76,6 @@ See the [Encoding and Decoding page](codec.html) for more details.
 circe aims to simplify Argonaut's API by removing all operator aliases. This is largely a matter of
 personal taste, and may change in the future.
 
-### Documentation
-
-The Argonaut documentation is good, but it could be better: to take just one example, it can be hard
-to tell at a glance why there are three different `Cursor`, `HCursor`, and `ACursor` types. In this
-particular case, circe introduces an abstraction over cursors that makes the relationship clearer and
-allows these three types to [share API documentation][generic-cursor].
-
 ### Testing
 
 I'd like to provide more complete test coverage (in part via [Discipline][discipline]), but it's
