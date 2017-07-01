@@ -4,7 +4,7 @@ resolvers ++= Seq(
   "jgit-repo" at "http://download.eclipse.org/jgit/maven"
 )
 
-addSbtPlugin("com.47deg" % "sbt-microsites" % "0.6.0")
+addSbtPlugin("com.47deg" % "sbt-microsites" % "0.6.1")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.1.0")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.0")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.5")
