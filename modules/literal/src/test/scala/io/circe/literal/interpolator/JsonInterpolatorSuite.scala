@@ -13,6 +13,30 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
       "json\"\"\"1a2b3c\"\"\"" shouldNot compile
     }
 
+    describe("should work with top-level") {
+      it("null") {
+        json"null" shouldBe Json.Null
+      }
+
+      it("booleans") {
+        forAll { (value: Boolean) =>
+          json"$value" shouldBe Json.fromBoolean(value)
+        }
+      }
+
+      it("strings") {
+        forAll { (value: String) =>
+          json"$value" shouldBe Json.fromString(value)
+        }
+      }
+
+      it("numbers") {
+        forAll { (value: BigDecimal) =>
+          json"$value" shouldBe Json.fromBigDecimal(value)
+        }
+      }
+    }
+
     it("should work with no interpolated variables") {
       val interpolated = json"""
         {
