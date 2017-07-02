@@ -22,7 +22,7 @@ class NumberParsingBenchmark {
   val inputDouble = "12345.6789"
   val inputLong = "123456789"
 
-  val count = 100
+  val count = 1000
 
   val inputBiggerDecimals = "[" + List.fill(count)(inputBiggerDecimal).mkString(", ") + "]"
   val inputBigDecimals = "[" + List.fill(count)(inputBigDecimal).mkString(", ") + "]"
