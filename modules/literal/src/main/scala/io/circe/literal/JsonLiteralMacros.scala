@@ -38,20 +38,21 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   }
 
   private[this] abstract class Handler(replacements: Seq[Replacement]) extends InvocationHandler {
-    def invokeWithoutArg: String => Object
-    def invokeWithArg: (String, Class[_], Object) => Object
+    protected[this] def invokeWithoutArgs: String => Object
+    protected[this] def invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object
 
-    final def invoke(proxy: Object, method: Method, args: Array[Object]): Object =
-      (args, method.getParameterTypes) match {
-        case (Array(arg), Array(cls)) => invokeWithArg(method.getName, cls, arg)
-        case _ => invokeWithoutArg(method.getName)
+    final def invoke(proxy: Object, method: Method, args: Array[Object]): Object = {
+      if (args.eq(null)) {
+        invokeWithoutArgs(method.getName)
+      } else {
+        invokeWithArgs(method.getName, method.getParameterTypes, args)
       }
-
-    final def toJsonKey(s: String): Tree =
+    }
+    protected[this] final def toJsonKey(s: String): Tree =
       replacements.find(_.placeholder == s).fold(q"$s")(_.asKey)
 
-    final def toJsonString(s: String): Tree =
-      replacements.find(_.placeholder == s).fold(q"_root_.io.circe.Json.fromString($s)")(_.asJson)
+    protected[this] final def toJsonString(s: CharSequence): Tree =
+      replacements.find(_.placeholder == s).fold(q"_root_.io.circe.Json.fromString(${ s.toString })")(_.asJson)
 
     final def asProxy(cls: Class[_]): Object = Proxy.newProxyInstance(getClass.getClassLoader, Array(cls), this)
   }
@@ -59,16 +60,16 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   private[this] class SingleContextHandler(replacements: Seq[Replacement]) extends Handler(replacements) {
     private[this] var value: Tree = null
 
-    val invokeWithoutArg: String => Object = {
+    protected[this] val invokeWithoutArgs: String => Object = {
       case "finish" => value
       case "isObj" => java.lang.Boolean.FALSE
     }
 
-    val invokeWithArg: (String, Class[_], Object) => Object = {
-      case ("add", cls, arg: String) if cls == classOf[String] =>
-        value = toJsonString(arg)
+    protected[this] val invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object = {
+      case ("add", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] =>
+        value = toJsonString(arg.toString)
         null
-      case ("add", cls, arg: Tree) =>
+      case ("add", Array(_), Array(arg: Tree)) =>
         value = arg
         null
     }
@@ -77,16 +78,16 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   private[this] class ArrayContextHandler(replacements: Seq[Replacement]) extends Handler(replacements) {
     private[this] var values: List[Tree] = Nil
 
-    val invokeWithoutArg: String => Object = {
+    protected[this] val invokeWithoutArgs: String => Object = {
       case "finish" => q"_root_.io.circe.Json.arr(..$values)"
       case "isObj" => java.lang.Boolean.FALSE
     }
 
-    val invokeWithArg: (String, Class[_], Object) => Object = {
-      case ("add", cls, arg: String) if cls == classOf[String] =>
-        values = values :+ toJsonString(arg)
+    protected[this] val invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object = {
+      case ("add", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] =>
+        values = values :+ toJsonString(arg.toString)
         null
-      case ("add", cls, arg: Tree) =>
+      case ("add", Array(_), Array(arg: Tree)) =>
         values = values :+ arg
         null
     }
@@ -96,35 +97,35 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     private[this] var key: String = null
     private[this] var fields: List[Tree] = Nil
 
-    val invokeWithoutArg: String => Object = {
+    protected[this] val invokeWithoutArgs: String => Object = {
       case "finish" => q"_root_.io.circe.Json.obj(..$fields)"
       case "isObj" => java.lang.Boolean.TRUE
     }
 
-    val invokeWithArg: (String, Class[_], Object) => Object = {
-      case ("add", cls, arg: String) if cls == classOf[String] =>
-        if (key == null) {
-          key = arg
+    protected[this] val invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object = {
+      case ("add", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] =>
+        if (key.eq(null)) {
+          key = arg.toString
         } else {
           fields = fields :+ q"(${ toJsonKey(key) }, ${ toJsonString(arg) })"
           key = null
         }
         null
-      case ("add", cls, arg: Tree) =>
+      case ("add", Array(_), Array(arg: Tree)) =>
         fields = fields :+ q"(${ toJsonKey(key) }, $arg)"
         key = null
         null
     }
   }
 
-  private[this] val jawnFContextClass = Class.forName("jawn.FContext")
-  private[this] val jawnParserClass = Class.forName("jawn.Parser$")
-  private[this] val jawnParser = jawnParserClass.getField("MODULE$").get(jawnParserClass)
-  private[this] val jawnFacadeClass = Class.forName("jawn.Facade")
-  private[this] val parseMethod = jawnParserClass.getMethod("parseUnsafe", classOf[String], jawnFacadeClass)
+  private[this] def jawnFContextClass = Class.forName("jawn.FContext")
+  private[this] def jawnParserClass = Class.forName("jawn.Parser$")
+  private[this] def jawnParser = jawnParserClass.getField("MODULE$").get(jawnParserClass)
+  private[this] def jawnFacadeClass = Class.forName("jawn.Facade")
+  private[this] def parseMethod = jawnParserClass.getMethod("parseUnsafe", classOf[String], jawnFacadeClass)
 
   private[this] class TreeFacadeHandler(replacements: Seq[Replacement]) extends Handler(replacements) {
-    val invokeWithoutArg: String => Object = {
+    protected[this] val invokeWithoutArgs: String => Object = {
       case "jnull" => q"_root_.io.circe.Json.Null"
       case "jfalse" => q"_root_.io.circe.Json.False"
       case "jtrue" => q"_root_.io.circe.Json.True"
@@ -133,18 +134,15 @@ class JsonLiteralMacros(val c: blackbox.Context) {
       case "objectContext" => new ObjectContextHandler(replacements).asProxy(jawnFContextClass)
     }
 
-    val invokeWithArg: (String, Class[_], Object) => Object = {
-      case ("jnum", cls, arg: String) if cls == classOf[String] => q"""
-        _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromDecimalStringUnsafe($arg)
-        )
-      """
-      case ("jint", cls, arg: String) if cls == classOf[String] => q"""
-        _root_.io.circe.Json.fromJsonNumber(
-          _root_.io.circe.JsonNumber.fromIntegralStringUnsafe($arg)
-        )
-      """
-      case ("jstring", cls, arg: String) if cls == classOf[String] => toJsonString(arg)
+    protected[this] val invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object = {
+      case ("jstring", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] => toJsonString(arg)
+      case ("jnum", Array(clsS, clsDecIndex, clsExpIndex), Array(s: CharSequence, decIndex, expIndex))
+        if clsS == classOf[CharSequence] && clsDecIndex == classOf[Int] && clsExpIndex == classOf[Int] =>
+          if (decIndex.asInstanceOf[Int] < 0 && expIndex.asInstanceOf[Int] < 0) {
+            q"_root_.io.circe.Json.fromJsonNumber(_root_.io.circe.JsonNumber.fromIntegralStringUnsafe(${ s.toString }))"
+          } else {
+            q"_root_.io.circe.Json.fromJsonNumber(_root_.io.circe.JsonNumber.fromDecimalStringUnsafe(${ s.toString }))"
+          }
     }
   }
 
