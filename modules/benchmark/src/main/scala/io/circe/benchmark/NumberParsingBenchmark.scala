@@ -58,29 +58,29 @@ class NumberParsingBenchmark {
   def parseLong: Either[Error, Json] = jawn.parse(inputLong)
 
   @Benchmark
-  def decodeBigDecimals: Either[Error, List[BigDecimal]] = jawn.decode[List[BigDecimal]](inputBigDecimals)
+  def decodeManyBigDecimals: Either[Error, List[BigDecimal]] = jawn.decode[List[BigDecimal]](inputBigDecimals)
 
   @Benchmark
-  def decodeBigInts: Either[Error, List[BigInt]] = jawn.decode[List[BigInt]](inputBigInts)
+  def decodeManyBigInts: Either[Error, List[BigInt]] = jawn.decode[List[BigInt]](inputBigInts)
 
   @Benchmark
-  def decodeDoubles: Either[Error, List[Double]] = jawn.decode[List[Double]](inputDoubles)
+  def decodeManyDoubles: Either[Error, List[Double]] = jawn.decode[List[Double]](inputDoubles)
 
   @Benchmark
-  def decodeLongs: Either[Error, List[Long]] = jawn.decode[List[Long]](inputLongs)
+  def decodeManyLongs: Either[Error, List[Long]] = jawn.decode[List[Long]](inputLongs)
 
   @Benchmark
-  def parseBiggerDecimals: Either[Error, Json] = jawn.parse(inputBiggerDecimals)
+  def parseManyBiggerDecimals: Either[Error, Json] = jawn.parse(inputBiggerDecimals)
 
   @Benchmark
-  def parseBigDecimals: Either[Error, Json] = jawn.parse(inputBigDecimals)
+  def parseManyBigDecimals: Either[Error, Json] = jawn.parse(inputBigDecimals)
 
   @Benchmark
-  def parseBigInts: Either[Error, Json] = jawn.parse(inputBigInts)
+  def parseManyBigInts: Either[Error, Json] = jawn.parse(inputBigInts)
 
   @Benchmark
-  def parseDoubles: Either[Error, Json] = jawn.parse(inputDoubles)
+  def parseManyDoubles: Either[Error, Json] = jawn.parse(inputDoubles)
 
   @Benchmark
-  def parseLongs: Either[Error, Json] = jawn.parse(inputLongs)
+  def parseManyLongs: Either[Error, Json] = jawn.parse(inputLongs)
 }
