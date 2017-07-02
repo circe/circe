@@ -44,12 +44,21 @@ final object KeyDecoder {
     }
   }
 
-  implicit val decodeKeyString: KeyDecoder[String] = new KeyDecoder[String] {
-    final def apply(key: String): Option[String] = Some(key)
+  /**
+   * A [[KeyDecoder]] that will always succeed.
+   */
+  private[circe] abstract class AlwaysKeyDecoder[A] extends KeyDecoder[A] {
+    def decodeSafe(key: String): A
+
+    final def apply(key: String): Option[A] = Some(decodeSafe(key))
   }
 
-  implicit val decodeKeySymbol: KeyDecoder[Symbol] = new KeyDecoder[Symbol] {
-    final def apply(key: String): Option[Symbol] = Some(Symbol(key))
+  implicit val decodeKeyString: KeyDecoder[String] = new AlwaysKeyDecoder[String] {
+    final def decodeSafe(key: String): String = key
+  }
+
+  implicit val decodeKeySymbol: KeyDecoder[Symbol] = new AlwaysKeyDecoder[Symbol] {
+    final def decodeSafe(key: String): Symbol = Symbol(key)
   }
 
   implicit val decodeKeyUUID: KeyDecoder[UUID] = new KeyDecoder[UUID] {
