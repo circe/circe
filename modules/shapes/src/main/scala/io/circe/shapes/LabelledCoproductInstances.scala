@@ -44,7 +44,7 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
 
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       Decoder.resultSemigroupK.combineK(
-        c.fields.flatMap(_.find(isK)).fold[Decoder.Result[String]](
+        c.keys.flatMap(_.find(isK)).fold[Decoder.Result[String]](
           Left(DecodingFailure("Record", c.history))
         )(Right(_)).right.flatMap(c.get[V](_).right.map(v => Inl(field[K](v)))),
         decodeR(c).right.map(Inr(_))

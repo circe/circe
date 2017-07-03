@@ -37,8 +37,8 @@ class ACursorSuite extends CirceSuite {
     val c = HCursor.fromJson(j)
 
     val intoObject = for {
-      fields  <- c.fields
-      first   <- fields.headOption
+      keys    <- c.keys
+      first   <- keys.headOption
       atFirst <- c.downField(first).success
     } yield atFirst
 
@@ -53,8 +53,8 @@ class ACursorSuite extends CirceSuite {
     val c = HCursor.fromJson(j)
 
     val intoObject = for {
-      fields  <- c.fields
-      first   <- fields.headOption
+      keys    <- c.keys
+      first   <- keys.headOption
       atFirst <- c.downField(first).success
     } yield atFirst
 
@@ -149,15 +149,15 @@ class ACursorSuite extends CirceSuite {
   }
 
   "values" should "return the expected values" in {
-    assert(cursor.downField("a").values === Some((1 to 5).toVector.map(_.asJson)))
+    assert(cursor.downField("a").values.map(_.toVector) === Some((1 to 5).toVector.map(_.asJson)))
   }
 
   "fieldSet" should "return the expected values" in {
     assert(cursor.fieldSet.map(_.toList.sorted) === Some(List("a", "b", "c")))
   }
 
-  "fields" should "return the expected values" in {
-    assert(cursor.fields === Some(Vector("a", "b", "c")))
+  "keys" should "return the expected values" in {
+    assert(cursor.keys.map(_.toVector) === Some(Vector("a", "b", "c")))
   }
 
   "left" should "successfully select an existing value" in {

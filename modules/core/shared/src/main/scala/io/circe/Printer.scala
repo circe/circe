@@ -144,13 +144,12 @@ final case class Printer(
       val m = value.toMap
 
       writer.append(p.lBraces)
-      val fields = if (preserveOrder) value.fields else value.fieldSet
       var first = true
 
-      val fieldIterator = fields.iterator
+      val keyIterator = value.keys.iterator
 
-      while (fieldIterator.hasNext) {
-        val key = fieldIterator.next()
+      while (keyIterator.hasNext) {
+        val key = keyIterator.next()
         val value = m(key)
         if (!dropNullKeys || !value.isNull) {
           if (!first) writer.append(p.objectCommas)

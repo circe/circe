@@ -10,107 +10,173 @@ import scala.collection.immutable.{ Map, Set }
 /**
  * A mapping from keys to JSON values that maintains insertion order.
  *
- * @author Tony Morris
  * @author Travis Brown
+ *
+ * @groupname Contents Operations for accessing contents
+ * @groupprio Contents 0
+ *
+ * @groupname Conversions Conversions to other collection types
+ * @groupprio Conversions 1
+ *
+ * @groupname Modification Operations that transform the JSON object
+ * @groupprio Modification
  */
 sealed abstract class JsonObject extends Serializable {
   /**
-   * Convert to a map.
+   * Return the JSON value associated with the given key.
+   *
+   * @group Contents
    */
-  def toMap: Map[String, Json]
+  def apply(key: String): Option[Json]
 
   /**
-   * Insert the given key-value pair.
+   * Return `true` if there is an association with the given key.
+   *
+   * @group Contents
    */
-  def add(k: String, j: Json): JsonObject
+  def contains(key: String): Boolean
 
   /**
-   * Prepend the given key-value pair.
+   * Return the number of associations.
+   *
+   * @group Contents
    */
-  def +:(f: (String, Json)): JsonObject
-
-  /**
-   * Remove the field with the given key (if it exists).
-   */
-  def remove(k: String): JsonObject
-
-  /**
-   * Return the JSON value associated with the given field.
-   */
-  def apply(k: String): Option[Json]
-
-  /**
-   * Transform all associated JSON values.
-   */
-  def withJsons(f: Json => Json): JsonObject
+  def size: Int
 
   /**
    * Return `true` if there are no associations.
+   *
+   * @group Contents
    */
   def isEmpty: Boolean
 
   /**
    * Return `true` if there is at least one association.
+   *
+   * @group Contents
    */
   final def nonEmpty: Boolean = !isEmpty
 
   /**
-   * Return `true` if there is an association with the given field.
+   * Return a Kleisli arrow that gets the JSON value associated with the given field.
    */
-  def contains(f: String): Boolean
+  final val kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
 
   /**
-   * Return the list of associations in insertion order.
+   * Return all keys in insertion order.
+   *
+   * @group Contents
    */
-  final def toList: List[(String, Json)] = toVector.toList
-
-  /**
-   * Return the list of associations in insertion order.
-   */
-  def toVector: Vector[(String, Json)]
-
+  def keys: Iterable[String]
 
   /**
    * Return all associated values in insertion order.
+   *
+   * @group Contents
    */
-  def values: Vector[Json]
+  def values: Iterable[Json]
 
   /**
-   * Return a Kleisli arrow that gets the JSON value associated with the given field.
+   * Return all keys in insertion order.
+   *
+   * @group Contents
    */
-  def kleisli: Kleisli[Option, String, Json]
+  @deprecated("Use keys", "0.9.0")
+  final def fields: Iterable[String] = keys
 
   /**
-   * Return all association keys in insertion order.
+   * Return all keys in an undefined order.
+   *
+   * @group Contents
    */
-  def fields: Vector[String]
+  @deprecated("Use key.toSet", "0.9.0")
+  final def fieldSet: Set[String] = keys.toSet
 
   /**
-   * Return all association keys in an undefined order.
+   * Convert to a map.
+   *
+   * @note This conversion does not maintain insertion order.
+   * @group Conversions
    */
-  def fieldSet: Set[String]
+  def toMap: Map[String, Json]
+
+  /**
+   * Return all key-value pairs in insertion order.
+   *
+   * @group Conversions
+   */
+  def toIterable: Iterable[(String, Json)]
+
+  /**
+   * Return all key-value pairs in insertion order as a list.
+   *
+   * @group Conversions
+   */
+  final def toList: List[(String, Json)] = toIterable.toList
+
+  /**
+   * Return all key-value pairs in insertion order as a vector.
+   *
+   * @group Conversions
+   */
+  final def toVector: Vector[(String, Json)] = toIterable.toVector
+
+  /**
+   * Insert the given key and value.
+   *
+   * @group Modification
+   */
+  def add(key: String, value: Json): JsonObject
+
+  /**
+   * Prepend the given key-value pair.
+   *
+   * @group Modification
+   */
+  def +:(field: (String, Json)): JsonObject
+
+  /**
+   * Remove the field with the given key (if it exists).
+   *
+   * @group Modification
+   */
+  def remove(key: String): JsonObject
 
   /**
    * Traverse [[Json]] values.
+   *
+   * @group Modification
    */
   def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject]
 
   /**
-   * Return the number of associations.
+   * Transform all associated JSON values.
+   *
+   * @group Modification
    */
-  def size: Int
+  def mapValues(f: Json => Json): JsonObject
+
+  /**
+   * Transform all associated JSON values.
+   *
+   * @group Modification
+   */
+  @deprecated("Use mapValues", "0.9.0")
+  final def withJsons(f: Json => Json): JsonObject = mapValues(f)
 
   /**
    * Filter by keys and values.
+   *
+   * @group Modification
    */
-  final def filter(pred: ((String, Json)) => Boolean): JsonObject = JsonObject.fromIterable(toVector.filter(pred))
+  final def filter(pred: ((String, Json)) => Boolean): JsonObject = JsonObject.fromIterable(toIterable.filter(pred))
 
   /**
    * Filter by keys.
+   *
+   * @group Modification
    */
-  final def filterKeys(pred: String => Boolean): JsonObject = filter {
-    case (k, _) => pred(k)
-  }
+  final def filterKeys(pred: String => Boolean): JsonObject = filter(field => pred(field._1))
 }
 
 /**
@@ -120,31 +186,31 @@ final object JsonObject {
   /**
    * Construct a [[JsonObject]] from the given key-value pairs.
    */
-  def apply(fields: (String, Json)*): JsonObject = fromIterable(fields)
+  final def apply(fields: (String, Json)*): JsonObject = fromIterable(fields)
 
   /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
-  final def from[F[_]](f: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
-    F.foldLeft(f, empty) { case (acc, (k, v)) => acc.add(k, v) }
+  final def from[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
+    F.foldLeft(fields, empty) { case (acc, (key, value)) => acc.add(key, value) }
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    val m = scala.collection.mutable.Map.empty[String, Json]
-    val fs = Vector.newBuilder[String]
+    val map = scala.collection.mutable.Map.empty[String, Json]
+    val keys = Vector.newBuilder[String]
 
-    val it = fields.iterator
+    val iterator = fields.iterator
 
-    while (it.hasNext) {
-      val (k, v) = it.next
-      if (!m.contains(k)) fs += k else {}
+    while (iterator.hasNext) {
+      val (key, value) = iterator.next
+      if (!map.contains(key)) keys += key else {}
 
-      m(k) = v
+      map(key) = value
     }
 
-    MapAndVectorJsonObject(m.toMap, fs.result())
+    MapAndVectorJsonObject(map.toMap, keys.result())
   }
 
   /**
@@ -152,10 +218,10 @@ final object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(m: Map[String, Json]): JsonObject = MapAndVectorJsonObject(m, m.keys.toVector)
+  final def fromMap(map: Map[String, Json]): JsonObject = MapAndVectorJsonObject(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(m: Map[String, Json], keys: Vector[String]): JsonObject =
-    MapAndVectorJsonObject(m, keys)
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
+    MapAndVectorJsonObject(map, keys)
 
   /**
    * Construct an empty [[JsonObject]].
@@ -165,8 +231,8 @@ final object JsonObject {
   /**
    * Construct a [[JsonObject]] with a single field.
    */
-  final def singleton(k: String, j: Json): JsonObject =
-    MapAndVectorJsonObject(Map((k, j)), Vector(k))
+  final def singleton(key: String, value: Json): JsonObject =
+    MapAndVectorJsonObject(Map((key, value)), Vector(key))
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
@@ -178,36 +244,35 @@ final object JsonObject {
     fieldMap: Map[String, Json],
     orderedFields: Vector[String]
   ) extends JsonObject {
-    final def toMap: Map[String, Json] = fieldMap
+    final def apply(key: String): Option[Json] = fieldMap.get(key)
+    final def size: Int = fieldMap.size
+    final def contains(key: String): Boolean = fieldMap.contains(key)
+    final def isEmpty: Boolean = fieldMap.isEmpty
 
-    final def add(k: String, j: Json): JsonObject =
-      if (fieldMap.contains(k)) {
-        copy(fieldMap = fieldMap.updated(k, j))
+    final def keys: Iterable[String] = orderedFields
+    final def values: Iterable[Json] = orderedFields.toIterable.map(key => fieldMap(key))(breakOut)
+
+    final def toMap: Map[String, Json] = fieldMap
+    final def toIterable: Iterable[(String, Json)] = orderedFields.toIterable.map(key => (key, fieldMap(key)))
+
+    final def add(key: String, value: Json): JsonObject =
+      if (fieldMap.contains(key)) {
+        copy(fieldMap = fieldMap.updated(key, value))
       } else {
-        copy(fieldMap = fieldMap.updated(k, j), orderedFields = orderedFields :+ k)
+        copy(fieldMap = fieldMap.updated(key, value), orderedFields = orderedFields :+ key)
       }
 
-    final def +:(f: (String, Json)): JsonObject = {
-      val (k, j) = f
-      if (fieldMap.contains(k)) {
-        copy(fieldMap = fieldMap.updated(k, j))
+    final def +:(field: (String, Json)): JsonObject = {
+      val (key, value) = field
+      if (fieldMap.contains(key)) {
+        copy(fieldMap = fieldMap.updated(key, value))
       } else {
-        copy(fieldMap = fieldMap.updated(k, j), orderedFields = k +: orderedFields)
+        copy(fieldMap = fieldMap.updated(key, value), orderedFields = key +: orderedFields)
       }
     }
 
-    final def remove(k: String): JsonObject =
-      copy(fieldMap = fieldMap - k, orderedFields = orderedFields.filterNot(_ == k))
-
-    final def apply(k: String): Option[Json] = fieldMap.get(k)
-    final def withJsons(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
-    final def isEmpty: Boolean = fieldMap.isEmpty
-    final def contains(k: String): Boolean = fieldMap.contains(k)
-    final def toVector: Vector[(String, Json)] = orderedFields.map(k => (k, fieldMap(k)))(breakOut)
-    final def values: Vector[Json] = orderedFields.map(k => fieldMap(k))(breakOut)
-    final def kleisli: Kleisli[Option, String, Json] = Kleisli(fieldMap.get)
-    final def fields: Vector[String] = orderedFields
-    final def fieldSet: Set[String] = orderedFields.toSet
+    final def remove(key: String): JsonObject =
+      copy(fieldMap = fieldMap - key, orderedFields = orderedFields.filterNot(_ == key))
 
     final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
       orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
@@ -215,7 +280,7 @@ final object JsonObject {
       }
     )(mappedFields => copy(fieldMap = mappedFields))
 
-    final def size: Int = fieldMap.size
+    final def mapValues(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
 
     override final def toString: String =
       fieldMap.map {

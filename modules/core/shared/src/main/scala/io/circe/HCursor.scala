@@ -3,7 +3,6 @@ package io.circe
 import cats.Applicative
 import io.circe.cursor.{ ArrayCursor, ObjectCursor, TopCursor }
 import scala.annotation.tailrec
-import scala.collection.immutable.Set
 
 abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
   def value: Json
@@ -20,18 +19,13 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
   final def focus: Option[Json] = Some(value)
 
-  final def values: Option[Vector[Json]] = value match {
+  final def values: Option[Iterable[Json]] = value match {
     case Json.JArray(vs) => Some(vs)
     case _ => None
   }
 
-  final def fieldSet: Option[Set[String]] = value match {
-    case Json.JObject(o) => Some(o.fieldSet)
-    case _ => None
-  }
-
-  final def fields: Option[Vector[String]] = value match {
-    case Json.JObject(o) => Some(o.fields)
+  final def keys: Option[Iterable[String]] = value match {
+    case Json.JObject(o) => Some(o.keys)
     case _ => None
   }
 

@@ -98,13 +98,13 @@ class JsonObjectSuite extends CirceSuite {
     assert(result2.kleisli(key) === expected)
   }
 
-  "fields" should "return all keys" in forAll { (fields: List[(String, Json)]) =>
+  "keys" should "return all keys" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.from(fields)
     val expected = fields.map(_._1).distinct
 
-    assert(result1.fields.toList === expected)
-    assert(result2.fields.toList === expected)
+    assert(result1.keys.toList === expected)
+    assert(result2.keys.toList === expected)
   }
 
   "values" should "return all values" in forAll { (fields: List[(String, Json)]) =>
@@ -132,6 +132,18 @@ class JsonObjectSuite extends CirceSuite {
 
     assert(JsonObject.fromMap(result1.toMap) === expected)
     assert(JsonObject.fromMap(result2.toMap) === expected)
+  }
+
+  "toIterable" should "return all fields" in forAll { (values: List[Json]) =>
+    val fields = values.zipWithIndex.map {
+      case (value, i) => i.toString -> value
+    }.reverse
+
+    val result1 = JsonObject.fromIterable(fields)
+    val result2 = JsonObject.from(fields)
+
+    assert(result1.toIterable.toList === fields)
+    assert(result2.toIterable.toList === fields)
   }
 
   "toList" should "return all fields" in forAll { (values: List[Json]) =>
@@ -218,13 +230,13 @@ class JsonObjectSuite extends CirceSuite {
     }
   }
 
-  "withJsons" should "transform the JSON object appropriately" in forAll { (values: List[Json], replacement: Json) =>
+  "mapValues" should "transform the JSON object appropriately" in forAll { (values: List[Json], replacement: Json) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }
 
-    val result1 = JsonObject.fromIterable(fields).withJsons(_ => replacement)
-    val result2 = JsonObject.from(fields).withJsons(_ => replacement)
+    val result1 = JsonObject.fromIterable(fields).mapValues(_ => replacement)
+    val result2 = JsonObject.from(fields).mapValues(_ => replacement)
     val expected = JsonObject.from(fields.map(field => field._1 -> replacement))
 
     assert(result1 === expected)
