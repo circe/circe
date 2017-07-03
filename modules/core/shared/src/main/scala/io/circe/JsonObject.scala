@@ -177,6 +177,8 @@ sealed abstract class JsonObject extends Serializable {
    * @group Modification
    */
   final def filterKeys(pred: String => Boolean): JsonObject = filter(field => pred(field._1))
+
+  private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit
 }
 
 /**
@@ -210,7 +212,7 @@ final object JsonObject {
       map(key) = value
     }
 
-    MapAndVectorJsonObject(map.toMap, keys.result())
+    new MapAndVectorJsonObject(map.toMap, keys.result())
   }
 
   /**
@@ -218,21 +220,21 @@ final object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(map: Map[String, Json]): JsonObject = MapAndVectorJsonObject(map, map.keys.toVector)
+  final def fromMap(map: Map[String, Json]): JsonObject = new MapAndVectorJsonObject(map, map.keys.toVector)
 
   private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
-    MapAndVectorJsonObject(map, keys)
+    new MapAndVectorJsonObject(map, keys)
 
   /**
    * Construct an empty [[JsonObject]].
    */
-  final val empty: JsonObject = MapAndVectorJsonObject(Map.empty, Vector.empty)
+  final val empty: JsonObject = new MapAndVectorJsonObject(Map.empty, Vector.empty)
 
   /**
    * Construct a [[JsonObject]] with a single field.
    */
   final def singleton(key: String, value: Json): JsonObject =
-    MapAndVectorJsonObject(Map((key, value)), Vector(key))
+    new MapAndVectorJsonObject(Map((key, value)), Vector(key))
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
@@ -240,52 +242,79 @@ final object JsonObject {
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
    */
-  private[this] final case class MapAndVectorJsonObject(
-    fieldMap: Map[String, Json],
-    orderedFields: Vector[String]
+  private[this] final class MapAndVectorJsonObject(
+    fields: Map[String, Json],
+    orderedKeys: Vector[String]
   ) extends JsonObject {
-    final def apply(key: String): Option[Json] = fieldMap.get(key)
-    final def size: Int = fieldMap.size
-    final def contains(key: String): Boolean = fieldMap.contains(key)
-    final def isEmpty: Boolean = fieldMap.isEmpty
+    final def apply(key: String): Option[Json] = fields.get(key)
+    final def size: Int = fields.size
+    final def contains(key: String): Boolean = fields.contains(key)
+    final def isEmpty: Boolean = fields.isEmpty
 
-    final def keys: Iterable[String] = orderedFields
-    final def values: Iterable[Json] = orderedFields.toIterable.map(key => fieldMap(key))(breakOut)
+    final def keys: Iterable[String] = orderedKeys
+    final def values: Iterable[Json] = orderedKeys.toIterable.map(key => fields(key))(breakOut)
 
-    final def toMap: Map[String, Json] = fieldMap
-    final def toIterable: Iterable[(String, Json)] = orderedFields.toIterable.map(key => (key, fieldMap(key)))
+    final def toMap: Map[String, Json] = fields
+    final def toIterable: Iterable[(String, Json)] = orderedKeys.toIterable.map(key => (key, fields(key)))
 
     final def add(key: String, value: Json): JsonObject =
-      if (fieldMap.contains(key)) {
-        copy(fieldMap = fieldMap.updated(key, value))
+      if (fields.contains(key)) {
+        new MapAndVectorJsonObject(fields.updated(key, value), orderedKeys)
       } else {
-        copy(fieldMap = fieldMap.updated(key, value), orderedFields = orderedFields :+ key)
+        new MapAndVectorJsonObject(fields.updated(key, value), orderedKeys :+ key)
       }
 
     final def +:(field: (String, Json)): JsonObject = {
       val (key, value) = field
-      if (fieldMap.contains(key)) {
-        copy(fieldMap = fieldMap.updated(key, value))
+      if (fields.contains(key)) {
+        new MapAndVectorJsonObject(fields.updated(key, value), orderedKeys)
       } else {
-        copy(fieldMap = fieldMap.updated(key, value), orderedFields = key +: orderedFields)
+        new MapAndVectorJsonObject(fields.updated(key, value), key +: orderedKeys)
       }
     }
 
     final def remove(key: String): JsonObject =
-      copy(fieldMap = fieldMap - key, orderedFields = orderedFields.filterNot(_ == key))
+      new MapAndVectorJsonObject(fields - key, orderedKeys.filterNot(_ == key))
 
     final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
-      orderedFields.foldLeft(F.pure(Map.empty[String, Json])) {
-        case (acc, k) => F.map2(acc, f(fieldMap(k)))(_.updated(k, _))
+      orderedKeys.foldLeft(F.pure(Map.empty[String, Json])) {
+        case (acc, k) => F.map2(acc, f(fields(k)))(_.updated(k, _))
       }
-    )(mappedFields => copy(fieldMap = mappedFields))
+    )(mappedFields => new MapAndVectorJsonObject(mappedFields, orderedKeys))
 
-    final def mapValues(f: Json => Json): JsonObject = copy(fieldMap = fieldMap.mapValues(f).view.force)
+    final def mapValues(f: Json => Json): JsonObject =
+      new MapAndVectorJsonObject(fields.mapValues(f).view.force, orderedKeys)
 
     override final def toString: String =
-      fieldMap.map {
+      fields.map {
         case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
       }.mkString("object[", ",", "]")
+
+    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val originalDepth = folder.depth
+      val p = folder.pieces(folder.depth)
+      var first = true
+      val keyIterator = orderedKeys.iterator
+
+      folder.writer.append(p.lBraces)
+
+      while (keyIterator.hasNext) {
+        val key = keyIterator.next()
+        val value = fields(key)
+        if (!folder.dropNullKeys || !value.isNull) {
+          if (!first) folder.writer.append(p.objectCommas)
+          folder.onString(key)
+          folder.writer.append(p.colons)
+
+          folder.depth += 1
+          value.foldWith(folder)
+          folder.depth = originalDepth
+          first = false
+        }
+      }
+
+      folder.writer.append(p.rBraces)
+    }
 
     /**
      * Universal equality derived from our type-safe equality.
@@ -295,6 +324,6 @@ final object JsonObject {
       case _ => false
     }
 
-    override final def hashCode: Int = fieldMap.hashCode
+    override final def hashCode: Int = fields.hashCode
   }
 }
