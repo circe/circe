@@ -47,9 +47,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
   final def downField(k: String): ACursor = value match {
     case Json.JObject(o) =>
-      val m = o.toMap
-
-      if (!m.contains(k)) fail(CursorOp.DownField(k)) else {
+      if (!o.contains(k)) fail(CursorOp.DownField(k)) else {
         new ObjectCursor(o, k, this, false)(this, CursorOp.DownField(k))
       }
     case _ => fail(CursorOp.DownField(k))

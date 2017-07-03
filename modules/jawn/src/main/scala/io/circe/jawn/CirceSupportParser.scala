@@ -1,6 +1,7 @@
 package io.circe.jawn
 
 import io.circe.{ Json, JsonNumber, JsonObject }
+import java.util.LinkedHashMap
 import jawn.{ Facade, FContext, SupportParser }
 
 final object CirceSupportParser extends SupportParser[Json] {
@@ -34,21 +35,18 @@ final object CirceSupportParser extends SupportParser[Json] {
 
     def objectContext(): FContext[Json] = new FContext[Json] {
       private[this] final var key: String = null
-      private[this] final val m = scala.collection.mutable.Map.empty[String, Json]
-      private[this] final val keys = Vector.newBuilder[String]
+      private[this] final val m = new LinkedHashMap[String, Json]
 
       final def add(s: CharSequence): Unit =
         if (key.eq(null)) { key = s.toString } else {
-          if (!m.contains(key)) keys += key
-          m(key) = jstring(s)
+          m.put(key, jstring(s))
           key = null
         }
       final def add(v: Json): Unit = {
-        if (!m.contains(key)) keys += key
-        m(key) = v
+        m.put(key, v)
         key = null
       }
-      final def finish: Json = Json.fromJsonObject(JsonObject.fromMapAndVector(m.toMap, keys.result()))
+      final def finish: Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
       final def isObj: Boolean = true
     }
   }

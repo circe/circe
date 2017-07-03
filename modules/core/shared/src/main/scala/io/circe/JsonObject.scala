@@ -2,9 +2,8 @@ package io.circe
 
 import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
-import cats.instances.map._
 import java.io.Serializable
-import scala.collection.breakOut
+import java.util.LinkedHashMap
 import scala.collection.immutable.{ Map, Set }
 
 /**
@@ -22,6 +21,13 @@ import scala.collection.immutable.{ Map, Set }
  * @groupprio Modification
  */
 sealed abstract class JsonObject extends Serializable {
+  /**
+   * Return the JSON value associated with the given key, with undefined behavior if there is none.
+   *
+   * @group Contents
+   */
+  private[circe] def applyUnsafe(k: String): Json
+
   /**
    * Return the JSON value associated with the given key.
    *
@@ -179,6 +185,18 @@ sealed abstract class JsonObject extends Serializable {
   final def filterKeys(pred: String => Boolean): JsonObject = filter(field => pred(field._1))
 
   private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit
+
+  final override def toString: String = toIterable.map {
+    case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
+  }.mkString("object[", ",", "]")
+
+  final override def equals(that: Any): Boolean = if (that.isInstanceOf[JsonObject]) {
+    toMap == that.asInstanceOf[JsonObject].toMap
+  } else {
+    false
+  }
+
+  final override def hashCode: Int = toMap.hashCode
 }
 
 /**
@@ -200,19 +218,16 @@ final object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    val map = scala.collection.mutable.Map.empty[String, Json]
-    val keys = Vector.newBuilder[String]
-
+    val map = new LinkedHashMap[String, Json]
     val iterator = fields.iterator
 
     while (iterator.hasNext) {
       val (key, value) = iterator.next
-      if (!map.contains(key)) keys += key else {}
 
-      map(key) = value
+      map.put(key, value)
     }
 
-    new MapAndVectorJsonObject(map.toMap, keys.result())
+    new LinkedHashMapJsonObject(map)
   }
 
   /**
@@ -221,6 +236,9 @@ final object JsonObject {
    * Note that the order of the fields is arbitrary.
    */
   final def fromMap(map: Map[String, Json]): JsonObject = new MapAndVectorJsonObject(map, map.keys.toVector)
+
+  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
+    new LinkedHashMapJsonObject(map)
 
   private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
     new MapAndVectorJsonObject(map, keys)
@@ -233,11 +251,107 @@ final object JsonObject {
   /**
    * Construct a [[JsonObject]] with a single field.
    */
-  final def singleton(key: String, value: Json): JsonObject =
-    new MapAndVectorJsonObject(Map((key, value)), Vector(key))
+  final def singleton(key: String, value: Json): JsonObject = new MapAndVectorJsonObject(Map((key, value)), Vector(key))
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
-  implicit final val eqJsonObject: Eq[JsonObject] = Eq.by(_.toMap)
+  implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
+
+  /**
+   * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
+   */
+  private[this] final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
+    private[circe] def applyUnsafe(key: String): Json = fields.get(key)
+    final def apply(k: String): Option[Json] = Option(fields.get(k))
+    final def size: Int = fields.size
+    final def contains(k: String): Boolean = fields.containsKey(k)
+    final def isEmpty: Boolean = fields.isEmpty
+
+    final def keys: Iterable[String] = new Iterable[String] {
+      final def iterator: Iterator[String] = new Iterator[String] {
+        private[this] val underlying = fields.keySet.iterator
+
+        final def hasNext: Boolean = underlying.hasNext
+        final def next(): String = underlying.next()
+      }
+    }
+
+    final def values: Iterable[Json] = new Iterable[Json] {
+      final def iterator: Iterator[Json] = new Iterator[Json] {
+        private[this] val underlying = fields.values.iterator
+
+        final def hasNext: Boolean = underlying.hasNext
+        final def next(): Json = underlying.next()
+      }
+    }
+
+    final def toMap: Map[String, Json] = {
+      val builder = Map.newBuilder[String, Json]
+      builder.sizeHint(size)
+
+      val iterator = fields.entrySet.iterator
+
+      while (iterator.hasNext) {
+        val next = iterator.next
+
+        builder += ((next.getKey, next.getValue))
+      }
+
+      builder.result()
+    }
+
+    final def toIterable: Iterable[(String, Json)] = new Iterable[(String, Json)] {
+      final def iterator: Iterator[(String, Json)] = new Iterator[(String, Json)] {
+        private[this] val underlying = fields.entrySet.iterator
+
+        final def hasNext: Boolean = underlying.hasNext
+        final def next(): (String, Json) = {
+          val field = underlying.next()
+
+          (field.getKey, field.getValue)
+        }
+      }
+    }
+
+    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val originalDepth = folder.depth
+      val p = folder.pieces(folder.depth)
+      var first = true
+      val iterator = fields.entrySet.iterator
+
+      folder.writer.append(p.lBraces)
+
+      while (iterator.hasNext) {
+        val next = iterator.next()
+        val key = next.getKey
+        val value = next.getValue
+
+        if (!folder.dropNullKeys || !value.isNull) {
+          if (!first) folder.writer.append(p.objectCommas)
+          folder.onString(key)
+          folder.writer.append(p.colons)
+
+          folder.depth += 1
+          value.foldWith(folder)
+          folder.depth = originalDepth
+          first = false
+        }
+      }
+
+      folder.writer.append(p.rBraces)
+    }
+
+    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject =
+      new MapAndVectorJsonObject(toMap, keys.toVector)
+
+    final def add(k: String, j: Json): JsonObject = toMapAndVectorJsonObject.add(k, j)
+    final def +:(f: (String, Json)): JsonObject = toMapAndVectorJsonObject.+:(f)
+    final def remove(k: String): JsonObject = toMapAndVectorJsonObject.remove(k)
+
+    final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] =
+      toMapAndVectorJsonObject.traverse[F](f)(F)
+
+    final def mapValues(f: Json => Json): JsonObject = toMapAndVectorJsonObject.mapValues(f)
+  }
 
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
@@ -246,16 +360,17 @@ final object JsonObject {
     fields: Map[String, Json],
     orderedKeys: Vector[String]
   ) extends JsonObject {
+    private[circe] def applyUnsafe(key: String): Json = fields(key)
     final def apply(key: String): Option[Json] = fields.get(key)
     final def size: Int = fields.size
     final def contains(key: String): Boolean = fields.contains(key)
     final def isEmpty: Boolean = fields.isEmpty
 
     final def keys: Iterable[String] = orderedKeys
-    final def values: Iterable[Json] = orderedKeys.toIterable.map(key => fields(key))(breakOut)
+    final def values: Iterable[Json] = orderedKeys.map(key => fields(key))
 
     final def toMap: Map[String, Json] = fields
-    final def toIterable: Iterable[(String, Json)] = orderedKeys.toIterable.map(key => (key, fields(key)))
+    final def toIterable: Iterable[(String, Json)] = orderedKeys.map(key => (key, fields(key)))
 
     final def add(key: String, value: Json): JsonObject =
       if (fields.contains(key)) {
@@ -278,17 +393,12 @@ final object JsonObject {
 
     final def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.map(
       orderedKeys.foldLeft(F.pure(Map.empty[String, Json])) {
-        case (acc, k) => F.map2(acc, f(fields(k)))(_.updated(k, _))
+        case (acc, key) => F.map2(acc, f(fields(key)))(_.updated(key, _))
       }
     )(mappedFields => new MapAndVectorJsonObject(mappedFields, orderedKeys))
 
     final def mapValues(f: Json => Json): JsonObject =
       new MapAndVectorJsonObject(fields.mapValues(f).view.force, orderedKeys)
-
-    override final def toString: String =
-      fields.map {
-        case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
-      }.mkString("object[", ",", "]")
 
     final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
       val originalDepth = folder.depth
@@ -315,15 +425,5 @@ final object JsonObject {
 
       folder.writer.append(p.rBraces)
     }
-
-    /**
-     * Universal equality derived from our type-safe equality.
-     */
-    override final def equals(that: Any): Boolean = that match {
-      case that: JsonObject => JsonObject.eqJsonObject.eqv(this, that)
-      case _ => false
-    }
-
-    override final def hashCode: Int = fields.hashCode
   }
 }
