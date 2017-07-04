@@ -1,23 +1,36 @@
 package io.circe.testing
 
 import cats.data.ValidatedNel
+import cats.instances.list._
 import cats.laws.discipline.arbitrary._
-import io.circe._
+import io.circe.{
+  AccumulatingDecoder,
+  ArrayEncoder,
+  Decoder,
+  DecodingFailure,
+  Encoder,
+  Json,
+  JsonBiggerDecimal,
+  JsonNumber,
+  JsonObject,
+  KeyDecoder,
+  KeyEncoder,
+  ObjectEncoder
+}
 import io.circe.numbers.BiggerDecimal
-import io.circe.numbers.testing.JsonNumberString
+import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
-import org.scalacheck.Arbitrary.arbitrary
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
+  /**
+   * The maximum depth of a generated JSON value.
+   */
+  protected def maxJsonDepth: Int = 5
+
   /**
    * The maximum number of values in a generated JSON array.
    */
   protected def maxJsonArraySize: Int = 10
-
-  /**
-   * The maximum depth of a generated JSON object.
-   */
-  protected def maxJsonObjectDepth: Int = 5
 
   /**
    * The maximum number of key-value pairs in a generated JSON object.
@@ -37,80 +50,84 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
 
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
     Gen.oneOf(
-      arbitrary[JsonNumberString].map(jns => JsonNumber.fromDecimalStringUnsafe(jns.value)),
-      arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
-      arbitrary[BigDecimal].map(value => JsonBigDecimal(value.underlying)),
-      arbitrary[Long].map(JsonLong(_)),
-      arbitrary[Double].map(d => if (d.isNaN || d.isInfinity) JsonDouble(0.0) else JsonDouble(d)),
-      arbitrary[Float].map(f => if (f.isNaN || f.isInfinity) JsonFloat(0.0f) else JsonFloat(f))
+      Arbitrary.arbitrary[IntegralString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
+      Arbitrary.arbitrary[JsonNumberString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
+      Arbitrary.arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
+      Arbitrary.arbitrary[BigDecimal].map(Json.fromBigDecimal(_).asNumber.get),
+      Arbitrary.arbitrary[BigInt].map(Json.fromBigInt(_).asNumber.get),
+      Arbitrary.arbitrary[Long].map(Json.fromLong(_).asNumber.get),
+      Arbitrary.arbitrary[Double].map(Json.fromDoubleOrString(_).asNumber.get),
+      Arbitrary.arbitrary[Float].map(Json.fromFloatOrString(_).asNumber.get)
     ).map(transformJsonNumber)
   )
 
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
-  private[this] val genBool: Gen[Json] = arbitrary[Boolean].map(Json.fromBoolean)
-  private[this] val genString: Gen[Json] = arbitrary[String].map(Json.fromString)
+  private[this] val genBool: Gen[Json] = Arbitrary.arbitrary[Boolean].map(Json.fromBoolean)
+  private[this] val genString: Gen[Json] = Arbitrary.arbitrary[String].map(Json.fromString)
   private[this] val genNumber: Gen[Json] = Arbitrary.arbitrary[JsonNumber].map(Json.fromJsonNumber)
 
   private[this] def genArray(depth: Int): Gen[Json] = Gen.choose(0, maxJsonArraySize).flatMap { size =>
-    Gen.listOfN(
-      size,
-      arbitraryJsonAtDepth(depth + 1).arbitrary
-    ).map(Json.arr)
+    Gen.listOfN(size, genJsonAtDepth(depth + 1)).map(Json.arr)
   }
 
-  private[this] def genObject(depth: Int): Gen[Json] = Gen.choose(0, maxJsonObjectSize).flatMap { size =>
-    Gen.listOfN(
+  private[this] def genJsonObject(depth: Int): Gen[JsonObject] = Gen.choose(0, maxJsonObjectSize).flatMap { size =>
+    val fields = Gen.listOfN(
       size,
       for {
-        k <- arbitrary[String]
-        v <- arbitraryJsonAtDepth(depth + 1).arbitrary
-      } yield k -> v
-    ).map(Json.obj)
-  }
-
-  private[this] def arbitraryJsonAtDepth(depth: Int): Arbitrary[Json] = {
-    val genJsons = List(genNumber, genString) ++ (
-      if (depth < maxJsonObjectDepth) List(genArray(depth), genObject(depth)) else Nil
+        key <- Arbitrary.arbitrary[String]
+        value <- genJsonAtDepth(depth + 1)
+      } yield key -> value
     )
 
-    Arbitrary(Gen.oneOf(genNull, genBool, genJsons: _*))
+    Gen.oneOf(
+      fields.map(JsonObject.fromIterable),
+      fields.map(JsonObject.from[List])
+    )
   }
 
-  implicit val arbitraryJson: Arbitrary[Json] = arbitraryJsonAtDepth(0)
-  implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genObject(0).map(_.asObject.get))
+  private[this] def genJsonAtDepth(depth: Int): Gen[Json] = {
+    val genJsons = List(genNumber, genString) ++ (
+      if (depth < maxJsonDepth) List(genArray(depth), genJsonObject(depth).map(Json.fromJsonObject)) else Nil
+    )
+
+    Gen.oneOf(genNull, genBool, genJsons: _*)
+  }
+
+  implicit val arbitraryJson: Arbitrary[Json] = Arbitrary(genJsonAtDepth(0))
+  implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genJsonObject(0))
 
   implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
-    arbitrary[String].map(DecodingFailure(_, Nil))
+    Arbitrary.arbitrary[String].map(DecodingFailure(_, Nil))
   )
 
   implicit def arbitraryKeyEncoder[A: Cogen]: Arbitrary[KeyEncoder[A]] = Arbitrary(
-    arbitrary[A => String].map(KeyEncoder.instance)
+    Arbitrary.arbitrary[A => String].map(KeyEncoder.instance)
   )
 
   implicit def arbitraryKeyDecoder[A: Arbitrary]: Arbitrary[KeyDecoder[A]] = Arbitrary(
-    arbitrary[String => Option[A]].map(KeyDecoder.instance)
+    Arbitrary.arbitrary[String => Option[A]].map(KeyDecoder.instance)
   )
 
   implicit def arbitraryEncoder[A: Cogen]: Arbitrary[Encoder[A]] = Arbitrary(
-    arbitrary[A => Json].map(Encoder.instance)
+    Arbitrary.arbitrary[A => Json].map(Encoder.instance)
   )
 
   implicit def arbitraryDecoder[A: Arbitrary]: Arbitrary[Decoder[A]] = Arbitrary(
-    arbitrary[Json => Either[DecodingFailure, A]].map(f =>
+    Arbitrary.arbitrary[Json => Either[DecodingFailure, A]].map(f =>
       Decoder.instance(c => f(c.value))
     )
   )
 
   implicit def arbitraryObjectEncoder[A: Cogen]: Arbitrary[ObjectEncoder[A]] = Arbitrary(
-    arbitrary[A => JsonObject].map(ObjectEncoder.instance)
+    Arbitrary.arbitrary[A => JsonObject].map(ObjectEncoder.instance)
   )
 
   implicit def arbitraryArrayEncoder[A: Cogen]: Arbitrary[ArrayEncoder[A]] = Arbitrary(
-    arbitrary[A => Vector[Json]].map(ArrayEncoder.instance)
+    Arbitrary.arbitrary[A => Vector[Json]].map(ArrayEncoder.instance)
   )
 
   implicit def arbitraryAccumulatingDecoder[A: Arbitrary]: Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
-    arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
+    Arbitrary.arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
       AccumulatingDecoder.instance(c => f(c.value))
     )
   )
