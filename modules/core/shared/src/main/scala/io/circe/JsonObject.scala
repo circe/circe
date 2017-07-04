@@ -18,7 +18,10 @@ import scala.collection.immutable.{ Map, Set }
  * @groupprio Conversions 1
  *
  * @groupname Modification Operations that transform the JSON object
- * @groupprio Modification
+ * @groupprio Modification 2
+ *
+ * @groupname Other Equality and other operations
+ * @groupprio Other 3
  */
 sealed abstract class JsonObject extends Serializable {
   /**
@@ -65,6 +68,8 @@ sealed abstract class JsonObject extends Serializable {
 
   /**
    * Return a Kleisli arrow that gets the JSON value associated with the given field.
+   *
+   * @group Contents
    */
   final val kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
 
@@ -186,16 +191,25 @@ sealed abstract class JsonObject extends Serializable {
 
   private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit
 
+  /**
+   * @group Other
+   */
   final override def toString: String = toIterable.map {
     case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
   }.mkString("object[", ",", "]")
 
+  /**
+   * @group Other
+   */
   final override def equals(that: Any): Boolean = if (that.isInstanceOf[JsonObject]) {
     toMap == that.asInstanceOf[JsonObject].toMap
   } else {
     false
   }
 
+  /**
+   * @group Other
+   */
   final override def hashCode: Int = toMap.hashCode
 }
 
