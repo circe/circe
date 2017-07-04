@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
 /**
- * Compare the performance of string and byte buffer printers.
+ * Compare the performance of JSON number parsing.
  *
  * The following command will run the benchmarks with reasonable settings:
  *
