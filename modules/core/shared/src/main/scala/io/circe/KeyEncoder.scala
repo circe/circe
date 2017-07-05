@@ -10,7 +10,7 @@ import java.util.UUID
  * This type class will be used to create strings for JSON keys when encoding
  * `Map[A, ?]` instances as JSON.
  *
- * Note that if more than one value maps to the same string, the resuling JSON
+ * Note that if more than one value maps to the same string, the resulting JSON
  * object may have fewer fields than the original map.
  */
 abstract class KeyEncoder[A] extends Serializable { self =>
