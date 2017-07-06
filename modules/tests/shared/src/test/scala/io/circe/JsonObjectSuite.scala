@@ -1,7 +1,8 @@
 package io.circe
 
-import io.circe.tests.CirceSuite
 import cats.data.Const
+import cats.kernel.Eq
+import io.circe.tests.CirceSuite
 
 class JsonObjectSuite extends CirceSuite {
   "JsonObject.fromIterable" should "drop all but the last instance when fields have the same key" in {
@@ -295,5 +296,14 @@ class JsonObjectSuite extends CirceSuite {
 
   "filterKeys" should "be consistent with Map#filterKeys" in forAll { (value: JsonObject, pred: String => Boolean) =>
     assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred))
+  }
+
+  "Eq[JsonObject]" should "be consistent with comparing fields" in {
+    forAll { (fields1: List[(String, Json)], fields2: List[(String, Json)]) =>
+      val result = Eq[JsonObject].eqv(JsonObject.fromIterable(fields1), JsonObject.fromIterable(fields2))
+      val expected = fields1 == fields2
+
+      assert(result === expected)
+    }
   }
 }
