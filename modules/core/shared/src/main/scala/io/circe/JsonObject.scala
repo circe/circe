@@ -357,8 +357,24 @@ final object JsonObject {
       folder.writer.append(p.rBraces)
     }
 
-    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject =
-      new MapAndVectorJsonObject(toMap, keys.toVector)
+    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject = {
+      val mapBuilder = Map.newBuilder[String, Json]
+      val keyBuilder = Vector.newBuilder[String]
+      mapBuilder.sizeHint(size)
+      keyBuilder.sizeHint(size)
+
+      val iterator = fields.entrySet.iterator
+
+      while (iterator.hasNext) {
+        val next = iterator.next
+        val key = next.getKey
+
+        mapBuilder += ((key, next.getValue))
+        keyBuilder += key
+      }
+
+      new MapAndVectorJsonObject(mapBuilder.result(), keyBuilder.result())
+    }
 
     final def add(k: String, j: Json): JsonObject = toMapAndVectorJsonObject.add(k, j)
     final def +:(f: (String, Json)): JsonObject = toMapAndVectorJsonObject.+:(f)
