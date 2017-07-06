@@ -260,9 +260,6 @@ final object JsonObject {
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     new LinkedHashMapJsonObject(map)
 
-  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
-    new MapAndVectorJsonObject(map, keys)
-
   /**
    * Construct an empty [[JsonObject]].
    */
