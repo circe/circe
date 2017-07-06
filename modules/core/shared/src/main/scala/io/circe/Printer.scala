@@ -30,13 +30,13 @@ import scala.annotation.switch
  * @param colonLeft Spaces to insert to left of a colon.
  * @param colonRight Spaces to insert to right of a colon.
  * @param preserveOrder Determines if field ordering should be preserved.
- * @param dropNullKeys Determines if object fields with values of null are dropped from the output.
+ * @param dropNullValues Determines if object fields with values of null are dropped from the output.
  * @param reuseWriters Determines whether the printer will reuse Appendables via thread-local
  *        storage.
  */
 final case class Printer(
   preserveOrder: Boolean,
-  dropNullKeys: Boolean,
+  dropNullValues: Boolean,
   indent: String,
   lbraceLeft: String = "",
   lbraceRight: String = "",
@@ -64,14 +64,14 @@ final case class Printer(
 
   private[this] final class StringBuilderFolder(
     writer: StringBuilder
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullKeys) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues) {
     final def onBoolean(value: Boolean): Unit = writer.append(value)
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullKeys) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
   }
@@ -206,7 +206,7 @@ final object Printer {
    */
   final val noSpaces: Printer = Printer(
     preserveOrder = true,
-    dropNullKeys = false,
+    dropNullValues = false,
     indent = ""
   )
 
@@ -215,7 +215,7 @@ final object Printer {
    */
   final def indented(indent: String): Printer = Printer(
     preserveOrder = true,
-    dropNullKeys = false,
+    dropNullValues = false,
     indent = indent,
     lbraceRight = "\n",
     rbraceLeft = "\n",
@@ -241,7 +241,7 @@ final object Printer {
   private[circe] abstract class PrintingFolder(
     private[circe] val writer: Appendable,
     private[circe] val pieces: PiecesAtDepth,
-    private[circe] val dropNullKeys: Boolean
+    private[circe] val dropNullValues: Boolean
   ) extends Json.Folder[Unit] {
     private[circe] var depth: Int = 0
 

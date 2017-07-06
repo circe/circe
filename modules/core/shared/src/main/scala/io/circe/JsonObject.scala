@@ -342,7 +342,7 @@ final object JsonObject {
         val key = next.getKey
         val value = next.getValue
 
-        if (!folder.dropNullKeys || !value.isNull) {
+        if (!folder.dropNullValues || !value.isNull) {
           if (!first) folder.writer.append(p.objectCommas)
           folder.onString(key)
           folder.writer.append(p.colons)
@@ -428,7 +428,7 @@ final object JsonObject {
       while (keyIterator.hasNext) {
         val key = keyIterator.next()
         val value = fields(key)
-        if (!folder.dropNullKeys || !value.isNull) {
+        if (!folder.dropNullValues || !value.isNull) {
           if (!first) folder.writer.append(p.objectCommas)
           folder.onString(key)
           folder.writer.append(p.colons)
