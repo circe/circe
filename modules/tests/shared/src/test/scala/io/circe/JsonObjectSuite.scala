@@ -200,6 +200,29 @@ class JsonObjectSuite extends CirceSuite {
     }
   }
 
+  "add and remove" should "be applied correctly" in {
+    forAll { (original: JsonObject, operations: List[Either[String, (String, Json)]]) =>
+      val result = operations.foldLeft(original) {
+        case (acc, Right((key, value))) => acc.add(key, value)
+        case (acc, Left(key)) => acc.remove(key)
+      }
+
+      val expected = operations.foldLeft(original.toList) {
+        case (acc, Right((key, value))) =>
+          val index = acc.indexWhere(_._1 == key)
+
+          if (index < 0) {
+            acc :+ (key -> value)
+          } else {
+            acc.updated(index, (key, value))
+          }
+        case (acc, Left(key)) => acc.filterNot(_._1 == key)
+      }
+
+      assert(result.toList === expected)
+    }
+  }
+
   "+:" should "replace existing fields with the same key" in {
     forAll { (head: Json, tail: List[Json], replacement: Json) =>
       val fields = (head :: tail).zipWithIndex.map {
