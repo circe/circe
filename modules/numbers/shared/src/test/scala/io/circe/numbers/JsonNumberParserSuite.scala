@@ -166,13 +166,13 @@ class JsonNumberParserSuite extends FunSpec with Matchers with GeneratorDrivenPr
         it("on zero") {
           val result = SimpleJsonNumberParser.fromDouble(0.0)
 
-          result shouldBe SimpleJsonNumberParser.parse(0.0.toString)
+          result shouldBe SimpleJsonNumberParser.parse("0.0")
         }
 
         it("on negative zero") {
           val result = SimpleJsonNumberParser.fromDouble(-0.0)
 
-          result shouldBe SimpleJsonNumberParser.parse(-0.0.toString)
+          result shouldBe SimpleJsonNumberParser.parse("-0.0")
         }
       }
 
@@ -204,13 +204,13 @@ class JsonNumberParserSuite extends FunSpec with Matchers with GeneratorDrivenPr
         it("on zero") {
           val result = SimpleJsonNumberParser.fromFloat(0.0f)
 
-          result shouldBe SimpleJsonNumberParser.parse(0.0f.toString)
+          result shouldBe SimpleJsonNumberParser.parse("0.0")
         }
 
         it("on negative zero") {
           val result = SimpleJsonNumberParser.fromFloat(-0.0f)
 
-          result shouldBe SimpleJsonNumberParser.parse(-0.0f.toString)
+          result shouldBe SimpleJsonNumberParser.parse("-0.0")
         }
       }
 
