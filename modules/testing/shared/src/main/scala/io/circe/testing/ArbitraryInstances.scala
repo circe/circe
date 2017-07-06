@@ -81,7 +81,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
 
     Gen.oneOf(
       fields.map(JsonObject.fromIterable),
-      fields.map(JsonObject.from[List])
+      fields.map(JsonObject.fromFoldable[List])
     )
   }
 

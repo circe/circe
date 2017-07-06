@@ -225,8 +225,14 @@ final object JsonObject {
   /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
-  final def from[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
+  final def fromFoldable[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
     F.foldLeft(fields, empty) { case (acc, (key, value)) => acc.add(key, value) }
+
+  /**
+   * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
+   */
+  @deprecated("Use fromFoldable", "0.9.0")
+  final def from[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject = fromFoldable[F](fields)(F)
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
