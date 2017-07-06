@@ -893,9 +893,9 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
      */
     def requireEmptyWithMessage(createMessage: List[String] => String): StateT[Result, ACursor, Unit] =
       StateT[Result, ACursor, Unit] { c =>
-        val fields = c.focus.flatMap(_.asObject).toList.flatMap(_.fields)
+        val keys = c.focus.flatMap(_.asObject).toList.flatMap(_.keys)
 
-        if (fields.isEmpty) Right((c, ())) else Left(DecodingFailure(createMessage(fields), c.history))
+        if (keys.isEmpty) Right((c, ())) else Left(DecodingFailure(createMessage(keys), c.history))
       }
 
     /**

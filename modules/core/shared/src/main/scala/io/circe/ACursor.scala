@@ -131,21 +131,30 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ObjectAccess
    */
-  def values: Option[Vector[Json]]
+  def values: Option[Iterable[Json]]
 
   /**
    * If the focus is a JSON object, return its field names in a set.
    *
    * @group ObjectAccess
    */
-  def fieldSet: Option[Set[String]]
+  @deprecated("Use keys.map(_.toSet)", "0.9.0")
+  def fieldSet: Option[Set[String]] = keys.map(_.toSet)
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
    *
    * @group ObjectAccess
    */
-  def fields: Option[Vector[String]]
+  def keys: Option[Iterable[String]]
+
+  /**
+   * If the focus is a JSON object, return its field names in their original order.
+   *
+   * @group ObjectAccess
+   */
+  @deprecated("Use keys", "0.9.0")
+  final def fields: Option[Iterable[String]] = keys
 
   /**
    * Delete the focus and move to its parent.

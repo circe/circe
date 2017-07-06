@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.Applicative
-import scala.collection.immutable.Set
 
 final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
   /**
@@ -20,9 +19,8 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def withFocus(f: Json => Json): ACursor = this
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
 
-  def values: Option[Vector[Json]] = None
-  def fieldSet: Option[Set[String]] = None
-  def fields: Option[Vector[String]] = None
+  def values: Option[Iterable[Json]] = None
+  def keys: Option[Iterable[String]] = None
   def lefts: Option[Vector[Json]] = None
   def rights: Option[Vector[Json]] = None
 

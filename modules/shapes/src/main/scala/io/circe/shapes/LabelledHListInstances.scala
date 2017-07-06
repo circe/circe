@@ -69,7 +69,7 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
     private[this] val isK: String => Boolean = decodeW(_).exists(eqW.eqv(widened, _))
 
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :: T] = Decoder.resultInstance.map2(
-        c.fields.flatMap(_.find(isK)).fold[Decoder.Result[String]](
+        c.keys.flatMap(_.find(isK)).fold[Decoder.Result[String]](
           Left(DecodingFailure("Record", c.history))
         )(Right(_)).right.flatMap(c.get[V](_)),
       decodeT(c)
@@ -77,7 +77,7 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[FieldType[K, V] :: T] =
       AccumulatingDecoder.resultInstance.map2(
-        c.fields.flatMap(_.find(isK)).fold[AccumulatingDecoder.Result[String]](
+        c.keys.flatMap(_.find(isK)).fold[AccumulatingDecoder.Result[String]](
           Validated.invalidNel(DecodingFailure("Record", c.history))
         )(Validated.valid).andThen(k => decodeV.tryDecodeAccumulating(c.downField(k))),
         decodeT.decodeAccumulating(c)

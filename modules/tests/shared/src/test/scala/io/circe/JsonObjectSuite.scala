@@ -1,7 +1,8 @@
 package io.circe
 
-import io.circe.tests.CirceSuite
 import cats.data.Const
+import cats.kernel.Eq
+import io.circe.tests.CirceSuite
 
 class JsonObjectSuite extends CirceSuite {
   "JsonObject.fromIterable" should "drop all but the last instance when fields have the same key" in {
@@ -20,13 +21,17 @@ class JsonObjectSuite extends CirceSuite {
     assert(JsonObject.fromIterable(fields) === expected)
   }
 
-  "JsonObject.from" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
-    assert(JsonObject.from(fields) === JsonObject.fromIterable(fields))
+  "JsonObject.fromFoldable" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
+    val result1 = JsonObject.fromIterable(fields)
+    val result2 = JsonObject.fromFoldable(fields)
+
+    assert(result1.hashCode === result2.hashCode)
+    assert(result1 === result2)
   }
 
   it should "drop all but the last instance when fields have the same key" in {
     forAll { (key: String, values: List[Json]) =>
-      val result = JsonObject.from(values.map(key -> _))
+      val result = JsonObject.fromFoldable(values.map(key -> _))
       val expected = if (values.isEmpty) JsonObject.empty else JsonObject.singleton(key, values.last)
 
       assert(result === expected)
@@ -37,7 +42,7 @@ class JsonObjectSuite extends CirceSuite {
     val fields = List("a" -> Json.fromInt(0), "b" -> Json.fromInt(1), "c" -> Json.fromInt(2), "b" -> Json.fromInt(3))
     val expected = JsonObject("a" -> Json.fromInt(0), "b" -> Json.fromInt(3), "c" -> Json.fromInt(2))
 
-    assert(JsonObject.from(fields) === expected)
+    assert(JsonObject.fromFoldable(fields) === expected)
   }
 
   "JsonObject.apply" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
@@ -46,7 +51,7 @@ class JsonObjectSuite extends CirceSuite {
 
   "apply" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).map(_._2)
 
     assert(result1(key) === expected)
@@ -55,7 +60,7 @@ class JsonObjectSuite extends CirceSuite {
 
   "contains" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).nonEmpty
 
     assert(result1.contains(key) === expected)
@@ -64,7 +69,7 @@ class JsonObjectSuite extends CirceSuite {
 
   "size" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.toMap.size
 
     assert(result1.size === expected)
@@ -73,7 +78,7 @@ class JsonObjectSuite extends CirceSuite {
 
   "isEmpty" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.isEmpty
 
     assert(result1.isEmpty === expected)
@@ -82,7 +87,7 @@ class JsonObjectSuite extends CirceSuite {
 
   "nonEmpty" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.nonEmpty
 
     assert(result1.nonEmpty === expected)
@@ -91,25 +96,25 @@ class JsonObjectSuite extends CirceSuite {
 
   "kleisli" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).map(_._2)
 
     assert(result1.kleisli(key) === expected)
     assert(result2.kleisli(key) === expected)
   }
 
-  "fields" should "return all keys" in forAll { (fields: List[(String, Json)]) =>
+  "keys" should "return all keys" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.map(_._1).distinct
 
-    assert(result1.fields.toList === expected)
-    assert(result2.fields.toList === expected)
+    assert(result1.keys.toList === expected)
+    assert(result2.keys.toList === expected)
   }
 
   "values" should "return all values" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected: List[Json] = fields.foldLeft(List.empty[(String, Json)]) {
       case (acc, (key, value)) =>
         val index = acc.indexWhere(_._1 == key)
@@ -127,11 +132,23 @@ class JsonObjectSuite extends CirceSuite {
 
   "toMap" should "round-trip through JsonObject.fromMap" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
     val expected = result1
 
     assert(JsonObject.fromMap(result1.toMap) === expected)
     assert(JsonObject.fromMap(result2.toMap) === expected)
+  }
+
+  "toIterable" should "return all fields" in forAll { (values: List[Json]) =>
+    val fields = values.zipWithIndex.map {
+      case (value, i) => i.toString -> value
+    }.reverse
+
+    val result1 = JsonObject.fromIterable(fields)
+    val result2 = JsonObject.fromFoldable(fields)
+
+    assert(result1.toIterable.toList === fields)
+    assert(result2.toIterable.toList === fields)
   }
 
   "toList" should "return all fields" in forAll { (values: List[Json]) =>
@@ -140,7 +157,7 @@ class JsonObjectSuite extends CirceSuite {
     }.reverse
 
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
 
     assert(result1.toList === fields)
     assert(result2.toList === fields)
@@ -152,7 +169,7 @@ class JsonObjectSuite extends CirceSuite {
     }.reverse
 
     val result1 = JsonObject.fromIterable(fields)
-    val result2 = JsonObject.from(fields)
+    val result2 = JsonObject.fromFoldable(fields)
 
     assert(result1.toVector === fields)
     assert(result2.toVector === fields)
@@ -165,8 +182,8 @@ class JsonObjectSuite extends CirceSuite {
       }
 
       val result1 = JsonObject.fromIterable(fields).add("0", replacement)
-      val result2 = JsonObject.from(fields).add("0", replacement)
-      val expected = JsonObject.from(("0" -> replacement) :: fields.tail)
+      val result2 = JsonObject.fromFoldable(fields).add("0", replacement)
+      val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
       assert(result1 === expected)
       assert(result2 === expected)
@@ -180,11 +197,43 @@ class JsonObjectSuite extends CirceSuite {
       }.reverse
 
       val result1 = JsonObject.fromIterable(fields).add("0", replacement)
-      val result2 = JsonObject.from(fields).add("0", replacement)
-      val expected = JsonObject.from(fields.init :+ ("0" -> replacement))
+      val result2 = JsonObject.fromFoldable(fields).add("0", replacement)
+      val expected = JsonObject.fromFoldable(fields.init :+ ("0" -> replacement))
 
       assert(result1 === expected)
       assert(result2 === expected)
+    }
+  }
+
+  "add, +:, and remove" should "be applied correctly" in {
+    forAll { (original: JsonObject, operations: List[Either[String, (String, Json, Boolean)]]) =>
+      val result = operations.foldLeft(original) {
+        case (acc, Right((key, value, true))) => acc.add(key, value)
+        case (acc, Right((key, value, false))) => (key, value) +: acc
+        case (acc, Left(key)) => acc.remove(key)
+      }
+
+      val expected = operations.foldLeft(original.toList) {
+        case (acc, Right((key, value, true))) =>
+          val index = acc.indexWhere(_._1 == key)
+
+          if (index < 0) {
+            acc :+ (key -> value)
+          } else {
+            acc.updated(index, (key, value))
+          }
+        case (acc, Right((key, value, false))) =>
+          val index = acc.indexWhere(_._1 == key)
+
+          if (index < 0) {
+            (key -> value) :: acc
+          } else {
+            acc.updated(index, (key, value))
+          }
+        case (acc, Left(key)) => acc.filterNot(_._1 == key)
+      }
+
+      assert(result.toList === expected)
     }
   }
 
@@ -195,8 +244,8 @@ class JsonObjectSuite extends CirceSuite {
       }.reverse
 
       val result1 = ("0" -> replacement) +: JsonObject.fromIterable(fields)
-      val result2 = ("0" -> replacement) +: JsonObject.from(fields)
-      val expected = JsonObject.from(("0" -> replacement) :: fields.init)
+      val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
+      val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.init)
 
       assert(result1 === expected)
       assert(result2 === expected)
@@ -210,22 +259,22 @@ class JsonObjectSuite extends CirceSuite {
       }
 
       val result1 = ("0" -> replacement) +: JsonObject.fromIterable(fields)
-      val result2 = ("0" -> replacement) +: JsonObject.from(fields)
-      val expected = JsonObject.from(("0" -> replacement) :: fields.tail)
+      val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
+      val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
       assert(result1 === expected)
       assert(result2 === expected)
     }
   }
 
-  "withJsons" should "transform the JSON object appropriately" in forAll { (values: List[Json], replacement: Json) =>
+  "mapValues" should "transform the JSON object appropriately" in forAll { (values: List[Json], replacement: Json) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }
 
-    val result1 = JsonObject.fromIterable(fields).withJsons(_ => replacement)
-    val result2 = JsonObject.from(fields).withJsons(_ => replacement)
-    val expected = JsonObject.from(fields.map(field => field._1 -> replacement))
+    val result1 = JsonObject.fromIterable(fields).mapValues(_ => replacement)
+    val result2 = JsonObject.fromFoldable(fields).mapValues(_ => replacement)
+    val expected = JsonObject.fromFoldable(fields.map(field => field._1 -> replacement))
 
     assert(result1 === expected)
     assert(result2 === expected)
@@ -237,8 +286,8 @@ class JsonObjectSuite extends CirceSuite {
     }
 
     val result1: Option[JsonObject] = JsonObject.fromIterable(fields).traverse[Option](Some(_))
-    val result2: Option[JsonObject] = JsonObject.from(fields).traverse[Option](Some(_))
-    val expected = JsonObject.from(fields)
+    val result2: Option[JsonObject] = JsonObject.fromFoldable(fields).traverse[Option](Some(_))
+    val expected = JsonObject.fromFoldable(fields)
 
     assert(result1 === Some(expected))
     assert(result2 === Some(expected))
@@ -256,5 +305,14 @@ class JsonObjectSuite extends CirceSuite {
 
   "filterKeys" should "be consistent with Map#filterKeys" in forAll { (value: JsonObject, pred: String => Boolean) =>
     assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred))
+  }
+
+  "Eq[JsonObject]" should "be consistent with comparing fields" in {
+    forAll { (fields1: List[(String, Json)], fields2: List[(String, Json)]) =>
+      val result = Eq[JsonObject].eqv(JsonObject.fromIterable(fields1), JsonObject.fromIterable(fields2))
+      val expected = fields1 == fields2
+
+      assert(result === expected)
+    }
   }
 }

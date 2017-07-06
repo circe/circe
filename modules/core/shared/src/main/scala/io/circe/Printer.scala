@@ -62,109 +62,18 @@ final case class Printer(
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
 
-  private[this] final class StringBuilderFolder(writer: StringBuilder) extends PrintingFolder(writer) {
+  private[this] final class StringBuilderFolder(
+    writer: StringBuilder
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(value)
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
-  ) extends PrintingFolder(writer) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
-  }
-
-  private[this] abstract class PrintingFolder(writer: Appendable) extends Json.Folder[Unit] {
-    private[this] var depth: Int = 0
-
-    final def onNull: Unit = writer.append("null")
-
-    final def onString(value: String): Unit = {
-      writer.append('"')
-
-      var i = 0
-      var offset = 0
-
-      while (i < value.length) {
-        val c = value.charAt(i)
-
-        if (
-          (c == '"' || c == '\\' || c == '\b' || c == '\f' || c == '\n' || c == '\r' || c == '\t') ||
-          Character.isISOControl(c)
-        ) {
-          writer.append(value, offset, i)
-          writer.append('\\')
-          (c: @switch) match {
-            case '"'  => writer.append('"')
-            case '\\' => writer.append('\\')
-            case '\b' => writer.append('b')
-            case '\f' => writer.append('f')
-            case '\n' => writer.append('n')
-            case '\r' => writer.append('r')
-            case '\t' => writer.append('t')
-            case control =>
-              writer.append(String.format("u%04x", Integer.valueOf(control.toInt)))
-          }
-          offset = i + 1
-        }
-
-        i += 1
-      }
-
-      if (offset < i) writer.append(value, offset, i)
-      writer.append('"')
-    }
-
-    final def onArray(value: Vector[Json]): Unit = {
-      val orig = depth
-      val p = pieces(depth)
-
-      if (value.isEmpty) writer.append(p.lrEmptyBrackets) else {
-        val iterator = value.iterator
-
-        writer.append(p.lBrackets)
-        depth += 1
-        iterator.next().foldWith(this)
-        depth = orig
-
-        while (iterator.hasNext) {
-          writer.append(p.arrayCommas)
-          depth += 1
-          iterator.next().foldWith(this)
-          depth = orig
-        }
-
-        writer.append(p.rBrackets)
-      }
-    }
-
-    final def onObject(value: JsonObject): Unit = {
-      val orig = depth
-      val p = pieces(depth)
-      val m = value.toMap
-
-      writer.append(p.lBraces)
-      val fields = if (preserveOrder) value.fields else value.fieldSet
-      var first = true
-
-      val fieldIterator = fields.iterator
-
-      while (fieldIterator.hasNext) {
-        val key = fieldIterator.next()
-        val value = m(key)
-        if (!dropNullKeys || !value.isNull) {
-          if (!first) writer.append(p.objectCommas)
-          onString(key)
-          writer.append(p.colons)
-
-          depth += 1
-          value.foldWith(this)
-          depth = orig
-          first = false
-        }
-      }
-      writer.append(p.rBraces)
-    }
   }
 
   private[this] final def concat(left: String, text: String, right: String): String = {
@@ -328,6 +237,77 @@ final object Printer {
    * A pretty-printer configuration that indents by four spaces.
    */
   final val spaces4: Printer = indented("    ")
+
+  private[circe] abstract class PrintingFolder(
+    private[circe] val writer: Appendable,
+    private[circe] val pieces: PiecesAtDepth,
+    private[circe] val dropNullKeys: Boolean
+  ) extends Json.Folder[Unit] {
+    private[circe] var depth: Int = 0
+
+    final def onNull: Unit = writer.append("null")
+
+    final def onString(value: String): Unit = {
+      writer.append('"')
+
+      var i = 0
+      var offset = 0
+
+      while (i < value.length) {
+        val c = value.charAt(i)
+
+        if (
+          (c == '"' || c == '\\' || c == '\b' || c == '\f' || c == '\n' || c == '\r' || c == '\t') ||
+          Character.isISOControl(c)
+        ) {
+          writer.append(value, offset, i)
+          writer.append('\\')
+          (c: @switch) match {
+            case '"'  => writer.append('"')
+            case '\\' => writer.append('\\')
+            case '\b' => writer.append('b')
+            case '\f' => writer.append('f')
+            case '\n' => writer.append('n')
+            case '\r' => writer.append('r')
+            case '\t' => writer.append('t')
+            case control =>
+              writer.append(String.format("u%04x", Integer.valueOf(control.toInt)))
+          }
+          offset = i + 1
+        }
+
+        i += 1
+      }
+
+      if (offset < i) writer.append(value, offset, i)
+      writer.append('"')
+    }
+
+    final def onArray(value: Vector[Json]): Unit = {
+      val orig = depth
+      val p = pieces(depth)
+
+      if (value.isEmpty) writer.append(p.lrEmptyBrackets) else {
+        val iterator = value.iterator
+
+        writer.append(p.lBrackets)
+        depth += 1
+        iterator.next().foldWith(this)
+        depth = orig
+
+        while (iterator.hasNext) {
+          writer.append(p.arrayCommas)
+          depth += 1
+          iterator.next().foldWith(this)
+          depth = orig
+        }
+
+        writer.append(p.rBrackets)
+      }
+    }
+
+    final def onObject(value: JsonObject): Unit = value.appendToFolder(this)
+  }
 
   private[circe] final case class Pieces(
     lBraces: String,

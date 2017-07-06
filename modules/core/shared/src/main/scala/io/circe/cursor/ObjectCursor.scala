@@ -6,7 +6,7 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
   lastCursor: HCursor,
   lastOp: CursorOp
 ) extends HCursor(lastCursor, lastOp) {
-  def value: Json = obj.toMap(key)
+  def value: Json = obj.applyUnsafe(key)
 
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor =
     new ObjectCursor(obj.add(key, newValue), key, parent, true)(cursor, op)
@@ -23,17 +23,13 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
   def delete: ACursor = parent.replace(Json.fromJsonObject(obj.remove(key)), this, CursorOp.DeleteGoParent)
 
   def field(k: String): ACursor = {
-    val m = obj.toMap
-
-    if (!m.contains(k)) fail(CursorOp.Field(k)) else {
+    if (!obj.contains(k)) fail(CursorOp.Field(k)) else {
       new ObjectCursor(obj, k, parent, changed)(this, CursorOp.Field(k))
     }
   }
 
   def deleteGoField(k: String): ACursor = {
-    val m = obj.toMap
-
-    if (m.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true)(this, CursorOp.DeleteGoField(k))
+    if (obj.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true)(this, CursorOp.DeleteGoField(k))
       else fail(CursorOp.DeleteGoField(k))
   }
 

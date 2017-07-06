@@ -132,7 +132,7 @@ package examples {
     }
 
     val decodeFoo: Decoder[Foo] = Decoder.instance { c =>
-      c.fields match {
+      c.keys.map(_.toVector) match {
         case Some(Vector("Bar")) => c.get("Bar")(Bar.decodeBar.widen)
         case Some(Vector("Baz")) => c.get("Baz")(Baz.decodeBaz.widen)
         case Some(Vector("Bam")) => c.get("Bam")(Bam.decodeBam.widen)
