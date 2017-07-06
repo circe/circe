@@ -21,7 +21,11 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   "JsonObject.from" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
-    assert(JsonObject.from(fields) === JsonObject.fromIterable(fields))
+    val fromFoldableResult = JsonObject.from(fields)
+    val fromIterableResult = JsonObject.fromIterable(fields)
+
+    assert(fromFoldableResult.hashCode === fromIterableResult.hashCode)
+    assert(fromFoldableResult === fromIterableResult)
   }
 
   it should "drop all but the last instance when fields have the same key" in {
