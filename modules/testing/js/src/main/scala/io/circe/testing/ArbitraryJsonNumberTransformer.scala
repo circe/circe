@@ -13,5 +13,5 @@ private[testing] trait ArbitraryJsonNumberTransformer {
     Try(JSON.parse(n.toString): Any).toOption.filter {
       case x: Double => !x.isInfinite && n.toBigDecimal.exists(_ == BigDecimal(x))
       case _ => true
-    }.fold(JsonNumber.fromIntegralStringUnsafe("0"))(_ => n)
+    }.fold(JsonNumber.fromString("0").get)(_ => n)
 }

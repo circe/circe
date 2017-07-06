@@ -138,11 +138,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
       case ("jstring", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] => toJsonString(arg)
       case ("jnum", Array(clsS, clsDecIndex, clsExpIndex), Array(s: CharSequence, decIndex, expIndex))
         if clsS == classOf[CharSequence] && clsDecIndex == classOf[Int] && clsExpIndex == classOf[Int] =>
-          if (decIndex.asInstanceOf[Int] < 0 && expIndex.asInstanceOf[Int] < 0) {
-            q"_root_.io.circe.Json.fromJsonNumber(_root_.io.circe.JsonNumber.fromIntegralStringUnsafe(${ s.toString }))"
-          } else {
-            q"_root_.io.circe.Json.fromJsonNumber(_root_.io.circe.JsonNumber.fromDecimalStringUnsafe(${ s.toString }))"
-          }
+          q"_root_.io.circe.Json.fromJsonNumber(_root_.io.circe.JsonNumber.fromString(${ s.toString }).get)"
     }
   }
 

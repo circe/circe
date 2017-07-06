@@ -106,8 +106,8 @@ class JsonNumberSuite extends CirceSuite {
   }
 
   val positiveZeros: List[JsonNumber] = List(
-    JsonNumber.fromIntegralStringUnsafe("0"),
-    JsonNumber.fromDecimalStringUnsafe("0.0"),
+    JsonNumber.fromString("0").get,
+    JsonNumber.fromString("0.0").get,
     Json.fromDouble(0.0).flatMap(_.asNumber).get,
     Json.fromFloat(0.0f).flatMap(_.asNumber).get,
     Json.fromLong(0).asNumber.get,
@@ -116,8 +116,8 @@ class JsonNumberSuite extends CirceSuite {
   )
 
   val negativeZeros: List[JsonNumber] = List(
-    JsonNumber.fromIntegralStringUnsafe("-0"),
-    JsonNumber.fromDecimalStringUnsafe("-0.0"),
+    JsonNumber.fromString("-0").get,
+    JsonNumber.fromString("-0.0").get,
     Json.fromDouble(-0.0).flatMap(_.asNumber).get,
     Json.fromFloat(-0.0f).flatMap(_.asNumber).get
   )
