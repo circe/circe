@@ -166,7 +166,7 @@ private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal)
 }
 
 /**
- * Represent a valid JSON number as a [[scala.math.BigDecimal]].
+ * Represent a valid JSON number as a `java.math.BigDecimal`.
  */
 private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends JsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = BiggerDecimal.fromBigDecimal(value)
