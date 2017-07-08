@@ -71,6 +71,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Byte]]. If the number
    * is `1e99`, for example, this will return `Byte.MaxValue`.
    */
+  @deprecated("Use toBigDecimal", "0.9.0")
   final def truncateToByte: Byte = {
     val asLong: Long = truncateToLong
     if (asLong > Byte.MaxValue) {
@@ -86,6 +87,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Short]]. If the number
    * is `1e99`, for example, this will return `Short.MaxValue`.
    */
+  @deprecated("Use toBigDecimal", "0.9.0")
   final def truncateToShort: Short = {
     val asLong: Long = truncateToLong
     if (asLong > Short.MaxValue) {
@@ -101,6 +103,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Int]]. If the number is
    * `1e99`, for example, this will return `Int.MaxValue`.
    */
+  @deprecated("Use toBigDecimal", "0.9.0")
   final def truncateToInt: Int = {
     val asLong: Long = truncateToLong
     if (asLong > Int.MaxValue) {
@@ -116,6 +119,7 @@ sealed abstract class JsonNumber extends Serializable {
    * Truncation means that we round toward zero to the closest valid [[scala.Long]]. If the number
    * is `1e99`, for example, this will return `Long.MaxValue`.
    */
+  @deprecated("Use toBigDecimal", "0.9.0")
   def truncateToLong: Long
 
   /**

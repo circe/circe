@@ -64,6 +64,7 @@ sealed abstract class BiggerDecimal extends Serializable {
   /**
    * Convert to the nearest [[scala.Long]].
    */
+  @deprecated("Use toBigDecimal", "0.9.0")
   def truncateToLong: Long
 
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
