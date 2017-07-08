@@ -89,7 +89,7 @@ class AccumulatingDecoderSpec extends CirceSuite {
         xs._2.fold(Json.fromInt, Json.fromString),
         xs._3.fold(Json.fromInt, Json.fromString)
       ).asJson.hcursor
-      
+
       val invalidElems = xs.productIterator.toList.collect {
         case Left(e: Int) => Some(e.asJson)
       }
