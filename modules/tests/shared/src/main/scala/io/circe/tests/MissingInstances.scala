@@ -1,6 +1,6 @@
 package io.circe.tests
 
-import cats.Eq
+import cats.kernel.Eq
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable

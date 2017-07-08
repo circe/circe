@@ -1,7 +1,7 @@
 package io.circe.testing
 
-import cats.Eq
 import cats.instances.option._
+import cats.kernel.Eq
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Parser, Printer }

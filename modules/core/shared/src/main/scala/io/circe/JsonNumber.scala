@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
 import java.lang.StringBuilder

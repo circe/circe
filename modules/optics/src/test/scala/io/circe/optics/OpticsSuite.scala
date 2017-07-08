@@ -1,6 +1,6 @@
 package io.circe.optics
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
 import io.circe.{ Json, JsonNumber, JsonObject }

@@ -1,8 +1,8 @@
 package io.circe.testing
 
-import cats.Eq
 import cats.instances.either._
 import cats.instances.option._
+import cats.kernel.Eq
 import cats.syntax.eq._
 import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, KeyDecoder, KeyEncoder, ObjectEncoder }
 import org.scalacheck.Arbitrary

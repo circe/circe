@@ -1,7 +1,7 @@
 package io.circe
 
-import cats.Eq
 import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
+import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -15,16 +15,16 @@ import scala.reflect.ClassTag
 
 class AnyValCodecSuite extends CirceSuite {
   /**
-   * We provide a special [[cats.Eq]] instance for [[scala.Float]] that does not distinguish `NaN`
-   * from itself.
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
+   * `NaN` from itself.
    */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
-   * We provide a special [[cats.Eq]] instance for [[scala.Double]] that does not distinguish `NaN`
-   * from itself.
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
+   * `NaN` from itself.
    */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)

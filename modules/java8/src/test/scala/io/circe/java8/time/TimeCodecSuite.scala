@@ -1,6 +1,6 @@
 package io.circe.java8.time
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.{ Decoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite

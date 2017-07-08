@@ -1,6 +1,6 @@
 package io.circe.tests.examples
 
-import cats.Eq
+import cats.kernel.Eq
 import org.scalacheck.{ Arbitrary, Gen }
 
 sealed trait CardinalDirection

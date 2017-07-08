@@ -1,7 +1,7 @@
 package io.circe.shapes
 
-import cats.Eq
 import cats.data.Validated
+import cats.kernel.Eq
 import io.circe.{
   AccumulatingDecoder,
   Decoder,

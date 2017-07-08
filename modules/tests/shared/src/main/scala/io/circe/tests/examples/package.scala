@@ -1,7 +1,7 @@
 package io.circe.tests
 
-import cats.Eq
 import cats.instances.AllInstances
+import cats.kernel.Eq
 import cats.syntax.functor._
 import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import io.circe.testing.ArbitraryInstances
