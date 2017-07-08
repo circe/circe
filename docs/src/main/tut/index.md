@@ -12,7 +12,7 @@ section: "home"
 circe (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is
 a JSON library for Scala (and [Scala.js][scala-js]).
 
-circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for 
+circe's working title was jfc, which stood for "JSON for [cats][cats]". The name was changed for
 [a number of reasons](https://github.com/circe/circe/issues/11).
 
 <a name="quick-start"></a>

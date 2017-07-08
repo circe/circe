@@ -1,6 +1,6 @@
 package io.circe.tests.examples
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.{ Decoder, Encoder }
 import org.scalacheck.Arbitrary
 

@@ -1,7 +1,7 @@
 package io.circe
 
-import cats.Eq
 import cats.data.Validated
+import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.DownArray
 import io.circe.parser.parse

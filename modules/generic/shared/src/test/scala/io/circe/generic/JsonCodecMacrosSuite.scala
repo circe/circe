@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import cats.Eq
+import cats.kernel.Eq
 import cats.instances.AllInstances
 import io.circe.{Decoder, Encoder, ObjectEncoder}
 import io.circe.generic.jsoncodecmacrossuiteaux._

@@ -1,6 +1,6 @@
 package io.circe.benchmark
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.semiauto._
 

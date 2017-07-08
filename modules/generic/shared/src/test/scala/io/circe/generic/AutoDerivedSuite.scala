@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import cats.Eq
+import cats.kernel.Eq
 import cats.syntax.AllSyntax
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._

@@ -1,6 +1,6 @@
 package io.circe.optics
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe._
 import io.circe.generic.semiauto._
 import io.circe.syntax._

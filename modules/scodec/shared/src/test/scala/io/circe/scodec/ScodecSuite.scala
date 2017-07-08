@@ -1,6 +1,6 @@
 package io.circe.scodec
 
-import cats.Eq
+import cats.kernel.Eq
 import io.circe.{ Decoder, Json }
 import io.circe.parser.parse
 import io.circe.testing.CodecTests

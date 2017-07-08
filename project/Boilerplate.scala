@@ -300,7 +300,7 @@ object Boilerplate {
       block"""
         |package io.circe
         |
-        |import cats.Eq
+        |import cats.kernel.Eq
         |import io.circe.testing.CodecTests
         |import io.circe.tests.CirceSuite
         |import org.scalacheck.Arbitrary

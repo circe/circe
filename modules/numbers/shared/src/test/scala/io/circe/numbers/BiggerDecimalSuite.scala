@@ -196,7 +196,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   "fromBigInteger" should "round-trip BigInteger values" in forAll { (value: BigInt) =>
     assert(BiggerDecimal.fromBigInteger(value.underlying).toBigInteger === Some(value.underlying))
   }
-  
+
   "integralIsValidLong" should "agree with toLong" in forAll { (input: IntegralString) =>
     assert(BiggerDecimal.integralIsValidLong(input.value) === Try(input.value.toLong).isSuccess)
   }

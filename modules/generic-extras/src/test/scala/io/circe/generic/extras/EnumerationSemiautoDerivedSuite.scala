@@ -17,7 +17,7 @@ class EnumerationSemiautoDerivedSuite extends CirceSuite {
   "deriveEnumerationDecoder" should "not compile on an ADT with case classes" in {
      illTyped("deriveEnumerationDecoder[ExtendedCardinalDirection]")
    }
- 
+
    "deriveEnumerationEncoder" should "not compile on an ADT with case classes" in {
      illTyped("deriveEnumerationEncoder[ExtendedCardinalDirection]")
    }
