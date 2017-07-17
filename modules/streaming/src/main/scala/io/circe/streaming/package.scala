@@ -6,25 +6,17 @@ import io.circe.jawn.CirceSupportParser
 import io.iteratee.{ Enumeratee, Enumerator }
 
 package object streaming {
-  final def stringParser[F[_]](implicit
-                               F: ApplicativeError[F, Throwable],
-                               pc: ParsingConfiguration): Enumeratee[F, String, Json] =
-    new ParsingEnumeratee[F, String] {
-      protected[this] final def parseWith(p: AsyncParser[Json])(in: String): Either[ParseException, Seq[Json]] =
-        p.absorb(in)(CirceSupportParser.facade)
+  final def stringArrayParser[F[_]](implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, String, Json] =
+    stringParser(AsyncParser.UnwrapArray)
 
-      protected[this] val parsingConfiguration: ParsingConfiguration = pc
-    }
+  final def stringStreamParser[F[_]](implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, String, Json] =
+    stringParser(AsyncParser.ValueStream)
 
-  final def byteParser[F[_]](implicit
-                             F: ApplicativeError[F, Throwable],
-                             pc: ParsingConfiguration): Enumeratee[F, Array[Byte], Json] =
-    new ParsingEnumeratee[F, Array[Byte]] {
-      protected[this] final def parseWith(p: AsyncParser[Json])(in: Array[Byte]): Either[ParseException, Seq[Json]] =
-        p.absorb(in)(CirceSupportParser.facade)
+  final def byteArrayParser[F[_]](implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, Array[Byte], Json] =
+    byteParser(AsyncParser.UnwrapArray)
 
-      protected[this] val parsingConfiguration: ParsingConfiguration = pc
-    }
+  final def byteStreamParser[F[_]](implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, Array[Byte], Json] =
+    byteParser(AsyncParser.ValueStream)
 
   final def decoder[F[_], A](implicit F: MonadError[F, Throwable], decode: Decoder[A]): Enumeratee[F, Json, A] =
     Enumeratee.flatMap(json =>
@@ -33,4 +25,23 @@ package object streaming {
         case Right(a) => Enumerator.enumOne(a)
       }
     )
+
+  private def stringParser[F[_]](mode: AsyncParser.Mode)
+                                (implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, String, Json] = {
+    new ParsingEnumeratee[F, String] {
+      protected[this] final def parseWith(p: AsyncParser[Json])(in: String): Either[ParseException, Seq[Json]] =
+        p.absorb(in)(CirceSupportParser.facade)
+
+      protected[this] val parsingMode: AsyncParser.Mode = mode
+    }
+  }
+
+  private def byteParser[F[_]](mode: AsyncParser.Mode)
+                              (implicit F: ApplicativeError[F, Throwable]): Enumeratee[F, Array[Byte], Json] =
+    new ParsingEnumeratee[F, Array[Byte]] {
+      protected[this] final def parseWith(p: AsyncParser[Json])(in: Array[Byte]): Either[ParseException, Seq[Json]] =
+        p.absorb(in)(CirceSupportParser.facade)
+
+      protected[this] val parsingMode: AsyncParser.Mode = mode
+    }
 }

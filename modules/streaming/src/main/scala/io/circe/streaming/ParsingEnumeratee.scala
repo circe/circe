@@ -13,12 +13,12 @@ import io.iteratee.internal.Step
 private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: ApplicativeError[F, Throwable])
   extends Enumeratee[F, S, Json] {
 
-  protected[this] def parsingConfiguration: ParsingConfiguration
+  protected[this] def parsingMode: AsyncParser.Mode
 
   protected[this] def parseWith(parser: AsyncParser[Json])(in: S): Either[ParseException, Seq[Json]]
 
   private[this] final def makeParser: AsyncParser[Json] = CirceSupportParser.async(
-    mode = parsingConfiguration.parseMode
+    mode = parsingMode
   )
 
   private[this] final def loop[A](p: AsyncParser[Json])(step: Step[F, Json, A]): Step[F, S, Step[F, Json, A]] =
