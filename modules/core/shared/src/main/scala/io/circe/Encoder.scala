@@ -1,14 +1,14 @@
 package io.circe
 
+import cats.Foldable
 import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
 import cats.functor.Contravariant
-import cats.Foldable
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
+import scala.Predef._
 import scala.collection.Map
 import scala.collection.immutable.{ Map => ImmutableMap, Set }
-import scala.Predef._
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
