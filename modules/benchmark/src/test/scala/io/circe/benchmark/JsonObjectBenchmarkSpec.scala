@@ -7,23 +7,31 @@ class JsonObjectBenchmarkSpec extends FlatSpec {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark
 
   "buildWithFromIterable" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithFromIterable === benchmark.value)
+    assert(benchmark.buildWithFromIterable === benchmark.valueFromIterable)
   }
 
-  "buildWithFrom" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithFrom === benchmark.value)
+  "buildWithFromFoldable" should "build the correct JsonObject" in {
+    assert(benchmark.buildWithFromFoldable === benchmark.valueFromIterable)
   }
 
   "buildWithAdd" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithAdd === benchmark.value)
+    assert(benchmark.buildWithAdd === benchmark.valueFromIterable)
   }
 
-  "lookupGood" should "return the correct result" in {
-    assert(benchmark.lookupGood === Some(Json.fromInt(50)))
+  "lookupGoodFromIterable" should "return the correct result" in {
+    assert(benchmark.lookupGoodFromIterable === Some(Json.fromInt(50)))
   }
 
-  "lookupBad" should "return the correct result" in {
-    assert(benchmark.lookupBad === None)
+  "lookupBadFromIterable" should "return the correct result" in {
+    assert(benchmark.lookupBadFromIterable === None)
+  }
+
+  "lookupGoodFromFoldable" should "return the correct result" in {
+    assert(benchmark.lookupGoodFromFoldable === Some(Json.fromInt(50)))
+  }
+
+  "lookupBadFromFoldable" should "return the correct result" in {
+    assert(benchmark.lookupBadFromFoldable === None)
   }
 
   "remove" should "return the correct result" in {

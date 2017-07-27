@@ -18,13 +18,14 @@ import org.openjdk.jmh.annotations._
 class JsonObjectBenchmark {
   val count = 100
   val fields: List[(String, Json)] = (1 to count).map(i => (i.toString, Json.fromInt(i))).toList
-  val value: JsonObject = JsonObject.fromIterable(fields)
+  val valueFromIterable: JsonObject = JsonObject.fromIterable(fields)
+  val valueFromFoldable: JsonObject = JsonObject.fromFoldable(fields)
 
   @Benchmark
   def buildWithFromIterable: JsonObject = JsonObject.fromIterable(fields)
 
   @Benchmark
-  def buildWithFrom: JsonObject = JsonObject.from(fields)
+  def buildWithFromFoldable: JsonObject = JsonObject.fromFoldable(fields)
 
   @Benchmark
   def buildWithAdd: JsonObject = fields.foldLeft(JsonObject.empty) {
@@ -32,11 +33,17 @@ class JsonObjectBenchmark {
   }
 
   @Benchmark
-  def lookupGood: Option[Json] = value("50")
+  def lookupGoodFromIterable: Option[Json] = valueFromIterable("50")
 
   @Benchmark
-  def lookupBad: Option[Json] = value("abc")
+  def lookupBadFromIterable: Option[Json] = valueFromIterable("abc")
 
   @Benchmark
-  def remove: JsonObject = value.remove("50").remove("51").remove("abc").remove("99").remove("0")
+  def lookupGoodFromFoldable: Option[Json] = valueFromFoldable("50")
+
+  @Benchmark
+  def lookupBadFromFoldable: Option[Json] = valueFromFoldable("abc")
+
+  @Benchmark
+  def remove: JsonObject = valueFromIterable.remove("50").remove("51").remove("abc").remove("99").remove("0")
 }
