@@ -100,7 +100,7 @@ sealed abstract class JsonObject extends Serializable {
    *
    * @group Contents
    */
-  @deprecated("Use key.toSet", "0.9.0")
+  @deprecated("Use keys.toSet", "0.9.0")
   final def fieldSet: Set[String] = keys.toSet
 
   /**
