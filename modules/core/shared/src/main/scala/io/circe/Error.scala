@@ -1,23 +1,12 @@
 package io.circe
 
 import cats.{ Eq, Show }
-import cats.data.NonEmptyList
 
 /**
  * The base exception type for both decoding and parsing errors.
  */
 sealed abstract class Error extends Exception {
   final override def fillInStackTrace(): Throwable = this
-}
-
-/**
- * A convenience exception type for aggregating one or more decoding or parsing
- * errors.
- */
-final case class Errors(errors: NonEmptyList[Error]) extends Exception {
-  def toList: List[Error] = errors.head :: errors.tail
-
-  override def fillInStackTrace(): Throwable = this
 }
 
 /**

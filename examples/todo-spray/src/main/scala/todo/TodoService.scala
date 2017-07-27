@@ -7,8 +7,9 @@ import akka.event.Logging
 import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
+import cats.data.NonEmptyList
 import cats.syntax.show._
-import io.circe.{ DecodingFailure, Errors}
+import io.circe.{ DecodingFailure, Error }
 import io.circe.generic.auto._
 import io.circe.java8.time._
 import io.circe.spray.ErrorAccumulatingJsonSupport._
@@ -22,6 +23,12 @@ import spray.routing.Directives._
 import spray.routing.{HttpService, MalformedRequestContentRejection, RejectionHandler, Route}
 
 case class Todo(id: UUID, title: String, completed: Boolean, order: Int, dueDate: LocalDateTime)
+
+/**
+ * A convenience exception type for aggregating one or more decoding or parsing
+ * errors.
+ */
+case class Errors(errors: NonEmptyList[Error]) extends Exception
 
 object Boot extends App {
   implicit val system: ActorSystem = ActorSystem("todo-service")
@@ -40,7 +47,7 @@ class TodoService extends Actor with HttpService {
 
   val rejectionHandler: RejectionHandler = RejectionHandler {
     case MalformedRequestContentRejection(_, Some(errors @ Errors(_))) :: _ =>
-      val errorMessages: List[String] = errors.toList.map {
+      val errorMessages: List[String] = errors.errors.toList.map {
         case decoding @ DecodingFailure(_, _) => decoding.show
         case other => other.getMessage
       }
