@@ -85,6 +85,7 @@ The following open source projects are either built on circe or provide circe su
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
+* [sttp][sttp]: Scala HTTP client
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on circe.
 
@@ -183,6 +184,7 @@ limitations under the License.
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
 [spray]: http://spray.io/
+[sttp]: https://github.com/softwaremill/sttp
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
 [todoist]: https://developer.todoist.com/
