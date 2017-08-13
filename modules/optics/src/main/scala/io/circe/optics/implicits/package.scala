@@ -18,25 +18,26 @@ package object implicits {
       findPathsToKeyR(json, key, new MaxDepthPathMarker(maxDepth))
 
     private case class PathStep(curPath: JsonPath, atField: String, atDepth: Int)
-    trait PathMarker {
+    sealed trait PathMarker {
       def mark(step: PathStep): JsonPath
       def update(step: PathStep): PathMarker
     }
 
-    private class KeyPathMarker() extends PathMarker {
+    private case class KeyPathMarker() extends PathMarker {
       override def mark(step: PathStep): JsonPath = step.curPath.selectDynamic(step.atField)
-      override def update(step: PathStep): PathMarker = this
+      override def update(step: PathStep): PathMarker = KeyPathMarker()
     }
 
-    private class ParentPathMarker() extends KeyPathMarker {
+    private case class ParentPathMarker() extends PathMarker {
       override def mark(step: PathStep): JsonPath = step.curPath
+      override def update(step: PathStep): PathMarker = ParentPathMarker()
     }
 
-    private class MaxDepthPathMarker(maxDepth: Int, maxStep: Option[PathStep] = None) extends PathMarker {
+    private case class MaxDepthPathMarker(maxDepth: Int, maxStep: Option[PathStep] = None) extends PathMarker {
       override def mark(step: PathStep): JsonPath =
         maxStep.fold(step.curPath.selectDynamic(step.atField))(s => s.curPath.selectDynamic(s.atField))
       override def update(step: PathStep): PathMarker =
-        if (step.atDepth == maxDepth) new MaxDepthPathMarker(maxDepth, Some(step)) else this
+        if (step.atDepth == maxDepth) MaxDepthPathMarker(maxDepth, Some(step)) else MaxDepthPathMarker(maxDepth)
     }
 
     private def findPathsToKeyR[T](json: Json, key: String, marker: PathMarker,
