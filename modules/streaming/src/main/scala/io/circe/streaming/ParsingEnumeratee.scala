@@ -15,7 +15,9 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: Applica
 
   protected[this] def parsingMode: AsyncParser.Mode
 
-  protected[this] def parseWith(parser: AsyncParser[Json])(in: S): Either[ParseException, Seq[Json]]
+  type Shim[B] = Either[ParseException,B]
+
+  protected[this] def parseWith(parser: AsyncParser[Json])(in: S): Shim[Seq[Json]] // Either[ParseException, Seq[Json]]
 
   private[this] final def makeParser: AsyncParser[Json] = CirceSupportParser.async(
     mode = parsingMode
@@ -32,7 +34,7 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: Applica
         case Right(js) => F.map(step.feed(js))(doneOrLoop[A](p))
       }
       final protected def feedNonEmpty(chunk: Seq[S]): F[Step[F, S, Step[F, Json, A]]] =
-        chunk.toList.traverseU(parseWith(p)) match {
+        chunk.toList.traverse(parseWith(p)) match {
           case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
           case Right(js) => F.map(step.feed(js.flatten(Predef.identity)))(doneOrLoop[A](p))
         }
