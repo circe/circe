@@ -119,7 +119,7 @@ class JsonImplicitsSuite extends CirceSuite {
     }
   }
 
-  val RandomDepth = Gen.Choose.chooseInt.choose(0, 1024).suchThat(_ >= 0)
+  val RandomDepth = Gen.Choose.chooseInt.choose(0, 256).suchThat(_ >= 0)
   "findPathsToKey with a max depth" should "traverse various depths" in {
     forAll(RandomDepth) { (randomDepth: Int) =>
 
