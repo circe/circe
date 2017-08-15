@@ -4,6 +4,7 @@ import io.circe.Json
 import io.circe.optics.JsonPath._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
+import org.scalacheck.Gen
 
 class JsonImplicitsSuite extends CirceSuite {
 
@@ -14,7 +15,7 @@ class JsonImplicitsSuite extends CirceSuite {
       whenever(key1 != key2) {
         val js = Json.obj(
           key1 -> value1.asJson,
-          key2 -> value2.asJson,
+          key2 -> value2.asJson
         )
 
         assert(js.findPathsToKey(key1).size == 1)
@@ -38,7 +39,8 @@ class JsonImplicitsSuite extends CirceSuite {
         )
 
         assert(js.findPathsToKey(key1).size == 2)
-        assert(js.findPathsToKey(key1).head.json.getOption(js).get == Json.obj(key1 -> value1.asJson, key2 -> value2.asJson))
+        assert(js.findPathsToKey(key1).head.json.getOption(js).get ==
+          Json.obj(key1 -> value1.asJson, key2 -> value2.asJson))
         assert(js.findPathsToKey(key1)(1).json.getOption(js).get == value1.asJson)
 
         assert(js.findPathsToKey(key2).size == 2)
@@ -117,28 +119,56 @@ class JsonImplicitsSuite extends CirceSuite {
     }
   }
 
-  "findPathsToKey with a max depth" should "traverse only to the max depth" in {
-    forAll { (key: String, randomDepth: Int) =>
-      whenever(randomDepth >= 0 && randomDepth <= 1024) {
+  val RandomDepth = Gen.Choose.chooseInt.choose(0, 1024).suchThat(_ >= 0)
+  "findPathsToKey with a max depth" should "traverse various depths" in {
+    forAll(RandomDepth) { (randomDepth: Int) =>
 
-        def key(i: Int) = s"key-$i"
+      def key(i: Int): String = s"key-$i"
 
-        var path = root
-        var json = Json.obj()
-        (0 to randomDepth).foreach(i => {
-          json = path.json.modify(js => Json.obj(key(i) -> i.asJson))(json)
-          path = path.selectDynamic(key(i))
-        })
+      var path = root
+      var json = Json.obj()
+      (0 to randomDepth).foreach(i => {
+        json = path.json.modify(js => Json.obj(key(i) -> i.asJson))(json)
+        path = path.selectDynamic(key(i))
+      })
 
-        assert(json.findPathsToKey(key(randomDepth), randomDepth).head.json.getOption(json).get == randomDepth.asJson)
-        if (randomDepth > 0) {
-          assert(json.findPathsToKey(key(randomDepth), randomDepth - 1).head.json.getOption(json).get ==
-            Json.obj(
-              key(randomDepth) -> randomDepth.asJson
-            )
+      if (randomDepth == 0) assert(json.findPathsToKey(key(0), 0).head.json.getOption(json).get == 0.asJson)
+      if (randomDepth > 0) {
+        assert(json.findPathsToKey(key(randomDepth), randomDepth - 1).head.json.getOption(json).get ==
+          Json.obj(
+            key(randomDepth) -> randomDepth.asJson
           )
-        }
+        )
       }
     }
+  }
+
+  it should "adhere to the max depth" in {
+
+    val js = Json.obj(
+      "top" -> Json.obj(
+        "child" -> Json.obj(
+          "bottom" -> 42.asJson
+        ),
+        "childArray" -> Json.arr(
+          Json.obj(
+            "bottomArray" -> 42.asJson
+          )
+        )
+      )
+    )
+
+    assert(js.findPathsToKey("bottom", 0).head.json.getOption(js).get == root.top.json.getOption(js).get)
+    assert(js.findPathsToKey("bottom", 1).head.json.getOption(js).get == root.top.child.json.getOption(js).get)
+    assert(js.findPathsToKey("bottom", 2).head.json.getOption(js).get == root.top.child.bottom.json.getOption(js).get)
+    assert(js.findPathsToKey("bottom", 100).head.json.getOption(js).get == root.top.child.bottom.json.getOption(js).get)
+
+    assert(js.findPathsToKey("bottomArray", 0).head.json.getOption(js).get == root.top.json.getOption(js).get)
+    assert(js.findPathsToKey("bottomArray", 1).head.json.getOption(js).get ==
+      root.top.childArray.json.getOption(js).get)
+    assert(js.findPathsToKey("bottomArray", 2).head.json.getOption(js).get ==
+      root.top.childArray.index(0).bottomArray.json.getOption(js).get)
+    assert(js.findPathsToKey("bottomArray", 100).head.json.getOption(js).get ==
+      root.top.childArray.index(0).bottomArray.json.getOption(js).get)
   }
 }
