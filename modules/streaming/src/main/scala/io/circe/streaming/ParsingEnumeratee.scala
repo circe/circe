@@ -31,8 +31,9 @@ private[streaming] abstract class ParsingEnumeratee[F[_], S](implicit F: Applica
         case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
         case Right(js) => F.map(step.feed(js))(doneOrLoop[A](p))
       }
+      type Result[A] = Either[ParseException, A]
       final protected def feedNonEmpty(chunk: Seq[S]): F[Step[F, S, Step[F, Json, A]]] =
-        chunk.toList.traverseU(parseWith(p)) match {
+        chunk.toList.traverse[Result, Seq[Json]](parseWith(p)) match {
           case Left(error) => F.raiseError(ParsingFailure(error.getMessage, error))
           case Right(js) => F.map(step.feed(js.flatten(Predef.identity)))(doneOrLoop[A](p))
         }

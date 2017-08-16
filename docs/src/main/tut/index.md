@@ -67,7 +67,9 @@ example), circe includes a subproject (`generic`) that provides generic codec de
 [This subproject][circe-generic] is currently a simplified port of
 [argonaut-shapeless][argonaut-shapeless] that provides fully automatic derivation of instances for
 case classes and sealed trait hierarchies. It also includes derivation of "incomplete" case class
-instances (see my recent [blog post][incompletes] for details).
+instances (see my recent [blog post][incompletes] for details). Note that if you use
+`-Ypartial-unification` and `auto`, incomplete decoders will not work (see
+[#724](https://github.com/circe/circe/pull/724)).
 
 See the [Encoding and Decoding page](codec.html) for more details.
 
