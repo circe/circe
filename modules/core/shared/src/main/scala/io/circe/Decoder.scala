@@ -701,11 +701,21 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
    *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
    * @group Collection
    */
-  implicit final def decodeCanBuildFrom[A, C[_]](implicit
+  implicit final def decodeTraversable[A, C[A] <: Traversable[A]](implicit
     decodeA: Decoder[A],
     cbf: CanBuildFrom[Nothing, A, C[A]]
   ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
     final protected def createBuilder(): Builder[A, C[A]] = cbf.apply()
+  }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeArray[A](implicit
+    decodeA: Decoder[A],
+    cbf: CanBuildFrom[Nothing, A, Array[A]]
+  ): Decoder[Array[A]] = new SeqDecoder[A, Array](decodeA) {
+    final protected def createBuilder(): Builder[A, Array[A]] = cbf.apply()
   }
 
   /**
