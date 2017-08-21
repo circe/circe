@@ -36,7 +36,7 @@ class ScalaJsSuite extends CirceSuite {
   }
 
   it should "handle defined js.UndefOr when decoding js.Object" in forAll { (s: String) =>
-    assert(decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.get) === Right(s))
+    assert(decodeJs[UndefOrExample](Dynamic.literal(name = s)).map(_.name.toOption.get) === Right(s))
   }
 
   "asJsAny" should "encode to js.Object" in forAll { (s: String) =>
