@@ -12,7 +12,7 @@ jdk:
 
 matrix:
   include:
-  - scala: 2.12.2
+  - scala: 2.12.3
     jdk: oraclejdk8
 
 cache:
