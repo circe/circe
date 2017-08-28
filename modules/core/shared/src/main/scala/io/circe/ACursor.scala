@@ -154,7 +154,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group ObjectAccess
    */
   @deprecated("Use keys", "0.9.0")
-  final def fields: Option[Iterable[String]] = keys
+  final def fields: Option[Vector[String]] = keys.map(_.toVector)
 
   /**
    * Delete the focus and move to its parent.
