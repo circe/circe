@@ -72,7 +72,7 @@ Bar(13, "Qux").asJson
 
 This works with both case classes and sealed trait hierarchies.
 
-NOTE: You will need the [Macro Paradise](http://docs.scala-lang.org/overviews/macros/paradise) plugin to use annotation macros like `@JsonCodec`
+NOTE: You will need the [Macro Paradise](https://docs.scala-lang.org/overviews/macros/paradise.html) plugin to use annotation macros like `@JsonCodec`
 
 ### forProductN helper methods
 
