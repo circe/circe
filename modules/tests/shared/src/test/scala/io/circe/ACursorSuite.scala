@@ -160,6 +160,10 @@ class ACursorSuite extends CirceSuite {
     assert(cursor.keys.map(_.toVector) === Some(Vector("a", "b", "c")))
   }
 
+  "fields" should "return the expected values" in {
+    assert(cursor.fields === Some(Vector("a", "b", "c")))
+  }
+
   "left" should "successfully select an existing value" in {
     val result = for {
       c <- cursor.downField("a").success
