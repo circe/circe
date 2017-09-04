@@ -10,7 +10,7 @@ final object ValueClassDecoder {
     implicit
     gen:    Lazy[Generic.Aux[A, R :: HNil]],
     decode: Decoder[R]
-  ): Decoder[A] = new ValueClassDecoder[A] {
+  ): ValueClassDecoder[A] = new ValueClassDecoder[A] {
     override def apply(c: HCursor): Decoder.Result[A] =
       decode(c).map { value ⇒
         gen.value.from(value :: HNil)
