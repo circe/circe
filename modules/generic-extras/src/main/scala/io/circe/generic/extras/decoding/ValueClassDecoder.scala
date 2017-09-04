@@ -12,8 +12,9 @@ final object ValueClassDecoder {
     decode: Decoder[R]
   ): ValueClassDecoder[A] = new ValueClassDecoder[A] {
     override def apply(c: HCursor): Decoder.Result[A] =
-      decode(c).map { value ⇒
-        gen.value.from(value :: HNil)
+      decode(c) match {
+        case Right(value) => Right(gen.value.from(value :: HNil))
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
       }
   }
 }
