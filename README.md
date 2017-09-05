@@ -42,11 +42,14 @@ Are you using circe? Please consider opening a pull request to list your organiz
 Please get in touch on [Gitter][gitter] if you have a circe-related project that you'd like to discuss hosting under the
 [circe organization][circe-org] on GitHub.
 
+* [circe-benchmarks][circe-benchmarks]: Benchmarks for comparing the performance of circe and other JSON libraries for the JVM.
+* [circe-config][circe-config]: A library for translating between HOCON, Java properties, and JSON documents.
+* [circe-derivation][circe-derivation]: Experimental generic derivation with improved compile times.
+* [circe-fs2][circe-fs2]: A library that provides streaming JSON parsing and decoding built on [fs2][fs2] and [Jawn][jawn].
 * [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
+* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
-* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
-* [circe-benchmarks][circe-benchmarks]: Benchmarks for comparing the performance of circe and other JSON libraries for the JVM.
 
 ### Related projects
 
@@ -55,7 +58,7 @@ The following open source projects are either built on circe or provide circe su
 * [Actor Messenger][actor-im]: A platform for instant messaging.
 * [akka-http-json][akka-http-json]: A library that supports using circe for JSON marshalling and
   unmarshalling in [Akka HTTP][akka-http].
-* [akka-stream-json][akka-stream-json]: A library that provides Json support for stream based applications using jawn as a parser with a convenience example for circe.
+* [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
@@ -85,7 +88,7 @@ The following open source projects are either built on circe or provide circe su
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
-* [sttp][sttp]: Scala HTTP client
+* [sttp][sttp]: Scala HTTP client.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on circe.
 
@@ -135,6 +138,9 @@ limitations under the License.
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
 [circe-benchmarks]: https://github.com/circe/circe-benchmarks
+[circe-config]: https://github.com/circe/circe-config
+[circe-derivation]: https://github.com/circe/circe-derivation
+[circe-fs2]: https://github.com/circe/circe-fs2
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
@@ -154,12 +160,14 @@ limitations under the License.
 [fintrospect]: https://github.com/daviddenton/fintrospect
 [fluentd]: http://www.fluentd.org/
 [fluflu]: https://github.com/tkrs/fluflu
+[fs2]: https://github.com/functional-streams-for-scala/fs2
 [github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
 [iglu]: https://github.com/snowplow/iglu
 [jackson]: https://github.com/FasterXML/jackson
+[jawn]: https://github.com/non/jawn
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
