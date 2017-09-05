@@ -33,6 +33,8 @@ import scala.annotation.switch
  * @param dropNullValues Determines if object fields with values of null are dropped from the output.
  * @param reuseWriters Determines whether the printer will reuse Appendables via thread-local
  *        storage.
+ * @param predictSize Uses an adaptive size predictor to avoid grow-and-copy steps while printing
+ *        into a binary output.
  */
 final case class Printer(
   preserveOrder: Boolean,
@@ -53,7 +55,8 @@ final case class Printer(
   objectCommaRight: String = "",
   colonLeft: String = "",
   colonRight: String = "",
-  reuseWriters: Boolean = false
+  reuseWriters: Boolean = false,
+  predictSize: Boolean = false
 ) {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
@@ -187,8 +190,18 @@ final case class Printer(
     writer.toString
   }
 
+  @transient
+  private[this] final val sizePredictor: ThreadLocal[Printer.SizePredictor] =
+    new ThreadLocal[Printer.SizePredictor] {
+      override final def initialValue: Printer.SizePredictor =
+        new Printer.AdaptiveSizePredictor()
+    }
+
   final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = {
-    val writer = new Printer.AppendableByteBuffer(cs)
+    val predictor = if (predictSize && sizePredictor.ne(null)) sizePredictor.get()
+    else Printer.NoSizePredictor
+
+    val writer = new Printer.AppendableByteBuffer(cs, predictor)
     val folder = new AppendableByteBufferFolder(writer)
 
     json.foldWith(folder)
@@ -365,15 +378,68 @@ final object Printer {
     }
   }
 
+  // We use these sizes as an initial buffers size: 32 bytes to 32 megabytes.
+  private[this] val SizeTable: Array[Int] = Array(
+         32,         48,      64,      80,      96,      112,      128,   144,    160,    176,
+        192,        208,     224,     240,     256,      272,      288,   304,    320,    336,
+        352,        368,     384,     400,     416,      432,      448,   464,    480,    496,
+        512,       1024,    2048,    4096,    8192,    16384,    32768, 65536, 131072, 262144,
+     524288,    1048576, 2097152, 4194304, 8388608, 16777216, 33554432
+  )
+
+  private abstract class SizePredictor {
+    def recordSize(size: Int): Unit
+    def predictSize: Int
+  }
+
+  /**
+   * Predicts an output buffer size based on the history of allocations. Highly inspired by
+   * Netty's AdaptiveRecvByteBufAllocator.
+   *
+   * @note This class isn't thread-safe. Any access to it should be synchronized externally.
+   */
+  private final class AdaptiveSizePredictor extends SizePredictor {
+    private[this] var index: Int = 0
+    private[this] var nextSize: Int = 32
+    private[this] var decreasing: Boolean = false
+
+    def recordSize(size: Int): Unit = {
+      if (size <= SizeTable(math.max(0, index - 2))) {
+        if (decreasing) {
+          index = math.max(0, index - 1)
+          nextSize = SizeTable(index)
+          decreasing = false
+        } else {
+          decreasing = true
+        }
+      } else if (size >= nextSize) {
+        index = math.min(SizeTable.length - 1, index + 4)
+        nextSize = SizeTable(index)
+        decreasing = false
+      }
+    }
+
+    def predictSize: Int = nextSize
+  }
+
+  private object NoSizePredictor extends SizePredictor {
+    def recordSize(size: Int): Unit = ()
+    def predictSize: Int = 32
+  }
+
   /**
    * Very bare-bones and fast [[Appendable]] that can produce a [[ByteBuffer]].
    *
    * The implementation is pretty much a regular growing char buffer that assumes all given
    * [[CharSequence]]s are just [[String]]s so both `toString` and `charAt` methods are cheap.
    */
-  private[circe] final class AppendableByteBuffer(cs: Charset) extends Appendable {
+  private[circe] final class AppendableByteBuffer(
+    cs: Charset,
+    sizePredictor: SizePredictor
+  ) extends Appendable {
+
     private[this] var index = 0
-    private[this] var chars = new Array[Char](32)
+    private[this] var chars = new Array[Char](sizePredictor.predictSize)
 
     private[this] def ensureToFit(n: Int): Unit = {
       val required = index + n
@@ -409,6 +475,9 @@ final object Printer {
       this
     }
 
-    def toByteBuffer: ByteBuffer = cs.encode(CharBuffer.wrap(chars, 0, index))
+    def toByteBuffer: ByteBuffer = {
+      sizePredictor.recordSize(index)
+      cs.encode(CharBuffer.wrap(chars, 0, index))
+    }
   }
 }

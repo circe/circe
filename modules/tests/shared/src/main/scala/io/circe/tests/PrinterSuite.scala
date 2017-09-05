@@ -14,8 +14,8 @@ class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceSuite 
   checkLaws("Printing Int", PrinterTests[Int].printer(printer, parser))
   checkLaws("Printing Map", PrinterTests[Map[String, List[Int]]].printer(printer, parser))
 
-  "prettyByteBuffer" should "match pretty" in forAll { (json: Json) =>
-    val buffer = printer.prettyByteBuffer(json)
+  "prettyByteBuffer" should "match pretty" in forAll { (json: Json, predictSize: Boolean) =>
+    val buffer = printer.copy(predictSize = predictSize).prettyByteBuffer(json)
 
     val bytes = new Array[Byte](buffer.limit)
     buffer.get(bytes)
