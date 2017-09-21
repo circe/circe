@@ -20,11 +20,11 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 
-private[circe] object TimeInstances {
+private[circe] object JavaTimeInstances {
   final val yearMonthFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
 }
 
-trait TimeDecoders {
+private[circe] trait JavaTimeDecoders {
 
   implicit final val decodeInstant: Decoder[Instant] =
     Decoder.instance { c =>
@@ -117,7 +117,7 @@ trait TimeDecoders {
       }
     }
 
-  implicit final def decodeYearMonthDefault: Decoder[YearMonth] = decodeYearMonth(TimeInstances.yearMonthFormatter)
+  implicit final def decodeYearMonthDefault: Decoder[YearMonth] = decodeYearMonth(JavaTimeInstances.yearMonthFormatter)
 
   implicit final val decodeDuration: Decoder[Duration] =
     Decoder.instance { c =>
@@ -129,7 +129,8 @@ trait TimeDecoders {
       }
     }
 }
-trait TimeEncoders {
+
+private[circe] trait JavaTimeEncoders {
   implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time => Json.fromString(time.toString))
 
   final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
@@ -164,7 +165,7 @@ trait TimeEncoders {
   final def encodeYearMonth(formatter: DateTimeFormatter): Encoder[YearMonth] =
     Encoder.instance(time => Json.fromString(time.format(formatter)))
 
-  implicit final def encodeYearMonthDefault: Encoder[YearMonth] = encodeYearMonth(TimeInstances.yearMonthFormatter)
+  implicit final def encodeYearMonthDefault: Encoder[YearMonth] = encodeYearMonth(JavaTimeInstances.yearMonthFormatter)
 
   implicit final val encodeDuration: Encoder[Duration] =
     Encoder.instance(duration => Json.fromString(duration.toString))
