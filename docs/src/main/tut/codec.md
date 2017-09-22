@@ -122,7 +122,7 @@ do so in a couple of ways.
 Firstly, you can write a new `Encoder[A]` and `Decoder[A]` from scratch:
 
 ```tut:book
-import io.circe.{ Decoder, Encoder, HCursor }
+import io.circe.{ Decoder, Encoder, HCursor, Json }
 
 class Thing(val foo: String, val bar: Int)
 
@@ -229,6 +229,8 @@ Since this is a common use case, we also support for mapping member names via an
 
 ```tut:book
 import io.circe.generic.extras._, io.circe.syntax._
+
+implicit val config: Configuration = Configuration.default
 
 @ConfiguredJsonCodec case class Bar(@JsonKey("my-int") i: Int, s: String)
 
