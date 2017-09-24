@@ -298,6 +298,17 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
   }
 
+  "either" should "return the correct disjunct" in {
+    forAll { (decodeString: Decoder[String], decodeBoolean: Decoder[Boolean], value: Either[String, Boolean]) =>
+      val json = value match {
+        case Left(s) => Json.fromString(s)
+        case Right(b) => Json.fromBoolean(b)
+      }
+
+      assert(decodeString.either(decodeBoolean).decodeJson(json) === Right(value))
+    }
+  }
+
   private[this] val stateful = {
     import Decoder.state._
     Decoder.fromState(for {
