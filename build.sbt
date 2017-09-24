@@ -26,9 +26,9 @@ lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.8.3"
 lazy val monocleVersion = "1.4.0"
 
-lazy val scalaTestVersion = "3.0.3"
+lazy val scalaTestVersion = "3.0.4"
 lazy val scalaCheckVersion = "1.13.5"
-lazy val disciplineVersion = "0.7.3"
+lazy val disciplineVersion = "0.8"
 
 lazy val previousCirceVersion = Some("0.8.0")
 
