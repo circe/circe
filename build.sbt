@@ -60,9 +60,9 @@ lazy val baseSettings = Seq(
   ),
   coverageScalacPluginVersion := "1.3.1",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
-  ivyConfigurations += config("compile-time").hide,
-  unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compile-time")),
-  unmanagedClasspath in Test ++= update.value.select(configurationFilter("compile-time"))
+  ivyConfigurations += CompileTime.hide,
+  unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
+  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name))
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
@@ -495,8 +495,8 @@ lazy val publishSettings = Seq(
 )
 
 lazy val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
+  publish := {},
+  publishLocal := {},
   publishArtifact := false
 )
 
@@ -511,6 +511,8 @@ credentials ++= (
     password
   )
 ).toSeq
+
+lazy val CompileTime = config("compile-time")
 
 val jvmTestProjects = jvmProjects.filterNot(Set(core, jawn, parser))
 val jsTestProjects = jsProjects.filterNot(Set(core, parser, scalajs))
