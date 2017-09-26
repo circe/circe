@@ -5,13 +5,13 @@ import io.circe.generic.decoding.ReprDecoder
 import macrocompat.bundle
 import scala.annotation.tailrec
 import scala.collection.immutable.Map
-import scala.reflect.macros.whitebox
+import scala.reflect.macros.blackbox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
 import shapeless.labelled.KeyTag
 
 @bundle
 abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
-  val c: whitebox.Context
+  val c: blackbox.Context
 
   import c.universe._
 
