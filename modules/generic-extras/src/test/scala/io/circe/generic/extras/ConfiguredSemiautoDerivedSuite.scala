@@ -4,30 +4,39 @@ import cats.kernel.Eq
 import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
 import io.circe.generic.extras.semiauto._
 import io.circe.literal._
+import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
+import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary.arbitrary
 import shapeless.Witness
 import shapeless.labelled.{ field, FieldType }
 
-class ConfiguredSemiautoDerivedSuite extends CirceSuite {
-  /**
-   * This nesting is necessary on 2.10 (possibly related to SI-7406).
-   */
-  object examples {
+object ConfiguredSemiautoDerivedSuite {
+  object localExamples {
     sealed trait ConfigExampleBase
     case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, b: Double) extends ConfigExampleBase
     case object ConfigExampleBar extends ConfigExampleBase
 
     object ConfigExampleFoo {
       implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
+      val genConfigExampleFoo: Gen[ConfigExampleFoo] = for {
+        thisIsAField <- arbitrary[String]
+        a <- arbitrary[Int]
+        b <- arbitrary[Double]
+      } yield ConfigExampleFoo(thisIsAField, a, b)
+      implicit val arbitraryConfigExampleFoo: Arbitrary[ConfigExampleFoo] = Arbitrary(genConfigExampleFoo)
     }
 
     object ConfigExampleBase {
       implicit val eqConfigExampleBase: Eq[ConfigExampleBase] = Eq.fromUniversalEquals
+      val genConfigExampleBase: Gen[ConfigExampleBase] =
+        Gen.oneOf(Gen.const(ConfigExampleBar), ConfigExampleFoo.genConfigExampleFoo)
+      implicit val arbitraryConfigExampleBase: Arbitrary[ConfigExampleBase] = Arbitrary(genConfigExampleBase)
     }
   }
 
-  import examples._
+  import localExamples._
 
   implicit val customConfig: Configuration =
     Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
@@ -42,6 +51,12 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
 
   implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
   implicit val encodeConfigExampleBase: ObjectEncoder[ConfigExampleBase] = deriveEncoder
+}
+
+class ConfiguredSemiautoDerivedSuite extends CirceSuite {
+  import ConfiguredSemiautoDerivedSuite._, localExamples._
+
+  checkLaws("Codec[ConfigExampleBase]", CodecTests[ConfigExampleBase].codec)
 
   "Semi-automatic derivation" should "support configuration" in forAll { (f: String, b: Double) =>
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)

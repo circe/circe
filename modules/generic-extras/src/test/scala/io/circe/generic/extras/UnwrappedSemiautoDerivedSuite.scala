@@ -3,7 +3,10 @@ package io.circe.generic.extras
 import cats.Eq
 import io.circe._
 import io.circe.generic.extras.semiauto._
+import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
+import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary.arbitrary
 
 object UnwrappedSemiautoDerivedSuite {
   case class Foo(value: String) extends AnyVal
@@ -12,11 +15,15 @@ object UnwrappedSemiautoDerivedSuite {
     implicit val eq: Eq[Foo] = Eq.fromUniversalEquals
     implicit val encoder: Encoder[Foo] = deriveUnwrappedEncoder
     implicit val decoder: Decoder[Foo] = deriveUnwrappedDecoder
+    val fooGen: Gen[Foo] = arbitrary[String].map(Foo(_))
+    implicit val arbitraryFoo: Arbitrary[Foo] = Arbitrary(fooGen)
   }
 }
 
 class UnwrappedSemiautoDerivedSuite extends CirceSuite {
   import UnwrappedSemiautoDerivedSuite._
+
+  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
   "Semi-automatic derivation" should "encode valueclasses" in forAll { (s: String) =>
     val foo = Foo(s)
