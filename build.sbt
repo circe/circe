@@ -291,6 +291,7 @@ lazy val genericJS = genericBase.js
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings(scaladocFor210 = false))
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
 
 lazy val genericExtras = genericExtrasBase.jvm
