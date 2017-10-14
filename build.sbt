@@ -24,7 +24,7 @@ lazy val catsVersion = "1.0.0-MF"
 lazy val jawnVersion = "0.11.0"
 lazy val shapelessVersion = "2.3.2"
 lazy val refinedVersion = "0.8.4"
-lazy val monocleVersion = "1.4.0"
+lazy val monocleVersion = "1.5.0-cats-M1"
 
 lazy val scalaTestVersion = "3.0.4"
 lazy val scalaCheckVersion = "1.13.5"
