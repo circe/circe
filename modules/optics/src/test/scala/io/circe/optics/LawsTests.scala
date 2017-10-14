@@ -1,14 +1,14 @@
 package io.circe.optics
 
+import cats.{Eq => Equal}
+import cats.instances.list._
+import cats.instances.option._
 import monocle.{ Lens, Optional, Prism, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
 import monocle.law.{ LensLaws, OptionalLaws, PrismLaws, TraversalLaws }
 import monocle.law.discipline.isEqToProp
 import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
-import scalaz.Equal
-import scalaz.std.list._
-import scalaz.std.option._
 
 /**
  * We use our own implementations because Monocle's don't (currently) use non-default `Shrink`

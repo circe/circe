@@ -1,30 +1,21 @@
 package io.circe.optics
 
-import cats.kernel.Eq
+import cats.Order
+import cats.kernel.instances.DoubleOrder
+import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
-import io.circe.{ Json, JsonNumber, JsonObject }
 import monocle.function.Plated.plate
 import monocle.syntax.all._
-import scalaz.Equal
-import scalaz.std.anyVal._
-import scalaz.std.math.bigDecimal._
-import scalaz.std.math.bigInt._
-import scalaz.std.option._
-import scalaz.std.string._
-import scalaz.std.vector._
 
 class OpticsSuite extends CirceSuite {
-  implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
-  implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
-  implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
   /**
    * For the purposes of these tests we consider `Double.NaN` to be equal to
    * itself.
    */
-  implicit val doubleInstance: Equal[Double] = Equal.equal { (a, b) =>
-    (a.isNaN && b.isNaN) || scalaz.std.anyVal.doubleInstance.equal(a, b)
+  override implicit val catsKernelStdOrderForDouble: Order[Double] = new DoubleOrder {
+    override def eqv(a: Double, b: Double)= (a.isNaN && b.isNaN) || a == b
   }
 
   checkLaws("Json to Unit", LawsTests.prismTests(jsonNull))
