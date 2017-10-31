@@ -420,7 +420,7 @@ lazy val java8JS = java8Base.js
 
 lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.13.0"
+    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.14.0"
   )
   .dependsOn(core, jawn, tests % Test)
 
