@@ -27,8 +27,12 @@ trait MissingInstances {
   implicit lazy val eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
   implicit lazy val eqUUID: Eq[UUID] = Eq.fromUniversalEquals
   implicit def eqRefArray[A <: AnyRef: Eq]: Eq[Array[A]] =
-    cats.kernel.instances.vector.catsKernelStdEqForVector[A].on(value => Predef.wrapRefArray(value).toVector)
-  implicit def eqSeq[A: Eq]: Eq[Seq[A]] = cats.kernel.instances.vector.catsKernelStdEqForVector[A].on(_.toVector)
+    Eq.by((value: Array[A]) =>
+      Predef.wrapRefArray(value).toVector
+    )(cats.kernel.instances.vector.catsKernelStdEqForVector[A])
+  implicit def eqSeq[A: Eq]: Eq[Seq[A]] = Eq.by((_: Seq[A]).toVector)(
+    cats.kernel.instances.vector.catsKernelStdEqForVector[A]
+  )
 
   implicit def arbitraryTuple1[A](implicit A: Arbitrary[A]): Arbitrary[Tuple1[A]] =
     Arbitrary(A.arbitrary.map(Tuple1(_)))
@@ -59,7 +63,7 @@ trait MissingInstances {
   implicit def eqTuple[P: IsTuple, L <: HList](implicit
     gen: Generic.Aux[P, L],
     eqL: Eq[L]
-  ): Eq[P] = eqL.on(gen.to)
+  ): Eq[P] = Eq.by(gen.to)(eqL)
 
   implicit lazy val arbitraryHNil: Arbitrary[HNil] = Arbitrary(Gen.const(HNil))
 
@@ -84,12 +88,14 @@ trait MissingInstances {
     }
   )
 
-  implicit def eqFieldType[K, V](implicit V: Eq[V]): Eq[FieldType[K, V]] = V.on(identity)
+  implicit def eqFieldType[K, V](implicit V: Eq[V]): Eq[FieldType[K, V]] =
+    Eq.by[FieldType[K, V], V](identity)
 
   implicit def arbitraryFieldType[K, V](implicit V: Arbitrary[V]): Arbitrary[FieldType[K, V]] =
     Arbitrary(V.arbitrary.map(field[K](_)))
 
-  implicit def eqSized[L <: Nat, C[_], A](implicit CA: Eq[C[A]]): Eq[Sized[C[A], L]] = CA.on(_.unsized)
+  implicit def eqSized[L <: Nat, C[_], A](implicit CA: Eq[C[A]]): Eq[Sized[C[A], L]] =
+    Eq.by[Sized[C[A], L], C[A]](_.unsized)
 
   implicit def arbitrarySized[L <: Nat, C[_], A](implicit
     A: Arbitrary[A],

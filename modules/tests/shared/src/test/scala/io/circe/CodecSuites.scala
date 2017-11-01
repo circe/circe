@@ -52,7 +52,6 @@ class StdLibCodecSuite extends CirceSuite {
     }
 
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
-  implicit def eqSortedMap[Long, Int]: Eq[SortedMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 

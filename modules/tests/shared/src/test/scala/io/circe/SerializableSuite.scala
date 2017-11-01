@@ -1,7 +1,7 @@
 package io.circe
 
-import cats.laws.SerializableLaws
 import cats.laws.discipline.SerializableTests
+import cats.kernel.laws.SerializableLaws
 import io.circe.tests.CirceSuite
 
 class SerializableSuite extends CirceSuite {
