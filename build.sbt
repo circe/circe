@@ -179,7 +179,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 )
 
 lazy val circeJsModules = Seq[Project](scalajs)
-lazy val circeJvmModules = Seq[Project](jawn, streaming)
+lazy val circeJvmModules = Seq[Project](jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
 
@@ -417,12 +417,6 @@ lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, Cros
 
 lazy val java8 = java8Base.jvm
 lazy val java8JS = java8Base.js
-
-lazy val streaming = circeModule("streaming", mima = previousCirceVersion)
-  .settings(
-    libraryDependencies += "io.iteratee" %% "iteratee-core" % "0.13.0"
-  )
-  .dependsOn(core, jawn, tests % Test)
 
 lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
   .settings(
