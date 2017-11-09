@@ -48,6 +48,7 @@ Please get in touch on [Gitter][gitter] if you have a circe-related project that
 * [circe-config][circe-config]: A library for translating between HOCON, Java properties, and JSON documents.
 * [circe-derivation][circe-derivation]: Experimental generic derivation with improved compile times.
 * [circe-fs2][circe-fs2]: A library that provides streaming JSON parsing and decoding built on [fs2][fs2] and [Jawn][jawn].
+* [circe-iteratee][circe-iteratee]: A library that provides streaming JSON parsing and decoding built on [iteratee.io][iteratee] and [Jawn][jawn].
 * [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
 * [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
@@ -167,6 +168,7 @@ limitations under the License.
 [gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
 [http4s]: https://github.com/http4s/http4s
+[iteratee]: https://github.com/travisbrown/iteratee
 [iglu]: https://github.com/snowplow/iglu
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
