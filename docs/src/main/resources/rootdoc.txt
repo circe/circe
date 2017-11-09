@@ -20,8 +20,6 @@ facilitate integration with other libraries or frameworks.
    classes and sealed trait hierarchies.
  - [[io.circe.generic.extras generic-extras]]: additional experimental generic
    derivation functionality (including some configurability).
- - [[https://github.com/circe/circe/blob/master/modules/streaming/src/main/scala/io/circe/streaming/package.scala streaming]]: streaming JSON parsing via
-   [[https://github.com/travisbrown/iteratee iteratees]].
  - [[io.circe.optics optics]]: navigation and immutable modification of JSON
    documents via Monocle's optics types.
  - [[https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala java8]]: encoders and decoders for the
