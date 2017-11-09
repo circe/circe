@@ -144,6 +144,7 @@ limitations under the License.
 [circe-config]: https://github.com/circe/circe-config
 [circe-derivation]: https://github.com/circe/circe-derivation
 [circe-fs2]: https://github.com/circe/circe-fs2
+[circe-iteratee]: https://github.com/circe/circe-iteratee
 [circe-jackson]: https://github.com/circe/circe-jackson
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
