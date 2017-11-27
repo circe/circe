@@ -39,6 +39,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [Whisk](https://whisk.com)
 * [Zalando](https://zalando.de)
+* [Zendesk](https://zendesk.com)
 
 ### Other circe organization projects
 
