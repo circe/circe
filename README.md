@@ -25,6 +25,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [DriveTribe](https://drivetribe.com)
 * [The Guardian](https://www.theguardian.com)
 * [HolidayCheck](https://www.holidaycheck.de)
+* [Indix](https://www.indix.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
