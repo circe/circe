@@ -28,11 +28,21 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
 
   import examples._
 
-  "Configuration#transformMemberNames" should "support member name transformation" in forAll { (f: String, a: Int, b: Double) =>
+  "Configuration#transformMemberNames" should "support member name transformation using snake_case" in forAll { (f: String, a: Int, b: Double) =>
     implicit val snakeCaseConfig: Configuration = Configuration.default.withSnakeCaseMemberNames
 
     val foo: ConfigExampleFoo = ConfigExampleFoo(f, a, b)
     val json = json"""{ "this_is_a_field": $f, "a": $a, "b": $b}"""
+
+    assert(Encoder[ConfigExampleFoo].apply(foo) === json)
+    assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
+  }
+
+  "Configuration#transformMemberNames" should "support member name transformation using kebab-case" in forAll { (f: String, a: Int, b: Double) =>
+    implicit val kebabCaseConfig: Configuration = Configuration.default.withKebabCaseMemberNames
+
+    val foo: ConfigExampleFoo = ConfigExampleFoo(f, a, b)
+    val json = json"""{ "this-is-a-field": $f, "a": $a, "b": $b}"""
 
     assert(Encoder[ConfigExampleFoo].apply(foo) === json)
     assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
