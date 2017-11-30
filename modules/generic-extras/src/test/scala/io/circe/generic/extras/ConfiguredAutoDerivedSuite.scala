@@ -73,11 +73,21 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     }
   }
 
-  "Configuration#transformConstructorNames" should "support constructor name transformation" in forAll { (f: String, a: Int, b: Double) =>
+  "Configuration#transformConstructorNames" should "support constructor name transformation with snake_case" in forAll { (f: String, a: Int, b: Double) =>
     implicit val snakeCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withSnakeCaseConstructorNames
 
     val foo: ConfigExampleBase = ConfigExampleFoo(f, a, b)
     val json = json"""{ "type": "config_example_foo", "thisIsAField": $f, "a": $a, "b": $b}"""
+
+    assert(Encoder[ConfigExampleBase].apply(foo) === json)
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+  }
+
+  "Configuration#transformConstructorNames" should "support constructor name transformation with kebab-case" in forAll { (f: String, a: Int, b: Double) =>
+    implicit val kebabCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withKebabCaseConstructorNames
+
+    val foo: ConfigExampleBase = ConfigExampleFoo(f, a, b)
+    val json = json"""{ "type": "config-example-foo", "thisIsAField": $f, "a": $a, "b": $b}"""
 
     assert(Encoder[ConfigExampleBase].apply(foo) === json)
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
