@@ -4,7 +4,6 @@ import io.circe.{ Decoder, Encoder }
 import io.circe.generic.decoding.ReprDecoder
 import macrocompat.bundle
 import scala.annotation.tailrec
-import scala.collection.immutable.Map
 import scala.reflect.macros.blackbox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
 import shapeless.labelled.KeyTag
@@ -76,19 +75,26 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
      * of some type class for each.
      */
     def fold[Z](resolver: Type => Tree)(init: Z)(f: (Member, TermName, Z) => Z): (List[Tree], Z) = {
-      val (instanceMap, result) = underlying.foldRight((Map.empty[Type, (TermName, Tree)], init)) {
-        case (member @ Member(_, _, valueType, _, _), (instanceMap, acc)) =>
-          val (instanceName, instance) = instanceMap.getOrElse(valueType, (TermName(c.freshName), resolver(valueType)))
-          val newInstances = instanceMap.updated(valueType, (instanceName, instance))
+      val (instanceList, result) = underlying.foldRight((List.empty[(Type, (TermName, Tree))], init)) {
+        case (member @ Member(label, _, valueType, _, _), (instanceList, acc)) =>
+          val (newInstanceList, instanceName) =
+            instanceList.find(_._1 =:= valueType) match {
+              case Some(result) => (instanceList, result._2._1)
+              case None =>
+                val newName = TermName(s"circeGenericInstanceFor$label")
+                val newInstance = resolver(valueType)
 
-          (newInstances, f(member, instanceName, acc))
+                ((valueType, (newName, newInstance)) :: instanceList, newName)
+            }
+
+          (newInstanceList, f(member, instanceName, acc))
       }
 
-      val instanceDefs = instanceMap.values.map {
-        case (instanceName, instance) => q"private[this] val $instanceName = $instance"
+      val instanceDefs = instanceList.map {
+        case (_, (instanceName, instance)) => q"private[this] val $instanceName = $instance"
       }
 
-      (instanceDefs.toList, result)
+      (instanceDefs, result)
     }
   }
 
@@ -176,7 +182,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   private[this] def hlistDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
     resolveInstance(List((typeOf[Decoder[_]], false)))
   )((q"$ReprDecoderUtils.hnilResult": Tree, q"$ReprDecoderUtils.hnilResultAccumulating": Tree)) {
-    case (Member(name, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) => (
+    case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) => (
       q"""
         $ReprDecoderUtils.consResults[
           _root_.io.circe.Decoder.Result,
@@ -184,7 +190,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           $tpe,
           $accTail
         ](
-          ${ decodeField(name, instanceName) },
+          ${ decodeField(label, instanceName) },
           $acc
         )(_root_.io.circe.Decoder.resultInstance)
       """,
@@ -195,7 +201,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           $tpe,
           $accTail
         ](
-          ${ decodeFieldAccumulating(name, instanceName) },
+          ${ decodeFieldAccumulating(label, instanceName) },
           $accAccumulating
         )(_root_.io.circe.AccumulatingDecoder.resultInstance)
       """
@@ -217,9 +223,9 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   private[this] def coproductDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
     resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
   )((cnilResult, cnilResultAccumulating)) {
-    case (Member(name, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) => (
+    case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) => (
       q"""
-        ${ decodeSubtype(name, instanceName) } match {
+        ${ decodeSubtype(label, instanceName) } match {
           case _root_.scala.Some(result) => result.right.map(v =>
            $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
           )
@@ -227,7 +233,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
         }
       """,
       q"""
-        ${ decodeSubtypeAccumulating(name, instanceName) } match {
+        ${ decodeSubtypeAccumulating(label, instanceName) } match {
           case _root_.scala.Some(result) => result.map(v =>
             $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
           )
@@ -270,12 +276,12 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     val (instanceDefs, (pattern, fields)) = members.fold(resolveInstance(List((typeOf[Encoder[_]], false))))(
       (pq"_root_.shapeless.HNil": Tree, List.empty[Tree])
     ) {
-      case (Member(name, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
-        val currentName = TermName(c.freshName)
+      case (Member(label, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
+        val currentName = TermName(s"circeGenericHListBindingFor$label")
 
         (
           pq"_root_.shapeless.::($currentName, $patternAcc)",
-          encodeField(name, instanceName, currentName) :: fieldsAcc
+          encodeField(label, instanceName, currentName) :: fieldsAcc
         )
     }
 
@@ -296,14 +302,14 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     )(
       cq"""_root_.shapeless.Inr(_) => _root_.scala.sys.error("Cannot encode CNil")"""
     ) {
-      case (Member(name, _, tpe, _, _), instanceName, acc) =>
-        val tailName = TermName(c.freshName)
-        val currentName = TermName(c.freshName)
+      case (Member(label, _, tpe, _, _), instanceName, acc) =>
+        val inrName = TermName(s"circeGenericInrBindingFor$label")
+        val inlName = TermName(s"circeGenericInlBindingFor$label")
 
         cq"""
-          _root_.shapeless.Inr($tailName) => $tailName match {
-            case _root_.shapeless.Inl($currentName) =>
-              ${ encodeSubtype(name, instanceName, currentName) }
+          _root_.shapeless.Inr($inrName) => $inrName match {
+            case _root_.shapeless.Inl($inlName) =>
+              ${ encodeSubtype(label, instanceName, inlName) }
             case $acc
           }
         """
