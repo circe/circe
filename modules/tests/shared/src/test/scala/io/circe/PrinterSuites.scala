@@ -5,7 +5,7 @@ import io.circe.tests.PrinterSuite
 class Spaces2PrinterSuite extends PrinterSuite(Printer.spaces2, parser.`package`) with Spaces2PrinterExample
 class Spaces4PrinterSuite extends PrinterSuite(Printer.spaces4, parser.`package`)
 class NoSpacesPrinterSuite extends PrinterSuite(Printer.noSpaces, parser.`package`)
-class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.escapeUnicode, parser.`package`) {
+class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escapeNonAscii = true), parser.`package`) {
   import io.circe.syntax._
   "Printing object" should "unicode-escape all non-ASCII chars" in {
     val actual = Json.obj("0 ℃" := "32 ℉").pretty(printer)
@@ -30,6 +30,6 @@ class NoSpacesPrinterWithWriterReuseSuite extends PrinterSuite(
 )
 
 class UnicodeEscapePrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.noSpaces.escapeUnicode.copy(reuseWriters = true),
+  Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
   parser.`package`
 )
