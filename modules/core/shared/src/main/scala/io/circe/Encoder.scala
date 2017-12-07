@@ -223,6 +223,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     final def apply(a: Option[A]): Json = a match {
       case Some(v) => e(v)
       case None => Json.Null
+      case null => Json.Null
     }
   }
 
