@@ -57,7 +57,7 @@ final case class Printer(
   colonRight: String = "",
   reuseWriters: Boolean = false,
   predictSize: Boolean = false,
-  alwaysEscapeUnicode: Boolean = false
+  escapeNonAscii: Boolean = false
 ) {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
@@ -68,14 +68,14 @@ final case class Printer(
 
   private[this] final class StringBuilderFolder(
     writer: StringBuilder
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, alwaysEscapeUnicode) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii) {
     final def onBoolean(value: Boolean): Unit = writer.append(value)
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, alwaysEscapeUnicode) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
   }
@@ -212,8 +212,6 @@ final case class Printer(
 
   final def prettyByteBuffer(json: Json): ByteBuffer =
     prettyByteBuffer(json, StandardCharsets.UTF_8)
-
-  final def escapeUnicode: Printer = copy(alwaysEscapeUnicode = true)
 }
 
 final object Printer {
@@ -258,7 +256,7 @@ final object Printer {
     private[circe] val writer: Appendable,
     private[circe] val pieces: PiecesAtDepth,
     private[circe] val dropNullValues: Boolean,
-    private[circe] val alwaysEscapeUnicode: Boolean
+    private[circe] val escapeNonAscii: Boolean
   ) extends Json.Folder[Unit] {
     private[circe] var depth: Int = 0
 
@@ -276,7 +274,7 @@ final object Printer {
         if (
           (c == '"' || c == '\\' || c == '\b' || c == '\f' || c == '\n' || c == '\r' || c == '\t') ||
           Character.isISOControl(c) ||
-          (alwaysEscapeUnicode && c.toInt > 127)
+          (escapeNonAscii && c.toInt > 127)
         ) {
           writer.append(value, offset, i)
           writer.append('\\')
