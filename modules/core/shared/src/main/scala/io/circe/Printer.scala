@@ -35,6 +35,7 @@ import scala.annotation.switch
  *        storage.
  * @param predictSize Uses an adaptive size predictor to avoid grow-and-copy steps while printing
  *        into a binary output.
+ * @param escapeNonAscii Unicode-escape any non-ASCII characters in strings.
  */
 final case class Printer(
   preserveOrder: Boolean,
