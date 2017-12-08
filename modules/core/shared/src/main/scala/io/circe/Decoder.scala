@@ -137,11 +137,17 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Run two decoders and return their results as a pair.
    */
-  final def and[B](fb: Decoder[B]): Decoder[(A, B)] = new Decoder[(A, B)] {
+  final def product[B](fb: Decoder[B]): Decoder[(A, B)] = new Decoder[(A, B)] {
     final def apply(c: HCursor): Decoder.Result[(A, B)] = Decoder.resultInstance.product(self(c), fb(c))
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
       AccumulatingDecoder.resultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
   }
+
+  /**
+   * Run two decoders and return their results as a pair.
+   */
+  @deprecated("Use product", "0.9.0")
+  final def and[B](fb: Decoder[B]): Decoder[(A, B)] = product(fb)
 
   /**
    * Choose the first succeeding decoder.
@@ -169,6 +175,7 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Run one or another decoder.
    */
+  @deprecated("Use cats.arrow.Choice", "0.9.0")
   final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = {
     case Left(c) => self(c) match {
       case Right(v) => Right(Left(v))
@@ -179,12 +186,6 @@ trait Decoder[A] extends Serializable { self =>
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
     }
   }
-
-  /**
-   * Run two decoders.
-   */
-  final def product[B](x: Decoder[B]): (HCursor, HCursor) => Decoder.Result[(A, B)] = (a1, a2) =>
-    Decoder.resultInstance.product(self(a1), x(a2))
 
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
