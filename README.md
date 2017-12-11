@@ -30,7 +30,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
 * [Reonomy](https://reonomy.com/)
-* [Sigma](https://thesigma.com)
+* [Sigma](https://sig.ma)
 * [Snowplow Analytics](https://snowplowanalytics.com/)
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
 * [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
