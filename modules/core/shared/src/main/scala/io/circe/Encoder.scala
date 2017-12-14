@@ -136,11 +136,17 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-   * @group Encoding
-   */
+    * @group Encoding
+    */
   implicit final val encodeBoolean: Encoder[Boolean] = new Encoder[Boolean] {
     final def apply(a: Boolean): Json = Json.fromBoolean(a)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaBoolean(implicit e: Encoder[Boolean]): Encoder[java.lang.Boolean] =
+    e.contramap(_.booleanValue())
 
   /**
    * @group Encoding
@@ -148,6 +154,12 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   implicit final val encodeChar: Encoder[Char] = new Encoder[Char] {
     final def apply(a: Char): Json = Json.fromString(a.toString)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaCharacter(implicit e: Encoder[Character]): Encoder[java.lang.Character] =
+    e.contramap(_.charValue())
 
   /**
    * Note that on Scala.js the encoding of `Float` values is subject to the
@@ -161,11 +173,23 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaFloat(implicit e: Encoder[Float]): Encoder[java.lang.Float] =
+    e.contramap(_.floatValue())
+
+  /**
    * @group Encoding
    */
   implicit final val encodeDouble: Encoder[Double] = new Encoder[Double] {
     final def apply(a: Double): Json = Json.fromDoubleOrNull(a)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaDouble(implicit e: Encoder[Double]): Encoder[java.lang.Double] =
+    e.contramap(_.doubleValue())
 
   /**
    * @group Encoding
@@ -175,11 +199,23 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaByte(implicit e: Encoder[Byte]): Encoder[java.lang.Byte] =
+    e.contramap(_.byteValue())
+
+  /**
    * @group Encoding
    */
   implicit final val encodeShort: Encoder[Short] = new Encoder[Short] {
     final def apply(a: Short): Json = Json.fromInt(a.toInt)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaShort(implicit e: Encoder[Short]): Encoder[java.lang.Short] =
+    e.contramap(_.shortValue())
 
   /**
    * @group Encoding
@@ -189,11 +225,23 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaInteger(implicit e: Encoder[Integer]): Encoder[java.lang.Integer] =
+    e.contramap(_.intValue())
+
+  /**
    * @group Encoding
    */
   implicit final val encodeLong: Encoder[Long] = new Encoder[Long] {
     final def apply(a: Long): Json = Json.fromLong(a)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaLong(implicit e: Encoder[Long]): Encoder[java.lang.Long] =
+    e.contramap(_.longValue())
 
   /**
    * @group Encoding
@@ -203,11 +251,24 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaBigInteger(implicit e: Encoder[BigInt]): Encoder[java.math.BigInteger] =
+    e.contramap(BigInt.apply)
+
+  /**
    * @group Encoding
    */
   implicit final val encodeBigDecimal: Encoder[BigDecimal] = new Encoder[BigDecimal] {
     final def apply(a: BigDecimal): Json = Json.fromBigDecimal(a)
   }
+
+  /**
+    * @group Encoding
+    */
+  implicit final def encodeJavaBigDecimal(implicit e: Encoder[BigDecimal]): Encoder[java.math.BigDecimal] =
+    e.contramap(BigDecimal.apply)
+
 
   /**
    * @group Encoding
