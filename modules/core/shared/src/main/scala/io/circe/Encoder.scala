@@ -145,8 +145,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaBoolean(implicit e: Encoder[Boolean]): Encoder[java.lang.Boolean] =
-    e.contramap(_.booleanValue())
+  implicit final val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
 
   /**
    * @group Encoding
@@ -174,8 +173,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaFloat(implicit e: Encoder[Float]): Encoder[java.lang.Float] =
-    e.contramap(_.floatValue())
+  implicit final val encodeJavaFloat: Encoder[java.lang.Float] = encodeFloat.contramap(_.floatValue())
 
   /**
    * @group Encoding
@@ -187,8 +185,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaDouble(implicit e: Encoder[Double]): Encoder[java.lang.Double] =
-    e.contramap(_.doubleValue())
+  implicit final val encodeJavaDouble: Encoder[java.lang.Double] = encodeDouble.contramap(_.doubleValue())
 
   /**
    * @group Encoding
@@ -200,8 +197,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaByte(implicit e: Encoder[Byte]): Encoder[java.lang.Byte] =
-    e.contramap(_.byteValue())
+  implicit final val encodeJavaByte: Encoder[java.lang.Byte] = encodeByte.contramap(_.byteValue())
 
   /**
    * @group Encoding
@@ -213,8 +209,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaShort(implicit e: Encoder[Short]): Encoder[java.lang.Short] =
-    e.contramap(_.shortValue())
+  implicit final val encodeJavaShort: Encoder[java.lang.Short] = encodeShort.contramap(_.shortValue())
 
   /**
    * @group Encoding
@@ -238,8 +233,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaLong(implicit e: Encoder[Long]): Encoder[java.lang.Long] =
-    e.contramap(_.longValue())
+  implicit final val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
 
   /**
    * @group Encoding
@@ -251,8 +245,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaBigInteger(implicit e: Encoder[BigInt]): Encoder[java.math.BigInteger] =
-    e.contramap(BigInt.apply)
+  implicit final val encodeJavaBigInteger: Encoder[java.math.BigInteger] = encodeBigInt.contramap(BigInt.apply)
 
   /**
    * @group Encoding
@@ -264,8 +257,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaBigDecimal(implicit e: Encoder[BigDecimal]): Encoder[java.math.BigDecimal] =
-    e.contramap(BigDecimal.apply)
+  implicit final val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
 
 
   /**
