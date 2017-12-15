@@ -470,8 +470,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaBoolean(implicit d: Decoder[Boolean]): Decoder[java.lang.Boolean] =
-    d.map(java.lang.Boolean.valueOf)
+  implicit final val decodeJavaBoolean: Decoder[java.lang.Boolean] = decodeBoolean.map(java.lang.Boolean.valueOf)
 
   /**
    * @group Decoding
@@ -488,8 +487,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaCharacter(implicit d: Decoder[Char]): Decoder[java.lang.Character] =
-    d.map(java.lang.Character.valueOf)
+  implicit final val decodeJavaCharacter: Decoder[java.lang.Character] = decodeChar.map(java.lang.Character.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Float]].
@@ -515,8 +513,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaFloat(implicit d: Decoder[Float]): Decoder[java.lang.Float] =
-    d.map(java.lang.Float.valueOf)
+  implicit final val decodeJavaFloat: Decoder[java.lang.Float] = decodeFloat.map(java.lang.Float.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Double]].
@@ -544,8 +541,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaDouble(implicit d: Decoder[Double]): Decoder[java.lang.Double] =
-    d.map(java.lang.Double.valueOf)
+  implicit final val decodeJavaDouble: Decoder[java.lang.Double] = decodeDouble.map(java.lang.Double.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Byte]].
@@ -573,8 +569,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaByte(implicit d: Decoder[Byte]): Decoder[java.lang.Byte] =
-    d.map(java.lang.Byte.valueOf)
+  implicit final val decodeJavaByte: Decoder[java.lang.Byte] = decodeByte.map(java.lang.Byte.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Short]].
@@ -602,8 +597,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaShort(implicit d: Decoder[Short]): Decoder[java.lang.Short] =
-    d.map(java.lang.Short.valueOf)
+  implicit final val decodeJavaShort: Decoder[java.lang.Short] = decodeShort.map(java.lang.Short.valueOf)
 
   /**
     * Decode a JSON value into a [[scala.Int]].
@@ -631,8 +625,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaInteger(implicit d: Decoder[Int]): Decoder[java.lang.Integer] =
-    d.map(java.lang.Integer.valueOf)
+  implicit final val decodeJavaInteger: Decoder[java.lang.Integer] = decodeInt.map(java.lang.Integer.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Long]].
@@ -663,8 +656,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaLong(implicit d: Decoder[Long]): Decoder[java.lang.Long] =
-    d.map(java.lang.Long.valueOf)
+  implicit final val decodeJavaLong: Decoder[java.lang.Long] = decodeLong.map(java.lang.Long.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.math.BigInt]].
@@ -695,8 +687,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaBigInteger(implicit d: Decoder[BigInt]): Decoder[java.math.BigInteger] =
-    d.map(_.bigInteger)
+  implicit final val decodeJavaBigInteger: Decoder[java.math.BigInteger] = decodeBigInt.map(_.bigInteger)
 
   /**
    * Decode a JSON value into a [[scala.math.BigDecimal]].
@@ -730,8 +721,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     *
     * @group Decoding
     */
-  implicit final def decodeJavaBigDecimal(implicit d: Decoder[BigDecimal]): Decoder[java.math.BigDecimal] =
-    d.map(_.bigDecimal)
+  implicit final val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] = decodeBigDecimal.map(_.bigDecimal)
 
   /**
    * @group Decoding
