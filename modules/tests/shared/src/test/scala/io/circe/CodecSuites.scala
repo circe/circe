@@ -52,18 +52,21 @@ class JavaBoxedCodecSuite extends CirceSuite {
   implicit val arbJavaShort: Arbitrary[java.lang.Short] = javaLangArb(java.lang.Short.valueOf(_: Short))
   implicit val arbJavaLong: Arbitrary[java.lang.Long] = javaLangArb(java.lang.Long.valueOf(_: Long))
   implicit val arbJavaInteger: Arbitrary[java.lang.Integer] = javaLangArb(java.lang.Integer.valueOf(_: Int))
+  implicit val arbJavaCharacter: Arbitrary[java.lang.Character] = javaLangArb(java.lang.Character.valueOf(_: Char))
 
   implicit val eqJavaBoolean: Eq[java.lang.Boolean] = Eq.fromUniversalEquals
   implicit val eqJavaByte: Eq[java.lang.Byte] = Eq.fromUniversalEquals
   implicit val eqJavaShort: Eq[java.lang.Short] = Eq.fromUniversalEquals
   implicit val eqJavaLong: Eq[java.lang.Long] = Eq.fromUniversalEquals
   implicit val eqJavaInteger: Eq[java.lang.Integer] = Eq.fromUniversalEquals
+  implicit val eqJavaCharacter: Eq[java.lang.Character] = Eq.fromUniversalEquals
 
   checkLaws("Codec[java.lang.Boolean]", CodecTests[java.lang.Boolean].codec)
   checkLaws("Codec[java.lang.Byte]", CodecTests[java.lang.Byte].codec)
   checkLaws("Codec[java.lang.Short]", CodecTests[java.lang.Short].codec)
   checkLaws("Codec[java.lang.Long]", CodecTests[java.lang.Long].codec)
   checkLaws("Codec[java.lang.Integer]", CodecTests[java.lang.Integer].codec)
+  checkLaws("Codec[java.lang.Character]", CodecTests[java.lang.Character].codec)
 }
 
 class StdLibCodecSuite extends CirceSuite {
