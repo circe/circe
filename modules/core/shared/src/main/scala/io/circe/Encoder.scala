@@ -227,8 +227,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaInteger(implicit e: Encoder[Integer]): Encoder[java.lang.Integer] =
-    e.contramap(_.intValue())
+  implicit final val encodeJavaInteger: Encoder[java.lang.Integer] = encodeInt.contramap(_.intValue())
 
   /**
    * @group Encoding
