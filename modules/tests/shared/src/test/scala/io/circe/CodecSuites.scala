@@ -41,6 +41,28 @@ class AnyValCodecSuite extends CirceSuite {
   checkLaws("Codec[Long]", CodecTests[Long].codec)
 }
 
+class JavaBoxedCodecSuite extends CirceSuite {
+
+  private def javaLangArb[ScalaPrimitive, JavaBoxed](wrap: ScalaPrimitive => JavaBoxed)
+                                                    (implicit scalaArb: Arbitrary[ScalaPrimitive]) =
+    Arbitrary(scalaArb.arbitrary.map(wrap))
+
+  implicit val arbJavaBoolean: Arbitrary[java.lang.Boolean] = javaLangArb(java.lang.Boolean.valueOf(_: Boolean))
+  implicit val arbJavaByte: Arbitrary[java.lang.Byte] = javaLangArb(java.lang.Byte.valueOf(_: Byte))
+  implicit val arbJavaShort: Arbitrary[java.lang.Short] = javaLangArb(java.lang.Short.valueOf(_: Short))
+  implicit val arbJavaLong: Arbitrary[java.lang.Long] = javaLangArb(java.lang.Long.valueOf(_: Long))
+
+  implicit val eqJavaBoolean: Eq[java.lang.Boolean] = Eq.fromUniversalEquals
+  implicit val eqJavaByte: Eq[java.lang.Byte] = Eq.fromUniversalEquals
+  implicit val eqJavaShort: Eq[java.lang.Short] = Eq.fromUniversalEquals
+  implicit val eqJavaLong: Eq[java.lang.Long] = Eq.fromUniversalEquals
+
+  checkLaws("Codec[java.lang.Boolean]", CodecTests[java.lang.Boolean].codec)
+  checkLaws("Codec[java.lang.Byte]", CodecTests[java.lang.Byte].codec)
+  checkLaws("Codec[java.lang.Short]", CodecTests[java.lang.Short].codec)
+  checkLaws("Codec[java.lang.Long]", CodecTests[java.lang.Long].codec)
+}
+
 class StdLibCodecSuite extends CirceSuite {
   /**
    * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
