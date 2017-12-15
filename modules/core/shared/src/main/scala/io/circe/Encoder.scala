@@ -158,8 +158,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
     * @group Encoding
     */
-  implicit final def encodeJavaCharacter(implicit e: Encoder[Character]): Encoder[java.lang.Character] =
-    e.contramap(_.charValue())
+  implicit final val encodeJavaCharacter: Encoder[java.lang.Character] = encodeChar.contramap(_.charValue())
 
   /**
    * Note that on Scala.js the encoding of `Float` values is subject to the
