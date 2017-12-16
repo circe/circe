@@ -44,20 +44,23 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   import java.{lang => jl}
+  import java.{math => jm}
 
   private def JavaCodecTests[ScalaPrimitive, JavaBoxed]
-    (wrap: ScalaPrimitive => JavaBoxed, unwrap: JavaBoxed => ScalaPrimitive, eq: Eq[JavaBoxed])
+    (wrap: ScalaPrimitive => JavaBoxed, unwrap: JavaBoxed => ScalaPrimitive, eq: Eq[JavaBoxed] = Eq.fromUniversalEquals[JavaBoxed])
     (implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
     CodecTests[JavaBoxed].codec(Arbitrary(scalaArb.arbitrary.map(wrap)), implicitly, eq, implicitly, implicitly)
 
-  checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Integer]", JavaCodecTests[Int, jl.Integer](jl.Integer.valueOf, _.intValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue(), Eq.fromUniversalEquals))
-  checkLaws("Codec[java.lang.Double]", JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue())))
+  checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue()))
+  checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue()))
   checkLaws("Codec[java.lang.Float]", JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue())))
+  checkLaws("Codec[java.lang.Double]", JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue())))
+  checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue()))
+  checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue()))
+  checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue()))
+  checkLaws("Codec[java.lang.Integer]", JavaCodecTests[Int, jl.Integer](jl.Integer.valueOf, _.intValue()))
+  checkLaws("Codec[java.math.BigDecimal]", JavaCodecTests[BigDecimal, jm.BigDecimal](_.bigDecimal, BigDecimal.apply))
+  checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
 class StdLibCodecSuite extends CirceSuite {
