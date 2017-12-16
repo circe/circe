@@ -13,23 +13,24 @@ import scala.collection.immutable.SortedMap
 import scala.collection.mutable.{ ArrayBuilder, Builder, HashMap }
 import scala.reflect.ClassTag
 
-class AnyValCodecSuite extends CirceSuite {
+trait SpecialEqForFloatAndDouble {
   /**
-   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
-   * `NaN` from itself.
-   */
+    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
+    * `NaN` from itself.
+    */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
-   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
-   * `NaN` from itself.
-   */
+    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
+    * `NaN` from itself.
+    */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
-
+}
+class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkLaws("Codec[Unit]", CodecTests[Unit].codec)
   checkLaws("Codec[Boolean]", CodecTests[Boolean].codec)
   checkLaws("Codec[Char]", CodecTests[Char].codec)
@@ -41,7 +42,7 @@ class AnyValCodecSuite extends CirceSuite {
   checkLaws("Codec[Long]", CodecTests[Long].codec)
 }
 
-class JavaBoxedCodecSuite extends CirceSuite {
+class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 
   private def javaLangArb[ScalaPrimitive, JavaBoxed](wrap: ScalaPrimitive => JavaBoxed)
                                                     (implicit scalaArb: Arbitrary[ScalaPrimitive]) =
@@ -53,6 +54,8 @@ class JavaBoxedCodecSuite extends CirceSuite {
   implicit val arbJavaLong: Arbitrary[java.lang.Long] = javaLangArb(java.lang.Long.valueOf(_: Long))
   implicit val arbJavaInteger: Arbitrary[java.lang.Integer] = javaLangArb(java.lang.Integer.valueOf(_: Int))
   implicit val arbJavaCharacter: Arbitrary[java.lang.Character] = javaLangArb(java.lang.Character.valueOf(_: Char))
+  implicit val arbJavaDouble: Arbitrary[java.lang.Double] = javaLangArb(java.lang.Double.valueOf(_: Double))
+  implicit val arbJavaFloat: Arbitrary[java.lang.Float] = javaLangArb(java.lang.Float.valueOf(_: Float))
 
   implicit val eqJavaBoolean: Eq[java.lang.Boolean] = Eq.fromUniversalEquals
   implicit val eqJavaByte: Eq[java.lang.Byte] = Eq.fromUniversalEquals
@@ -67,6 +70,8 @@ class JavaBoxedCodecSuite extends CirceSuite {
   checkLaws("Codec[java.lang.Long]", CodecTests[java.lang.Long].codec)
   checkLaws("Codec[java.lang.Integer]", CodecTests[java.lang.Integer].codec)
   checkLaws("Codec[java.lang.Character]", CodecTests[java.lang.Character].codec)
+  checkLaws("Codec[java.lang.Double]", CodecTests[java.lang.Double].codec(implicitly, implicitly, eqDouble.contramap(_.doubleValue()), implicitly, implicitly))
+  checkLaws("Codec[java.lang.Float]", CodecTests[java.lang.Float].codec(implicitly, implicitly, eqFloat.contramap(_.floatValue()), implicitly, implicitly))
 }
 
 class StdLibCodecSuite extends CirceSuite {
