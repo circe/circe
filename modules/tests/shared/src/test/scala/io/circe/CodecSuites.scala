@@ -43,35 +43,21 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 }
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
+  import java.{lang => jl}
 
-  private def javaLangArb[ScalaPrimitive, JavaBoxed](wrap: ScalaPrimitive => JavaBoxed)
-                                                    (implicit scalaArb: Arbitrary[ScalaPrimitive]) =
-    Arbitrary(scalaArb.arbitrary.map(wrap))
+  private def JavaCodecTests[ScalaPrimitive, JavaBoxed]
+    (wrap: ScalaPrimitive => JavaBoxed, unwrap: JavaBoxed => ScalaPrimitive, eq: Eq[JavaBoxed])
+    (implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
+    CodecTests[JavaBoxed].codec(Arbitrary(scalaArb.arbitrary.map(wrap)), implicitly, eq, implicitly, implicitly)
 
-  implicit val arbJavaBoolean: Arbitrary[java.lang.Boolean] = javaLangArb(java.lang.Boolean.valueOf(_: Boolean))
-  implicit val arbJavaByte: Arbitrary[java.lang.Byte] = javaLangArb(java.lang.Byte.valueOf(_: Byte))
-  implicit val arbJavaShort: Arbitrary[java.lang.Short] = javaLangArb(java.lang.Short.valueOf(_: Short))
-  implicit val arbJavaLong: Arbitrary[java.lang.Long] = javaLangArb(java.lang.Long.valueOf(_: Long))
-  implicit val arbJavaInteger: Arbitrary[java.lang.Integer] = javaLangArb(java.lang.Integer.valueOf(_: Int))
-  implicit val arbJavaCharacter: Arbitrary[java.lang.Character] = javaLangArb(java.lang.Character.valueOf(_: Char))
-  implicit val arbJavaDouble: Arbitrary[java.lang.Double] = javaLangArb(java.lang.Double.valueOf(_: Double))
-  implicit val arbJavaFloat: Arbitrary[java.lang.Float] = javaLangArb(java.lang.Float.valueOf(_: Float))
-
-  implicit val eqJavaBoolean: Eq[java.lang.Boolean] = Eq.fromUniversalEquals
-  implicit val eqJavaByte: Eq[java.lang.Byte] = Eq.fromUniversalEquals
-  implicit val eqJavaShort: Eq[java.lang.Short] = Eq.fromUniversalEquals
-  implicit val eqJavaLong: Eq[java.lang.Long] = Eq.fromUniversalEquals
-  implicit val eqJavaInteger: Eq[java.lang.Integer] = Eq.fromUniversalEquals
-  implicit val eqJavaCharacter: Eq[java.lang.Character] = Eq.fromUniversalEquals
-
-  checkLaws("Codec[java.lang.Boolean]", CodecTests[java.lang.Boolean].codec)
-  checkLaws("Codec[java.lang.Byte]", CodecTests[java.lang.Byte].codec)
-  checkLaws("Codec[java.lang.Short]", CodecTests[java.lang.Short].codec)
-  checkLaws("Codec[java.lang.Long]", CodecTests[java.lang.Long].codec)
-  checkLaws("Codec[java.lang.Integer]", CodecTests[java.lang.Integer].codec)
-  checkLaws("Codec[java.lang.Character]", CodecTests[java.lang.Character].codec)
-  checkLaws("Codec[java.lang.Double]", CodecTests[java.lang.Double].codec(implicitly, implicitly, eqDouble.contramap(_.doubleValue()), implicitly, implicitly))
-  checkLaws("Codec[java.lang.Float]", CodecTests[java.lang.Float].codec(implicitly, implicitly, eqFloat.contramap(_.floatValue()), implicitly, implicitly))
+  checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Integer]", JavaCodecTests[Int, jl.Integer](jl.Integer.valueOf, _.intValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue(), Eq.fromUniversalEquals))
+  checkLaws("Codec[java.lang.Double]", JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue())))
+  checkLaws("Codec[java.lang.Float]", JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue())))
 }
 
 class StdLibCodecSuite extends CirceSuite {
