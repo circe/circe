@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.Contravariant
+import cats.functor.Contravariant
 
 /**
  * A type class that provides a conversion from a value of type `A` to a JSON

@@ -2,7 +2,6 @@ package io.circe.testing
 
 import cats.instances.option._
 import cats.kernel.Eq
-import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{ Decoder, Encoder, Parser, Printer }
