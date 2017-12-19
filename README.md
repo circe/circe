@@ -23,6 +23,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
 * [Datalogue](https://datalogue.io)
 * [DriveTribe](https://drivetribe.com)
+* [Earnest](https://www.earnest.com)
 * [The Guardian](https://www.theguardian.com)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [Indix](https://www.indix.com)
