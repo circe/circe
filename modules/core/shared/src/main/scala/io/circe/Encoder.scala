@@ -1,7 +1,8 @@
 package io.circe
 
-import cats.{ Contravariant, Foldable }
+import cats.Foldable
 import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
+import cats.functor.Contravariant
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID

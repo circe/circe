@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.Contravariant
+import cats.functor.Contravariant
 import io.circe.export.Exported
 
 /**
