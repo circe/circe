@@ -8,6 +8,7 @@ import java.time.{
   LocalDateTime,
   LocalTime,
   OffsetDateTime,
+  OffsetTime,
   Period,
   YearMonth,
   ZonedDateTime
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_LOCAL_DATE_TIME,
   ISO_LOCAL_TIME,
   ISO_OFFSET_DATE_TIME,
+  ISO_OFFSET_TIME,
   ISO_ZONED_DATE_TIME
 }
 
@@ -113,6 +115,22 @@ trait TimeInstances {
 
   implicit final val decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
   implicit final val encodeLocalTimeDefault: Encoder[LocalTime] = encodeLocalTime(ISO_LOCAL_TIME)
+
+  final def decodeOffsetTime(formatter: DateTimeFormatter): Decoder[OffsetTime] =
+    Decoder.instance { c =>
+      c.as[String] match {
+        case Right(s) => try Right(OffsetTime.parse(s, formatter)) catch {
+          case _: DateTimeParseException => Left(DecodingFailure("OffsetTime", c.history))
+        }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[OffsetTime]]
+      }
+    }
+
+  final def encodeOffsetTime(formatter: DateTimeFormatter): Encoder[OffsetTime] =
+    Encoder.instance(time => Json.fromString(time.format(formatter)))
+
+  implicit final val decodeOffsetTimeDefault: Decoder[OffsetTime] = decodeOffsetTime(ISO_OFFSET_TIME)
+  implicit final val encodeOffsetTimeDefault: Encoder[OffsetTime] = encodeOffsetTime(ISO_OFFSET_TIME)
 
   implicit final val decodePeriod: Decoder[Period] = Decoder.instance { c =>
     c.as[String] match {

@@ -4,7 +4,19 @@ import cats.kernel.Eq
 import io.circe.{ Decoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import java.time.{ Duration, Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime, Period, YearMonth, ZonedDateTime, ZoneId }
+import java.time.{
+  Duration,
+  Instant,
+  LocalDate,
+  LocalDateTime,
+  LocalTime,
+  OffsetDateTime,
+  OffsetTime,
+  Period,
+  YearMonth,
+  ZonedDateTime,
+  ZoneId
+}
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
@@ -54,6 +66,8 @@ class TimeCodecSuite extends CirceSuite {
 
   implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
 
+  implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
+
   implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(arbitrary[LocalDateTime].map(
     ldt => YearMonth.of(ldt.getYear, ldt.getMonth)))
 
@@ -70,6 +84,7 @@ class TimeCodecSuite extends CirceSuite {
   implicit val eqOffsetDateTime: Eq[OffsetDateTime] = Eq.fromUniversalEquals
   implicit val eqLocalDate: Eq[LocalDate] = Eq.fromUniversalEquals
   implicit val eqLocalTime: Eq[LocalTime] = Eq.fromUniversalEquals
+  implicit val eqOffsetTime: Eq[OffsetTime] = Eq.fromUniversalEquals
   implicit val eqPeriod: Eq[Period] = Eq.fromUniversalEquals
   implicit val eqYearMonth: Eq[YearMonth] = Eq.fromUniversalEquals
   implicit val eqDuration: Eq[Duration] = Eq.fromUniversalEquals
@@ -80,6 +95,7 @@ class TimeCodecSuite extends CirceSuite {
   checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].unserializableCodec)
   checkLaws("Codec[LocalDate]", CodecTests[LocalDate].unserializableCodec)
   checkLaws("Codec[LocalTime]", CodecTests[LocalTime].unserializableCodec)
+  checkLaws("Codec[OffsetTime]", CodecTests[OffsetTime].unserializableCodec)
   checkLaws("Codec[Period]", CodecTests[Period].codec)
   checkLaws("Codec[YearMonth]", CodecTests[YearMonth].unserializableCodec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
@@ -108,6 +124,10 @@ class TimeCodecSuite extends CirceSuite {
 
   "Decoder[LocalTime]" should "fail on invalid values" in {
     assert(Decoder[LocalTime].apply(invalidJson.hcursor).isLeft)
+  }
+
+  "Decoder[OffsetTime]" should "fail on invalid values" in {
+    assert(Decoder[OffsetTime].apply(invalidJson.hcursor).isLeft)
   }
 
   "Decoder[Period]" should "fail on invalid values" in {
