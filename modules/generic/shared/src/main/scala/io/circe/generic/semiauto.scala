@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, ObjectEncoder }
+import io.circe.{ Decoder, ObjectEncoder, Codec }
 import io.circe.generic.decoding.{ DerivedDecoder, ReprDecoder }
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.util.PatchWithOptions
@@ -11,8 +11,9 @@ import shapeless.ops.record.RemoveAll
 /**
  * Semi-automatic codec derivation.
  *
- * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.ObjectEncoder]]
- * instances for case classes, "incomplete" case classes, sealed trait hierarchies, etc.
+ * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.ObjectEncoder]],
+ * or [[io.circe.Codec]] (when you need both), instances for case classes, "incomplete"
+ * case classes, sealed trait hierarchies, etc.
  *
  * Typical usage will look like the following:
  *
@@ -24,6 +25,9 @@ import shapeless.ops.record.RemoveAll
  *   object Foo {
  *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
  *     implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+ *
+ *     //or a one-liner for the above:
+ *     //implicit val codecFoo: Codec[Foo] = deriveCodec[Foo]
  *   }
  * }}}
  */
@@ -32,6 +36,11 @@ final object semiauto {
   final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] = encode.value
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
+
+  final def deriveCodec[A](implicit
+    encode: Lazy[DerivedObjectEncoder[A]],
+    decode: Lazy[DerivedDecoder[A]]
+  ): Codec[A] = Codec.instance(encode.value, decode.value)
 
   final class DerivationHelper[A] {
     final def incomplete[P <: HList, C, T <: HList, R <: HList](implicit
