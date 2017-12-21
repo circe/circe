@@ -5,7 +5,7 @@ import cats.kernel.Eq
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Codec, Decoder, Encoder, Json }
 import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
 
@@ -69,6 +69,10 @@ trait CodecTests[A] extends Laws {
 
 object CodecTests {
   def apply[A: Decoder: Encoder]: CodecTests[A] = new CodecTests[A] {
+    val laws: CodecLaws[A] = CodecLaws[A]
+  }
+
+  def forCodec[A: Codec]: CodecTests[A] = new CodecTests[A] {
     val laws: CodecLaws[A] = CodecLaws[A]
   }
 }
