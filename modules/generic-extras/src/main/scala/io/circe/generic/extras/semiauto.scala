@@ -1,6 +1,6 @@
 package io.circe.generic.extras
 
-import io.circe.{Decoder, Encoder, ObjectEncoder, Codec}
+import io.circe.{Codec, Decoder, Encoder, ObjectEncoder}
 import io.circe.generic.extras.decoding.{ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder}
 import io.circe.generic.extras.encoding.{ConfiguredObjectEncoder, EnumerationEncoder, UnwrappedEncoder}
 import io.circe.generic.extras.util.RecordToMap

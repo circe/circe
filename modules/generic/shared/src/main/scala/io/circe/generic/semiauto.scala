@@ -1,6 +1,6 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, ObjectEncoder, Codec }
+import io.circe.{ Codec, Decoder, ObjectEncoder }
 import io.circe.generic.decoding.{ DerivedDecoder, ReprDecoder }
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.util.PatchWithOptions
