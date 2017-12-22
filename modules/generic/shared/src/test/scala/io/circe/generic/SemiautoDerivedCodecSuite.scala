@@ -1,14 +1,10 @@
 package io.circe.generic
 
-//import cats.kernel.Eq
 import io.circe._
 import io.circe.generic.semiauto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
-//import org.scalacheck.{ Arbitrary, Gen }
-//import shapeless.Witness, shapeless.labelled.{ FieldType, field }
-//import shapeless.test.illTyped
 
 /**
   *
@@ -20,11 +16,8 @@ import io.circe.tests.examples._
   *
   */
 object SemiautoDerivedCodecSuite {
-  //TODO: need to make this work with only the : Codec typeclass constraint,
-  //TODO: unfortunately that cannot be done without deriving a Codec from Encoder, Decoder
-  //TODO: which creates an infinity of other problems to deal with. Need to think.
-  implicit def codecBox[A: Encoder: Decoder]: Codec[Box[A]] = deriveCodec[Box[A]]
-  implicit def codecQux[A: Encoder: Decoder]: Codec[Qux[A]] = deriveCodec
+  implicit def codecBox[A: Codec]: Codec[Box[A]] = deriveCodec[Box[A]]
+  implicit def codecQux[A: Codec]: Codec[Qux[A]] = deriveCodec
 
   implicit val CodecWub: Codec[Wub] = deriveCodec
   implicit val CodecFoo: Codec[Foo] = deriveCodec
@@ -41,7 +34,7 @@ class SemiautoDerivedCodecSuite extends CirceSuite {
   checkLaws("Codec[Baz]", CodecTests[Baz].codec)
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
+  //if you need Codec explicitely it should be summonable, this is too a trivial test to be worth writing
   checkLaws("Codec[Foo] — explicit codec requirement", CodecTests.forCodec[Foo].codec)
   checkLaws("Codec[Box[Int]] — explicit codec requirement", CodecTests.forCodec[Box[Int]].codec)
-
 }
