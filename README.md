@@ -25,6 +25,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
 * [The Guardian](https://www.theguardian.com)
+* [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [Indix](https://www.indix.com)
 * [OVO Energy](https://www.ovoenergy.com)
