@@ -2,6 +2,7 @@ package io.circe.java8.time
 
 import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import java.time.{
+  DateTimeException,
   Duration,
   Instant,
   LocalDate,
@@ -11,7 +12,8 @@ import java.time.{
   OffsetTime,
   Period,
   YearMonth,
-  ZonedDateTime
+  ZonedDateTime,
+  ZoneId
 }
 import java.time.format.{ DateTimeFormatter, DateTimeParseException }
 import java.time.format.DateTimeFormatter.{
@@ -35,6 +37,20 @@ trait TimeInstances {
     }
 
   implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time => Json.fromString(time.toString))
+
+  implicit final val decodeZoneId: Decoder[ZoneId] =
+    Decoder.instance{ c =>
+      c.as[String] match {
+        case Right(s) =>
+          try Right(ZoneId.of(s)) catch {
+            case _: DateTimeException => Left(DecodingFailure("ZoneId", c.history))
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[ZoneId]]
+      }
+    }
+
+  implicit final val encodeZoneId: Encoder[ZoneId] =
+    Encoder[String].contramap(_.getId)
 
   final def decodeLocalDateTime(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
     Decoder.instance { c =>
