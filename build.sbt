@@ -20,7 +20,7 @@ lazy val compilerOptions = Seq(
   "-Yno-predef"
 )
 
-lazy val catsVersion = "1.0.0"
+lazy val catsVersion = "1.0.1"
 lazy val jawnVersion = "0.11.0"
 lazy val shapelessVersion = "2.3.3"
 lazy val refinedVersion = "0.8.6"
