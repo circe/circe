@@ -1,4 +1,4 @@
-<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>circe</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="author" content="Travis Brown" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/codemirror.css" /><link rel="stylesheet" href="/circe/css/kazari-style.css" /><link rel="stylesheet" href="/circe/css/solarized-dark.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/circe/" class="brand"><div class="icon-wrapper"><span>circe</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/circe/circe"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="api"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">A JSON library for Scala powered by Cats</h1><h2></h2><p class="text-center"><a href="https://github.com/circe/circe" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">         <li><a class="" href="/circe/parsing.html">Parsing JSON</a></li>  <li><a class="" href="/circe/cursors.html">Traversing and modifying JSON</a></li>  <li><a class="" href="/circe/codec.html">Encoding and decoding</a></li>  <li><a class="" href="/circe/optics.html">Optics</a></li>  <li><a class="" href="/circe/performance.html">Performance</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p><a href="https://travis-ci.org/circe/circe"><img src="https://img.shields.io/travis/circe/circe/master.svg" alt="Build status" /></a>
+<html><head><title>circe</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Travis Brown" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><meta name="twitter:title" content="circe" /><meta name="twitter:image" content="https://circe.github.io/circe/img/poster.png" /><meta name="twitter:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/codemirror.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/circe/" class="brand"><div class="icon-wrapper"><span>circe</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/circe/circe"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="api"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">A JSON library for Scala powered by Cats</h1><h2></h2><p class="text-center"><a href="https://github.com/circe/circe" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">         <li><a class="" href="/circe/parsing.html">Parsing JSON</a></li>  <li><a class="" href="/circe/cursors.html">Traversing and modifying JSON</a></li>  <li><a class="" href="/circe/codec.html">Encoding and decoding</a></li>  <li><a class="" href="/circe/optics.html">Optics</a></li>  <li><a class="" href="/circe/performance.html">Performance</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p><a href="https://travis-ci.org/circe/circe"><img src="https://img.shields.io/travis/circe/circe/master.svg" alt="Build status" /></a>
 <a href="https://codecov.io/github/circe/circe"><img src="https://img.shields.io/codecov/c/github/circe/circe/master.svg" alt="Coverage status" /></a>
 <a href="https://gitter.im/circe/circe"><img src="https://img.shields.io/badge/gitter-join%20chat-green.svg" alt="Gitter" /></a>
 <a href="https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11"><img src="https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg" alt="Maven Central" /></a></p>
@@ -6,7 +6,7 @@
 <p>circe (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is
 a JSON library for Scala (and <a href="http://www.scala-js.org/">Scala.js</a>).</p>
 
-<p>circe’s working title was jfc, which stood for “JSON for <a href="https://github.com/typelevel/cats">cats</a>”. The name was changed for 
+<p>circe’s working title was jfc, which stood for “JSON for <a href="https://github.com/typelevel/cats">cats</a>”. The name was changed for
 <a href="https://github.com/circe/circe/issues/11">a number of reasons</a>.</p>
 
 <p><a name="quick-start"></a></p>
@@ -40,28 +40,97 @@ plugin in your build:</p>
 root directory of this repository):</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// import io.circe._
+<span class="c1">// &lt;console&gt;:12: warning: Unused import
+//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+//                        ^
+// &lt;console&gt;:12: warning: Unused import
+//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+//                                                 ^
+// &lt;console&gt;:12: warning: Unused import
+//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+//                                                                    ^
+// &lt;console&gt;:12: warning: Unused import
+//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+//                                                                                       ^
+// import io.circe._
 // import io.circe.generic.auto._
 // import io.circe.parser._
 // import io.circe.syntax._
 </span>
 <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span>
-<span class="c1">// defined trait Foo
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:13: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// &lt;console&gt;:16: warning: Unused import
+//        import io.circe.parser._
+//                               ^
+// &lt;console&gt;:19: warning: Unused import
+//        import io.circe.syntax._
+//                               ^
+// defined trait Foo
 </span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">xs</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// defined class Bar
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:13: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// &lt;console&gt;:16: warning: Unused import
+//        import io.circe.parser._
+//                               ^
+// &lt;console&gt;:19: warning: Unused import
+//        import io.circe.syntax._
+//                               ^
+// defined class Bar
 </span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// defined class Qux
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:13: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// &lt;console&gt;:16: warning: Unused import
+//        import io.circe.parser._
+//                               ^
+// &lt;console&gt;:19: warning: Unused import
+//        import io.circe.syntax._
+//                               ^
+// defined class Qux
 </span>
 <span class="k">val</span> <span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span> <span class="o">=</span> <span class="nc">Qux</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">14.0</span><span class="o">))</span>
-<span class="c1">// foo: Foo = Qux(13,Some(14.0))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:13: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// &lt;console&gt;:16: warning: Unused import
+//        import io.circe.parser._
+//                               ^
+// &lt;console&gt;:19: warning: Unused import
+//        import io.circe.syntax._
+//                               ^
+// foo: Foo = Qux(13,Some(14.0))
 </span>
 <span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
-<span class="c1">// res0: String = {"Qux":{"i":13,"d":14.0}}
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:16: warning: Unused import
+//        import io.circe.parser._
+//                               ^
+// res0: String = {"Qux":{"i":13,"d":14.0}}
 </span>
 <span class="n">decode</span><span class="o">[</span><span class="kt">Foo</span><span class="o">](</span><span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">spaces4</span><span class="o">)</span>
-<span class="c1">// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import io.circe._
+//                        ^
+// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
 </span></code></pre>
 </div>
 
@@ -115,7 +184,9 @@ example), circe includes a subproject (<code class="highlighter-rouge">generic</
 <p><a href="https://circe.github.io/circe/api/io/circe/generic/auto$.html">This subproject</a> is currently a simplified port of
 <a href="https://github.com/alexarchambault/argonaut-shapeless">argonaut-shapeless</a> that provides fully automatic derivation of instances for
 case classes and sealed trait hierarchies. It also includes derivation of “incomplete” case class
-instances (see my recent <a href="https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/">blog post</a> for details).</p>
+instances (see my recent <a href="https://meta.plasm.us/posts/2015/06/21/deriving-incomplete-type-class-instances/">blog post</a> for details). Note that if you use
+<code class="highlighter-rouge">-Ypartial-unification</code> and <code class="highlighter-rouge">auto</code>, incomplete decoders will not work (see
+<a href="https://github.com/circe/circe/pull/724">#724</a>).</p>
 
 <p>See the <a href="codec.html">Encoding and Decoding page</a> for more details.</p>
 
@@ -123,13 +194,6 @@ instances (see my recent <a href="https://meta.plasm.us/posts/2015/06/21/derivin
 
 <p>circe aims to simplify Argonaut’s API by removing all operator aliases. This is largely a matter of
 personal taste, and may change in the future.</p>
-
-<h3 id="documentation">Documentation</h3>
-
-<p>The Argonaut documentation is good, but it could be better: to take just one example, it can be hard
-to tell at a glance why there are three different <code class="highlighter-rouge">Cursor</code>, <code class="highlighter-rouge">HCursor</code>, and <code class="highlighter-rouge">ACursor</code> types. In this
-particular case, circe introduces an abstraction over cursors that makes the relationship clearer and
-allows these three types to <a href="https://circe.github.io/circe/api/io/circe/GenericCursor.html">share API documentation</a>.</p>
 
 <h3 id="testing">Testing</h3>
 
@@ -156,8 +220,5 @@ limitations under the License.</p>
 languages:['scala','java','bash']
 });
 hljs.initHighlighting();
-             </script><script src="/circe/js/kazari.js"></script><script><script>
-$(document).ready(function() {
-	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
-})
-    </script></script></body></html>
+             </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script></body></html>
