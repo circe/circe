@@ -1,5 +1,6 @@
 import ReleaseTransformations._
 import microsites.ExtraMdFileConfig
+import microsites.ConfigYml
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
@@ -131,6 +132,11 @@ lazy val docSettings = allSettings ++ Seq(
     "gray-light" -> "#E5E5E6",
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
+  micrositeConfigYaml := ConfigYml(yamlInline =
+    s"""
+      |scalafiddle:
+      |  dependency: io.circe %%% circe-core % ${(version in ThisBuild).value},io.circe %%% circe-generic % ${(version in ThisBuild).value},io.circe %%% circe-parser % ${(version in ThisBuild).value}
+    """.stripMargin),
   addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
   ghpagesNoJekyll := false,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
