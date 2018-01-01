@@ -14,7 +14,7 @@ abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   private[this] class CaseClassConfiguredDecoder[A, R <: HList](
     gen: LabelledGeneric.Aux[A, R],
-    decodeR: ReprDecoder[R],
+    decodeR: Lazy[ReprDecoder[R]],
     config: Configuration,
     defaultMap: Map[String, Any],
     keyAnnotationMap: Map[String, String]
@@ -22,7 +22,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
       keyAnnotationMap.getOrElse(value, transformMemberNames(value))
 
-    final def apply(c: HCursor): Decoder.Result[A] = decodeR.configuredDecode(c)(
+    final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       if (keyAnnotationMap.nonEmpty) {
         memberNameTransformer(config.transformMemberNames)
       } else {
@@ -37,7 +37,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     }
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-      decodeR.configuredDecodeAccumulating(c)(
+      decodeR.value.configuredDecodeAccumulating(c)(
         if (keyAnnotationMap.nonEmpty) {
           memberNameTransformer(config.transformMemberNames)
         } else {
@@ -51,10 +51,10 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
   private[this] class AdtConfiguredDecoder[A, R <: Coproduct](
     gen: LabelledGeneric.Aux[A, R],
-    decodeR: ReprDecoder[R],
+    decodeR: Lazy[ReprDecoder[R]],
     config: Configuration
   ) extends ConfiguredDecoder[A] {
-    final def apply(c: HCursor): Decoder.Result[A] = decodeR.configuredDecode(c)(
+    final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       Predef.identity,
       config.transformConstructorNames,
       Map.empty,
@@ -65,7 +65,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     }
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-      decodeR.configuredDecodeAccumulating(c)(
+      decodeR.value.configuredDecodeAccumulating(c)(
         Predef.identity,
         config.transformConstructorNames,
         Map.empty,
@@ -99,5 +99,5 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     gen: LabelledGeneric.Aux[A, R],
     decodeR: Lazy[ReprDecoder[R]],
     config: Configuration
-  ): ConfiguredDecoder[A] = new AdtConfiguredDecoder[A, R](gen, decodeR.value, config)
+  ): ConfiguredDecoder[A] = new AdtConfiguredDecoder[A, R](gen, decodeR, config)
 }
