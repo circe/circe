@@ -16,7 +16,7 @@ a JSON library for Scala (and <a href="http://www.scala-js.org/">Scala.js</a>).<
 <p>circe is published to <a href="http://search.maven.org/">Maven Central</a> and cross-built for Scala 2.10, 2.11, and 2.12,
 so you can just add the following to your build:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">circeVersion</span> <span class="k">=</span> <span class="s">"0.8.0"</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">circeVersion</span> <span class="k">=</span> <span class="s">"0.9.0"</span>
 
 <span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
   <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-core"</span><span class="o">,</span>
@@ -40,97 +40,28 @@ plugin in your build:</p>
 root directory of this repository):</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
-//                        ^
-// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
-//                                                 ^
-// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
-//                                                                    ^
-// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
-//                                                                                       ^
-// import io.circe._
+<span class="c1">// import io.circe._
 // import io.circe.generic.auto._
 // import io.circe.parser._
 // import io.circe.syntax._
 </span>
 <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.generic.auto._
-//                                     ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:19: warning: Unused import
-//        import io.circe.syntax._
-//                               ^
-// defined trait Foo
+<span class="c1">// defined trait Foo
 </span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">xs</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.generic.auto._
-//                                     ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:19: warning: Unused import
-//        import io.circe.syntax._
-//                               ^
-// defined class Bar
+<span class="c1">// defined class Bar
 </span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.generic.auto._
-//                                     ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:19: warning: Unused import
-//        import io.circe.syntax._
-//                               ^
-// defined class Qux
+<span class="c1">// defined class Qux
 </span>
 <span class="k">val</span> <span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span> <span class="o">=</span> <span class="nc">Qux</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">14.0</span><span class="o">))</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.generic.auto._
-//                                     ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:19: warning: Unused import
-//        import io.circe.syntax._
-//                               ^
-// foo: Foo = Qux(13,Some(14.0))
+<span class="c1">// foo: Foo = Qux(13,Some(14.0))
 </span>
 <span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// res0: String = {"Qux":{"i":13,"d":14.0}}
+<span class="c1">// res0: String = {"Qux":{"i":13,"d":14.0}}
 </span>
 <span class="n">decode</span><span class="o">[</span><span class="kt">Foo</span><span class="o">](</span><span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">spaces4</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
+<span class="c1">// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
 </span></code></pre>
 </div>
 

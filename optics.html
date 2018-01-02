@@ -53,62 +53,20 @@ dependency on <code class="highlighter-rouge">circe-optics</code> to your build:
       <span class="n">downField</span><span class="o">(</span><span class="s">"contactDetails"</span><span class="o">).</span>
       <span class="n">get</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">"phone"</span><span class="o">).</span>
       <span class="n">toOption</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// phoneNum: Option[String] = Some(0123-456-789)
+<span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
 </span></code></pre>
 </div>
 
 <p>This works, but it’s a little verbose. We could rewrite it using optics like this:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonPath._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:21: warning: Unused import
-//        import io.circe.optics.JsonPath._
-//                                        ^
-// import io.circe.optics.JsonPath._
+<span class="c1">// import io.circe.optics.JsonPath._
 </span>
 <span class="k">val</span> <span class="nc">_phoneNum</span> <span class="k">=</span> <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">customer</span><span class="o">.</span><span class="n">contactDetails</span><span class="o">.</span><span class="n">phone</span><span class="o">.</span><span class="n">string</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@b314fdc
+<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@184cbc8
 </span>
 <span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">_phoneNum</span><span class="o">.</span><span class="n">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:20: warning: Unused import
-//        import io.circe.optics.JsonPath._
-//                                        ^
-// phoneNum: Option[String] = Some(0123-456-789)
+<span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
 </span></code></pre>
 </div>
 
@@ -129,16 +87,7 @@ items in the order. Using a cursor it might look like this:</p>
       <span class="n">focus</span><span class="o">.</span>
       <span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">asArray</span><span class="o">).</span>
       <span class="n">getOrElse</span><span class="o">(</span><span class="nc">Vector</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:20: warning: Unused import
-//        import io.circe.optics.JsonPath._
-//                                        ^
-// items: Vector[io.circe.Json] =
+<span class="c1">// items: Vector[io.circe.Json] =
 // Vector({
 //   "id" : 123,
 //   "description" : "banana",
@@ -151,19 +100,7 @@ items in the order. Using a cursor it might look like this:</p>
 </span>
 <span class="k">val</span> <span class="n">quantities</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">items</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span><span class="n">get</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="s">"quantity"</span><span class="o">).</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:19: warning: Unused import
-//        import io.circe.optics.JsonPath._
-//                                        ^
-// quantities: Vector[Int] = Vector(1, 2)
+<span class="c1">// quantities: Vector[Int] = Vector(1, 2)
 </span></code></pre>
 </div>
 
@@ -171,16 +108,7 @@ items in the order. Using a cursor it might look like this:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">getAll</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// items: List[Int] = List(1, 2)
+<span class="c1">// items: List[Int] = List(1, 2)
 </span></code></pre>
 </div>
 
@@ -193,28 +121,10 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$9553/659354503@7273bf17
+<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$10034/513287154@5aa313d7
 </span>
 <span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:20: warning: Unused import
-//        import io.circe.optics.JsonPath._
-//                                        ^
-// modifiedJson: io.circe.Json =
+<span class="c1">// modifiedJson: io.circe.Json =
 // {
 //   "order" : {
 //     "customer" : {

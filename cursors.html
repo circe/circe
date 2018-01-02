@@ -39,34 +39,16 @@ document and extract data from it:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">baz</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"values"</span><span class="o">).</span><span class="n">downField</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// baz: io.circe.Decoder.Result[Double] = Right(100.001)
+<span class="c1">// baz: io.circe.Decoder.Result[Double] = Right(100.001)
 </span>
 <span class="c1">// You can also use `get[A](key)` as shorthand for `downField(key).as[A]`
 </span><span class="k">val</span> <span class="n">baz2</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"values"</span><span class="o">).</span><span class="n">get</span><span class="o">[</span><span class="kt">Double</span><span class="o">](</span><span class="s">"baz"</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// baz2: io.circe.Decoder.Result[Double] = Right(100.001)
+<span class="c1">// baz2: io.circe.Decoder.Result[Double] = Right(100.001)
 </span>
 <span class="k">val</span> <span class="n">secondQux</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"values"</span><span class="o">).</span><span class="n">downField</span><span class="o">(</span><span class="s">"qux"</span><span class="o">).</span><span class="n">downArray</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// secondQux: io.circe.Decoder.Result[String] = Right(b)
+<span class="c1">// secondQux: io.circe.Decoder.Result[String] = Right(b)
 </span></code></pre>
 </div>
 
@@ -82,13 +64,7 @@ document and extract data from it:</p>
 <p>We can then return to the root of the document and return its value with <code class="highlighter-rouge">top</code>:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">reversedName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">reversedNameCursor</span><span class="o">.</span><span class="n">top</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// &lt;console&gt;:16: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// reversedName: Option[io.circe.Json] =
+<span class="c1">// reversedName: Option[io.circe.Json] =
 // Some({
 //   "id" : "c730433b-082c-4984-9d66-855c243266f0",
 //   "name" : "ooF",

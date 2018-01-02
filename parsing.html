@@ -11,13 +11,7 @@
 <p>Parsing is done as follows.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.parser._
-//                        ^
-// &lt;console&gt;:12: warning: Unused import
-//        import io.circe._, io.circe.parser._
-//                                           ^
-// import io.circe._
+<span class="c1">// import io.circe._
 // import io.circe.parser._
 </span>
 <span class="k">val</span> <span class="n">rawJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"""
@@ -27,13 +21,7 @@
   "list of stuff": [ 4, 5, 6 ]
 }
 """</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// rawJson: String =
+<span class="c1">// rawJson: String =
 // "
 // {
 //   "foo": "bar",
@@ -43,10 +31,7 @@
 // "
 </span>
 <span class="k">val</span> <span class="n">parseResult</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// parseResult: Either[io.circe.ParsingFailure,io.circe.Json] =
+<span class="c1">// parseResult: Either[io.circe.ParsingFailure,io.circe.Json] =
 // Right({
 //   "foo" : "bar",
 //   "baz" : 123,
@@ -66,19 +51,10 @@ corresponding JSON representation.</p>
 <p>Let’s see what happens when you try to parse invalid JSON:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">badJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"yolo"</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// badJson: String = yolo
+<span class="c1">// badJson: String = yolo
 </span>
 <span class="n">parse</span><span class="o">(</span><span class="n">badJson</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// res0: Either[io.circe.ParsingFailure,io.circe.Json] = Left(io.circe.ParsingFailure: expected json value got y (line 1, column 1))
+<span class="c1">// res0: Either[io.circe.ParsingFailure,io.circe.Json] = Left(io.circe.ParsingFailure: expected json value got y (line 1, column 1))
 </span></code></pre>
 </div>
 
@@ -89,32 +65,17 @@ match on it:</p>
   <span class="k">case</span> <span class="nc">Left</span><span class="o">(</span><span class="n">failure</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">"Invalid JSON :("</span><span class="o">)</span>
   <span class="k">case</span> <span class="nc">Right</span><span class="o">(</span><span class="n">json</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">"Yay, got some JSON!"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// Yay, got some JSON!
+<span class="c1">// Yay, got some JSON!
 </span></code></pre>
 </div>
 
 <p>Or use <code class="highlighter-rouge">getOrElse</code> (an extension method provided by Cats):</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import io.circe._
-//                        ^
-// &lt;console&gt;:13: warning: Unused import
-//        import io.circe.parser._
-//                               ^
-// &lt;console&gt;:18: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// import cats.syntax.either._
+<span class="c1">// import cats.syntax.either._
 </span>
 <span class="k">val</span> <span class="n">json</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="nc">Null</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:17: warning: Unused import
-//        import cats.syntax.either._
-//                                  ^
-// json: io.circe.Json =
+<span class="c1">// json: io.circe.Json =
 // {
 //   "foo" : "bar",
 //   "baz" : 123,
