@@ -26,7 +26,7 @@ val catsVersion = "1.1.0"
 val jawnVersion = "0.11.1"
 val shapelessVersion = "2.3.3"
 val refinedVersion = "0.8.7"
-val monocleVersion = "1.5.0"
+val monocleVersion = "1.5.1-cats"
 
 val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.0.5"

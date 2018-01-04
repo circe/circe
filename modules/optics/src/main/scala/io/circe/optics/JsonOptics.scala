@@ -1,5 +1,6 @@
 package io.circe.optics
 
+import cats.Applicative
 import cats.instances.vector._
 import cats.syntax.functor._
 import cats.syntax.traverse._
@@ -16,7 +17,7 @@ import monocle.function.{ Each, Plated }
  * @author Travis Brown
  * @author Julien Truffaut
  */
-trait JsonOptics extends CatsConversions {
+trait JsonOptics {
   final lazy val jsonNull: Prism[Json, Unit] = Prism[Json, Unit](j => if (j.isNull) Some(()) else None)(_ => Json.Null)
   final lazy val jsonBoolean: Prism[Json, Boolean] = Prism[Json, Boolean](_.asBoolean)(Json.fromBoolean)
   final lazy val jsonBigDecimal: Prism[Json, BigDecimal] = jsonNumber.composePrism(jsonNumberBigDecimal)
@@ -50,7 +51,7 @@ trait JsonOptics extends CatsConversions {
 
   /** points to all values of a JsonObject or JsonList */
   final lazy val jsonDescendants: Traversal[Json, Json] = new Traversal[Json, Json]{
-    override def modifyF[F[_]](f: Json => F[Json])(s: Json)(implicit F: scalaz.Applicative[F]): F[Json] =
+    override def modifyF[F[_]](f: Json => F[Json])(s: Json)(implicit F: Applicative[F]): F[Json] =
       s.fold(F.pure(s), _ => F.pure(s), _ => F.pure(s), _ => F.pure(s),
         arr => F.map(Each.each[Vector[Json], Json].modifyF(f)(arr))(Json.arr(_: _*)),
         obj => F.map(Each.each[JsonObject, Json].modifyF(f)(obj))(Json.fromJsonObject)
@@ -60,9 +61,8 @@ trait JsonOptics extends CatsConversions {
   implicit final lazy val jsonPlated: Plated[Json] = new Plated[Json] {
     val plate: Traversal[Json, Json] = new Traversal[Json, Json] {
       def modifyF[F[_]](f: Json => F[Json])(a: Json)(implicit
-        FZ: scalaz.Applicative[F]
-      ): F[Json] = {
-        implicit val F = csApplicative(FZ)
+        F: Applicative[F]
+      ): F[Json] =
         a.fold(
           F.pure(a),
           b => F.pure(Json.fromBoolean(b)),
@@ -71,7 +71,6 @@ trait JsonOptics extends CatsConversions {
           _.traverse(f).map(Json.fromValues),
           _.traverse(f).map(Json.fromJsonObject)
         )
-      }
     }
   }
 }
