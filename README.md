@@ -87,6 +87,7 @@ The following open source projects are either built on circe or provide circe su
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
 * [play-circe][play-circe]: circe support for [Play!][play].
+* [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
 * [roc][roc]: A PostgreSQL client built on Finagle.
 * [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
@@ -190,6 +191,8 @@ limitations under the License.
 [msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
 [play]: https://www.playframework.com/
 [play-circe]: https://github.com/jilen/play-circe
+[pulsar]: https://pulsar.apache.org/
+[pulsar4s]: https://github.com/sksamuel/pulsar4s
 [graphql]: http://graphql.org/docs/getting-started/
 [rapture]: http://rapture.io/
 [roc]: https://github.com/finagle/roc
