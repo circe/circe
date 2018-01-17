@@ -1,7 +1,7 @@
 # Processing large JSON files with circe
 
 This example demonstrates how to use [iteratee.io][iteratee-io] and
-[circe-streaming][circe-streaming] to process JSON files that may not fit in memory.
+[circe-iteratee][circe-iteratee] to process JSON files that may not fit in memory.
 
 ## Getting started
 
@@ -152,15 +152,18 @@ in order to keep things simple I've gone with the `for`-comprehension.
 
 ## Streaming
 
-circe-streaming provides generic enumeratees for parsing and decoding that work over any type
-constructor with a `MonadError` instance. We'll use Scalaz's `Task` since we need to read from a
-file (at least until Cats [gets its own version][cats-32] of `Task`).
+circe-iteratee provides generic enumeratees for parsing and decoding that work over any type
+constructor with a `MonadError` instance. We'll use Monix's `Task` since we need to read from a
+file.
 
 ```scala
-import io.circe.streaming._
-import io.iteratee.scalaz.task._
+import io.circe.iteratee._
+import io.iteratee.monix.task._
 import java.io.File
-import scalaz.concurrent.Task
+import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 ```
 
 And then we can define an `Enumerator` that will let us read lines from the file, parse them
@@ -168,7 +171,7 @@ asynchronously with jawn, and decode them into `Task` values:
 
 ```scala
 val lots =
-  readBytes(new File("data.json")).through(byteParser).through(decoder[Task, Lot])
+  readBytes(new File("data.json")).through(byteArrayParser).through(decoder[Task, Lot])
 ```
 
 This line doesn't do any real work—it doesn't even open the file. It just represents a source of
@@ -177,10 +180,10 @@ lots that we can process with an iteratee. For example, we can count the number 
 
 ```scala
 scala> val task = lots.into(length)
-task: scalaz.concurrent.Task[Int] = scalaz.concurrent.Task@5f04c487
+task: monix.eval.Task[Long] = Task.FlatMap(Task@464564415, io.iteratee.Enumerator$$Lambda$4368/1828535352@33c49757)
 
-scala> task.unsafePerformSync
-res0: Int = 206560
+scala> Await.result(task.runAsync, Duration.Inf)
+res0: Long = 206560
 ```
 
 Or we can count how many of each geometry type there are:
@@ -196,16 +199,16 @@ scala> val task: Task[Map[String, Int]] = lots.through(
      |     case Lot(_, _, Some(MultiPolygon(_))) => Map("MultiPolygon" -> 1)
      |   }
      | ).into(sum)
-task: scalaz.concurrent.Task[Map[String,Int]] = scalaz.concurrent.Task@1d3a58cb
+task: monix.eval.Task[Map[String,Int]] = Task.FlatMap(Task@1472992396, io.iteratee.Enumerator$$Lambda$4368/1828535352@6812cc02)
 
-scala> val res: Map[String, Int] = task.unsafePerformSync
-res: Map[String,Int] = Map(Polygon -> 206434, MultiPolygon -> 120)
+scala> val res: Map[String, Int] = Await.result(task.runAsync, Duration.Inf)
+res: Map[String,Int] = Map(MultiPolygon -> 120, Polygon -> 206434)
 ```
 
 Or simply gather the first few lots into a sequence:
 
 ```scala
-scala> val first3 = lots.into(takeI(3)).unsafePerformSync
+scala> val first3 = Await.result(lots.into(takeI(3)).runAsync, Duration.Inf)
 first3: Vector[Lot] = Vector(Lot(Feature,Map(MAPBLKLOT -> 0001001, ...
 ```
 
@@ -215,7 +218,7 @@ few lines from the file, or if we run into decoding or I/O errors during the pro
 
 [cats]: https://github.com/typelevel/cats
 [cats-32]: https://github.com/typelevel/cats/issues/32
-[circe-streaming]: ../../modules/streaming/
+[circe-iteratee]: https://github.com/circe/circe-iteratee
 [error-accumulation]: https://meta.plasm.us/posts/2015/12/17/error-accumulating-decoders-in-circe/
 [jawn]: https://github.com/non/jawn
 [generic-derivation]: https://meta.plasm.us/posts/2015/11/08/type-classes-and-generic-derivation/
