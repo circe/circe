@@ -184,7 +184,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](jawn)
 lazy val circeDocsModules = Seq[Project](docs)
-lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
+lazy val circeUtilModules = Seq[Project](hygiene, hygieneJS, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
   case "1.8" => Set.empty
@@ -399,13 +399,16 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = circeModule("hygiene", mima = None)
+lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
   .settings(
     crossScalaVersions := crossScalaVersions.value.tail,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(core, generic, jawn, literal)
+  .dependsOn(coreBase, genericBase, literalBase)
+
+lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
+lazy val hygieneJS = hygieneBase.js
 
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
