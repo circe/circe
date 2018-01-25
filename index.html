@@ -16,54 +16,46 @@ a JSON library for Scala (and <a href="http://www.scala-js.org/">Scala.js</a>).<
 <p>circe is published to <a href="http://search.maven.org/">Maven Central</a> and cross-built for Scala 2.10, 2.11, and 2.12,
 so you can just add the following to your build:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">circeVersion</span> <span class="k">=</span> <span class="s">"0.9.0"</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">circeVersion</span> <span class="k">=</span> <span class="s">"0.9.1"</span>
 
 <span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
   <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-core"</span><span class="o">,</span>
   <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-generic"</span><span class="o">,</span>
   <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-parser"</span>
 <span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="o">%</span> <span class="n">circeVersion</span><span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If you’re using circe’s generic derivation with Scala 2.10, or <code class="highlighter-rouge">@JsonCodec</code> the macro annotation
 (with any Scala version), you’ll also need to include the <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a> compiler
 plugin in your build:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">addCompilerPlugin</span><span class="o">(</span>
-  <span class="s">"org.scalamacros"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"2.1.0"</span> <span class="n">cross</span> <span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">addCompilerPlugin</span><span class="o">(</span>
+  <span class="s">"org.scalamacros"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"2.1.1"</span> <span class="n">cross</span> <span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span>
 <span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Then type <code class="highlighter-rouge">sbt console</code> to start a REPL and then paste the following (this will also work from the
 root directory of this repository):</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// import io.circe._
-// import io.circe.generic.auto._
-// import io.circe.parser._
-// import io.circe.syntax._
-</span>
+<div data-scalafiddle="" data-dependency="io.circe %%% circe-core % 0.9.0,io.circe %%% circe-generic % 0.9.0,io.circe %%% circe-parser % 0.9.0">
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
+
 <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span>
-<span class="c1">// defined trait Foo
-</span>
-<span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">xs</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// defined class Bar
-</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">xs</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Foo</span>
-<span class="c1">// defined class Qux
-</span>
+
 <span class="k">val</span> <span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span> <span class="o">=</span> <span class="nc">Qux</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">14.0</span><span class="o">))</span>
-<span class="c1">// foo: Foo = Qux(13,Some(14.0))
-</span>
-<span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
-<span class="c1">// res0: String = {"Qux":{"i":13,"d":14.0}}
-</span>
-<span class="n">decode</span><span class="o">[</span><span class="kt">Foo</span><span class="o">](</span><span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">spaces4</span><span class="o">)</span>
-<span class="c1">// res1: Either[io.circe.Error,Foo] = Right(Qux(13,Some(14.0)))
-</span></code></pre>
+
+<span class="k">val</span> <span class="n">json</span> <span class="k">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
+<span class="n">println</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">decodedFoo</span> <span class="k">=</span> <span class="n">decode</span><span class="o">[</span><span class="kt">Foo</span><span class="o">](</span><span class="n">json</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="n">decodedFoo</span><span class="o">)</span>
+</code></pre></div></div>
 </div>
+
+<p>Alternatively you can experiment with Circe directly in your browser by clicking the <code class="highlighter-rouge">Run</code> button in the code block and
+making modifications in the code.</p>
 
 <p>No boilerplate, no runtime reflection.</p>
 
@@ -152,4 +144,6 @@ languages:['scala','java','bash']
 });
 hljs.initHighlighting();
              </script><script>((window.gitter = {}).chat = {}).options = {
-room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script></body></html>
+room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script>
+<script defer src='https://embed.scalafiddle.io/integration.js'></script>
+</body></html>

@@ -6,9 +6,8 @@ considerably, especially if you are working with deeply nested JSON.</p>
 <p>circe provides support for optics by integrating with <a href="monocle">Monocle</a>. To use them, add a
 dependency on <code class="highlighter-rouge">circe-optics</code> to your build:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-optics"</span> <span class="o">%</span> <span class="n">circeVersion</span>
-</code></pre>
-</div>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-optics"</span> <span class="o">%</span> <span class="n">circeVersion</span>
+</code></pre></div></div>
 
 <p>Note that this will require your project to depend on both Scalaz and cats.</p>
 
@@ -16,7 +15,7 @@ dependency on <code class="highlighter-rouge">circe-optics</code> to your build:
 
 <p>Suppose we have the following JSON document:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
 <span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span>
 
 <span class="k">val</span> <span class="n">json</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="n">parse</span><span class="o">(</span><span class="s">"""
@@ -42,33 +41,30 @@ dependency on <code class="highlighter-rouge">circe-optics</code> to your build:
   }
 }
 """</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="nc">Null</span><span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If we wanted to get the customer’s phone number, we could do it using a cursor as follows:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
       <span class="n">downField</span><span class="o">(</span><span class="s">"order"</span><span class="o">).</span>
       <span class="n">downField</span><span class="o">(</span><span class="s">"customer"</span><span class="o">).</span>
       <span class="n">downField</span><span class="o">(</span><span class="s">"contactDetails"</span><span class="o">).</span>
       <span class="n">get</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">"phone"</span><span class="o">).</span>
       <span class="n">toOption</span>
 <span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>This works, but it’s a little verbose. We could rewrite it using optics like this:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonPath._</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonPath._</span>
 <span class="c1">// import io.circe.optics.JsonPath._
 </span>
 <span class="k">val</span> <span class="nc">_phoneNum</span> <span class="k">=</span> <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">customer</span><span class="o">.</span><span class="n">contactDetails</span><span class="o">.</span><span class="n">phone</span><span class="o">.</span><span class="n">string</span>
-<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@184cbc8
+<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@cc1acf9
 </span>
 <span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">_phoneNum</span><span class="o">.</span><span class="n">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>Note the difference between cursors and optics. With cursors, we start with a JSON document, get a
 cursor from it, and then use that cursor to traverse the document. With optics, on the other hand,
@@ -81,7 +77,7 @@ traversals together, and so on.</p>
 <p>Let’s look at a more complex example. This time we want to get the quantities of all the
 items in the order. Using a cursor it might look like this:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">json</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span>
       <span class="n">downField</span><span class="o">(</span><span class="s">"order"</span><span class="o">).</span>
       <span class="n">downField</span><span class="o">(</span><span class="s">"items"</span><span class="o">).</span>
       <span class="n">focus</span><span class="o">.</span>
@@ -101,16 +97,14 @@ items in the order. Using a cursor it might look like this:</p>
 <span class="k">val</span> <span class="n">quantities</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">items</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">hcursor</span><span class="o">.</span><span class="n">get</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="s">"quantity"</span><span class="o">).</span><span class="n">toOption</span><span class="o">)</span>
 <span class="c1">// quantities: Vector[Int] = Vector(1, 2)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>And with optics:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">items</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">getAll</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// items: List[Int] = List(1, 2)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <h2 id="modifying-json">Modifying JSON</h2>
 
@@ -119,9 +113,9 @@ items in the order. Using a cursor it might look like this:</p>
 <p>Suppose we decide to have a 2-for-1 sale, so we want to double all the quantities in the order. This
 can be achieved with a small change to the code we wrote for traversal:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
-<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$10034/513287154@5aa313d7
+<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$9284/630591417@4e82e7c
 </span>
 <span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// modifiedJson: io.circe.Json =
@@ -149,8 +143,7 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 //     "total" : 123.45
 //   }
 // }
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>The result is a copy of the original JSON with only the <code class="highlighter-rouge">quantity</code> fields updated.</p>
 
@@ -168,12 +161,11 @@ called, and the name of the method you wanted to call is passed as an argument.<
 <p>The use of Dynamic means that your code is not “typo-safe”. For example, if you fat-finger the previous
 example:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">itemss</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span> <span class="c1">// Note the "itemss" typo
 </span>
 <span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This code will compile just fine, but not do what you expect. Because the JSON document doesn’t have
 an <code class="highlighter-rouge">itemss</code> field, the same document will be returned unmodified.</p>

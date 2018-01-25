@@ -7,7 +7,7 @@ make circe faster (the public API does not and will never expose any of this, th
 <p><a href="https://github.com/circe/circe-benchmarks/blob/master/modules/benchmarks/src/main/scala/io/circe/benchmark/Benchmark.scala">My initial benchmarks</a> suggest this is at least kind of working (higher numbers are
 better):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Benchmark                          Mode  Cnt        Score       Error  Units
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Benchmark                          Mode  Cnt        Score       Error  Units
 DecodingBenchmark.decodeFoosC     thrpt   40     3711.680 ±    22.766  ops/s
 DecodingBenchmark.decodeFoosA     thrpt   40     1519.045 ±    11.373  ops/s
 DecodingBenchmark.decodeFoosP     thrpt   40     2032.834 ±    27.033  ops/s
@@ -55,12 +55,11 @@ PrintingBenchmark.printIntsA      thrpt   40    15611.121 ±   140.017  ops/s
 PrintingBenchmark.printIntsP      thrpt   40    66283.874 ±   731.534  ops/s
 PrintingBenchmark.printIntsPico   thrpt   40    23703.796 ±   188.186  ops/s
 PrintingBenchmark.printIntsS      thrpt   40    53015.753 ±   462.472  ops/s
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And allocation rates (lower is better):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Benchmark                                              Mode  Cnt        Score        Error   Units
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Benchmark                                              Mode  Cnt        Score        Error   Units
 
 DecodingBenchmark.decodeFoosC:gc.alloc.rate.norm      thrpt   20  1308424.455 ±      0.881    B/op
 DecodingBenchmark.decodeFoosA:gc.alloc.rate.norm      thrpt   20  3779097.640 ±      2.456    B/op
@@ -109,8 +108,7 @@ PrintingBenchmark.printIntsA:gc.alloc.rate.norm       thrpt   20   239712.107 ±
 PrintingBenchmark.printIntsP:gc.alloc.rate.norm       thrpt   20    24144.025 ±      0.048    B/op
 PrintingBenchmark.printIntsPico:gc.alloc.rate.norm    thrpt   20    95472.072 ±      0.140    B/op
 PrintingBenchmark.printIntsS:gc.alloc.rate.norm       thrpt   20    24048.032 ±      0.062    B/op
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">Foos</code> benchmarks work with a map containing case class values, and the <code class="highlighter-rouge">Ints</code> ones are an array
 of integers. <code class="highlighter-rouge">C</code> suffixes indicate circe’s throughput, <code class="highlighter-rouge">A</code> is for Argonaut, <code class="highlighter-rouge">P</code> is for

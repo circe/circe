@@ -5,7 +5,7 @@ data and for performing modification.</p>
 
 <p>Suppose we have the following JSON document:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.either._</span>
 <span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span>
 
 <span class="k">val</span> <span class="n">json</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"""
@@ -22,22 +22,20 @@ data and for performing modification.</p>
 """</span>
 
 <span class="k">val</span> <span class="n">doc</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">json</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="nc">Null</span><span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="extracting-data">Extracting data</h2>
 
 <p>In order to traverse the document we need to create an <code class="highlighter-rouge">HCursor</code> with the focus at the document’s
 root:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">cursor</span><span class="k">:</span> <span class="kt">HCursor</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">hcursor</span>
-</code></pre>
-</div>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">cursor</span><span class="k">:</span> <span class="kt">HCursor</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">hcursor</span>
+</code></pre></div></div>
 
 <p>We can then use <a href="https://circe.github.io/circe/api/io/circe/ACursor.html">various operations</a> to move the focus of the cursor around the
 document and extract data from it:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">baz</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">baz</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"values"</span><span class="o">).</span><span class="n">downField</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span>
 <span class="c1">// baz: io.circe.Decoder.Result[Double] = Right(100.001)
 </span>
@@ -49,21 +47,19 @@ document and extract data from it:</p>
 <span class="k">val</span> <span class="n">secondQux</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"values"</span><span class="o">).</span><span class="n">downField</span><span class="o">(</span><span class="s">"qux"</span><span class="o">).</span><span class="n">downArray</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
 <span class="c1">// secondQux: io.circe.Decoder.Result[String] = Right(b)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <h2 id="transforming-data">Transforming data</h2>
 
 <p>We can also use a cursor to modify JSON.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">reversedNameCursor</span><span class="k">:</span> <span class="kt">ACursor</span> <span class="o">=</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">reversedNameCursor</span><span class="k">:</span> <span class="kt">ACursor</span> <span class="o">=</span>
   <span class="n">cursor</span><span class="o">.</span><span class="n">downField</span><span class="o">(</span><span class="s">"name"</span><span class="o">).</span><span class="n">withFocus</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">mapString</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">reverse</span><span class="o">))</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>We can then return to the root of the document and return its value with <code class="highlighter-rouge">top</code>:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">reversedName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">reversedNameCursor</span><span class="o">.</span><span class="n">top</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">reversedName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="k">=</span> <span class="n">reversedNameCursor</span><span class="o">.</span><span class="n">top</span>
 <span class="c1">// reversedName: Option[io.circe.Json] =
 // Some({
 //   "id" : "c730433b-082c-4984-9d66-855c243266f0",
@@ -82,8 +78,7 @@ document and extract data from it:</p>
 //     ]
 //   }
 // })
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>The result contains the original document with the <code class="highlighter-rouge">"name"</code> field reversed.</p>
 
