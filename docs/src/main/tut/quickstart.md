@@ -4,7 +4,7 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 so you can just add the following to your build:
 
 ```scala
-val circeVersion = "0.9.0"
+val circeVersion = "0.9.1"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -19,7 +19,7 @@ plugin in your build:
 
 ```scala
 addCompilerPlugin(
-  "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full
+  "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
 )
 ```
 
