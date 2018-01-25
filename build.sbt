@@ -32,6 +32,7 @@ lazy val scalaCheckVersion = "1.13.5"
 lazy val disciplineVersion = "0.8"
 
 lazy val previousCirceVersion = Some("0.9.0")
+val scalaFiddleCirceVersion = "0.9.0"
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -135,7 +136,7 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeConfigYaml := ConfigYml(yamlInline =
     s"""
       |scalafiddle:
-      |  dependency: io.circe %%% circe-core % ${(version in ThisBuild).value},io.circe %%% circe-generic % ${(version in ThisBuild).value},io.circe %%% circe-parser % ${(version in ThisBuild).value}
+      |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
     """.stripMargin),
   addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
   ghpagesNoJekyll := false,
