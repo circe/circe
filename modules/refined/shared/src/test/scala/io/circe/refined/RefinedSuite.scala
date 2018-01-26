@@ -8,7 +8,7 @@ import eu.timepit.refined.numeric.{ Positive, Greater }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitraryWit
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder, Json, KeyDecoder, KeyEncoder }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.syntax._
@@ -18,9 +18,11 @@ import shapeless.{ Nat, Witness => W }
 class RefinedSuite extends CirceSuite {
   implicit def refinedEq[T, P, F[_, _]](implicit refType: RefType[F]): Eq[F[T, P]] = Eq.fromUniversalEquals
 
+  type Gt2 = Greater[W.`2`.T]
+
   checkLaws(
     "Codec[Int Refined Greater[W.`2`.T]]",
-    CodecTests[Int Refined Greater[W.`2`.T]].codec
+    CodecTests[Int Refined Gt2].codec
   )
 
   checkLaws(
@@ -29,7 +31,7 @@ class RefinedSuite extends CirceSuite {
   )
 
   "A refined encoder" should "encode as the underlying type" in {
-    val n = refineMV[Greater[W.`2`.T]](5)
+    val n = refineMV[Gt2](5)
     assert(n.asJson === 5.asJson)
 
     val list = List(1, 2, 3, 4)
@@ -40,11 +42,27 @@ class RefinedSuite extends CirceSuite {
   }
 
   "A refined decoder" should "refuse to decode wrong values" in {
-    assert(Decoder[Int Refined Greater[W.`2`.T]].decodeJson(3.asJson).isRight)
-    assert(Decoder[Int Refined Greater[W.`2`.T]].decodeJson(1.asJson).isLeft)
+    assert(Decoder[Int Refined Gt2].decodeJson(3.asJson).isRight)
+    assert(Decoder[Int Refined Gt2].decodeJson(1.asJson).isLeft)
 
     assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ab".asJson).isRight)
     assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ba".asJson).isLeft)
+  }
+
+  "A refined key encoder" should "encode as string" in {
+    val n = refineMV[Gt2](5)
+    val s = refineMV[NonEmpty]("a")
+
+    assert(KeyEncoder[Int Refined Gt2].apply(n) === "5")
+    assert(KeyEncoder[String Refined NonEmpty].apply(s) === "a")
+  }
+
+  "A refined key decoder" should "refuse to decode wrong values" in {
+    assert(KeyDecoder[Int Refined Gt2].apply("3").isDefined)
+    assert(KeyDecoder[Int Refined Gt2].apply("1").isEmpty)
+
+    assert(KeyDecoder[String Refined NonEmpty].apply("a").isDefined)
+    assert(KeyDecoder[String Refined NonEmpty].apply("").isEmpty)
   }
 }
 
@@ -99,5 +117,30 @@ class RefinedFieldsSuite extends CirceSuite {
     )
 
     assert(json === expectedJson)
+  }
+}
+
+class RefinedKeysSuite extends CirceSuite {
+  "Refined keys" should "be encoded as Map keys" in {
+    val example: Map[String Refined NonEmpty, Int] = Map(
+      refineMV[NonEmpty]("a") -> 1,
+      refineMV[NonEmpty]("b") -> 2)
+
+    val expectedJson = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
+
+    assert(example.asJson === expectedJson)
+  }
+
+  it should "decode when valid" in {
+    val json = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
+    val expected: Map[String Refined NonEmpty, Int] = Map(
+      refineMV[NonEmpty]("a") -> 1,
+      refineMV[NonEmpty]("b") -> 2)
+    assert(json.as[Map[String Refined NonEmpty, Int]] === Right(expected))
+  }
+
+  it should "not decode when invalid" in {
+    val json = Json.obj("a" -> 1.asJson, "" -> 2.asJson)
+    assert(json.as[Map[String Refined NonEmpty, Int]].isLeft)
   }
 }
