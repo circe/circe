@@ -41,4 +41,19 @@ package object refined {
     refType: RefType[F]
   ): Encoder[F[T, P]] =
     underlying.contramap(refType.unwrap)
+
+  implicit final def refinedKeyDecoder[T, P, F[_, _]](implicit
+    underlying: KeyDecoder[T],
+    validate: Validate[T, P],
+    refType: RefType[F]
+  ): KeyDecoder[F[T, P]] =
+    KeyDecoder.instance { str =>
+      underlying(str).flatMap(t => refType.refine(t).toOption)
+    }
+
+  implicit final def refinedKeyEncoder[T, P, F[_, _]](implicit
+    underlying: KeyEncoder[T],
+    refType: RefType[F]
+  ): KeyEncoder[F[T, P]] =
+    underlying.contramap(refType.unwrap)
 }
