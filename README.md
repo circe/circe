@@ -95,6 +95,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
 * [scala-json-rpc]: [JSON-RPC][json-rpc] 2.0 library for Scala and Scala.js 
+* [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
@@ -201,6 +202,7 @@ limitations under the License.
 [scala-js]: http://www.scala-js.org/
 [scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scala-json-rpc]: https://github.com/shogowada/scala-json-rpc
+[scalatest-json-circe]: https://github.com/stephennancekivell/scalatest-json
 [scalist]: https://github.com/vpavkin/scalist
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
