@@ -48,7 +48,12 @@ package object refined {
     refType: RefType[F]
   ): KeyDecoder[F[T, P]] =
     KeyDecoder.instance { str =>
-      underlying(str).flatMap(t => refType.refine(t).toOption)
+      underlying(str) flatMap { t0 =>
+        refType.refine(t0) match {
+          case Left(_) => None
+          case Right(t) => Some(t)
+        }
+      }
     }
 
   implicit final def refinedKeyEncoder[T, P, F[_, _]](implicit
