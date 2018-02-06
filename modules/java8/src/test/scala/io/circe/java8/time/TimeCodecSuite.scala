@@ -106,7 +106,7 @@ class TimeCodecSuite extends CirceSuite {
 
   "Decoder[ZoneId]" should "fail for invalid ZoneId" in {
     forAll((s: String) =>
-      whenever(ZoneId.getAvailableZoneIds.contains(s) == false) {
+      whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
         assertResult(
           Left(DecodingFailure("ZoneId", Nil))
         )(
