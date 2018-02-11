@@ -347,6 +347,11 @@ lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
+lazy val printerBase = circeCrossModule("printer", mima = previousCirceVersion)
+  .dependsOn(coreBase)
+lazy val printer = printerBase.jvm
+lazy val printerJS = printerBase.js
+
 lazy val scalajs = circeModule("scalajs", mima = None)
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(coreJS)

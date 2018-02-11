@@ -1,8 +1,10 @@
 package io.circe.tests
 
-import io.circe.{ Json, Parser, Printer }
+import io.circe.{Json, Parser}
 import io.circe.testing.PrinterTests
 import java.nio.charset.StandardCharsets.UTF_8
+
+import io.circe.printer.Printer
 
 class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceSuite with PlatformSpecificPrinterTests {
   checkLaws("Printing Unit", PrinterTests[Unit].printer(printer, parser))

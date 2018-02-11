@@ -5,8 +5,9 @@ import cats.kernel.Eq
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Parser, Printer }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.printer.Printer
+import io.circe.{Decoder, Encoder, Parser}
+import org.scalacheck.{Arbitrary, Prop, Shrink}
 import org.typelevel.discipline.Laws
 
 trait PrinterLaws[A] {

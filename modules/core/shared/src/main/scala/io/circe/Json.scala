@@ -1,8 +1,10 @@
 package io.circe
 
-import cats.{ Eq, Show }
+import cats.{Eq, Show}
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
+
+import io.circe.printer.Printer
 
 /**
  * A data type representing possible JSON values.

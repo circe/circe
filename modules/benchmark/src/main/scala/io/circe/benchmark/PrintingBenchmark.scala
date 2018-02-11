@@ -1,8 +1,9 @@
 package io.circe.benchmark
 
-import io.circe.Printer
 import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
+
+import io.circe.printer.Printer
 import org.openjdk.jmh.annotations._
 
 /**
