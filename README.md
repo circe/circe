@@ -17,6 +17,7 @@ about why circe exists and how to use it.
 Are you using circe? Please consider opening a pull request to list your organization here:
 
 * [Anduin Transactions](https://anduintransact.com/)
+* [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
