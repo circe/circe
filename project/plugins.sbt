@@ -1,9 +1,3 @@
-resolvers ++= Seq(
-  Classpaths.typesafeReleases,
-  Classpaths.sbtPluginReleases,
-  "jgit-repo" at "http://download.eclipse.org/jgit/maven"
-)
-
 addSbtCoursier
 addSbtPlugin("com.47deg" % "sbt-microsites" % "0.7.16")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.1.1")
