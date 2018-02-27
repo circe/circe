@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -51,5 +51,27 @@ class ConfiguredJsonCodecSuite extends CirceSuite {
 
     assert(Encoder[ConfigExampleBase].apply(foo) === expected)
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+  }
+
+  it should "allow only one, named argument set to true" in {
+    // Can't supply both
+    assertDoesNotCompile("@ConfiguredJsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)")
+    // Must specify the argument name
+    assertDoesNotCompile("@ConfiguredJsonCodec(true) case class X(a: Int)")
+    // Can't specify false
+    assertDoesNotCompile("@ConfiguredJsonCodec(encodeOnly = false) case class X(a: Int)")
+  }
+
+  "@ConfiguredJsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
+    @ConfiguredJsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
+    Encoder[CaseClassEncodeOnly]
+    ObjectEncoder[CaseClassEncodeOnly]
+    assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
+  }
+
+  "@ConfiguredJsonCodec(decodeOnly = true)" should "provide Decoder instances" in {
+    @ConfiguredJsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
+    Decoder[CaseClassDecodeOnly]
+    assertDoesNotCompile("Encoder[CaseClassDecodeOnly]")
   }
 }
