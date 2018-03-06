@@ -1,7 +1,7 @@
 package io.circe.java8.time
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Json }
+import io.circe.{ Decoder, DecodingFailure, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import java.time.{
@@ -88,6 +88,7 @@ class TimeCodecSuite extends CirceSuite {
   implicit val eqPeriod: Eq[Period] = Eq.fromUniversalEquals
   implicit val eqYearMonth: Eq[YearMonth] = Eq.fromUniversalEquals
   implicit val eqDuration: Eq[Duration] = Eq.fromUniversalEquals
+  implicit val eqZoneId: Eq[ZoneId] = Eq.fromUniversalEquals
 
   checkLaws("Codec[Instant]", CodecTests[Instant].codec)
   checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].unserializableCodec)
@@ -99,8 +100,21 @@ class TimeCodecSuite extends CirceSuite {
   checkLaws("Codec[Period]", CodecTests[Period].codec)
   checkLaws("Codec[YearMonth]", CodecTests[YearMonth].unserializableCodec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
+  checkLaws("Codec[ZoneId]", CodecTests[ZoneId].codec)
 
   val invalidJson: Json = Json.fromString("abc")
+
+  "Decoder[ZoneId]" should "fail for invalid ZoneId" in {
+    forAll((s: String) =>
+      whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
+        assertResult(
+          Left(DecodingFailure("ZoneId", Nil))
+        )(
+          Decoder[ZoneId].decodeJson(Json.fromString(s))
+        )
+      }
+    )
+  }
 
   "Decoder[Instant]" should "fail on invalid values" in {
     assert(Decoder[Instant].apply(invalidJson.hcursor).isLeft)

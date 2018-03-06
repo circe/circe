@@ -17,6 +17,7 @@ about why circe exists and how to use it.
 Are you using circe? Please consider opening a pull request to list your organization here:
 
 * [Anduin Transactions](https://anduintransact.com/)
+* [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
@@ -25,6 +26,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
 * [The Guardian](https://www.theguardian.com)
+* [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [Indix](https://www.indix.com)
 * [OVO Energy](https://www.ovoenergy.com)
@@ -86,6 +88,7 @@ The following open source projects are either built on circe or provide circe su
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
 * [play-circe][play-circe]: circe support for [Play!][play].
+* [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
 * [roc][roc]: A PostgreSQL client built on Finagle.
 * [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
@@ -93,6 +96,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalist][scalist]: A [Todoist][todoist] API client.
 * [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
 * [scala-json-rpc]: [JSON-RPC][json-rpc] 2.0 library for Scala and Scala.js 
+* [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
@@ -189,6 +193,8 @@ limitations under the License.
 [msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
 [play]: https://www.playframework.com/
 [play-circe]: https://github.com/jilen/play-circe
+[pulsar]: https://pulsar.apache.org/
+[pulsar4s]: https://github.com/sksamuel/pulsar4s
 [graphql]: http://graphql.org/docs/getting-started/
 [rapture]: http://rapture.io/
 [roc]: https://github.com/finagle/roc
@@ -197,6 +203,7 @@ limitations under the License.
 [scala-js]: http://www.scala-js.org/
 [scala-jsonapi]: https://github.com/zalando/scala-jsonapi
 [scala-json-rpc]: https://github.com/shogowada/scala-json-rpc
+[scalatest-json-circe]: https://github.com/stephennancekivell/scalatest-json
 [scalist]: https://github.com/vpavkin/scalist
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/

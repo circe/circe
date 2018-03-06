@@ -126,6 +126,8 @@ trait Decoder[A] extends Serializable { self =>
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
       if (pred(c)) self(c) else Left(DecodingFailure(message, c.history))
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c)
   }
 
   /**

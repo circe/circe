@@ -1,5 +1,6 @@
 import ReleaseTransformations._
 import microsites.ExtraMdFileConfig
+import microsites.ConfigYml
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
@@ -20,17 +21,18 @@ lazy val compilerOptions = Seq(
   "-Yno-predef"
 )
 
-lazy val catsVersion = "1.0.0-RC2"
-lazy val jawnVersion = "0.11.0"
-lazy val shapelessVersion = "2.3.2"
-lazy val refinedVersion = "0.8.5"
-lazy val monocleVersion = "1.4.0"
+lazy val catsVersion = "1.0.1"
+lazy val jawnVersion = "0.11.1"
+lazy val shapelessVersion = "2.3.3"
+lazy val refinedVersion = "0.8.7"
+lazy val monocleVersion = "1.5.0"
 
-lazy val scalaTestVersion = "3.0.4"
+lazy val scalaTestVersion = "3.0.5"
 lazy val scalaCheckVersion = "1.13.5"
 lazy val disciplineVersion = "0.8"
 
-lazy val previousCirceVersion = Some("0.8.0")
+lazy val previousCirceVersion = Some("0.9.0")
+val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions ++ (
@@ -43,6 +45,9 @@ lazy val baseSettings = Seq(
     _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
   scalacOptions in (Test, console) ~= {
+    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
+  },
+  scalacOptions in Tut ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
   scalacOptions in Test ~= {
@@ -128,8 +133,13 @@ lazy val docSettings = allSettings ++ Seq(
     "gray-light" -> "#E5E5E6",
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"),
+  micrositeConfigYaml := ConfigYml(yamlInline =
+    s"""
+      |scalafiddle:
+      |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
+    """.stripMargin),
   addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
-  ghpagesNoJekyll := false,
+  ghpagesNoJekyll := true,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
@@ -155,7 +165,7 @@ lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
   )
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
@@ -181,7 +191,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](jawn)
 lazy val circeDocsModules = Seq[Project](docs)
-lazy val circeUtilModules = Seq[Project](hygiene, benchmark)
+lazy val circeUtilModules = Seq[Project](hygiene, hygieneJS, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
   case "1.8" => Set.empty
@@ -209,14 +219,14 @@ def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
     scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
     scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
     "org.typelevel" %%% "macro-compat" % "1.1.1",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+    compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
   ),
   libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.11+ is used, quasiquotes are merged into scala-reflect.
       case Some((2, scalaMajor)) if scalaMajor >= 11 => Nil
       // in Scala 2.10, quasiquotes are provided by macro paradise.
-      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.0" cross CrossVersion.binary)
+      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.1" cross CrossVersion.binary)
     }
   },
   sources in (Compile, doc) := {
@@ -231,7 +241,7 @@ lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch),
     initialCommands in console :=
       """
         |import io.circe._
@@ -396,13 +406,16 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
 
-lazy val hygiene = circeModule("hygiene", mima = None)
+lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
   .settings(
     crossScalaVersions := crossScalaVersions.value.tail,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(core, generic, jawn, literal)
+  .dependsOn(coreBase, genericBase, literalBase)
+
+lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
+lazy val hygieneJS = hygieneBase.js
 
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
@@ -424,7 +437,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
     )
   )
   .dependsOn(coreBase, genericBase % Test, testsBase % Test)
@@ -441,7 +454,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     },
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
     )
   )
   .enablePlugins(JmhPlugin)

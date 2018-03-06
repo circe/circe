@@ -1,6 +1,7 @@
 package io.circe
 
-import cats.data.Validated
+import cats.data.Validated.Invalid
+import cats.data.{NonEmptyList, Validated}
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.DownArray
@@ -296,6 +297,21 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "validate" should "not infinitely recurse (#396)" in forAll { (i: Int) =>
     assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
+  }
+
+  it should "not override the wrapped class decodeAccumulating method" in {
+    trait Foo
+
+    val decoder = new Decoder[Foo] {
+      override def apply(c: HCursor): Decoder.Result[Foo] = Right(new Foo {})
+
+      override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Foo] = Invalid(
+        NonEmptyList.one(DecodingFailure("This shouldn't work", c.history))
+      )
+    }
+
+    val validatedDecoder = decoder.validate(c => true, "Foobar")
+    assert(validatedDecoder.decodeAccumulating(Json.True.hcursor).isInstanceOf[Invalid[_]])
   }
 
   "either" should "return the correct disjunct" in forAll { (value: Either[String, Boolean]) =>

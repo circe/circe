@@ -81,7 +81,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
             instanceList.find(_._1 =:= valueType) match {
               case Some(result) => (instanceList, result._2._1)
               case None =>
-                val newName = TermName(s"circeGenericInstanceFor$label")
+                val newName = TermName(s"circeGenericInstanceFor$label").encodedName.toTermName
                 val newInstance = resolver(valueType)
 
                 ((valueType, (newName, newInstance)) :: instanceList, newName)
@@ -277,7 +277,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       (pq"_root_.shapeless.HNil": Tree, List.empty[Tree])
     ) {
       case (Member(label, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
-        val currentName = TermName(s"circeGenericHListBindingFor$label")
+        val currentName = TermName(s"circeGenericHListBindingFor$label").encodedName.toTermName
 
         (
           pq"_root_.shapeless.::($currentName, $patternAcc)",
@@ -303,8 +303,8 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       cq"""_root_.shapeless.Inr(_) => _root_.scala.sys.error("Cannot encode CNil")"""
     ) {
       case (Member(label, _, tpe, _, _), instanceName, acc) =>
-        val inrName = TermName(s"circeGenericInrBindingFor$label")
-        val inlName = TermName(s"circeGenericInlBindingFor$label")
+        val inrName = TermName(s"circeGenericInrBindingFor$label").encodedName.toTermName
+        val inlName = TermName(s"circeGenericInlBindingFor$label").encodedName.toTermName
 
         cq"""
           _root_.shapeless.Inr($inrName) => $inrName match {

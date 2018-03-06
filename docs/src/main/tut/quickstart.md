@@ -4,7 +4,7 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 so you can just add the following to your build:
 
 ```scala
-val circeVersion = "0.8.0"
+val circeVersion = "0.9.1"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -19,25 +19,32 @@ plugin in your build:
 
 ```scala
 addCompilerPlugin(
-  "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full
+  "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
 )
 ```
 
 Then type `sbt console` to start a REPL and then paste the following (this will also work from the
 root directory of this repository):
 
-```tut:book
+{% scalafiddle %}
+```scala
 import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
 sealed trait Foo
-case class Bar(xs: List[String]) extends Foo
+case class Bar(xs: Vector[String]) extends Foo
 case class Qux(i: Int, d: Option[Double]) extends Foo
 
 val foo: Foo = Qux(13, Some(14.0))
 
-foo.asJson.noSpaces
+val json = foo.asJson.noSpaces
+println(json)
 
-decode[Foo](foo.asJson.spaces4)
+val decodedFoo = decode[Foo](json)
+println(decodedFoo)
 ```
+{% endscalafiddle %}
+
+Alternatively you can experiment with Circe directly in your browser by clicking the `Run` button in the code block and
+making modifications in the code.
 
 No boilerplate, no runtime reflection.
