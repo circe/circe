@@ -748,7 +748,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     case c: HCursor =>
       if (c.value.isNull) rightNone else d(c) match {
         case Right(a) => Right(Some(a))
-        case Left(df) if df.history.isEmpty => rightNone
         case Left(df) => Left(df)
       }
     case c: FailedCursor =>
