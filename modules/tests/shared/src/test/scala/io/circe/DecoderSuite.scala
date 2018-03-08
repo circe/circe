@@ -169,6 +169,23 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     }
   }
 
+  "An optional top-level decoder" should "fail appropriately" in {
+    val decoder: Decoder[Option[String]] = Decoder.instance(_.as[Option[String]])
+
+    forAll { (json: Json) =>
+      val result = decoder.apply(json.hcursor)
+
+      assert(
+        if (json.isNull) {
+          result === Right(None)
+        } else json.asString match {
+          case Some(str) => result === Right(Some(str))
+          case None => result.isLeft
+        }
+      )
+    }
+  }
+
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
     val exception = new Exception("Not an Int")
     val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
