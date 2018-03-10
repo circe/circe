@@ -14,5 +14,7 @@ case class Qux(i: scala.Int, d: scala.Option[scala.Double]) extends Foo
  */
 object HygieneTests {
   val foo: Foo = Bar(scala.List("abc", "def", "ghi"))
-  val json = foo.asJson.noSpaces
+
+  // @TODO: need to represent json as string
+  val json = foo.asJson
 }

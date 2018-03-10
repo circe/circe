@@ -1,12 +1,12 @@
 package io.circe.testing
 
-import cats.data.{ Validated, ValidatedNel }
+import cats.data.{Validated, ValidatedNel}
 import cats.instances.either._
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Error, Json, Parser, ParsingFailure }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.{Error, Json, Parser, ParsingFailure, PrinterBuilder}
+import org.scalacheck.{Arbitrary, Prop, Shrink}
 import org.typelevel.discipline.Laws
 
 case class ParserLaws[P <: Parser](parser: P) {
@@ -29,7 +29,11 @@ case class ParserLaws[P <: Parser](parser: P) {
 case class ParserTests[P <: Parser](p: P) extends Laws {
   def laws: ParserLaws[P] = ParserLaws(p)
 
-  def fromString(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet =
+  def fromString(
+    implicit arbitraryJson: Arbitrary[Json],
+    shrinkJson: Shrink[Json],
+    printerBuilder: PrinterBuilder
+  ): RuleSet =
     fromFunction[String]("fromString")(
       identity, _.parse, _.decode[Json], _.decodeAccumulating[Json]
     )
@@ -39,28 +43,28 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
     parse: P => A => Either[ParsingFailure, Json],
     decode: P => A => Either[Error, Json],
     decodeAccumulating: P => A => ValidatedNel[Error, Json]
-  )(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet = new DefaultRuleSet(
+  )(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json], printerBuilder: PrinterBuilder): RuleSet = new DefaultRuleSet(
     name = s"parser[$name]",
     parent = None,
     "parsingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
-      laws.parsingRoundTrip[A](json)(json => serialize(json.noSpaces), parse)
+      laws.parsingRoundTrip[A](json)(json => serialize(printerBuilder.noSpaces.pretty(json)), parse)
     },
     "parsingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
-      laws.parsingRoundTrip[A](json)(json => serialize(json.spaces2), parse)
+      laws.parsingRoundTrip[A](json)(json => serialize(printerBuilder.spaces2.pretty(json)), parse)
     },
     "decodingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
-      laws.decodingRoundTrip[A](json)(json => serialize(json.noSpaces), decode)
+      laws.decodingRoundTrip[A](json)(json => serialize(printerBuilder.noSpaces.pretty(json)), decode)
     },
     "decodingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
-      laws.decodingRoundTrip[A](json)(json => serialize(json.spaces2), decode)
+      laws.decodingRoundTrip[A](json)(json => serialize(printerBuilder.spaces2.pretty(json)), decode)
     },
     "decodingAccumulatingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingAccumulatingRoundTrip[A](json)(json =>
-        serialize(json.noSpaces), decodeAccumulating)
+        serialize(printerBuilder.noSpaces.pretty(json)), decodeAccumulating)
     },
     "decodingAccumulatingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
       laws.decodingAccumulatingRoundTrip[A](json)(json =>
-        serialize(json.spaces2), decodeAccumulating)
+        serialize(printerBuilder.spaces2.pretty(json)), decodeAccumulating)
     },
     "parser serializability" -> SerializableLaws.serializable(p)
   )

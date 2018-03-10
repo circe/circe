@@ -13,3 +13,9 @@ trait Printer {
 
   def prettyByteBuffer(json: Json): ByteBuffer
 }
+
+trait PrinterBuilder {
+  def noSpaces: Printer
+
+  def spaces2: Printer
+}

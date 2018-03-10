@@ -275,6 +275,8 @@ final object JsonObject {
    * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
    */
   private[circe] final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
+    private[circe] def underlying: LinkedHashMap[String, Json] = fields
+
     private[circe] def applyUnsafe(key: String): Json = fields.get(key)
     final def apply(k: String): Option[Json] = Option(fields.get(k))
     final def size: Int = fields.size
@@ -363,6 +365,9 @@ final object JsonObject {
     fields: Map[String, Json],
     orderedKeys: Vector[String]
   ) extends JsonObject {
+    private[circe] def underlying: Map[String, Json] = fields
+    private[circe] def underlyingKeys: Vector[String] = orderedKeys
+
     private[circe] def applyUnsafe(key: String): Json = fields(key)
     final def apply(key: String): Option[Json] = fields.get(key)
     final def size: Int = fields.size

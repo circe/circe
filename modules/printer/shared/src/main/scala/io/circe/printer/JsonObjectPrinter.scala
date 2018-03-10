@@ -7,7 +7,7 @@ object JsonObjectPrinter {
     val originalDepth = folder.depth
     val p = folder.pieces(folder.depth)
     var first = true
-    val iterator = jsonObject.fields.entrySet.iterator
+    val iterator = jsonObject.underlying.entrySet.iterator
 
     folder.writer.append(p.lBraces)
 
@@ -35,13 +35,13 @@ object JsonObjectPrinter {
     val originalDepth = folder.depth
     val p = folder.pieces(folder.depth)
     var first = true
-    val keyIterator = jsonObject.orderedKeys.iterator
+    val keyIterator = jsonObject.underlyingKeys.iterator
 
     folder.writer.append(p.lBraces)
 
     while (keyIterator.hasNext) {
       val key = keyIterator.next()
-      val value = jsonObject.fields(key)
+      val value = jsonObject.underlying(key)
       if (!folder.dropNullValues || !value.isNull) {
         if (!first) folder.writer.append(p.objectCommas)
         folder.onString(key)

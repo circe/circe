@@ -5,7 +5,6 @@ import java.lang.StringBuilder
 import java.nio.charset.{Charset, StandardCharsets}
 import java.nio.{ByteBuffer, CharBuffer}
 import java.util.concurrent.CopyOnWriteArrayList
-import io.circe._
 import io.circe.{Printer => CorePrinter}
 import io.circe.JsonObject.{LinkedHashMapJsonObject, MapAndVectorJsonObject}
 import scala.annotation.switch
@@ -223,7 +222,7 @@ package object printer {
       prettyByteBuffer(json, StandardCharsets.UTF_8)
   }
 
-  final object Printer {
+  final object Printer extends PrinterBuilder {
     def apply(
       preserveOrder: Boolean,
       dropNullValues: Boolean,
@@ -354,7 +353,7 @@ package object printer {
         }
       }
 
-      final def onObject(value: JsonObject): Unit = {
+      final def onObject(value: JsonObject): Unit = value match {
         case v: LinkedHashMapJsonObject => JsonObjectPrinter.appendToFolder(v, this)
         case v: MapAndVectorJsonObject => JsonObjectPrinter.appendToFolder(v, this)
       }
