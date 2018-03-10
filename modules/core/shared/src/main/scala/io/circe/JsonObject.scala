@@ -189,8 +189,6 @@ sealed abstract class JsonObject extends Serializable {
    */
   final def filterKeys(pred: String => Boolean): JsonObject = filter(field => pred(field._1))
 
-  private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit
-
   /**
    * @group Other
    */
@@ -276,7 +274,7 @@ final object JsonObject {
   /**
    * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
    */
-  private[this] final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
+  private[circe] final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
     private[circe] def applyUnsafe(key: String): Json = fields.get(key)
     final def apply(k: String): Option[Json] = Option(fields.get(k))
     final def size: Int = fields.size
@@ -329,34 +327,6 @@ final object JsonObject {
       }
     }
 
-    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
-      val originalDepth = folder.depth
-      val p = folder.pieces(folder.depth)
-      var first = true
-      val iterator = fields.entrySet.iterator
-
-      folder.writer.append(p.lBraces)
-
-      while (iterator.hasNext) {
-        val next = iterator.next()
-        val key = next.getKey
-        val value = next.getValue
-
-        if (!folder.dropNullValues || !value.isNull) {
-          if (!first) folder.writer.append(p.objectCommas)
-          folder.onString(key)
-          folder.writer.append(p.colons)
-
-          folder.depth += 1
-          value.foldWith(folder)
-          folder.depth = originalDepth
-          first = false
-        }
-      }
-
-      folder.writer.append(p.rBraces)
-    }
-
     private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject = {
       val mapBuilder = Map.newBuilder[String, Json]
       val keyBuilder = Vector.newBuilder[String]
@@ -389,7 +359,7 @@ final object JsonObject {
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
    */
-  private[this] final class MapAndVectorJsonObject(
+  private[circe] final class MapAndVectorJsonObject(
     fields: Map[String, Json],
     orderedKeys: Vector[String]
   ) extends JsonObject {
@@ -433,30 +403,5 @@ final object JsonObject {
     final def mapValues(f: Json => Json): JsonObject =
       new MapAndVectorJsonObject(fields.mapValues(f).view.force, orderedKeys)
 
-    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
-      val originalDepth = folder.depth
-      val p = folder.pieces(folder.depth)
-      var first = true
-      val keyIterator = orderedKeys.iterator
-
-      folder.writer.append(p.lBraces)
-
-      while (keyIterator.hasNext) {
-        val key = keyIterator.next()
-        val value = fields(key)
-        if (!folder.dropNullValues || !value.isNull) {
-          if (!first) folder.writer.append(p.objectCommas)
-          folder.onString(key)
-          folder.writer.append(p.colons)
-
-          folder.depth += 1
-          value.foldWith(folder)
-          folder.depth = originalDepth
-          first = false
-        }
-      }
-
-      folder.writer.append(p.rBraces)
-    }
   }
 }

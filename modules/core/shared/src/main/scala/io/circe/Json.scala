@@ -4,8 +4,6 @@ import cats.{Eq, Show}
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
 
-import io.circe.printer.Printer
-
 /**
  * A data type representing possible JSON values.
  *
@@ -113,21 +111,6 @@ sealed abstract class Json extends Product with Serializable {
   final def pretty(p: Printer): String = p.pretty(this)
 
   /**
-   * Pretty-print this JSON value to a string with no spaces.
-   */
-  final def noSpaces: String = Printer.noSpaces.pretty(this)
-
-  /**
-   * Pretty-print this JSON value to a string indentation of two spaces.
-   */
-  final def spaces2: String = Printer.spaces2.pretty(this)
-
-  /**
-   * Pretty-print this JSON value to a string indentation of four spaces.
-   */
-  final def spaces4: String = Printer.spaces4.pretty(this)
-
-  /**
    * Perform a deep merge of this JSON value with another JSON value.
    *
    * Objects are merged by key, values from the argument JSON take
@@ -149,11 +132,6 @@ sealed abstract class Json extends Product with Serializable {
         )
       case _ => that
     }
-
-  /**
-   * Compute a `String` representation for this JSON value.
-   */
-  override final def toString: String = spaces2
 
   /**
    * Universal equality derived from our type-safe equality.
