@@ -1,6 +1,7 @@
 package io.circe.tests
 
-import io.circe.{Json, Parser, Printer}
+import io.circe.{Json, Parser}
+import io.circe.printer.Printer
 import io.circe.testing.PrinterTests
 import java.nio.charset.StandardCharsets.UTF_8
 
