@@ -223,31 +223,6 @@ package object printer {
   }
 
   final object Printer extends PrinterBuilder {
-    def apply(
-      preserveOrder: Boolean,
-      dropNullValues: Boolean,
-      indent: String,
-      lbraceLeft: String = "",
-      lbraceRight: String = "",
-      rbraceLeft: String = "",
-      rbraceRight: String = "",
-      lbracketLeft: String = "",
-      lbracketRight: String = "",
-      rbracketLeft: String = "",
-      rbracketRight: String = "",
-      lrbracketsEmpty: String = "",
-      arrayCommaLeft: String = "",
-      arrayCommaRight: String = "",
-      objectCommaLeft: String = "",
-      objectCommaRight: String = "",
-      colonLeft: String = "",
-      colonRight: String = "",
-      reuseWriters: Boolean = false,
-      predictSize: Boolean = false,
-      escapeNonAscii: Boolean = false
-    ): Printer = new Printer(preserveOrder, dropNullValues, indent, lbraceLeft, lbraceRight, rbraceLeft, rbraceRight, lbracketLeft, lbracketRight, rbracketLeft, rbracketRight, lrbracketsEmpty, arrayCommaLeft, arrayCommaRight, objectCommaLeft, objectCommaRight, colonLeft, colonRight, reuseWriters, predictSize, escapeNonAscii)
-
-
     /**
       * A pretty-printer configuration that inserts no spaces.
       */
