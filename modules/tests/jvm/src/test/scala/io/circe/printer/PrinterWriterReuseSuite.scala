@@ -1,8 +1,9 @@
-package io.circe
+package io.circe.printer
 
+import io.circe.Json
 import io.circe.tests.CirceSuite
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{ Millis, Span }
+import org.scalatest.time.{Millis, Span}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 

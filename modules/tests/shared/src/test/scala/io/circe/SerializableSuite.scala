@@ -2,6 +2,7 @@ package io.circe
 
 import cats.laws.discipline.SerializableTests
 import cats.kernel.laws.SerializableLaws
+import io.circe.printer.Printer
 import io.circe.tests.CirceSuite
 
 class SerializableSuite extends CirceSuite {

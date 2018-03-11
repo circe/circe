@@ -322,7 +322,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings(scaladocFor210 = false))
   .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
-  .dependsOn(coreBase, parserBase % Test, testingBase % Test)
+  .dependsOn(coreBase, parserBase % Test, printerBase % Test, testingBase % Test)
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
@@ -406,7 +406,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .dependsOn(coreBase, parserBase, testingBase)
+  .dependsOn(coreBase, parserBase, testingBase, printerBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -417,7 +417,7 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
     crossScalaVersions := crossScalaVersions.value.tail,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(coreBase, genericBase, literalBase)
+  .dependsOn(coreBase, genericBase, literalBase, printerBase)
 
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js

@@ -42,7 +42,7 @@ package object printer {
   *        into a binary output.
   * @param escapeNonAscii Unicode-escape any non-ASCII characters in strings.
   */
-  private[circe] class Printer(
+  private[circe] case class Printer(
     preserveOrder: Boolean,
     dropNullValues: Boolean,
     indent: String,
@@ -246,6 +246,8 @@ package object printer {
       predictSize: Boolean = false,
       escapeNonAscii: Boolean = false
     ): Printer = new Printer(preserveOrder, dropNullValues, indent, lbraceLeft, lbraceRight, rbraceLeft, rbraceRight, lbracketLeft, lbracketRight, rbracketLeft, rbracketRight, lrbracketsEmpty, arrayCommaLeft, arrayCommaRight, objectCommaLeft, objectCommaRight, colonLeft, colonRight, reuseWriters, predictSize, escapeNonAscii)
+
+
     /**
       * A pretty-printer configuration that inserts no spaces.
       */

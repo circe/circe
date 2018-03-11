@@ -1,5 +1,6 @@
-package io.circe
+package io.circe.printer
 
+import io.circe.{parser, Json}
 import io.circe.tests.PrinterSuite
 
 class Spaces2PrinterSuite extends PrinterSuite(Printer.spaces2, parser.`package`) with Spaces2PrinterExample
