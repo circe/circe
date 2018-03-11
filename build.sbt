@@ -182,6 +182,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (optics, opticsJS),
   (refined, refinedJS),
   (parser, parserJS),
+  (printer, printerJS),
   (scodec, scodecJS),
   (java8, java8JS),
   (testing, testingJS),
