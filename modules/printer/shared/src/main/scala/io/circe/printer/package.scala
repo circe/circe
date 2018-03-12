@@ -1,12 +1,12 @@
 package io.circe
 
-import java.io.Serializable
-import java.lang.StringBuilder
-import java.nio.charset.{Charset, StandardCharsets}
-import java.nio.{ByteBuffer, CharBuffer}
-import java.util.concurrent.CopyOnWriteArrayList
 import io.circe.{Printer => CorePrinter}
 import io.circe.JsonObject.{LinkedHashMapJsonObject, MapAndVectorJsonObject}
+import java.io.Serializable
+import java.lang.StringBuilder
+import java.nio.{ByteBuffer, CharBuffer}
+import java.nio.charset.{Charset, StandardCharsets}
+import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 
 
