@@ -15,5 +15,6 @@ package object syntax {
   implicit final class PrinterOps(val json: Json) extends AnyVal {
     final def noSpaces(implicit printerBuilder: PrinterBuilder): String = printerBuilder.noSpaces.pretty(json)
     final def spaces2(implicit printerBuilder: PrinterBuilder): String = printerBuilder.spaces2.pretty(json)
+    final def spaces4(implicit printerBuilder: PrinterBuilder): String = printerBuilder.spaces4.pretty(json)
   }
 }

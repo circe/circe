@@ -3,7 +3,6 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
 trait Printer {
-
   /**
     * Returns a string representation of a pretty-printed JSON value.
     */
@@ -18,4 +17,6 @@ trait PrinterBuilder {
   def noSpaces: Printer
 
   def spaces2: Printer
+
+  def spaces4: Printer
 }
