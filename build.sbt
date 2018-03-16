@@ -7,7 +7,7 @@ import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
 
-lazy val compilerOptions = Seq(
+val compilerOptions = Seq(
   "-deprecation",
   "-encoding", "UTF-8",
   "-feature",
@@ -21,17 +21,18 @@ lazy val compilerOptions = Seq(
   "-Yno-predef"
 )
 
-lazy val catsVersion = "1.0.1"
-lazy val jawnVersion = "0.11.1"
-lazy val shapelessVersion = "2.3.3"
-lazy val refinedVersion = "0.8.7"
-lazy val monocleVersion = "1.5.0"
+val catsVersion = "1.0.1"
+val jawnVersion = "0.11.1"
+val shapelessVersion = "2.3.3"
+val refinedVersion = "0.8.7"
+val monocleVersion = "1.5.0"
 
-lazy val scalaTestVersion = "3.0.5"
-lazy val scalaCheckVersion = "1.13.5"
-lazy val disciplineVersion = "0.8"
+val paradiseVersion = "2.1.1"
+val scalaTestVersion = "3.0.5"
+val scalaCheckVersion = "1.13.5"
+val disciplineVersion = "0.9.0"
 
-lazy val previousCirceVersion = Some("0.9.0")
+val previousCirceVersion = Some("0.9.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
@@ -165,7 +166,7 @@ lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
   )
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
@@ -219,14 +220,14 @@ def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
     scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
     scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
     "org.typelevel" %%% "macro-compat" % "1.1.1",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+    compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
   ),
   libraryDependencies ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       // if scala 2.11+ is used, quasiquotes are merged into scala-reflect.
       case Some((2, scalaMajor)) if scalaMajor >= 11 => Nil
       // in Scala 2.10, quasiquotes are provided by macro paradise.
-      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.1" cross CrossVersion.binary)
+      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % paradiseVersion cross CrossVersion.binary)
     }
   },
   sources in (Compile, doc) := {
@@ -241,7 +242,7 @@ lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch),
+    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch),
     initialCommands in console :=
       """
         |import io.circe._
@@ -426,7 +427,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M12"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
   )
 
 lazy val java8 = java8Base.jvm
@@ -437,7 +438,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
     )
   )
   .dependsOn(coreBase, genericBase % Test, testsBase % Test)
@@ -454,7 +455,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     },
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
     )
   )
   .enablePlugins(JmhPlugin)
