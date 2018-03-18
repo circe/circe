@@ -4,12 +4,11 @@ import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{ Configuration, JsonKey }
 import io.circe.generic.extras.util.RecordToMap
+import scala.collection.concurrent.TrieMap
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
-
-import scala.collection.concurrent.TrieMap
 
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 
@@ -27,7 +26,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     private[this] def memberNameTransformer(value: String): String =
       memberNameCache.getOrElseUpdate(value, {
-        if(keyAnnotationMap.nonEmpty)
+        if (keyAnnotationMap.nonEmpty)
           keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
         else
           config.transformMemberNames(value)
