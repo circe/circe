@@ -67,6 +67,35 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
+  "Semi-automatice derivation" should "call field modification times equal to field count" in {
+    var transformMemberNamesCallCount, transformConstructorCallCount = 0
+    implicit val customConfig: Configuration =
+      Configuration.default.copy(transformMemberNames = v => {
+        transformMemberNamesCallCount = transformMemberNamesCallCount + 1
+        Configuration.snakeCaseTransformation(v)
+      }, transformConstructorNames = v => {
+        transformConstructorCallCount = transformConstructorCallCount + 1
+        Configuration.snakeCaseTransformation(v)
+      })
+
+    val fieldCount = 3
+    val decodeConstructorCount = 2
+    val encodeConstructorCount = 1
+
+    val encoder: Encoder[ConfigExampleBase] = deriveEncoder
+    val decoder: Decoder[ConfigExampleBase] = deriveDecoder
+    for {
+      _ <- 1 until 100
+    } {
+      val foo: ConfigExampleBase = ConfigExampleFoo("field_value", 0, 100)
+      val encoded = encoder.apply(foo)
+      val decoded = decoder.decodeJson(encoded)
+      assert(decoded === Right(foo))
+      assert(transformMemberNamesCallCount === fieldCount * 2)
+      assert(transformConstructorCallCount === decodeConstructorCount + encodeConstructorCount)
+    }
+  }
+
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
     val result = Json.obj(
       "a" -> Json.fromString(s),
