@@ -9,6 +9,8 @@ import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
 
+import scala.collection.concurrent.TrieMap
+
 abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
 
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
@@ -19,16 +21,21 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     defaultMap: Map[String, Any],
     keyAnnotationMap: Map[String, String]
   ) extends ConfiguredDecoder[A] {
-    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
+
+    private[this] val memberNameCache: TrieMap[String, String] = new TrieMap()
+    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
+
+    private[this] def memberNameTransformer(value: String): String =
+      memberNameCache.getOrElseUpdate(value, {
+        if(keyAnnotationMap.nonEmpty)
+          keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
+        else
+          config.transformMemberNames(value)
+      })
 
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
-      if (keyAnnotationMap.nonEmpty) {
-        memberNameTransformer(config.transformMemberNames)
-      } else {
-        config.transformMemberNames
-      },
-      config.transformConstructorNames,
+      memberNameTransformer,
+      v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
       defaultMap,
       None
     ) match {
@@ -38,12 +45,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
-        if (keyAnnotationMap.nonEmpty) {
-          memberNameTransformer(config.transformMemberNames)
-        } else {
-          config.transformMemberNames
-        },
-        config.transformConstructorNames,
+        memberNameTransformer,
+        v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
         defaultMap,
         None
       ).map(gen.from)
@@ -54,9 +57,12 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     decodeR: Lazy[ReprDecoder[R]],
     config: Configuration
   ) extends ConfiguredDecoder[A] {
+
+    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
+
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       Predef.identity,
-      config.transformConstructorNames,
+      v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
       Map.empty,
       config.discriminator
     ) match {
@@ -67,7 +73,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
         Predef.identity,
-        config.transformConstructorNames,
+        v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
         Map.empty,
         config.discriminator
       ).map(gen.from)

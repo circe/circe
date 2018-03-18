@@ -7,6 +7,7 @@ import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
+import scala.collection.concurrent.TrieMap
 
 abstract class ConfiguredObjectEncoder[A] extends DerivedObjectEncoder[A]
 
@@ -28,13 +29,23 @@ final object ConfiguredObjectEncoder {
         case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
       }.toMap
 
-    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
+    private[this] def memberNameTransformer(value: String): String = {
+      if(hasKeyAnnotations)
+        keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
+      else
+        config.transformMemberNames(value)
+    }
+
+    private[this] val transformedMemberNames: Map[String, String] = {
+      fieldsToList(fields()).map(f => (f.name, memberNameTransformer(f.name))).toMap
+    }
+
+    private[this] val constructorNames: TrieMap[String, String] = TrieMap()
 
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
-        if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
-        config.transformConstructorNames,
+        v => transformedMemberNames.getOrElse(v, v),
+        v => constructorNames.getOrElseUpdate(v, config.transformConstructorNames(v)),
         None
       )
   }
@@ -44,10 +55,13 @@ final object ConfiguredObjectEncoder {
     encode: Lazy[ReprObjectEncoder[R]],
     config: Configuration
   ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
+
+    private[this] val constructorNames: TrieMap[String, String] = TrieMap()
+
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
         Predef.identity,
-        config.transformConstructorNames,
+        v => constructorNames.getOrElseUpdate(v, config.transformConstructorNames(v)),
         config.discriminator
       )
   }
