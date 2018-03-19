@@ -36,16 +36,21 @@ final object ConfiguredObjectEncoder {
         config.transformMemberNames(value)
     }
 
-    private[this] val transformedMemberNames: Map[String, String] = {
+    private[this] val transformedMemberCache: Map[String, String] = {
       fieldsToList(fields()).map(f => (f.name, memberNameTransformer(f.name))).toMap
     }
 
-    private[this] val constructorNames: TrieMap[String, String] = TrieMap()
+    private[this] def transformMemberName(value: String) =
+      transformedMemberCache.getOrElse(value, value)
+
+    private[this] val constructorNameCache: TrieMap[String, String] = TrieMap()
+    private[this] def constructorNameTransformer(value: String): String =
+      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
 
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
-        v => transformedMemberNames.getOrElse(v, v),
-        v => constructorNames.getOrElseUpdate(v, config.transformConstructorNames(v)),
+        transformMemberName,
+        constructorNameTransformer,
         None
       )
   }
@@ -56,12 +61,14 @@ final object ConfiguredObjectEncoder {
     config: Configuration
   ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
 
-    private[this] val constructorNames: TrieMap[String, String] = TrieMap()
+    private[this] val constructorNameCache: TrieMap[String, String] = TrieMap()
+    private[this] def constructorNameTransformer(value: String): String =
+      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
 
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
         Predef.identity,
-        v => constructorNames.getOrElseUpdate(v, config.transformConstructorNames(v)),
+        constructorNameTransformer,
         config.discriminator
       )
   }
