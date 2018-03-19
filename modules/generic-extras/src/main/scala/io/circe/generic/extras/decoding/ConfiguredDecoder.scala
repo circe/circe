@@ -22,8 +22,6 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   ) extends ConfiguredDecoder[A] {
 
     private[this] val memberNameCache: TrieMap[String, String] = new TrieMap()
-    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
-
     private[this] def memberNameTransformer(value: String): String =
       memberNameCache.getOrElseUpdate(value, {
         if (keyAnnotationMap.nonEmpty)
@@ -32,9 +30,13 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
           config.transformMemberNames(value)
       })
 
+    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
+    private[this] def constructorNameTransformer(value: String): String =
+      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
+
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       memberNameTransformer,
-      v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
+      constructorNameTransformer,
       defaultMap,
       None
     ) match {
@@ -45,7 +47,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
         memberNameTransformer,
-        v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
+        constructorNameTransformer,
         defaultMap,
         None
       ).map(gen.from)
@@ -58,10 +60,12 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   ) extends ConfiguredDecoder[A] {
 
     private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
+    private[this] def constructorNameTransformer(value: String): String =
+      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
 
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       Predef.identity,
-      v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
+      constructorNameTransformer,
       Map.empty,
       config.discriminator
     ) match {
@@ -72,7 +76,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
         Predef.identity,
-        v => constructorNameCache.getOrElseUpdate(v, config.transformConstructorNames(v)),
+        constructorNameTransformer,
         Map.empty,
         config.discriminator
       ).map(gen.from)
