@@ -1,8 +1,8 @@
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.5"
 
 scalacOptions += "-deprecation"
 
-val circeVersion = "0.9.0"
+val circeVersion = "0.9.2"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % circeVersion,
