@@ -33,6 +33,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Onfocus](https://onfocus.io)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
+* [REA Group - realestate.com.au](https://www.realestate.com.au/)
 * [Reonomy](https://reonomy.com/)
 * [Sigma](https://sig.ma)
 * [Snowplow Analytics](https://snowplowanalytics.com/)
