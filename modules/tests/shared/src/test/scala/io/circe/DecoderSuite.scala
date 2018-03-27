@@ -295,23 +295,48 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decoder.apply(friday.hcursor).isEmpty)
   }
 
-  "validate" should "not infinitely recurse (#396)" in forAll { (i: Int) =>
+  "validate" should "fail appropriately on invalid input in fail-fast mode" in forAll { (i: Int) =>
+    val message = "Not positive!"
+
+    val decodePositiveInt: Decoder[Int] =
+      Decoder[Int].validate(_.as[Int].right.exists(_ > 0), message)
+
+    val expected = if (i > 0) Right(i) else Left(DecodingFailure(message, Nil))
+
+    assert(decodePositiveInt.decodeJson(Json.fromInt(i)) === expected)
+  }
+
+  it should "fail appropriately on invalid input in error-accumulation mode (#865)" in forAll { (i: Int) =>
+    val message = "Not positive!"
+
+    val decodePositiveInt: Decoder[Int] =
+      Decoder[Int].validate(_.as[Int].right.exists(_ > 0), message)
+
+    val expected = if (i > 0) Validated.valid(i) else Validated.invalidNel(DecodingFailure(message, Nil))
+
+    assert(decodePositiveInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
+  }
+
+  it should "not infinitely recurse (#396)" in forAll { (i: Int) =>
     assert(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) === Right(i))
   }
 
-  it should "not override the wrapped class decodeAccumulating method" in {
+  it should "preserve error accumulation when validation succeeds" in {
+    val message = "This shouldn't work"
+
     trait Foo
 
-    val decoder = new Decoder[Foo] {
+    val decoder: Decoder[Foo] = new Decoder[Foo] {
       override def apply(c: HCursor): Decoder.Result[Foo] = Right(new Foo {})
 
       override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Foo] = Invalid(
-        NonEmptyList.one(DecodingFailure("This shouldn't work", c.history))
+        NonEmptyList.one(DecodingFailure(message, c.history))
       )
     }
 
-    val validatedDecoder = decoder.validate(c => true, "Foobar")
-    assert(validatedDecoder.decodeAccumulating(Json.True.hcursor).isInstanceOf[Invalid[_]])
+    val validatingDecoder = decoder.validate(c => true, "Foobar")
+
+    assert(validatingDecoder.decodeAccumulating(Json.True.hcursor).isInvalid)
   }
 
   "either" should "return the correct disjunct" in forAll { (value: Either[String, Boolean]) =>
