@@ -1,11 +1,10 @@
 package io.circe.optics
 
+import cats.{Applicative, Foldable ,  Monoid, Traverse}
 import cats.instances.list.catsStdInstancesForList
 import io.circe.{ Json, JsonObject }
 import monocle.{ Fold, Lens, Traversal }
 import monocle.function.{ At, Each, FilterIndex, Index }
-import cats.{ Applicative, Monoid, Traverse, Foldable }
-import cats.instances.list._
 
 /**
  * Optics instances for [[io.circe.JsonObject]].
