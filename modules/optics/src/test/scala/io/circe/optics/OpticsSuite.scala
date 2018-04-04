@@ -1,31 +1,29 @@
 package io.circe.optics
 
-import cats.kernel.Eq
+import cats.kernel.{Eq, Hash, Order}
 import io.circe.optics.all._
 import io.circe.tests.CirceSuite
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.{Json, JsonNumber, JsonObject}
 import monocle.function.Plated.plate
 import monocle.syntax.all._
-import scalaz.Equal
-import scalaz.std.anyVal._
-import scalaz.std.math.bigDecimal._
-import scalaz.std.math.bigInt._
-import scalaz.std.option._
-import scalaz.std.string._
-import scalaz.std.vector._
+import cats.instances.bigDecimal._
+import cats.instances.bigInt._
+import cats.instances.option._
+import cats.instances.string._
+import cats.instances.vector._
+import cats.kernel.instances.DoubleOrder
 
 class OpticsSuite extends CirceSuite {
-  implicit val equalJson: Equal[Json] = Equal.equal(Eq[Json].eqv)
-  implicit val equalJsonNumber: Equal[JsonNumber] = Equal.equal(Eq[JsonNumber].eqv)
-  implicit val equalJsonObject: Equal[JsonObject] = Equal.equal(Eq[JsonObject].eqv)
 
   /**
    * For the purposes of these tests we consider `Double.NaN` to be equal to
    * itself.
    */
-  implicit val doubleInstance: Equal[Double] = Equal.equal { (a, b) =>
-    (a.isNaN && b.isNaN) || scalaz.std.anyVal.doubleInstance.equal(a, b)
-  }
+  override implicit val catsKernelStdOrderForDouble: Order[Double] with Hash[Double] =
+    new DoubleOrder{
+      override def eqv(a: Double, b: Double): Boolean =
+        (a.isNaN && b.isNaN) || super.eqv(a, b)
+    }
 
   checkLaws("Json to Unit", LawsTests.prismTests(jsonNull))
   checkLaws("Json to Boolean", LawsTests.prismTests(jsonBoolean))
