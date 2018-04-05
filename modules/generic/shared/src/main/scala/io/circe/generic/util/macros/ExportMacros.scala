@@ -4,10 +4,8 @@ import io.circe.{ Decoder, ObjectEncoder }
 import io.circe.export.Exported
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedObjectEncoder
-import macrocompat.bundle
 import scala.reflect.macros.blackbox
 
-@bundle
 class ExportMacros(val c: blackbox.Context) {
   import c.universe._
 

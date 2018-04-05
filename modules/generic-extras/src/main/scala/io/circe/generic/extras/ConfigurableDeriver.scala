@@ -3,10 +3,8 @@ package io.circe.generic.extras
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, ReprDecoder }
 import io.circe.generic.extras.encoding.{ ConfiguredObjectEncoder, ReprObjectEncoder }
 import io.circe.generic.util.macros.DerivationMacros
-import macrocompat.bundle
 import scala.reflect.macros.whitebox
 
-@bundle
 class ConfigurableDeriver(val c: whitebox.Context)
     extends DerivationMacros[ReprDecoder, ReprObjectEncoder, ConfiguredDecoder, ConfiguredObjectEncoder] {
   import c.universe._

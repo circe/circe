@@ -3,12 +3,10 @@ package io.circe.literal
 import io.circe.Json
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
-import macrocompat.bundle
 import scala.Predef.classOf
 import scala.reflect.macros.blackbox
 import scala.util.control.NonFatal
 
-@bundle
 class JsonLiteralMacros(val c: blackbox.Context) {
   import c.universe._
 

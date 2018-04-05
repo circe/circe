@@ -1,9 +1,7 @@
 package io.circe.literal
 
-import macrocompat.bundle
 import scala.reflect.macros.whitebox
 
-@bundle
 class LiteralInstanceMacros(val c: whitebox.Context) {
   import c.universe._
 
