@@ -1,7 +1,6 @@
 package io.circe.generic.extras
 
 import io.circe.generic.util.macros.JsonCodecMacros
-import macrocompat.bundle
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
@@ -12,7 +11,6 @@ class ConfiguredJsonCodec(
   def macroTransform(annottees: Any*): Any = macro ConfiguredJsonCodecMacros.jsonCodecAnnotationMacro
 }
 
-@bundle
 private[generic] class ConfiguredJsonCodecMacros(val c: blackbox.Context) extends JsonCodecMacros {
   import c.universe._
 

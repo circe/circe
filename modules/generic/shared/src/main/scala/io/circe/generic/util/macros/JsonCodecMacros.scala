@@ -1,10 +1,8 @@
 package io.circe.generic.util.macros
 
 import io.circe.{ Decoder, Encoder, ObjectEncoder }
-import macrocompat.bundle
 import scala.reflect.macros.blackbox
 
-@bundle
 abstract class JsonCodecMacros {
   val c: blackbox.Context
 
