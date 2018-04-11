@@ -151,7 +151,7 @@ do so in a couple of ways.</p>
     <span class="o">(</span><span class="s">"bar"</span><span class="o">,</span> <span class="nc">Json</span><span class="o">.</span><span class="n">fromInt</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="n">bar</span><span class="o">))</span>
   <span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// encodeFoo: io.circe.Encoder[Thing] = $anon$1@17b1c0d4
+<span class="c1">// encodeFoo: io.circe.Encoder[Thing] = $anon$1@2fcab360
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeFoo</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">final</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">HCursor</span><span class="o">)</span><span class="k">:</span> <span class="kt">Decoder.Result</span><span class="o">[</span><span class="kt">Thing</span><span class="o">]</span> <span class="k">=</span>
@@ -162,7 +162,7 @@ do so in a couple of ways.</p>
       <span class="k">new</span> <span class="nc">Thing</span><span class="o">(</span><span class="n">foo</span><span class="o">,</span> <span class="n">bar</span><span class="o">)</span>
     <span class="o">}</span>
 <span class="o">}</span>
-<span class="c1">// decodeFoo: io.circe.Decoder[Thing] = $anon$1@49ef082d
+<span class="c1">// decodeFoo: io.circe.Decoder[Thing] = $anon$1@6abfad68
 </span></code></pre></div></div>
 
 <p>But in many cases you might find it more convenient to piggyback on top of the decoders that are
@@ -178,12 +178,12 @@ already available. For example, a codec for <code class="highlighter-rouge">java
 <span class="c1">// import java.time.Instant
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeInstant</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Instant</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Encoder</span><span class="o">.</span><span class="n">encodeString</span><span class="o">.</span><span class="n">contramap</span><span class="o">[</span><span class="kt">Instant</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
-<span class="c1">// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$16@1d2ca1fa
+<span class="c1">// encodeInstant: io.circe.Encoder[java.time.Instant] = io.circe.Encoder$$anon$16@125d9839
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeInstant</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Instant</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Decoder</span><span class="o">.</span><span class="n">decodeString</span><span class="o">.</span><span class="n">emap</span> <span class="o">{</span> <span class="n">str</span> <span class="k">=&gt;</span>
   <span class="nc">Either</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="nc">Instant</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">str</span><span class="o">)).</span><span class="n">leftMap</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Instant"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$30@f3406f7
+<span class="c1">// decodeInstant: io.circe.Decoder[java.time.Instant] = io.circe.Decoder$$anon$30@8184ac5
 </span></code></pre></div></div>
 
 <h2 id="custom-key-types">Custom key types</h2>
@@ -203,7 +203,7 @@ you need to provide a <code class="highlighter-rouge">KeyEncoder</code> and/or <
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">fooKeyEncoder</span><span class="k">:</span> <span class="kt">KeyEncoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">KeyEncoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">override</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">foo</span><span class="k">:</span> <span class="kt">Foo</span><span class="o">)</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">value</span>
 <span class="o">}</span>
-<span class="c1">// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@1fe6922b
+<span class="c1">// fooKeyEncoder: io.circe.KeyEncoder[Foo] = $anon$1@243e276
 </span>
 <span class="k">val</span> <span class="n">map</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">[</span><span class="kt">Foo</span>, <span class="kt">Int</span><span class="o">](</span>
   <span class="nc">Foo</span><span class="o">(</span><span class="s">"hello"</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="mi">123</span><span class="o">,</span>
@@ -221,7 +221,7 @@ you need to provide a <code class="highlighter-rouge">KeyEncoder</code> and/or <
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">fooKeyDecoder</span><span class="k">:</span> <span class="kt">KeyDecoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">KeyDecoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">override</span> <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Foo</span><span class="o">(</span><span class="n">key</span><span class="o">))</span>
 <span class="o">}</span>
-<span class="c1">// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@595aefa1
+<span class="c1">// fooKeyDecoder: io.circe.KeyDecoder[Foo] = $anon$1@1885cd6e
 </span>
 <span class="n">json</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">Map</span><span class="o">[</span><span class="kt">Foo</span>, <span class="kt">Int</span><span class="o">]]</span>
 <span class="c1">// res8: io.circe.Decoder.Result[Map[Foo,Int]] = Right(Map(Foo(hello) -&gt; 123, Foo(world) -&gt; 456))
@@ -242,7 +242,7 @@ all you need is a custom implicit configuration:</p>
 // import io.circe.syntax._
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">config</span><span class="k">:</span> <span class="kt">Configuration</span> <span class="o">=</span> <span class="nc">Configuration</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">withSnakeCaseMemberNames</span>
-<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration(io.circe.generic.extras.Configuration$$$Lambda$9270/1533028126@2b299972,io.circe.generic.extras.Configuration$$$Lambda$9269/1692824256@7c8e8ea5,false,None)
+<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration(io.circe.generic.extras.Configuration$$$Lambda$9280/511835997@1211a993,io.circe.generic.extras.Configuration$$$Lambda$9279/358085416@3875c64a,false,None)
 </span>
 <span class="nd">@ConfiguredJsonCodec</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">firstName</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">lastName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 <span class="c1">// defined class User
@@ -268,7 +268,7 @@ all you need is a custom implicit configuration:</p>
     <span class="k">case</span> <span class="n">other</span> <span class="k">=&gt;</span> <span class="n">other</span>
   <span class="o">}</span>
 <span class="o">)</span>
-<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration($$Lambda$9380/975336654@4ca696a2,io.circe.generic.extras.Configuration$$$Lambda$9269/1692824256@7c8e8ea5,false,None)
+<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration($$Lambda$9393/1310502364@1d89d6c5,io.circe.generic.extras.Configuration$$$Lambda$9279/358085416@3875c64a,false,None)
 </span>
 <span class="nd">@ConfiguredJsonCodec</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 <span class="c1">// defined class Bar
@@ -289,7 +289,7 @@ all you need is a custom implicit configuration:</p>
 // import io.circe.syntax._
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">config</span><span class="k">:</span> <span class="kt">Configuration</span> <span class="o">=</span> <span class="nc">Configuration</span><span class="o">.</span><span class="n">default</span>
-<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration(io.circe.generic.extras.Configuration$$$Lambda$9268/686108973@415a1684,io.circe.generic.extras.Configuration$$$Lambda$9269/1692824256@7c8e8ea5,false,None)
+<span class="c1">// config: io.circe.generic.extras.Configuration = Configuration(io.circe.generic.extras.Configuration$$$Lambda$9278/1919445250@7a4cd960,io.circe.generic.extras.Configuration$$$Lambda$9279/358085416@3875c64a,false,None)
 </span>
 <span class="nd">@ConfiguredJsonCodec</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="nd">@JsonKey</span><span class="o">(</span><span class="s">"my-int"</span><span class="o">)</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 <span class="c1">// defined class Bar
@@ -318,11 +318,11 @@ completely unmagical <code class="highlighter-rouge">forProductN</code> version 
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
   <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct2</span><span class="o">(</span><span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="n">firstName</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lastName</span><span class="o">))</span>
-<span class="c1">// encodeUser: io.circe.Encoder[User] = io.circe.ProductEncoders$$anon$2@63e57755
+<span class="c1">// encodeUser: io.circe.Encoder[User] = io.circe.ProductEncoders$$anon$2@ad0e65a
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeBar</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Bar</span><span class="o">]</span> <span class="k">=</span>
   <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct2</span><span class="o">(</span><span class="s">"my-int"</span><span class="o">,</span> <span class="s">"s"</span><span class="o">)(</span><span class="n">b</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">b</span><span class="o">.</span><span class="n">i</span><span class="o">,</span> <span class="n">b</span><span class="o">.</span><span class="n">s</span><span class="o">))</span>
-<span class="c1">// encodeBar: io.circe.Encoder[Bar] = io.circe.ProductEncoders$$anon$2@73d1e3ef
+<span class="c1">// encodeBar: io.circe.Encoder[Bar] = io.circe.ProductEncoders$$anon$2@581b35f2
 </span>
 <span class="nc">User</span><span class="o">(</span><span class="s">"Foo"</span><span class="o">,</span> <span class="s">"McBar"</span><span class="o">).</span><span class="n">asJson</span>
 <span class="c1">// res12: io.circe.Json =
