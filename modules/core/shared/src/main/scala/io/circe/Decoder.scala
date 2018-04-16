@@ -978,6 +978,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       val field = c.downField(k)
 
       field.as[A] match {
+        case Right(a) if field.failed => Right((c, a))
         case Right(a) => Right((field.delete, a))
         case l @ Left(_) => l.asInstanceOf[Result[(ACursor, A)]]
       }
