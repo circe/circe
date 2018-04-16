@@ -399,6 +399,63 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(stateful.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
   }
 
+  private[this] val statefulOpt = {
+    import Decoder.state._
+    Decoder.fromState(for {
+      a <- decodeField[Option[String]]("a")
+      b <- decodeField[String]("b")
+      _ <- requireEmpty
+    } yield a.foldMap(identity) ++ b)
+  }
+
+  "a stateful Decoder with requireEmpty and an optional value" should 
+    "succeed when there are no leftover fields and an optional field is missing" in {
+      val json = Json.obj(
+        "b" -> "2".asJson)
+
+      assert(statefulOpt.decodeJson(json) === Right("2"))
+  }
+
+  it should "succeed when there are no leftover fields and an optional field is present" in {
+    val json = Json.obj(
+      "a" -> "1".asJson,
+      "b" -> "2".asJson)
+
+    assert(statefulOpt.decodeJson(json) === Right("12"))
+  }
+
+  it should "fail when there are leftover fields and an optional field is missing" in {
+    val json = Json.obj(
+      "b" -> "2".asJson,
+      "c" -> "3".asJson,
+      "d" -> "4".asJson)
+
+    assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
+  }
+
+  it should "fail when there are leftover fields and an optional field is present" in {
+    val json = Json.obj(
+      "a" -> "1".asJson,
+      "b" -> "2".asJson,
+      "c" -> "3".asJson,
+      "d" -> "4".asJson)
+
+    assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
+  }
+
+  it should "fail normally when a field is missing and an optional field is present" in {
+    val json = Json.obj(
+      "a" -> "1".asJson)
+
+    assert(statefulOpt.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+  }
+
+  it should "fail normally when a field is missing and an optional field is missing" in {
+    val json = Json.obj()
+
+    assert(statefulOpt.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+  }
+
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 
   "decodeSet" should "match sequence decoders" in forAll { (xs: List[Int]) =>
