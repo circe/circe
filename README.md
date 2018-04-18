@@ -84,6 +84,7 @@ The following open source projects are either built on circe or provide circe su
 * [Github4s][github4s]: A GitHub API wrapper written in Scala.
 * [content-api-models][guardian-content-api-models]: The Guardian's Content API Thrift models.
 * [http4s][http4s]: A purely functional HTTP library for client and server applications.
+* [IdeaLingua][izumi-r2]: Staged Interface Definition and Data Modeling Language & RPC system currently targeting Scala, Go, C# and TypeScript. Scala codegen generates models and JSON codecs using circe.
 * [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
 * [jsactor][jsactor]: An actor library for Scala.js with circe support.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
@@ -182,6 +183,7 @@ limitations under the License.
 [http4s]: https://github.com/http4s/http4s
 [iteratee]: https://github.com/travisbrown/iteratee
 [iglu]: https://github.com/snowplow/iglu
+[izumi-r2]: https://github.com/pshirshov/izumi-r2
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
 [jsactor]: https://github.com/codemettle/jsactor
