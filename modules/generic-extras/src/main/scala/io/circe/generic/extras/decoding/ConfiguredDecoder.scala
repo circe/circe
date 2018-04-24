@@ -4,13 +4,28 @@ import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{ Configuration, JsonKey }
 import io.circe.generic.extras.util.RecordToMap
-import scala.collection.concurrent.TrieMap
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
 
-abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
+abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecoder[A] {
+  private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
+    new ConcurrentHashMap[String, String]()
+
+  protected[this] def constructorNameTransformer(value: String): String = {
+    val current = constructorNameCache.get(value)
+
+    if (current eq null) {
+      val transformed = config.transformConstructorNames(value)
+      constructorNameCache.put(value, transformed)
+      transformed
+    } else {
+      current
+    }
+  }
+}
 
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   private[this] class CaseClassConfiguredDecoder[A, R <: HList](
@@ -19,20 +34,26 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     config: Configuration,
     defaultMap: Map[String, Any],
     keyAnnotationMap: Map[String, String]
-  ) extends ConfiguredDecoder[A] {
+  ) extends ConfiguredDecoder[A](config) {
+    private[this] val memberNameCache: ConcurrentHashMap[String, String] =
+      new ConcurrentHashMap[String, String]()
 
-    private[this] val memberNameCache: TrieMap[String, String] = new TrieMap()
-    private[this] def memberNameTransformer(value: String): String =
-      memberNameCache.getOrElseUpdate(value, {
-        if (keyAnnotationMap.nonEmpty)
+    private[this] def memberNameTransformer(value: String): String = {
+      val current = memberNameCache.get(value)
+
+      if (current eq null) {
+        val transformed = if (keyAnnotationMap.nonEmpty) {
           keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
-        else
+        } else {
           config.transformMemberNames(value)
-      })
+        }
 
-    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
-    private[this] def constructorNameTransformer(value: String): String =
-      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
+        memberNameCache.put(value, transformed)
+        transformed
+      } else {
+        current
+      }
+    }
 
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       memberNameTransformer,
@@ -57,12 +78,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     gen: LabelledGeneric.Aux[A, R],
     decodeR: Lazy[ReprDecoder[R]],
     config: Configuration
-  ) extends ConfiguredDecoder[A] {
-
-    private[this] val constructorNameCache: TrieMap[String, String] = new TrieMap()
-    private[this] def constructorNameTransformer(value: String): String =
-      constructorNameCache.getOrElseUpdate(value, config.transformConstructorNames(value))
-
+  ) extends ConfiguredDecoder[A](config) {
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       Predef.identity,
       constructorNameTransformer,
