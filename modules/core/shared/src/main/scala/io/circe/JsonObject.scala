@@ -71,8 +71,7 @@ sealed abstract class JsonObject extends Serializable {
    *
    * @group Contents
    */
-  @transient
-  final val kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
+  final def kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
 
   /**
    * Return all keys in insertion order.
