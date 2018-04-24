@@ -2,7 +2,6 @@ package io.circe
 
 import io.circe.numbers.testing.JsonNumberString
 import io.circe.tests.CirceSuite
-import scala.math.{ min, max }
 
 class JsonNumberSuite extends CirceSuite {
   "fromString" should "parse valid JSON numbers" in forAll { (jsn: JsonNumberString) =>
@@ -74,35 +73,6 @@ class JsonNumberSuite extends CirceSuite {
       case _ => None
     }
     assert(j.toBigInt === expected)
-  }
-
-  "truncateToLong" should "round toward zero" in {
-    assert(JsonNumber.fromString("1.5").map(_.truncateToLong) === Some(1L))
-    assert(JsonNumber.fromString("-1.5").map(_.truncateToLong) === Some(-1L))
-    assert(Json.fromDouble(1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(1L))
-    assert(Json.fromDouble(-1.5).flatMap(_.asNumber).map(_.truncateToLong) === Some(-1L))
-    assert(Json.fromFloat(1.5f).flatMap(_.asNumber).map(_.truncateToLong) === Some(1L))
-    assert(Json.fromFloat(-1.5f).flatMap(_.asNumber).map(_.truncateToLong) === Some(-1L))
-    assert(Json.fromBigDecimal(BigDecimal(1.5)).asNumber.map(_.truncateToLong) === Some(1L))
-    assert(Json.fromBigDecimal(BigDecimal(-1.5)).asNumber.map(_.truncateToLong) === Some(-1L))
-  }
-
-  "truncateToByte" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Byte = min(Byte.MaxValue, max(Byte.MinValue, l)).toByte
-
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToByte) === Some(truncated))
-  }
-
-  "truncateToShort" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Short = min(Short.MaxValue, max(Short.MinValue, l)).toShort
-
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToShort) === Some(truncated))
-  }
-
-  "truncateToInt" should "return the truncated value" in forAll { (l: Long) =>
-    val truncated: Int = min(Int.MaxValue, max(Int.MinValue, l)).toInt
-
-    assert(JsonNumber.fromString(l.toString).map(_.truncateToInt) === Some(truncated))
   }
 
   val positiveZeros: List[JsonNumber] = List(
