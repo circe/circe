@@ -66,63 +66,6 @@ sealed abstract class JsonNumber extends Serializable {
   def toLong: Option[Long]
 
   /**
-   * Truncate the number to a [[scala.Byte]].
-   *
-   * Truncation means that we round toward zero to the closest valid [[scala.Byte]]. If the number
-   * is `1e99`, for example, this will return `Byte.MaxValue`.
-   */
-  @deprecated("Use toBigDecimal", "0.9.0")
-  final def truncateToByte: Byte = {
-    val asLong: Long = truncateToLong
-    if (asLong > Byte.MaxValue) {
-      Byte.MaxValue
-    } else if (asLong < Byte.MinValue) {
-      Byte.MinValue
-    } else asLong.toByte
-  }
-
-  /**
-   * Truncate the number to a [[scala.Short]].
-   *
-   * Truncation means that we round toward zero to the closest valid [[scala.Short]]. If the number
-   * is `1e99`, for example, this will return `Short.MaxValue`.
-   */
-  @deprecated("Use toBigDecimal", "0.9.0")
-  final def truncateToShort: Short = {
-    val asLong: Long = truncateToLong
-    if (asLong > Short.MaxValue) {
-      Short.MaxValue
-    } else if (asLong < Short.MinValue) {
-      Short.MinValue
-    } else asLong.toShort
-  }
-
-  /**
-   * Truncate the number to an [[scala.Int]].
-   *
-   * Truncation means that we round toward zero to the closest valid [[scala.Int]]. If the number is
-   * `1e99`, for example, this will return `Int.MaxValue`.
-   */
-  @deprecated("Use toBigDecimal", "0.9.0")
-  final def truncateToInt: Int = {
-    val asLong: Long = truncateToLong
-    if (asLong > Int.MaxValue) {
-      Int.MaxValue
-    } else if (asLong < Int.MinValue) {
-      Int.MinValue
-    } else asLong.toInt
-  }
-
-  /**
-   * Truncate the number to a [[scala.Long]].
-   *
-   * Truncation means that we round toward zero to the closest valid [[scala.Long]]. If the number
-   * is `1e99`, for example, this will return `Long.MaxValue`.
-   */
-  @deprecated("Use toBigDecimal", "0.9.0")
-  def truncateToLong: Long
-
-  /**
    * Universal equality derived from our type-safe equality.
    */
   override final def equals(that: Any): Boolean = that match {
@@ -143,7 +86,6 @@ private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber 
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = toBiggerDecimal.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = toBiggerDecimal.truncateToLong
 }
 
 /**
@@ -178,7 +120,6 @@ private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends Js
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = value.doubleValue
   final def toLong: Option[Long] = toBiggerDecimal.toLong
-  final def truncateToLong: Long = value.setScale(0, java.math.BigDecimal.ROUND_DOWN).longValue
   override final def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
 }
@@ -192,7 +133,6 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toBigInt: Option[BigInt] = Some(BigInt(value))
   final def toDouble: Double = value.toDouble
   final def toLong: Option[Long] = Some(value)
-  final def truncateToLong: Long = value
   override final def toString: String = java.lang.Long.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
@@ -219,7 +159,6 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
     if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
   }
 
-  final def truncateToLong: Long = value.toLong
   override final def toString: String = java.lang.Double.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
@@ -247,7 +186,6 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
     if (JsonNumber.bigDecimalIsValidLong(asBigDecimal)) Some(asBigDecimal.longValue) else None
   }
 
-  final def truncateToLong: Long = value.toLong
   override final def toString: String = java.lang.Float.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }

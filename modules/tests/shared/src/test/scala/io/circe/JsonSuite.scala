@@ -7,7 +7,7 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   "foldWith" should "give the same result as fold" in forAll { (json: Json) =>
     val z: Int = 0
     val b: Boolean => Int = if (_) 1 else 2
-    val n: JsonNumber => Int = _.truncateToInt
+    val n: JsonNumber => Int = _.toDouble.toInt
     val s: String => Int = _.length
     val a: Vector[Json] => Int = _.size
     val o: JsonObject => Int = _.keys.size

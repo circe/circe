@@ -152,16 +152,8 @@ class ACursorSuite extends CirceSuite {
     assert(cursor.downField("a").values.map(_.toVector) === Some((1 to 5).toVector.map(_.asJson)))
   }
 
-  "fieldSet" should "return the expected values" in {
-    assert(cursor.fieldSet.map(_.toList.sorted) === Some(List("a", "b", "c")))
-  }
-
   "keys" should "return the expected values" in {
     assert(cursor.keys.map(_.toVector) === Some(Vector("a", "b", "c")))
-  }
-
-  "fields" should "return the expected values" in {
-    assert(cursor.fields === Some(Vector("a", "b", "c")))
   }
 
   "left" should "successfully select an existing value" in {

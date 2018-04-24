@@ -24,7 +24,7 @@ class FoldingBenchmark extends ExampleData {
 
       def onNull: Int = 0
       def onBoolean(value: Boolean): Int = if (value) 1 else 0
-      def onNumber(value: JsonNumber): Int = value.truncateToInt
+      def onNumber(value: JsonNumber): Int = value.toDouble.toInt
       def onString(value: String): Int = value.length
       def onArray(value: Vector[Json]): Int = value.foldLeft(0)(this)
       def onObject(value: JsonObject): Int = value.values.foldLeft(0)(this)
@@ -36,7 +36,7 @@ class FoldingBenchmark extends ExampleData {
     def foldToInt(json: Json): Int = json.fold(
       0,
       if (_) 1 else 0,
-      _.truncateToInt,
+      _.toDouble.toInt,
       _.length,
       _.foldLeft(0) {
         case (acc, json) => acc + foldToInt(json)
@@ -54,7 +54,7 @@ class FoldingBenchmark extends ExampleData {
     def foldToInt(json: Json): Int = json match {
       case Json.JNull => 0
       case Json.JBoolean(value) => if (value) 1 else 0
-      case Json.JNumber(value) => value.truncateToInt
+      case Json.JNumber(value) => value.toDouble.toInt
       case Json.JString(value) => value.length
       case Json.JArray(value) => value.foldLeft(0) {
         case (acc, json) => acc + foldToInt(json)

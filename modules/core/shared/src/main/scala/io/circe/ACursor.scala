@@ -3,7 +3,6 @@ package io.circe
 import cats.Applicative
 import cats.kernel.Eq
 import java.io.Serializable
-import scala.collection.immutable.Set
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.
@@ -134,27 +133,11 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def values: Option[Iterable[Json]]
 
   /**
-   * If the focus is a JSON object, return its field names in a set.
-   *
-   * @group ObjectAccess
-   */
-  @deprecated("Use keys.map(_.toSet)", "0.9.0")
-  def fieldSet: Option[Set[String]] = keys.map(_.toSet)
-
-  /**
    * If the focus is a JSON object, return its field names in their original order.
    *
    * @group ObjectAccess
    */
   def keys: Option[Iterable[String]]
-
-  /**
-   * If the focus is a JSON object, return its field names in their original order.
-   *
-   * @group ObjectAccess
-   */
-  @deprecated("Use keys", "0.9.0")
-  final def fields: Option[Vector[String]] = keys.map(_.toVector)
 
   /**
    * Delete the focus and move to its parent.

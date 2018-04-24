@@ -147,12 +147,6 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-   * Run two decoders and return their results as a pair.
-   */
-  @deprecated("Use product", "0.9.0")
-  final def and[B](fb: Decoder[B]): Decoder[(A, B)] = product(fb)
-
-  /**
    * Choose the first succeeding decoder.
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = new Decoder[AA] {
@@ -172,21 +166,6 @@ trait Decoder[A] extends Serializable { self =>
         case Right(v) => Right(Right(v))
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
       }
-    }
-  }
-
-  /**
-   * Run one or another decoder.
-   */
-  @deprecated("Use cats.arrow.Choice", "0.9.0")
-  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = {
-    case Left(c) => self(c) match {
-      case Right(v) => Right(Left(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
-    }
-    case Right(c) => d(c) match {
-      case Right(v) => Right(Right(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
     }
   }
 
@@ -931,7 +910,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
-      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
+      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.product(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
