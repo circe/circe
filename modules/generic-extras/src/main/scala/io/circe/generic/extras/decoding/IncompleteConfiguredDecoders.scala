@@ -18,12 +18,12 @@ private[circe] trait IncompleteConfiguredDecoders {
     defaults: Default.AsRecord.Aux[A, D],
     defaultMapper: RecordToMap[D],
     config: Configuration
-  ): ConfiguredDecoder[F] = new ConfiguredDecoder[F] {
+  ): ConfiguredDecoder[F] = new ConfiguredDecoder[F](config) {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[F] = decode.configuredDecode(c)(
       config.transformMemberNames,
-      config.transformConstructorNames,
+      constructorNameTransformer,
       defaultMap,
       None
     ) match {
@@ -34,7 +34,7 @@ private[circe] trait IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
       decode.configuredDecodeAccumulating(c)(
         config.transformMemberNames,
-        config.transformConstructorNames,
+        constructorNameTransformer,
         defaultMap,
         None
       ).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
@@ -47,12 +47,12 @@ private[circe] trait IncompleteConfiguredDecoders {
     defaults: Default.AsRecord.Aux[A, D],
     defaultMapper: RecordToMap[D],
     config: Configuration
-  ): ConfiguredDecoder[A => A] = new ConfiguredDecoder[A => A] {
+  ): ConfiguredDecoder[A => A] = new ConfiguredDecoder[A => A](config) {
     private[this] val defaultMap: Map[String, Any] = if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
     final def apply(c: HCursor): Decoder.Result[A => A] = decode.configuredDecode(c)(
       config.transformMemberNames,
-      config.transformConstructorNames,
+      constructorNameTransformer,
       defaultMap,
       None
     ) match {
@@ -63,7 +63,7 @@ private[circe] trait IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
       decode.configuredDecodeAccumulating(c)(
         config.transformMemberNames,
-        config.transformConstructorNames,
+        constructorNameTransformer,
         defaultMap,
         None
       ).map(o => a => gen.from(patch(gen.to(a), o)))
