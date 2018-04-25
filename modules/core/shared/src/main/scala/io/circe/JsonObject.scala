@@ -227,7 +227,7 @@ final object JsonObject {
    */
   final def fromMap(map: Map[String, Json]): JsonObject = new MapAndVectorJsonObject(map, map.keys.toVector)
 
-  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
+  final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     new LinkedHashMapJsonObject(map)
 
   /**
