@@ -9,6 +9,18 @@ options:
   - title: Encoding and decoding
     url: codec.html
 
+    nested_options:
+    - title: Semi-automatic derivation
+      url: codecs/semiauto-derivation.html
+    - title: Automatic derivation
+      url: codecs/auto-derivation.html
+    - title: Custom codecs
+      url: codecs/custom-codecs.html
+    - title: ADT (Algebraic Data Types)
+      url: codecs/adt.html
+    - title: Warnings and known issues
+      url: codecs/known-issues.html
+
   - title: Optics
     url: optics.html
 
