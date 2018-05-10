@@ -7,7 +7,7 @@ title:  "ADT (Algebraic Data Types)"
 
 The most straightforward way to encode / decode ADTs is by using generic derivation for the case classes but explicitly defined instances for the ADT type.
 
-Consider the following ADT with the codecs instances in its companion object:
+Consider the following ADT:
 
 ```tut:book:silent
 sealed trait Event
@@ -18,7 +18,7 @@ case class Baz(c: Char) extends Event
 case class Qux(values: List[String]) extends Event
 ```
 
-And the codecs instance in the `Event` companion object:
+And the encoder / decorder instances:
 
 ```tut:book:silent
 import cats.syntax.functor._
