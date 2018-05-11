@@ -4,7 +4,7 @@ dist: trusty
 
 scala:
   - 2.11.12
-  - 2.12.5
+  - 2.12.6
 
 jdk:
   - oraclejdk8
