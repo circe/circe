@@ -40,6 +40,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
 * [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
 * [Stripe](https://stripe.com)
+* [Stylight](https://stylight.de)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [Threat Stack](https://www.threatstack.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
