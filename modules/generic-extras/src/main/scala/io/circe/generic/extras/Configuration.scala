@@ -27,9 +27,6 @@ final case class Configuration(
     transformMemberNames = Configuration.kebabCaseTransformation
   )
 
-  @deprecated("Use withSnakeCaseMemberNames instead", "0.9.0")
-  def withSnakeCaseKeys: Configuration = withSnakeCaseMemberNames
-
   def withSnakeCaseConstructorNames: Configuration = copy(
     transformConstructorNames = Configuration.snakeCaseTransformation
   )

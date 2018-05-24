@@ -127,7 +127,8 @@ trait Decoder[A] extends Serializable { self =>
     final def apply(c: HCursor): Decoder.Result[A] =
       if (pred(c)) self(c) else Left(DecodingFailure(message, c.history))
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c)
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      if (pred(c)) self.decodeAccumulating(c) else Validated.invalidNel(DecodingFailure(message, c.history))
   }
 
   /**
@@ -144,12 +145,6 @@ trait Decoder[A] extends Serializable { self =>
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
       AccumulatingDecoder.resultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
   }
-
-  /**
-   * Run two decoders and return their results as a pair.
-   */
-  @deprecated("Use product", "0.9.0")
-  final def and[B](fb: Decoder[B]): Decoder[(A, B)] = product(fb)
 
   /**
    * Choose the first succeeding decoder.
@@ -171,21 +166,6 @@ trait Decoder[A] extends Serializable { self =>
         case Right(v) => Right(Right(v))
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
       }
-    }
-  }
-
-  /**
-   * Run one or another decoder.
-   */
-  @deprecated("Use cats.arrow.Choice", "0.9.0")
-  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = {
-    case Left(c) => self(c) match {
-      case Right(v) => Right(Left(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
-    }
-    case Right(c) => d(c) match {
-      case Right(v) => Right(Right(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
     }
   }
 
@@ -748,7 +728,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     case c: HCursor =>
       if (c.value.isNull) rightNone else d(c) match {
         case Right(a) => Right(Some(a))
-        case Left(df) if df.history.isEmpty => rightNone
         case Left(df) => Left(df)
       }
     case c: FailedCursor =>
@@ -931,7 +910,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
-      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
+      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.product(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
@@ -978,6 +957,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       val field = c.downField(k)
 
       field.as[A] match {
+        case Right(a) if field.failed => Right((c, a))
         case Right(a) => Right((field.delete, a))
         case l @ Left(_) => l.asInstanceOf[Result[(ACursor, A)]]
       }

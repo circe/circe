@@ -4,7 +4,7 @@ import cats.{ Applicative, Eq, Foldable, Show }
 import cats.data.Kleisli
 import java.io.Serializable
 import java.util.LinkedHashMap
-import scala.collection.immutable.{ Map, Set }
+import scala.collection.immutable.Map
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -71,8 +71,7 @@ sealed abstract class JsonObject extends Serializable {
    *
    * @group Contents
    */
-  @transient
-  final val kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
+  final def kleisli: Kleisli[Option, String, Json] = Kleisli(apply(_))
 
   /**
    * Return all keys in insertion order.
@@ -87,22 +86,6 @@ sealed abstract class JsonObject extends Serializable {
    * @group Contents
    */
   def values: Iterable[Json]
-
-  /**
-   * Return all keys in insertion order.
-   *
-   * @group Contents
-   */
-  @deprecated("Use keys", "0.9.0")
-  final def fields: Iterable[String] = keys
-
-  /**
-   * Return all keys in an undefined order.
-   *
-   * @group Contents
-   */
-  @deprecated("Use keys.toSet", "0.9.0")
-  final def fieldSet: Set[String] = keys.toSet
 
   /**
    * Convert to a map.
@@ -169,14 +152,6 @@ sealed abstract class JsonObject extends Serializable {
   def mapValues(f: Json => Json): JsonObject
 
   /**
-   * Transform all associated JSON values.
-   *
-   * @group Modification
-   */
-  @deprecated("Use mapValues", "0.9.0")
-  final def withJsons(f: Json => Json): JsonObject = mapValues(f)
-
-  /**
    * Filter by keys and values.
    *
    * @group Modification
@@ -228,12 +203,6 @@ final object JsonObject {
    */
   final def fromFoldable[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject =
     F.foldLeft(fields, empty) { case (acc, (key, value)) => acc.add(key, value) }
-
-  /**
-   * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
-   */
-  @deprecated("Use fromFoldable", "0.9.0")
-  final def from[F[_]](fields: F[(String, Json)])(implicit F: Foldable[F]): JsonObject = fromFoldable[F](fields)(F)
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).

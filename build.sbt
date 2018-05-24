@@ -7,7 +7,7 @@ import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
 
-lazy val compilerOptions = Seq(
+val compilerOptions = Seq(
   "-deprecation",
   "-encoding", "UTF-8",
   "-feature",
@@ -18,29 +18,26 @@ lazy val compilerOptions = Seq(
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
   "-Xfuture",
-  "-Yno-predef"
+  "-Yno-predef",
+  "-Ywarn-unused-import"
 )
 
-lazy val catsVersion = "1.0.1"
-lazy val jawnVersion = "0.11.1"
-lazy val shapelessVersion = "2.3.3"
-lazy val refinedVersion = "0.8.7"
-lazy val monocleVersion = "1.5.0"
+val catsVersion = "1.1.0"
+val jawnVersion = "0.12.1"
+val shapelessVersion = "2.3.3"
+val refinedVersion = "0.9.0"
+val monocleVersion = "1.5.1-cats"
 
-lazy val scalaTestVersion = "3.0.5"
-lazy val scalaCheckVersion = "1.13.5"
-lazy val disciplineVersion = "0.8"
+val paradiseVersion = "2.1.1"
+val scalaTestVersion = "3.0.5"
+val scalaCheckVersion = "1.13.5"
+val disciplineVersion = "0.9.0"
 
-lazy val previousCirceVersion = Some("0.9.0")
+val previousCirceVersion = Some("0.9.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
-  scalacOptions ++= compilerOptions ++ (
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, p)) if p >= 11 => Seq("-Ywarn-unused-import")
-      case _ => Nil
-    }
-  ),
+  scalacOptions ++= compilerOptions,
   scalacOptions in (Compile, console) ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
@@ -57,12 +54,7 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
   ),
-  coverageHighlighting := (
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => false
-      case _ => true
-    }
-  ),
+  coverageHighlighting := true,
   coverageScalacPluginVersion := "1.3.1",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += CompileTime.hide,
@@ -100,18 +92,10 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
 }
 
 /**
- * We omit all Scala.js projects from Unidoc generation, as well as
- * circe-generic on 2.10, since Unidoc doesn't like its macros.
+ * We omit all Scala.js projects from Unidoc generation.
  */
-def noDocProjects(sv: String): Seq[ProjectReference] = {
-  val unwanted = circeCrossModules.map(_._2) ++ circeUtilModules :+ tests
-  val scala210 = CrossVersion.partialVersion(sv) match {
-    case Some((2, 10)) => Seq(generic, literal)
-    case _ => Nil
-  }
-
-  (unwanted ++ jvm8Only(java8) ++ scala210).map(p => p: ProjectReference)
-}
+def noDocProjects(sv: String): Seq[ProjectReference] =
+  (circeCrossModules.map(_._2) ++ jvm8Only(java8) :+ tests).map(p => p: ProjectReference)
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
@@ -157,7 +141,7 @@ lazy val docSettings = allSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
-lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
+lazy val docs = project.dependsOn(core, genericExtras, parser, optics, shapes)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs"
@@ -165,7 +149,7 @@ lazy val docs = project.dependsOn(core, genericExtras, parser, optics)
   .settings(docSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
   )
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
@@ -185,13 +169,13 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (scodec, scodecJS),
   (java8, java8JS),
   (testing, testingJS),
-  (tests, testsJS)
+  (tests, testsJS),
+  (hygiene, hygieneJS)
 )
 
 lazy val circeJsModules = Seq[Project](scalajs)
-lazy val circeJvmModules = Seq[Project](jawn)
+lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
-lazy val circeUtilModules = Seq[Project](hygiene, hygieneJS, benchmark)
 
 def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
   case "1.8" => Set.empty
@@ -211,37 +195,22 @@ lazy val jsProjects: Seq[Project] =
  */
 lazy val aggregatedProjects: Seq[ProjectReference] =
   (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeDocsModules ++ circeUtilModules)
+   circeJsModules ++ circeJvmModules ++ circeDocsModules)
     .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
 
-def macroSettings(scaladocFor210: Boolean): Seq[Setting[_]] = Seq(
+lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
     scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
     scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
-    "org.typelevel" %%% "macro-compat" % "1.1.1",
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
-  ),
-  libraryDependencies ++= {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      // if scala 2.11+ is used, quasiquotes are merged into scala-reflect.
-      case Some((2, scalaMajor)) if scalaMajor >= 11 => Nil
-      // in Scala 2.10, quasiquotes are provided by macro paradise.
-      case Some((2, 10)) => Seq("org.scalamacros" %% "quasiquotes" % "2.1.1" cross CrossVersion.binary)
-    }
-  },
-  sources in (Compile, doc) := {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) if !scaladocFor210 => Nil
-      case _ => (sources in (Compile, doc)).value
-    }
-  }
+    compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
+  )
 )
 
 lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch),
+    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch),
     initialCommands in console :=
       """
         |import io.circe._
@@ -288,7 +257,7 @@ lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
-  .settings(macroSettings(scaladocFor210 = false))
+  .settings(macroSettings)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
@@ -299,7 +268,7 @@ lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = false))
+  .settings(macroSettings)
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
   .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
@@ -308,7 +277,7 @@ lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
 
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = true))
+  .settings(macroSettings)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
@@ -319,7 +288,7 @@ lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings(scaladocFor210 = false))
+  .settings(macroSettings)
   .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
@@ -409,7 +378,6 @@ lazy val testsJS = testsBase.js
 lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
   .settings(
-    crossScalaVersions := crossScalaVersions.value.tail,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(coreBase, genericBase, literalBase)
@@ -426,7 +394,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M12"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
   )
 
 lazy val java8 = java8Base.jvm
@@ -437,7 +405,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
     )
   )
   .dependsOn(coreBase, genericBase % Test, testsBase % Test)
@@ -448,13 +416,12 @@ lazy val opticsJS = opticsBase.js
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
   .settings(
-    crossScalaVersions := crossScalaVersions.value.init,
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.patch)
+      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
     )
   )
   .enablePlugins(JmhPlugin)

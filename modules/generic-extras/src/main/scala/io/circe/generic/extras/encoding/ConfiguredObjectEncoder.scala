@@ -3,12 +3,28 @@ package io.circe.generic.extras.encoding
 import io.circe.JsonObject
 import io.circe.generic.encoding.DerivedObjectEncoder
 import io.circe.generic.extras.{ Configuration, JsonKey }
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
 
-abstract class ConfiguredObjectEncoder[A] extends DerivedObjectEncoder[A]
+abstract class ConfiguredObjectEncoder[A](config: Configuration) extends DerivedObjectEncoder[A] {
+  private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
+    new ConcurrentHashMap[String, String]()
+
+  protected[this] def constructorNameTransformer(value: String): String = {
+    val current = constructorNameCache.get(value)
+
+    if (current eq null) {
+      val transformed = config.transformConstructorNames(value)
+      constructorNameCache.put(value, transformed)
+      transformed
+    } else {
+      current
+    }
+  }
+}
 
 final object ConfiguredObjectEncoder {
   implicit def encodeCaseClass[A, R <: HList, F <: HList, K <: HList](implicit
@@ -19,7 +35,7 @@ final object ConfiguredObjectEncoder {
     fieldsToList: ToTraversable.Aux[F, List, Symbol],
     keys: Annotations.Aux[JsonKey, A, K],
     keysToList: ToTraversable.Aux[K, List, Option[JsonKey]]
-  ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
+  ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A](config) {
     private[this] val keyAnnotations: List[Option[JsonKey]] = keysToList(keys())
     private[this] val hasKeyAnnotations: Boolean = keyAnnotations.exists(_.nonEmpty)
 
@@ -28,13 +44,24 @@ final object ConfiguredObjectEncoder {
         case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
       }.toMap
 
-    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
+    private[this] def memberNameTransformer(value: String): String = {
+      if (hasKeyAnnotations)
+        keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
+      else
+        config.transformMemberNames(value)
+    }
+
+    private[this] val transformedMemberCache: Map[String, String] = {
+      fieldsToList(fields()).map(f => (f.name, memberNameTransformer(f.name))).toMap
+    }
+
+    private[this] def transformMemberName(value: String) =
+      transformedMemberCache.getOrElse(value, value)
 
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
-        if (hasKeyAnnotations) memberNameTransformer(config.transformMemberNames) else config.transformMemberNames,
-        config.transformConstructorNames,
+        transformMemberName,
+        constructorNameTransformer,
         None
       )
   }
@@ -43,11 +70,11 @@ final object ConfiguredObjectEncoder {
     gen: LabelledGeneric.Aux[A, R],
     encode: Lazy[ReprObjectEncoder[R]],
     config: Configuration
-  ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A] {
+  ): ConfiguredObjectEncoder[A] = new ConfiguredObjectEncoder[A](config) {
     final def encodeObject(a: A): JsonObject =
       encode.value.configuredEncodeObject(gen.to(a))(
         Predef.identity,
-        config.transformConstructorNames,
+        constructorNameTransformer,
         config.discriminator
       )
   }

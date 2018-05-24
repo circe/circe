@@ -2,13 +2,11 @@ package io.circe.generic.util.macros
 
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.decoding.ReprDecoder
-import macrocompat.bundle
 import scala.annotation.tailrec
 import scala.reflect.macros.blackbox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
 import shapeless.labelled.KeyTag
 
-@bundle
 abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   val c: blackbox.Context
 
@@ -115,9 +113,6 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     case class Entry(label: String, keyType: Type, valueType: Type)
 
     object Entry {
-      // We need this import for the `RefinedType` constructor in Scala 2.12.
-      import compat._
-
       def unapply(tpe: Type): Option[(String, Type, Type)] = tpe.dealias match {
         /**
          * Before Scala 2.12 the `RefinedType` extractor returns the field type
@@ -137,7 +132,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
          */
         case RefinedType(parents, scope) => parents.reverse match {
           case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
-            if lt =:= ShapelessLabelledType && RefinedType(refs.reverse, scope) =:= taggedFieldType =>
+            if lt =:= ShapelessLabelledType && internal.refinedType(refs.reverse, scope) =:= taggedFieldType =>
               tagType.dealias match {
                 case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                   if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
