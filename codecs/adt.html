@@ -1,0 +1,138 @@
+<html><head><title>circe: ADT (Algebraic Data Types)</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Travis Brown" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe: ADT (Algebraic Data Types)" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><meta name="twitter:title" content="circe: ADT (Algebraic Data Types)" /><meta name="twitter:image" content="https://circe.github.io/circe/img/poster.png" /><meta name="twitter:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/style.css" /><link rel="stylesheet" href="/circe/css/palette.css" /><link rel="stylesheet" href="/circe/css/codemirror.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class="">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class="">Encoding and decoding</a> <ul class="sub_section"> <li><a href="/circe/codecs/semiauto-derivation.html" class="">Semi-automatic derivation</a></li> <li><a href="/circe/codecs/auto-derivation.html" class="">Automatic derivation</a></li> <li><a href="/circe/codecs/custom-codecs.html" class="">Custom codecs</a></li> <li><a href="/circe/codecs/adt.html" class=" active ">ADT (Algebraic Data Types)</a></li> <li><a href="/circe/codecs/known-issues.html" class="">Warnings and known issues</a></li></ul></li> <li><a href="/circe/optics.html" class="">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/circe/circe"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h3 id="adts-encoding-and-decoding">ADTs encoding and decoding</h3>
+
+<p>The most straightforward way to encode / decode ADTs is by using generic derivation for the case classes but explicitly defined instances for the ADT type.</p>
+
+<p>Consider the following ADT:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Event</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Event</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Event</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Baz</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">Char</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Event</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">values</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Event</span>
+</code></pre></div></div>
+
+<p>And the encoder / decorder instances:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.functor._</span>
+<span class="k">import</span> <span class="nn">io.circe.</span><span class="o">{</span> <span class="nc">Decoder</span><span class="o">,</span> <span class="nc">Encoder</span> <span class="o">},</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span>
+<span class="k">import</span> <span class="nn">io.circe.syntax._</span>
+
+<span class="k">object</span> <span class="nc">GenericDerivation</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeEvent</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Event</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Encoder</span><span class="o">.</span><span class="n">instance</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">foo</span> <span class="k">@</span> <span class="nc">Foo</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">foo</span><span class="o">.</span><span class="n">asJson</span>
+    <span class="k">case</span> <span class="n">bar</span> <span class="k">@</span> <span class="nc">Bar</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">bar</span><span class="o">.</span><span class="n">asJson</span>
+    <span class="k">case</span> <span class="n">baz</span> <span class="k">@</span> <span class="nc">Baz</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">baz</span><span class="o">.</span><span class="n">asJson</span>
+    <span class="k">case</span> <span class="n">qux</span> <span class="k">@</span> <span class="nc">Qux</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">qux</span><span class="o">.</span><span class="n">asJson</span>
+  <span class="o">}</span>
+
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeEvent</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Event</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">List</span><span class="o">[</span><span class="kt">Decoder</span><span class="o">[</span><span class="kt">Event</span><span class="o">]](</span>
+      <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">].</span><span class="n">widen</span><span class="o">,</span>
+      <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Bar</span><span class="o">].</span><span class="n">widen</span><span class="o">,</span>
+      <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Baz</span><span class="o">].</span><span class="n">widen</span><span class="o">,</span>
+      <span class="nc">Decoder</span><span class="o">[</span><span class="kt">Qux</span><span class="o">].</span><span class="n">widen</span>
+    <span class="o">).</span><span class="n">reduceLeft</span><span class="o">(</span><span class="k">_</span> <span class="n">or</span> <span class="k">_</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Note that we have to call <code class="highlighter-rouge">widen</code> (which is provided by Cats’s <code class="highlighter-rouge">Functor</code> syntax, which we bring into scope with the first import) on the decoders because the <code class="highlighter-rouge">Decoder</code> type class is not covariant. The invariance of circe’s type classes is a matter of <a href="https://twitter.com/Gentmen/status/829431567315513344">some controversy</a> (<code class="highlighter-rouge">Argonaut</code> for example has gone from invariant to covariant and back), but it has enough benefits that it’s unlikely to change, which means we need workarounds like this occasionally.</p>
+
+<p>It’s also worth noting that our explicit <code class="highlighter-rouge">Encoder</code> and <code class="highlighter-rouge">Decoder</code> instances will take precedence over the generically-derived instances we would otherwise get from the <code class="highlighter-rouge">io.circe.generic.auto._</code> import (see slides from Travis Brown’s talk <a href="http://meta.plasm.us/slides/scalaworld/#1">here</a> for some discussion of how this prioritization works).</p>
+
+<p>We can use these instances like this:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">GenericDerivation._</span>
+<span class="c1">// import GenericDerivation._
+</span>
+<span class="k">import</span> <span class="nn">io.circe.parser.decode</span>
+<span class="c1">// import io.circe.parser.decode
+</span>
+<span class="n">decode</span><span class="o">[</span><span class="kt">Event</span><span class="o">](</span><span class="s">"""{ "i": 1000 }"""</span><span class="o">)</span>
+<span class="c1">// res0: Either[io.circe.Error,Event] = Right(Foo(1000))
+</span>
+<span class="o">(</span><span class="nc">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">)</span><span class="k">:</span> <span class="kt">Event</span><span class="o">).</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
+<span class="c1">// res1: String = {"i":100}
+</span></code></pre></div></div>
+
+<p>This works, and if you need to be able to specify the order that the ADT constructors are tried, it’s currently the best solution. Having to enumerate the constructors like this is obviously not ideal, though, even if we get the case class instances for free.</p>
+
+<h3 id="a-more-generic-solution">A more generic solution</h3>
+
+<p>As discussed <a href="https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a">on Gitter</a>, we can avoid the fuss of writing out all the cases by using the <code class="highlighter-rouge">circe-shapes</code> module:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// To suppress previously imported inplicit codecs.
+</span><span class="k">import</span> <span class="nn">GenericDerivation.</span><span class="o">{</span> <span class="n">decodeEvent</span> <span class="k">=&gt;</span> <span class="k">_</span><span class="o">,</span> <span class="n">encodeEvent</span> <span class="k">=&gt;</span> <span class="k">_</span> <span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">ShapesDerivation</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">io.circe.shapes</span>
+  <span class="k">import</span> <span class="nn">shapeless.</span><span class="o">{</span> <span class="nc">Coproduct</span><span class="o">,</span> <span class="nc">Generic</span> <span class="o">}</span>
+
+  <span class="k">implicit</span> <span class="k">def</span> <span class="n">encodeAdtNoDiscr</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">Repr</span> <span class="k">&lt;:</span> <span class="kt">Coproduct</span><span class="o">](</span><span class="k">implicit</span>
+    <span class="n">gen</span><span class="k">:</span> <span class="kt">Generic.Aux</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">Repr</span><span class="o">],</span>
+    <span class="n">encodeRepr</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Repr</span><span class="o">]</span>
+  <span class="o">)</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">encodeRepr</span><span class="o">.</span><span class="n">contramap</span><span class="o">(</span><span class="n">gen</span><span class="o">.</span><span class="n">to</span><span class="o">)</span>
+
+  <span class="k">implicit</span> <span class="k">def</span> <span class="n">decodeAdtNoDiscr</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">Repr</span> <span class="k">&lt;:</span> <span class="kt">Coproduct</span><span class="o">](</span><span class="k">implicit</span>
+    <span class="n">gen</span><span class="k">:</span> <span class="kt">Generic.Aux</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">Repr</span><span class="o">],</span>
+    <span class="n">decodeRepr</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Repr</span><span class="o">]</span>
+  <span class="o">)</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">decodeRepr</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">gen</span><span class="o">.</span><span class="n">from</span><span class="o">)</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>And then:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">ShapesDerivation._</span>
+<span class="c1">// import ShapesDerivation._
+</span>
+<span class="k">import</span> <span class="nn">io.circe.parser.decode</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import io.circe.parser.decode
+// import io.circe.syntax._
+</span>
+<span class="n">decode</span><span class="o">[</span><span class="kt">Event</span><span class="o">](</span><span class="s">"""{ "i": 1000 }"""</span><span class="o">)</span>
+<span class="c1">// res3: Either[io.circe.Error,Event] = Right(Foo(1000))
+</span>
+<span class="o">(</span><span class="nc">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">)</span><span class="k">:</span> <span class="kt">Event</span><span class="o">).</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
+<span class="c1">// res4: String = {"i":100}
+</span></code></pre></div></div>
+
+<p>This will work for any ADT anywhere that <code class="highlighter-rouge">encodeAdtNoDiscr</code> and <code class="highlighter-rouge">decodeAdtNoDiscr</code> are in scope. If we wanted it to be more limited, we could replace the generic <code class="highlighter-rouge">A</code> with our ADT types in those definitions, or we could make the definitions non-implicit and define implicit instances explicitly for the ADTs we want encoded this way.</p>
+
+<p>The main drawback of this approach (apart from the extra <code class="highlighter-rouge">circe-shapes</code> dependency) is that the constructors will be tried in alphabetical order, which may not be what we want if we have ambiguous case classes (where the member names and types are the same).</p>
+
+<h3 id="the-future">The future</h3>
+
+<p>The <code class="highlighter-rouge">generic-extras</code> module provides a little more configurability in this respect. We can write the following, for example:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.extras.auto._</span>
+<span class="k">import</span> <span class="nn">io.circe.generic.extras.Configuration</span>
+
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">genDevConfig</span><span class="k">:</span> <span class="kt">Configuration</span> <span class="o">=</span>
+  <span class="nc">Configuration</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">withDiscriminator</span><span class="o">(</span><span class="s">"what_am_i"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>And then:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.parser.decode</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import io.circe.parser.decode
+// import io.circe.syntax._
+</span>
+<span class="o">(</span><span class="nc">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">)</span><span class="k">:</span> <span class="kt">Event</span><span class="o">).</span><span class="n">asJson</span><span class="o">.</span><span class="n">noSpaces</span>
+<span class="c1">// res5: String = {"i":100}
+</span>
+<span class="n">decode</span><span class="o">[</span><span class="kt">Event</span><span class="o">](</span><span class="s">"""{ "i": 1000, "what_am_i": "Foo" }"""</span><span class="o">)</span>
+<span class="c1">// res6: Either[io.circe.Error,Event] = Right(Foo(1000))
+</span></code></pre></div></div>
+
+<p>Instead of a wrapper object in the JSON we have an extra field that indicates the constructor. This isn’t the default behavior since it has some weird corner cases (e.g. if one of our case classes had a member named <code class="highlighter-rouge">what_am_i</code>), but in many cases it’s reasonable and it’s been supported in <code class="highlighter-rouge">generic-extras</code> since that module was introduced.</p>
+
+<h3 id="notes">Notes</h3>
+
+<p>This still doesn’t get us exactly what we want, but it’s closer than the default behavior. It’s also been considered to change <code class="highlighter-rouge">withDiscriminator</code> to take an <code class="highlighter-rouge">Option[String]</code> instead of a <code class="highlighter-rouge">String</code>, with <code class="highlighter-rouge">None</code> indicating that we don’t want an extra field indicating the constructor, giving us the same behavior as our <code class="highlighter-rouge">circe-shape</code>s instances in the previous section, but haven’t been implemented so far.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/main.js"></script></body></html>
