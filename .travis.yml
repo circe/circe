@@ -1,6 +1,4 @@
 language: scala
-sudo: required
-dist: trusty
 
 scala:
   - 2.11.12
