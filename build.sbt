@@ -36,6 +36,8 @@ val disciplineVersion = "0.9.0"
 val previousCirceVersion = Some("0.9.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
+val moneyVersion = "0.6.2"
+
 lazy val baseSettings = Seq(
   scalacOptions ++= compilerOptions,
   scalacOptions in (Compile, console) ~= {
@@ -170,7 +172,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (java8, java8JS),
   (testing, testingJS),
   (tests, testsJS),
-  (hygiene, hygieneJS)
+  (hygiene, hygieneJS),
+  (monies, moniesJS)
 )
 
 lazy val circeJsModules = Seq[Project](scalajs)
@@ -390,6 +393,15 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
   )
   .dependsOn(core)
+
+lazy val moniesBase = circeCrossModule("monies", mima = previousCirceVersion)
+  .settings(
+    libraryDependencies += "com.lambdista" %% "money" % moneyVersion
+  )
+  .dependsOn(coreBase, genericBase, testsBase % Test)
+
+lazy val monies = moniesBase.jvm
+lazy val moniesJS = moniesBase.js
 
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
