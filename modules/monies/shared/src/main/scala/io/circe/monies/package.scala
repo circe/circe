@@ -1,9 +1,7 @@
 package io.circe
 
-import scala.util.Try
-import cats.syntax.either._
+import scala.util.{Failure, Success, Try}
 import io.circe.generic.auto._
-
 import money.{Currency, Money}
 
 /**
@@ -25,17 +23,16 @@ package object monies {
 
   implicit val moneyDecoder = Decoder[Money]
 
-  implicit val currencyEncoder: Encoder[Currency] = Encoder[Currency] { c =>
+  implicit val currencyEncoder: Encoder[Currency] = Encoder[Currency] { (c: Currency) =>
     Json.fromString(c.getCode)
   }
 
   implicit val currencyDecoder: Decoder[Currency] = Decoder.instance { c =>
-    def safeDecode(s: String) =
-      Try(Currency(s))
-        .toEither
-        .leftMap(err => DecodingFailure(s"Unsupported currency: $s", c.history))
-
-    c.as[String].flatMap(safeDecode)
+    c.as[String].flatMap { s =>
+      Try(Currency(s)) match {
+        case Success(curr) => Right(curr)
+        case Failure(_) => Left(DecodingFailure(s"Unsupported currency: $s", c.history))
+      }
+    }
   }
-
 }
