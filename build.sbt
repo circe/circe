@@ -1,7 +1,7 @@
 import ReleaseTransformations._
 import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
-import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
+import sbtcrossproject.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
@@ -83,9 +83,10 @@ def circeModule(path: String, mima: Option[String]): Project = {
 
 def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
-  CrossProject(jvmId = id, jsId = id + "JS", file(s"modules/$path"), crossType)
+  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
+    .crossType(crossType)
     .settings(allSettings)
-    .configureAll(circeProject(path))
+    .configure(circeProject(path))
     .jvmSettings(
       mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
     )
