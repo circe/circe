@@ -448,7 +448,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Boolean]].
+    * Decode a JSON value into a `java.lang.Boolean`.
     *
     * @group Decoding
     */
@@ -465,7 +465,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Character]].
+    * Decode a JSON value into a `java.lang.Character`.
     *
     * @group Decoding
     */
@@ -491,7 +491,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Float]].
+    * Decode a JSON value into a `java.lang.Float`.
     *
     * @group Decoding
     */
@@ -519,7 +519,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Double]].
+    * Decode a JSON value into a `java.lang.Double`.
     *
     * @group Decoding
     */
@@ -547,7 +547,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Byte]].
+    * Decode a JSON value into a `java.lang.Byte`.
     *
     * @group Decoding
     */
@@ -575,7 +575,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Short]].
+    * Decode a JSON value into a `java.lang.Short`.
     *
     * @group Decoding
     */
@@ -603,7 +603,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Integer]].
+    * Decode a JSON value into a `java.lang.Integer`.
     *
     * @group Decoding
     */
@@ -634,7 +634,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Long]].
+    * Decode a JSON value into a `java.lang.Long`.
     *
     * @group Decoding
     */
@@ -665,7 +665,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.math.BigInteger]].
+    * Decode a JSON value into a `java.math.BigInteger`.
     *
     * @group Decoding
     */
@@ -699,7 +699,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.math.BigDecimal]].
+    * Decode a JSON value into a `java.math.BigDecimal`.
     *
     * @group Decoding
     */
