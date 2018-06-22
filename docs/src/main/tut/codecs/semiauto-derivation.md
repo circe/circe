@@ -50,7 +50,7 @@ import io.circe.{ Decoder, Encoder }
 
 case class User(id: Long, firstName: String, lastName: String)
 
-object UserCodec {
+object User {
   implicit val decodeUser: Decoder[User] =
     Decoder.forProduct3("id", "first_name", "last_name")(User.apply)
 
