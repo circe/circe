@@ -75,6 +75,7 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
+* [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
@@ -162,6 +163,7 @@ limitations under the License.
 [circe-fs2]: https://github.com/circe/circe-fs2
 [circe-iteratee]: https://github.com/circe/circe-iteratee
 [circe-jackson]: https://github.com/circe/circe-jackson
+[circe-kafka]: https://github.com/NeQuissimus/circe-kafka
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
 [circe-yaml]: https://github.com/circe/circe-yaml
