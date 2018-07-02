@@ -26,6 +26,22 @@ import java.time.format.DateTimeFormatter.{
 
 private[circe] object JavaTimeInstances {
   final val yearMonthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
+
+  /**
+   * Adds error information of `DateTimeParseException` to the error message of `DecodingFailure`.
+   */
+  final def formatMessage(typeName: String, dateTimeParseException: DateTimeParseException): String =
+    Option(dateTimeParseException.getMessage).fold(typeName) { errMsg =>
+      s"$typeName (DateTimeParseException: $errMsg)"
+    }
+
+   /**
+    * Adds error information of `DateTimeException` to the error message of `DecodingFailure` for `ZoneId`.
+    */
+  final def formatZoneIdMessage(dateTimeException: DateTimeException): String =
+    Option(dateTimeException.getMessage).fold("ZoneId") { errMsg =>
+      s"ZoneId (DateTimeException: $errMsg)"
+    }
 }
 
 private[circe] trait JavaTimeDecoders {
@@ -35,7 +51,10 @@ private[circe] trait JavaTimeDecoders {
   implicit final val decodeDuration: Decoder[Duration] = Decoder.instance { c =>
     c.as[String] match {
       case Right(s) => try Right(Duration.parse(s)) catch {
-        case _: DateTimeParseException => Left(DecodingFailure("Duration", c.history))
+        case e: DateTimeParseException =>
+          // For some reason the error message for `Duration` does not contain the input string by
+          // default.
+          Left(DecodingFailure(s"Duration (Text '$s' cannot be parsed to a Duration)", c.history))
       }
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[Duration]]
     }
@@ -47,7 +66,8 @@ private[circe] trait JavaTimeDecoders {
   implicit final val decodeInstant: Decoder[Instant] = Decoder.instance { c =>
     c.as[String] match {
       case Right(s) => try Right(Instant.parse(s)) catch {
-        case _: DateTimeParseException => Left(DecodingFailure("Instant", c.history))
+        case e: DateTimeParseException =>
+          Left(DecodingFailure(JavaTimeInstances.formatMessage("Instant", e), c.history))
       }
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[Instant]]
     }
@@ -60,6 +80,9 @@ private[circe] trait JavaTimeDecoders {
     c.as[String] match {
       case Right(s) => try Right(Period.parse(s)) catch {
         case _: DateTimeParseException => Left(DecodingFailure("Period", c.history))
+          // For some reason the error message for `Period` does not contain the input string by
+          // default.
+          Left(DecodingFailure(s"Period (Text '$s' cannot be parsed to a Period)", c.history))
       }
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[Period]]
     }
@@ -71,7 +94,8 @@ private[circe] trait JavaTimeDecoders {
   implicit final val decodeZoneId: Decoder[ZoneId] = Decoder.instance { c =>
     c.as[String] match {
       case Right(s) => try Right(ZoneId.of(s)) catch {
-        case _: DateTimeException => Left(DecodingFailure("ZoneId", c.history))
+        case e: DateTimeException =>
+          Left(DecodingFailure(JavaTimeInstances.formatZoneIdMessage(e), c.history))
       }
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[ZoneId]]
     }
@@ -84,7 +108,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(LocalDate.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("LocalDate", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("LocalDate", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalDate]]
       }
@@ -97,7 +122,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(LocalTime.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("LocalTime", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("LocalTime", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalTime]]
       }
@@ -110,7 +136,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(LocalDateTime.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("LocalDateTime", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("LocalDateTime", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalDateTime]]
       }
@@ -123,7 +150,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(OffsetTime.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("OffsetTime", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("OffsetTime", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[OffsetTime]]
       }
@@ -136,7 +164,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(OffsetDateTime.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("OffsetDateTime", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("OffsetDateTime", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[OffsetDateTime]]
       }
@@ -149,7 +178,8 @@ private[circe] trait JavaTimeDecoders {
     Decoder.instance { c =>
       c.as[String] match {
         case Right(s) => try Right(ZonedDateTime.parse(s, formatter)) catch {
-          case _: DateTimeParseException => Left(DecodingFailure("ZonedDateTime", c.history))
+          case e: DateTimeParseException =>
+            Left(DecodingFailure(JavaTimeInstances.formatMessage("ZonedDateTime", e), c.history))
         }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[ZonedDateTime]]
       }
@@ -164,7 +194,8 @@ private[circe] trait JavaTimeDecoders {
         case Right(s) =>
           try Right(YearMonth.parse(s, formatter))
           catch {
-            case _: DateTimeParseException => Left(DecodingFailure("YearMonth", c.history))
+            case e: DateTimeParseException =>
+              Left(DecodingFailure(JavaTimeInstances.formatMessage("YearMonth", e), c.history))
           }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[YearMonth]]
       }
