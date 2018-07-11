@@ -19,7 +19,8 @@ val compilerOptions = Seq(
   "-Ywarn-numeric-widen",
   "-Xfuture",
   "-Yno-predef",
-  "-Ywarn-unused-import"
+  "-Ywarn-unused-import",
+  "-Ypartial-unification"
 )
 
 val catsVersion = "1.1.0"
