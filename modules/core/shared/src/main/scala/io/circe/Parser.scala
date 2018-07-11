@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, ValidatedNel }
+import cats.data.{ Validated, ValidatedNel }
 import java.io.Serializable
 
 trait Parser extends Serializable {
@@ -14,17 +14,15 @@ trait Parser extends Serializable {
   }
 
   protected[this] final def finishDecodeAccumulating[A](input: Either[ParsingFailure, Json])(implicit
-    decoder: Decoder[A]
+    decoder: AccumulatingDecoder[A]
   ): ValidatedNel[Error, A] = input match {
-    case Right(json) => decoder.accumulating(json.hcursor).leftMap {
-      case NonEmptyList(h, t) => NonEmptyList(h, t)
-    }
+    case Right(json) => decoder(json.hcursor)
     case Left(error) => Validated.invalidNel(error)
   }
 
   final def decode[A: Decoder](input: String): Either[Error, A] =
     finishDecode(parse(input))
 
-  final def decodeAccumulating[A: Decoder](input: String): ValidatedNel[Error, A] =
+  final def decodeAccumulating[A: AccumulatingDecoder](input: String): ValidatedNel[Error, A] =
     finishDecodeAccumulating(parse(input))
 }
