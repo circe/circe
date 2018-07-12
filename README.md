@@ -95,6 +95,7 @@ The following open source projects are either built on circe or provide circe su
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
+* [ohNoMyCirce][ohNoMyCirce]: Friendly compile error messages for [shapeless][shapeless]'s Generic, [circe][circe-org]'s Encoder & Decoder and [slick][slick]'s case class mapping.
 * [play-circe][play-circe]: circe support for [Play!][play].
 * [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
@@ -201,6 +202,7 @@ limitations under the License.
 [markhibberd]: https://github.com/markhibberd
 [msgpack]: https://github.com/msgpack/msgpack/blob/master/spec.md
 [msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
+[ohNoMyCirce]: https://github.com/djx314/ohNoMyCirce
 [play]: https://www.playframework.com/
 [play-circe]: https://github.com/jilen/play-circe
 [pulsar]: https://pulsar.apache.org/
@@ -217,6 +219,7 @@ limitations under the License.
 [scalist]: https://github.com/vpavkin/scalist
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
+[shapeless]: https://github.com/milessabin/shapeless
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
