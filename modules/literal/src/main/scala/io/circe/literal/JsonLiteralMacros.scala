@@ -1,6 +1,7 @@
 package io.circe.literal
 
 import io.circe.Json
+import java.io.{ PrintWriter, StringWriter }
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
 import scala.Predef.classOf
@@ -233,10 +234,13 @@ class JsonLiteralMacros(val c: blackbox.Context) {
               c.enclosingPosition,
               "The json interpolator requires jawn to be available at compile time"
             )
-            case Left(t: Throwable) => c.abort(
-              c.enclosingPosition,
-              "Invalid JSON in interpolated string"
-            )
+            case Left(t: Throwable) =>
+              val sw = new StringWriter
+              t.printStackTrace(new PrintWriter(sw))
+
+              c.abort(c.enclosingPosition,
+                s"Invalid JSON in interpolated string, ${sw.toString}"
+              )
           }
         )
       }
