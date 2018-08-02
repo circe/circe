@@ -23,6 +23,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
+* [Codacy](https://www.codacy.com)
 * [Datalogue](https://datalogue.io)
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
