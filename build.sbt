@@ -426,7 +426,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(core, generic, jawn, genericExtras)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
