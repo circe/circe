@@ -1,5 +1,7 @@
 package io.circe.generic.extras
 
+import java.util.regex.Pattern
+
 /**
  * Configuration allowing customisation of the JSON produced when encoding, or expected when decoding. Can be used
  * with the [[ConfiguredJsonCodec]] annotation to allow customisation of the semi-automatic derivation.
@@ -40,17 +42,20 @@ final case class Configuration(
 }
 
 final object Configuration {
+
   val default: Configuration = Configuration(Predef.identity, Predef.identity, false, None)
+  val basePattern: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  val swapPattern: Pattern = Pattern.compile("([a-z\\d])([A-Z])")
 
-  val snakeCaseTransformation: String => String = _.replaceAll(
-    "([A-Z]+)([A-Z][a-z])",
-    "$1_$2"
-  ).replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase
+  val snakeCaseTransformation: String => String = s => {
+    val partial = basePattern.matcher(s).replaceAll("$1_$2")
+    swapPattern.matcher(partial).replaceAll("$1_$2").toLowerCase
+  }
 
-  val kebabCaseTransformation: String => String = _.replaceAll(
-    "([A-Z]+)([A-Z][a-z])",
-    "$1-$2"
-  ).replaceAll("([a-z\\d])([A-Z])", "$1-$2").toLowerCase
+  val kebabCaseTransformation: String => String = s => {
+    val partial = basePattern.matcher(s).replaceAll("$1-$2")
+    swapPattern.matcher(partial).replaceAll("$1-$2").toLowerCase
+  }
 }
 
 final object defaults {
