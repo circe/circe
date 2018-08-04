@@ -14,7 +14,6 @@ val compilerOptions = Seq(
   "-language:existentials",
   "-language:higherKinds",
   "-unchecked",
-  "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
   "-Xfuture",
@@ -77,7 +76,8 @@ lazy val baseSettings = Seq(
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += CompileTime.hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
-  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name))
+  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name)),
+  coverageEnabled := { if (priorTo2_13(scalaVersion.value)) coverageEnabled.value else false }
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
@@ -216,8 +216,13 @@ lazy val aggregatedProjects: Seq[ProjectReference] =
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
     scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
-    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided,
-    compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
+    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
+  ) ++ (
+    if (priorTo2_13(scalaVersion.value)) {
+      Seq(
+        compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
+      )
+    } else Nil
   )
 )
 
@@ -263,7 +268,17 @@ lazy val numbersJS = numbersBase.js
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
+    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
+    Compile / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
+        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
+        case _ => Nil
+      }
+    }
   )
   .dependsOn(numbersBase)
 
