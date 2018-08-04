@@ -401,7 +401,12 @@ final object JsonObject {
     )(mappedFields => new MapAndVectorJsonObject(mappedFields, orderedKeys))
 
     final def mapValues(f: Json => Json): JsonObject =
-      new MapAndVectorJsonObject(fields.mapValues(f).view.force, orderedKeys)
+      new MapAndVectorJsonObject(
+        fields.map {
+          case (key, value) => (key, f(value))
+        },
+        orderedKeys
+      )
 
     final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
       val originalDepth = folder.depth
