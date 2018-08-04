@@ -2,7 +2,7 @@ package io.circe
 
 import cats.data.OneAnd
 import scala.collection.Map
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 import scala.collection.mutable.Builder
 
 private[circe] trait CollectionDecoders {
@@ -14,9 +14,9 @@ private[circe] trait CollectionDecoders {
   implicit final def decodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
     decodeK: KeyDecoder[K],
     decodeV: Decoder[V],
-    cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
+    factory: Factory[(K, V), M[K, V]]
   ): Decoder[M[K, V]] = new MapDecoder[K, V, M](decodeK, decodeV) {
-    final protected def createBuilder(): Builder[(K, V), M[K, V]] = cbf()
+    final protected def createBuilder(): Builder[(K, V), M[K, V]] = factory.newBuilder
   }
 
   /**
@@ -26,9 +26,9 @@ private[circe] trait CollectionDecoders {
    */
   implicit final def decodeTraversable[A, C[A] <: Traversable[A]](implicit
     decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, C[A]]
+    factory: Factory[A, C[A]]
   ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
-    final protected def createBuilder(): Builder[A, C[A]] = cbf.apply()
+    final protected def createBuilder(): Builder[A, C[A]] = factory.newBuilder
   }
 
   /**
@@ -36,9 +36,9 @@ private[circe] trait CollectionDecoders {
    */
   implicit final def decodeArray[A](implicit
     decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, Array[A]]
+    factory: Factory[A, Array[A]]
   ): Decoder[Array[A]] = new SeqDecoder[A, Array](decodeA) {
-    final protected def createBuilder(): Builder[A, Array[A]] = cbf.apply()
+    final protected def createBuilder(): Builder[A, Array[A]] = factory.newBuilder
   }
 
   /**
@@ -48,9 +48,9 @@ private[circe] trait CollectionDecoders {
    */
   implicit final def decodeOneAnd[A, C[_]](implicit
     decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, C[A]]
+    factory: Factory[A, C[A]]
   ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]](decodeA) {
-    final protected def createBuilder(): Builder[A, C[A]] = cbf()
+    final protected def createBuilder(): Builder[A, C[A]] = factory.newBuilder
     final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
 }
