@@ -33,6 +33,25 @@ val scalaTestVersion = "3.0.5"
 val scalaCheckVersion = "1.13.5"
 val disciplineVersion = "0.9.0"
 
+/**
+ * Some terrible hacks to work around Cats's decision to have builds for
+ * different Scala versions depend on different versions of Discipline, etc.
+ */
+def priorTo2_13(scalaVersion: String): Boolean =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, minor)) if minor < 13 => true
+    case _ => false
+  }
+
+def scalaTestVersionFor(scalaVersion: String): String =
+  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP1"
+
+def scalaCheckVersionFor(scalaVersion: String): String =
+  if (priorTo2_13(scalaVersion)) scalaCheckVersion else "1.14.0"
+
+def disciplineVersionFor(scalaVersion: String): String =
+  if (priorTo2_13(scalaVersion)) disciplineVersion else "0.10.0"
+
 val previousCirceVersion = Some("0.9.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
@@ -225,7 +244,7 @@ lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previou
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
-    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value),
     coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
   )
 
@@ -235,8 +254,8 @@ lazy val numbersTestingJS = numbersTestingBase.js
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
+      "org.scalatest" %%% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test
     )
   ).dependsOn(numbersTestingBase % Test)
 
@@ -332,10 +351,10 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
+      "org.scalatest" %%% "scalatest" % scalaTestVersionFor(scalaVersion.value),
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersion
+      "org.typelevel" %%% "discipline" % disciplineVersionFor(scalaVersion.value)
     )
   )
   .settings(
@@ -353,11 +372,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersion
+      "com.chuusai" %%% "shapeless" % shapelessVersion
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
@@ -416,7 +431,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+      "org.scalatest" %% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test
     )
   )
   .enablePlugins(JmhPlugin)
