@@ -142,7 +142,7 @@ lazy val docSettings = allSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
-lazy val docs = project.dependsOn(core, genericExtras, parser, optics, shapes)
+lazy val docs = project.dependsOn(core, genericExtras, parser, shapes)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs"
@@ -164,7 +164,6 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (genericExtras, genericExtrasJS),
   (shapes, shapesJS),
   (literal, literalJS),
-  (optics, opticsJS),
   (refined, refinedJS),
   (parser, parserJS),
   (scodec, scodecJS),
@@ -400,19 +399,6 @@ lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, Cros
 
 lazy val java8 = java8Base.jvm
 lazy val java8JS = java8Base.js
-
-lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, CrossType.Pure)
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
-    )
-  )
-  .dependsOn(coreBase, genericBase % Test, testsBase % Test)
-
-lazy val optics = opticsBase.jvm
-lazy val opticsJS = opticsBase.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
