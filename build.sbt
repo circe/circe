@@ -149,9 +149,6 @@ lazy val docs = project.dependsOn(core, genericExtras, parser, optics, shapes)
   )
   .settings(docSettings)
   .settings(noPublishSettings)
-  .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
-  )
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
@@ -211,7 +208,6 @@ lazy val circe = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch),
     initialCommands in console :=
       """
         |import io.circe._
@@ -405,8 +401,7 @@ lazy val opticsBase = circeCrossModule("optics", mima = previousCirceVersion, Cr
   .settings(
     libraryDependencies ++= Seq(
       "com.github.julien-truffaut" %%% "monocle-core" % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
+      "com.github.julien-truffaut" %%% "monocle-law"  % monocleVersion % Test
     )
   )
   .dependsOn(coreBase, genericBase % Test, testsBase % Test)
@@ -421,8 +416,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.patch)
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test
     )
   )
   .enablePlugins(JmhPlugin)
