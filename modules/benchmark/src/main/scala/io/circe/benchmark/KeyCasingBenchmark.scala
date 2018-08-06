@@ -1,8 +1,8 @@
 package io.circe.benchmark
 
-import org.openjdk.jmh.annotations._
 import io.circe.generic.extras.Configuration
 import java.util.concurrent.TimeUnit
+import org.openjdk.jmh.annotations._
 
 /**
   * Measure the performance of the case transformations.
