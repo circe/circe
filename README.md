@@ -31,6 +31,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [Indix](https://www.indix.com)
+* [ITV](https://www.itv.com/)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
