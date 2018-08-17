@@ -183,6 +183,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (optics, opticsJS),
   (refined, refinedJS),
   (parser, parserJS),
+  (printer, printerJS),
   (scodec, scodecJS),
   (java8, java8JS),
   (testing, testingJS),
@@ -307,7 +308,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
-  .dependsOn(coreBase, parserBase % Test, testingBase % Test)
+  .dependsOn(coreBase, parserBase % Test, printerBase % Test, testingBase % Test)
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
@@ -331,6 +332,11 @@ lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
 
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
+
+lazy val printerBase = circeCrossModule("printer", mima = previousCirceVersion)
+  .dependsOn(coreBase)
+lazy val printer = printerBase.jvm
+lazy val printerJS = printerBase.js
 
 lazy val scalajs = circeModule("scalajs", mima = None)
   .enablePlugins(ScalaJSPlugin)
@@ -382,7 +388,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(fork := true)
-  .dependsOn(coreBase, parserBase, testingBase)
+  .dependsOn(coreBase, parserBase, testingBase, printerBase)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
@@ -392,7 +398,7 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(coreBase, genericBase, literalBase)
+  .dependsOn(coreBase, genericBase, literalBase, printerBase)
 
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js
@@ -435,7 +441,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(core, generic, jawn, printer)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,

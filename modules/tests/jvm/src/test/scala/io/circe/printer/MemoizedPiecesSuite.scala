@@ -1,13 +1,13 @@
-package io.circe
+package io.circe.printer
 
 import io.circe.tests.CirceSuite
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{ Millis, Span }
+import org.scalatest.time.{Millis, Span}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MemoizedPiecesSuite extends CirceSuite with ScalaFutures {
+class serMemoizedPiecesSuite extends CirceSuite with ScalaFutures {
   implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(1000, Millis))
 
   case class Depths(depths: Seq[Int])

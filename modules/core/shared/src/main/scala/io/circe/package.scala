@@ -1,3 +1,4 @@
 package io
 
-package object circe
+package object circe {
+}

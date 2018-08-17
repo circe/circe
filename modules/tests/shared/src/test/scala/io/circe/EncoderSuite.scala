@@ -40,15 +40,16 @@ class EncoderSuite extends CirceSuite {
   }
 
   "encodeFloat" should "match string representation" in forAll { x: Float =>
+    val printer = io.circe.printer.Printer.noSpaces
     // All Float values should be encoded in a way that match the original value.
-    assert(Encoder[Float].apply(x).toString.toFloat === x)
+    assert(Encoder[Float].apply(x).pretty(printer).toFloat === x)
 
     // For floats which are NOT represented with scientific notation,
     // the JSON representaton should match Float.toString
     // This should catch cases where 1.2f would previously be encoded
     // as 1.2000000476837158 due to the use of .toDouble
     if (!x.toString.toLowerCase.contains('e')) {
-      assert(Encoder[Float].apply(x).toString === x.toString)
+      assert(Encoder[Float].apply(x).pretty(printer) === x.toString)
     }
   }
 }

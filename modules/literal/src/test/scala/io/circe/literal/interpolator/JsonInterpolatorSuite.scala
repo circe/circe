@@ -3,6 +3,8 @@ package io.circe.literal.interpolator
 import io.circe.{ Encoder, Json }
 import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
+import io.circe.printer.Implicits._
+import io.circe.syntax._
 import io.circe.testing.instances.arbitraryJson
 import org.scalatest.{ FunSpec, Matchers }
 import org.scalatest.prop.GeneratorDrivenPropertyChecks

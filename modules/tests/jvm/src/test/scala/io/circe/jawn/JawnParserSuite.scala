@@ -2,6 +2,7 @@ package io.circe.jawn
 
 import cats.data.Validated
 import io.circe.Json
+import io.circe.printer.Implicits._
 import io.circe.testing.ParserTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.glossary

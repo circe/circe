@@ -1,5 +1,6 @@
-package io.circe
+package io.circe.printer
 
+import io.circe.Json
 import scala.io.Source
 import scala.util.Random
 

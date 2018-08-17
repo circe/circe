@@ -1,6 +1,7 @@
 package io.circe.hygiene
 
 import io.circe.generic.auto._
+import io.circe.printer.Implicits._
 import io.circe.syntax._
 
 sealed trait Foo
@@ -14,5 +15,6 @@ case class Qux(i: scala.Int, d: scala.Option[scala.Double]) extends Foo
  */
 object HygieneTests {
   val foo: Foo = Bar(scala.List("abc", "def", "ghi"))
+
   val json = foo.asJson.noSpaces
 }

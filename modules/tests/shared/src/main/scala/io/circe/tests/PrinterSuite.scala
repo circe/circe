@@ -1,6 +1,7 @@
 package io.circe.tests
 
-import io.circe.{ Json, Parser, Printer }
+import io.circe.{Json, Parser}
+import io.circe.printer.Printer
 import io.circe.testing.PrinterTests
 import java.nio.charset.StandardCharsets.UTF_8
 
@@ -15,7 +16,7 @@ class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceSuite 
   checkLaws("Printing Map", PrinterTests[Map[String, List[Int]]].printer(printer, parser))
 
   "prettyByteBuffer" should "match pretty" in forAll { (json: Json, predictSize: Boolean) =>
-    val buffer = printer.copy(predictSize = predictSize).prettyByteBuffer(json)
+    val buffer = printer.prettyByteBuffer(json)
 
     val bytes = new Array[Byte](buffer.limit)
     buffer.get(bytes)
