@@ -8,7 +8,7 @@ import scala.collection.mutable.Builder
 private[circe] trait CollectionDecoders {
   /**
    * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
+   *       unless the provided [[scala.collection.Factory]] is serializable.
    * @group Collection
    */
   implicit final def decodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
@@ -21,7 +21,7 @@ private[circe] trait CollectionDecoders {
 
   /**
    * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
+   *       unless the provided [[scala.collection.Factory]] is serializable.
    * @group Collection
    */
   implicit final def decodeTraversable[A, C[A] <: Traversable[A]](implicit
@@ -43,7 +43,7 @@ private[circe] trait CollectionDecoders {
 
   /**
    * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
+   *       unless the provided [[scala.collection.Factory]] is serializable.
    * @group Collection
    */
   implicit final def decodeOneAnd[A, C[_]](implicit
