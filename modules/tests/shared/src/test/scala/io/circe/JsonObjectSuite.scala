@@ -304,7 +304,7 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   "filterKeys" should "be consistent with Map#filterKeys" in forAll { (value: JsonObject, pred: String => Boolean) =>
-    assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred))
+    assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred).toMap)
   }
 
   "Eq[JsonObject]" should "be consistent with comparing fields" in {
