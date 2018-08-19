@@ -8,10 +8,8 @@ import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
-import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable.SortedMap
-import scala.collection.mutable.{ ArrayBuilder, Builder, HashMap }
-import scala.reflect.ClassTag
+import scala.collection.mutable.HashMap
 
 trait SpecialEqForFloatAndDouble {
   /**
@@ -63,16 +61,7 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
-   */
-  implicit def canBuildFromRefArraySerializable[A <: AnyRef: ClassTag]: CanBuildFrom[Array[A], A, Array[A]] =
-    new CanBuildFrom[Array[A], A, Array[A]] with Serializable {
-      def apply(from: Array[A]): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-      def apply(): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-    }
-
+class StdLibCodecSuite extends CirceSuite with CanBuildFromInstances {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
@@ -142,16 +131,7 @@ class StdLibCodecSuite extends CirceSuite {
   }
 }
 
-class CatsCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
-   */
-  implicit def canBuildFromStreamSerializable[A]: CanBuildFrom[Stream[A], A, Stream[A]] =
-    new CanBuildFrom[Stream[A], A, Stream[A]] with Serializable {
-      def apply(from: Stream[A]): Builder[A, Stream[A]] = Stream.newBuilder[A]
-      def apply(): Builder[A, Stream[A]] = Stream.newBuilder[A]
-    }
-
+class CatsCodecSuite extends CirceSuite with CanBuildFromInstances {
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
