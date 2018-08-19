@@ -288,7 +288,17 @@ lazy val coreJS = coreBase.js
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroSettings)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
+    Test / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
+        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
+        case _ => Nil
+      }
+    }
   )
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
@@ -298,6 +308,18 @@ lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
+  .settings(
+    Test / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Pure.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
+        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
+        case _ => Nil
+      }
+    }
+  )
   .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
   .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
