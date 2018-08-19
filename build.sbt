@@ -44,7 +44,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
   }
 
 def scalaTestVersionFor(scalaVersion: String): String =
-  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP1"
+  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP2"
 
 def scalaCheckVersionFor(scalaVersion: String): String =
   if (priorTo2_13(scalaVersion)) scalaCheckVersion else "1.14.0"
@@ -338,7 +338,7 @@ lazy val scalajs = circeModule("scalajs", mima = None)
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.5"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.6"
   )
   .dependsOn(coreBase, testsBase % Test)
 
