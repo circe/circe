@@ -1,8 +1,7 @@
 package io.circe
 
 import cats.data.OneAnd
-import scala.collection.Map
-import scala.collection.Factory
+import scala.collection.{ Factory, Map }
 import scala.collection.mutable.Builder
 
 private[circe] trait CollectionDecoders {
