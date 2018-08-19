@@ -4,7 +4,7 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.{ ArrayBuilder, Builder }
 import scala.reflect.ClassTag
 
-trait CanBuildFromInstances {
+trait ArrayFactoryInstance {
   /**
    * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
    */
@@ -13,7 +13,9 @@ trait CanBuildFromInstances {
       def apply(from: Array[A]): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
       def apply(): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
     }
+}
 
+trait StreamFactoryInstance {
   /**
    * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
    */

@@ -4,7 +4,7 @@ import scala.collection.{ Factory, IterableOnce }
 import scala.collection.mutable.{ ArrayBuffer, ArrayBuilder, Builder }
 import scala.reflect.ClassTag
 
-trait CanBuildFromInstances {
+trait ArrayFactoryInstance {
   /**
    * We need serializable `Factory` instances for arrays for our `Array` codec tests.
    */
@@ -13,7 +13,9 @@ trait CanBuildFromInstances {
       def fromSpecific(it: IterableOnce[A]): Array[A] = ArrayBuffer.from(it).toArray
       def newBuilder: Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
     }
+}
 
+trait StreamFactoryInstance {
   /**
    * We need serializable `Factory` instances for streams for our `NonEmptyStream` codec tests.
    */

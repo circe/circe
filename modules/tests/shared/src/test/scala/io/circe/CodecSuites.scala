@@ -61,7 +61,7 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceSuite with CanBuildFromInstances {
+class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
@@ -131,7 +131,7 @@ class StdLibCodecSuite extends CirceSuite with CanBuildFromInstances {
   }
 }
 
-class CatsCodecSuite extends CirceSuite with CanBuildFromInstances {
+class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
