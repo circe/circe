@@ -114,7 +114,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) ++ jvm8Only(java8) :+ tests).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ tests).map(p => p: ProjectReference)
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
@@ -182,7 +182,6 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (refined, refinedJS),
   (parser, parserJS),
   (scodec, scodecJS),
-  (java8, java8JS),
   (testing, testingJS),
   (tests, testsJS),
   (hygiene, hygieneJS)
@@ -192,13 +191,8 @@ lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 
-def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
-  case "1.8" => Set.empty
-  case _ => Set(projects: _*)
-}
-
 lazy val jvmProjects: Seq[Project] =
-  (circeCrossModules.map(_._1) ++ circeJvmModules).filterNot(jvm8Only(java8))
+  (circeCrossModules.map(_._1) ++ circeJvmModules)
 
 lazy val jsProjects: Seq[Project] =
   (circeCrossModules.map(_._2) ++ circeJsModules)
@@ -208,10 +202,10 @@ lazy val jsProjects: Seq[Project] =
  * JVM version. The `validate` command aliases will filter out projects
  * not supported by the given JVM.
  */
-lazy val aggregatedProjects: Seq[ProjectReference] =
-  (circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-   circeJsModules ++ circeJvmModules ++ circeDocsModules)
-    .filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
+lazy val aggregatedProjects: Seq[ProjectReference] = (
+  circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
+    circeJsModules ++ circeJvmModules ++ circeDocsModules
+).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
@@ -276,6 +270,37 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
+        case _ => Nil
+      }
+    }
+  )
+  .jvmSettings(
+    Compile / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor <= 11 => extraDirs("-no-jdk8")
+        case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
+        case _ => Nil
+      }
+    }
+  )
+  .jsSettings(
+    Compile / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor <= 11 || minor == 13 => extraDirs("-no-jdk8")
+        case Some((2, minor)) if minor == 12 => extraDirs("-with-jdk8")
+        case _ => Nil
+      }
+    },
+    libraryDependencies ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor == 12 =>
+          List("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13")
         case _ => Nil
       }
     }
@@ -426,7 +451,29 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
-  .jvmSettings(fork := true)
+  .jvmSettings(
+    fork := true,
+    Test / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
+        case _ => Nil
+      }
+    }
+  )
+  .jsSettings(
+    Test / unmanagedSourceDirectories ++= {
+      val baseDir = baseDirectory.value
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor == 12 => extraDirs("-with-jdk8")
+        case _ => Nil
+      }
+    }
+  )
   .dependsOn(coreBase, parserBase, testingBase)
 
 lazy val tests = testsBase.jvm
@@ -447,15 +494,6 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
   )
   .dependsOn(core)
-
-lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
-  .dependsOn(coreBase, testsBase % Test)
-  .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
-  )
-
-lazy val java8 = java8Base.jvm
-lazy val java8JS = java8Base.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)

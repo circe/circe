@@ -22,8 +22,6 @@ facilitate integration with other libraries or frameworks.
    derivation functionality (including some configurability).
  - [[io.circe.optics optics]]: navigation and immutable modification of JSON
    documents via Monocle's optics types.
- - [[https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala java8]]: encoders and decoders for the
-   `java.time` library that was introduced in Java 8.
  - [[io.circe.shapes shapes]]: encoders and decoders for
    [[https://github.com/milessabin/shapeless Shapeless]] hlists, coproducts, records, and sized collections.
  - [[https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala scodec]]: encoders and decoders for
