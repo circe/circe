@@ -173,37 +173,37 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeLocalDateDefault: Decoder[LocalDate] = decodeLocalDate(ISO_LOCAL_DATE)
+  implicit final def decodeLocalDateDefault: Decoder[LocalDate] = decodeLocalDate(ISO_LOCAL_DATE)
 
   /**
    * @group Time
    */
-  implicit final val decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
+  implicit final def decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
 
   /**
    * @group Time
    */
-  implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(ISO_LOCAL_DATE_TIME)
+  implicit final def decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(ISO_LOCAL_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val decodeOffsetTimeDefault: Decoder[OffsetTime] = decodeOffsetTime(ISO_OFFSET_TIME)
+  implicit final def decodeOffsetTimeDefault: Decoder[OffsetTime] = decodeOffsetTime(ISO_OFFSET_TIME)
 
   /**
    * @group Time
    */
-  implicit final val decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] = decodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
+  implicit final def decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] = decodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val decodeZonedDateTimeDefault: Decoder[ZonedDateTime] = decodeZonedDateTime(ISO_ZONED_DATE_TIME)
+  implicit final def decodeZonedDateTimeDefault: Decoder[ZonedDateTime] = decodeZonedDateTime(ISO_ZONED_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val decodeYearMonthDefault: Decoder[YearMonth] = decodeYearMonth(JavaTimeInstances.yearMonthFormatter)
+  implicit final def decodeYearMonthDefault: Decoder[YearMonth] = decodeYearMonth(JavaTimeInstances.yearMonthFormatter)
 }
 
 private[circe] trait JavaTimeEncoders {
@@ -280,35 +280,35 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeLocalDateDefault: Encoder[LocalDate] = encodeLocalDate(ISO_LOCAL_DATE)
+  implicit final def encodeLocalDateDefault: Encoder[LocalDate] = encodeLocalDate(ISO_LOCAL_DATE)
 
   /**
    * @group Time
    */
-  implicit final val encodeLocalTimeDefault: Encoder[LocalTime] = encodeLocalTime(ISO_LOCAL_TIME)
+  implicit final def encodeLocalTimeDefault: Encoder[LocalTime] = encodeLocalTime(ISO_LOCAL_TIME)
 
   /**
    * @group Time
    */
-  implicit final val encodeLocalDateTimeDefault: Encoder[LocalDateTime] = encodeLocalDateTime(ISO_LOCAL_DATE_TIME)
+  implicit final def encodeLocalDateTimeDefault: Encoder[LocalDateTime] = encodeLocalDateTime(ISO_LOCAL_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val encodeOffsetTimeDefault: Encoder[OffsetTime] = encodeOffsetTime(ISO_OFFSET_TIME)
+  implicit final def encodeOffsetTimeDefault: Encoder[OffsetTime] = encodeOffsetTime(ISO_OFFSET_TIME)
 
   /**
    * @group Time
    */
-  implicit final val encodeOffsetDateTimeDefault: Encoder[OffsetDateTime] = encodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
+  implicit final def encodeOffsetDateTimeDefault: Encoder[OffsetDateTime] = encodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val encodeZonedDateTimeDefault: Encoder[ZonedDateTime] = encodeZonedDateTime(ISO_ZONED_DATE_TIME)
+  implicit final def encodeZonedDateTimeDefault: Encoder[ZonedDateTime] = encodeZonedDateTime(ISO_ZONED_DATE_TIME)
 
   /**
    * @group Time
    */
-  implicit final val encodeYearMonthDefault: Encoder[YearMonth] = encodeYearMonth(JavaTimeInstances.yearMonthFormatter)
+  implicit final def encodeYearMonthDefault: Encoder[YearMonth] = encodeYearMonth(JavaTimeInstances.yearMonthFormatter)
 }
