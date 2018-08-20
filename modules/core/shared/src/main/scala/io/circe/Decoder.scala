@@ -273,8 +273,11 @@ trait Decoder[A] extends Serializable { self =>
  * @groupname Product Case class and other product instances
  * @groupprio Product 8
  *
+ * @groupname Time Java date and time instances
+ * @groupprio Time 9
+ *
  * @groupname Prioritization Instance prioritization
- * @groupprio Prioritization 9
+ * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
