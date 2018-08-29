@@ -225,7 +225,10 @@ final object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(map: Map[String, Json]): JsonObject = new MapAndVectorJsonObject(map, map.keys.toVector)
+  final def fromMap(map: Map[String, Json]): JsonObject = fromMapAndVector(map, map.keys.toVector)
+
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
+    new MapAndVectorJsonObject(map, keys)
 
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     new LinkedHashMapJsonObject(map)
