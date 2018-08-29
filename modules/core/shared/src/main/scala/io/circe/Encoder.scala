@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ Contravariant, Foldable }
-import cats.data.{ NonEmptyList, NonEmptySet, NonEmptyVector, OneAnd, Validated }
+import cats.data.{ NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
@@ -343,6 +343,18 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptySet[A]] =
     new ArrayEncoder[NonEmptySet[A]] {
       final def encodeArray(a: NonEmptySet[A]): Vector[Json] = a.toSortedSet.toVector.map(encodeA(_))
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def encodeNonEmptyMap[K, V](implicit
+                                             encodeK: KeyEncoder[K],
+                                             encodeV: Encoder[V]
+                                            ): ObjectEncoder[NonEmptyMap[K, V]] =
+    new ObjectEncoder[NonEmptyMap[K, V]] {
+      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
+        encodeMap.encodeObject(a.toSortedMap)
     }
 
   /**

@@ -1,14 +1,14 @@
 package io.circe
 
 import cats.{ MonadError, Order, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptySet, NonEmptyVector, StateT, Validated }
+import cats.data.{ Kleisli, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, StateT, Validated }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
 import scala.annotation.tailrec
-import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedSet }
+import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
 import scala.collection.mutable.Builder
 import scala.util.{ Failure, Success, Try }
 
@@ -812,8 +812,26 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
     */
   implicit final def decodeNonEmptySet[A: Order](implicit decodeA: Decoder[A]): Decoder[NonEmptySet[A]] =
     new NonEmptySeqDecoder[A, SortedSet, NonEmptySet[A]](decodeA) {
-      final protected def createBuilder(): Builder[A, SortedSet[A]] = SortedSet.newBuilder[A](Order.catsKernelOrderingForOrder)
-      final protected val create: (A, SortedSet[A]) => NonEmptySet[A] = (h, t) => NonEmptySet(h, t)
+      final protected def createBuilder(): Builder[A, SortedSet[A]] =
+        SortedSet.newBuilder[A](Order.catsKernelOrderingForOrder)
+      final protected val create: (A, SortedSet[A]) => NonEmptySet[A] =
+        (h, t) => NonEmptySet(h, t)
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeNonEmptyMap[K, V](implicit
+    decodeK: KeyDecoder[K],
+    decodeV: Decoder[V],
+    orderK: Order[K]
+  ): Decoder[NonEmptyMap[K, V]] =
+    decodeMapLike[K, V, SortedMap](
+      decodeK,
+      decodeV,
+      SortedMap.canBuildFrom(Order.catsKernelOrderingForOrder(orderK))
+    ).emap { map =>
+      NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
     }
 
   /**
