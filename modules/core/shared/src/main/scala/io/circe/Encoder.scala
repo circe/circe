@@ -350,20 +350,19 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
+   * Preserves iteration order.
+   *
    * @group Collection
    */
   implicit final def encodeMap[K, V](implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
-  ): ObjectEncoder[ImmutableMap[K, V]] = new ObjectEncoder[ImmutableMap[K, V]] {
-    final def encodeObject(a: ImmutableMap[K, V]): JsonObject = JsonObject.fromMap(
-      a.map {
-        case (k, v) => (encodeK(k), encodeV(v))
-      }
-    )
-  }
+  ): ObjectEncoder[ImmutableMap[K, V]] =
+    encodeMapLike[K, V, ImmutableMap](encodeK, encodeV, identity)
 
   /**
+   * Preserves iteration order.
+   *
    * @group Collection
    */
   implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
@@ -416,6 +415,9 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
     override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
   }
 
+  /**
+   * Note that this implementation assumes that the collection does not contain duplicate keys.
+   */
   private[this] abstract class IterableObjectEncoder[K, V, M[_, _]](
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
@@ -424,14 +426,17 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
 
     final def encodeObject(a: M[K, V]): JsonObject = {
       val builder = ImmutableMap.newBuilder[String, Json]
+      val keysBuilder = Vector.newBuilder[String]
       val iterator = toIterator(a)
 
       while (iterator.hasNext) {
         val next = iterator.next()
-        builder += ((encodeK(next._1), encodeV(next._2)))
+        val key = encodeK(next._1)
+        builder += ((key, encodeV(next._2)))
+        keysBuilder += key
       }
 
-      JsonObject.fromMap(builder.result())
+      JsonObject.fromMapAndVector(builder.result(), keysBuilder.result())
     }
   }
 }
