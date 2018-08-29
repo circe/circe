@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
+import cats.data.{ NonEmptyList, NonEmptySet, NonEmptyStream, NonEmptyVector, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
@@ -135,6 +135,7 @@ class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
+  checkLaws("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
 }
 
 class CirceCodecSuite extends CirceSuite {
