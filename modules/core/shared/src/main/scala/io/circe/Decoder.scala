@@ -821,18 +821,13 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
   /**
     * @group Collection
     */
-  implicit final def decodeNonEmptyMap[K, V](implicit
-    decodeK: KeyDecoder[K],
-    decodeV: Decoder[V],
-    orderK: Order[K]
-  ): Decoder[NonEmptyMap[K, V]] =
-    decodeMapLike[K, V, SortedMap](
-      decodeK,
-      decodeV,
-      SortedMap.canBuildFrom(Order.catsKernelOrderingForOrder(orderK))
-    ).emap { map =>
+  implicit final def decodeNonEmptyMap[K: KeyDecoder: Order, V: Decoder]: Decoder[NonEmptyMap[K, V]] = {
+    import Order.catsKernelOrderingForOrder
+
+    decodeMapLike[K, V, SortedMap].emap { map =>
       NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
     }
+  }
 
   /**
    * @group Disjunction
