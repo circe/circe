@@ -20,6 +20,18 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
 
+case class JavaTimeCaseClass(foo: Duration, bar: Option[LocalTime], baz: List[ZoneId])
+
+object JavaTimeCaseClass {
+  implicit val decodeJavaTimeCaseClass: Decoder[JavaTimeCaseClass] =
+    Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass(_, _, _))
+
+  implicit val encodeJavaTimeCaseClass: ObjectEncoder[JavaTimeCaseClass] =
+    Encoder.forProduct3("foo", "bar", "baz") { (value: JavaTimeCaseClass) =>
+      (value.foo, value.bar, value.baz)
+    }
+}
+
 class JavaTimeCodecSuite extends CirceSuite {
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
@@ -77,6 +89,14 @@ class JavaTimeCodecSuite extends CirceSuite {
     } yield Duration.between(first, second)
   )
 
+  implicit val arbitraryJavaTimeCaseClass: Arbitrary[JavaTimeCaseClass] = Arbitrary(
+    for {
+      foo <- arbitrary[Duration]
+      bar <- arbitrary[Option[LocalTime]]
+      baz <- arbitrary[List[ZoneId]]
+    } yield JavaTimeCaseClass(foo, bar, baz)
+  )
+
   implicit val eqInstant: Eq[Instant] = Eq.fromUniversalEquals
   implicit val eqLocalDateTime: Eq[LocalDateTime] = Eq.fromUniversalEquals
   implicit val eqZonedDateTime: Eq[ZonedDateTime] = Eq.fromUniversalEquals
@@ -88,18 +108,20 @@ class JavaTimeCodecSuite extends CirceSuite {
   implicit val eqYearMonth: Eq[YearMonth] = Eq.fromUniversalEquals
   implicit val eqDuration: Eq[Duration] = Eq.fromUniversalEquals
   implicit val eqZoneId: Eq[ZoneId] = Eq.fromUniversalEquals
+  implicit val eqJavaTimeCaseClass: Eq[JavaTimeCaseClass] = Eq.fromUniversalEquals
 
   checkLaws("Codec[Instant]", CodecTests[Instant].codec)
-  checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].unserializableCodec)
-  checkLaws("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].unserializableCodec)
-  checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].unserializableCodec)
-  checkLaws("Codec[LocalDate]", CodecTests[LocalDate].unserializableCodec)
-  checkLaws("Codec[LocalTime]", CodecTests[LocalTime].unserializableCodec)
-  checkLaws("Codec[OffsetTime]", CodecTests[OffsetTime].unserializableCodec)
+  checkLaws("Codec[LocalDateTime]", CodecTests[LocalDateTime].codec)
+  checkLaws("Codec[ZonedDateTime]", CodecTests[ZonedDateTime].codec)
+  checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].codec)
+  checkLaws("Codec[LocalDate]", CodecTests[LocalDate].codec)
+  checkLaws("Codec[LocalTime]", CodecTests[LocalTime].codec)
+  checkLaws("Codec[OffsetTime]", CodecTests[OffsetTime].codec)
   checkLaws("Codec[Period]", CodecTests[Period].codec)
-  checkLaws("Codec[YearMonth]", CodecTests[YearMonth].unserializableCodec)
+  checkLaws("Codec[YearMonth]", CodecTests[YearMonth].codec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
   checkLaws("Codec[ZoneId]", CodecTests[ZoneId].codec)
+  checkLaws("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
 
   val invalidText: String = "abc"
   val invalidJson: Json = Json.fromString(invalidText)

@@ -24,36 +24,36 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 
+private[circe] abstract class JavaTimeDecoder[A](name: String) extends Decoder[A] {
+  protected def parseUnsafe(input: String): A
+
+  /**
+   * Add information from the `DateTimeException` to the `DecodingFailure` error message.
+   */
+  protected def formatMessage(input: String, message: String): String
+
+  final def apply(c: HCursor): Decoder.Result[A] = c.value match {
+    case Json.JString(string) =>
+      try Right(parseUnsafe(string)) catch {
+        case e: DateTimeException =>
+          val message = e.getMessage
+
+          if (message.eq(null)) Left(DecodingFailure(name, c.history)) else {
+            val newMessage = formatMessage(string, message)
+            Left(DecodingFailure(s"$name ($newMessage)", c.history))
+          }
+      }
+    case _ => Left(DecodingFailure(name, c.history))
+  }
+}
+
+private[circe] abstract class StandardJavaTimeDecoder[A](name: String)
+    extends JavaTimeDecoder[A](name) {
+
+  protected final def formatMessage(input: String, message: String): String = message
+}
+
 private[circe] trait JavaTimeDecoders {
-  private[this] abstract class JavaTimeDecoder[A](name: String) extends Decoder[A] {
-    protected def parseUnsafe(input: String): A
-
-    /**
-     * Add information from the `DateTimeException` to the `DecodingFailure` error message.
-     */
-    protected def formatMessage(input: String, message: String): String
-
-    final def apply(c: HCursor): Decoder.Result[A] = c.value match {
-      case Json.JString(string) =>
-        try Right(parseUnsafe(string)) catch {
-          case e: DateTimeException =>
-            val message = e.getMessage
-
-            if (message.eq(null)) Left(DecodingFailure(name, c.history)) else {
-              val newMessage = formatMessage(string, message)
-              Left(DecodingFailure(s"$name ($newMessage)", c.history))
-            }
-        }
-      case _ => Left(DecodingFailure(name, c.history))
-    }
-  }
-
-  private[this] abstract class StandardJavaTimeDecoder[A](name: String)
-      extends JavaTimeDecoder[A](name) {
-
-    protected final def formatMessage(input: String, message: String): String = message
-  }
-
   /**
    * @group Time
    */
@@ -141,7 +141,6 @@ private[circe] trait JavaTimeDecoders {
         OffsetDateTime.parse(input, formatter)
     }
 
-
   /**
    * @group Time
    */
@@ -150,7 +149,6 @@ private[circe] trait JavaTimeDecoders {
       protected final def parseUnsafe(input: String): ZonedDateTime =
         ZonedDateTime.parse(input, formatter)
     }
-
 
   /**
    * @group Time
@@ -164,36 +162,63 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final def decodeLocalDateDefault: Decoder[LocalDate] = decodeLocalDate(ISO_LOCAL_DATE)
+  implicit final val decodeLocalDateDefault: Decoder[LocalDate] =
+    new StandardJavaTimeDecoder[LocalDate]("LocalDate") {
+      protected final def parseUnsafe(input: String): LocalDate =
+        LocalDate.parse(input, ISO_LOCAL_DATE)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeLocalTimeDefault: Decoder[LocalTime] = decodeLocalTime(ISO_LOCAL_TIME)
+  implicit final val decodeLocalTimeDefault: Decoder[LocalTime] =
+    new StandardJavaTimeDecoder[LocalTime]("LocalTime") {
+      protected final def parseUnsafe(input: String): LocalTime =
+        LocalTime.parse(input, ISO_LOCAL_TIME)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(ISO_LOCAL_DATE_TIME)
+  implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] =
+    new StandardJavaTimeDecoder[LocalDateTime]("LocalDateTime") {
+      protected final def parseUnsafe(input: String): LocalDateTime =
+        LocalDateTime.parse(input, ISO_LOCAL_DATE_TIME)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeOffsetTimeDefault: Decoder[OffsetTime] = decodeOffsetTime(ISO_OFFSET_TIME)
+  implicit final val decodeOffsetTimeDefault: Decoder[OffsetTime] =
+    new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
+      protected final def parseUnsafe(input: String): OffsetTime =
+        OffsetTime.parse(input, ISO_OFFSET_TIME)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] = decodeOffsetDateTime(ISO_OFFSET_DATE_TIME)
+  implicit final val decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] =
+    new StandardJavaTimeDecoder[OffsetDateTime]("OffsetDateTime") {
+      protected final def parseUnsafe(input: String): OffsetDateTime =
+        OffsetDateTime.parse(input, ISO_OFFSET_DATE_TIME)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeZonedDateTimeDefault: Decoder[ZonedDateTime] = decodeZonedDateTime(ISO_ZONED_DATE_TIME)
+  implicit final val decodeZonedDateTimeDefault: Decoder[ZonedDateTime] =
+    new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
+      protected final def parseUnsafe(input: String): ZonedDateTime =
+        ZonedDateTime.parse(input, ISO_ZONED_DATE_TIME)
+    }
 
   /**
    * @group Time
    */
-  implicit final def decodeYearMonthDefault: Decoder[YearMonth] =
-    decodeYearMonth(DateTimeFormatter.ofPattern("yyyy-MM"))
+  implicit final val decodeYearMonthDefault: Decoder[YearMonth] =
+    new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
+      protected final def parseUnsafe(input: String): YearMonth =
+        YearMonth.parse(input, DateTimeFormatter.ofPattern("yyyy-MM"))
+    }
 }
