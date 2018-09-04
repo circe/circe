@@ -23,7 +23,7 @@ private[circe] trait CollectionDecoders {
    *       unless the provided [[scala.collection.Factory]] is serializable.
    * @group Collection
    */
-  implicit final def decodeTraversable[A, C[A] <: Traversable[A]](implicit
+  implicit final def decodeIterable[A, C[A] <: Iterable[A]](implicit
     decodeA: Decoder[A],
     factory: Factory[A, C[A]]
   ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
