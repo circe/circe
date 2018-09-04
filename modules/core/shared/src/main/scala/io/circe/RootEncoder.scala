@@ -20,6 +20,6 @@ final object RootEncoder extends LowPriorityRootEncoders {
 }
 
 private[circe] trait LowPriorityRootEncoders {
-  implicit final def importedRootEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): RootEncoder[A] =
+  implicit final def importedRootEncoder[A](implicit exported: Exported[RootEncoder[A]]): RootEncoder[A] =
     exported.instance
 }
