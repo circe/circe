@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.Contravariant
+import io.circe.export.Exported
 
 /**
  * A type class that provides a conversion from a value of type `A` to a JSON
@@ -33,7 +34,7 @@ trait ArrayEncoder[A] extends RootEncoder[A] { self =>
   }
 }
 
-final object ArrayEncoder {
+final object ArrayEncoder extends LowPriorityArrayEncoders {
   /**
    * Return an instance for a given type.
    *
@@ -56,4 +57,9 @@ final object ArrayEncoder {
   implicit final val arrayEncoderContravariant: Contravariant[ArrayEncoder] = new Contravariant[ArrayEncoder] {
     final def contramap[A, B](e: ArrayEncoder[A])(f: B => A): ArrayEncoder[B] = e.contramapArray(f)
   }
+}
+
+private[circe] trait LowPriorityArrayEncoders {
+  implicit final def importedArrayEncoder[A](implicit exported: Exported[ArrayEncoder[A]]): ArrayEncoder[A] =
+    exported.instance
 }
