@@ -20,7 +20,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
 
-class TimeCodecSuite extends CirceSuite {
+class JavaTimeCodecSuite extends CirceSuite {
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
 
