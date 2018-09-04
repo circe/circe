@@ -394,14 +394,32 @@ object Boilerplate {
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
       val deconstructors = synTypes.map(tpe => s"deconstruct$tpe: PartialFunction[Source, $tpe]").mkString(", ")
       val findConstructor = synTypes.tail.foldLeft(
-        s"deconstruct${ synTypes.head }.andThen(t => (name${ synTypes.head }, encode${ synTypes.head }.encodeObject(t)))"
+        s"deconstruct${ synTypes.head }.andThen[(String, JsonObject)]" +
+          s"((t: ${ synTypes.head }) => (name${ synTypes.head }, encode${ synTypes.head }.encodeObject(t)))"
       ) {
         case (acc, tpe) =>
-          s"$acc.orElse(deconstruct$tpe.andThen(t => (name$tpe, encode$tpe.encodeObject(t))))"
+          s"$acc.orElse[Source, (String, JsonObject)](deconstruct$tpe.andThen[(String, JsonObject)]" +
+            s"((t: $tpe) => (name$tpe, encode$tpe.encodeObject(t))))"
       }
 
       block"""
         |package io.circe
+        |
+        |private[circe] abstract class SumEncoder[A](typeField: Option[String]) extends ObjectEncoder[A] {
+        |  protected def encodeWithoutType: PartialFunction[A, (String, JsonObject)]
+        |
+        |  private[this] val encodeWithType: ((String, JsonObject)) => JsonObject = typeField match {
+        |    case Some(typeFieldKey) => p => (typeFieldKey, Json.fromString(p._1)) +: p._2
+        |    case None => p => JsonObject.singleton(p._1, Json.fromJsonObject(p._2))
+        |  }
+        |
+        |  private[this] val encoder: PartialFunction[A, JsonObject] =
+        |    encodeWithoutType.andThen[JsonObject](encodeWithType)
+        |
+        |  private[this] val constEmpty: A => JsonObject = _ => JsonObject.empty
+        |
+        |  final def encodeObject(a: A): JsonObject = encoder.applyOrElse(a, constEmpty)
+        |}
         |
         |private[circe] trait SumEncoders {
         -  /**
@@ -409,19 +427,9 @@ object Boilerplate {
         -   */
         -  final def forSum$arity[Source, ${`A..N`}](typeField: Option[String])($memberNames)($deconstructors)(implicit
         -    $instances
-        -  ): ObjectEncoder[Source] = typeField match {
-        -    case Some(tf) => new ObjectEncoder[Source] {
-        -      final def encodeObject(a: Source): JsonObject = $findConstructor.lift(a) match {
-        -        case Some((name, o)) => (tf, Json.fromString(name)) +: o
-        -        case None => JsonObject.empty
-        -      }
-        -    }
-        -    case None => new ObjectEncoder[Source] {
-        -      final def encodeObject(a: Source): JsonObject = $findConstructor.lift(a) match {
-        -        case Some((name, o)) => JsonObject.singleton(name, Json.fromJsonObject(o))
-        -        case None => JsonObject.empty
-        -      }
-        -    }
+        -  ): ObjectEncoder[Source] = new SumEncoder[Source](typeField) {
+        -    protected final def encodeWithoutType: PartialFunction[Source, (String, JsonObject)] =
+        -      $findConstructor
         -  }
         |}
       """
