@@ -492,5 +492,5 @@ private[circe] trait LowPriorityEncoders {
   /**
    * @group Prioritization
    */
-  implicit final def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
+  implicit final def importedEncoder[A](implicit exported: Exported[Encoder[A]]): Encoder[A] = exported.instance
 }
