@@ -25,7 +25,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
       if (failed.eq(null)) Right(builder.result) else Left(failed)
     } else {
       if (c.value.isArray) Right(createBuilder().result) else {
-        Left(DecodingFailure("CanBuildFrom for A", c.history))
+        Left(DecodingFailure("C[A]", c.history))
       }
     }
   }
@@ -58,7 +58,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
       }
     } else {
       if (c.value.isArray) Validated.valid(createBuilder().result) else {
-        Validated.invalidNel(DecodingFailure("CanBuildFrom for A", c.history))
+        Validated.invalidNel(DecodingFailure("C[A]", c.history))
       }
     }
   }
