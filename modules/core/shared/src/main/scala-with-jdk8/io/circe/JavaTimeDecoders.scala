@@ -99,7 +99,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeLocalDate(formatter: DateTimeFormatter): Decoder[LocalDate] =
+  final def decodeLocalDateWithFormatter(formatter: DateTimeFormatter): Decoder[LocalDate] =
     new StandardJavaTimeDecoder[LocalDate]("LocalDate") {
       protected final def parseUnsafe(input: String): LocalDate =
         LocalDate.parse(input, formatter)
@@ -108,7 +108,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeLocalTime(formatter: DateTimeFormatter): Decoder[LocalTime] =
+  final def decodeLocalTimeWithFormatter(formatter: DateTimeFormatter): Decoder[LocalTime] =
     new StandardJavaTimeDecoder[LocalTime]("LocalTime") {
       protected final def parseUnsafe(input: String): LocalTime =
         LocalTime.parse(input, formatter)
@@ -117,7 +117,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeLocalDateTime(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
+  final def decodeLocalDateTimeWithFormatter(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
     new StandardJavaTimeDecoder[LocalDateTime]("LocalDateTime") {
       protected final def parseUnsafe(input: String): LocalDateTime =
         LocalDateTime.parse(input, formatter)
@@ -126,7 +126,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeOffsetTime(formatter: DateTimeFormatter): Decoder[OffsetTime] =
+  final def decodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
       protected final def parseUnsafe(input: String): OffsetTime =
         OffsetTime.parse(input, formatter)
@@ -135,7 +135,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeOffsetDateTime(formatter: DateTimeFormatter): Decoder[OffsetDateTime] =
+  final def decodeOffsetDateTimeWithFormatter(formatter: DateTimeFormatter): Decoder[OffsetDateTime] =
     new StandardJavaTimeDecoder[OffsetDateTime]("OffsetDateTime") {
       protected final def parseUnsafe(input: String): OffsetDateTime =
         OffsetDateTime.parse(input, formatter)
@@ -144,7 +144,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeZonedDateTime(formatter: DateTimeFormatter): Decoder[ZonedDateTime] =
+  final def decodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Decoder[ZonedDateTime] =
     new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
       protected final def parseUnsafe(input: String): ZonedDateTime =
         ZonedDateTime.parse(input, formatter)
@@ -153,7 +153,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeYearMonth(formatter: DateTimeFormatter): Decoder[YearMonth] =
+  final def decodeYearMonthWithFormatter(formatter: DateTimeFormatter): Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected final def parseUnsafe(input: String): YearMonth =
         YearMonth.parse(input, formatter)
@@ -162,7 +162,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeLocalDateDefault: Decoder[LocalDate] =
+  implicit final val decodeLocalDate: Decoder[LocalDate] =
     new StandardJavaTimeDecoder[LocalDate]("LocalDate") {
       protected final def parseUnsafe(input: String): LocalDate =
         LocalDate.parse(input, ISO_LOCAL_DATE)
@@ -171,7 +171,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeLocalTimeDefault: Decoder[LocalTime] =
+  implicit final val decodeLocalTime: Decoder[LocalTime] =
     new StandardJavaTimeDecoder[LocalTime]("LocalTime") {
       protected final def parseUnsafe(input: String): LocalTime =
         LocalTime.parse(input, ISO_LOCAL_TIME)
@@ -180,7 +180,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] =
+  implicit final val decodeLocalDateTime: Decoder[LocalDateTime] =
     new StandardJavaTimeDecoder[LocalDateTime]("LocalDateTime") {
       protected final def parseUnsafe(input: String): LocalDateTime =
         LocalDateTime.parse(input, ISO_LOCAL_DATE_TIME)
@@ -189,7 +189,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeOffsetTimeDefault: Decoder[OffsetTime] =
+  implicit final val decodeOffsetTime: Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
       protected final def parseUnsafe(input: String): OffsetTime =
         OffsetTime.parse(input, ISO_OFFSET_TIME)
@@ -198,7 +198,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeOffsetDateTimeDefault: Decoder[OffsetDateTime] =
+  implicit final val decodeOffsetDateTime: Decoder[OffsetDateTime] =
     new StandardJavaTimeDecoder[OffsetDateTime]("OffsetDateTime") {
       protected final def parseUnsafe(input: String): OffsetDateTime =
         OffsetDateTime.parse(input, ISO_OFFSET_DATE_TIME)
@@ -207,7 +207,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeZonedDateTimeDefault: Decoder[ZonedDateTime] =
+  implicit final val decodeZonedDateTime: Decoder[ZonedDateTime] =
     new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
       protected final def parseUnsafe(input: String): ZonedDateTime =
         ZonedDateTime.parse(input, ISO_ZONED_DATE_TIME)
@@ -216,7 +216,7 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeYearMonthDefault: Decoder[YearMonth] =
+  implicit final val decodeYearMonth: Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected final def parseUnsafe(input: String): YearMonth =
         YearMonth.parse(input, DateTimeFormatter.ofPattern("yyyy-MM"))

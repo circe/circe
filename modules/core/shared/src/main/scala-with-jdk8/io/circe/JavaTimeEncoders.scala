@@ -62,7 +62,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeLocalDate(formatter: DateTimeFormatter): Encoder[LocalDate] =
+  final def encodeLocalDateWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDate] =
     new JavaTimeEncoder[LocalDate] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -70,7 +70,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeLocalTime(formatter: DateTimeFormatter): Encoder[LocalTime] =
+  final def encodeLocalTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalTime] =
     new JavaTimeEncoder[LocalTime] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -78,7 +78,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
+  final def encodeLocalDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
     new JavaTimeEncoder[LocalDateTime] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -86,7 +86,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeOffsetTime(formatter: DateTimeFormatter): Encoder[OffsetTime] =
+  final def encodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetTime] =
     new JavaTimeEncoder[OffsetTime] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -94,7 +94,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeOffsetDateTime(formatter: DateTimeFormatter): Encoder[OffsetDateTime] =
+  final def encodeOffsetDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetDateTime] =
     new JavaTimeEncoder[OffsetDateTime] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -102,7 +102,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeZonedDateTime(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
+  final def encodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
     new JavaTimeEncoder[ZonedDateTime] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -110,7 +110,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeYearMonth(formatter: DateTimeFormatter): Encoder[YearMonth] =
+  final def encodeYearMonthWithFormatter(formatter: DateTimeFormatter): Encoder[YearMonth] =
     new JavaTimeEncoder[YearMonth] {
       protected final def format: DateTimeFormatter = formatter
     }
@@ -118,7 +118,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeLocalDateDefault: Encoder[LocalDate] =
+  implicit final val encodeLocalDate: Encoder[LocalDate] =
     new JavaTimeEncoder[LocalDate] {
       protected final def format: DateTimeFormatter = ISO_LOCAL_DATE
     }
@@ -126,7 +126,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeLocalTimeDefault: Encoder[LocalTime] =
+  implicit final val encodeLocalTime: Encoder[LocalTime] =
     new JavaTimeEncoder[LocalTime] {
       protected final def format: DateTimeFormatter = ISO_LOCAL_TIME
     }
@@ -134,7 +134,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeLocalDateTimeDefault: Encoder[LocalDateTime] =
+  implicit final val encodeLocalDateTime: Encoder[LocalDateTime] =
     new JavaTimeEncoder[LocalDateTime] {
       protected final def format: DateTimeFormatter = ISO_LOCAL_DATE_TIME
     }
@@ -142,7 +142,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeOffsetTimeDefault: Encoder[OffsetTime] =
+  implicit final val encodeOffsetTime: Encoder[OffsetTime] =
     new JavaTimeEncoder[OffsetTime] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
     }
@@ -150,7 +150,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeOffsetDateTimeDefault: Encoder[OffsetDateTime] =
+  implicit final val encodeOffsetDateTime: Encoder[OffsetDateTime] =
     new JavaTimeEncoder[OffsetDateTime] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
     }
@@ -158,7 +158,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeZonedDateTimeDefault: Encoder[ZonedDateTime] =
+  implicit final val encodeZonedDateTime: Encoder[ZonedDateTime] =
     new JavaTimeEncoder[ZonedDateTime] {
       protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
     }
@@ -166,7 +166,7 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeYearMonthDefault: Encoder[YearMonth] =
+  implicit final val encodeYearMonth: Encoder[YearMonth] =
     new JavaTimeEncoder[YearMonth] {
       protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
     }
