@@ -405,23 +405,23 @@ object Boilerplate {
       block"""
         |package io.circe
         |
-        |private[circe] abstract class SumEncoder[A](typeField: Option[String]) extends ObjectEncoder[A] {
-        |  protected def encodeWithoutType: PartialFunction[A, (String, JsonObject)]
+        |private[circe] trait SumEncoders {
+        |  private[this] abstract class SumEncoder[A](typeField: Option[String]) extends ObjectEncoder[A] {
+        |    protected def encodeWithoutType: PartialFunction[A, (String, JsonObject)]
         |
-        |  private[this] val encodeWithType: ((String, JsonObject)) => JsonObject = typeField match {
-        |    case Some(typeFieldKey) => p => (typeFieldKey, Json.fromString(p._1)) +: p._2
-        |    case None => p => JsonObject.singleton(p._1, Json.fromJsonObject(p._2))
+        |    private[this] val encodeWithType: ((String, JsonObject)) => JsonObject = typeField match {
+        |      case Some(typeFieldKey) => p => (typeFieldKey, Json.fromString(p._1)) +: p._2
+        |      case None => p => JsonObject.singleton(p._1, Json.fromJsonObject(p._2))
+        |    }
+        |
+        |    private[this] val encoder: PartialFunction[A, JsonObject] =
+        |      encodeWithoutType.andThen[JsonObject](encodeWithType)
+        |
+        |    private[this] val constEmpty: A => JsonObject = _ => JsonObject.empty
+        |
+        |    final def encodeObject(a: A): JsonObject = encoder.applyOrElse(a, constEmpty)
         |  }
         |
-        |  private[this] val encoder: PartialFunction[A, JsonObject] =
-        |    encodeWithoutType.andThen[JsonObject](encodeWithType)
-        |
-        |  private[this] val constEmpty: A => JsonObject = _ => JsonObject.empty
-        |
-        |  final def encodeObject(a: A): JsonObject = encoder.applyOrElse(a, constEmpty)
-        |}
-        |
-        |private[circe] trait SumEncoders {
         -  /**
         -   * @group Sum
         -   */
