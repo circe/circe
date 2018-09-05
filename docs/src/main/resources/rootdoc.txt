@@ -20,8 +20,6 @@ facilitate integration with other libraries or frameworks.
    classes and sealed trait hierarchies.
  - [[io.circe.generic.extras generic-extras]]: additional experimental generic
    derivation functionality (including some configurability).
- - [[io.circe.optics optics]]: navigation and immutable modification of JSON
-   documents via Monocle's optics types.
  - [[io.circe.shapes shapes]]: encoders and decoders for
    [[https://github.com/milessabin/shapeless Shapeless]] hlists, coproducts, records, and sized collections.
  - [[https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala scodec]]: encoders and decoders for

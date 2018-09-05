@@ -34,6 +34,20 @@ trait ArrayEncoder[A] extends RootEncoder[A] { self =>
   }
 }
 
+/**
+ * Utilities and instances for [[ArrayEncoder]].
+ *
+ * @groupname Utilities Defining encoders
+ * @groupprio Utilities 1
+ *
+ * @groupname Instances Type class instances
+ * @groupprio Instances 2
+ *
+ * @groupname Prioritization Instance prioritization
+ * @groupprio Prioritization 3
+ *
+ * @author Travis Brown
+ */
 final object ArrayEncoder extends LowPriorityArrayEncoders {
   /**
    * Return an instance for a given type.
@@ -52,14 +66,17 @@ final object ArrayEncoder extends LowPriorityArrayEncoders {
   }
 
   /**
-    * @group Instances
-    */
+   * @group Instances
+   */
   implicit final val arrayEncoderContravariant: Contravariant[ArrayEncoder] = new Contravariant[ArrayEncoder] {
     final def contramap[A, B](e: ArrayEncoder[A])(f: B => A): ArrayEncoder[B] = e.contramapArray(f)
   }
 }
 
 private[circe] trait LowPriorityArrayEncoders {
+  /**
+   * @group Prioritization
+   */
   implicit final def importedArrayEncoder[A](implicit exported: Exported[ArrayEncoder[A]]): ArrayEncoder[A] =
     exported.instance
 }

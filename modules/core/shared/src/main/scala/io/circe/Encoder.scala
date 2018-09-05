@@ -40,13 +40,13 @@ trait Encoder[A] extends Serializable { self =>
  * Utilities and instances for [[Encoder]].
  *
  * @groupname Utilities Defining encoders
- * @groupprio Utilities 0
+ * @groupprio Utilities 1
  *
  * @groupname Encoding General encoder instances
- * @groupprio Encoding 1
+ * @groupprio Encoding 2
  *
  * @groupname Collection Collection instances
- * @groupprio Collection 2
+ * @groupprio Collection 3
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
@@ -56,19 +56,22 @@ trait Encoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 3
+ * @groupprio Disjunction 4
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 4
+ * @groupprio Instances 5
  *
  * @groupname Tuple Tuple instances
- * @groupprio Tuple 5
+ * @groupprio Tuple 6
  *
  * @groupname Product Case class and other product instances
- * @groupprio Product 6
+ * @groupprio Product 7
+ *
+ * @groupname Time Java date and time instances
+ * @groupprio Time 8
  *
  * @groupname Prioritization Instance prioritization
- * @groupprio Prioritization 9
+ * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
