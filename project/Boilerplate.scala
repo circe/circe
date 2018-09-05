@@ -231,7 +231,7 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[${`A..N`}, Target]($memberNames)(f: (${`A..N`}) => Target)(implicit
+        -  final def forProduct$arity[Target, ${`A..N`}]($memberNames)(f: (${`A..N`}) => Target)(implicit
         -    $instances
         -  ): Decoder[Target] =
         -    new Decoder[Target] {
@@ -269,7 +269,7 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[${`A..N`}, Source]($memberNames)(f: Source => $outputType)(implicit
+        -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
         -  ): ObjectEncoder[Source] =
         -    new ObjectEncoder[Source] {
