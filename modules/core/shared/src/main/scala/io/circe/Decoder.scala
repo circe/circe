@@ -252,7 +252,7 @@ trait Decoder[A] extends Serializable { self =>
  * @groupprio Decoding 2
  *
  * @groupname Collection Collection instances
- * @groupprio Collection 4
+ * @groupprio Collection 3
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
@@ -262,19 +262,19 @@ trait Decoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 5
+ * @groupprio Disjunction 4
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 6
+ * @groupprio Instances 5
  *
  * @groupname Tuple Tuple instances
- * @groupprio Tuple 7
+ * @groupprio Tuple 6
  *
  * @groupname Product Case class and other product instances
- * @groupprio Product 8
+ * @groupprio Product 7
  *
  * @groupname Time Java date and time instances
- * @groupprio Time 9
+ * @groupprio Time 8
  *
  * @groupname Prioritization Instance prioritization
  * @groupprio Prioritization 10
