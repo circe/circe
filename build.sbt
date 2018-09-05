@@ -21,7 +21,7 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "1.2.0"
+val catsVersion = "1.3.0"
 val jawnVersion = "0.13.0"
 val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.2"
