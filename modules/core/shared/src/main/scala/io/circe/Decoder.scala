@@ -1,9 +1,10 @@
 package io.circe
 
-import cats.{ MonadError, Order, SemigroupK }
+import cats.{ MonadError, SemigroupK }
 import cats.data.{ Kleisli, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, StateT, Validated }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
+import cats.kernel.Order
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
@@ -810,10 +811,10 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
   /**
     * @group Collection
     */
-  implicit final def decodeNonEmptySet[A: Order](implicit decodeA: Decoder[A]): Decoder[NonEmptySet[A]] =
+  implicit final def decodeNonEmptySet[A](implicit decodeA: Decoder[A], orderA: Order[A]): Decoder[NonEmptySet[A]] =
     new NonEmptySeqDecoder[A, SortedSet, NonEmptySet[A]](decodeA) {
       final protected def createBuilder(): Builder[A, SortedSet[A]] =
-        SortedSet.newBuilder[A](Order.catsKernelOrderingForOrder)
+        SortedSet.newBuilder[A](Order.catsKernelOrderingForOrder(orderA))
       final protected val create: (A, SortedSet[A]) => NonEmptySet[A] =
         (h, t) => NonEmptySet(h, t)
     }
@@ -821,13 +822,17 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
   /**
     * @group Collection
     */
-  implicit final def decodeNonEmptyMap[K: KeyDecoder: Order, V: Decoder]: Decoder[NonEmptyMap[K, V]] = {
-    import Order.catsKernelOrderingForOrder
-
-    decodeMapLike[K, V, SortedMap].emap { map =>
-      NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
+  implicit final def decodeNonEmptyMap[K, V](implicit
+    decodeK: KeyDecoder[K],
+    orderK: Order[K],
+    decodeV: Decoder[V]
+  ): Decoder[NonEmptyMap[K, V]] =
+    new MapDecoder[K, V, SortedMap](decodeK, decodeV) {
+      final protected def createBuilder(): Builder[(K, V), SortedMap[K, V]] =
+        SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
+    }.emap { map =>
+      NonEmptyMap.fromMap(map)(orderK).toRight("[K, V]NonEmptyMap[K, V]")
     }
-  }
 
   /**
    * @group Disjunction
