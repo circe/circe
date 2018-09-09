@@ -1,5 +1,7 @@
 package io.circe
 
+import cats.data.Chain
+import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.ContravariantTests
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
@@ -58,6 +60,10 @@ class EncoderSuite extends CirceSuite {
 
   "encodeVector" should "match sequence encoders" in forAll { (xs: Vector[Int]) =>
     assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+  }
+
+  "encodeChain" should "match sequence encoders" in forAll { (xs: Chain[Int]) =>
+    assert(Encoder.encodeChain[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toList))
   }
 
   "encodeFloat" should "match string representation" in forAll { x: Float =>

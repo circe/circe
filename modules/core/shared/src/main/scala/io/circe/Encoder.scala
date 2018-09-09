@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ Contravariant, Foldable }
-import cats.data.{ NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
@@ -325,6 +325,14 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
     }
 
   /**
+    * @group Collection
+    */
+  implicit final def encodeChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[Chain[A]] =
+    new IterableArrayEncoder[A, Chain](encodeA) {
+      final protected def toIterator(a: Chain[A]): Iterator[A] = a.iterator
+    }
+
+  /**
    * @group Collection
    */
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyList[A]] =
@@ -358,6 +366,14 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
     new ObjectEncoder[NonEmptyMap[K, V]] {
       final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
         encodeMap.encodeObject(a.toSortedMap)
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyChain[A]] =
+    new ArrayEncoder[NonEmptyChain[A]] {
+      final def encodeArray(a: NonEmptyChain[A]): Vector[Json] = a.toChain.toVector.map(encodeA(_))
     }
 
   /**

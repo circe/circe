@@ -1,7 +1,8 @@
 package io.circe
 
 import cats.{ MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, StateT, Validated }
+import cats.data.{ Chain, Kleisli, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, StateT,
+  Validated }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
@@ -791,6 +792,14 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
     }
 
   /**
+    * @group Collection
+    */
+  implicit final def decodeChain[A](implicit decodeA: Decoder[A]): Decoder[Chain[A]] =
+    new SeqDecoder[A, Chain](decodeA) {
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder
+    }
+
+  /**
    * @group Collection
    */
   implicit final def decodeNonEmptyList[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyList[A]] =
@@ -832,6 +841,16 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
         SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
     }.emap { map =>
       NonEmptyMap.fromMap(map)(orderK).toRight("[K, V]NonEmptyMap[K, V]")
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeNonEmptyChain[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyChain[A]] =
+    new NonEmptySeqDecoder[A, Chain, NonEmptyChain[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder
+      final protected val create: (A, Chain[A]) => NonEmptyChain[A] =
+        (h, t) => NonEmptyChain.fromChainPrepend(h, t)
     }
 
   /**
