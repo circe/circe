@@ -32,7 +32,8 @@ object Boilerplate {
 
   val testTemplates: Seq[Template] = Seq(
     GenTupleTests,
-    GenProductTests
+    GenProductTests,
+    GenSumTests
   )
 
   val header = "// auto-generated boilerplate"
@@ -271,7 +272,7 @@ object Boilerplate {
         |  private[this] abstract class SumDecoder[Target] extends Decoder[Target] {
         |    protected[this] def nameMap: Map[String, Decoder[Target]]
         |  }
-        |        
+        |
         |  private[this] abstract class TypeFieldSumDecoder[Target](typeField: String) extends SumDecoder[Target] {
         |    private[this] def failure(name: String, c: HCursor): DecodingFailure =
         |      DecodingFailure(s"Unknown name in $$typeField: $$name", c.history)
@@ -465,12 +466,80 @@ object Boilerplate {
         -    implicit val arbitraryCc$arity: Arbitrary[Cc$arity] = Arbitrary(
         -      for { $memberArbitraryItems } yield Cc$arity($memberVariableNames)
         -    )
-        -    implicit val encodeCc$arity: Encoder[Cc$arity] =
-        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
+        -    implicit val encodeCc$arity: Encoder[Cc$arity] =
+        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
         -  }
         -  checkLaws("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
+        |}
+      """
+    }
+  }
+
+  object GenSumTests extends Template {
+    override def range: IndexedSeq[Int] = 1 to maxArity
+
+    def filename(root: File): File = root /  "io" / "circe" / "SumCodecSuite.scala"
+
+    def content(tv: TemplateVals): String = {
+      import tv._
+
+      val names = (0 until arity).map(i => "\"" + s"Cc${ arity }_$i" + "\"").mkString(", ")
+      val types = (0 until arity).map(i => s"Cc${ arity }_$i").mkString(", ")
+
+      val caseClasses = (0 until arity).map(i =>
+        List(
+          s"case class Cc${ arity }_$i(fooBar$i: String, bazQux: Int) extends Adt$arity; ",
+          s"object Cc${ arity }_$i { ",
+          s"implicit val eqCc${ arity }_$i: Eq[Cc${ arity }_$i] = Eq.fromUniversalEquals; ",
+          s"implicit val arbitraryCc${ arity }_$i: Arbitrary[Cc${ arity }_$i] = Arbitrary(",
+          "for { fooBar <- Arbitrary.arbitrary[String]; bazQux <- Arbitrary.arbitrary[Int]",
+          s"} yield Cc${ arity }_$i(fooBar, bazQux)); ",
+          s"implicit val decodeCc${ arity }_$i: Decoder[Cc${ arity }_$i] = ",
+          s"""Decoder.forProduct2("fooBar$i", "bazQux")(Cc${ arity }_$i.apply) ;""",
+          s"implicit val encodeCc${ arity }_$i: ObjectEncoder[Cc${ arity }_$i] = ",
+          s"""Encoder.forProduct2("fooBar$i", "bazQux")((Cc${ arity }_$i.unapply _).andThen(_.get)) }"""
+        ).mkString
+      ).mkString("; ")
+
+      val arbitraries = (0 until arity).map(i => s"Cc${ arity }_$i.arbitraryCc${ arity }_$i.arbitrary").mkString(", ")
+      val gen = if (arity == 1) "Cc1_0.arbitraryCc1_0.arbitrary" else s"Gen.oneOf($arbitraries)"
+      val cases = (0 until arity).map(i => s"{ case cc @ Cc${ arity }_$i(_, _) => cc }").mkString(", ")
+
+      block"""
+        |package io.circe
+        |
+        |import cats.kernel.Eq
+        |import io.circe.testing.CodecTests
+        |import io.circe.tests.CirceSuite
+        |import org.scalacheck.{ Arbitrary, Gen }
+        |
+        |class SumCodecSuite extends CirceSuite {
+        -  sealed trait Adt$arity
+        -  $caseClasses
+        -  object Adt$arity {
+        -    implicit val eqAdt$arity: Eq[Adt$arity] = Eq.fromUniversalEquals
+        -    implicit val arbitraryAdt$arity: Arbitrary[Adt$arity] = Arbitrary(
+        -      $gen
+        -    )
+        -    implicit val decodeAdt$arity: Decoder[Adt$arity] =
+        -      Decoder.forSum$arity[Adt$arity, $types](None)($names)
+        -    implicit val encodeAdt$arity: ObjectEncoder[Adt$arity] =
+        -      Encoder.forSum$arity(None)($names)($cases)
+        -    val decodeWithTypeFieldAdt$arity: Decoder[Adt$arity] =
+        -      Decoder.forSum$arity[Adt$arity, $types](Some("type"))($names)
+        -    val encodeWithTypeFieldAdt$arity: ObjectEncoder[Adt$arity] =
+        -      Encoder.forSum$arity(Some("type"))($names)($cases)
+        -  }
+        -  checkLaws("Codec[Adt$arity]", CodecTests[Adt$arity].unserializableCodec)
+        -  checkLaws(
+        -    "Codec[Adt$arity] (with type field)",
+        -    CodecTests[Adt$arity](
+        -      Adt$arity.decodeWithTypeFieldAdt$arity,
+        -      Adt$arity.encodeWithTypeFieldAdt$arity
+        -    ).unserializableCodec
+        -  )
         |}
       """
     }
