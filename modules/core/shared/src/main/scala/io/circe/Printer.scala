@@ -272,24 +272,21 @@ final object Printer {
       while (i < value.length) {
         val c = value.charAt(i)
 
-        if (
-          (c == '"' || c == '\\' || c == '\b' || c == '\f' || c == '\n' || c == '\r' || c == '\t') ||
-          Character.isISOControl(c) ||
-          (escapeNonAscii && c.toInt > 127)
-        ) {
-          writer.append(value, offset, i)
-          writer.append('\\')
-          (c: @switch) match {
-            case '"'  => writer.append('"')
-            case '\\' => writer.append('\\')
-            case '\b' => writer.append('b')
-            case '\f' => writer.append('f')
-            case '\n' => writer.append('n')
-            case '\r' => writer.append('r')
-            case '\t' => writer.append('t')
-            case control =>
-              writer.append(String.format("u%04x", Integer.valueOf(control.toInt)))
-          }
+        val esc = (c: @switch) match {
+          case '"' => '"'
+          case '\\' => '\\'
+          case '\b' => 'b'
+          case '\f' => 'f'
+          case '\n' => 'n'
+          case '\r' => 'r'
+          case '\t' => 't'
+          case _ => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
+        }
+        if (esc != 0) {
+          writer.append(value, offset, i).append('\\')
+          if (esc != 1) writer.append(esc)
+          else writer.append('u').append(toHex((c >> 12) & 15)).append(toHex((c >> 8) & 15))
+            .append(toHex((c >> 4) & 15)).append(toHex(c & 15))
           offset = i + 1
         }
 
@@ -299,6 +296,8 @@ final object Printer {
       if (offset < i) writer.append(value, offset, i)
       writer.append('"')
     }
+
+    final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
 
     final def onArray(value: Vector[Json]): Unit = {
       val orig = depth
