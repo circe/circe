@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{NonEmptyList, Validated}
+import cats.data.{Chain, NonEmptyList, Validated}
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.DownArray
@@ -30,7 +30,8 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     "decoder",
     Decoder[Set[T]],
     Decoder[List[T]],
-    Decoder[Vector[T]]
+    Decoder[Vector[T]],
+    Decoder[Chain[T]]
   )
 
   "transformations" should "do nothing when used with identity" in forAll(transformations[Int]) { transformation =>
@@ -468,6 +469,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "decodeVector" should "match sequence decoders" in forAll { (xs: List[Int]) =>
     assert(Decoder.decodeVector[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toVector).decodeJson(xs.asJson))
+  }
+
+  "decodeChain" should "match sequence decoders" in forAll { (xs: List[Int]) =>
+    assert(Decoder.decodeChain[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(Chain.fromSeq(_)).decodeJson(xs.asJson))
   }
 
   "HCursor#history" should "be stack safe" in {
