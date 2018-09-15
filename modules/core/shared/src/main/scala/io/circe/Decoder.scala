@@ -791,12 +791,23 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
     }
 
+  private[this] class ChainBuilder[A] extends CompatBuilder[A, Chain[A]] {
+    private[this] var xs: Chain[A] = Chain.nil
+    final def clear(): Unit = xs = Chain.nil
+    final def result(): Chain[A] = xs
+
+    final def addOne(elem: A): this.type = {
+      xs = xs.append(elem)
+      this
+    }
+  }
+
   /**
     * @group Collection
     */
   implicit final def decodeChain[A](implicit decodeA: Decoder[A]): Decoder[Chain[A]] =
     new SeqDecoder[A, Chain](decodeA) {
-      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder[A]
     }
 
   /**
@@ -848,7 +859,7 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
     */
   implicit final def decodeNonEmptyChain[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyChain[A]] =
     new NonEmptySeqDecoder[A, Chain, NonEmptyChain[A]](decodeA) {
-      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder[A]
       final protected val create: (A, Chain[A]) => NonEmptyChain[A] =
         (h, t) => NonEmptyChain.fromChainPrepend(h, t)
     }
