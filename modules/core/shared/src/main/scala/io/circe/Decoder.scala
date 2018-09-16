@@ -121,8 +121,9 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-    * Build a new instance that fails if the condition does not hold.
-    */
+   * Build a new instance that fails if the condition does not hold for the
+   * result.
+   */
   final def ensure(pred: A => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
       case l @ Left(_) => l
@@ -138,7 +139,14 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-   * Build a new instance that fails if the condition does not hold.
+   * Build a new instance that fails if the condition does not hold for the
+   * input.
+   *
+   * Note that this condition is checked before decoding with the current
+   * decoder, and if it does not hold, decoding does not continue. This means
+   * that if you chain calls to this method, errors will not be accumulated
+   * (instead only the error of the last failing `validate` in the chain will be
+   * returned).
    */
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
