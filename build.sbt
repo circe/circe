@@ -114,7 +114,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) ++ jvm8Only(java8) :+ tests).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ java8 :+ java8JS :+ tests).map(p => p: ProjectReference)
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
@@ -182,7 +182,6 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (refined, refinedJS),
   (parser, parserJS),
   (scodec, scodecJS),
-  (java8, java8JS),
   (testing, testingJS),
   (tests, testsJS),
   (hygiene, hygieneJS)
@@ -192,26 +191,16 @@ lazy val circeJsModules = Seq[Project](scalajs)
 lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 
-def jvm8Only(projects: Project*): Set[Project] = sys.props("java.specification.version") match {
-  case "1.8" => Set.empty
-  case _ => Set(projects: _*)
-}
-
 lazy val jvmProjects: Seq[Project] =
-  (circeCrossModules.map(_._1) ++ circeJvmModules).filterNot(jvm8Only(java8))
+  (circeCrossModules.map(_._1) ++ circeJvmModules)
 
 lazy val jsProjects: Seq[Project] =
   (circeCrossModules.map(_._2) ++ circeJsModules)
 
-/**
- * Aggregation should ensure that publish works as expected on the given
- * JVM version. The `validate` command aliases will filter out projects
- * not supported by the given JVM.
- */
 lazy val aggregatedProjects: Seq[ProjectReference] = (
   circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
     circeJsModules ++ circeJvmModules ++ circeDocsModules
-).filterNot(jvm8Only(java8)).map(p => p: ProjectReference)
+).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
