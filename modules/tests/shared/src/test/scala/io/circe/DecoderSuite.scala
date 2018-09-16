@@ -313,6 +313,46 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decoder.apply(friday.hcursor).isEmpty)
   }
 
+  "ensure" should "fail appropriately on an invalid result" in forAll { (i: Int) =>
+    val message = "Not positive!"
+
+    val decodePositiveInt: Decoder[Int] = Decoder[Int].ensure(_ > 0, message)
+    val expected = if (i > 0) Right(i) else Left(DecodingFailure(message, Nil))
+
+    assert(decodePositiveInt.decodeJson(Json.fromInt(i)) === expected)
+  }
+
+  it should "fail appropriately on an invalid result in error-accumulation mode" in forAll { (i: Int) =>
+    val positiveMessage = "Not positive!"
+    val oddMessage = "Not odd!"
+
+    val decodePositiveOddInt: Decoder[Int] =
+      Decoder[Int]
+        .ensure(_ > 0, positiveMessage)
+        .ensure(_ % 2 == 1, oddMessage)
+
+    val expected = if (i > 0) {
+      if (i % 2 == 1) {
+        Validated.valid(i)
+      } else {
+        Validated.invalidNel(DecodingFailure(oddMessage, Nil))
+      }
+    } else {
+      if (i % 2 == 1) {
+        Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
+      } else {
+        Validated.invalid(
+          NonEmptyList.of(
+            DecodingFailure(positiveMessage, Nil),
+            DecodingFailure(oddMessage, Nil)
+          )
+        )
+      }
+    }
+
+    assert(decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
+  }
+
   "validate" should "fail appropriately on invalid input in fail-fast mode" in forAll { (i: Int) =>
     val message = "Not positive!"
 
