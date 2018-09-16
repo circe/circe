@@ -25,7 +25,7 @@ case class JavaTimeCaseClass(foo: Duration, bar: Option[LocalTime], baz: List[Zo
 
 object JavaTimeCaseClass {
   implicit val decodeJavaTimeCaseClass: Decoder[JavaTimeCaseClass] =
-    Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass(_, _, _))
+    Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass.apply)
 
   implicit val encodeJavaTimeCaseClass: ObjectEncoder[JavaTimeCaseClass] =
     Encoder.forProduct3("foo", "bar", "baz") { (value: JavaTimeCaseClass) =>
