@@ -8,6 +8,7 @@ import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
 import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.concurrent.duration.FiniteDuration
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -269,6 +270,18 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   implicit final val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
   }
+
+  /**
+   * @group Encoding
+   */
+  implicit final val finiteDurationEncoder: Encoder[FiniteDuration] = new Encoder[FiniteDuration] {
+    final def apply(a: FiniteDuration): Json =
+      Json.fromJsonObject(
+        JsonObject(
+          "length" -> Json.fromLong(a.length),
+          "unit"   -> Json.fromString(a.unit.name)))
+  }
+
 
   /**
    * @group Encoding

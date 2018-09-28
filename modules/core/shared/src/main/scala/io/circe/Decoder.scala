@@ -9,9 +9,11 @@ import cats.kernel.Order
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
 import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
 import scala.collection.mutable.Builder
+import scala.concurrent.duration.FiniteDuration
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
@@ -747,6 +749,20 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
       case _ => fail(c)
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final val finiteDurationDecoder: Decoder[FiniteDuration] =
+    new Decoder[FiniteDuration] {
+      def apply(c: HCursor): Result[FiniteDuration] = for {
+        length <- c.downField("length").as[Long].right
+        unitString <- c.downField("unit").as[String].right
+        unit <- (try { Right(TimeUnit.valueOf(unitString)) } catch {
+          case _: IllegalArgumentException => Left(DecodingFailure("FiniteDuration", c.history))
+        }).right
+      } yield FiniteDuration(length, unit)
+    }
 
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
