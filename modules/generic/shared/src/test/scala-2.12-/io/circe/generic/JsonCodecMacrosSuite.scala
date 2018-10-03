@@ -77,6 +77,21 @@ package jsoncodecmacrossuiteaux {
       )
   }
 
+  // Access modifier
+
+  @JsonCodec private[circe] final case class AccessModifier(a: Int)
+
+  private[circe] object AccessModifier {
+    implicit def eqAccessModifier: Eq[AccessModifier] = Eq.fromUniversalEquals
+
+    implicit def arbitraryAccessModifier: Arbitrary[AccessModifier] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[Int]
+        } yield AccessModifier(a)
+      )
+  }
+
   // Hierarchy
 
   @JsonCodec sealed trait Hierarchy
@@ -143,6 +158,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkLaws("Codec[Single]", CodecTests[Single].codec)
   checkLaws("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
   checkLaws("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
+  checkLaws("Codec[AccessModifier]", CodecTests[AccessModifier].codec)
   checkLaws("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
   checkLaws("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkLaws("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
@@ -152,6 +168,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
     ObjectEncoder[Single]
     ObjectEncoder[Typed1[Int]]
     ObjectEncoder[Typed2[Int, Long]]
+    ObjectEncoder[AccessModifier]
     ObjectEncoder[Hierarchy]
     ObjectEncoder[RecursiveHierarchy]
     ObjectEncoder[SelfRecursiveWithOption]

@@ -23,11 +23,11 @@ abstract class JsonCodecMacros {
        """
     case List(
       clsDef: ClassDef,
-      q"object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
+      q"..$mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
     ) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
-       object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
+       $mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
          ..$objDefs
          ..${ codec(clsDef) }
        }
