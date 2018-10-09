@@ -151,6 +151,13 @@ sealed abstract class Json extends Product with Serializable {
     }
 
   /**
+   * Drop the entries with a null value if this is an object.
+   *
+   * Note that this does not apply recursively.
+   */
+  def dropNullValues: Json = this.mapObject(_.filter { case (_, v) => !v.isNull })
+
+  /**
    * Compute a `String` representation for this JSON value.
    */
   override final def toString: String = spaces2
