@@ -2,8 +2,8 @@
 
 <ol>
   <li>
-    <p>Please note that generic derivation will not work on Scala 2.10 unless you’ve added the [Macro
-Paradise][paradise] plugin to your build. See the <a href="/circe/index.html#quick-start">quick start section on the home page</a>
+    <p>Please note that generic derivation will not work on Scala 2.10 unless you’ve added the <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro
+Paradise</a> plugin to your build. See the <a href="https://circe.github.io/circe/index.html#quick-start">quick start section on the home page</a>
 for details.</p>
   </li>
   <li>
@@ -34,15 +34,15 @@ derivation (which is typically what you want, anyway).</p>
 provided by the <code class="highlighter-rouge">generic</code> subproject may stack overflow during compilation, which will result in
 the derived encoders or decoders simply not being found. Increasing the stack size available to
 the compiler (e.g. with <code class="highlighter-rouge">sbt -J-Xss64m</code> if you’re using SBT) will help in many cases, but we have
-at least [one report][very-large-adt] of a case where it doesn’t.</p>
+at least <a href="http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168">one report</a> of a case where it doesn’t.</p>
   </li>
   <li>
     <p>More generally, the generic derivation provided by the <code class="highlighter-rouge">generic</code> subproject works for a wide
 range of test cases, and is likely to <em>just work</em> for you, but it relies on macros (provided by
 Shapeless) that rely on compiler functionality that is not always perfectly robust
-(“[SI-7046][si-7046] is like [playing roulette][si-7046-roulette]”), and if you’re running into
+(“<a href="https://issues.scala-lang.org/browse/SI-7046">SI-7046</a> is like <a href="https://twitter.com/li_haoyi/status/637281580847878145">playing roulette</a>”), and if you’re running into
 problems, it’s likely that they’re not your fault. Please file an issue here or ask a question on
-the [Gitter channel][gitter], and we’ll do our best to figure out whether the problem is
+the <a href="https://gitter.im/circe/circe">Gitter channel</a>, and we’ll do our best to figure out whether the problem is
 something we can fix.</p>
   </li>
   <li>
@@ -67,7 +67,7 @@ the leaf types:</p>
 <span class="k">object</span> <span class="nc">A</span>
 </code></pre></div>    </div>
 
-    <p>See [this issue][circe-251] for additional discussion (this workaround may not be necessary in
+    <p>See <a href="https://github.com/circe/circe/issues/251">this issue</a> for additional discussion (this workaround may not be necessary in
 future versions).</p>
   </li>
   <li>
@@ -75,7 +75,7 @@ future versions).</p>
 or arbitrary-precision types, but precision may still be lost during parsing. This shouldn’t
 happen when using Jawn for parsing, but <code class="highlighter-rouge">scalajs.js.JSON</code> parses JSON numbers into a floating
 point representation that may lose precision (even when decoding into a type like <code class="highlighter-rouge">BigDecimal</code>;
-see [this issue][circe-262] for an example).</p>
+see <a href="https://github.com/circe/circe/issues/262">this issue</a> for an example).</p>
   </li>
 </ol>
 
@@ -138,9 +138,7 @@ as the parent trait:</p>
 </ol>
 
 <p>If none of these workarounds are desirable for your use case, it might be a good idea to try semi-auto derivation instead.</p>
-</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
-languages:['scala','java','bash']
-});
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
-             </script><script>((window.gitter = {}).chat = {}).options = {
+              </script><script>((window.gitter = {}).chat = {}).options = {
 room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/main.js"></script></body></html>

@@ -80,9 +80,7 @@ facilitate integration with other libraries or frameworks.</p><ul><li><a href="n
    decoder instances for literal types.</li><li><a href="generic/index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
    <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
    classes and sealed trait hierarchies.</li><li><a href="generic/extras/index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
-   derivation functionality (including some configurability).</li><li><a href="optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
-   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
-   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   derivation functionality (including some configurability).</li><li><a href="shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
    <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
    <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
 detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
@@ -182,24 +180,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.java8" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="java8"></a><a id="java8:java8"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#java8" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="Codecs for Java standard library types that were introduced in Java 8." href="java8/index.html"><span class="name">java8</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Codecs for Java standard library types that were introduced in Java 8.</p><div class="fullcomment"><div class="comment cmt"><p>Codecs for Java standard library types that were introduced in Java 8.</p><p>Once circe drops support for earlier Java versions, this module will be
-merged into core.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.jawn" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="jawn"></a><a id="jawn:jawn"></a>
       <span class="permalink">
@@ -245,22 +225,6 @@ merged into core.
       </span>
       <span class="symbol">
         <a title="" href="numbers/index.html"><span class="name">numbers</span></a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
-    </li><li name="io.circe.optics" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="optics"></a><a id="optics:optics"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#optics" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="optics/index.html"><span class="name">optics</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
@@ -338,7 +302,7 @@ merged into core.
                         <a class="trait" href="AccumulatingDecoder.html" title=""></a>
                         <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="" title=""></a>
+                        <a class="object" href="" title="Utilities and instances for ArrayEncoder."></a>
                         <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
                         <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
                       </li><li class="current-entities indented2">
@@ -394,7 +358,7 @@ merged into core.
                         <a class="class" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title=""></a>
+                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
                         <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
                         <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
                       </li><li class="current-entities indented2">
@@ -410,7 +374,7 @@ merged into core.
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title=""></a>
+                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
                         <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
                         <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
@@ -442,16 +406,17 @@ merged into core.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ArrayEncoder</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name">ArrayEncoder</span><span class="result"> extends <span class="extype" name="io.circe.LowPriorityArrayEncoders">LowPriorityArrayEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/core/shared/src/main/scala/io/circe/ArrayEncoder.scala" target="_blank">ArrayEncoder.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Utilities and instances for <a href="ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/core/shared/src/main/scala/io/circe/ArrayEncoder.scala" target="_blank">ArrayEncoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="io.circe.LowPriorityArrayEncoders">LowPriorityArrayEncoders</span>, <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -477,7 +442,7 @@ merged into core.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="io.circe.ArrayEncoder"><span>ArrayEncoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="io.circe.ArrayEncoder"><span>ArrayEncoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="io.circe.LowPriorityArrayEncoders"><span>LowPriorityArrayEncoders</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -716,6 +681,22 @@ merged into core.
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.LowPriorityArrayEncoders#importedArrayEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Prioritization">
+      <a id="importedArrayEncoder[A](implicitexported:io.circe.export.Exported[io.circe.ArrayEncoder[A]]):io.circe.ArrayEncoder[A]"></a><a id="importedArrayEncoder[A](Exported[ArrayEncoder[A]]):ArrayEncoder[A]"></a>
+      <span class="permalink">
+      <a href="../../io/circe/ArrayEncoder$.html#importedArrayEncoder[A](implicitexported:io.circe.export.Exported[io.circe.ArrayEncoder[A]]):io.circe.ArrayEncoder[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">importedArrayEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="exported">exported: <a href="export/Exported.html" class="extype" name="io.circe.export.Exported">Exported</a>[<a href="ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>[<span class="extype" name="io.circe.LowPriorityArrayEncoders.importedArrayEncoder.A">A</span>]]</span>)</span><span class="result">: <a href="ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>[<span class="extype" name="io.circe.LowPriorityArrayEncoders.importedArrayEncoder.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>LowPriorityArrayEncoders</dd></dl></div>
     </li><li name="io.circe.ArrayEncoder#instance" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Utilities">
       <a id="instance[A](f:A=&gt;Vector[io.circe.Json]):io.circe.ArrayEncoder[A]"></a><a id="instance[A]((A)⇒Vector[Json]):ArrayEncoder[A]"></a>
       <span class="permalink">
@@ -916,6 +897,8 @@ merged into core.
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="io.circe.LowPriorityArrayEncoders">
+              <h3>Inherited from <span class="extype" name="io.circe.LowPriorityArrayEncoders">LowPriorityArrayEncoders</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
@@ -925,11 +908,14 @@ merged into core.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Instances">
-              <h3>Instances</h3>
+        <div class="group" name="Utilities">
+              <h3>Defining encoders</h3>
               
-            </div><div class="group" name="Utilities">
-              <h3>Utilities</h3>
+            </div><div class="group" name="Instances">
+              <h3>Type class instances</h3>
+              
+            </div><div class="group" name="Prioritization">
+              <h3>Instance prioritization</h3>
               
             </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>

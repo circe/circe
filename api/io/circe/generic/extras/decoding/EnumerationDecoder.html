@@ -80,9 +80,7 @@ facilitate integration with other libraries or frameworks.</p><ul><li><a href=".
    decoder instances for literal types.</li><li><a href="../../index.html" class="extype" name="io.circe.generic">generic</a>: Shapeless-powered
    <a href="https://circe.github.io/circe/codec.html" target="_blank">generic derivation</a> for case
    classes and sealed trait hierarchies.</li><li><a href="../index.html" class="extype" name="io.circe.generic.extras">generic-extras</a>: additional experimental generic
-   derivation functionality (including some configurability).</li><li><a href="../../../optics/index.html" class="extype" name="io.circe.optics">optics</a>: navigation and immutable modification of JSON
-   documents via Monocle's optics types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/java8/src/main/scala/io/circe/java8/package.scala" target="_blank">java8</a>: encoders and decoders for the
-   <code>java.time</code> library that was introduced in Java 8.</li><li><a href="../../../shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
+   derivation functionality (including some configurability).</li><li><a href="../../../shapes/index.html" class="extype" name="io.circe.shapes">shapes</a>: encoders and decoders for
    <a href="https://github.com/milessabin/shapeless" target="_blank">Shapeless</a> hlists, coproducts, records, and sized collections.</li><li><a href="https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala" target="_blank">scodec</a>: encoders and decoders for
    <a href="https://github.com/scodec/scodec-bits" target="_blank">Scodec</a>'s <code>BitVector</code> and <code>ByteVector</code>.</li><li><a href="https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala" target="_blank">refined</a>: encoders and decoders for <a href="https://github.com/fthomas/refined" target="_blank">refined</a> types.</li><li><a href="https://github.com/circe/circe/blob/master/modules/spray/src/main/scala/io/circe/spray/JsonSupport.scala" target="_blank">spray</a>: Spray marshaller conversions for circe's type classes.</li></ul><p>Please refer to the <a href="https://circe.github.io/circe/" target="_blank">documentation</a> for a more
 detailed introduction to the library.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
@@ -528,6 +526,25 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <p class="shortcomment cmt">Create a new decoder that performs some operation on the result if this one succeeds.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new decoder that performs some operation on the result if this one succeeds.
 </p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a function returning either a value or an error message</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="io.circe.Decoder#ensure" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ensure(pred:A=&gt;Boolean,message:=&gt;String):io.circe.Decoder[A]"></a><a id="ensure((A)⇒Boolean,⇒String):Decoder[A]"></a>
+      <span class="permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/EnumerationDecoder.html#ensure(pred:A=&gt;Boolean,message:=&gt;String):io.circe.Decoder[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ensure</span><span class="params">(<span name="pred">pred: (<span class="extype" name="io.circe.generic.extras.decoding.EnumerationDecoder.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.12.6/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="message">message: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.EnumerationDecoder.A">A</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Build a new instance that fails if the condition does not hold for the
+result.</p><div class="fullcomment"><div class="comment cmt"><p>Build a new instance that fails if the condition does not hold for the
+result.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((EnumerationDecoder[A])⇒Boolean,⇒Any):EnumerationDecoder[A]"></a>
       <span class="permalink">
@@ -997,7 +1014,13 @@ accumulating decoding to be consistent.
         <span class="name">validate</span><span class="params">(<span name="pred">pred: (<a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.6/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="message">message: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.EnumerationDecoder.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Build a new instance that fails if the condition does not hold.</p><div class="fullcomment"><div class="comment cmt"><p>Build a new instance that fails if the condition does not hold.
+      <p class="shortcomment cmt">Build a new instance that fails if the condition does not hold for the
+input.</p><div class="fullcomment"><div class="comment cmt"><p>Build a new instance that fails if the condition does not hold for the
+input.</p><p>Note that this condition is checked before decoding with the current
+decoder, and if it does not hold, decoding does not continue. This means
+that if you chain calls to this method, errors will not be accumulated
+(instead only the error of the last failing <code>validate</code> in the chain will be
+returned).
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>

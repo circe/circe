@@ -47,24 +47,24 @@ use of semi-automatic generic derivation:</p>
 in a relatively boilerplate-free way without generic derivation:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.</span><span class="o">{</span> <span class="nc">Decoder</span><span class="o">,</span> <span class="nc">Encoder</span> <span class="o">}</span>
-
+<span class="c1">// import io.circe.{Decoder, Encoder}
+</span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">firstName</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">lastName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
-
-<span class="k">object</span> <span class="nc">UserCodec</span> <span class="o">{</span>
-  <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeUser</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
-    <span class="nc">Decoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="nc">User</span><span class="o">.</span><span class="n">apply</span><span class="o">)</span>
-
-  <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
-    <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span>
-      <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">firstName</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lastName</span><span class="o">)</span>
-    <span class="o">)</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<span class="c1">// defined class User
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeUser</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
+  <span class="nc">Decoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="nc">User</span><span class="o">.</span><span class="n">apply</span><span class="o">)</span>
+<span class="c1">// decodeUser: io.circe.Decoder[User] = io.circe.ProductDecoders$$anon$3@7e6f0f9b
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
+  <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span>
+    <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">firstName</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lastName</span><span class="o">)</span>
+  <span class="o">)</span>
+<span class="c1">// encodeUser: io.circe.Encoder[User] = io.circe.ProductEncoders$$anon$3@1da90bdd
+</span></code></pre></div></div>
 
 <p>It’s not as clean or as maintainable as generic derivation, but it’s less magical, it requires nothing but <code class="highlighter-rouge">circe-core</code>, and if you need a custom name mapping it’s currently the best solution (although <code class="highlighter-rouge">0.6.0</code> introduces experimental configurable generic derivation in the <code class="highlighter-rouge">circe-generic-extras</code> module).</p>
-</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({
-languages:['scala','java','bash']
-});
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
-             </script><script>((window.gitter = {}).chat = {}).options = {
+              </script><script>((window.gitter = {}).chat = {}).options = {
 room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/main.js"></script></body></html>
