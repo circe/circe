@@ -163,10 +163,13 @@ lazy val docSettings = allSettings ++ Seq(
 lazy val docs = project.dependsOn(core, genericExtras, parser, shapes)
   .settings(
     moduleName := "circe-docs",
-    name := "Circe docs"
+    name := "Circe docs",
+    crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.13")),
+    libraryDependencies += "io.circe" %% "circe-optics" % "0.10.0"
   )
   .settings(docSettings)
   .settings(noPublishSettings)
+  .settings(macroSettings)
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
@@ -199,7 +202,7 @@ lazy val jsProjects: Seq[Project] =
 
 lazy val aggregatedProjects: Seq[ProjectReference] = (
   circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-    circeJsModules ++ circeJvmModules ++ circeDocsModules
+    circeJsModules ++ circeJvmModules
 ).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
@@ -561,7 +564,7 @@ val jsTestProjects = jsProjects.filterNot(Set(core, parser, scalajs))
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
   "validateJVM",
-  ";buildJVM" + jvmTestProjects.map(";" + _.id + "/test").mkString + ";scalastyle;unidoc"
+  ";buildJVM" + jvmTestProjects.map(";" + _.id + "/test").mkString + ";scalastyle"
 )
 addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(

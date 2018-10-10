@@ -16,10 +16,19 @@ cache:
 
 install:
   - pip install --user codecov
+  - rvm use 2.2.8 --install --fuzzy
+  - gem update --system
+  - gem install sass
+  - gem install jekyll -v 3.2.1
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
   - sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
+    else echo "Skipping docs on 2.11 and 2.13";
+    fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
