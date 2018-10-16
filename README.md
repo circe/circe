@@ -128,6 +128,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/gvolpe/simple-http4s-api
 * https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
+* https://github.com/pauljamescleary/scala-pet-store
 
 ## Contributors and participation
 
