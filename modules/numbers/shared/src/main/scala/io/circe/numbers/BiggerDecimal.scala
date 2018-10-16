@@ -247,11 +247,12 @@ final object BiggerDecimal {
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
-      var c = input.charAt(i)
 
-      var state = if (input.charAt(i) != '0') START else {
-        i = i + 1
-        AFTER_ZERO
+      var state = if (i >= len) FAILED else {
+        if (input.charAt(i) != '0') START else {
+          i = i + 1
+          AFTER_ZERO
+        }
       }
 
       while (i < len && state != FAILED) {
