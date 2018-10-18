@@ -49,7 +49,7 @@ package object scalajs {
     def onNumber(value: JsonNumber): js.Any = value.toDouble
     def onString(value: String): js.Any = value
     def onArray(value: Vector[Json]): js.Any = value.map(this).toJSArray
-    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toMap.toJSDictionary
+    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toJSDictionary
   }
 
   /**
