@@ -30,6 +30,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Earnest](https://www.earnest.com)
 * [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
+* [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
 * [MatchesFashion](https://www.matchesfashion.com)
