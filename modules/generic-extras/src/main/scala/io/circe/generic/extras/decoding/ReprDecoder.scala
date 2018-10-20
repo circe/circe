@@ -34,11 +34,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     name: String,
     defaults: Map[String, Any]
   ): Decoder.Result[B] = result match {
-    case r @ Right(_) => r
-    case l @ Left(_) =>
+    case r @ Right(_) if r ne Decoder.keyMissingNone => r
+    case _ =>
       defaults.get(name) match {
         case Some(d: B @unchecked) => Right(d)
-        case _                     => l
+        case _                     => result
       }
   }
 

@@ -90,6 +90,40 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     }
   }
 
+  {
+    case class FooWithDefault(a: Option[Int] = Some(0), b: String = "b")
+    object FooWithDefault {
+      implicit val eqConfigExampleFoo: Eq[FooWithDefault] = Eq.fromUniversalEquals
+    }
+
+    case class FooNoDefault(a: Option[Int], b: String = "b")
+    object FooNoDefault {
+      implicit val eqConfigExampleFoo: Eq[FooNoDefault] = Eq.fromUniversalEquals
+    }
+
+    implicit val customConfig: Configuration = Configuration.default.withDefaults
+
+    "Option[T] without default" should "be None if null decoded" in {
+      val json = json"""{ "a": null }"""
+      assert(Decoder[FooNoDefault].decodeJson(json) === Right(FooNoDefault(None, "b")))
+    }
+
+    "Option[T] without default" should "be None if missing key decoded" in {
+      val json = json"""{}"""
+      assert(Decoder[FooNoDefault].decodeJson(json) === Right(FooNoDefault(None, "b")))
+    }
+
+    "Option[T] with default" should "be None if null decoded" in {
+      val json = json"""{ "a": null }"""
+      assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(None, "b")))
+    }
+
+    "Option[T] with default" should "be default value if missing key decoded" in {
+      val json = json"""{}"""
+      assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
+    }
+  }
+
   "Configuration#discriminator" should "support a field indicating constructor" in {
     forAll { foo: ConfigExampleFoo =>
       implicit val withDefaultsConfig: Configuration = Configuration.default.withDiscriminator("type")

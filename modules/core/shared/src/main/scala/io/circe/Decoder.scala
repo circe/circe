@@ -808,6 +808,8 @@ final object Decoder
 
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
+  private[circe] final val keyMissingNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
+
   /**
    * @group Decoding
    */
@@ -820,7 +822,7 @@ final object Decoder
           case Left(df) => Left(df)
         }
     case c: FailedCursor =>
-      if (!c.incorrectFocus) rightNone else Left(DecodingFailure("[A]Option[A]", c.history))
+      if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
   }
 
   /**
