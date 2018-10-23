@@ -31,7 +31,7 @@ private[time] abstract class JavaTimeEncoder[A <: TemporalAccessor] extends Enco
   final def apply(a: A): Json = Json.fromString(format.format(a))
 }
 
-private[time] trait JavaTimeEncoders {
+trait JavaTimeEncoders {
   /**
    * @group Time
    */

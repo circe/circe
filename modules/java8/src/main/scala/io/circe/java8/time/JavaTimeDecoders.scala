@@ -57,7 +57,7 @@ private[time] abstract class StandardJavaTimeDecoder[A](name: String)
   protected final def formatMessage(input: String, message: String): String = message
 }
 
-private[time] trait JavaTimeDecoders {
+trait JavaTimeDecoders {
   /**
    * @group Time
    */
