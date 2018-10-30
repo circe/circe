@@ -187,7 +187,7 @@ trait JavaTimeDecoders {
   final def decodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Decoder[ZoneOffset] =
     new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
       protected final def parseUnsafe(input: String): ZoneOffset =
-        ZoneOffset.parse(input, formatter)
+        ZoneOffset.of(input)
     }
 
   /**
@@ -222,8 +222,11 @@ trait JavaTimeDecoders {
    */
   implicit final val decodeMonthDay: Decoder[MonthDay] =
     new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
+      private[this] final def monthDayFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("--MM-dd")
+
       protected final def parseUnsafe(input: String): MonthDay =
-        MonthDay.parse(input, ISO_LOCAL_DATE_TIME)
+        MonthDay.parse(input, monthDayFormatter)
     }
 
   /**
@@ -248,8 +251,8 @@ trait JavaTimeDecoders {
    * @group Time
    */
   implicit final val decodeYear: Decoder[Year] =
-    new StandardJavaTimeDecoder[YearMonth]("Year") {
-      protected final def parseUnsafe(input: String): YearMonth =
+    new StandardJavaTimeDecoder[Year]("Year") {
+      protected final def parseUnsafe(input: String): Year =
         Year.parse(input)
     }
 

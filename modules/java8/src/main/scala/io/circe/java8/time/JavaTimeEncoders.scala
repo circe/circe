@@ -7,12 +7,15 @@ import java.time.{
   LocalDate,
   LocalDateTime,
   LocalTime,
+  MonthDay,
   OffsetDateTime,
   OffsetTime,
   Period,
+  Year,
   YearMonth,
   ZonedDateTime,
-  ZoneId
+  ZoneId,
+  ZoneOffset
 }
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.{
@@ -167,9 +170,10 @@ trait JavaTimeEncoders {
   /**
     * @group Time
     */
-  implicit final val encodeMonthDay: Encoder[MonthDay] = Encoder.instance(monthDay =>
-    Json.fromString(monthDay.toString)
-  )
+  implicit final val encodeMonthDay: Encoder[MonthDay] =
+    new JavaTimeEncoder[MonthDay] {
+      protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("--MM-dd")
+    }
 
   /**
    * @group Time
