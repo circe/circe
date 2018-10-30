@@ -66,7 +66,7 @@ class JavaTimeCodecSuite extends CirceSuite {
 
   implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
 
-  implicit val arbitraryMonthDay: Arbitrary[MonthDay] = Arbitrary(arbitrary[MonthDay].map(
+  implicit val arbitraryMonthDay: Arbitrary[MonthDay] = Arbitrary(arbitrary[LocalDateTime].map(
     ldt => MonthDay.of(ldt.getMonth, ldt.getDayOfMonth)))
 
   implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
@@ -78,7 +78,7 @@ class JavaTimeCodecSuite extends CirceSuite {
     ldt => YearMonth.of(ldt.getYear, ldt.getMonth)))
 
   implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
-    Gen.choose(-18 * 60 * 60, 18 * 60 * 60).map(ZoneOffset.ofTotalSeconds)
+    Arbitrary(Gen.choose(-18 * 60 * 60, 18 * 60 * 60).map(ZoneOffset.ofTotalSeconds))
 
   implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
     for {
@@ -232,6 +232,6 @@ class JavaTimeCodecSuite extends CirceSuite {
     val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.left.get.message.contains("ZoneOffset (Invalid ID for ZoneOffset, "))
   }
 }
