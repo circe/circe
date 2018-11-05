@@ -1,10 +1,8 @@
 package io.circe.generic.util.macros
 
 import io.circe.{ Decoder, Encoder, ObjectEncoder }
-import macrocompat.bundle
 import scala.reflect.macros.blackbox
 
-@bundle
 abstract class JsonCodecMacros {
   val c: blackbox.Context
 
@@ -25,11 +23,11 @@ abstract class JsonCodecMacros {
        """
     case List(
       clsDef: ClassDef,
-      q"object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
+      q"..$mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
     ) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
-       object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
+       $mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
          ..$objDefs
          ..${ codec(clsDef) }
        }

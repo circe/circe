@@ -118,9 +118,9 @@ lots of more-or-less well-considered personal preferences that are subject to ch
     enough I would be willing to consider compromise here).
 
 10. **Avoid variance, but without burdening users.**
-    This isn't a popular decision (even Argonaut's codec type classes are [co- and contravariant
-    now](argonaut-variance)), but I'm not convinced it's worth it, especially given the way that
-    generic derivation works for ADTs (i.e. `Decoder[Base]` and `Decoder[Leaf]` behave differently).
+    This isn't a popular decision (even Argonaut's codec type classes were [co- and contravariant][argonaut-variance]
+    until 6.1), but I'm not convinced it's worth it, especially given the way that generic derivation
+    works for ADTs (i.e. `Decoder[Base]` and `Decoder[Leaf]` behave differently).
 
     What this means concretely: You may occasionally need to upcast to get the right encoder to
     kick in.

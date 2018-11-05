@@ -73,42 +73,6 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     assert(d.toLong === Some(value))
   }
 
-  "truncateToLong" should "work on values too big to be represented exactly as doubles" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("16858240615609565")
-
-    assert(d.truncateToLong === 16858240615609565L)
-  }
-
-  it should "work on negative values too big to be represented exactly as doubles" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("-16858240615609565")
-
-    assert(d.truncateToLong === -16858240615609565L)
-  }
-
-  it should "work on values too small to be parsed as BigDecimals" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("1e-16858240615609565")
-
-    assert(d.truncateToLong === 0L)
-  }
-
-  it should "work on negative values too small to be parsed as BigDecimals" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("-1e-16858240615609565")
-
-    assert(d.truncateToLong === 0L)
-  }
-
-  it should "work on values larger than Long.MaxValue" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("9223372036854775808")
-
-    assert(d.truncateToLong === Long.MaxValue)
-  }
-
-  it should "work on negative values smaller than Long.MinValue" in {
-    val Some(d) = BiggerDecimal.parseBiggerDecimal("-9223372036854775809")
-
-    assert(d.truncateToLong === Long.MinValue)
-  }
-
   "toBigInteger" should "fail on very large values" in {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("1e262144")
 
@@ -244,7 +208,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   it should "fail on bad input" in {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-")
+    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input) === None)

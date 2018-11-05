@@ -4,12 +4,28 @@ import io.circe.{AccumulatingDecoder, Decoder, HCursor}
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{ Configuration, JsonKey }
 import io.circe.generic.extras.util.RecordToMap
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.Map
 import shapeless.{ Annotations, Coproduct, Default, HList, LabelledGeneric, Lazy }
 import shapeless.ops.hlist.ToTraversable
 import shapeless.ops.record.Keys
 
-abstract class ConfiguredDecoder[A] extends DerivedDecoder[A]
+abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecoder[A] {
+  private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
+    new ConcurrentHashMap[String, String]()
+
+  protected[this] def constructorNameTransformer(value: String): String = {
+    val current = constructorNameCache.get(value)
+
+    if (current eq null) {
+      val transformed = config.transformConstructorNames(value)
+      constructorNameCache.put(value, transformed)
+      transformed
+    } else {
+      current
+    }
+  }
+}
 
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   private[this] class CaseClassConfiguredDecoder[A, R <: HList](
@@ -18,17 +34,30 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     config: Configuration,
     defaultMap: Map[String, Any],
     keyAnnotationMap: Map[String, String]
-  ) extends ConfiguredDecoder[A] {
-    private[this] def memberNameTransformer(transformMemberNames: String => String)(value: String): String =
-      keyAnnotationMap.getOrElse(value, transformMemberNames(value))
+  ) extends ConfiguredDecoder[A](config) {
+    private[this] val memberNameCache: ConcurrentHashMap[String, String] =
+      new ConcurrentHashMap[String, String]()
+
+    private[this] def memberNameTransformer(value: String): String = {
+      val current = memberNameCache.get(value)
+
+      if (current eq null) {
+        val transformed = if (keyAnnotationMap.nonEmpty) {
+          keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
+        } else {
+          config.transformMemberNames(value)
+        }
+
+        memberNameCache.put(value, transformed)
+        transformed
+      } else {
+        current
+      }
+    }
 
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
-      if (keyAnnotationMap.nonEmpty) {
-        memberNameTransformer(config.transformMemberNames)
-      } else {
-        config.transformMemberNames
-      },
-      config.transformConstructorNames,
+      memberNameTransformer,
+      constructorNameTransformer,
       defaultMap,
       None
     ) match {
@@ -38,12 +67,8 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
-        if (keyAnnotationMap.nonEmpty) {
-          memberNameTransformer(config.transformMemberNames)
-        } else {
-          config.transformMemberNames
-        },
-        config.transformConstructorNames,
+        memberNameTransformer,
+        constructorNameTransformer,
         defaultMap,
         None
       ).map(gen.from)
@@ -53,10 +78,10 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     gen: LabelledGeneric.Aux[A, R],
     decodeR: Lazy[ReprDecoder[R]],
     config: Configuration
-  ) extends ConfiguredDecoder[A] {
+  ) extends ConfiguredDecoder[A](config) {
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       Predef.identity,
-      config.transformConstructorNames,
+      constructorNameTransformer,
       Map.empty,
       config.discriminator
     ) match {
@@ -67,7 +92,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       decodeR.value.configuredDecodeAccumulating(c)(
         Predef.identity,
-        config.transformConstructorNames,
+        constructorNameTransformer,
         Map.empty,
         config.discriminator
       ).map(gen.from)

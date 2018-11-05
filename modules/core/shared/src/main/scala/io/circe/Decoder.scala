@@ -1,17 +1,19 @@
 package io.circe
 
 import cats.{ MonadError, SemigroupK }
-import cats.data.{ Kleisli, NonEmptyList, NonEmptyVector, OneAnd, StateT, Validated }
+import cats.data.{ Chain, Kleisli, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, StateT,
+  Validated }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
+import cats.kernel.Order
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
-import scala.collection.Map
-import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
 import scala.collection.mutable.Builder
+import scala.concurrent.duration.FiniteDuration
 import scala.util.{ Failure, Success, Try }
 
 trait Decoder[A] extends Serializable { self =>
@@ -121,13 +123,39 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-   * Build a new instance that fails if the condition does not hold.
+   * Build a new instance that fails if the condition does not hold for the
+   * result.
+   */
+  final def ensure(pred: A => Boolean, message: => String): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
+      case l @ Left(_) => l
+      case Right(a) => if (pred(a)) Right(a) else Left(DecodingFailure(message, c.history))
+    }
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c) match {
+      case v @ Valid(a) => if (pred(a)) v else Validated.invalidNel(DecodingFailure(message, c.history))
+      case Invalid(nel) => Validated.invalid(
+        AccumulatingDecoder.failureNelInstance.combine(nel, NonEmptyList(DecodingFailure(message, c.history), Nil))
+      )
+    }
+  }
+
+  /**
+   * Build a new instance that fails if the condition does not hold for the
+   * input.
+   *
+   * Note that this condition is checked before decoding with the current
+   * decoder, and if it does not hold, decoding does not continue. This means
+   * that if you chain calls to this method, errors will not be accumulated
+   * (instead only the error of the last failing `validate` in the chain will be
+   * returned).
    */
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
       if (pred(c)) self(c) else Left(DecodingFailure(message, c.history))
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c)
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+      if (pred(c)) self.decodeAccumulating(c) else Validated.invalidNel(DecodingFailure(message, c.history))
   }
 
   /**
@@ -144,12 +172,6 @@ trait Decoder[A] extends Serializable { self =>
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
       AccumulatingDecoder.resultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
   }
-
-  /**
-   * Run two decoders and return their results as a pair.
-   */
-  @deprecated("Use product", "0.9.0")
-  final def and[B](fb: Decoder[B]): Decoder[(A, B)] = product(fb)
 
   /**
    * Choose the first succeeding decoder.
@@ -171,21 +193,6 @@ trait Decoder[A] extends Serializable { self =>
         case Right(v) => Right(Right(v))
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
       }
-    }
-  }
-
-  /**
-   * Run one or another decoder.
-   */
-  @deprecated("Use cats.arrow.Choice", "0.9.0")
-  final def split[B](d: Decoder[B]): Either[HCursor, HCursor] => Decoder.Result[Either[A, B]] = {
-    case Left(c) => self(c) match {
-      case Right(v) => Right(Left(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
-    }
-    case Right(c) => d(c) match {
-      case Right(v) => Right(Right(v))
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
     }
   }
 
@@ -274,7 +281,7 @@ trait Decoder[A] extends Serializable { self =>
  * @groupprio Decoding 2
  *
  * @groupname Collection Collection instances
- * @groupprio Collection 4
+ * @groupprio Collection 3
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
@@ -284,23 +291,27 @@ trait Decoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 5
+ * @groupprio Disjunction 4
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 6
+ * @groupprio Instances 5
  *
  * @groupname Tuple Tuple instances
- * @groupprio Tuple 7
+ * @groupprio Tuple 6
  *
  * @groupname Product Case class and other product instances
- * @groupprio Product 8
+ * @groupprio Product 7
+ *
+ * @groupname Time Java date and time instances
+ * @groupprio Time 8
  *
  * @groupname Prioritization Instance prioritization
- * @groupprio Prioritization 9
+ * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
-final object Decoder extends TupleDecoders with ProductDecoders with LowPriorityDecoders {
+final object Decoder extends CollectionDecoders with TupleDecoders with ProductDecoders
+    with JavaTimeDecoders with LowPriorityDecoders {
   /**
    * @group Aliases
    */
@@ -468,7 +479,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Boolean]].
+    * Decode a JSON value into a `java.lang.Boolean`.
     *
     * @group Decoding
     */
@@ -485,7 +496,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Character]].
+    * Decode a JSON value into a `java.lang.Character`.
     *
     * @group Decoding
     */
@@ -511,7 +522,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Float]].
+    * Decode a JSON value into a `java.lang.Float`.
     *
     * @group Decoding
     */
@@ -539,7 +550,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Double]].
+    * Decode a JSON value into a `java.lang.Double`.
     *
     * @group Decoding
     */
@@ -567,7 +578,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Byte]].
+    * Decode a JSON value into a `java.lang.Byte`.
     *
     * @group Decoding
     */
@@ -595,7 +606,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Short]].
+    * Decode a JSON value into a `java.lang.Short`.
     *
     * @group Decoding
     */
@@ -623,7 +634,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Integer]].
+    * Decode a JSON value into a `java.lang.Integer`.
     *
     * @group Decoding
     */
@@ -654,7 +665,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.lang.Long]].
+    * Decode a JSON value into a `java.lang.Long`.
     *
     * @group Decoding
     */
@@ -685,7 +696,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.math.BigInteger]].
+    * Decode a JSON value into a `java.math.BigInteger`.
     *
     * @group Decoding
     */
@@ -719,7 +730,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
   }
 
   /**
-    * Decode a JSON value into a [[java.math.BigDecimal]].
+    * Decode a JSON value into a `java.math.BigDecimal`.
     *
     * @group Decoding
     */
@@ -739,6 +750,20 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     }
   }
 
+  /**
+   * @group Decoding
+   */
+  implicit final val finiteDurationDecoder: Decoder[FiniteDuration] =
+    new Decoder[FiniteDuration] {
+      def apply(c: HCursor): Result[FiniteDuration] = for {
+        length <- c.downField("length").as[Long].right
+        unitString <- c.downField("unit").as[String].right
+        unit <- (try { Right(TimeUnit.valueOf(unitString)) } catch {
+          case _: IllegalArgumentException => Left(DecodingFailure("FiniteDuration", c.history))
+        }).right
+      } yield FiniteDuration(length, unit)
+    }
+
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
   /**
@@ -748,7 +773,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     case c: HCursor =>
       if (c.value.isNull) rightNone else d(c) match {
         case Right(a) => Right(Some(a))
-        case Left(df) if df.history.isEmpty => rightNone
         case Left(df) => Left(df)
       }
     case c: FailedCursor =>
@@ -767,41 +791,6 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None) else {
       Left(DecodingFailure("None", c.history))
     }
-  }
-
-  /**
-   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
-   * @group Collection
-   */
-  implicit final def decodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
-    decodeK: KeyDecoder[K],
-    decodeV: Decoder[V],
-    cbf: CanBuildFrom[Nothing, (K, V), M[K, V]]
-  ): Decoder[M[K, V]] = new MapDecoder[K, V, M](decodeK, decodeV) {
-    final protected def createBuilder(): Builder[(K, V), M[K, V]] = cbf()
-  }
-
-  /**
-   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
-   * @group Collection
-   */
-  implicit final def decodeTraversable[A, C[A] <: Traversable[A]](implicit
-    decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
-    final protected def createBuilder(): Builder[A, C[A]] = cbf.apply()
-  }
-
-  /**
-   * @group Collection
-   */
-  implicit final def decodeArray[A](implicit
-    decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, Array[A]]
-  ): Decoder[Array[A]] = new SeqDecoder[A, Array](decodeA) {
-    final protected def createBuilder(): Builder[A, Array[A]] = cbf.apply()
   }
 
   /**
@@ -843,18 +832,24 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
     }
 
-  /**
-   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
-   *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.
-   * @group Collection
-   */
-  implicit final def decodeOneAnd[A, C[_]](implicit
-    decodeA: Decoder[A],
-    cbf: CanBuildFrom[Nothing, A, C[A]]
-  ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]](decodeA) {
-    final protected def createBuilder(): Builder[A, C[A]] = cbf()
-    final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
+  private[this] class ChainBuilder[A] extends CompatBuilder[A, Chain[A]] {
+    private[this] var xs: Chain[A] = Chain.nil
+    final def clear(): Unit = xs = Chain.nil
+    final def result(): Chain[A] = xs
+
+    final def addOne(elem: A): this.type = {
+      xs = xs.append(elem)
+      this
+    }
   }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeChain[A](implicit decodeA: Decoder[A]): Decoder[Chain[A]] =
+    new SeqDecoder[A, Chain](decodeA) {
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder[A]
+    }
 
   /**
    * @group Collection
@@ -872,6 +867,42 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
     new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]](decodeA) {
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
       final protected val create: (A, Vector[A]) => NonEmptyVector[A] = (h, t) => NonEmptyVector(h, t)
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeNonEmptySet[A](implicit decodeA: Decoder[A], orderA: Order[A]): Decoder[NonEmptySet[A]] =
+    new NonEmptySeqDecoder[A, SortedSet, NonEmptySet[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, SortedSet[A]] =
+        SortedSet.newBuilder[A](Order.catsKernelOrderingForOrder(orderA))
+      final protected val create: (A, SortedSet[A]) => NonEmptySet[A] =
+        (h, t) => NonEmptySet(h, t)
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeNonEmptyMap[K, V](implicit
+    decodeK: KeyDecoder[K],
+    orderK: Order[K],
+    decodeV: Decoder[V]
+  ): Decoder[NonEmptyMap[K, V]] =
+    new MapDecoder[K, V, SortedMap](decodeK, decodeV) {
+      final protected def createBuilder(): Builder[(K, V), SortedMap[K, V]] =
+        SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
+    }.emap { map =>
+      NonEmptyMap.fromMap(map)(orderK).toRight("[K, V]NonEmptyMap[K, V]")
+    }
+
+  /**
+    * @group Collection
+    */
+  implicit final def decodeNonEmptyChain[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyChain[A]] =
+    new NonEmptySeqDecoder[A, Chain, NonEmptyChain[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, Chain[A]] = new ChainBuilder[A]
+      final protected val create: (A, Chain[A]) => NonEmptyChain[A] =
+        (h, t) => NonEmptyChain.fromChainPrepend(h, t)
     }
 
   /**
@@ -931,7 +962,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
-      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.and(fb)
+      override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.product(fb)
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
@@ -978,6 +1009,7 @@ final object Decoder extends TupleDecoders with ProductDecoders with LowPriority
       val field = c.downField(k)
 
       field.as[A] match {
+        case Right(a) if field.failed => Right((c, a))
         case Right(a) => Right((field.delete, a))
         case l @ Left(_) => l.asInstanceOf[Result[(ACursor, A)]]
       }

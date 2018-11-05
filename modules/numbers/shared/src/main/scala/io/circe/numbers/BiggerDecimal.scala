@@ -61,12 +61,6 @@ sealed abstract class BiggerDecimal extends Serializable {
    */
   def toLong: Option[Long]
 
-  /**
-   * Convert to the nearest [[scala.Long]].
-   */
-  @deprecated("Use toBigDecimal", "0.9.0")
-  def truncateToLong: Long
-
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
 }
 
@@ -113,20 +107,6 @@ private[numbers] final class SigAndExp(
     }
   }
 
-  def truncateToLong: Long = toLong.getOrElse {
-    toBigDecimal.map { asBigDecimal =>
-      val rounded = asBigDecimal.setScale(0, BigDecimal.ROUND_DOWN)
-
-      if (rounded.compareTo(BiggerDecimal.MaxLong) >= 0) {
-        Long.MaxValue
-      } else if (rounded.compareTo(BiggerDecimal.MinLong) <= 0) {
-        Long.MinValue
-      } else rounded.longValue
-    }.getOrElse {
-      if (scale.signum > 0) 0L else if (unscaled.signum > 0) Long.MaxValue else Long.MinValue
-    }
-  }
-
   override def equals(that: Any): Boolean = that match {
     case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
     case _ => false
@@ -161,8 +141,7 @@ final object BiggerDecimal {
     final def signum: Int = 0
     final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
     final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
-    final val toLong: Option[Long] = Some(truncateToLong)
-    final def truncateToLong: Long = 0L
+    final val toLong: Option[Long] = Some(0L)
 
     private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
       builder.append(toString)
@@ -268,11 +247,12 @@ final object BiggerDecimal {
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
-      var c = input.charAt(i)
 
-      var state = if (input.charAt(i) != '0') START else {
-        i = i + 1
-        AFTER_ZERO
+      var state = if (i >= len) FAILED else {
+        if (input.charAt(i) != '0') START else {
+          i = i + 1
+          AFTER_ZERO
+        }
       }
 
       while (i < len && state != FAILED) {

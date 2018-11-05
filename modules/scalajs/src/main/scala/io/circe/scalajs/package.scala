@@ -1,7 +1,7 @@
 package io.circe
 
 import scala.scalajs.js
-import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
+import scala.scalajs.js.JSConverters._
 import scala.util.control.NonFatal
 
 package object scalajs {

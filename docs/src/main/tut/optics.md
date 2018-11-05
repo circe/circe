@@ -9,7 +9,7 @@ position: 4
 Optics are a powerful tool for traversing and modifying JSON documents. They can reduce boilerplate
 considerably, especially if you are working with deeply nested JSON.
 
-circe provides support for optics by integrating with [Monocle](monocle). To use them, add a
+circe provides support for optics by integrating with [Monocle](https://julien-truffaut.github.io/Monocle/). To use them, add a
 dependency on `circe-optics` to your build:
 
 ```scala

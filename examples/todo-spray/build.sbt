@@ -3,7 +3,7 @@ version := "0.1.0"
 scalaVersion := "2.11.12"
 
 val sprayVersion = "1.3.4"
-val circeVersion = "0.9.0"
+val circeVersion = "0.9.2"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic"             % circeVersion,

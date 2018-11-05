@@ -8,7 +8,7 @@
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argonaut-shapeless]: https://github.com/alexarchambault/argonaut-shapeless
 [argus]: https://github.com/aishfenton/Argus
-[benchmarks]: https://github.com/circe/circe-benchmarks/blob/master/modules/benchmarks/src/main/scala/io/circe/benchmark/Benchmark.scala
+[benchmarks]: https://github.com/circe/circe-benchmarks/blob/9edb76ef0de7e59fa101db0058ccc2a83253dd80/src/main/scala/io/circe/benchmarks/Benchmark.scala
 [cats]: https://github.com/typelevel/cats
 [circe-251]: https://github.com/circe/circe/issues/251
 [circe-262]: https://github.com/circe/circe/issues/262

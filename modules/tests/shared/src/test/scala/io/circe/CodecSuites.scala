@@ -1,17 +1,17 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyStream, NonEmptyVector, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
 import java.util.UUID
+import java.util.concurrent.TimeUnit._
 import org.scalacheck.{ Arbitrary, Gen }
-import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable.SortedMap
-import scala.collection.mutable.{ ArrayBuilder, Builder, HashMap }
-import scala.reflect.ClassTag
+import scala.collection.mutable.HashMap
+import scala.concurrent.duration.FiniteDuration
 
 trait SpecialEqForFloatAndDouble {
   /**
@@ -63,19 +63,26 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
-   */
-  implicit def canBuildFromRefArraySerializable[A <: AnyRef: ClassTag]: CanBuildFrom[Array[A], A, Array[A]] =
-    new CanBuildFrom[Array[A], A, Array[A]] with Serializable {
-      def apply(from: Array[A]): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-      def apply(): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-    }
-
+class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
+
+  implicit val arbitraryDuration: Arbitrary[FiniteDuration] = {
+    // max range is +/- 292 years, but we give ourselves some extra headroom
+    // to ensure that we can add these things up. they crash on overflow.
+    val n = (292L * 365) / 50
+    Arbitrary(Gen.oneOf(
+      Gen.choose(-n, n).map(FiniteDuration(_, DAYS)),
+      Gen.choose(-n * 24L, n * 24L).map(FiniteDuration(_, HOURS)),
+      Gen.choose(-n * 1440L, n * 1440L).map(FiniteDuration(_, MINUTES)),
+      Gen.choose(-n * 86400L, n * 86400L).map(FiniteDuration(_, SECONDS)),
+      Gen.choose(-n * 86400000L, n * 86400000L).map(FiniteDuration(_, MILLISECONDS)),
+      Gen.choose(-n * 86400000000L, n * 86400000000L).map(FiniteDuration(_, MICROSECONDS)),
+      Gen.choose(-n * 86400000000000L, n * 86400000000000L).map(FiniteDuration(_, NANOSECONDS))))
+  }
+
+  implicit val eqFiniteDuration: Eq[FiniteDuration] = Eq.fromUniversalEquals
 
   checkLaws("Codec[String]", CodecTests[String].codec)
   checkLaws("Codec[BigInt]", CodecTests[BigInt].codec)
@@ -97,6 +104,7 @@ class StdLibCodecSuite extends CirceSuite {
   checkLaws("Codec[SortedMap[Long, Int]]", CodecTests[SortedMap[Long, Int]].unserializableCodec)
   checkLaws("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
   checkLaws("Codec[Array[String]]", CodecTests[Array[String]].codec)
+  checkLaws("Codec[FiniteDuration]", CodecTests[FiniteDuration].codec)
 
   "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
@@ -142,19 +150,14 @@ class StdLibCodecSuite extends CirceSuite {
   }
 }
 
-class CatsCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
-   */
-  implicit def canBuildFromStreamSerializable[A]: CanBuildFrom[Stream[A], A, Stream[A]] =
-    new CanBuildFrom[Stream[A], A, Stream[A]] with Serializable {
-      def apply(from: Stream[A]): Builder[A, Stream[A]] = Stream.newBuilder[A]
-      def apply(): Builder[A, Stream[A]] = Stream.newBuilder[A]
-    }
-
+class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
+  checkLaws("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
+  checkLaws("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
+  checkLaws("Codec[NonEmptyMap[Int, String]]", CodecTests[NonEmptyMap[Int, String]].unserializableCodec)
+  checkLaws("Codec[NonEmptyChain[Int]]", CodecTests[NonEmptyChain[Int]].codec)
 }
 
 class CirceCodecSuite extends CirceSuite {
