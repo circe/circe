@@ -115,6 +115,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
+* [shaclex][shaclex]: RDF validation using SHACL or ShEx. 
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [sttp][sttp]: Scala HTTP client.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
