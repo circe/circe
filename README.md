@@ -229,6 +229,7 @@ limitations under the License.
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
 [shapeless]: https://github.com/milessabin/shapeless
+[shaclex]: https://github.com/labra/shaclex
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
