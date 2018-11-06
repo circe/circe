@@ -55,21 +55,21 @@ class JavaTimeCodecSuite extends CirceSuite {
   implicit val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId  <- arbitrary[ZoneId]
+      zoneId <- arbitrary[ZoneId]
     } yield LocalDateTime.ofInstant(instant, zoneId)
   )
 
   implicit val arbitraryZonedDateTime: Arbitrary[ZonedDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId  <- arbitrary[ZoneId].suchThat(_ != ZoneId.of("GMT0")) // #280 - avoid JDK-8138664
+      zoneId <- arbitrary[ZoneId].suchThat(_ != ZoneId.of("GMT0")) // #280 - avoid JDK-8138664
     } yield ZonedDateTime.ofInstant(instant, zoneId)
   )
 
   implicit val arbitraryOffsetDateTime: Arbitrary[OffsetDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId  <- arbitrary[ZoneId]
+      zoneId <- arbitrary[ZoneId]
     } yield OffsetDateTime.ofInstant(instant, zoneId)
   )
 
@@ -79,8 +79,9 @@ class JavaTimeCodecSuite extends CirceSuite {
 
   implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
 
-  implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(arbitrary[LocalDateTime].map(
-    ldt => YearMonth.of(ldt.getYear, ldt.getMonth)))
+  implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(
+    arbitrary[LocalDateTime].map(ldt => YearMonth.of(ldt.getYear, ldt.getMonth))
+  )
 
   implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
     for {
@@ -128,15 +129,16 @@ class JavaTimeCodecSuite extends CirceSuite {
   val parseExceptionMessage = s"Text '$invalidText'"
 
   "Decoder[ZoneId]" should "fail for invalid ZoneId" in {
-    forAll((s: String) =>
-      whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
-        val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
+    forAll(
+      (s: String) =>
+        whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
+          val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
 
-        assert(decodingResult.isLeft)
-        // The middle part of the message depends on the type of zone.
-        assert(decodingResult.left.get.message.contains("ZoneId (Invalid"))
-        assert(decodingResult.left.get.message.contains(s", invalid format: $s)"))
-      }
+          assert(decodingResult.isLeft)
+          // The middle part of the message depends on the type of zone.
+          assert(decodingResult.left.get.message.contains("ZoneId (Invalid"))
+          assert(decodingResult.left.get.message.contains(s", invalid format: $s)"))
+        }
     )
   }
 

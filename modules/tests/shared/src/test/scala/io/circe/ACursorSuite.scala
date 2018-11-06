@@ -37,8 +37,8 @@ class ACursorSuite extends CirceSuite {
     val c = HCursor.fromJson(j)
 
     val intoObject = for {
-      keys    <- c.keys
-      first   <- keys.headOption
+      keys <- c.keys
+      first <- keys.headOption
       atFirst <- c.downField(first).success
     } yield atFirst
 
@@ -53,8 +53,8 @@ class ACursorSuite extends CirceSuite {
     val c = HCursor.fromJson(j)
 
     val intoObject = for {
-      keys    <- c.keys
-      first   <- keys.headOption
+      keys <- c.keys
+      first <- keys.headOption
       atFirst <- c.downField(first).success
     } yield atFirst
 
@@ -63,9 +63,7 @@ class ACursorSuite extends CirceSuite {
 
   it should "undo navigation into an array" in forAll { (j: Json) =>
     assert(
-      HCursor.fromJson(j).downArray.success.forall(atFirst =>
-        atFirst.up.success.flatMap(_.focus) === Some(j)
-      )
+      HCursor.fromJson(j).downArray.success.forall(atFirst => atFirst.up.success.flatMap(_.focus) === Some(j))
     )
   }
 
@@ -80,11 +78,12 @@ class ACursorSuite extends CirceSuite {
   }
 
   it should "support adding an element to an array" in {
-    val result = cursor.downField("a").success.map(
-      _.withFocus(j =>
-        j.asArray.fold(j)(a => Json.fromValues(0.asJson +: a))
+    val result = cursor
+      .downField("a")
+      .success
+      .map(
+        _.withFocus(j => j.asArray.fold(j)(a => Json.fromValues(0.asJson +: a)))
       )
-    )
 
     assert(result.flatMap(_.top) === Some(j2))
   }
@@ -343,7 +342,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(3.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
+        result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
     )
   }
 
@@ -365,7 +364,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(5.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
+        result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
     )
   }
 
@@ -387,7 +386,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(1.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
+        result.map(_._2) === Some(List(1, 2, 3, 5).asJson)
     )
   }
 
@@ -409,7 +408,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(5.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 4, 5).asJson)
+        result.map(_._2) === Some(List(1, 2, 4, 5).asJson)
     )
   }
 
@@ -431,7 +430,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(4.asJson) &&
-      result.map(_._2) === Some(List(4, 5).asJson)
+        result.map(_._2) === Some(List(4, 5).asJson)
     )
   }
 
@@ -453,7 +452,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(4.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 3, 4).asJson)
+        result.map(_._2) === Some(List(1, 2, 3, 4).asJson)
     )
   }
 
@@ -475,7 +474,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(200.2.asJson) &&
-      result.map(_._2) === Some(Map("f" -> 200.2).asJson)
+        result.map(_._2) === Some(Map("f" -> 200.2).asJson)
     )
   }
 
@@ -497,7 +496,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(4.asJson) &&
-      result.map(_._2) === Some(List(101, 100, 4, 5).asJson)
+        result.map(_._2) === Some(List(101, 100, 4, 5).asJson)
     )
   }
 
@@ -519,7 +518,7 @@ class ACursorSuite extends CirceSuite {
 
     assert(
       result.map(_._1) === Some(4.asJson) &&
-      result.map(_._2) === Some(List(1, 2, 3, 4, 100, 101).asJson)
+        result.map(_._2) === Some(List(1, 2, 3, 4, 100, 101).asJson)
     )
   }
 

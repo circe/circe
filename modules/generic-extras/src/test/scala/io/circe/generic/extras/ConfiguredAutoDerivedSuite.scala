@@ -11,9 +11,10 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
 object ConfiguredAutoDerivedSuite {
+
   /**
-    * This nesting is necessary on 2.10 (possibly related to SI-7406).
-    */
+   * This nesting is necessary on 2.10 (possibly related to SI-7406).
+   */
   object localExamples {
     sealed trait ConfigExampleBase
     case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, b: Double) extends ConfigExampleBase
@@ -54,24 +55,26 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     checkLaws("Codec[ConfigExampleBase] (default configuration)", CodecTests[ConfigExampleBase].codec)
   }
 
-  "Configuration#transformMemberNames" should "support member name transformation using snake_case" in forAll { foo: ConfigExampleFoo =>
-    implicit val snakeCaseConfig: Configuration = Configuration.default.withSnakeCaseMemberNames
+  "Configuration#transformMemberNames" should "support member name transformation using snake_case" in forAll {
+    foo: ConfigExampleFoo =>
+      implicit val snakeCaseConfig: Configuration = Configuration.default.withSnakeCaseMemberNames
 
-    import foo._
-    val json = json"""{ "this_is_a_field": $thisIsAField, "a": $a, "b": $b}"""
+      import foo._
+      val json = json"""{ "this_is_a_field": $thisIsAField, "a": $a, "b": $b}"""
 
-    assert(Encoder[ConfigExampleFoo].apply(foo) === json)
-    assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
+      assert(Encoder[ConfigExampleFoo].apply(foo) === json)
+      assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
   }
 
-  "Configuration#transformMemberNames" should "support member name transformation using kebab-case" in forAll { foo: ConfigExampleFoo =>
-    implicit val kebabCaseConfig: Configuration = Configuration.default.withKebabCaseMemberNames
+  "Configuration#transformMemberNames" should "support member name transformation using kebab-case" in forAll {
+    foo: ConfigExampleFoo =>
+      implicit val kebabCaseConfig: Configuration = Configuration.default.withKebabCaseMemberNames
 
-    import foo._
-    val json = json"""{ "this-is-a-field": $thisIsAField, "a": $a, "b": $b}"""
+      import foo._
+      val json = json"""{ "this-is-a-field": $thisIsAField, "a": $a, "b": $b}"""
 
-    assert(Encoder[ConfigExampleFoo].apply(foo) === json)
-    assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
+      assert(Encoder[ConfigExampleFoo].apply(foo) === json)
+      assert(Decoder[ConfigExampleFoo].decodeJson(json) === Right(foo))
   }
 
   "Configuration#useDefaults" should "support using default values during decoding" in {
@@ -99,24 +102,28 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     }
   }
 
-  "Configuration#transformConstructorNames" should "support constructor name transformation with snake_case" in forAll { foo: ConfigExampleFoo =>
-    implicit val snakeCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withSnakeCaseConstructorNames
+  "Configuration#transformConstructorNames" should "support constructor name transformation with snake_case" in forAll {
+    foo: ConfigExampleFoo =>
+      implicit val snakeCaseConfig: Configuration =
+        Configuration.default.withDiscriminator("type").withSnakeCaseConstructorNames
 
-    import foo._
-    val json = json"""{ "type": "config_example_foo", "thisIsAField": $thisIsAField, "a": $a, "b": $b}"""
+      import foo._
+      val json = json"""{ "type": "config_example_foo", "thisIsAField": $thisIsAField, "a": $a, "b": $b}"""
 
-    assert(Encoder[ConfigExampleBase].apply(foo) === json)
-    assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+      assert(Encoder[ConfigExampleBase].apply(foo) === json)
+      assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
-  "Configuration#transformConstructorNames" should "support constructor name transformation with kebab-case" in forAll { foo: ConfigExampleFoo =>
-    implicit val kebabCaseConfig: Configuration = Configuration.default.withDiscriminator("type").withKebabCaseConstructorNames
+  "Configuration#transformConstructorNames" should "support constructor name transformation with kebab-case" in forAll {
+    foo: ConfigExampleFoo =>
+      implicit val kebabCaseConfig: Configuration =
+        Configuration.default.withDiscriminator("type").withKebabCaseConstructorNames
 
-    import foo._
-    val json = json"""{ "type": "config-example-foo", "thisIsAField": $thisIsAField, "a": $a, "b": $b}"""
+      import foo._
+      val json = json"""{ "type": "config-example-foo", "thisIsAField": $thisIsAField, "a": $a, "b": $b}"""
 
-    assert(Encoder[ConfigExampleBase].apply(foo) === json)
-    assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
+      assert(Encoder[ConfigExampleBase].apply(foo) === json)
+      assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
   "Configuration options" should "work together" in forAll { (f: String, b: Double) =>
@@ -138,13 +145,17 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
     checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
-    "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-      val result = Json.obj(
-        "a" -> Json.fromString(s),
-        "j" -> Json.fromInt(j)
-      ).as[Int => Qux[String]].map(_(i))
+    "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll {
+      (i: Int, s: String, j: Int) =>
+        val result = Json
+          .obj(
+            "a" -> Json.fromString(s),
+            "j" -> Json.fromInt(j)
+          )
+          .as[Int => Qux[String]]
+          .map(_(i))
 
-      assert(result === Right(Qux(i, s, j)))
+        assert(result === Right(Qux(i, s, j)))
     }
   }
 }

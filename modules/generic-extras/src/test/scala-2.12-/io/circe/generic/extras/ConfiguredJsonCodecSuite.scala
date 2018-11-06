@@ -12,8 +12,8 @@ object ConfiguredJsonCodecSuite {
     Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
   /**
-    * This nesting is necessary on 2.10 (possibly related to SI-7406).
-    */
+   * This nesting is necessary on 2.10 (possibly related to SI-7406).
+   */
   object localExamples {
     @ConfiguredJsonCodec
     sealed trait ConfigExampleBase

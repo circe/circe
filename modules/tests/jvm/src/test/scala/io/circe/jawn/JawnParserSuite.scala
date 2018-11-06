@@ -11,8 +11,9 @@ import scala.io.Source
 
 class JawnParserSuite extends CirceSuite {
   checkLaws("Parser", ParserTests(`package`).fromString)
-  checkLaws("Parser", ParserTests(`package`)
-    .fromFunction[ByteBuffer]("fromByteBuffer")(
+  checkLaws(
+    "Parser",
+    ParserTests(`package`).fromFunction[ByteBuffer]("fromByteBuffer")(
       s => ByteBuffer.wrap(s.getBytes("UTF-8")),
       p => p.parseByteBuffer _,
       p => p.decodeByteBuffer[Json] _,

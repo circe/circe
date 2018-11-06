@@ -59,12 +59,13 @@ trait BitVectorMatchers {
 
       val decoded = decoder.decodeJson(json)
       val expected = Right(expectedBitVector)
-      MatchResult(decoded.right.get == expectedBitVector,
+      MatchResult(
+        decoded.right.get == expectedBitVector,
         s"Decoded to [$decoded], expected: [$expected]",
-        s"Decoded to [$expected]")
+        s"Decoded to [$expected]"
+      )
     }
   }
 
   def decodeTo(input: String, expectedBitVector: BitVector): DecodeTo = new DecodeTo(input, expectedBitVector)
 }
-
