@@ -22,6 +22,7 @@ import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
+
   /**
    * The maximum depth of a generated JSON value.
    */
@@ -49,16 +50,18 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   )
 
   implicit val arbitraryJsonNumber: Arbitrary[JsonNumber] = Arbitrary(
-    Gen.oneOf(
-      Arbitrary.arbitrary[IntegralString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
-      Arbitrary.arbitrary[JsonNumberString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
-      Arbitrary.arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
-      Arbitrary.arbitrary[BigDecimal].map(Json.fromBigDecimal(_).asNumber.get),
-      Arbitrary.arbitrary[BigInt].map(Json.fromBigInt(_).asNumber.get),
-      Arbitrary.arbitrary[Long].map(Json.fromLong(_).asNumber.get),
-      Arbitrary.arbitrary[Double].map(Json.fromDoubleOrString(_).asNumber.get),
-      Arbitrary.arbitrary[Float].map(Json.fromFloatOrString(_).asNumber.get)
-    ).map(transformJsonNumber)
+    Gen
+      .oneOf(
+        Arbitrary.arbitrary[IntegralString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
+        Arbitrary.arbitrary[JsonNumberString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
+        Arbitrary.arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
+        Arbitrary.arbitrary[BigDecimal].map(Json.fromBigDecimal(_).asNumber.get),
+        Arbitrary.arbitrary[BigInt].map(Json.fromBigInt(_).asNumber.get),
+        Arbitrary.arbitrary[Long].map(Json.fromLong(_).asNumber.get),
+        Arbitrary.arbitrary[Double].map(Json.fromDoubleOrString(_).asNumber.get),
+        Arbitrary.arbitrary[Float].map(Json.fromFloatOrString(_).asNumber.get)
+      )
+      .map(transformJsonNumber)
   )
 
   private[this] val genNull: Gen[Json] = Gen.const(Json.Null)
@@ -113,9 +116,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   )
 
   implicit def arbitraryDecoder[A: Arbitrary]: Arbitrary[Decoder[A]] = Arbitrary(
-    Arbitrary.arbitrary[Json => Either[DecodingFailure, A]].map(f =>
-      Decoder.instance(c => f(c.value))
-    )
+    Arbitrary.arbitrary[Json => Either[DecodingFailure, A]].map(f => Decoder.instance(c => f(c.value)))
   )
 
   implicit def arbitraryObjectEncoder[A: Cogen]: Arbitrary[ObjectEncoder[A]] = Arbitrary(
@@ -127,8 +128,8 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   )
 
   implicit def arbitraryAccumulatingDecoder[A: Arbitrary]: Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
-    Arbitrary.arbitrary[Json => ValidatedNel[DecodingFailure, A]].map(f =>
-      AccumulatingDecoder.instance(c => f(c.value))
-    )
+    Arbitrary
+      .arbitrary[Json => ValidatedNel[DecodingFailure, A]]
+      .map(f => AccumulatingDecoder.instance(c => f(c.value)))
   )
 }

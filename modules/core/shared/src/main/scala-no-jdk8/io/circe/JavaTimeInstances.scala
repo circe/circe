@@ -7,4 +7,3 @@ private[circe] trait JavaTimeEncoders {
 private[circe] trait JavaTimeDecoders {
   // `java.time` is only guaranteed to be available on Scala 2.12 and later.
 }
-

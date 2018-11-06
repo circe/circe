@@ -4,21 +4,7 @@ import cats.kernel.Eq
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable
-import shapeless.{
-  :+:,
-  ::,
-  AdditiveCollection,
-  CNil,
-  Coproduct,
-  Generic,
-  HList,
-  HNil,
-  Inl,
-  Inr,
-  IsTuple,
-  Nat,
-  Sized
-}
+import shapeless.{ :+:, ::, AdditiveCollection, CNil, Coproduct, Generic, HList, HNil, Inl, Inr, IsTuple, Nat, Sized }
 import shapeless.labelled.{ field, FieldType }
 import shapeless.ops.nat.ToInt
 
@@ -27,9 +13,9 @@ trait MissingInstances {
   implicit lazy val eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
   implicit lazy val eqUUID: Eq[UUID] = Eq.fromUniversalEquals
   implicit def eqRefArray[A <: AnyRef: Eq]: Eq[Array[A]] =
-    Eq.by((value: Array[A]) =>
-      Predef.wrapRefArray(value).toVector
-    )(cats.kernel.instances.vector.catsKernelStdEqForVector[A])
+    Eq.by((value: Array[A]) => Predef.wrapRefArray(value).toVector)(
+      cats.kernel.instances.vector.catsKernelStdEqForVector[A]
+    )
   implicit def eqSeq[A: Eq]: Eq[Seq[A]] = Eq.by((_: Seq[A]).toVector)(
     cats.kernel.instances.vector.catsKernelStdEqForVector[A]
   )
@@ -57,10 +43,11 @@ trait MissingInstances {
     Eq.instance[L :+: R] {
       case (Inl(l1), Inl(l2)) => eqL.eqv(l1, l2)
       case (Inr(r1), Inr(r2)) => eqR.eqv(r1, r2)
-      case (_, _) => false
+      case (_, _)             => false
     }
 
-  implicit def eqTuple[P: IsTuple, L <: HList](implicit
+  implicit def eqTuple[P: IsTuple, L <: HList](
+    implicit
     gen: Generic.Aux[P, L],
     eqL: Eq[L]
   ): Eq[P] = Eq.by(gen.to)(eqL)
@@ -78,12 +65,13 @@ trait MissingInstances {
   implicit def arbitrarySingletonCoproduct[L](implicit L: Arbitrary[L]): Arbitrary[L :+: CNil] =
     Arbitrary(L.arbitrary.map(Inl(_)))
 
-  implicit def arbitraryCoproduct[L, R <: Coproduct](implicit
+  implicit def arbitraryCoproduct[L, R <: Coproduct](
+    implicit
     L: Arbitrary[L],
     R: Arbitrary[R]
   ): Arbitrary[L :+: R] = Arbitrary(
     Arbitrary.arbitrary[Either[L, R]].map {
-      case Left(l) => Inl(l)
+      case Left(l)  => Inl(l)
       case Right(r) => Inr(r)
     }
   )
@@ -97,7 +85,8 @@ trait MissingInstances {
   implicit def eqSized[L <: Nat, C[_], A](implicit CA: Eq[C[A]]): Eq[Sized[C[A], L]] =
     Eq.by[Sized[C[A], L], C[A]](_.unsized)
 
-  implicit def arbitrarySized[L <: Nat, C[_], A](implicit
+  implicit def arbitrarySized[L <: Nat, C[_], A](
+    implicit
     A: Arbitrary[A],
     additive: AdditiveCollection[C[A]],
     buildable: Buildable[A, C[A]],

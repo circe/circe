@@ -52,16 +52,18 @@ class FoldingBenchmark extends ExampleData {
   @Benchmark
   def withPatternMatch: Int = {
     def foldToInt(json: Json): Int = json match {
-      case Json.JNull => 0
+      case Json.JNull           => 0
       case Json.JBoolean(value) => if (value) 1 else 0
-      case Json.JNumber(value) => value.toDouble.toInt
-      case Json.JString(value) => value.length
-      case Json.JArray(value) => value.foldLeft(0) {
-        case (acc, json) => acc + foldToInt(json)
-      }
-      case Json.JObject(value) => value.values.foldLeft(0) {
-        case (acc, json) => acc + foldToInt(json)
-      }
+      case Json.JNumber(value)  => value.toDouble.toInt
+      case Json.JString(value)  => value.length
+      case Json.JArray(value) =>
+        value.foldLeft(0) {
+          case (acc, json) => acc + foldToInt(json)
+        }
+      case Json.JObject(value) =>
+        value.values.foldLeft(0) {
+          case (acc, json) => acc + foldToInt(json)
+        }
     }
 
     foldToInt(doc)

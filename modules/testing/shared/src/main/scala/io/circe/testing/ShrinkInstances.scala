@@ -22,18 +22,20 @@ private[testing] trait ShrinkInstances {
 
     jn.toBigDecimal match {
       case Some(n) =>
-        val ns = if (n == zero) Stream.empty else {
-          val hs = halfs(n / two).map(n - _)
-          zero #:: interleave(hs, hs.map(h => -h))
-        }
+        val ns =
+          if (n == zero) Stream.empty
+          else {
+            val hs = halfs(n / two).map(n - _)
+            zero #:: interleave(hs, hs.map(h => -h))
+          }
 
         ns.map(value => JsonBigDecimal(value.underlying))
       case None => Stream(jn)
     }
   }
 
-  implicit val shrinkJsonObject: Shrink[JsonObject] = Shrink(o =>
-    Shrink.shrinkContainer[List, (String, Json)].shrink(o.toList).map(JsonObject.fromIterable)
+  implicit val shrinkJsonObject: Shrink[JsonObject] = Shrink(
+    o => Shrink.shrinkContainer[List, (String, Json)].shrink(o.toList).map(JsonObject.fromIterable)
   )
 
   implicit val shrinkJson: Shrink[Json] = Shrink(

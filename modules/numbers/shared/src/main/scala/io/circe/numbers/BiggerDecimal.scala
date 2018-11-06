@@ -85,19 +85,23 @@ private[numbers] final class SigAndExp(
     } else None
 
   def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
-    if (!isWhole) None else {
+    if (!isWhole) None
+    else {
       val digits = BigInteger.valueOf(unscaled.abs.toString.length.toLong).subtract(scale)
 
-      if (digits.compareTo(maxDigits) > 0) None else Some(
-        new BigDecimal(unscaled, scale.intValue).toBigInteger
-      )
+      if (digits.compareTo(maxDigits) > 0) None
+      else
+        Some(
+          new BigDecimal(unscaled, scale.intValue).toBigInteger
+        )
     }
 
   def toDouble: Double = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
     new BigDecimal(unscaled, scale.intValue).doubleValue
   } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
 
-  def toLong: Option[Long] = if (!this.isWhole) None else {
+  def toLong: Option[Long] = if (!this.isWhole) None
+  else {
     toBigInteger match {
       case Some(i) =>
         val asLong = i.longValue
@@ -109,13 +113,14 @@ private[numbers] final class SigAndExp(
 
   override def equals(that: Any): Boolean = that match {
     case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
-    case _ => false
+    case _                => false
   }
 
   override def hashCode: Int = scale.hashCode + unscaled.hashCode
 
-  override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString else {
-    s"${ unscaled }e${ scale.negate }"
+  override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString
+  else {
+    s"${unscaled}e${scale.negate}"
   }
 
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
@@ -154,7 +159,7 @@ final object BiggerDecimal {
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => !other.isNegativeZero
-      case _ => false
+      case _           => false
     }
     final override def hashCode: Int = (0.0).hashCode
     final override def toString: String = "0"
@@ -166,14 +171,15 @@ final object BiggerDecimal {
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => other.isNegativeZero
-      case _ => false
+      case _           => false
     }
     final override def hashCode: Int = (-0.0).hashCode
     final override def toString: String = "-0"
   }
 
   private[this] def fromUnscaledAndScale(unscaled: BigInteger, scale: Long): BiggerDecimal =
-    if (unscaled == BigInteger.ZERO) UnsignedZero else {
+    if (unscaled == BigInteger.ZERO) UnsignedZero
+    else {
       var current = unscaled
       var depth = scale
 
@@ -242,18 +248,22 @@ final object BiggerDecimal {
   def parseBiggerDecimalUnsafe(input: String): BiggerDecimal = {
     val len = input.length
 
-    if (len == 0) null else {
+    if (len == 0) null
+    else {
       var zeros = 0
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
 
-      var state = if (i >= len) FAILED else {
-        if (input.charAt(i) != '0') START else {
-          i = i + 1
-          AFTER_ZERO
+      var state =
+        if (i >= len) FAILED
+        else {
+          if (input.charAt(i) != '0') START
+          else {
+            i = i + 1
+            AFTER_ZERO
+          }
         }
-      }
 
       while (i < len && state != FAILED) {
         val c = input.charAt(i)
@@ -336,18 +346,25 @@ final object BiggerDecimal {
         i += 1
       }
 
-      if (state == FAILED || state == AFTER_DOT || state == AFTER_E || state == AFTER_EXP_SIGN) null else {
-        val integral = if (decIndex >= 0) input.substring(0, decIndex) else {
-          if (expIndex == -1) input else {
-            input.substring(0, expIndex)
+      if (state == FAILED || state == AFTER_DOT || state == AFTER_E || state == AFTER_EXP_SIGN) null
+      else {
+        val integral =
+          if (decIndex >= 0) input.substring(0, decIndex)
+          else {
+            if (expIndex == -1) input
+            else {
+              input.substring(0, expIndex)
+            }
           }
-        }
 
-        val fractional = if (decIndex == -1) "" else {
-          if (expIndex == -1) input.substring(decIndex + 1) else {
-            input.substring(decIndex + 1, expIndex)
+        val fractional =
+          if (decIndex == -1) ""
+          else {
+            if (expIndex == -1) input.substring(decIndex + 1)
+            else {
+              input.substring(decIndex + 1, expIndex)
+            }
           }
-        }
 
         val unscaledString = integral + fractional
         val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
@@ -356,9 +373,11 @@ final object BiggerDecimal {
           if (input.charAt(0) == '-') NegativeZero else UnsignedZero
         } else {
           val rescale = BigInteger.valueOf((fractional.length - zeros).toLong)
-          val scale = if (expIndex == -1) rescale else {
-            rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
-          }
+          val scale =
+            if (expIndex == -1) rescale
+            else {
+              rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
+            }
 
           new SigAndExp(unscaled, scale)
         }

@@ -11,7 +11,8 @@ final object EnumerationDecoder {
     def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("Enumeration", c.history))
   }
 
-  implicit def decodeEnumerationCCons[K <: Symbol, V, R <: Coproduct](implicit
+  implicit def decodeEnumerationCCons[K <: Symbol, V, R <: Coproduct](
+    implicit
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
     dr: EnumerationDecoder[R]
@@ -19,12 +20,13 @@ final object EnumerationDecoder {
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       c.as[String] match {
         case Right(s) if s == wit.value.name => Right(Inl(field[K](gv.from(HNil))))
-        case Right(_) => dr.apply(c).right.map(Inr(_))
-        case Left(err) => Left(DecodingFailure("Enumeration", c.history))
+        case Right(_)                        => dr.apply(c).right.map(Inr(_))
+        case Left(err)                       => Left(DecodingFailure("Enumeration", c.history))
       }
   }
 
-  implicit def decodeEnumeration[A, Repr <: Coproduct](implicit
+  implicit def decodeEnumeration[A, Repr <: Coproduct](
+    implicit
     gen: LabelledGeneric.Aux[A, Repr],
     rr: EnumerationDecoder[Repr]
   ): EnumerationDecoder[A] =

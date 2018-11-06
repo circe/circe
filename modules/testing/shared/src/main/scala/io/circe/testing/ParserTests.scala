@@ -11,17 +11,20 @@ import org.typelevel.discipline.Laws
 
 case class ParserLaws[P <: Parser](parser: P) {
   def parsingRoundTrip[A](json: Json)(
-    encode: Json => A, decode: P => (A => Either[ParsingFailure, Json])
+    encode: Json => A,
+    decode: P => (A => Either[ParsingFailure, Json])
   ): IsEq[Either[ParsingFailure, Json]] =
     decode(parser)(encode(json)) <-> Right(json)
 
   def decodingRoundTrip[A](json: Json)(
-    encode: Json => A, decode: P => (A => Either[Error, Json])
+    encode: Json => A,
+    decode: P => (A => Either[Error, Json])
   ): IsEq[Either[Error, Json]] =
     decode(parser)(encode(json)) <-> Right(json)
 
   def decodingAccumulatingRoundTrip[A](json: Json)(
-    encode: Json => A, decode: P => (A => ValidatedNel[Error, Json])
+    encode: Json => A,
+    decode: P => (A => ValidatedNel[Error, Json])
   ): IsEq[ValidatedNel[Error, Json]] =
     decode(parser)(encode(json)) <-> Validated.valid(json)
 }
@@ -31,7 +34,10 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
 
   def fromString(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet =
     fromFunction[String]("fromString")(
-      identity, _.parse, _.decode[Json], _.decodeAccumulating[Json]
+      identity,
+      _.parse,
+      _.decode[Json],
+      _.decodeAccumulating[Json]
     )
 
   def fromFunction[A](name: String)(
@@ -55,12 +61,10 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
       laws.decodingRoundTrip[A](json)(json => serialize(json.spaces2), decode)
     },
     "decodingAccumulatingRoundTripWithoutSpaces" -> Prop.forAll { (json: Json) =>
-      laws.decodingAccumulatingRoundTrip[A](json)(json =>
-        serialize(json.noSpaces), decodeAccumulating)
+      laws.decodingAccumulatingRoundTrip[A](json)(json => serialize(json.noSpaces), decodeAccumulating)
     },
     "decodingAccumulatingRoundTripWithSpaces" -> Prop.forAll { (json: Json) =>
-      laws.decodingAccumulatingRoundTrip[A](json)(json =>
-        serialize(json.spaces2), decodeAccumulating)
+      laws.decodingAccumulatingRoundTrip[A](json)(json => serialize(json.spaces2), decodeAccumulating)
     },
     "parser serializability" -> SerializableLaws.serializable(p)
   )

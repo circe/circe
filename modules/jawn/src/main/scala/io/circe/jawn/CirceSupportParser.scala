@@ -20,7 +20,7 @@ final object CirceSupportParser extends SupportParser[Json] {
     final def singleContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
       private[this] final var value: Json = null
       final def add(s: CharSequence, index: Int): Unit = { value = jstring(s.toString, index) }
-      final def add(v: Json, index: Int): Unit =  { value = v }
+      final def add(v: Json, index: Int): Unit = { value = v }
       final def finish(index: Int): Json = value
       final def isObj: Boolean = false
     }
@@ -38,7 +38,9 @@ final object CirceSupportParser extends SupportParser[Json] {
       private[this] final val m = new LinkedHashMap[String, Json]
 
       final def add(s: CharSequence, index: Int): Unit =
-        if (key.eq(null)) { key = s.toString } else {
+        if (key.eq(null)) {
+          key = s.toString
+        } else {
           m.put(key, jstring(s, index))
           key = null
         }

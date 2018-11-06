@@ -5,6 +5,7 @@ import cats.data.{ NonEmptyList, Validated, ValidatedNel }
 import java.io.Serializable
 
 sealed trait AccumulatingDecoder[A] extends Serializable { self =>
+
   /**
    * Decode the given [[HCursor]].
    */
@@ -32,7 +33,7 @@ sealed trait AccumulatingDecoder[A] extends Serializable { self =>
   final def or[AA >: A](d: => AccumulatingDecoder[AA]): AccumulatingDecoder[AA] = new AccumulatingDecoder[AA] {
     final def apply(c: HCursor): AccumulatingDecoder.Result[AA] = self(c) match {
       case v @ Validated.Valid(_) => v
-      case Validated.Invalid(_) => d(c)
+      case Validated.Invalid(_)   => d(c)
     }
   }
 
@@ -76,8 +77,8 @@ final object AccumulatingDecoder {
     final def apply(c: HCursor): Result[A] = Validated.invalid(e)
   }
 
-  implicit final val accumulatingDecoderInstances: SemigroupK[AccumulatingDecoder] with
-    ApplicativeError[AccumulatingDecoder, NonEmptyList[DecodingFailure]] =
+  implicit final val accumulatingDecoderInstances
+    : SemigroupK[AccumulatingDecoder] with ApplicativeError[AccumulatingDecoder, NonEmptyList[DecodingFailure]] =
     new SemigroupK[AccumulatingDecoder] with ApplicativeError[AccumulatingDecoder, NonEmptyList[DecodingFailure]] {
       final def combineK[A](x: AccumulatingDecoder[A], y: AccumulatingDecoder[A]): AccumulatingDecoder[A] = x.or(y)
 

@@ -19,7 +19,8 @@ private[shapes] trait LowPriorityHListInstances {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
 
-  implicit final def decodeHCons[H, T <: HList](implicit
+  implicit final def decodeHCons[H, T <: HList](
+    implicit
     decodeH: Decoder[H],
     decodeT: Decoder[T]
   ): Decoder[H :: T] = new Decoder[H :: T] {
@@ -39,10 +40,11 @@ private[shapes] trait LowPriorityHListInstances {
     }
   }
 
-  implicit final def encodeHCons[H, T <: HList](implicit
+  implicit final def encodeHCons[H, T <: HList](
+    implicit
     encodeH: Encoder[H],
     encodeT: ArrayEncoder[T]
   ): ArrayEncoder[H :: T] = new ArrayEncoder[H :: T] {
-      def encodeArray(a: H :: T): Vector[Json] = encodeH(a.head) +: encodeT.encodeArray(a.tail)
+    def encodeArray(a: H :: T): Vector[Json] = encodeH(a.head) +: encodeT.encodeArray(a.tail)
   }
 }
