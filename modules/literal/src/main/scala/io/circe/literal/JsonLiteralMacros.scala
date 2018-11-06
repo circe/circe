@@ -165,14 +165,16 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     }
 
     protected[this] val invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object = {
-      case ("jnull", _, _)                                                                         => q"_root_.io.circe.Json.Null"
-      case ("jfalse", _, _)                                                                        => q"_root_.io.circe.Json.False"
-      case ("jtrue", _, _)                                                                         => q"_root_.io.circe.Json.True"
-      case ("singleContext", _, _)                                                                 => new SingleContextHandler(replacements).asProxy(jawnFContextClass)
-      case ("arrayContext", _, _)                                                                  => new ArrayContextHandler(replacements).asProxy(jawnFContextClass)
-      case ("objectContext", _, _)                                                                 => new ObjectContextHandler(replacements).asProxy(jawnFContextClass)
+      // format: off
+      case ("jnull", _, _)         => q"_root_.io.circe.Json.Null"
+      case ("jfalse", _, _)        => q"_root_.io.circe.Json.False"
+      case ("jtrue", _, _)         => q"_root_.io.circe.Json.True"
+      case ("singleContext", _, _) => new SingleContextHandler(replacements).asProxy(jawnFContextClass)
+      case ("arrayContext", _, _)  => new ArrayContextHandler(replacements).asProxy(jawnFContextClass)
+      case ("objectContext", _, _) => new ObjectContextHandler(replacements).asProxy(jawnFContextClass)
       case ("jstring", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence]       => toJsonString(arg)
       case ("jstring", Array(cls, _), Array(arg: CharSequence, _)) if cls == classOf[CharSequence] => toJsonString(arg)
+      // format: on
       case ("jnum", Array(clsS, clsDecIndex, clsExpIndex), Array(s: CharSequence, decIndex, expIndex))
           if clsS == classOf[CharSequence] && clsDecIndex == classOf[Int] && clsExpIndex == classOf[Int] =>
         if (decIndex.asInstanceOf[Int] < 0 && expIndex.asInstanceOf[Int] < 0) {

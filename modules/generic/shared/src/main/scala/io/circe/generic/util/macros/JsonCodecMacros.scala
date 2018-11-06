@@ -51,7 +51,9 @@ abstract class JsonCodecMacros {
       case q"new ${`macroName` }()"                  => JsonCodecType.Both
       case q"new ${`macroName` }(encodeOnly = true)" => JsonCodecType.EncodeOnly
       case q"new ${`macroName` }(decodeOnly = true)" => JsonCodecType.DecodeOnly
-      case _                                         => c.abort(c.enclosingPosition, s"Unsupported arguments supplied to @$macroName")
+      // format: off
+      case _ => c.abort(c.enclosingPosition, s"Unsupported arguments supplied to @$macroName")
+      // format: on
     }
   }
 
