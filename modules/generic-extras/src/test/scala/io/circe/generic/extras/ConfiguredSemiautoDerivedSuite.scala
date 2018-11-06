@@ -70,13 +70,16 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
   "Semi-automatice derivation" should "call field modification times equal to field count" in {
     var transformMemberNamesCallCount, transformConstructorCallCount = 0
     implicit val customConfig: Configuration =
-      Configuration.default.copy(transformMemberNames = v => {
-        transformMemberNamesCallCount = transformMemberNamesCallCount + 1
-        Configuration.snakeCaseTransformation(v)
-      }, transformConstructorNames = v => {
-        transformConstructorCallCount = transformConstructorCallCount + 1
-        Configuration.snakeCaseTransformation(v)
-      })
+      Configuration.default.copy(
+        transformMemberNames = v => {
+          transformMemberNamesCallCount = transformMemberNamesCallCount + 1
+          Configuration.snakeCaseTransformation(v)
+        },
+        transformConstructorNames = v => {
+          transformConstructorCallCount = transformConstructorCallCount + 1
+          Configuration.snakeCaseTransformation(v)
+        }
+      )
 
     val fieldCount = 3
     val decodeConstructorCount = 2
@@ -97,22 +100,28 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
   }
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    val result = Json
+      .obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      )
+      .as[Int => Qux[String]]
+      .map(_(i))
 
     assert(result === Right(Qux(i, s, j)))
   }
 
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
     forAll { (i: Int, s: String, j: Int) =>
-      val result = Json.obj(
-        "i" -> Json.fromInt(i),
-        "a" -> Json.fromString(s)
-      ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
-         _(field(j))
-      )
+      val result = Json
+        .obj(
+          "i" -> Json.fromInt(i),
+          "a" -> Json.fromString(s)
+        )
+        .as[FieldType[Witness.`'j`.T, Int] => Qux[String]]
+        .map(
+          _(field(j))
+        )
 
       assert(result === Right(Qux(i, s, j)))
     }

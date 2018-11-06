@@ -1,6 +1,6 @@
 package io.circe.syntax
 
-import io.circe.{Encoder, Json, KeyEncoder}
+import io.circe.{ Encoder, Json, KeyEncoder }
 import io.circe.tests.CirceSuite
 
 class SyntaxSuite extends CirceSuite {
@@ -26,19 +26,21 @@ class SyntaxSuite extends CirceSuite {
     implicit val keyEncoder: KeyEncoder[CustomKey] =
       KeyEncoder[String].contramap(k => s"${k.componentOne}_${k.componentTwo}")
 
-    forAll { (
-      m: Map[String, Int],
-      aNumber: Int,
-      aString: String,
-      aBoolean: Boolean
-    ) => {
-      val key = CustomKey("keyComponentOne", 2)
-      val keyStringRepresentation = "keyComponentOne_2"
-      assert((key := m) === (keyStringRepresentation, m.asJson))
-      assert((key := aNumber) === (keyStringRepresentation, aNumber.asJson))
-      assert((key := aString) === (keyStringRepresentation, aString.asJson))
-      assert((key := aBoolean) === (keyStringRepresentation, aBoolean.asJson))
-    }
+    forAll {
+      (
+        m: Map[String, Int],
+        aNumber: Int,
+        aString: String,
+        aBoolean: Boolean
+      ) =>
+        {
+          val key = CustomKey("keyComponentOne", 2)
+          val keyStringRepresentation = "keyComponentOne_2"
+          assert((key := m) === (keyStringRepresentation, m.asJson))
+          assert((key := aNumber) === (keyStringRepresentation, aNumber.asJson))
+          assert((key := aString) === (keyStringRepresentation, aString.asJson))
+          assert((key := aBoolean) === (keyStringRepresentation, aBoolean.asJson))
+        }
     }
   }
 }

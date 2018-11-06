@@ -56,7 +56,7 @@ class EncoderSuite extends CirceSuite {
     }
 
     assert(asJsonObject.toList === expected)
-  } 
+  }
 
   "encodeVector" should "match sequence encoders" in forAll { (xs: Vector[Int]) =>
     assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))

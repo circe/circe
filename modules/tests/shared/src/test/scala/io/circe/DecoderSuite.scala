@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{Chain, NonEmptyList, Validated}
+import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.DownArray
@@ -108,26 +108,30 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
         json.asObject match {
           // The top-level value isn't an object, so we should fail.
           case None => result.isLeft
-          case Some(o1) => o1("") match {
-            // The top-level object doesn't contain a "" key, so we should succeed emptily.
-            case None => result === Right(None)
-            case Some(j2) => j2.asObject match {
-              // The second-level value isn't an object, so we should fail.
-              case None => result.isLeft
-              case Some(o2) => o2("") match {
-                // The second-level object doesn't contain a "" key, so we should succeed emptily.
-                case None => result === Right(None)
-                // The third-level value is null, so we succeed emptily.
-                case Some(j3) if j3.isNull => result === Right(None)
-                case Some(j3) => j3.asString match {
-                  // The third-level value isn't a string, so we should fail.
+          case Some(o1) =>
+            o1("") match {
+              // The top-level object doesn't contain a "" key, so we should succeed emptily.
+              case None => result === Right(None)
+              case Some(j2) =>
+                j2.asObject match {
+                  // The second-level value isn't an object, so we should fail.
                   case None => result.isLeft
-                  // The third-level value is a string, so we should have decoded it.
-                  case Some(s3) => result === Right(Some(s3))
+                  case Some(o2) =>
+                    o2("") match {
+                      // The second-level object doesn't contain a "" key, so we should succeed emptily.
+                      case None => result === Right(None)
+                      // The third-level value is null, so we succeed emptily.
+                      case Some(j3) if j3.isNull => result === Right(None)
+                      case Some(j3) =>
+                        j3.asString match {
+                          // The third-level value isn't a string, so we should fail.
+                          case None => result.isLeft
+                          // The third-level value is a string, so we should have decoded it.
+                          case Some(s3) => result === Right(Some(s3))
+                        }
+                    }
                 }
-              }
             }
-          }
         }
       )
     }
@@ -145,26 +149,30 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
         json.asArray match {
           // The top-level value isn't an array, so we should fail.
           case None => result.isLeft
-          case Some(a1) => a1.lift(0) match {
-            // The top-level array is empty, so we should succeed emptily.
-            case None => result === Right(None)
-            case Some(j2) => j2.asArray match {
-              // The second-level value isn't an array, so we should fail.
-              case None => result.isLeft
-              case Some(a2) => a2.lift(1) match {
-                // The second-level array doesn't have a second element, so we should succeed emptily.
-                case None => result === Right(None)
-                // The third-level value is null, so we succeed emptily.
-                case Some(j3) if j3.isNull => result === Right(None)
-                case Some(j3) => j3.asString match {
-                  // The third-level value isn't a string, so we should fail.
+          case Some(a1) =>
+            a1.lift(0) match {
+              // The top-level array is empty, so we should succeed emptily.
+              case None => result === Right(None)
+              case Some(j2) =>
+                j2.asArray match {
+                  // The second-level value isn't an array, so we should fail.
                   case None => result.isLeft
-                  // The third-level value is a string, so we should have decoded it.
-                  case Some(s3) => result === Right(Some(s3))
+                  case Some(a2) =>
+                    a2.lift(1) match {
+                      // The second-level array doesn't have a second element, so we should succeed emptily.
+                      case None => result === Right(None)
+                      // The third-level value is null, so we succeed emptily.
+                      case Some(j3) if j3.isNull => result === Right(None)
+                      case Some(j3) =>
+                        j3.asString match {
+                          // The third-level value isn't a string, so we should fail.
+                          case None => result.isLeft
+                          // The third-level value is a string, so we should have decoded it.
+                          case Some(s3) => result === Right(Some(s3))
+                        }
+                    }
                 }
-              }
             }
-          }
         }
       )
     }
@@ -179,10 +187,11 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       assert(
         if (json.isNull) {
           result === Right(None)
-        } else json.asString match {
-          case Some(str) => result === Right(Some(str))
-          case None => result.isLeft
-        }
+        } else
+          json.asString match {
+            case Some(str) => result === Right(Some(str))
+            case None      => result.isLeft
+          }
       )
     }
   }
@@ -244,7 +253,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isEmpty)
   }
 
-  it should "fail on non-whole values (#83)" in forAll {(d: Double) =>
+  it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Int].apply(json.hcursor)
 
@@ -327,9 +336,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val oddMessage = "Not odd!"
 
     val decodePositiveOddInt: Decoder[Int] =
-      Decoder[Int]
-        .ensure(_ > 0, positiveMessage)
-        .ensure(_ % 2 == 1, oddMessage)
+      Decoder[Int].ensure(_ > 0, positiveMessage).ensure(_ % 2 == 1, oddMessage)
 
     val expected = if (i > 0) {
       if (i % 2 == 1) {
@@ -399,7 +406,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "either" should "return the correct disjunct" in forAll { (value: Either[String, Boolean]) =>
     val json = value match {
-      case Left(s) => Json.fromString(s)
+      case Left(s)  => Json.fromString(s)
       case Right(b) => Json.fromBoolean(b)
     }
 
@@ -416,26 +423,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   }
 
   "a stateful Decoder with requireEmpty" should "succeed when there are no leftover fields" in {
-    val json = Json.obj(
-      "a" -> "1".asJson,
-      "b" -> "2".asJson)
+    val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson)
 
     assert(stateful.decodeJson(json) === Right("12"))
   }
 
   it should "fail when there are leftover fields" in {
-    val json = Json.obj(
-      "a" -> "1".asJson,
-      "b" -> "2".asJson,
-      "c" -> "3".asJson,
-      "d" -> "4".asJson)
+    val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
     assert(stateful.decodeJson(json).left.get.message === "Leftover keys: c, d")
   }
 
   it should "fail normally when a field is missing" in {
-    val json = Json.obj(
-      "a" -> "1".asJson)
+    val json = Json.obj("a" -> "1".asJson)
 
     assert(stateful.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
   }
@@ -449,44 +449,33 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     } yield a.foldMap(identity) ++ b)
   }
 
-  "a stateful Decoder with requireEmpty and an optional value" should 
+  "a stateful Decoder with requireEmpty and an optional value" should
     "succeed when there are no leftover fields and an optional field is missing" in {
-      val json = Json.obj(
-        "b" -> "2".asJson)
+    val json = Json.obj("b" -> "2".asJson)
 
-      assert(statefulOpt.decodeJson(json) === Right("2"))
+    assert(statefulOpt.decodeJson(json) === Right("2"))
   }
 
   it should "succeed when there are no leftover fields and an optional field is present" in {
-    val json = Json.obj(
-      "a" -> "1".asJson,
-      "b" -> "2".asJson)
+    val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson)
 
     assert(statefulOpt.decodeJson(json) === Right("12"))
   }
 
   it should "fail when there are leftover fields and an optional field is missing" in {
-    val json = Json.obj(
-      "b" -> "2".asJson,
-      "c" -> "3".asJson,
-      "d" -> "4".asJson)
+    val json = Json.obj("b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
     assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
   }
 
   it should "fail when there are leftover fields and an optional field is present" in {
-    val json = Json.obj(
-      "a" -> "1".asJson,
-      "b" -> "2".asJson,
-      "c" -> "3".asJson,
-      "d" -> "4".asJson)
+    val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
     assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
   }
 
   it should "fail normally when a field is missing and an optional field is present" in {
-    val json = Json.obj(
-      "a" -> "1".asJson)
+    val json = Json.obj("a" -> "1".asJson)
 
     assert(statefulOpt.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
   }
@@ -512,7 +501,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   }
 
   "decodeChain" should "match sequence decoders" in forAll { (xs: List[Int]) =>
-    assert(Decoder.decodeChain[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(Chain.fromSeq(_)).decodeJson(xs.asJson))
+    assert(
+      Decoder.decodeChain[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(Chain.fromSeq(_)).decodeJson(xs.asJson)
+    )
   }
 
   "HCursor#history" should "be stack safe" in {
@@ -526,8 +517,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   case class NotDecodable(a: Int)
   implicit val decodeNotDecodable: Decoder[NotDecodable] = Decoder.failedWithMessage("Some message")
 
-  "container decoder" should "pass through error message from item" in forAll(containerDecoders[NotDecodable]) { decoder =>
-    val json = Json.arr(Json.obj("a" -> 1.asJson))
-    assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
+  "container decoder" should "pass through error message from item" in forAll(containerDecoders[NotDecodable]) {
+    decoder =>
+      val json = Json.arr(Json.obj("a" -> 1.asJson))
+      assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
   }
 }

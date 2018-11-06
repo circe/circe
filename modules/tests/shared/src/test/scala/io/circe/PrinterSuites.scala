@@ -14,22 +14,26 @@ class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escap
   }
 }
 
-class Spaces2PrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.spaces2.copy(reuseWriters = true),
-  parser.`package`
-)
+class Spaces2PrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.spaces2.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class Spaces4PrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.spaces4.copy(reuseWriters = true),
-  parser.`package`
-)
+class Spaces4PrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.spaces4.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class NoSpacesPrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.noSpaces.copy(reuseWriters = true),
-  parser.`package`
-)
+class NoSpacesPrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.noSpaces.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class UnicodeEscapePrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
-  parser.`package`
-)
+class UnicodeEscapePrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
+      parser.`package`
+    )

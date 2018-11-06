@@ -1,6 +1,15 @@
 package io.circe
 
-import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyStream, NonEmptyVector, Validated }
+import cats.data.{
+  Chain,
+  NonEmptyChain,
+  NonEmptyList,
+  NonEmptyMap,
+  NonEmptySet,
+  NonEmptyStream,
+  NonEmptyVector,
+  Validated
+}
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
@@ -14,18 +23,19 @@ import scala.collection.mutable.HashMap
 import scala.concurrent.duration.FiniteDuration
 
 trait SpecialEqForFloatAndDouble {
+
   /**
-    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
-    * `NaN` from itself.
-    */
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
+   * `NaN` from itself.
+   */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
-    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
-    * `NaN` from itself.
-    */
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
+   * `NaN` from itself.
+   */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
@@ -43,18 +53,26 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 }
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
-  import java.{lang => jl}
-  import java.{math => jm}
+  import java.{ lang => jl }
+  import java.{ math => jm }
 
-  private def JavaCodecTests[ScalaPrimitive, JavaBoxed]
-    (wrap: ScalaPrimitive => JavaBoxed, unwrap: JavaBoxed => ScalaPrimitive, eq: Eq[JavaBoxed] = Eq.fromUniversalEquals[JavaBoxed])
-    (implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
+  private def JavaCodecTests[ScalaPrimitive, JavaBoxed](
+    wrap: ScalaPrimitive => JavaBoxed,
+    unwrap: JavaBoxed => ScalaPrimitive,
+    eq: Eq[JavaBoxed] = Eq.fromUniversalEquals[JavaBoxed]
+  )(implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
     CodecTests[JavaBoxed].codec(Arbitrary(scalaArb.arbitrary.map(wrap)), implicitly, eq, implicitly, implicitly)
 
   checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue()))
   checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue()))
-  checkLaws("Codec[java.lang.Float]", JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue())))
-  checkLaws("Codec[java.lang.Double]", JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue())))
+  checkLaws(
+    "Codec[java.lang.Float]",
+    JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue()))
+  )
+  checkLaws(
+    "Codec[java.lang.Double]",
+    JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue()))
+  )
   checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue()))
   checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue()))
   checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue()))
@@ -72,14 +90,17 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
     // max range is +/- 292 years, but we give ourselves some extra headroom
     // to ensure that we can add these things up. they crash on overflow.
     val n = (292L * 365) / 50
-    Arbitrary(Gen.oneOf(
-      Gen.choose(-n, n).map(FiniteDuration(_, DAYS)),
-      Gen.choose(-n * 24L, n * 24L).map(FiniteDuration(_, HOURS)),
-      Gen.choose(-n * 1440L, n * 1440L).map(FiniteDuration(_, MINUTES)),
-      Gen.choose(-n * 86400L, n * 86400L).map(FiniteDuration(_, SECONDS)),
-      Gen.choose(-n * 86400000L, n * 86400000L).map(FiniteDuration(_, MILLISECONDS)),
-      Gen.choose(-n * 86400000000L, n * 86400000000L).map(FiniteDuration(_, MICROSECONDS)),
-      Gen.choose(-n * 86400000000000L, n * 86400000000000L).map(FiniteDuration(_, NANOSECONDS))))
+    Arbitrary(
+      Gen.oneOf(
+        Gen.choose(-n, n).map(FiniteDuration(_, DAYS)),
+        Gen.choose(-n * 24L, n * 24L).map(FiniteDuration(_, HOURS)),
+        Gen.choose(-n * 1440L, n * 1440L).map(FiniteDuration(_, MINUTES)),
+        Gen.choose(-n * 86400L, n * 86400L).map(FiniteDuration(_, SECONDS)),
+        Gen.choose(-n * 86400000L, n * 86400000L).map(FiniteDuration(_, MILLISECONDS)),
+        Gen.choose(-n * 86400000000L, n * 86400000000L).map(FiniteDuration(_, MICROSECONDS)),
+        Gen.choose(-n * 86400000000000L, n * 86400000000000L).map(FiniteDuration(_, NANOSECONDS))
+      )
+    )
   }
 
   implicit val eqFiniteDuration: Eq[FiniteDuration] = Eq.fromUniversalEquals
