@@ -60,10 +60,10 @@ object Boilerplate {
 
   class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity).map(n => s"A$n")
-    val synVals  = (0 until arity).map(n => s"a$n")
-    val `A..N`   = synTypes.mkString(", ")
-    val `a..n`   = synVals.mkString(", ")
-    val `_.._`   = Seq.fill(arity)("_").mkString(", ")
+    val synVals = (0 until arity).map(n => s"a$n")
+    val `A..N` = synTypes.mkString(", ")
+    val `a..n` = synVals.mkString(", ")
+    val `_.._` = Seq.fill(arity)("_").mkString(", ")
     val `(A..N)` = if (arity == 1) "Tuple1[A0]" else synTypes.mkString("(", ", ", ")")
     val `(_.._)` = if (arity == 1) "Tuple1[_]" else Seq.fill(arity)("_").mkString("(", ", ", ")")
     val `(a..n)` = if (arity == 1) "Tuple1(a)" else synVals.mkString("(", ", ", ")")
@@ -99,7 +99,7 @@ object Boilerplate {
   object GenTupleDecoders extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "TupleDecoders.scala"
+    def filename(root: File): File = root / "io" / "circe" / "TupleDecoders.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
@@ -114,11 +114,12 @@ object Boilerplate {
       }.mkString(", ")
 
       val result =
-        if (arity == 1) s"Decoder.resultInstance.map($applied)(Tuple1(_))" else s"Decoder.resultInstance.tuple$arity($applied)"
+        if (arity == 1) s"Decoder.resultInstance.map($applied)(Tuple1(_))"
+        else s"Decoder.resultInstance.tuple$arity($applied)"
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingApplied.map(Tuple1(_))"
-          else s"AccumulatingDecoder.resultInstance.tuple$arity($accumulatingApplied)"
+        else s"AccumulatingDecoder.resultInstance.tuple$arity($accumulatingApplied)"
 
       block"""
         |package io.circe
@@ -149,14 +150,14 @@ object Boilerplate {
   object GenTupleEncoders extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "TupleEncoders.scala"
+    def filename(root: File): File = root / "io" / "circe" / "TupleEncoders.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
 
       val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
       val applied = synTypes.zipWithIndex.map {
-        case (tpe, n) => s"encode$tpe(a._${ n + 1 })"
+        case (tpe, n) => s"encode$tpe(a._${n + 1})"
       }.mkString(", ")
 
       block"""
@@ -178,7 +179,7 @@ object Boilerplate {
   object GenTupleTests extends Template {
     override def range: IndexedSeq[Int] = 2 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "TupleCodecSuite.scala"
+    def filename(root: File): File = root / "io" / "circe" / "TupleCodecSuite.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
@@ -203,7 +204,7 @@ object Boilerplate {
   object GenProductDecoders extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "ProductDecoders.scala"
+    def filename(root: File): File = root / "io" / "circe" / "ProductDecoders.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
@@ -213,16 +214,15 @@ object Boilerplate {
 
       val results = synTypes.map(tpe => s"c.get[$tpe](name$tpe)(decode$tpe)").mkString(", ")
 
-      val accumulatingResults = synTypes.map(tpe =>
-        s"decode$tpe.tryDecodeAccumulating(c.downField(name$tpe))"
-      ).mkString(",")
+      val accumulatingResults =
+        synTypes.map(tpe => s"decode$tpe.tryDecodeAccumulating(c.downField(name$tpe))").mkString(",")
 
       val result =
         if (arity == 1) s"Decoder.resultInstance.map($results)(f)" else s"Decoder.resultInstance.map$arity($results)(f)"
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingResults.map(f)"
-          else s"AccumulatingDecoder.resultInstance.map$arity($accumulatingResults)(f)"
+        else s"AccumulatingDecoder.resultInstance.map$arity($accumulatingResults)(f)"
 
       block"""
         |package io.circe
@@ -248,18 +248,20 @@ object Boilerplate {
   object GenProductEncoders extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "ProductEncoders.scala"
+    def filename(root: File): File = root / "io" / "circe" / "ProductEncoders.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
 
       val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
-      val kvs = if (arity == 1) s"(name${ synTypes.head }, encode${ synTypes.head }(members))" else {
-        synTypes.zipWithIndex.map {
-          case (tpe, i) => s"(name$tpe, encode$tpe(members._${ i + 1 }))"
-        }.mkString(", ")
-      }
+      val kvs =
+        if (arity == 1) s"(name${synTypes.head}, encode${synTypes.head}(members))"
+        else {
+          synTypes.zipWithIndex.map {
+            case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
+          }.mkString(", ")
+        }
       val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
 
       block"""
@@ -286,7 +288,7 @@ object Boilerplate {
   object GenProductTests extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root /  "io" / "circe" / "ProductCodecSuite.scala"
+    def filename(root: File): File = root / "io" / "circe" / "ProductCodecSuite.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._

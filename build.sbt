@@ -9,7 +9,8 @@ organization in ThisBuild := "io.circe"
 
 val compilerOptions = Seq(
   "-deprecation",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-feature",
   "-language:existentials",
   "-language:higherKinds",
@@ -38,7 +39,7 @@ val disciplineVersion = "0.9.0"
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, minor)) if minor < 13 => true
-    case _ => false
+    case _                              => false
   }
 
 def scalaTestVersionFor(scalaVersion: String): String =
@@ -135,9 +136,9 @@ lazy val docSettings = allSettings ++ Seq(
     "gray" -> "#7B7B7E",
     "gray-light" -> "#E5E5E6",
     "gray-lighter" -> "#F4F3F4",
-    "white-color" -> "#FFFFFF"),
-  micrositeConfigYaml := ConfigYml(yamlInline =
-    s"""
+    "white-color" -> "#FFFFFF"
+  ),
+  micrositeConfigYaml := ConfigYml(yamlInline = s"""
       |scalafiddle:
       |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
     """.stripMargin),
@@ -146,10 +147,14 @@ lazy val docSettings = allSettings ++ Seq(
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
     "-implicits",
-    "-skip-packages", "scalaz",
-    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
-    "-doc-root-content", (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
+    "-skip-packages",
+    "scalaz",
+    "-doc-source-url",
+    scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
+    "-sourcepath",
+    baseDirectory.in(LocalRootProject).value.getAbsolutePath,
+    "-doc-root-content",
+    (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
   ),
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
@@ -160,7 +165,8 @@ lazy val docSettings = allSettings ++ Seq(
   includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
-lazy val docs = project.dependsOn(core, genericExtras, parser, shapes)
+lazy val docs = project
+  .dependsOn(core, genericExtras, parser, shapes)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
@@ -218,7 +224,8 @@ lazy val macroSettings: Seq[Setting[_]] = Seq(
   )
 )
 
-lazy val circe = project.in(file("."))
+lazy val circe = project
+  .in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
@@ -234,14 +241,13 @@ lazy val circe = project.in(file("."))
   .aggregate(aggregatedProjects: _*)
   .dependsOn(core, genericExtras, literal, parser)
 
-lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure)
-  .settings(
-    scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
-    },
-    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value),
-    coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
-  )
+lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
+  scalacOptions ~= {
+    _.filterNot(Set("-Yno-predef"))
+  },
+  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value),
+  coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
+)
 
 lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
@@ -252,7 +258,8 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test
     )
-  ).dependsOn(numbersTestingBase % Test)
+  )
+  .dependsOn(numbersTestingBase % Test)
 
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
@@ -268,7 +275,7 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -280,7 +287,7 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 11 => extraDirs("-no-jdk8")
         case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -308,7 +315,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -328,7 +335,7 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousC
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -379,9 +386,7 @@ lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = circeModule("scalajs", mima = None)
-  .enablePlugins(ScalaJSPlugin)
-  .dependsOn(coreJS)
+lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).dependsOn(coreJS)
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
@@ -431,7 +436,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -446,7 +451,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
         CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
-        case _ => Nil
+        case _                               => Nil
       }
     }
   )
@@ -503,13 +508,15 @@ lazy val publishSettings = Seq(
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  pomIncludeRepository := { _ => false },
+  pomIncludeRepository := { _ =>
+    false
+  },
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
       Some("snapshots" at nexus + "content/repositories/snapshots")
     else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+      Some("releases" at nexus + "service/local/staging/deploy/maven2")
   },
   autoAPIMappings := true,
   apiURL := Some(url("https://circe.github.io/circe/api/")),
@@ -520,8 +527,7 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com",
-      url("https://twitter.com/travisbrown"))
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
   ),
   pomPostProcess := { (node: XmlNode) =>
     new RuleTransformer(
@@ -531,7 +537,7 @@ lazy val publishSettings = Seq(
 
         override def transform(node: XmlNode): XmlNodeSeq = node match {
           case elem: Elem if isTestScope(elem) => Nil
-          case _ => node
+          case _                               => node
         }
       }
     ).transform(node).head
@@ -548,12 +554,13 @@ credentials ++= (
   for {
     username <- Option(System.getenv().get("SONATYPE_USERNAME"))
     password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-  } yield Credentials(
-    "Sonatype Nexus Repository Manager",
-    "oss.sonatype.org",
-    username,
-    password
-  )
+  } yield
+    Credentials(
+      "Sonatype Nexus Repository Manager",
+      "oss.sonatype.org",
+      username,
+      password
+    )
 ).toSeq
 
 lazy val CompileTime = config("compile-time")
