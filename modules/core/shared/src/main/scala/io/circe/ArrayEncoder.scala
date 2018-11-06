@@ -18,9 +18,9 @@ trait ArrayEncoder[A] extends RootEncoder[A] { self =>
   def encodeArray(a: A): Vector[Json]
 
   /**
-    * Create a new [[ArrayEncoder]] by applying a function to a value of type `B` before encoding as
-    * an `A`.
-    */
+   * Create a new [[ArrayEncoder]] by applying a function to a value of type `B` before encoding as
+   * an `A`.
+   */
   final def contramapArray[B](f: B => A): ArrayEncoder[B] = new ArrayEncoder[B] {
     final def encodeArray(a: B) = self.encodeArray(f(a))
   }
@@ -49,6 +49,7 @@ trait ArrayEncoder[A] extends RootEncoder[A] { self =>
  * @author Travis Brown
  */
 final object ArrayEncoder extends LowPriorityArrayEncoders {
+
   /**
    * Return an instance for a given type.
    *
@@ -74,6 +75,7 @@ final object ArrayEncoder extends LowPriorityArrayEncoders {
 }
 
 private[circe] trait LowPriorityArrayEncoders {
+
   /**
    * @group Prioritization
    */

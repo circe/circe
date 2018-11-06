@@ -8,15 +8,18 @@ import io.circe.{ AccumulatingDecoder, ArrayEncoder, Decoder, Encoder, Json, Key
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
+
   /**
    * The number of arbitrary values that will be considered when checking for
    * codec equality.
    */
   protected def codecEqualityCheckCount: Int = 16
 
-  private[this] def arbitraryValues[A](implicit A: Arbitrary[A]): Stream[A] = Stream.continually(
-    A.arbitrary.sample
-  ).flatten
+  private[this] def arbitraryValues[A](implicit A: Arbitrary[A]): Stream[A] = Stream
+    .continually(
+      A.arbitrary.sample
+    )
+    .flatten
 
   implicit def eqKeyEncoder[A: Arbitrary]: Eq[KeyEncoder[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => Eq[String].eqv(e1(a), e2(a)))
@@ -31,9 +34,9 @@ trait EqInstances { this: ArbitraryInstances =>
   }
 
   implicit def eqDecoder[A: Eq]: Eq[Decoder[A]] = Eq.instance { (d1, d2) =>
-    arbitraryValues[Json].take(codecEqualityCheckCount).forall(json =>
-      Eq[Decoder.Result[A]].eqv(d1(json.hcursor), d2(json.hcursor))
-    )
+    arbitraryValues[Json]
+      .take(codecEqualityCheckCount)
+      .forall(json => Eq[Decoder.Result[A]].eqv(d1(json.hcursor), d2(json.hcursor)))
   }
 
   implicit def eqObjectEncoder[A: Arbitrary]: Eq[ObjectEncoder[A]] = Eq.instance { (e1, e2) =>
@@ -45,8 +48,8 @@ trait EqInstances { this: ArbitraryInstances =>
   }
 
   implicit def eqAccumulatingDecoder[A: Eq]: Eq[AccumulatingDecoder[A]] = Eq.instance { (d1, d2) =>
-    arbitraryValues[Json].take(codecEqualityCheckCount).forall(json =>
-      Eq[AccumulatingDecoder.Result[A]].eqv(d1(json.hcursor), d2(json.hcursor))
-    )
+    arbitraryValues[Json]
+      .take(codecEqualityCheckCount)
+      .forall(json => Eq[AccumulatingDecoder.Result[A]].eqv(d1(json.hcursor), d2(json.hcursor)))
   }
 }

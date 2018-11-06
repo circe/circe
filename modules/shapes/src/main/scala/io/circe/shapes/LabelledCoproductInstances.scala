@@ -6,7 +6,8 @@ import shapeless.{ :+:, Coproduct, Inl, Inr, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 
 trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
-  implicit final def decodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](implicit
+  implicit final def decodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](
+    implicit
     witK: Witness.Aux[K],
     decodeV: Decoder[V],
     decodeR: Decoder[R]
@@ -18,7 +19,8 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
       )
   }
 
-  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](implicit
+  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](
+    implicit
     witK: Witness.Aux[K],
     encodeV: Encoder[V],
     encodeR: Encoder[R]
@@ -31,7 +33,8 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
 }
 
 private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductInstances {
-  implicit final def decodeLabelledCCons[K, W >: K, V, R <: Coproduct](implicit
+  implicit final def decodeLabelledCCons[K, W >: K, V, R <: Coproduct](
+    implicit
     witK: Witness.Aux[K],
     widenK: Widen.Aux[K, W],
     eqW: Eq[W],
@@ -44,14 +47,19 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
 
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       Decoder.resultSemigroupK.combineK(
-        c.keys.flatMap(_.find(isK)).fold[Decoder.Result[String]](
-          Left(DecodingFailure("Record", c.history))
-        )(Right(_)).right.flatMap(c.get[V](_).right.map(v => Inl(field[K](v)))),
+        c.keys
+          .flatMap(_.find(isK))
+          .fold[Decoder.Result[String]](
+            Left(DecodingFailure("Record", c.history))
+          )(Right(_))
+          .right
+          .flatMap(c.get[V](_).right.map(v => Inl(field[K](v)))),
         decodeR(c).right.map(Inr(_))
       )
   }
 
-  implicit final def encodeLabelledCCons[K, W >: K, V, R <: Coproduct](implicit
+  implicit final def encodeLabelledCCons[K, W >: K, V, R <: Coproduct](
+    implicit
     witK: Witness.Aux[K],
     eqW: Eq[W],
     encodeW: KeyEncoder[W],
@@ -64,4 +72,3 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
     }
   }
 }
-

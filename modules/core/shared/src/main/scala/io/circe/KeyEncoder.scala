@@ -14,6 +14,7 @@ import java.util.UUID
  * object may have fewer fields than the original map.
  */
 abstract class KeyEncoder[A] extends Serializable { self =>
+
   /**
    * Convert a key value to a string.
    */

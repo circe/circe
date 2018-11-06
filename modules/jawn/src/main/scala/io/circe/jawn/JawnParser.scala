@@ -8,7 +8,7 @@ import scala.util.{ Failure, Success, Try }
 
 class JawnParser extends Parser {
   private[this] final def fromTry(t: Try[Json]): Either[ParsingFailure, Json] = t match {
-    case Success(json) => Right(json)
+    case Success(json)  => Right(json)
     case Failure(error) => Left(ParsingFailure(error.getMessage, error))
   }
 

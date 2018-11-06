@@ -27,7 +27,8 @@ abstract class ConfiguredObjectEncoder[A](config: Configuration) extends Derived
 }
 
 final object ConfiguredObjectEncoder {
-  implicit def encodeCaseClass[A, R <: HList, F <: HList, K <: HList](implicit
+  implicit def encodeCaseClass[A, R <: HList, F <: HList, K <: HList](
+    implicit
     gen: LabelledGeneric.Aux[A, R],
     encode: Lazy[ReprObjectEncoder[R]],
     config: Configuration,
@@ -40,9 +41,13 @@ final object ConfiguredObjectEncoder {
     private[this] val hasKeyAnnotations: Boolean = keyAnnotations.exists(_.nonEmpty)
 
     private[this] val keyAnnotationMap: Map[String, String] =
-      fieldsToList(fields()).map(_.name).zip(keyAnnotations).collect {
-        case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
-      }.toMap
+      fieldsToList(fields())
+        .map(_.name)
+        .zip(keyAnnotations)
+        .collect {
+          case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
+        }
+        .toMap
 
     private[this] def memberNameTransformer(value: String): String = {
       if (hasKeyAnnotations)
@@ -66,7 +71,8 @@ final object ConfiguredObjectEncoder {
       )
   }
 
-  implicit def encodeAdt[A, R <: Coproduct](implicit
+  implicit def encodeAdt[A, R <: Coproduct](
+    implicit
     gen: LabelledGeneric.Aux[A, R],
     encode: Lazy[ReprObjectEncoder[R]],
     config: Configuration

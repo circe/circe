@@ -20,7 +20,8 @@ import eu.timepit.refined.api.{ RefType, Validate }
  * @author Alexandre Archambault
  */
 package object refined {
-  implicit final def refinedDecoder[T, P, F[_, _]](implicit
+  implicit final def refinedDecoder[T, P, F[_, _]](
+    implicit
     underlying: Decoder[T],
     validate: Validate[T, P],
     refType: RefType[F]
@@ -29,20 +30,22 @@ package object refined {
       underlying(c) match {
         case Right(t0) =>
           refType.refine(t0) match {
-            case Left(err) => Left(DecodingFailure(err, c.history))
-            case r @ Right(t)  => r.asInstanceOf[Decoder.Result[F[T, P]]]
+            case Left(err)    => Left(DecodingFailure(err, c.history))
+            case r @ Right(t) => r.asInstanceOf[Decoder.Result[F[T, P]]]
           }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[F[T, P]]]
       }
     }
 
-  implicit final def refinedEncoder[T, P, F[_, _]](implicit
+  implicit final def refinedEncoder[T, P, F[_, _]](
+    implicit
     underlying: Encoder[T],
     refType: RefType[F]
   ): Encoder[F[T, P]] =
     underlying.contramap(refType.unwrap)
 
-  implicit final def refinedKeyDecoder[T, P, F[_, _]](implicit
+  implicit final def refinedKeyDecoder[T, P, F[_, _]](
+    implicit
     underlying: KeyDecoder[T],
     validate: Validate[T, P],
     refType: RefType[F]
@@ -50,13 +53,14 @@ package object refined {
     KeyDecoder.instance { str =>
       underlying(str) flatMap { t0 =>
         refType.refine(t0) match {
-          case Left(_) => None
+          case Left(_)  => None
           case Right(t) => Some(t)
         }
       }
     }
 
-  implicit final def refinedKeyEncoder[T, P, F[_, _]](implicit
+  implicit final def refinedKeyEncoder[T, P, F[_, _]](
+    implicit
     underlying: KeyEncoder[T],
     refType: RefType[F]
   ): KeyEncoder[F[T, P]] =

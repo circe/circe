@@ -19,7 +19,8 @@ object PatchWithOptions {
       final def apply(r: HNil, o: HNil): HNil = HNil
     }
 
-  implicit final def hconsPatchWithOptions[K <: Symbol, V, T <: HList](implicit
+  implicit final def hconsPatchWithOptions[K <: Symbol, V, T <: HList](
+    implicit
     tailPatch: PatchWithOptions[T]
   ): Aux[FieldType[K, V] :: T, FieldType[K, Option[V]] :: tailPatch.Out] =
     new PatchWithOptions[FieldType[K, V] :: T] {

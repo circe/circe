@@ -18,9 +18,9 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
   def encodeObject(a: A): JsonObject
 
   /**
-    * Create a new [[ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
-    * `A`.
-    */
+   * Create a new [[ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
+   * `A`.
+   */
   final def contramapObject[B](f: B => A): ObjectEncoder[B] = new ObjectEncoder[B] {
     final def encodeObject(a: B) = self.encodeObject(f(a))
   }
@@ -49,6 +49,7 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
  * @author Travis Brown
  */
 final object ObjectEncoder extends LowPriorityObjectEncoders {
+
   /**
    * Return an instance for a given type.
    *
@@ -74,10 +75,12 @@ final object ObjectEncoder extends LowPriorityObjectEncoders {
 }
 
 private[circe] trait LowPriorityObjectEncoders {
+
   /**
    * @group Prioritization
    */
-  implicit final def importedObjectEncoder[A](implicit
+  implicit final def importedObjectEncoder[A](
+    implicit
     exported: Exported[ObjectEncoder[A]]
   ): ObjectEncoder[A] = exported.instance
 }

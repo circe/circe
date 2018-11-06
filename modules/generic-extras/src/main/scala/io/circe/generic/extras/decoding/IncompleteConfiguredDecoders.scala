@@ -10,7 +10,8 @@ import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll
 
 private[circe] trait IncompleteConfiguredDecoders {
-  implicit final def decodeIncompleteCaseClass[F, P <: HList, A, D <: HList, T <: HList, R <: HList](implicit
+  implicit final def decodeIncompleteCaseClass[F, P <: HList, A, D <: HList, T <: HList, R <: HList](
+    implicit
     ffp: FnFromProduct.Aux[P => A, F],
     gen: LabelledGeneric.Aux[A, T],
     removeAll: RemoveAll.Aux[T, P, (P, R)],
@@ -27,20 +28,23 @@ private[circe] trait IncompleteConfiguredDecoders {
       defaultMap,
       None
     ) match {
-      case Right(r) => Right(ffp(p => gen.from(removeAll.reinsert((p, r)))))
+      case Right(r)    => Right(ffp(p => gen.from(removeAll.reinsert((p, r)))))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[F]]
     }
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
-      decode.configuredDecodeAccumulating(c)(
-        config.transformMemberNames,
-        constructorNameTransformer,
-        defaultMap,
-        None
-      ).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
+      decode
+        .configuredDecodeAccumulating(c)(
+          config.transformMemberNames,
+          constructorNameTransformer,
+          defaultMap,
+          None
+        )
+        .map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
   }
 
-  implicit final def decodeCaseClassPatch[A, D <: HList, R <: HList, O <: HList](implicit
+  implicit final def decodeCaseClassPatch[A, D <: HList, R <: HList, O <: HList](
+    implicit
     gen: LabelledGeneric.Aux[A, R],
     patch: PatchWithOptions.Aux[R, O],
     decode: ReprDecoder[O],
@@ -56,16 +60,18 @@ private[circe] trait IncompleteConfiguredDecoders {
       defaultMap,
       None
     ) match {
-      case Right(o) => Right(a => gen.from(patch(gen.to(a), o)))
+      case Right(o)    => Right(a => gen.from(patch(gen.to(a), o)))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A => A]]
     }
 
     override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
-      decode.configuredDecodeAccumulating(c)(
-        config.transformMemberNames,
-        constructorNameTransformer,
-        defaultMap,
-        None
-      ).map(o => a => gen.from(patch(gen.to(a), o)))
+      decode
+        .configuredDecodeAccumulating(c)(
+          config.transformMemberNames,
+          constructorNameTransformer,
+          defaultMap,
+          None
+        )
+        .map(o => a => gen.from(patch(gen.to(a), o)))
   }
 }

@@ -11,7 +11,8 @@ final object EnumerationEncoder {
     def apply(a: CNil): Json = sys.error("Cannot encode CNil")
   }
 
-  implicit def encodeEnumerationCCons[K <: Symbol, V, R <: Coproduct](implicit
+  implicit def encodeEnumerationCCons[K <: Symbol, V, R <: Coproduct](
+    implicit
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
     dr: EnumerationEncoder[R]
@@ -22,7 +23,8 @@ final object EnumerationEncoder {
     }
   }
 
-  implicit def encodeEnumeration[A, Repr <: Coproduct](implicit
+  implicit def encodeEnumeration[A, Repr <: Coproduct](
+    implicit
     gen: LabelledGeneric.Aux[A, Repr],
     rr: EnumerationEncoder[Repr]
   ): EnumerationEncoder[A] =

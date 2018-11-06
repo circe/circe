@@ -1,11 +1,11 @@
 package io.circe.generic.extras
 
-import io.circe.{Decoder, Encoder, ObjectEncoder}
-import io.circe.generic.extras.decoding.{ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder}
-import io.circe.generic.extras.encoding.{ConfiguredObjectEncoder, EnumerationEncoder, UnwrappedEncoder}
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder }
+import io.circe.generic.extras.encoding.{ ConfiguredObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
 import io.circe.generic.extras.util.RecordToMap
 import io.circe.generic.util.PatchWithOptions
-import shapeless.{Default, HList, LabelledGeneric, Lazy}
+import shapeless.{ Default, HList, LabelledGeneric, Lazy }
 import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll
 
@@ -51,17 +51,18 @@ final object semiauto {
   def deriveEnumerationEncoder[A](implicit encode: Lazy[EnumerationEncoder[A]]): Encoder[A] = encode.value
 
   /**
-    * Derive a decoder for a value class.
-    */
+   * Derive a decoder for a value class.
+   */
   def deriveUnwrappedDecoder[A](implicit decode: Lazy[UnwrappedDecoder[A]]): Decoder[A] = decode.value
 
   /**
-    * Derive an encoder for a value class.
-    */
+   * Derive an encoder for a value class.
+   */
   def deriveUnwrappedEncoder[A](implicit encode: Lazy[UnwrappedEncoder[A]]): Encoder[A] = encode.value
 
   final class DerivationHelper[A] {
-    final def incomplete[P <: HList, C, D <: HList, T <: HList, R <: HList](implicit
+    final def incomplete[P <: HList, C, D <: HList, T <: HList, R <: HList](
+      implicit
       ffp: FnFromProduct.Aux[P => C, A],
       gen: LabelledGeneric.Aux[C, T],
       removeAll: RemoveAll.Aux[T, P, (P, R)],
@@ -71,7 +72,8 @@ final object semiauto {
       config: Configuration
     ): Decoder[A] = ConfiguredDecoder.decodeIncompleteCaseClass[A, P, C, D, T, R]
 
-    final def patch[D <: HList, R <: HList, O <: HList](implicit
+    final def patch[D <: HList, R <: HList, O <: HList](
+      implicit
       gen: LabelledGeneric.Aux[A, R],
       patch: PatchWithOptions.Aux[R, O],
       decode: ReprDecoder[O],

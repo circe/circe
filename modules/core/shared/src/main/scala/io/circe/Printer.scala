@@ -89,86 +89,90 @@ final case class Printer(
     builder.toString
   }
 
-  private[this] final val pieces: Printer.PiecesAtDepth = if (indent.isEmpty) new Printer.ConstantPieces(
-    Printer.Pieces(
-      concat(lbraceLeft, openBraceText, lbraceRight),
-      concat(rbraceRight, closeBraceText, rbraceLeft),
-      concat(lbracketLeft, openArrayText, lbracketRight),
-      concat(rbracketLeft, closeArrayText, rbracketRight),
-      concat(openArrayText, lrbracketsEmpty, closeArrayText),
-      concat(arrayCommaLeft, commaText, arrayCommaRight),
-      concat(objectCommaLeft, commaText, objectCommaRight),
-      concat(colonLeft, colonText, colonRight)
-    )
-  ) else new Printer.MemoizedPieces(indent) {
-    final def compute(i: Int): Printer.Pieces = {
-      val builder = new StringBuilder()
+  private[this] final val pieces: Printer.PiecesAtDepth =
+    if (indent.isEmpty)
+      new Printer.ConstantPieces(
+        Printer.Pieces(
+          concat(lbraceLeft, openBraceText, lbraceRight),
+          concat(rbraceRight, closeBraceText, rbraceLeft),
+          concat(lbracketLeft, openArrayText, lbracketRight),
+          concat(rbracketLeft, closeArrayText, rbracketRight),
+          concat(openArrayText, lrbracketsEmpty, closeArrayText),
+          concat(arrayCommaLeft, commaText, arrayCommaRight),
+          concat(objectCommaLeft, commaText, objectCommaRight),
+          concat(colonLeft, colonText, colonRight)
+        )
+      )
+    else
+      new Printer.MemoizedPieces(indent) {
+        final def compute(i: Int): Printer.Pieces = {
+          val builder = new StringBuilder()
 
-      addIndentation(builder, lbraceLeft, i)
-      builder.append(openBraceText)
-      addIndentation(builder, lbraceRight, i + 1)
+          addIndentation(builder, lbraceLeft, i)
+          builder.append(openBraceText)
+          addIndentation(builder, lbraceRight, i + 1)
 
-      val lBraces = builder.toString
+          val lBraces = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, rbraceLeft, i)
-      builder.append(closeBraceText)
-      addIndentation(builder, rbraceRight, i + 1)
+          addIndentation(builder, rbraceLeft, i)
+          builder.append(closeBraceText)
+          addIndentation(builder, rbraceRight, i + 1)
 
-      val rBraces = builder.toString
+          val rBraces = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, lbracketLeft, i)
-      builder.append(openArrayText)
-      addIndentation(builder, lbracketRight, i + 1)
+          addIndentation(builder, lbracketLeft, i)
+          builder.append(openArrayText)
+          addIndentation(builder, lbracketRight, i + 1)
 
-      val lBrackets = builder.toString
+          val lBrackets = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, rbracketLeft, i)
-      builder.append(closeArrayText)
-      addIndentation(builder, rbracketRight, i + 1)
+          addIndentation(builder, rbracketLeft, i)
+          builder.append(closeArrayText)
+          addIndentation(builder, rbracketRight, i + 1)
 
-      val rBrackets = builder.toString
+          val rBrackets = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      builder.append(openArrayText)
-      addIndentation(builder, lrbracketsEmpty, i)
-      builder.append(closeArrayText)
+          builder.append(openArrayText)
+          addIndentation(builder, lrbracketsEmpty, i)
+          builder.append(closeArrayText)
 
-      val lrEmptyBrackets = builder.toString
+          val lrEmptyBrackets = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, arrayCommaLeft, i + 1)
-      builder.append(commaText)
-      addIndentation(builder, arrayCommaRight, i + 1)
+          addIndentation(builder, arrayCommaLeft, i + 1)
+          builder.append(commaText)
+          addIndentation(builder, arrayCommaRight, i + 1)
 
-      val arrayCommas = builder.toString
+          val arrayCommas = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, objectCommaLeft, i + 1)
-      builder.append(commaText)
-      addIndentation(builder, objectCommaRight, i + 1)
+          addIndentation(builder, objectCommaLeft, i + 1)
+          builder.append(commaText)
+          addIndentation(builder, objectCommaRight, i + 1)
 
-      val objectCommas = builder.toString
+          val objectCommas = builder.toString
 
-      builder.setLength(0)
+          builder.setLength(0)
 
-      addIndentation(builder, colonLeft, i + 1)
-      builder.append(colonText)
-      addIndentation(builder, colonRight, i + 1)
+          addIndentation(builder, colonLeft, i + 1)
+          builder.append(colonText)
+          addIndentation(builder, colonRight, i + 1)
 
-      val colons = builder.toString
+          val colons = builder.toString
 
-      Printer.Pieces(lBraces, rBraces, lBrackets, rBrackets, lrEmptyBrackets, arrayCommas, objectCommas, colons)
-    }
-  }
+          Printer.Pieces(lBraces, rBraces, lBrackets, rBrackets, lrEmptyBrackets, arrayCommas, objectCommas, colons)
+        }
+      }
 
   @transient
   private[this] final val stringWriter: ThreadLocal[StringBuilder] = new ThreadLocal[StringBuilder] {
@@ -200,8 +204,9 @@ final case class Printer(
     }
 
   final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = {
-    val predictor = if (predictSize && sizePredictor.ne(null)) sizePredictor.get()
-    else Printer.NoSizePredictor
+    val predictor =
+      if (predictSize && sizePredictor.ne(null)) sizePredictor.get()
+      else Printer.NoSizePredictor
 
     val writer = new Printer.AppendableByteBuffer(cs, predictor)
     val folder = new AppendableByteBufferFolder(writer)
@@ -216,6 +221,7 @@ final case class Printer(
 }
 
 final object Printer {
+
   /**
    * A pretty-printer configuration that inserts no spaces.
    */
@@ -273,20 +279,25 @@ final object Printer {
         val c = value.charAt(i)
 
         val esc = (c: @switch) match {
-          case '"' => '"'
+          case '"'  => '"'
           case '\\' => '\\'
           case '\b' => 'b'
           case '\f' => 'f'
           case '\n' => 'n'
           case '\r' => 'r'
           case '\t' => 't'
-          case _ => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
+          case _    => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
         }
         if (esc != 0) {
           writer.append(value, offset, i).append('\\')
           if (esc != 1) writer.append(esc)
-          else writer.append('u').append(toHex((c >> 12) & 15)).append(toHex((c >> 8) & 15))
-            .append(toHex((c >> 4) & 15)).append(toHex(c & 15))
+          else
+            writer
+              .append('u')
+              .append(toHex((c >> 12) & 15))
+              .append(toHex((c >> 8) & 15))
+              .append(toHex((c >> 4) & 15))
+              .append(toHex(c & 15))
           offset = i + 1
         }
 
@@ -303,7 +314,8 @@ final object Printer {
       val orig = depth
       val p = pieces(depth)
 
-      if (value.isEmpty) writer.append(p.lrEmptyBrackets) else {
+      if (value.isEmpty) writer.append(p.lrEmptyBrackets)
+      else {
         val iterator = value.iterator
 
         writer.append(p.lBrackets)
@@ -356,7 +368,8 @@ final object Printer {
     protected[this] final def addIndentation(builder: StringBuilder, s: String, depth: Int): Unit = {
       val lastNewLineIndex = s.lastIndexOf('\n')
 
-      if (lastNewLineIndex == -1) builder.append(s) else {
+      if (lastNewLineIndex == -1) builder.append(s)
+      else {
         builder.append(s, 0, lastNewLineIndex + 1)
 
         var i = 0
@@ -370,10 +383,12 @@ final object Printer {
       }
     }
 
-    final def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i) else {
+    final def apply(i: Int): Pieces = if (i >= maxMemoizationDepth) compute(i)
+    else {
       val res = known.get(i)
 
-      if (res.ne(null)) res else {
+      if (res.ne(null)) res
+      else {
         val tmp = compute(i)
         known.set(i, tmp)
         tmp
@@ -383,11 +398,9 @@ final object Printer {
 
   // We use these sizes as an initial buffers size: 32 bytes to 32 megabytes.
   private[this] val SizeTable: Array[Int] = Array(
-         32,         48,      64,      80,      96,      112,      128,   144,    160,    176,
-        192,        208,     224,     240,     256,      272,      288,   304,    320,    336,
-        352,        368,     384,     400,     416,      432,      448,   464,    480,    496,
-        512,       1024,    2048,    4096,    8192,    16384,    32768, 65536, 131072, 262144,
-     524288,    1048576, 2097152, 4194304, 8388608, 16777216, 33554432
+    32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400,
+    416, 432, 448, 464, 480, 496, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576,
+    2097152, 4194304, 8388608, 16777216, 33554432
   )
 
   private abstract class SizePredictor {

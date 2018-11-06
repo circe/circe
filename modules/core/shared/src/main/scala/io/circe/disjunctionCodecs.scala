@@ -11,23 +11,27 @@ object disjunctionCodecs {
   private[this] final val failureKey: String = "Invalid"
   private[this] final val successKey: String = "Valid"
 
-  implicit final def decoderEither[A, B](implicit
+  implicit final def decoderEither[A, B](
+    implicit
     da: Decoder[A],
     db: Decoder[B]
   ): Decoder[Either[A, B]] = Decoder.decodeEither(leftKey, rightKey)
 
-  implicit final def decodeValidated[E, A](implicit
+  implicit final def decodeValidated[E, A](
+    implicit
     de: Decoder[E],
     da: Decoder[A]
   ): Decoder[Validated[E, A]] = Decoder.decodeValidated(failureKey, successKey)
 
-  implicit final def encodeEither[A, B](implicit
+  implicit final def encodeEither[A, B](
+    implicit
     ea: Encoder[A],
     eb: Encoder[B]
   ): ObjectEncoder[Either[A, B]] =
     Encoder.encodeEither(leftKey, rightKey)
 
-  implicit final def encodeValidated[E, A](implicit
+  implicit final def encodeValidated[E, A](
+    implicit
     ee: Encoder[E],
     ea: Encoder[A]
   ): ObjectEncoder[Validated[E, A]] =

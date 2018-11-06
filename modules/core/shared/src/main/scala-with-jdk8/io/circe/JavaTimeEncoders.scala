@@ -31,33 +31,27 @@ private[circe] abstract class JavaTimeEncoder[A <: TemporalAccessor] extends Enc
 }
 
 private[circe] trait JavaTimeEncoders {
-  /**
-   * @group Time
-   */
-  implicit final val encodeDuration: Encoder[Duration] = Encoder.instance(duration =>
-    Json.fromString(duration.toString)
-  )
 
   /**
    * @group Time
    */
-  implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time =>
-    Json.fromString(time.toString)
-  )
+  implicit final val encodeDuration: Encoder[Duration] =
+    Encoder.instance(duration => Json.fromString(duration.toString))
 
   /**
    * @group Time
    */
-  implicit final val encodePeriod: Encoder[Period] = Encoder.instance(period =>
-    Json.fromString(period.toString)
-  )
+  implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time => Json.fromString(time.toString))
 
   /**
    * @group Time
    */
-  implicit final val encodeZoneId: Encoder[ZoneId] = Encoder.instance(zoneId =>
-    Json.fromString(zoneId.getId)
-  )
+  implicit final val encodePeriod: Encoder[Period] = Encoder.instance(period => Json.fromString(period.toString))
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeZoneId: Encoder[ZoneId] = Encoder.instance(zoneId => Json.fromString(zoneId.getId))
 
   /**
    * @group Time

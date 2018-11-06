@@ -22,6 +22,7 @@ trait RootEncoder[A] extends Encoder[A]
  * @author Travis Brown
  */
 final object RootEncoder extends LowPriorityRootEncoders {
+
   /**
    * Return an instance for a given type.
    *
@@ -31,6 +32,7 @@ final object RootEncoder extends LowPriorityRootEncoders {
 }
 
 private[circe] trait LowPriorityRootEncoders {
+
   /**
    * @group Prioritization
    */

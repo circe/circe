@@ -16,6 +16,7 @@ import scala.concurrent.duration.FiniteDuration
  * @author Travis Brown
  */
 trait Encoder[A] extends Serializable { self =>
+
   /**
    * Convert a value to JSON.
    */
@@ -77,6 +78,7 @@ trait Encoder[A] extends Serializable { self =>
  * @author Travis Brown
  */
 final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEncoders with MidPriorityEncoders {
+
   /**
    * Return an instance for a given type `A`.
    *
@@ -140,15 +142,15 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeBoolean: Encoder[Boolean] = new Encoder[Boolean] {
     final def apply(a: Boolean): Json = Json.fromBoolean(a)
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
 
   /**
@@ -159,8 +161,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaCharacter: Encoder[java.lang.Character] = encodeChar.contramap(_.charValue())
 
   /**
@@ -175,8 +177,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaFloat: Encoder[java.lang.Float] = encodeFloat.contramap(_.floatValue())
 
   /**
@@ -187,8 +189,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaDouble: Encoder[java.lang.Double] = encodeDouble.contramap(_.doubleValue())
 
   /**
@@ -199,8 +201,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaByte: Encoder[java.lang.Byte] = encodeByte.contramap(_.byteValue())
 
   /**
@@ -211,8 +213,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaShort: Encoder[java.lang.Short] = encodeShort.contramap(_.shortValue())
 
   /**
@@ -223,8 +225,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaInteger: Encoder[java.lang.Integer] = encodeInt.contramap(_.intValue())
 
   /**
@@ -235,8 +237,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
 
   /**
@@ -247,8 +249,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBigInteger: Encoder[java.math.BigInteger] = encodeBigInt.contramap(BigInt.apply)
 
   /**
@@ -259,10 +261,9 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
-
 
   /**
    * @group Encoding
@@ -276,12 +277,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
    */
   implicit final val finiteDurationEncoder: Encoder[FiniteDuration] = new Encoder[FiniteDuration] {
     final def apply(a: FiniteDuration): Json =
-      Json.fromJsonObject(
-        JsonObject(
-          "length" -> Json.fromLong(a.length),
-          "unit"   -> Json.fromString(a.unit.name)))
+      Json.fromJsonObject(JsonObject("length" -> Json.fromLong(a.length), "unit" -> Json.fromString(a.unit.name)))
   }
-
 
   /**
    * @group Encoding
@@ -289,7 +286,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
     final def apply(a: Option[A]): Json = a match {
       case Some(v) => e(v)
-      case None => Json.Null
+      case None    => Json.Null
     }
   }
 
@@ -338,8 +335,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
     }
 
   /**
-    * @group Collection
-    */
+   * @group Collection
+   */
   implicit final def encodeChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[Chain[A]] =
     new IterableArrayEncoder[A, Chain](encodeA) {
       final protected def toIterator(a: Chain[A]): Iterator[A] = a.iterator
@@ -362,28 +359,29 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
     }
 
   /**
-    * @group Collection
-    */
+   * @group Collection
+   */
   implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptySet[A]] =
     new ArrayEncoder[NonEmptySet[A]] {
       final def encodeArray(a: NonEmptySet[A]): Vector[Json] = a.toSortedSet.toVector.map(encodeA(_))
     }
 
   /**
-    * @group Collection
-    */
-  implicit final def encodeNonEmptyMap[K, V](implicit
-                                             encodeK: KeyEncoder[K],
-                                             encodeV: Encoder[V]
-                                            ): ObjectEncoder[NonEmptyMap[K, V]] =
+   * @group Collection
+   */
+  implicit final def encodeNonEmptyMap[K, V](
+    implicit
+    encodeK: KeyEncoder[K],
+    encodeV: Encoder[V]
+  ): ObjectEncoder[NonEmptyMap[K, V]] =
     new ObjectEncoder[NonEmptyMap[K, V]] {
       final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
         encodeMap.encodeObject(a.toSortedMap)
     }
 
   /**
-    * @group Collection
-    */
+   * @group Collection
+   */
   implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyChain[A]] =
     new ArrayEncoder[NonEmptyChain[A]] {
       final def encodeArray(a: NonEmptyChain[A]): Vector[Json] = a.toChain.toVector.map(encodeA(_))
@@ -392,7 +390,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   /**
    * @group Collection
    */
-  implicit final def encodeOneAnd[A, C[_]](implicit
+  implicit final def encodeOneAnd[A, C[_]](
+    implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): ArrayEncoder[OneAnd[C, A]] = new ArrayEncoder[OneAnd[C, A]] {
@@ -406,7 +405,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
    *
    * @group Collection
    */
-  implicit final def encodeMap[K, V](implicit
+  implicit final def encodeMap[K, V](
+    implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
   ): ObjectEncoder[ImmutableMap[K, V]] =
@@ -417,7 +417,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
    *
    * @group Collection
    */
-  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](
+    implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V],
     ev: M[K, V] => Iterable[(K, V)]
@@ -428,12 +429,13 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   /**
    * @group Disjunction
    */
-  final def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
+  final def encodeEither[A, B](leftKey: String, rightKey: String)(
+    implicit
     ea: Encoder[A],
     eb: Encoder[B]
   ): ObjectEncoder[Either[A, B]] = new ObjectEncoder[Either[A, B]] {
     final def encodeObject(a: Either[A, B]): JsonObject = a match {
-      case Left(a) => JsonObject.singleton(leftKey, ea(a))
+      case Left(a)  => JsonObject.singleton(leftKey, ea(a))
       case Right(b) => JsonObject.singleton(rightKey, eb(b))
     }
   }
@@ -441,12 +443,13 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   /**
    * @group Disjunction
    */
-  final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
+  final def encodeValidated[E, A](failureKey: String, successKey: String)(
+    implicit
     ee: Encoder[E],
     ea: Encoder[A]
   ): ObjectEncoder[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
     case Validated.Invalid(e) => Left(e)
-    case Validated.Valid(a) => Right(a)
+    case Validated.Valid(a)   => Right(a)
   }
 
   /**
@@ -494,10 +497,12 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
+
   /**
    * @group Collection
    */
-  implicit final def encodeIterable[A, C[_]](implicit
+  implicit final def encodeIterable[A, C[_]](
+    implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): ArrayEncoder[C[A]] = new IterableArrayEncoder[A, C](encodeA) {
@@ -521,6 +526,7 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
 }
 
 private[circe] trait LowPriorityEncoders {
+
   /**
    * @group Prioritization
    */

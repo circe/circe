@@ -70,7 +70,7 @@ sealed abstract class JsonNumber extends Serializable {
    */
   override final def equals(that: Any): Boolean = that match {
     case that: JsonNumber => JsonNumber.eqJsonNumber.eqv(this, that)
-    case _ => false
+    case _                => false
   }
 
   /**
@@ -104,8 +104,7 @@ private[circe] final case class JsonDecimal(value: String) extends BiggerDecimal
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
-private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal)
-  extends BiggerDecimalJsonNumber {
+private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal) extends BiggerDecimalJsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = value
   override def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = value.appendToStringBuilder(builder)
@@ -194,6 +193,7 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
  * Constructors, type class instances, and other utilities for [[JsonNumber]].
  */
 final object JsonNumber {
+
   /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *
@@ -213,7 +213,8 @@ final object JsonNumber {
    * already been verified.
    */
   final def fromIntegralStringUnsafe(value: String): JsonNumber =
-    if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value) else {
+    if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value)
+    else {
       val longValue = java.lang.Long.parseLong(value)
 
       if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(longValue)
@@ -235,10 +236,10 @@ final object JsonNumber {
     bigDecimalIsWhole(value) && value.compareTo(bigDecimalMinLong) >= 0 && value.compareTo(bigDecimalMaxLong) <= 0
 
   implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
-    case (JsonLong(x), JsonLong(y)) => x == y
-    case (JsonDouble(x), JsonDouble(y)) => java.lang.Double.compare(x, y) == 0
-    case (JsonFloat(x), JsonFloat(y)) => java.lang.Float.compare(x, y) == 0
+    case (JsonLong(x), JsonLong(y))             => x == y
+    case (JsonDouble(x), JsonDouble(y))         => java.lang.Double.compare(x, y) == 0
+    case (JsonFloat(x), JsonFloat(y))           => java.lang.Float.compare(x, y) == 0
     case (JsonBigDecimal(x), JsonBigDecimal(y)) => x.compareTo(y) == 0
-    case (a, b) => a.toBiggerDecimal == b.toBiggerDecimal
+    case (a, b)                                 => a.toBiggerDecimal == b.toBiggerDecimal
   }
 }
