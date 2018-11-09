@@ -55,7 +55,14 @@ val previousCirceVersion = Some("0.10.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
-  scalacOptions ++= compilerOptions,
+  scalacOptions ++= {
+    if (priorTo2_13(scalaVersion.value)) compilerOptions
+    else
+      compilerOptions.map {
+        case "-Ywarn-unused-import" ⇒ "-Ywarn-unused:imports"
+        case other => other
+      }
+  },
   scalacOptions in (Compile, console) ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
   },
