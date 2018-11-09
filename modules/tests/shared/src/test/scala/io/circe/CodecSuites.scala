@@ -16,11 +16,9 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
 import java.util.UUID
-import java.util.concurrent.TimeUnit._
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
-import scala.concurrent.duration.FiniteDuration
 
 trait SpecialEqForFloatAndDouble {
 
@@ -86,25 +84,6 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
-  implicit val arbitraryDuration: Arbitrary[FiniteDuration] = {
-    // max range is +/- 292 years, but we give ourselves some extra headroom
-    // to ensure that we can add these things up. they crash on overflow.
-    val n = (292L * 365) / 50
-    Arbitrary(
-      Gen.oneOf(
-        Gen.choose(-n, n).map(FiniteDuration(_, DAYS)),
-        Gen.choose(-n * 24L, n * 24L).map(FiniteDuration(_, HOURS)),
-        Gen.choose(-n * 1440L, n * 1440L).map(FiniteDuration(_, MINUTES)),
-        Gen.choose(-n * 86400L, n * 86400L).map(FiniteDuration(_, SECONDS)),
-        Gen.choose(-n * 86400000L, n * 86400000L).map(FiniteDuration(_, MILLISECONDS)),
-        Gen.choose(-n * 86400000000L, n * 86400000000L).map(FiniteDuration(_, MICROSECONDS)),
-        Gen.choose(-n * 86400000000000L, n * 86400000000000L).map(FiniteDuration(_, NANOSECONDS))
-      )
-    )
-  }
-
-  implicit val eqFiniteDuration: Eq[FiniteDuration] = Eq.fromUniversalEquals
-
   checkLaws("Codec[String]", CodecTests[String].codec)
   checkLaws("Codec[BigInt]", CodecTests[BigInt].codec)
   checkLaws("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
@@ -125,7 +104,6 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   checkLaws("Codec[SortedMap[Long, Int]]", CodecTests[SortedMap[Long, Int]].unserializableCodec)
   checkLaws("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
   checkLaws("Codec[Array[String]]", CodecTests[Array[String]].codec)
-  checkLaws("Codec[FiniteDuration]", CodecTests[FiniteDuration].codec)
 
   "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
