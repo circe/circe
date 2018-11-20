@@ -16,6 +16,7 @@ about why circe exists and how to use it.
 
 Are you using circe? Please consider opening a pull request to list your organization here:
 
+* [Abacus](https://abacusprotocol.com/)
 * [Anduin Transactions](https://anduintransact.com/)
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
