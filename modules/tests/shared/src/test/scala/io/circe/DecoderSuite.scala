@@ -404,6 +404,24 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(validatingDecoder.decodeAccumulating(Json.True.hcursor).isInvalid)
   }
 
+  it should "generate error messages from HCursor when a function is passed" in {
+    case class Foo(x: Int, y: String)
+
+    val errorFunction: HCursor => String = { c =>
+      val maybeFieldsStr = for {
+        json <- c.focus
+        jsonKeys <- json.hcursor.keys
+      } yield jsonKeys.mkString(",")
+      maybeFieldsStr.getOrElse("")
+    }
+
+    val decoder: Decoder[Foo] = Decoder.const(Foo(42, "meaning")).validate(_ => false, errorFunction)
+
+    val Right(fooJson) = parse("""{"x":42, "y": "meaning"}""")
+
+    assert(decoder.decodeJson(fooJson).left.get.message == "x,y")
+  }
+
   "either" should "return the correct disjunct" in forAll { (value: Either[String, Boolean]) =>
     val json = value match {
       case Left(s)  => Json.fromString(s)
