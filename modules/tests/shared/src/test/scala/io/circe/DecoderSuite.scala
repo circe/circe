@@ -407,15 +407,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   it should "generate error messages from HCursor when a function is passed" in {
     case class Foo(x: Int, y: String)
 
-    val errorFunction: HCursor => String = { c =>
+    val decoder: Decoder[Foo] = Decoder.const(Foo(42, "meaning")).validate(_ => false) { c =>
       val maybeFieldsStr = for {
         json <- c.focus
         jsonKeys <- json.hcursor.keys
       } yield jsonKeys.mkString(",")
       maybeFieldsStr.getOrElse("")
     }
-
-    val decoder: Decoder[Foo] = Decoder.const(Foo(42, "meaning")).validate(_ => false, errorFunction)
 
     val Right(fooJson) = parse("""{"x":42, "y": "meaning"}""")
 
