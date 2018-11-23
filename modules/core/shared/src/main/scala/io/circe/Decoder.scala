@@ -163,7 +163,7 @@ trait Decoder[A] extends Serializable { self =>
    * (instead only the error of the last failing `validate` in the chain will be
    * returned).
    */
-  final def validate(pred: HCursor => Boolean, message: HCursor => String): Decoder[A] = new Decoder[A] {
+  final def validate(pred: HCursor => Boolean)(message: HCursor => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
       if (pred(c)) self(c) else Left(DecodingFailure(message(c), c.history))
 
@@ -172,17 +172,17 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   /**
-    * Build a new instance that fails if the condition does not hold for the
-    * input.
-    *
-    * Note that this condition is checked before decoding with the current
-    * decoder, and if it does not hold, decoding does not continue. This means
-    * that if you chain calls to this method, errors will not be accumulated
-    * (instead only the error of the last failing `validate` in the chain will be
-    * returned).
-    */
+   * Build a new instance that fails if the condition does not hold for the
+   * input.
+   *
+   * Note that this condition is checked before decoding with the current
+   * decoder, and if it does not hold, decoding does not continue. This means
+   * that if you chain calls to this method, errors will not be accumulated
+   * (instead only the error of the last failing `validate` in the chain will be
+   * returned).
+   */
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] =
-    validate(pred, _ => message)
+    validate(pred)(_ => message)
 
   /**
    * Convert to a Kleisli arrow.
