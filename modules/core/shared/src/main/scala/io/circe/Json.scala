@@ -142,7 +142,9 @@ sealed abstract class Json extends Product with Serializable {
         fromJsonObject(
           lhs.toList.foldLeft(rhs) {
             case (acc, (key, value)) =>
-              rhs(key).fold(acc.add(key, value)) { r => acc.add(key, value.deepMerge(r)) }
+              rhs(key).fold(acc.add(key, value)) { r =>
+                acc.add(key, value.deepMerge(r))
+              }
           }
         )
       case _ => that
@@ -158,7 +160,7 @@ sealed abstract class Json extends Product with Serializable {
    */
   override final def equals(that: Any): Boolean = that match {
     case that: Json => Json.eqJson.eqv(this, that)
-    case _ => false
+    case _          => false
   }
 
   /**
@@ -190,6 +192,7 @@ sealed abstract class Json extends Product with Serializable {
 }
 
 final object Json {
+
   /**
    * Represents a set of operations for reducing a [[Json]] instance to a value.
    */
@@ -527,12 +530,12 @@ final object Json {
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {
-    case ( JObject(a),  JObject(b)) => JsonObject.eqJsonObject.eqv(a, b)
-    case ( JString(a),  JString(b)) => a == b
-    case ( JNumber(a),  JNumber(b)) => JsonNumber.eqJsonNumber.eqv(a, b)
+    case (JObject(a), JObject(b))   => JsonObject.eqJsonObject.eqv(a, b)
+    case (JString(a), JString(b))   => a == b
+    case (JNumber(a), JNumber(b))   => JsonNumber.eqJsonNumber.eqv(a, b)
     case (JBoolean(a), JBoolean(b)) => a == b
-    case (  JArray(a),   JArray(b)) => arrayEq(a, b)
-    case (          x,           y) => x.isNull && y.isNull
+    case (JArray(a), JArray(b))     => arrayEq(a, b)
+    case (x, y)                     => x.isNull && y.isNull
   }
 
   implicit final val showJson: Show[Json] = Show.fromToString[Json]

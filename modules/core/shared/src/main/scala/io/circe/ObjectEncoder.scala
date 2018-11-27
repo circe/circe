@@ -18,9 +18,9 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
   def encodeObject(a: A): JsonObject
 
   /**
-    * Create a new [[ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
-    * `A`.
-    */
+   * Create a new [[ObjectEncoder]] by applying a function to a value of type `B` before encoding as an
+   * `A`.
+   */
   final def contramapObject[B](f: B => A): ObjectEncoder[B] = new ObjectEncoder[B] {
     final def encodeObject(a: B) = self.encodeObject(f(a))
   }
@@ -34,7 +34,22 @@ trait ObjectEncoder[A] extends RootEncoder[A] { self =>
   }
 }
 
+/**
+ * Utilities and instances for [[ObjectEncoder]].
+ *
+ * @groupname Utilities Defining encoders
+ * @groupprio Utilities 1
+ *
+ * @groupname Instances Type class instances
+ * @groupprio Instances 2
+ *
+ * @groupname Prioritization Instance prioritization
+ * @groupprio Prioritization 3
+ *
+ * @author Travis Brown
+ */
 final object ObjectEncoder extends LowPriorityObjectEncoders {
+
   /**
    * Return an instance for a given type.
    *
@@ -52,15 +67,20 @@ final object ObjectEncoder extends LowPriorityObjectEncoders {
   }
 
   /**
-    * @group Instances
-    */
+   * @group Instances
+   */
   implicit final val objectEncoderContravariant: Contravariant[ObjectEncoder] = new Contravariant[ObjectEncoder] {
     final def contramap[A, B](e: ObjectEncoder[A])(f: B => A): ObjectEncoder[B] = e.contramapObject(f)
   }
 }
 
 private[circe] trait LowPriorityObjectEncoders {
-  implicit final def importedObjectEncoder[A](implicit
+
+  /**
+   * @group Prioritization
+   */
+  implicit final def importedObjectEncoder[A](
+    implicit
     exported: Exported[ObjectEncoder[A]]
   ): ObjectEncoder[A] = exported.instance
 }

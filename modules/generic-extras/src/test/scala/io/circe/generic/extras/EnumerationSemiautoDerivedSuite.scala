@@ -15,10 +15,10 @@ class EnumerationSemiautoDerivedSuite extends CirceSuite {
   checkLaws("Codec[CardinalDirection]", CodecTests[CardinalDirection].codec)
 
   "deriveEnumerationDecoder" should "not compile on an ADT with case classes" in {
-     illTyped("deriveEnumerationDecoder[ExtendedCardinalDirection]")
-   }
+    illTyped("deriveEnumerationDecoder[ExtendedCardinalDirection]")
+  }
 
-   "deriveEnumerationEncoder" should "not compile on an ADT with case classes" in {
-     illTyped("deriveEnumerationEncoder[ExtendedCardinalDirection]")
-   }
+  "deriveEnumerationEncoder" should "not compile on an ADT with case classes" in {
+    illTyped("deriveEnumerationEncoder[ExtendedCardinalDirection]")
+  }
 }

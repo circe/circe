@@ -46,7 +46,7 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
   def history: List[CursorOp]
 
   final override def getMessage: String =
-    if (history.isEmpty) message else s"$message: ${ history.mkString(",") }"
+    if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
 
   final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure = {
     def newHistory = history
@@ -60,7 +60,7 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
   override final def toString: String = s"DecodingFailure($message, $history)"
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
-    case _ => false
+    case _                      => false
   }
   override final def hashCode: Int = message.hashCode
 }
@@ -71,7 +71,7 @@ final object DecodingFailure {
   }
 
   def unapply(error: Error): Option[(String, List[CursorOp])] = error match {
-    case ParsingFailure(_, _) => None
+    case ParsingFailure(_, _)   => None
     case other: DecodingFailure => Some((other.message, other.history))
   }
 
@@ -89,9 +89,9 @@ final object DecodingFailure {
   }
 
   /**
-    * Creates compact, human readable string representations for DecodingFailure
-    * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
-    */
+   * Creates compact, human readable string representations for DecodingFailure
+   * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
+   */
   implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { failure =>
     val path = CursorOp.opsToPath(failure.history)
     s"DecodingFailure at ${path}: ${failure.message}"
@@ -101,9 +101,9 @@ final object DecodingFailure {
 
 final object Error {
   implicit final val eqError: Eq[Error] = Eq.instance {
-    case (pf1: ParsingFailure, pf2: ParsingFailure) => ParsingFailure.eqParsingFailure.eqv(pf1, pf2)
+    case (pf1: ParsingFailure, pf2: ParsingFailure)   => ParsingFailure.eqParsingFailure.eqv(pf1, pf2)
     case (df1: DecodingFailure, df2: DecodingFailure) => DecodingFailure.eqDecodingFailure.eqv(df1, df2)
-    case (_, _) => false
+    case (_, _)                                       => false
   }
 
   implicit final val showError: Show[Error] = Show.show {

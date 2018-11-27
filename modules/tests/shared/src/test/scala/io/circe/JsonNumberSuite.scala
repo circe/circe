@@ -21,7 +21,7 @@ class JsonNumberSuite extends CirceSuite {
   }
 
   it should "match Json.fromFloat for Floats that don't have the same toString when Double-ed" in {
-    val value = -4.9913575E19F
+    val value = -4.9913575e19f
 
     assert(Json.fromFloat(value).flatMap(_.asNumber) === JsonNumber.fromString(value.toString))
   }
@@ -70,7 +70,7 @@ class JsonNumberSuite extends CirceSuite {
     val j = JsonFloat(f)
     val expected = j.toBiggerDecimal match {
       case d if d.isWhole => Some(BigDecimal(f.toString).toBigInt)
-      case _ => None
+      case _              => None
     }
     assert(j.toBigInt === expected)
   }

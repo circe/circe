@@ -23,7 +23,7 @@ class LiteralInstancesSuite extends FunSpec with Matchers {
 
   describe("A literal Float codec") {
     it("should round-trip values") {
-      val w = Witness(0.0F)
+      val w = Witness(0.0f)
 
       Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
     }

@@ -3,4 +3,5 @@ package io.circe
 /**
  * On the JVM this trait contains tests that read an example resource file.
  */
-trait Spaces2PrinterExample { this: Spaces2PrinterSuite => }
+trait Spaces2PrinterExample { this: Spaces2PrinterSuite =>
+}

@@ -16,7 +16,6 @@ package object literal {
   implicit final def decodeLiteralBoolean[S <: Boolean]: Decoder[S] =
     macro LiteralInstanceMacros.decodeLiteralBoolean[S]
 
-
   implicit final def encodeLiteralString[S <: String]: Encoder[S] = macro LiteralInstanceMacros.encodeLiteralString[S]
   implicit final def encodeLiteralDouble[S <: Double]: Encoder[S] = macro LiteralInstanceMacros.encodeLiteralDouble[S]
   implicit final def encodeLiteralFloat[S <: Float]: Encoder[S] = macro LiteralInstanceMacros.encodeLiteralFloat[S]

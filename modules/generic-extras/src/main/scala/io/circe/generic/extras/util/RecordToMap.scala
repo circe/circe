@@ -13,7 +13,8 @@ final object RecordToMap {
     def apply(r: HNil): Map[String, Any] = Map.empty
   }
 
-  implicit def hconsRecordToMap[K <: Symbol, V, T <: HList](implicit
+  implicit def hconsRecordToMap[K <: Symbol, V, T <: HList](
+    implicit
     wit: Witness.Aux[K],
     rtmT: RecordToMap[T]
   ): RecordToMap[FieldType[K, V] :: T] = new RecordToMap[FieldType[K, V] :: T] {

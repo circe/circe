@@ -11,9 +11,14 @@ import scala.language.implicitConversions
 /**
  * An opinionated stack of traits to improve consistency and reduce boilerplate in circe tests.
  */
-trait CirceSuite extends FlatSpec with GeneratorDrivenPropertyChecks
-  with AllInstances with AllSyntax
-  with ArbitraryInstances with EqInstances with MissingInstances {
+trait CirceSuite
+    extends FlatSpec
+    with GeneratorDrivenPropertyChecks
+    with AllInstances
+    with AllSyntax
+    with ArbitraryInstances
+    with EqInstances
+    with MissingInstances {
 
   override def convertToEqualizer[T](left: T): Equalizer[T] =
     sys.error("Intentionally ambiguous implicit for Equalizer")

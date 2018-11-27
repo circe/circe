@@ -127,7 +127,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
     d.abs > 1 && d.toString.contains("E-")
 
   it should "agree with parseBiggerDecimalUnsafe" in forAll { (value: SBigDecimal) =>
-    whenever (!isBadJsBigDecimal(value)) {
+    whenever(!isBadJsBigDecimal(value)) {
       val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
 
       assert(BiggerDecimal.fromBigDecimal(value.underlying) === expected)
@@ -180,13 +180,13 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   it should "parse number strings with big exponents" in {
     forAll { (integral: BigInt, fractionalDigits: BigInt, exponent: BigInt) =>
       val fractional = fractionalDigits.abs
-      val s = s"$integral.${ fractional }e$exponent"
+      val s = s"$integral.${fractional}e$exponent"
 
       val scale = -exponent + (
         (integral == 0, fractional == 0) match {
           case (true, true) => 0
-          case (_, true) => -trailingZeros(integral)
-          case (_, _) => significantDigits(fractional)
+          case (_, true)    => -trailingZeros(integral)
+          case (_, _)       => significantDigits(fractional)
         }
       )
 
@@ -194,7 +194,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
         case (Some(parsedBiggerDecimal), Some(parsedBigDecimal)) if scale.isValidInt =>
           assert(parsedBiggerDecimal.toBigDecimal.exists(_.compareTo(parsedBigDecimal) == 0))
         case (Some(_), None) => assert(true)
-        case _ => assert(false)
+        case _               => assert(false)
       }
     }
   }
@@ -208,7 +208,7 @@ class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
   }
 
   it should "fail on bad input" in {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-")
+    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input) === None)

@@ -28,7 +28,8 @@ object PrinterLaws {
 trait PrinterTests[A] extends Laws {
   def laws: PrinterLaws[A]
 
-  def printer(printer: Printer, parser: Parser)(implicit
+  def printer(printer: Printer, parser: Parser)(
+    implicit
     arbitraryA: Arbitrary[A],
     shrinkA: Shrink[A],
     eqA: Eq[A]

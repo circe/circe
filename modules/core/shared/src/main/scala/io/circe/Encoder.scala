@@ -1,13 +1,14 @@
 package io.circe
 
 import cats.{ Contravariant, Foldable }
-import cats.data.{ NonEmptyList, NonEmptyVector, OneAnd, Validated }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.export.Exported
 import java.io.Serializable
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
 import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.concurrent.duration.FiniteDuration
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -15,6 +16,7 @@ import scala.collection.immutable.{ Map => ImmutableMap, Set }
  * @author Travis Brown
  */
 trait Encoder[A] extends Serializable { self =>
+
   /**
    * Convert a value to JSON.
    */
@@ -40,13 +42,13 @@ trait Encoder[A] extends Serializable { self =>
  * Utilities and instances for [[Encoder]].
  *
  * @groupname Utilities Defining encoders
- * @groupprio Utilities 0
+ * @groupprio Utilities 1
  *
  * @groupname Encoding General encoder instances
- * @groupprio Encoding 1
+ * @groupprio Encoding 2
  *
  * @groupname Collection Collection instances
- * @groupprio Collection 2
+ * @groupprio Collection 3
  *
  * @groupname Disjunction Disjunction instances
  * @groupdesc Disjunction Instance creation methods for disjunction-like types. Note that these
@@ -56,23 +58,27 @@ trait Encoder[A] extends Serializable { self =>
  * {{{
  *   import io.circe.disjunctionCodecs._
  * }}}
- * @groupprio Disjunction 3
+ * @groupprio Disjunction 4
  *
  * @groupname Instances Type class instances
- * @groupprio Instances 4
+ * @groupprio Instances 5
  *
  * @groupname Tuple Tuple instances
- * @groupprio Tuple 5
+ * @groupprio Tuple 6
  *
  * @groupname Product Case class and other product instances
- * @groupprio Product 6
+ * @groupprio Product 7
+ *
+ * @groupname Time Java date and time instances
+ * @groupprio Time 8
  *
  * @groupname Prioritization Instance prioritization
- * @groupprio Prioritization 9
+ * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
-final object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
+final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEncoders with MidPriorityEncoders {
+
   /**
    * Return an instance for a given type `A`.
    *
@@ -136,15 +142,15 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeBoolean: Encoder[Boolean] = new Encoder[Boolean] {
     final def apply(a: Boolean): Json = Json.fromBoolean(a)
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
 
   /**
@@ -155,8 +161,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaCharacter: Encoder[java.lang.Character] = encodeChar.contramap(_.charValue())
 
   /**
@@ -171,8 +177,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaFloat: Encoder[java.lang.Float] = encodeFloat.contramap(_.floatValue())
 
   /**
@@ -183,8 +189,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaDouble: Encoder[java.lang.Double] = encodeDouble.contramap(_.doubleValue())
 
   /**
@@ -195,8 +201,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaByte: Encoder[java.lang.Byte] = encodeByte.contramap(_.byteValue())
 
   /**
@@ -207,8 +213,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaShort: Encoder[java.lang.Short] = encodeShort.contramap(_.shortValue())
 
   /**
@@ -219,8 +225,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaInteger: Encoder[java.lang.Integer] = encodeInt.contramap(_.intValue())
 
   /**
@@ -231,8 +237,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
 
   /**
@@ -243,8 +249,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBigInteger: Encoder[java.math.BigInteger] = encodeBigInt.contramap(BigInt.apply)
 
   /**
@@ -255,10 +261,9 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
-    * @group Encoding
-    */
+   * @group Encoding
+   */
   implicit final val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
-
 
   /**
    * @group Encoding
@@ -270,10 +275,18 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Encoding
    */
+  implicit final val finiteDurationEncoder: Encoder[FiniteDuration] = new Encoder[FiniteDuration] {
+    final def apply(a: FiniteDuration): Json =
+      Json.fromJsonObject(JsonObject("length" -> Json.fromLong(a.length), "unit" -> Json.fromString(a.unit.name)))
+  }
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
     final def apply(a: Option[A]): Json = a match {
       case Some(v) => e(v)
-      case None => Json.Null
+      case None    => Json.Null
     }
   }
 
@@ -324,6 +337,14 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Collection
    */
+  implicit final def encodeChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[Chain[A]] =
+    new IterableArrayEncoder[A, Chain](encodeA) {
+      final protected def toIterator(a: Chain[A]): Iterator[A] = a.iterator
+    }
+
+  /**
+   * @group Collection
+   */
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyList[A]] =
     new ArrayEncoder[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
@@ -340,7 +361,37 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Collection
    */
-  implicit final def encodeOneAnd[A, C[_]](implicit
+  implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptySet[A]] =
+    new ArrayEncoder[NonEmptySet[A]] {
+      final def encodeArray(a: NonEmptySet[A]): Vector[Json] = a.toSortedSet.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptyMap[K, V](
+    implicit
+    encodeK: KeyEncoder[K],
+    encodeV: Encoder[V]
+  ): ObjectEncoder[NonEmptyMap[K, V]] =
+    new ObjectEncoder[NonEmptyMap[K, V]] {
+      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
+        encodeMap.encodeObject(a.toSortedMap)
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyChain[A]] =
+    new ArrayEncoder[NonEmptyChain[A]] {
+      final def encodeArray(a: NonEmptyChain[A]): Vector[Json] = a.toChain.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeOneAnd[A, C[_]](
+    implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): ArrayEncoder[OneAnd[C, A]] = new ArrayEncoder[OneAnd[C, A]] {
@@ -350,23 +401,24 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   }
 
   /**
+   * Preserves iteration order.
+   *
    * @group Collection
    */
-  implicit final def encodeMap[K, V](implicit
+  implicit final def encodeMap[K, V](
+    implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
-  ): ObjectEncoder[ImmutableMap[K, V]] = new ObjectEncoder[ImmutableMap[K, V]] {
-    final def encodeObject(a: ImmutableMap[K, V]): JsonObject = JsonObject.fromMap(
-      a.map {
-        case (k, v) => (encodeK(k), encodeV(v))
-      }
-    )
-  }
+  ): ObjectEncoder[ImmutableMap[K, V]] =
+    encodeMapLike[K, V, ImmutableMap](encodeK, encodeV, identity)
 
   /**
+   * Preserves iteration order.
+   *
    * @group Collection
    */
-  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](
+    implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V],
     ev: M[K, V] => Iterable[(K, V)]
@@ -377,12 +429,13 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Disjunction
    */
-  final def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
+  final def encodeEither[A, B](leftKey: String, rightKey: String)(
+    implicit
     ea: Encoder[A],
     eb: Encoder[B]
   ): ObjectEncoder[Either[A, B]] = new ObjectEncoder[Either[A, B]] {
     final def encodeObject(a: Either[A, B]): JsonObject = a match {
-      case Left(a) => JsonObject.singleton(leftKey, ea(a))
+      case Left(a)  => JsonObject.singleton(leftKey, ea(a))
       case Right(b) => JsonObject.singleton(rightKey, eb(b))
     }
   }
@@ -390,12 +443,13 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Disjunction
    */
-  final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
+  final def encodeValidated[E, A](failureKey: String, successKey: String)(
+    implicit
     ee: Encoder[E],
     ea: Encoder[A]
   ): ObjectEncoder[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
     case Validated.Invalid(e) => Left(e)
-    case Validated.Valid(a) => Right(a)
+    case Validated.Valid(a)   => Right(a)
   }
 
   /**
@@ -416,6 +470,9 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
   }
 
+  /**
+   * Note that this implementation assumes that the collection does not contain duplicate keys.
+   */
   private[this] abstract class IterableObjectEncoder[K, V, M[_, _]](
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
@@ -424,23 +481,28 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
 
     final def encodeObject(a: M[K, V]): JsonObject = {
       val builder = ImmutableMap.newBuilder[String, Json]
+      val keysBuilder = Vector.newBuilder[String]
       val iterator = toIterator(a)
 
       while (iterator.hasNext) {
         val next = iterator.next()
-        builder += ((encodeK(next._1), encodeV(next._2)))
+        val key = encodeK(next._1)
+        builder += ((key, encodeV(next._2)))
+        keysBuilder += key
       }
 
-      JsonObject.fromMap(builder.result())
+      JsonObject.fromMapAndVector(builder.result(), keysBuilder.result())
     }
   }
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
+
   /**
    * @group Collection
    */
-  implicit final def encodeIterable[A, C[_]](implicit
+  implicit final def encodeIterable[A, C[_]](
+    implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): ArrayEncoder[C[A]] = new IterableArrayEncoder[A, C](encodeA) {
@@ -464,8 +526,9 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
 }
 
 private[circe] trait LowPriorityEncoders {
+
   /**
    * @group Prioritization
    */
-  implicit final def importedEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): Encoder[A] = exported.instance
+  implicit final def importedEncoder[A](implicit exported: Exported[Encoder[A]]): Encoder[A] = exported.instance
 }

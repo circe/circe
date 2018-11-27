@@ -3,7 +3,7 @@
 [![Build status](https://img.shields.io/travis/circe/circe/master.svg)](https://travis-ci.org/circe/circe)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/circe/circe)
-[![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11)
+[![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.12)
 
 circe is a JSON library for Scala (and [Scala.js][scala-js]).
 
@@ -16,6 +16,7 @@ about why circe exists and how to use it.
 
 Are you using circe? Please consider opening a pull request to list your organization here:
 
+* [Abacus](https://abacusprotocol.com/)
 * [Anduin Transactions](https://anduintransact.com/)
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
@@ -23,14 +24,18 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
+* [ClearScore](https://www.clearscore.com)
 * [Codacy](https://www.codacy.com)
 * [Datalogue](https://datalogue.io)
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
-* [The Guardian](https://www.theguardian.com)
 * [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
+* [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Indix](https://www.indix.com)
+* [ITV](https://www.itv.com/)
+* [MatchesFashion](https://www.matchesfashion.com)
+* [Ocado Technology](https://ocadotechnology.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
@@ -46,8 +51,10 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Stripe](https://stripe.com)
 * [Stylight](https://stylight.de)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
+* [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [WeWork](https://www.wework.com)
 * [Whisk](https://whisk.com)
 * [Zalando](https://zalando.de)
 * [Zendesk](https://zendesk.com)
@@ -109,6 +116,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
+* [shaclex][shaclex]: RDF validation using SHACL or ShEx. 
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [sttp][sttp]: Scala HTTP client.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
@@ -123,6 +131,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/gvolpe/simple-http4s-api
 * https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
+* https://github.com/pauljamescleary/scala-pet-store
 
 ## Contributors and participation
 
@@ -221,6 +230,7 @@ limitations under the License.
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
 [shapeless]: https://github.com/milessabin/shapeless
+[shaclex]: https://github.com/labra/shaclex
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml

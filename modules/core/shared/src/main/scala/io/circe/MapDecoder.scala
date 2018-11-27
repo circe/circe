@@ -30,15 +30,16 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         if (alwaysDecodeK.ne(null)) {
           atH.as(decodeV) match {
             case Right(value) => builder += ((alwaysDecodeK.decodeSafe(key), value))
-            case Left(error) => failed = error
+            case Left(error)  => failed = error
           }
         } else {
           decodeK(key) match {
             case None => failed = MapDecoder.failure(atH)
-            case Some(k) => atH.as(decodeV) match {
-              case Right(value) => builder += ((k, value))
-              case Left(error) => failed = error
-            }
+            case Some(k) =>
+              atH.as(decodeV) match {
+                case Right(value) => builder += ((k, value))
+                case Left(error)  => failed = error
+              }
           }
         }
       }
@@ -83,10 +84,11 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         }
       }
 
-      if (!failed) Validated.valid(builder.result) else {
+      if (!failed) Validated.valid(builder.result)
+      else {
         failures.result match {
           case h :: t => Validated.invalid(NonEmptyList(h, t))
-          case Nil => Validated.valid(builder.result)
+          case Nil    => Validated.valid(builder.result)
         }
       }
   }

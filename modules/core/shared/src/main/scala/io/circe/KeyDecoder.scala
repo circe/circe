@@ -10,6 +10,7 @@ import scala.annotation.tailrec
  * value of type `A`.
  */
 abstract class KeyDecoder[A] extends Serializable { self =>
+
   /**
    * Attempt to convert a String to a value.
    */
@@ -39,7 +40,8 @@ final object KeyDecoder {
   }
 
   private[this] def numberInstance[A](f: String => A): KeyDecoder[A] = new KeyDecoder[A] {
-    final def apply(key: String): Option[A] = try Some(f(key)) catch {
+    final def apply(key: String): Option[A] = try Some(f(key))
+    catch {
       case _: NumberFormatException => None
     }
   }
@@ -63,7 +65,8 @@ final object KeyDecoder {
 
   implicit val decodeKeyUUID: KeyDecoder[UUID] = new KeyDecoder[UUID] {
     final def apply(key: String): Option[UUID] = if (key.length == 36) {
-      try Some(UUID.fromString(key)) catch {
+      try Some(UUID.fromString(key))
+      catch {
         case _: IllegalArgumentException => None
       }
     } else None
@@ -94,7 +97,7 @@ final object KeyDecoder {
     final def tailRecM[A, B](a: A)(f: A => KeyDecoder[Either[A, B]]): KeyDecoder[B] = new KeyDecoder[B] {
       @tailrec
       private[this] def step(key: String, a1: A): Option[B] = f(a1)(key) match {
-        case None => None
+        case None           => None
         case Some(Left(a2)) => step(key, a2)
         case Some(Right(b)) => Some(b)
       }

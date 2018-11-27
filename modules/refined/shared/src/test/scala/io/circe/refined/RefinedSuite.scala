@@ -82,11 +82,12 @@ object RefinedFieldsSuite {
         st <- Arbitrary.arbitrary[String]
         (l0, l1, l2) <- Arbitrary.arbitrary[(Int, Int, Int)]
         lr <- Arbitrary.arbitrary[List[Int]]
-      } yield RefinedFields(
-        RefType[Refined].unsafeWrap(i),
-        RefType[Refined].unsafeWrap(sh + st),
-        RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
-      )
+      } yield
+        RefinedFields(
+          RefType[Refined].unsafeWrap(i),
+          RefType[Refined].unsafeWrap(sh + st),
+          RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
+        )
     )
 
     implicit val decodeRefinedFields: Decoder[RefinedFields] = Decoder.forProduct3("i", "s", "l")(RefinedFields.apply)
@@ -122,9 +123,7 @@ class RefinedFieldsSuite extends CirceSuite {
 
 class RefinedKeysSuite extends CirceSuite {
   "Refined keys" should "be encoded as Map keys" in {
-    val example: Map[String Refined NonEmpty, Int] = Map(
-      refineMV[NonEmpty]("a") -> 1,
-      refineMV[NonEmpty]("b") -> 2)
+    val example: Map[String Refined NonEmpty, Int] = Map(refineMV[NonEmpty]("a") -> 1, refineMV[NonEmpty]("b") -> 2)
 
     val expectedJson = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
 
@@ -133,9 +132,7 @@ class RefinedKeysSuite extends CirceSuite {
 
   it should "decode when valid" in {
     val json = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
-    val expected: Map[String Refined NonEmpty, Int] = Map(
-      refineMV[NonEmpty]("a") -> 1,
-      refineMV[NonEmpty]("b") -> 2)
+    val expected: Map[String Refined NonEmpty, Int] = Map(refineMV[NonEmpty]("a") -> 1, refineMV[NonEmpty]("b") -> 2)
     assert(json.as[Map[String Refined NonEmpty, Int]] === Right(expected))
   }
 

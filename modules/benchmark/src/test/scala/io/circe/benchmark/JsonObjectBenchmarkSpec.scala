@@ -36,10 +36,10 @@ class JsonObjectBenchmarkSpec extends FlatSpec {
 
   "remove" should "return the correct result" in {
     val expected = benchmark.fields.flatMap {
-      case ("0", _) => None
-      case ("50", _) => None
-      case ("51", _) => None
-      case ("99", _) => None
+      case ("0", _)     => None
+      case ("50", _)    => None
+      case ("51", _)    => None
+      case ("99", _)    => None
       case (key, value) => Some((key, value))
     }
 

@@ -7,7 +7,8 @@ import shapeless.{ AdditiveCollection, Nat, Sized }
 import shapeless.ops.nat.ToInt
 
 trait SizedInstances {
-  implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](implicit
+  implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](
+    implicit
     decodeCA: Decoder[C[A]],
     ev: AdditiveCollection[C[A]],
     toInt: ToInt[L]
@@ -19,19 +20,21 @@ trait SizedInstances {
 
     def apply(c: HCursor): Decoder.Result[Sized[C[A], L]] =
       decodeCA(c) match {
-        case Right(as) => checkSize(as) match {
-          case Some(s) => Right(s)
-          case None => Left(failure(c))
-        }
+        case Right(as) =>
+          checkSize(as) match {
+            case Some(s) => Right(s)
+            case None    => Left(failure(c))
+          }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Sized[C[A], L]]]
       }
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Sized[C[A], L]] =
       decodeCA.decodeAccumulating(c) match {
-        case Validated.Valid(as) => checkSize(as) match {
-          case Some(s) => Validated.valid(s)
-          case None => Validated.invalidNel(failure(c))
-        }
+        case Validated.Valid(as) =>
+          checkSize(as) match {
+            case Some(s) => Validated.valid(s)
+            case None    => Validated.invalidNel(failure(c))
+          }
         case l @ Validated.Invalid(_) => l.asInstanceOf[AccumulatingDecoder.Result[Sized[C[A], L]]]
       }
   }

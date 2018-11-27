@@ -35,10 +35,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     defaults: Map[String, Any]
   ): Decoder.Result[B] = result match {
     case r @ Right(_) => r
-    case l @ Left(_) => defaults.get(name) match {
-      case Some(d: B @unchecked) => Right(d)
-      case _ => l
-    }
+    case l @ Left(_) =>
+      defaults.get(name) match {
+        case Some(d: B @unchecked) => Right(d)
+        case _                     => l
+      }
   }
 
   final protected[this] def orDefaultAccumulating[B](
@@ -47,10 +48,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     defaults: Map[String, Any]
   ): AccumulatingDecoder.Result[B] = result match {
     case r @ Validated.Valid(_) => r
-    case l @ Validated.Invalid(_) => defaults.get(name) match {
-      case Some(d: B @unchecked) => Validated.valid(d)
-      case _ => l
-    }
+    case l @ Validated.Invalid(_) =>
+      defaults.get(name) match {
+        case Some(d: B @unchecked) => Validated.valid(d)
+        case _                     => l
+      }
   }
 
   final protected[this] def withDiscriminator[V](
@@ -66,9 +68,9 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     case Some(disc) =>
       c.get[String](disc) match {
         case Right(leafType) if leafType == name => Some(decode(c))
-        case Right(_) => None
-        case l @ Left(_) => Some(l.asInstanceOf[Decoder.Result[V]])
-    }
+        case Right(_)                            => None
+        case l @ Left(_)                         => Some(l.asInstanceOf[Decoder.Result[V]])
+      }
   }
 
   final protected[this] def withDiscriminatorAccumulating[V](
@@ -85,9 +87,9 @@ abstract class ReprDecoder[A] extends Decoder[A] {
       c.get[String](disc) match {
         case Right(leafType) if leafType == name =>
           Some(decode.tryDecodeAccumulating(c))
-        case Right(_) => None
+        case Right(_)  => None
         case Left(err) => Some(Validated.invalidNel(err))
-    }
+      }
   }
 
   final def apply(c: HCursor): Decoder.Result[A] =
