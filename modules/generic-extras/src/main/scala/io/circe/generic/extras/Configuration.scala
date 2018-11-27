@@ -44,8 +44,8 @@ final case class Configuration(
 final object Configuration {
 
   val default: Configuration = Configuration(Predef.identity, Predef.identity, false, None)
-  val basePattern: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
-  val swapPattern: Pattern = Pattern.compile("([a-z\\d])([A-Z])")
+  private val basePattern: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  private val swapPattern: Pattern = Pattern.compile("([a-z\\d])([A-Z])")
 
   val snakeCaseTransformation: String => String = s => {
     val partial = basePattern.matcher(s).replaceAll("$1_$2")
