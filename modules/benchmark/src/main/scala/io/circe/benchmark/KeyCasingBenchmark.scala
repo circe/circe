@@ -22,5 +22,4 @@ class KeyCasingBenchmark {
   @Benchmark
   def kebabCase: String = Configuration.kebabCaseTransformation("KebabCase")
 
-
 }
