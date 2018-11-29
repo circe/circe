@@ -360,6 +360,15 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
   }
 
+  it should "not include failures it hasn't checked for" in {
+    val decodePositiveInt: Decoder[Int] =
+      Decoder[Int].ensure(_ > 0, "Not positive!")
+
+    val expected = Validated.invalidNel(DecodingFailure("Int", Nil))
+
+    assert(decodePositiveInt.decodeAccumulating(Json.Null.hcursor) === expected)
+  }
+
   "validate" should "fail appropriately on invalid input in fail-fast mode" in forAll { (i: Int) =>
     val message = "Not positive!"
 
