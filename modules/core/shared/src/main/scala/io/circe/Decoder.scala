@@ -138,16 +138,13 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def ensure(pred: A => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
-      case l @ Left(_) => l
-      case Right(a)    => if (pred(a)) Right(a) else Left(DecodingFailure(message, c.history))
+      case r @ Right(a) => if (pred(a)) r else Left(DecodingFailure(message, c.history))
+      case l @ Left(_)  => l
     }
 
     override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c) match {
-      case v @ Valid(a) => if (pred(a)) v else Validated.invalidNel(DecodingFailure(message, c.history))
-      case Invalid(nel) =>
-        Validated.invalid(
-          AccumulatingDecoder.failureNelInstance.combine(nel, NonEmptyList(DecodingFailure(message, c.history), Nil))
-        )
+      case v @ Valid(a)   => if (pred(a)) v else Validated.invalidNel(DecodingFailure(message, c.history))
+      case i @ Invalid(_) => i
     }
   }
 
