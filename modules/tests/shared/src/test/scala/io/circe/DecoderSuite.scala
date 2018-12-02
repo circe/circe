@@ -336,7 +336,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val oddMessage = "Not odd!"
 
     val decodePositiveOddInt: Decoder[Int] =
-      Decoder[Int].ensure(_ > 0, positiveMessage).ensure(_ % 2 == 1, oddMessage)
+      Decoder[Int].ensure(_ > 0, positiveMessage).ensure(_ % 2 != 0, oddMessage)
 
     val expected = if (i > 0) {
       if (i % 2 == 1) {
@@ -345,7 +345,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
         Validated.invalidNel(DecodingFailure(oddMessage, Nil))
       }
     } else {
-      if (i % 2 == 1) {
+      if (i % 2 != 0) {
         Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
       } else {
         Validated.invalid(
