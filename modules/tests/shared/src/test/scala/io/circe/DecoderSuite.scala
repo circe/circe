@@ -322,6 +322,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decoder.apply(friday.hcursor).isEmpty)
   }
 
+  val isPositive: Int => Boolean = _ > 0
+  val isOdd: Int => Boolean = _ % 2 != 0
+
   "ensure" should "fail appropriately on an invalid result" in forAll { (i: Int) =>
     val message = "Not positive!"
 
@@ -331,42 +334,60 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decodePositiveInt.decodeJson(Json.fromInt(i)) === expected)
   }
 
-  it should "fail appropriately on an invalid result in error-accumulation mode" in forAll { (i: Int) =>
+  it should "only include the first failure when chained, even in error-accumulation mode" in forAll { (i: Int) =>
     val positiveMessage = "Not positive!"
     val oddMessage = "Not odd!"
 
-    val decodePositiveOddInt: Decoder[Int] =
-      Decoder[Int].ensure(_ > 0, positiveMessage).ensure(_ % 2 != 0, oddMessage)
+    val badDecodePositiveOddInt: Decoder[Int] =
+      Decoder[Int].ensure(isPositive, positiveMessage).ensure(isOdd, oddMessage)
 
-    val expected = if (i > 0) {
-      if (i % 2 == 1) {
+    val expected = if (isPositive(i)) {
+      if (isOdd(i)) {
         Validated.valid(i)
       } else {
         Validated.invalidNel(DecodingFailure(oddMessage, Nil))
       }
     } else {
-      if (i % 2 != 0) {
-        Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
-      } else {
-        Validated.invalid(
-          NonEmptyList.of(
-            DecodingFailure(positiveMessage, Nil),
-            DecodingFailure(oddMessage, Nil)
-          )
-        )
-      }
+      Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
     }
 
-    assert(decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
+    assert(badDecodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
   }
 
   it should "not include failures it hasn't checked for" in {
     val decodePositiveInt: Decoder[Int] =
-      Decoder[Int].ensure(_ > 0, "Not positive!")
+      Decoder[Int].ensure(isPositive, "Not positive!")
 
     val expected = Validated.invalidNel(DecodingFailure("Int", Nil))
 
     assert(decodePositiveInt.decodeAccumulating(Json.Null.hcursor) === expected)
+  }
+
+  it should "include all given failures in error-accumulation mode" in forAll { (i: Int) =>
+    val positiveMessage = "Not positive!"
+    val oddMessage = "Not odd!"
+
+    val decodePositiveOddInt: Decoder[Int] =
+      Decoder[Int].ensure(i =>
+        (if (isPositive(i)) Nil else List(positiveMessage)) ++
+        (if (isOdd(i)) Nil else List(oddMessage))
+      )
+
+    val expected = if (isPositive(i)) {
+      if (isOdd(i)) {
+        Validated.valid(i)
+      } else {
+        Validated.invalidNel(DecodingFailure(oddMessage, Nil))
+      }
+    } else {
+      if (isOdd(i)) {
+        Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
+      } else {
+        Validated.invalid(NonEmptyList.of(DecodingFailure(positiveMessage, Nil), DecodingFailure(oddMessage, Nil)))
+      }
+    }
+
+    assert(decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
   }
 
   "validate" should "fail appropriately on invalid input in fail-fast mode" in forAll { (i: Int) =>
