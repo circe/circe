@@ -25,7 +25,7 @@ val compilerOptions = Seq(
 val catsVersion = "1.4.0"
 val jawnVersion = "0.13.0"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.2"
+val refinedVersion = "0.9.3"
 
 val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.0.5"
@@ -370,7 +370,7 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
-      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
+      "eu.timepit" %%% "refined-scalacheck_1.13" % refinedVersion % Test
     )
   )
   .dependsOn(coreBase, testsBase % Test)
