@@ -135,6 +135,9 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Build a new instance that fails if the condition does not hold for the
    * result.
+   *
+   * Note that in the case of chained calls to this method, only the first
+   * failure will be returned.
    */
   final def ensure(pred: A => Boolean, message: => String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
@@ -150,7 +153,34 @@ trait Decoder[A] extends Serializable { self =>
 
   /**
    * Build a new instance that fails with one or more errors if the condition
-   * does not hold for the input.
+   * does not hold for the result.
+   *
+   * If the result of the function applied to the decoded value is the empty
+   * list, the new decoder will succeed with that value.
+   */
+  final def ensure(errors: A => List[String]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
+      case r @ Right(a) =>
+        errors(a) match {
+          case Nil          => r
+          case message :: _ => Left(DecodingFailure(message, c.history))
+        }
+      case l @ Left(_) => l
+    }
+
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c) match {
+      case v @ Valid(a) =>
+        errors(a).map(DecodingFailure(_, c.history)) match {
+          case Nil    => v
+          case h :: t => Validated.invalid(NonEmptyList(h, t))
+        }
+      case i @ Invalid(_) => i
+    }
+  }
+
+  /**
+   * Build a new instance that fails if the condition does not hold for the
+   * input.
    *
    * Note that this condition is checked before decoding with the current
    * decoder, and if it does not hold, decoding does not continue. This means
