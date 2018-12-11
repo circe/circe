@@ -18,7 +18,7 @@ case class Baz(c: Char) extends Event
 case class Qux(values: List[String]) extends Event
 ```
 
-And the encoder / decorder instances:
+And the encoder / decoder instances:
 
 ```tut:book:silent
 import cats.syntax.functor._
