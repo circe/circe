@@ -9,7 +9,7 @@ import scala.annotation.tailrec
  * A type class that provides a conversion from a string used as a JSON key to a
  * value of type `A`.
  */
-abstract class KeyDecoder[A] extends Serializable { self =>
+trait KeyDecoder[A] extends Serializable { self =>
 
   /**
    * Attempt to convert a String to a value.
