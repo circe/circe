@@ -13,7 +13,7 @@ import java.util.UUID
  * Note that if more than one value maps to the same string, the resulting JSON
  * object may have fewer fields than the original map.
  */
-abstract class KeyEncoder[A] extends Serializable { self =>
+trait KeyEncoder[A] extends Serializable { self =>
 
   /**
    * Convert a key value to a string.
