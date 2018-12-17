@@ -30,7 +30,7 @@ val refinedVersion = "0.9.2"
 val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.0.5"
 val scalaCheckVersion = "1.13.5"
-val disciplineVersion = "0.9.0"
+val disciplineVersion = "0.10.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
