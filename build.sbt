@@ -22,8 +22,8 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "1.5.0-RC0"
-val jawnVersion = "0.13.0"
+val catsVersion = "1.5.0"
+val jawnVersion = "0.14.0"
 val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.3"
 
@@ -326,7 +326,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
       }
     }
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val generic = genericBase.jvm
@@ -346,7 +346,7 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousC
       }
     }
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
 
@@ -358,7 +358,7 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val shapes = shapesBase.jvm
@@ -367,7 +367,7 @@ lazy val shapesJS = shapesBase.js
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
-  .jsConfigure(_.settings(libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion % Test))
+  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
 
 lazy val literal = literalBase.jvm
@@ -479,17 +479,14 @@ lazy val hygieneJS = hygieneBase.js
 
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % jawnVersion
+    libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion
   )
   .dependsOn(core)
 
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
-  .settings(
-    crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.13"))
-  )
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1"
   )
 
 lazy val java8 = java8Base.jvm

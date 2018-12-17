@@ -2,7 +2,7 @@ package io.circe.jawn
 
 import io.circe.{ Json, JsonNumber, JsonObject }
 import java.util.LinkedHashMap
-import jawn.{ RawFacade, RawFContext, SupportParser }
+import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
 
 final object CirceSupportParser extends SupportParser[Json] {
   implicit final val facade: RawFacade[Json] = new RawFacade[Json] {

@@ -147,11 +147,11 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     }
   }
 
-  private[this] def jawnFContextClass = Class.forName("jawn.FContext")
-  private[this] def jawnParserClass = Class.forName("jawn.Parser$")
+  private[this] def jawnFContextClass = Class.forName("org.typelevel.jawn.FContext")
+  private[this] def jawnParserClass = Class.forName("org.typelevel.jawn.Parser$")
   private[this] def jawnParser = jawnParserClass.getField("MODULE$").get(jawnParserClass)
-  private[this] def jawnFacadeClass = Class.forName("jawn.Facade")
-  private[this] def jawnRawFacadeClass = Class.forName("jawn.RawFacade")
+  private[this] def jawnFacadeClass = Class.forName("org.typelevel.jawn.Facade")
+  private[this] def jawnRawFacadeClass = Class.forName("org.typelevel.jawn.RawFacade")
   private[this] def parseMethod = jawnParserClass.getMethod("parseUnsafe", classOf[String], jawnRawFacadeClass)
 
   private[this] class TreeFacadeHandler(replacements: Seq[Replacement]) extends Handler(replacements) {
