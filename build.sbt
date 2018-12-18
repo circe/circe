@@ -43,7 +43,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
   }
 
 def scalaTestVersionFor(scalaVersion: String): String =
-  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP4"
+  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP5"
 
 def scalaCheckVersionFor(scalaVersion: String): String =
   if (priorTo2_13(scalaVersion)) scalaCheckVersion else "1.14.0"
