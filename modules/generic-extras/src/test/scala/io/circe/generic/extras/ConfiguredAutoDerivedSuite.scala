@@ -1,5 +1,6 @@
 package io.circe.generic.extras
 
+import cats.data.Validated
 import cats.kernel.Eq
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.extras.auto._
@@ -121,6 +122,7 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     "Option[T] with default" should "be default value if missing key decoded" in {
       val json = json"""{}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
+      assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
     }
   }
 

@@ -837,21 +837,42 @@ final object Decoder
 
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
 
-  private[circe] final val keyMissingNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
+  private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
+  private[circe] final val keyMissingNoneAccumulating: AccumulatingDecoder.Result[Option[Nothing]] =
+    Validated.valid(None)
 
   /**
    * @group Decoding
    */
-  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = withReattempt {
-    case c: HCursor =>
-      if (c.value.isNull) rightNone
-      else
-        d(c) match {
-          case Right(a) => Right(Some(a))
-          case Left(df) => Left(df)
+  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
+    final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
+
+    final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) rightNone
+        else
+          d(c) match {
+            case Right(a) => Right(Some(a))
+            case Left(df) => Left(df)
+          }
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
+    }
+
+    final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Option[A]] = tryDecodeAccumulating(c)
+
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[Option[A]] = {
+      val result = tryDecode(c)
+
+      if (result eq keyMissingNone) {
+        keyMissingNoneAccumulating
+      } else {
+        result match {
+          case Right(v) => Validated.valid(v)
+          case Left(e)  => Validated.invalidNel(e)
         }
-    case c: FailedCursor =>
-      if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
+      }
+    }
   }
 
   /**
