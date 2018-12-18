@@ -377,7 +377,7 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
-      "eu.timepit" %%% "refined-scalacheck_1.13" % refinedVersion % Test
+      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
     )
   )
   .dependsOn(coreBase, testsBase % Test)
