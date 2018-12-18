@@ -47,11 +47,11 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     name: String,
     defaults: Map[String, Any]
   ): AccumulatingDecoder.Result[B] = result match {
-    case r @ Validated.Valid(_) => r
-    case l @ Validated.Invalid(_) =>
+    case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating => r
+    case _ =>
       defaults.get(name) match {
         case Some(d: B @unchecked) => Validated.valid(d)
-        case _                     => l
+        case _                     => result
       }
   }
 
