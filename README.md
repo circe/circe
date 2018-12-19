@@ -55,6 +55,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [VEACT](https://veact.net/)
 * [WeWork](https://www.wework.com)
 * [Whisk](https://whisk.com)
 * [Zalando](https://zalando.de)
