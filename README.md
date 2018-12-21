@@ -224,7 +224,7 @@ limitations under the License.
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
-[scala-jsonapi]: https://github.com/zalando/scala-jsonapi
+[scala-jsonapi]: https://github.com/scala-jsonapi/scala-jsonapi
 [scala-json-rpc]: https://github.com/shogowada/scala-json-rpc
 [scalatest-json-circe]: https://github.com/stephennancekivell/scalatest-json
 [scalist]: https://github.com/vpavkin/scalist
