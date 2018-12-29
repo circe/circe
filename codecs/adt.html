@@ -12,7 +12,7 @@
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Qux</span><span class="o">(</span><span class="n">values</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Event</span>
 </code></pre></div></div>
 
-<p>And the encoder / decorder instances:</p>
+<p>And the encoder / decoder instances:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.syntax.functor._</span>
 <span class="k">import</span> <span class="nn">io.circe.</span><span class="o">{</span> <span class="nc">Decoder</span><span class="o">,</span> <span class="nc">Encoder</span> <span class="o">},</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">generic</span><span class="o">.</span><span class="n">auto</span><span class="o">.</span><span class="k">_</span>
