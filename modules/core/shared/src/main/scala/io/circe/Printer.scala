@@ -36,6 +36,7 @@ import scala.annotation.switch
  * @param predictSize Uses an adaptive size predictor to avoid grow-and-copy steps while printing
  *        into a binary output.
  * @param escapeNonAscii Unicode-escape any non-ASCII characters in strings.
+ * @param sortKeys Determines whether the fields should be sorted.
  */
 final case class Printer(
   preserveOrder: Boolean,
@@ -58,7 +59,8 @@ final case class Printer(
   colonRight: String = "",
   reuseWriters: Boolean = false,
   predictSize: Boolean = false,
-  escapeNonAscii: Boolean = false
+  escapeNonAscii: Boolean = false,
+  sortKeys: Boolean = false
 ) {
   private[this] final val openBraceText = "{"
   private[this] final val closeBraceText = "}"
@@ -231,10 +233,17 @@ final object Printer {
     indent = ""
   )
 
+  final val noSpacesSortedKeys: Printer = Printer(
+    preserveOrder = true,
+    dropNullValues = false,
+    indent = "",
+    sortKeys = true
+  )
+
   /**
    * A pretty-printer configuration that indents by the given spaces.
    */
-  final def indented(indent: String): Printer = Printer(
+  final def indented(indent: String, sortKeys: Boolean = false): Printer = Printer(
     preserveOrder = true,
     dropNullValues = false,
     indent = indent,
@@ -246,7 +255,8 @@ final object Printer {
     arrayCommaRight = "\n",
     objectCommaRight = "\n",
     colonLeft = " ",
-    colonRight = " "
+    colonRight = " ",
+    sortKeys = sortKeys
   )
 
   /**
@@ -255,9 +265,19 @@ final object Printer {
   final val spaces2: Printer = indented("  ")
 
   /**
+   * A pretty-printer configuration that indents by two spaces  and outputs fields in sorted order.
+   */
+  final val spaces2SortKeys: Printer = indented("  ", true)
+
+  /**
    * A pretty-printer configuration that indents by four spaces.
    */
   final val spaces4: Printer = indented("    ")
+
+  /**
+   * A pretty-printer configuration that indents by four spaces and outputs fields in sorted order.
+   */
+  final val spaces4SortKeys: Printer = indented("    ", true)
 
   private[circe] abstract class PrintingFolder(
     private[circe] val writer: Appendable,
