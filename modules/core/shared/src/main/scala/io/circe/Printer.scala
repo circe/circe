@@ -220,6 +220,11 @@ final case class Printer(
 
   final def prettyByteBuffer(json: Json): ByteBuffer =
     prettyByteBuffer(json, StandardCharsets.UTF_8)
+
+  /**
+   * The same pretty-printer configuration that outputs fields in sorted order.
+   */
+  final def withSortedKeys: Printer = copy(sortKeys = true)
 }
 
 final object Printer {
