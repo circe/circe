@@ -29,7 +29,6 @@ import scala.annotation.switch
  * @param objectCommaRight Spaces to insert to right of a comma in an object.
  * @param colonLeft Spaces to insert to left of a colon.
  * @param colonRight Spaces to insert to right of a colon.
- * @param preserveOrder Determines if field ordering should be preserved.
  * @param dropNullValues Determines if object fields with values of null are dropped from the output.
  * @param reuseWriters Determines whether the printer will reuse Appendables via thread-local
  *        storage.
@@ -39,7 +38,6 @@ import scala.annotation.switch
  * @param sortKeys Determines whether the fields should be sorted.
  */
 final case class Printer(
-  preserveOrder: Boolean,
   dropNullValues: Boolean,
   indent: String,
   lbraceLeft: String = "",
@@ -233,13 +231,11 @@ final object Printer {
    * A pretty-printer configuration that inserts no spaces.
    */
   final val noSpaces: Printer = Printer(
-    preserveOrder = true,
     dropNullValues = false,
     indent = ""
   )
 
   final val noSpacesSortKeys: Printer = Printer(
-    preserveOrder = true,
     dropNullValues = false,
     indent = "",
     sortKeys = true
@@ -249,7 +245,6 @@ final object Printer {
    * A pretty-printer configuration that indents by the given spaces.
    */
   final def indented(indent: String, sortKeys: Boolean = false): Printer = Printer(
-    preserveOrder = true,
     dropNullValues = false,
     indent = indent,
     lbraceRight = "\n",
