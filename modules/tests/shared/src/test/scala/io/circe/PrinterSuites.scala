@@ -37,3 +37,9 @@ class UnicodeEscapePrinterWithWriterReuseSuite
       Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
       parser.`package`
     )
+
+class Spaces2SortKeysPrinterSuite extends PrinterSuite(Printer.spaces2SortKeys, parser.`package`) with SortedKeysSuite
+class Spaces4SortKeysPrinterSuite extends PrinterSuite(Printer.spaces4SortKeys, parser.`package`) with SortedKeysSuite
+class NoSpacesSortKeysPrinterSuite
+    extends PrinterSuite(Printer.noSpacesSortedKeys, parser.`package`)
+    with SortedKeysSuite
