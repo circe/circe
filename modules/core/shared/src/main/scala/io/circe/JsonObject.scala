@@ -308,14 +308,15 @@ final object JsonObject {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
-      val iterator = fields.entrySet.iterator
+      val iterable = if (folder.sortKeys) toIterable.toVector.sortBy(_._1) else toIterable
+      val iterator = iterable.iterator
 
       folder.writer.append(p.lBraces)
 
       while (iterator.hasNext) {
         val next = iterator.next()
-        val key = next.getKey
-        val value = next.getValue
+        val key = next._1
+        val value = next._2
 
         if (!folder.dropNullValues || !value.isNull) {
           if (!first) folder.writer.append(p.objectCommas)
@@ -417,7 +418,7 @@ final object JsonObject {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
-      val keyIterator = orderedKeys.iterator
+      val keyIterator = if (folder.sortKeys) orderedKeys.sorted.iterator else orderedKeys.iterator
 
       folder.writer.append(p.lBraces)
 

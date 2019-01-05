@@ -71,14 +71,14 @@ final case class Printer(
 
   private[this] final class StringBuilderFolder(
     writer: StringBuilder
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(value)
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii) {
+  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
   }
@@ -288,7 +288,8 @@ final object Printer {
     private[circe] val writer: Appendable,
     private[circe] val pieces: PiecesAtDepth,
     private[circe] val dropNullValues: Boolean,
-    private[circe] val escapeNonAscii: Boolean
+    private[circe] val escapeNonAscii: Boolean,
+    private[circe] val sortKeys: Boolean
   ) extends Json.Folder[Unit] {
     private[circe] var depth: Int = 0
 
