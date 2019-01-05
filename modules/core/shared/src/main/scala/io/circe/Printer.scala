@@ -238,7 +238,7 @@ final object Printer {
     indent = ""
   )
 
-  final val noSpacesSortedKeys: Printer = Printer(
+  final val noSpacesSortKeys: Printer = Printer(
     preserveOrder = true,
     dropNullValues = false,
     indent = "",
