@@ -126,6 +126,24 @@ sealed abstract class Json extends Product with Serializable {
   final def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
+   * Pretty-print this JSON value to a string with no spaces, with object keys
+   * sorted alphabetically.
+   */
+  final def noSpacesSortKeys: String = Printer.noSpacesSortKeys.pretty(this)
+
+  /**
+   * Pretty-print this JSON value to a string indentation of two spaces, with
+   * object keys sorted alphabetically.
+   */
+  final def spaces2SortKeys: String = Printer.spaces2SortKeys.pretty(this)
+
+  /**
+   * Pretty-print this JSON value to a string indentation of four spaces, with
+   * object keys sorted alphabetically.
+   */
+  final def spaces4SortKeys: String = Printer.spaces4SortKeys.pretty(this)
+
+  /**
    * Perform a deep merge of this JSON value with another JSON value.
    *
    * Objects are merged by key, values from the argument JSON take
