@@ -47,6 +47,13 @@ implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emap { str =
 }
 ```
 
+#### Older scala versions
+
+If you are using custom codecs and an older versions of scala (below 2.12) and you get errors like 
+this `value flatMap is not a member of io.circe.Decoder.Result[Option[String]]` or 
+`value map is not a member of io.circe.Decoder.Result[Option[String]]` then you need to use the 
+following import: `import cats.syntax.either._` to fix this.
+
 ### Custom key types
 
 If you need to encode/decode `Map[K, V]` where `K` is not `String` (or `Symbol`, `Int`, `Long`, etc.),
