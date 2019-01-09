@@ -84,6 +84,7 @@ sealed abstract class JsonNumber extends Serializable {
 private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
+  def toDouble: Double = toBiggerDecimal.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
 }
 
@@ -99,14 +100,13 @@ private[circe] final case class JsonDecimal(value: String) extends BiggerDecimal
     } else result
   }
 
-  def toDouble: Double = java.lang.Double.parseDouble(value)
+  override final def toDouble: Double = java.lang.Double.parseDouble(value)
   override def toString: String = value
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal) extends BiggerDecimalJsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = value
-  def toDouble: Double = value.toDouble
   override def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = value.appendToStringBuilder(builder)
 }
