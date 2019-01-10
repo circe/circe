@@ -85,7 +85,7 @@ private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber 
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   def toDouble: Double = toBiggerDecimal.toDouble
-  final def toLong: Option[Long] = toBiggerDecimal.toLong
+  def toLong: Option[Long] = toBiggerDecimal.toLong
 }
 
 /**
@@ -101,6 +101,8 @@ private[circe] final case class JsonDecimal(value: String) extends BiggerDecimal
   }
 
   override final def toDouble: Double = java.lang.Double.parseDouble(value)
+  override final def toLong: Option[Long] =
+    if (BiggerDecimal.integralIsValidLong(value)) Some(java.lang.Long.parseLong(value)) else None
   override def toString: String = value
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
