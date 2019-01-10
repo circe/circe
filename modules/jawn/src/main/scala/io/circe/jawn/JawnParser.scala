@@ -6,20 +6,43 @@ import java.io.File
 import java.nio.ByteBuffer
 import scala.util.{ Failure, Success, Try }
 
-class JawnParser extends Parser {
+final object JawnParser {
+
+  /**
+   * Returns a parser that fails on JSON strings, object keys, or numbers that
+   * exceed a given length.
+   *
+   * In some cases excessively long values (e.g. JSON numbers with millions of
+   * digits) may support denial-of-service attacks. For example, the string
+   * constructor for Java's `BigInteger` is quadratic with the length of the
+   * input, and decoding a ten-million digit JSON number into a `BigInteger` may
+   * take minutes.
+   */
+  def apply(maxValueSize: Int): JawnParser = new JawnParser(Some(maxValueSize))
+}
+
+class JawnParser(maxValueSize: Option[Int]) extends Parser {
+  def this() = this(None)
+
+  private[this] final val supportParser: CirceSupportParser =
+    maxValueSize match {
+      case Some(_) => new CirceSupportParser(maxValueSize)
+      case None    => CirceSupportParser
+    }
+
   private[this] final def fromTry(t: Try[Json]): Either[ParsingFailure, Json] = t match {
     case Success(json)  => Right(json)
     case Failure(error) => Left(ParsingFailure(error.getMessage, error))
   }
 
   final def parse(input: String): Either[ParsingFailure, Json] =
-    fromTry(CirceSupportParser.parseFromString(input))
+    fromTry(supportParser.parseFromString(input))
 
   final def parseFile(file: File): Either[ParsingFailure, Json] =
-    fromTry(CirceSupportParser.parseFromFile(file))
+    fromTry(supportParser.parseFromFile(file))
 
   final def parseByteBuffer(buffer: ByteBuffer): Either[ParsingFailure, Json] =
-    fromTry(CirceSupportParser.parseFromByteBuffer(buffer))
+    fromTry(supportParser.parseFromByteBuffer(buffer))
 
   final def decodeByteBuffer[A: Decoder](buffer: ByteBuffer): Either[Error, A] =
     finishDecode[A](parseByteBuffer(buffer))
