@@ -1,18 +1,19 @@
 package io.circe.jawn
 
 import io.circe.{ Json, JsonNumber, JsonObject }
+import java.io.Serializable
 import java.util.LinkedHashMap
 import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
 
 final object CirceSupportParser extends CirceSupportParser(None)
 
-class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] {
+class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] with Serializable {
   implicit final val facade: RawFacade[Json] = maxValueSize match {
     case Some(size) => new LimitedFacade(size)
     case None       => new UnlimitedFacade
   }
 
-  private[this] abstract class BaseFacade extends RawFacade[Json] {
+  private[this] abstract class BaseFacade extends RawFacade[Json] with Serializable {
     final def jnull(index: Int): Json = Json.Null
     final def jfalse(index: Int): Json = Json.False
     final def jtrue(index: Int): Json = Json.True
