@@ -194,7 +194,9 @@ trait JavaTimeEncoders {
    * @group Time
    */
   implicit final val encodeYearMonth: Encoder[YearMonth] =
-    Encoder.instance(yearMonth => Json.fromString(yearMonth.toString))
+    new JavaTimeEncoder[YearMonth] {
+      protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM")
+    }
 
   /**
    * @group Time

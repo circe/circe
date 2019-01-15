@@ -3,19 +3,7 @@ package io.circe
 import cats.kernel.Eq
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import java.time.{
-  Duration,
-  Instant,
-  LocalDate,
-  LocalDateTime,
-  LocalTime,
-  OffsetDateTime,
-  OffsetTime,
-  Period,
-  YearMonth,
-  ZonedDateTime,
-  ZoneId
-}
+import java.time._
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import scala.collection.JavaConverters._
@@ -24,7 +12,7 @@ case class JavaTimeCaseClass(foo: Duration, bar: Option[LocalTime], baz: List[Zo
 
 object JavaTimeCaseClass {
   implicit val decodeJavaTimeCaseClass: Decoder[JavaTimeCaseClass] =
-    Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass(_, _, _))
+    Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass.apply)
 
   implicit val encodeJavaTimeCaseClass: ObjectEncoder[JavaTimeCaseClass] =
     Encoder.forProduct3("foo", "bar", "baz") { (value: JavaTimeCaseClass) =>
@@ -77,11 +65,20 @@ class JavaTimeCodecSuite extends CirceSuite {
 
   implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
 
+  implicit val arbitraryMonthDay: Arbitrary[MonthDay] = Arbitrary(
+    arbitrary[LocalDateTime].map(ldt => MonthDay.of(ldt.getMonth, ldt.getDayOfMonth))
+  )
+
   implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
+
+  implicit val arbitraryYear: Arbitrary[Year] = Arbitrary(arbitrary[LocalDateTime].map(ldt => Year.of(ldt.getYear)))
 
   implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(
     arbitrary[LocalDateTime].map(ldt => YearMonth.of(ldt.getYear, ldt.getMonth))
   )
+
+  implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
+    Arbitrary(Gen.choose(-18 * 60 * 60, 18 * 60 * 60).map(ZoneOffset.ofTotalSeconds))
 
   implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
     for {
@@ -104,11 +101,14 @@ class JavaTimeCodecSuite extends CirceSuite {
   implicit val eqOffsetDateTime: Eq[OffsetDateTime] = Eq.fromUniversalEquals
   implicit val eqLocalDate: Eq[LocalDate] = Eq.fromUniversalEquals
   implicit val eqLocalTime: Eq[LocalTime] = Eq.fromUniversalEquals
+  implicit val eqMonthDay: Eq[MonthDay] = Eq.fromUniversalEquals
   implicit val eqOffsetTime: Eq[OffsetTime] = Eq.fromUniversalEquals
   implicit val eqPeriod: Eq[Period] = Eq.fromUniversalEquals
+  implicit val eqYear: Eq[Year] = Eq.fromUniversalEquals
   implicit val eqYearMonth: Eq[YearMonth] = Eq.fromUniversalEquals
   implicit val eqDuration: Eq[Duration] = Eq.fromUniversalEquals
   implicit val eqZoneId: Eq[ZoneId] = Eq.fromUniversalEquals
+  implicit val eqZoneOffset: Eq[ZoneOffset] = Eq.fromUniversalEquals
   implicit val eqJavaTimeCaseClass: Eq[JavaTimeCaseClass] = Eq.fromUniversalEquals
 
   checkLaws("Codec[Instant]", CodecTests[Instant].codec)
@@ -117,11 +117,14 @@ class JavaTimeCodecSuite extends CirceSuite {
   checkLaws("Codec[OffsetDateTime]", CodecTests[OffsetDateTime].codec)
   checkLaws("Codec[LocalDate]", CodecTests[LocalDate].codec)
   checkLaws("Codec[LocalTime]", CodecTests[LocalTime].codec)
+  checkLaws("Codec[MonthDay]", CodecTests[MonthDay].codec)
   checkLaws("Codec[OffsetTime]", CodecTests[OffsetTime].codec)
   checkLaws("Codec[Period]", CodecTests[Period].codec)
+  checkLaws("Codec[Year]", CodecTests[Year].codec)
   checkLaws("Codec[YearMonth]", CodecTests[YearMonth].codec)
   checkLaws("Codec[Duration]", CodecTests[Duration].codec)
   checkLaws("Codec[ZoneId]", CodecTests[ZoneId].codec)
+  checkLaws("Codec[ZoneOffset]", CodecTests[ZoneOffset].codec)
   checkLaws("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
 
   val invalidText: String = "abc"
@@ -184,6 +187,13 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.left.get.message.contains(parseExceptionMessage))
   }
 
+  "Decoder[MonthDay]" should "fail on invalid values" in {
+    val decodingResult = Decoder[MonthDay].apply(invalidJson.hcursor)
+
+    assert(decodingResult.isLeft)
+    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+  }
+
   "Decoder[OffsetTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[OffsetTime].apply(invalidJson.hcursor)
 
@@ -198,6 +208,13 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.left.get.message.contains(s"Text '$invalidText' cannot be parsed to a Period"))
   }
 
+  "Decoder[Year]" should "fail on invalid values" in {
+    val decodingResult = Decoder[Year].apply(invalidJson.hcursor)
+
+    assert(decodingResult.isLeft)
+    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+  }
+
   "Decoder[YearMonth]" should "fail on invalid values" in {
     val decodingResult = Decoder[YearMonth].apply(invalidJson.hcursor)
 
@@ -210,5 +227,12 @@ class JavaTimeCodecSuite extends CirceSuite {
 
     assert(decodingResult.isLeft)
     assert(decodingResult.left.get.message.contains(s"Text '$invalidText' cannot be parsed to a Duration"))
+  }
+
+  "Decoder[ZoneOffset]" should "fail on invalid values" in {
+    val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
+
+    assert(decodingResult.isLeft)
+    assert(decodingResult.left.get.message.contains("ZoneOffset (Invalid ID for ZoneOffset, "))
   }
 }
