@@ -35,33 +35,27 @@ private[time] abstract class JavaTimeEncoder[A <: TemporalAccessor] extends Enco
 }
 
 trait JavaTimeEncoders {
-  /**
-   * @group Time
-   */
-  implicit final val encodeDuration: Encoder[Duration] = Encoder.instance(duration =>
-    Json.fromString(duration.toString)
-  )
 
   /**
    * @group Time
    */
-  implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time =>
-    Json.fromString(time.toString)
-  )
+  implicit final val encodeDuration: Encoder[Duration] =
+    Encoder.instance(duration => Json.fromString(duration.toString))
 
   /**
    * @group Time
    */
-  implicit final val encodePeriod: Encoder[Period] = Encoder.instance(period =>
-    Json.fromString(period.toString)
-  )
+  implicit final val encodeInstant: Encoder[Instant] = Encoder.instance(time => Json.fromString(time.toString))
 
   /**
    * @group Time
    */
-  implicit final val encodeZoneId: Encoder[ZoneId] = Encoder.instance(zoneId =>
-    Json.fromString(zoneId.getId)
-  )
+  implicit final val encodePeriod: Encoder[Period] = Encoder.instance(period => Json.fromString(period.toString))
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeZoneId: Encoder[ZoneId] = Encoder.instance(zoneId => Json.fromString(zoneId.getId))
 
   /**
    * @group Time
@@ -112,16 +106,16 @@ trait JavaTimeEncoders {
     }
 
   /**
-    * @group Time
-    */
+   * @group Time
+   */
   final def encodeYearWithFormatter(formatter: DateTimeFormatter): Encoder[Year] =
     new JavaTimeEncoder[Year] {
       protected final def format: DateTimeFormatter = formatter
     }
 
   /**
-    * @group Time
-    */
+   * @group Time
+   */
   final def encodeYearMonthWithFormatter(formatter: DateTimeFormatter): Encoder[YearMonth] =
     new JavaTimeEncoder[YearMonth] {
       protected final def format: DateTimeFormatter = formatter
@@ -168,8 +162,8 @@ trait JavaTimeEncoders {
     }
 
   /**
-    * @group Time
-    */
+   * @group Time
+   */
   implicit final val encodeMonthDay: Encoder[MonthDay] =
     new JavaTimeEncoder[MonthDay] {
       protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("--MM-dd")
@@ -192,18 +186,15 @@ trait JavaTimeEncoders {
     }
 
   /**
-    * @group Time
-    */
-  implicit final val encodeYear: Encoder[Year] = Encoder.instance(year =>
-    Json.fromString(year.toString)
-  )
+   * @group Time
+   */
+  implicit final val encodeYear: Encoder[Year] = Encoder.instance(year => Json.fromString(year.toString))
 
   /**
-    * @group Time
-    */
-  implicit final val encodeYearMonth: Encoder[YearMonth] = Encoder.instance(yearMonth =>
-    Json.fromString(yearMonth.toString)
-  )
+   * @group Time
+   */
+  implicit final val encodeYearMonth: Encoder[YearMonth] =
+    Encoder.instance(yearMonth => Json.fromString(yearMonth.toString))
 
   /**
    * @group Time
@@ -214,9 +205,8 @@ trait JavaTimeEncoders {
     }
 
   /**
-    * @group Time
-    */
-  implicit final val encodeZoneOffset: Encoder[ZoneOffset] = Encoder.instance(zoneOffset =>
-    Json.fromString(zoneOffset.toString)
-  )
+   * @group Time
+   */
+  implicit final val encodeZoneOffset: Encoder[ZoneOffset] =
+    Encoder.instance(zoneOffset => Json.fromString(zoneOffset.toString))
 }
