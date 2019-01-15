@@ -264,7 +264,7 @@ trait JavaTimeDecoders {
   implicit final val decodeYearMonth: Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected final def parseUnsafe(input: String): YearMonth =
-        YearMonth.parse(input)
+        YearMonth.parse(input, DateTimeFormatter.ofPattern("uuuu-MM"))
     }
 
   /**

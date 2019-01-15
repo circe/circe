@@ -7,11 +7,14 @@ import java.time.{
   LocalDate,
   LocalDateTime,
   LocalTime,
+  MonthDay,
   OffsetDateTime,
   OffsetTime,
   Period,
+  Year,
   YearMonth,
   ZonedDateTime,
+  ZoneOffset,
   ZoneId
 }
 import java.time.format.DateTimeFormatter
@@ -128,6 +131,15 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
+  final def decodeMonthDayWithFormatter(formatter: DateTimeFormatter): Decoder[MonthDay] =
+    new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
+      protected final def parseUnsafe(input: String): MonthDay =
+        MonthDay.parse(input, formatter)
+    }
+
+  /**
+   * @group Time
+   */
   final def decodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
       protected final def parseUnsafe(input: String): OffsetTime =
@@ -146,10 +158,10 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  final def decodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Decoder[ZonedDateTime] =
-    new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
-      protected final def parseUnsafe(input: String): ZonedDateTime =
-        ZonedDateTime.parse(input, formatter)
+  final def decodeYearWithFormatter(formatter: DateTimeFormatter): Decoder[Year] =
+    new StandardJavaTimeDecoder[Year]("Year") {
+      protected final def parseUnsafe(input: String): Year =
+        Year.parse(input, formatter)
     }
 
   /**
@@ -159,6 +171,24 @@ private[circe] trait JavaTimeDecoders {
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected final def parseUnsafe(input: String): YearMonth =
         YearMonth.parse(input, formatter)
+    }
+
+  /**
+   * @group Time
+   */
+  final def decodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Decoder[ZonedDateTime] =
+    new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
+      protected final def parseUnsafe(input: String): ZonedDateTime =
+        ZonedDateTime.parse(input, formatter)
+    }
+
+  /**
+   * @group Time
+   */
+  final def decodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Decoder[ZoneOffset] =
+    new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
+      protected final def parseUnsafe(input: String): ZoneOffset =
+        ZoneOffset.of(input)
     }
 
   /**
@@ -191,6 +221,18 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
+  implicit final val decodeMonthDay: Decoder[MonthDay] =
+    new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
+      private[this] final def monthDayFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("--MM-dd")
+
+      protected final def parseUnsafe(input: String): MonthDay =
+        MonthDay.parse(input, monthDayFormatter)
+    }
+
+  /**
+   * @group Time
+   */
   implicit final val decodeOffsetTime: Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
       protected final def parseUnsafe(input: String): OffsetTime =
@@ -209,6 +251,24 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
+  implicit final val decodeYear: Decoder[Year] =
+    new StandardJavaTimeDecoder[Year]("Year") {
+      protected final def parseUnsafe(input: String): Year =
+        Year.parse(input)
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val decodeYearMonth: Decoder[YearMonth] =
+    new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
+      protected final def parseUnsafe(input: String): YearMonth =
+        YearMonth.parse(input, DateTimeFormatter.ofPattern("uuuu-MM"))
+    }
+
+  /**
+   * @group Time
+   */
   implicit final val decodeZonedDateTime: Decoder[ZonedDateTime] =
     new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
       protected final def parseUnsafe(input: String): ZonedDateTime =
@@ -218,9 +278,8 @@ private[circe] trait JavaTimeDecoders {
   /**
    * @group Time
    */
-  implicit final val decodeYearMonth: Decoder[YearMonth] =
-    new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
-      protected final def parseUnsafe(input: String): YearMonth =
-        YearMonth.parse(input, DateTimeFormatter.ofPattern("yyyy-MM"))
+  implicit final val decodeZoneOffset: Decoder[ZoneOffset] =
+    new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
+      protected final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
     }
 }

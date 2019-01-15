@@ -6,12 +6,15 @@ import java.time.{
   LocalDate,
   LocalDateTime,
   LocalTime,
+  MonthDay,
   OffsetDateTime,
   OffsetTime,
   Period,
+  Year,
   YearMonth,
   ZonedDateTime,
-  ZoneId
+  ZoneId,
+  ZoneOffset
 }
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.{
@@ -80,6 +83,14 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
+  final def encodeMonthDayWithFormatter(formatter: DateTimeFormatter): Encoder[MonthDay] =
+    new JavaTimeEncoder[MonthDay] {
+      protected final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
   final def encodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetTime] =
     new JavaTimeEncoder[OffsetTime] {
       protected final def format: DateTimeFormatter = formatter
@@ -96,8 +107,8 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  final def encodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
-    new JavaTimeEncoder[ZonedDateTime] {
+  final def encodeYearWithFormatter(formatter: DateTimeFormatter): Encoder[Year] =
+    new JavaTimeEncoder[Year] {
       protected final def format: DateTimeFormatter = formatter
     }
 
@@ -106,6 +117,22 @@ private[circe] trait JavaTimeEncoders {
    */
   final def encodeYearMonthWithFormatter(formatter: DateTimeFormatter): Encoder[YearMonth] =
     new JavaTimeEncoder[YearMonth] {
+      protected final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
+    new JavaTimeEncoder[ZonedDateTime] {
+      protected final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Encoder[ZoneOffset] =
+    new JavaTimeEncoder[ZoneOffset] {
       protected final def format: DateTimeFormatter = formatter
     }
 
@@ -136,6 +163,14 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
+  implicit final val encodeMonthDay: Encoder[MonthDay] =
+    new JavaTimeEncoder[MonthDay] {
+      protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("--MM-dd")
+    }
+
+  /**
+   * @group Time
+   */
   implicit final val encodeOffsetTime: Encoder[OffsetTime] =
     new JavaTimeEncoder[OffsetTime] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
@@ -152,6 +187,19 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
+  implicit final val encodeYear: Encoder[Year] = Encoder.instance(year => Json.fromString(year.toString))
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeYearMonth: Encoder[YearMonth] =
+    new JavaTimeEncoder[YearMonth] {
+      protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM")
+    }
+
+  /**
+   * @group Time
+   */
   implicit final val encodeZonedDateTime: Encoder[ZonedDateTime] =
     new JavaTimeEncoder[ZonedDateTime] {
       protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
@@ -160,8 +208,6 @@ private[circe] trait JavaTimeEncoders {
   /**
    * @group Time
    */
-  implicit final val encodeYearMonth: Encoder[YearMonth] =
-    new JavaTimeEncoder[YearMonth] {
-      protected final def format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
-    }
+  implicit final val encodeZoneOffset: Encoder[ZoneOffset] =
+    Encoder.instance(zoneOffset => Json.fromString(zoneOffset.toString))
 }
