@@ -38,11 +38,13 @@ private[time] abstract class JavaTimeDecoder[A](name: String) extends Decoder[A]
 
   final def apply(c: HCursor): Decoder.Result[A] = c.value match {
     case Json.JString(string) =>
-      try Right(parseUnsafe(string)) catch {
+      try Right(parseUnsafe(string))
+      catch {
         case e: DateTimeException =>
           val message = e.getMessage
 
-          if (message.eq(null)) Left(DecodingFailure(name, c.history)) else {
+          if (message.eq(null)) Left(DecodingFailure(name, c.history))
+          else {
             val newMessage = formatMessage(string, message)
             Left(DecodingFailure(s"$name ($newMessage)", c.history))
           }
@@ -51,13 +53,13 @@ private[time] abstract class JavaTimeDecoder[A](name: String) extends Decoder[A]
   }
 }
 
-private[time] abstract class StandardJavaTimeDecoder[A](name: String)
-    extends JavaTimeDecoder[A](name) {
+private[time] abstract class StandardJavaTimeDecoder[A](name: String) extends JavaTimeDecoder[A](name) {
 
   protected final def formatMessage(input: String, message: String): String = message
 }
 
 trait JavaTimeDecoders {
+
   /**
    * @group Time
    */
