@@ -224,11 +224,8 @@ trait JavaTimeDecoders {
    */
   implicit final val decodeMonthDay: Decoder[MonthDay] =
     new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
-      private[this] final def monthDayFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("--MM-dd")
-
       protected final def parseUnsafe(input: String): MonthDay =
-        MonthDay.parse(input, monthDayFormatter)
+        MonthDay.parse(input)
     }
 
   /**
@@ -264,7 +261,7 @@ trait JavaTimeDecoders {
   implicit final val decodeYearMonth: Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected final def parseUnsafe(input: String): YearMonth =
-        YearMonth.parse(input, DateTimeFormatter.ofPattern("uuuu-MM"))
+        YearMonth.parse(input)
     }
 
   /**
