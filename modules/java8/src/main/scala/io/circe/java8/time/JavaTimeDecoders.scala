@@ -15,8 +15,8 @@ import java.time.{
   Year,
   YearMonth,
   ZonedDateTime,
-  ZoneOffset,
-  ZoneId
+  ZoneId,
+  ZoneOffset
 }
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.{
