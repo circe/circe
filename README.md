@@ -36,6 +36,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
 * [MatchesFashion](https://www.matchesfashion.com)
+* [Metacommerce](https://www.metacommerce.ru)
 * [Ocado Technology](https://ocadotechnology.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
