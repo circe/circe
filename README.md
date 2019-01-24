@@ -146,7 +146,7 @@ circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archamb
 and [Vladimir Kostyukov][vkostyukov]. After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
-The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
+The circe project supports the [Scala code of conduct][code-of-conduct] and wants
 all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
 Please see the [contributors' guide](CONTRIBUTING.md) for details on how to submit a pull request.
@@ -182,7 +182,7 @@ limitations under the License.
 [circe-spray]: https://github.com/circe/circe-spray
 [circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
-[code-of-conduct]: http://typelevel.org/conduct.html
+[code-of-conduct]: https://www.scala-lang.org/conduct/
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
