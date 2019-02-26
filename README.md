@@ -47,6 +47,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Reonomy](https://reonomy.com/)
 * [Resilient plc](https://resilientplc.com/)
 * [Sigma](https://sig.ma)
+* [Sky](https://www.sky.com/)
 * [Snowplow Analytics](https://snowplowanalytics.com/)
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
 * [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
