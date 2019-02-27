@@ -76,7 +76,7 @@ trait Decoder[A] extends Serializable { self =>
     case hc: HCursor => apply(hc)
     case _ =>
       Left(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
+        cursorToDecodingFailure(c)
       )
   }
 
@@ -84,8 +84,20 @@ trait Decoder[A] extends Serializable { self =>
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
+        cursorToDecodingFailure(c)
       )
+  }
+
+  private[this] def cursorToDecodingFailure(cursor: ACursor) = {
+    val history = cursor.history
+    val historyToFailedCursor = history.takeWhile(_ != CursorOp.DeleteGoParent)
+    val field = CursorOp.opsToPath(historyToFailedCursor).replaceFirst("^\\.", "")
+    val down = cursor.downField(field)
+    if (down.succeeded) {
+      DecodingFailure.IncorrectValue(field, history)
+    } else {
+      DecodingFailure.MissingElement(field, history)
+    }
   }
 
   /**

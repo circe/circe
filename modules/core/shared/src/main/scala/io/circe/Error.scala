@@ -84,6 +84,10 @@ final object DecodingFailure {
       DecodingFailure(sw.toString, ops)
   }
 
+  case class MissingElement(field: String, history: List[CursorOp])
+      extends DecodingFailure(s"The field $field is missing")
+  case class IncorrectValue(field: String /* ... */, history: List[CursorOp]) extends DecodingFailure("Incorrect value")
+
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
     case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
   }

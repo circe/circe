@@ -521,7 +521,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   it should "fail normally when a field is missing" in {
     val json = Json.obj("a" -> "1".asJson)
 
-    assert(stateful.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+    assert(stateful.decodeJson(json).swap.exists(_.message === "The field b is missing"))
   }
 
   private[this] val statefulOpt = {
@@ -561,13 +561,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   it should "fail normally when a field is missing and an optional field is present" in {
     val json = Json.obj("a" -> "1".asJson)
 
-    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "The field b is missing"))
   }
 
   it should "fail normally when a field is missing and an optional field is missing" in {
     val json = Json.obj()
 
-    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "The field b is missing"))
   }
 
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
