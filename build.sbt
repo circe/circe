@@ -28,7 +28,7 @@ val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.4"
 
 val paradiseVersion = "2.1.1"
-val scalaTestVersion = "3.0.5"
+val scalaTestVersion = "3.0.6"
 val scalaCheckVersion = "1.13.5"
 val disciplineVersion = "0.9.0"
 
