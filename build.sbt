@@ -42,9 +42,6 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-def scalaTestVersionFor(scalaVersion: String): String =
-  if (priorTo2_13(scalaVersion)) scalaTestVersion else "3.0.6-SNAP5"
-
 def scalaCheckVersionFor(scalaVersion: String): String =
   if (priorTo2_13(scalaVersion)) scalaCheckVersion else "1.14.0"
 
@@ -266,7 +263,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -414,7 +411,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
     },
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersionFor(scalaVersion.value),
+      "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersionFor(scalaVersion.value)
     )
@@ -483,7 +480,7 @@ lazy val hygieneJS = hygieneBase.js
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test,
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.typelevel" %% "jawn-parser" % jawnVersion
     )
   )
@@ -505,7 +502,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersionFor(scalaVersion.value) % Test
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test
     )
   )
   .enablePlugins(JmhPlugin)
