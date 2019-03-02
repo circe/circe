@@ -1,5 +1,5 @@
 addSbtCoursier
-addSbtPlugin("com.47deg" % "sbt-microsites" % "0.7.24")
+addSbtPlugin("com.47deg" % "sbt-microsites" % "0.9.0")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.1.3")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.2")
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.6.0-RC4")
