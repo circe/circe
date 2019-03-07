@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.laws.discipline.TraverseTests
-import io.circe.JsonF.{foldJson, unfoldJson}
+import io.circe.JsonF.{ foldJson, unfoldJson }
 import io.circe.tests.CirceSuite
 
 class JsonFSuite extends CirceSuite {
