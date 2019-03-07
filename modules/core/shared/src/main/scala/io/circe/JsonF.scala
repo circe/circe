@@ -88,7 +88,7 @@ object JsonF {
     case (JNumberF(jn1), JNumberF(jn2))         => jn1 == jn2
     case (JArrayF(values1), JArrayF(values2))   => Eq[Vector[A]].eqv(values1, values2)
     case (JObjectF(values1), JObjectF(values2)) => Eq[Vector[(String, A)]].eqv(values1, values2)
-    case other                                  => false
+    case _                                      => false
   }
 
   private val unfolder: Json.Folder[JsonF[Json]] =
