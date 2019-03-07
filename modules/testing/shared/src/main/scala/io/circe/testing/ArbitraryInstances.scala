@@ -9,10 +9,17 @@ import io.circe.{
   Decoder,
   DecodingFailure,
   Encoder,
+  JArrayF,
+  JBooleanF,
+  JNullF,
+  JNumberF,
+  JObjectF,
   Json,
   JsonBiggerDecimal,
+  JsonF,
   JsonNumber,
   JsonObject,
+  JStringF,
   KeyDecoder,
   KeyEncoder,
   ObjectEncoder
@@ -132,4 +139,16 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
       .arbitrary[Json => ValidatedNel[DecodingFailure, A]]
       .map(f => AccumulatingDecoder.instance(c => f(c.value)))
   )
+  implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] = {
+    Arbitrary(
+      Gen.oneOf[JsonF[A]](
+        Arbitrary.arbitrary[Boolean].map(JBooleanF),
+        Arbitrary.arbitrary[JsonNumber].map(JNumberF),
+        Gen.const(JNullF),
+        Arbitrary.arbitrary[String].map(JStringF),
+        Arbitrary.arbitrary[Vector[(String, A)]].map(JObjectF.apply),
+        Arbitrary.arbitrary[Vector[A]].map(JArrayF.apply)
+      )
+    )
+  }
 }
