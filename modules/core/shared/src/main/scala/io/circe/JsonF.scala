@@ -16,14 +16,13 @@ import io.circe.Json._
 sealed trait JsonF[+A]
 
 // format: off
-case object JNullF                                  extends JsonF[Nothing]
-case class JBooleanF(b: Boolean)                    extends JsonF[Nothing]
-case class JNumberF(n: JsonNumber)                  extends JsonF[Nothing]
-case class JStringF(s: String)                      extends JsonF[Nothing]
-case class JArrayF[A](value: Vector[A])             extends JsonF[A]
-case class JObjectF[A](fields: Vector[(String, A)]) extends JsonF[A]
+final case object JNullF                                  extends JsonF[Nothing]
+final case class JBooleanF(b: Boolean)                    extends JsonF[Nothing]
+final case class JNumberF(n: JsonNumber)                  extends JsonF[Nothing]
+final case class JStringF(s: String)                      extends JsonF[Nothing]
+final case class JArrayF[A](value: Vector[A])             extends JsonF[A]
+final case class JObjectF[A](fields: Vector[(String, A)]) extends JsonF[A]
 // format: on
-
 
 object JsonF {
 
