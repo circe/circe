@@ -6,7 +6,6 @@ import cats.instances.vector._
 import cats.kernel.Eq
 import cats.kernel.instances.string._
 import io.circe.{ JsonNumber, Json, JsonObject }
-import io.circe.Json._
 
 /**
  * A pattern-functor reflecting the JSON datatype structure in a
@@ -91,7 +90,7 @@ object JsonF {
   }
 
   private val unfolder: Json.Folder[JsonF[Json]] =
-    new Folder[JsonF[Json]] {
+    new Json.Folder[JsonF[Json]] {
       def onNull = JNullF
       def onBoolean(value: Boolean) = JBooleanF(value)
       def onNumber(value: JsonNumber) = JNumberF(value)
