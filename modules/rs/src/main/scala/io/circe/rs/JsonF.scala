@@ -13,16 +13,15 @@ import io.circe.{ JsonNumber, Json, JsonObject }
  */
 sealed trait JsonF[+A]
 
-// format: off
-final case object JNullF                                  extends JsonF[Nothing]
-final case class JBooleanF(b: Boolean)                    extends JsonF[Nothing]
-final case class JNumberF(n: JsonNumber)                  extends JsonF[Nothing]
-final case class JStringF(s: String)                      extends JsonF[Nothing]
-final case class JArrayF[A](value: Vector[A])             extends JsonF[A]
-final case class JObjectF[A](fields: Vector[(String, A)]) extends JsonF[A]
-// format: on
-
 object JsonF {
+  // format: off
+  final case object JNullF                                  extends JsonF[Nothing]
+  final case class JBooleanF(b: Boolean)                    extends JsonF[Nothing]
+  final case class JNumberF(n: JsonNumber)                  extends JsonF[Nothing]
+  final case class JStringF(s: String)                      extends JsonF[Nothing]
+  final case class JArrayF[A](value: Vector[A])             extends JsonF[A]
+  final case class JObjectF[A](fields: Vector[(String, A)]) extends JsonF[A]
+  // format: on
 
   /**
    * An co-algebraic function that unfolds one layer of json into
