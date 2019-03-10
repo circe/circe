@@ -1,4 +1,4 @@
-package io.circe
+package io.circe.rs
 
 import cats.{ Applicative, Eval, Foldable, Traverse }
 import cats.instances.string._
@@ -7,6 +7,7 @@ import cats.instances.vector._
 import cats.kernel.Eq
 import cats.syntax.functor._
 import cats.syntax.traverse._
+import io.circe.{ JsonNumber, Json, JsonObject }
 import io.circe.Json._
 
 /**

@@ -9,23 +9,17 @@ import io.circe.{
   Decoder,
   DecodingFailure,
   Encoder,
-  JArrayF,
-  JBooleanF,
-  JNullF,
-  JNumberF,
-  JObjectF,
   Json,
   JsonBiggerDecimal,
-  JsonF,
   JsonNumber,
   JsonObject,
-  JStringF,
   KeyDecoder,
   KeyEncoder,
   ObjectEncoder
 }
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
+import io.circe.rs.{ JArrayF, JBooleanF, JNullF, JNumberF, JObjectF, JsonF, JStringF }
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
