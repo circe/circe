@@ -188,6 +188,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (numbersTesting, numbersTestingJS),
   (numbers, numbersJS),
   (core, coreJS),
+  (rs, rsJS),
   (generic, genericJS),
   (genericExtras, genericExtrasJS),
   (shapes, shapesJS),
@@ -311,6 +312,11 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
+lazy val rsBase = circeCrossModule("rs", mima = previousCirceVersion, CrossType.Pure).dependsOn(coreBase)
+
+lazy val rs = rsBase.jvm
+lazy val rsJS = rsBase.js
+
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroSettings)
   .settings(
@@ -419,7 +425,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
   )
-  .dependsOn(coreBase, numbersTestingBase)
+  .dependsOn(coreBase, numbersTestingBase, rsBase)
 
 lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js
