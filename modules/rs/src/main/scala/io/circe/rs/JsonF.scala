@@ -42,7 +42,7 @@ object JsonF {
     case JObjectF(fields) => Json.obj(fields: _*)
   }
 
-  private type Field[A] = (String, A)
+  private[this] type Field[A] = (String, A)
 
   implicit val jsonFTraverseInstance: Traverse[JsonF] = new Traverse[JsonF] {
     override def traverse[G[_], A, B](fa: JsonF[A])(f: A => G[B])(implicit G: Applicative[G]): G[JsonF[B]] = fa match {
@@ -88,7 +88,7 @@ object JsonF {
     case _                                      => false
   }
 
-  private val unfolder: Json.Folder[JsonF[Json]] =
+  private[this] val unfolder: Json.Folder[JsonF[Json]] =
     new Json.Folder[JsonF[Json]] {
       def onNull = JNullF
       def onBoolean(value: Boolean) = JBooleanF(value)
