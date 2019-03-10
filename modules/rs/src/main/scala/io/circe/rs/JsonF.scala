@@ -1,12 +1,10 @@
 package io.circe.rs
 
 import cats.{ Applicative, Eval, Foldable, Traverse }
-import cats.instances.string._
 import cats.instances.tuple._
 import cats.instances.vector._
 import cats.kernel.Eq
-import cats.syntax.functor._
-import cats.syntax.traverse._
+import cats.kernel.instances.string._
 import io.circe.{ JsonNumber, Json, JsonObject }
 import io.circe.Json._
 
@@ -54,9 +52,9 @@ object JsonF {
       case x @ JBooleanF(_) => G.pure(x)
       case x @ JStringF(_)  => G.pure(x)
       case x @ JNumberF(_)  => G.pure(x)
-      case JArrayF(vecA)    => vecA.traverse(f).map(vecB => JArrayF(vecB))
+      case JArrayF(vecA)    => G.map(Traverse[Vector].traverse(vecA)(f))(vecB => JArrayF(vecB))
       case JObjectF(fieldsA) =>
-        Traverse[Vector].compose[Field].traverse(fieldsA)(f).map(fieldsB => JObjectF(fieldsB))
+        G.map(Traverse[Vector].compose[Field].traverse(fieldsA)(f))(fieldsB => JObjectF(fieldsB))
     }
 
     override def foldLeft[A, B](fa: JsonF[A], b: B)(f: (B, A) => B): B =
