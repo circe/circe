@@ -5,7 +5,7 @@ import cats.instances.tuple._
 import cats.instances.vector._
 import cats.kernel.Eq
 import cats.kernel.instances.string._
-import io.circe.{ JsonNumber, Json, JsonObject }
+import io.circe.{ Json, JsonNumber, JsonObject }
 
 /**
  * A pattern-functor reflecting the JSON datatype structure in a
