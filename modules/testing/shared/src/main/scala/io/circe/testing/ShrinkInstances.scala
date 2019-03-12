@@ -1,6 +1,7 @@
 package io.circe.testing
 
 import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.rs.JsonF
 import org.scalacheck.Shrink
 
 private[testing] trait ShrinkInstances {
@@ -58,4 +59,15 @@ private[testing] trait ShrinkInstances {
         }
     )
   )
+
+  implicit def shrinkJsonF[A](implicit A: Shrink[A]): Shrink[JsonF[A]] = Shrink {
+    case JsonF.JNullF       => Stream.empty
+    case JsonF.JBooleanF(_) => Stream.empty
+    case JsonF.JNumberF(n)  => shrinkJsonNumber.shrink(n).map(JsonF.JNumberF(_))
+    case JsonF.JStringF(s)  => Shrink.shrinkString.shrink(s).map(JsonF.JStringF(_))
+    case JsonF.JArrayF(values) =>
+      Shrink.shrinkContainer[Vector, A].shrink(values).map(JsonF.JArrayF(_))
+    case JsonF.JObjectF(fields) =>
+      Shrink.shrinkContainer[Vector, (String, A)].shrink(fields).map(JsonF.JObjectF(_))
+  }
 }
