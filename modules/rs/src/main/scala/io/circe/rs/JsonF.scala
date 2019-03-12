@@ -1,6 +1,6 @@
 package io.circe.rs
 
-import cats.{ Applicative, Eval, Foldable, Traverse }
+import cats.{ Applicative, Eval, Traverse }
 import cats.instances.tuple._
 import cats.instances.vector._
 import cats.kernel.Eq
@@ -43,6 +43,8 @@ object JsonF {
   }
 
   private[this] type Field[A] = (String, A)
+  private[this] type Fields[A] = Vector[(String, A)]
+  private[this] val fieldInstance: Traverse[Fields] = catsStdInstancesForVector.compose[Field]
 
   implicit val jsonFTraverseInstance: Traverse[JsonF] = new Traverse[JsonF] {
     override def traverse[G[_], A, B](fa: JsonF[A])(f: A => G[B])(implicit G: Applicative[G]): G[JsonF[B]] = fa match {
@@ -50,9 +52,9 @@ object JsonF {
       case x @ JBooleanF(_) => G.pure(x)
       case x @ JStringF(_)  => G.pure(x)
       case x @ JNumberF(_)  => G.pure(x)
-      case JArrayF(vecA)    => G.map(Traverse[Vector].traverse(vecA)(f))(vecB => JArrayF(vecB))
+      case JArrayF(vecA)    => G.map(catsStdInstancesForVector.traverse(vecA)(f))(vecB => JArrayF(vecB))
       case JObjectF(fieldsA) =>
-        G.map(Traverse[Vector].compose[Field].traverse(fieldsA)(f))(fieldsB => JObjectF(fieldsB))
+        G.map(fieldInstance.traverse(fieldsA)(f))(fieldsB => JObjectF(fieldsB))
     }
 
     override def foldLeft[A, B](fa: JsonF[A], b: B)(f: (B, A) => B): B =
@@ -63,7 +65,7 @@ object JsonF {
         case JNumberF(_)   => b
         case JArrayF(vecA) => vecA.foldLeft(b)(f)
         case JObjectF(fieldsA) =>
-          Foldable[Vector].compose[Field].foldLeft(fieldsA, b)(f)
+          fieldInstance.foldLeft(fieldsA, b)(f)
       }
 
     override def foldRight[A, B](fa: JsonF[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
@@ -72,9 +74,9 @@ object JsonF {
         case JBooleanF(_)  => lb
         case JStringF(_)   => lb
         case JNumberF(_)   => lb
-        case JArrayF(vecA) => Foldable[Vector].foldRight(vecA, lb)(f)
+        case JArrayF(vecA) => catsStdInstancesForVector.foldRight(vecA, lb)(f)
         case JObjectF(fieldsA) =>
-          Foldable[Vector].compose[Field].foldRight(fieldsA, lb)(f)
+          fieldInstance.foldRight(fieldsA, lb)(f)
       }
   }
 
