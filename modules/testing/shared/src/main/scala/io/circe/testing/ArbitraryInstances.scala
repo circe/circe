@@ -141,7 +141,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
         Arbitrary.arbitrary[JsonNumber].map(JNumberF),
         Gen.const(JNullF),
         Arbitrary.arbitrary[String].map(JStringF),
-        Arbitrary.arbitrary[Vector[(String, A)]].map(JObjectF.apply),
+        Arbitrary.arbitrary[Vector[(String, A)]].map(_.groupBy(_._1).mapValues(_.head._2).toVector).map(JObjectF.apply),
         Arbitrary.arbitrary[Vector[A]].map(JArrayF.apply)
       )
     )
