@@ -28,7 +28,7 @@ val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.4"
 
 val paradiseVersion = "2.1.1"
-val scalaTestVersion = "3.0.7-RC1"
+val scalaTestVersion = "3.0.7"
 val scalaCheckVersion = "1.13.5"
 val disciplineVersion = "0.9.0"
 
@@ -61,10 +61,10 @@ lazy val baseSettings = Seq(
       }
   },
   scalacOptions in (Compile, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
   },
   scalacOptions in (Test, console) ~= {
-    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
+    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
   },
   scalacOptions in Tut ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
