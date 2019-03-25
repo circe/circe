@@ -86,17 +86,17 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   }
   "canonicallyEqual" should "not consider null values" in {
     val expected = true
-    val this_json = Json.fromJsonObject(JsonObject.empty)
-    val that_json = Json.obj(("foo", Json.Null))
-    val actual = this_json.canonicallyEqual(that_json)
+    val thisJson = Json.fromJsonObject(JsonObject.empty)
+    val thatJson = Json.obj(("foo", Json.Null))
+    val actual = thisJson.canonicallyEqual(thatJson)
     assert(actual == expected)
   }
 
   it should "not consider field ordering" in {
     val expected = true
-    val this_json = Json.obj("a" -> Json.fromInt(1), "b" -> Json.fromInt(2))
-    val that_json = Json.obj("b" -> Json.fromInt(2), "a" -> Json.fromInt(1))
-    val actual = this_json.canonicallyEqual(that_json)
+    val thisJson = Json.obj("a" -> Json.fromInt(1), "b" -> Json.fromInt(2))
+    val thatJson = Json.obj("b" -> Json.fromInt(2), "a" -> Json.fromInt(1))
+    val actual = thisJson.canonicallyEqual(thatJson)
     assert(actual == expected)
   }
 
