@@ -169,12 +169,12 @@ sealed abstract class Json extends Product with Serializable {
     }
 
   /**
-    *Equality method that does not consider field order or null
-    *values.
-    */
+   *Equality method that does not consider field order or null
+   *values.
+   */
   def canonicallyEqual(that: Any): Boolean = that match {
-    case that : Json => this.dropNullValues.equals(that.dropNullValues)
-    case _ => false
+    case that: Json => this.dropNullValues.equals(that.dropNullValues)
+    case _          => false
   }
 
   /**
