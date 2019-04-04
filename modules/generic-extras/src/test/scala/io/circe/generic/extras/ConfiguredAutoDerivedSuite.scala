@@ -2,7 +2,8 @@ package io.circe.generic.extras
 
 import cats.data.Validated
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
+import io.circe.CursorOp.DownField
 import io.circe.generic.extras.auto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -123,6 +124,25 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
       val json = json"""{}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
       assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
+    }
+
+    "Option[T] with default" should "fail to decode if type in json is not correct" in {
+      val json = json"""{"a": "NotAnInt"}"""
+      assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("Int", List(DownField("a")))))
+      assert(
+        Decoder[FooWithDefault].accumulating(json.hcursor)
+          === Validated.invalidNel(DecodingFailure("Int", List(DownField("a"))))
+      )
+    }
+
+    "Field with default" should "fail to decode it type in json is not correct" in {
+      val json = json"""{"b": 1}"""
+      assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("String", List(DownField("b")))))
+      assert(
+        Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.invalidNel(
+          DecodingFailure("String", List(DownField("b")))
+        )
+      )
     }
   }
 

@@ -1,7 +1,7 @@
 package io.circe.generic.extras.decoding
 
 import cats.data.Validated
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ AccumulatingDecoder, ACursor, Decoder, HCursor }
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.collection.immutable.Map
 import scala.language.experimental.macros
@@ -30,29 +30,37 @@ abstract class ReprDecoder[A] extends Decoder[A] {
   ): AccumulatingDecoder.Result[A]
 
   final protected[this] def orDefault[B](
-    result: Decoder.Result[B],
+    c: ACursor,
+    decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): Decoder.Result[B] = result match {
-    case r @ Right(_) if r ne Decoder.keyMissingNone => r
-    case _ =>
-      defaults.get(name) match {
-        case Some(d: B @unchecked) => Right(d)
-        case _                     => result
-      }
+  ): Decoder.Result[B] = {
+    decoder.tryDecode(c) match {
+      case r @ Right(_) if r ne Decoder.keyMissingNone => r
+      case l @ Left(_) if c.succeeded                  => l
+      case r =>
+        defaults.get(name) match {
+          case Some(d: B @unchecked) => Right(d)
+          case _                     => r
+        }
+    }
   }
 
   final protected[this] def orDefaultAccumulating[B](
-    result: AccumulatingDecoder.Result[B],
+    c: ACursor,
+    decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): AccumulatingDecoder.Result[B] = result match {
-    case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating => r
-    case _ =>
-      defaults.get(name) match {
-        case Some(d: B @unchecked) => Validated.valid(d)
-        case _                     => result
-      }
+  ): AccumulatingDecoder.Result[B] = {
+    decoder.tryDecodeAccumulating(c) match {
+      case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating => r
+      case l @ Validated.Invalid(_) if c.succeeded                           => l
+      case r =>
+        defaults.get(name) match {
+          case Some(d: B @unchecked) => Validated.valid(d)
+          case _                     => r
+        }
+    }
   }
 
   final protected[this] def withDiscriminator[V](
