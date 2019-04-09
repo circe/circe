@@ -51,7 +51,7 @@ package object squants {
     Perhaps(Option(ev))
   }
 
-  
+
   def getFormatter[A <: Quantity[A]](a: A)(implicit pf: Perhaps[Formatter[A]]): Option[Formatter[A]] = {
     pf.fold[Option[Formatter[A]]] {
       None
@@ -78,6 +78,7 @@ package object squants {
           }))),
         ("number", Json.fromDoubleOrString(a.value)),
         ("unit", Json.fromString(a.unit.symbol)),
+        ("name", Json.fromString(a.dimension.name)),
       )
     }
   }
@@ -93,9 +94,14 @@ package object squants {
 
         val universeMirror = runtimeMirror(getClass.getClassLoader)
         val companionMirror = universeMirror.reflectModule(typeOf[A].typeSymbol.companion.asModule)
-        val i = companionMirror.instance.asInstanceOf[Dimension[A]]
+        val dimensionCompanionOcbject = companionMirror.instance.asInstanceOf[Dimension[A]]
 
-        val d = i.parseString(readable).get
+
+        val d = dimensionCompanionOcbject.parseString(readable).toOption.getOrElse({
+          dimensionCompanionOcbject.units.filter(_.symbol.eq(unit)).headOption.map(_.apply(number)).getOrElse({
+            throw DecodingFailure("unable to unmarshall the provided value", c.history)
+          })
+        })
         d
 
 

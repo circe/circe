@@ -39,6 +39,27 @@ class SquantsSuite extends CirceSuite {
     println("----")
     assert(o.toOption.isDefined)
   }
+
+
+  "a decoder withou good data " should "fail" in {
+
+    val j =
+      """
+        |{
+        |  "readable" : "1.0 Byut",
+        |  "number" : 1.0,
+        |  "unit" : "Bfe",
+        |  "name" : "Informdatison"
+        |}
+      """.stripMargin
+
+    val o = parse(j.toString).map(_.as[Information]).toTry
+
+    println(o)
+
+    println("----")
+    assert(o.toOption.isEmpty)
+  }
 }
 
 
