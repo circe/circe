@@ -26,6 +26,7 @@ val catsVersion = "1.6.0"
 val jawnVersion = "0.14.1"
 val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.4"
+val squantsVersion = "1.4.0"
 
 val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.0.7"
@@ -194,6 +195,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (shapes, shapesJS),
   (literal, literalJS),
   (refined, refinedJS),
+  (squants, squantsJS),
   (parser, parserJS),
   (scodec, scodecJS),
   (testing, testingJS),
@@ -390,6 +392,19 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
 
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
+
+lazy val squantsBase = circeCrossModule("squants", mima = previousCirceVersion)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.typelevel"  %% "squants"  % squantsVersion
+    )
+  )
+  .dependsOn(coreBase, testsBase % Test)
+
+lazy val squants = squantsBase.jvm
+lazy val squantsJS = squantsBase.js
+
+
 
 lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
   .jvmConfigure(_.dependsOn(jawn))
