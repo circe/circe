@@ -60,8 +60,6 @@ package object squants {
       }
   }
 
-  implicit def encodeInformation: Encoder[Information] = encodeSquantsQuantity[Information]
-  implicit def decodeInformation: Decoder[Information] = decodeSquantsQuantity[Information]
 
 
 
