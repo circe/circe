@@ -24,8 +24,6 @@ import scala.collection.Set
 
 package object squants {
 
-  private implicit def OptionalImplicit[A <: AnyRef](implicit a: A = null) = Option(a)
-
   def getCompagnonObject[A <: Quantity[A]](implicit man: TypeTag[A]) = {
     val universeMirror = runtimeMirror(getClass.getClassLoader)
     val companionMirror = universeMirror.reflectModule(typeOf[A].typeSymbol.companion.asModule)
@@ -54,10 +52,7 @@ package object squants {
               import _root_.squants.experimental.unitgroups.ImplicitDimensions.thermal._
               import _root_.squants.experimental.unitgroups.ImplicitDimensions.time._
               import _root_.squants.experimental.unitgroups.si.strict.implicits._
-              import _root_.squants.experimental.unitgroups.information._
               import _root_.squants.experimental.unitgroups.UnitGroup
-              import _root_.squants.experimental.formatter.implicits._
-              import _root_.squants.experimental.formatter.Formatters.InformationMetricFormatter
               implicit val dim: Dimension[A] = getCompagnonObject[A]
               val unitGroup:UnitGroup[A] = _root_.squants.experimental.unitgroups.si.strict.implicits.mkSiUnitGroup
               val defaultformatter = new DefaultFormatter[A](unitGroup)

@@ -1,16 +1,10 @@
 package io.circe.squants
 
-import cats.kernel.Eq
 import squants.information._
-import io.circe._
 import io.circe.syntax._
-import io.circe.parser.parse
-import io.circe.{Decoder, Encoder, Json, KeyDecoder, KeyEncoder}
-import io.circe.testing.CodecTests
+
 import io.circe.tests.CirceSuite
-import io.circe.squants._
-import org.scalacheck.{Arbitrary, Gen}
-import shapeless.{Nat, Witness => W}
+
 import io.circe.parser.decode
 
 
@@ -55,7 +49,7 @@ class SquantsSuite extends CirceSuite {
       """.stripMargin.trim
 
     val j = n.asJson.toString.stripMargin.trim
-    
+
     assert(assertedResult.equals(j))
 
   }
