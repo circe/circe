@@ -27,8 +27,9 @@ class SquantsSuite extends CirceSuite {
     val n = Information.primaryUnit.apply(1)
 
     val assertedResult =
-      """{
-        |  "readable" : "1.0 B",
+      """
+        |{
+        |  "readable" : "1,0 B",
         |  "number" : 1.0,
         |  "unit" : "B",
         |  "name" : "Information"
@@ -40,27 +41,48 @@ class SquantsSuite extends CirceSuite {
     assert(assertedResult.equals(j))
   }
 
-  "an Information should " should "use the best unit to encode readble" in {
+  "an Information should " should "use the best unit to encode readable" in {
     val n = Megabytes(30000)
 
     val assertedResult =
-      """{
-        |  "readable" : "1.0 B",
-        |  "number" : 1.0,
-        |  "unit" : "B",
+      """
+        |{
+        |  "readable" : "30000,0 MB",
+        |  "number" : 30000.0,
+        |  "unit" : "MB",
         |  "name" : "Information"
         |}
       """.stripMargin.trim
 
+    //implicit val formatter = _root_.squants.experimental.formatter.Formatters.InformationMetricFormatter
     val j = n.asJson.toString.stripMargin.trim
 
-    println((j))
+    assert(assertedResult.equals(j))
+
+  }
+
+  "an Information should " should "use the provided formatter to encode readable" in {
+    val n = Megabytes(30000)
+
+    val assertedResult =
+      """
+        |{
+        |  "readable" : "30,0 GB",
+        |  "number" : 30000.0,
+        |  "unit" : "MB",
+        |  "name" : "Information"
+        |}
+      """.stripMargin.trim
+
+    implicit val formatter = _root_.squants.experimental.formatter.Formatters.InformationMetricFormatter
+    val j = n.asJson.toString.stripMargin.trim
 
     assert(assertedResult.equals(j))
+
   }
 
 
-  "a decoder without good data " should "fail" in {
+  "a have to fail without good data " should "fail" in {
 
     val j =
       """
@@ -74,31 +96,22 @@ class SquantsSuite extends CirceSuite {
 
     val decoding =  decode[Information](j.toString)
 
-    println("decode  " + decoding)
-    println("decode  " + decoding.toOption)
-
-    println("----")
     assert(decoding.toOption.isEmpty)
   }
 
 
-  "information without any readable field" should "fulfil anyway" in {
+  "information without any readable field" should "decode using number and unit anyway" in {
 
     val j =
       """
         |{
         |  "number" : 1.0,
-        |  "unit" : "B",
-        |  "name" : "Informdatison"
+        |  "unit" : "B"
         |}
       """.stripMargin
 
     val decoding =  decode[Information](j.toString)
 
-    println("decode  " + decoding)
-    println("decode  " + decoding.toOption)
-
-    println("----")
     assert(decoding.toOption.isDefined)
   }
 }
