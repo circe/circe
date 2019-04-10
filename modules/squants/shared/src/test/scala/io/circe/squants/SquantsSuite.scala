@@ -92,7 +92,7 @@ class SquantsSuite extends CirceSuite {
         |  "unit" : "Bfe",
         |  "name" : "Informdatison"
         |}
-      """.stripMargin
+      """.stripMargin.trim
 
     val decoding =  decode[Information](j.toString)
 
@@ -108,11 +108,56 @@ class SquantsSuite extends CirceSuite {
         |  "number" : 1.0,
         |  "unit" : "B"
         |}
-      """.stripMargin
+      """.stripMargin.trim
 
     val decoding =  decode[Information](j.toString)
 
     assert(decoding.toOption.isDefined)
+  }
+
+
+  "tests with others squants data" should "decode and encode" in {
+
+    import _root_.squants.space.LengthConversions._
+    import _root_.squants.space.Length
+    import _root_.squants.motion._
+    import _root_.squants.time.TimeConversions._
+
+    val length = 200.cm
+    val lengthj = length.asJson.toString.stripMargin.trim
+
+    val lengthAsserted =
+      """
+        |{
+        |  "readable" : "200,0 cm",
+        |  "number" : 200.0,
+        |  "unit" : "cm",
+        |  "name" : "Length"
+        |}
+      """.stripMargin.trim
+
+    assert(lengthAsserted.equals(lengthj))
+
+    val lengthRebuild = decode[Length](lengthj).toOption
+
+    assert(lengthRebuild.exists(_.equals(length)))
+
+    val speed = length / 2.seconds
+    val speedj = speed.asJson.toString.stripMargin.trim
+
+    val speedAsserted = """
+        |{
+        |  "readable" : "1,0 m/s",
+        |  "number" : 1.0,
+        |  "unit" : "m/s",
+        |  "name" : "Velocity"
+        |}
+      """.stripMargin.trim
+
+    assert(speedAsserted.equals(speedj))
+    val speedRebuild = decode[Velocity](speedAsserted).toOption
+    assert(speedRebuild.exists(_.equals(speed)))
+
   }
 }
 
