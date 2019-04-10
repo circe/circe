@@ -47,16 +47,15 @@ class SquantsSuite extends CirceSuite {
     val assertedResult =
       """
         |{
-        |  "readable" : "30000,0 MB",
+        |  "readable" : "30000000000,0 B",
         |  "number" : 30000.0,
         |  "unit" : "MB",
         |  "name" : "Information"
         |}
       """.stripMargin.trim
 
-    //implicit val formatter = _root_.squants.experimental.formatter.Formatters.InformationMetricFormatter
     val j = n.asJson.toString.stripMargin.trim
-
+    
     assert(assertedResult.equals(j))
 
   }
@@ -126,10 +125,11 @@ class SquantsSuite extends CirceSuite {
     val length = 200.cm
     val lengthj = length.asJson.toString.stripMargin.trim
 
+
     val lengthAsserted =
       """
         |{
-        |  "readable" : "200,0 cm",
+        |  "readable" : "2,0 m",
         |  "number" : 200.0,
         |  "unit" : "cm",
         |  "name" : "Length"
@@ -157,6 +157,8 @@ class SquantsSuite extends CirceSuite {
     assert(speedAsserted.equals(speedj))
     val speedRebuild = decode[Velocity](speedAsserted).toOption
     assert(speedRebuild.exists(_.equals(speed)))
+
+
 
   }
 }
