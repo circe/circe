@@ -93,8 +93,7 @@ package object squants {
           .orElse({
             (c.downField("unit").as[String].toOption, c.downField("number").as[Double].toOption) match {
               case (Some(unit), Some(number)) => {
-                Predef.println("get to unit and number")
-                dimensionCompanionObject.units.find(_.symbol.eq(unit)).map(_.apply(number))
+                dimensionCompanionObject.units.find(_.symbol.equals(unit)).map(_.apply(number))
               }
               case _ => None
             }

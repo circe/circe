@@ -1,11 +1,7 @@
 package io.circe.squants
 
 import cats.kernel.Eq
-
-import squants.information.Information
-
-
-
+import squants.information._
 import io.circe._
 import io.circe.syntax._
 import io.circe.parser.parse
@@ -27,18 +23,40 @@ import io.circe.parser.decode
 
 class SquantsSuite extends CirceSuite {
 
-  "an Information should " should "encode and decode" in {
+  "an Information should " should "encode" in {
     val n = Information.primaryUnit.apply(1)
 
-    val j = n.asJson
-    println(j)
+    val assertedResult =
+      """{
+        |  "readable" : "1.0 B",
+        |  "number" : 1.0,
+        |  "unit" : "B",
+        |  "name" : "Information"
+        |}
+      """.stripMargin.trim
 
-    val o = parse(j.toString).map(_.as[Information])
+    val j = n.asJson.toString.stripMargin.trim
 
-    println("decode  " + decode[Information](j.toString))
+    assert(assertedResult.equals(j))
+  }
 
-    println("----")
-    assert(o.toOption.isDefined)
+  "an Information should " should "use the best unit to encode readble" in {
+    val n = Megabytes(30000)
+
+    val assertedResult =
+      """{
+        |  "readable" : "1.0 B",
+        |  "number" : 1.0,
+        |  "unit" : "B",
+        |  "name" : "Information"
+        |}
+      """.stripMargin.trim
+
+    val j = n.asJson.toString.stripMargin.trim
+
+    println((j))
+
+    assert(assertedResult.equals(j))
   }
 
 
