@@ -15,6 +15,7 @@ import io.circe.tests.CirceSuite
 import io.circe.squants._
 import org.scalacheck.{Arbitrary, Gen}
 import shapeless.{Nat, Witness => W}
+import io.circe.parser.decode
 
 
 /**
@@ -34,14 +35,14 @@ class SquantsSuite extends CirceSuite {
 
     val o = parse(j.toString).map(_.as[Information])
 
-    println(o)
+    println("decode  " + decode[Information](j.toString))
 
     println("----")
     assert(o.toOption.isDefined)
   }
 
 
-  "a decoder withou good data " should "fail" in {
+  "a decoder without good data " should "fail" in {
 
     val j =
       """
@@ -53,12 +54,34 @@ class SquantsSuite extends CirceSuite {
         |}
       """.stripMargin
 
-    val o = parse(j.toString).map(_.as[Information]).toTry
+    val decoding =  decode[Information](j.toString)
 
-    println(o)
+    println("decode  " + decoding)
+    println("decode  " + decoding.toOption)
 
     println("----")
-    assert(o.toOption.isEmpty)
+    assert(decoding.toOption.isEmpty)
+  }
+
+
+  "information without any readable field" should "fulfil anyway" in {
+
+    val j =
+      """
+        |{
+        |  "number" : 1.0,
+        |  "unit" : "B",
+        |  "name" : "Informdatison"
+        |}
+      """.stripMargin
+
+    val decoding =  decode[Information](j.toString)
+
+    println("decode  " + decoding)
+    println("decode  " + decoding.toOption)
+
+    println("----")
+    assert(decoding.toOption.isDefined)
   }
 }
 
