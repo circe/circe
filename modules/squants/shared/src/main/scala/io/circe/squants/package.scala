@@ -24,7 +24,7 @@ import scala.collection.Set
 
 package object squants {
 
-  def getCompanionObject[A <: Quantity[A]](implicit man: TypeTag[A]) = {
+  private def getCompanionObject[A <: Quantity[A]](implicit man: TypeTag[A]) = {
     val universeMirror = runtimeMirror(getClass.getClassLoader)
     val companionMirror = universeMirror.reflectModule(typeOf[A].typeSymbol.companion.asModule)
     companionMirror.instance.asInstanceOf[Dimension[A]]

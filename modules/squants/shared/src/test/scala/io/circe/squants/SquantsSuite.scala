@@ -1,11 +1,14 @@
 package io.circe.squants
 
+import java.util.Locale
+
+import cats.implicits._, cats._
 import squants.information._
 import io.circe.syntax._
-
 import io.circe.tests.CirceSuite
-
 import io.circe.parser.decode
+
+
 
 
 /**
@@ -17,13 +20,15 @@ import io.circe.parser.decode
 
 class SquantsSuite extends CirceSuite {
 
+  Locale.setDefault(Locale.US)
+
   "an Information should " should "encode" in {
     val n = Information.primaryUnit.apply(1)
 
     val assertedResult =
       """
         |{
-        |  "readable" : "1,0 B",
+        |  "readable" : "1.0 B",
         |  "number" : 1.0,
         |  "unit" : "B",
         |  "name" : "Information"
@@ -41,7 +46,7 @@ class SquantsSuite extends CirceSuite {
     val assertedResult =
       """
         |{
-        |  "readable" : "30000000000,0 B",
+        |  "readable" : "30000000000.0 B",
         |  "number" : 30000.0,
         |  "unit" : "MB",
         |  "name" : "Information"
@@ -60,7 +65,7 @@ class SquantsSuite extends CirceSuite {
     val assertedResult =
       """
         |{
-        |  "readable" : "30,0 GB",
+        |  "readable" : "30.0 GB",
         |  "number" : 30000.0,
         |  "unit" : "MB",
         |  "name" : "Information"
@@ -116,6 +121,10 @@ class SquantsSuite extends CirceSuite {
     import _root_.squants.motion._
     import _root_.squants.time.TimeConversions._
 
+    implicit val eqLength: Eq[Length] = Eq.fromUniversalEquals
+    implicit val eqVelocity: Eq[Velocity] = Eq.fromUniversalEquals
+
+
     val length = 200.cm
     val lengthj = length.asJson.toString.stripMargin.trim
 
@@ -123,7 +132,7 @@ class SquantsSuite extends CirceSuite {
     val lengthAsserted =
       """
         |{
-        |  "readable" : "2,0 m",
+        |  "readable" : "2.0 m",
         |  "number" : 200.0,
         |  "unit" : "cm",
         |  "name" : "Length"
@@ -139,7 +148,7 @@ class SquantsSuite extends CirceSuite {
 
     val speedAsserted = """
         |{
-        |  "readable" : "1,0 m/s",
+        |  "readable" : "1.0 m/s",
         |  "number" : 1.0,
         |  "unit" : "m/s",
         |  "name" : "Velocity"
