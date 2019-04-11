@@ -132,9 +132,7 @@ class SquantsSuite extends CirceSuite {
 
     assert(lengthAsserted.equals(lengthj))
 
-    val lengthRebuild = decode[Length](lengthj).toOption
-
-    assert(lengthRebuild.exists(_.equals(length)))
+    assert(decode[Length](lengthj) === Right(length))
 
     val speed = length / 2.seconds
     val speedj = speed.asJson.toString.stripMargin.trim
@@ -150,7 +148,7 @@ class SquantsSuite extends CirceSuite {
 
     assert(speedAsserted.equals(speedj))
     val speedRebuild = decode[Velocity](speedAsserted).toOption
-    assert(speedRebuild.exists(_.equals(speed)))
+    assert(decode[Velocity](speedAsserted) === Right(speed))
 
 
 
