@@ -24,7 +24,7 @@ import scala.collection.Set
 
 package object squants {
 
-  def getCompagnonObject[A <: Quantity[A]](implicit man: TypeTag[A]) = {
+  def getCompanionObject[A <: Quantity[A]](implicit man: TypeTag[A]) = {
     val universeMirror = runtimeMirror(getClass.getClassLoader)
     val companionMirror = universeMirror.reflectModule(typeOf[A].typeSymbol.companion.asModule)
     companionMirror.instance.asInstanceOf[Dimension[A]]
@@ -53,7 +53,7 @@ package object squants {
               import _root_.squants.experimental.unitgroups.ImplicitDimensions.time._
               import _root_.squants.experimental.unitgroups.si.strict.implicits._
               import _root_.squants.experimental.unitgroups.UnitGroup
-              implicit val dim: Dimension[A] = getCompagnonObject[A]
+              implicit val dim: Dimension[A] = getCompanionObject[A]
               val unitGroup:UnitGroup[A] = _root_.squants.experimental.unitgroups.si.strict.implicits.mkSiUnitGroup
               val defaultformatter = new DefaultFormatter[A](unitGroup)
               Some(defaultformatter.inBestUnit(a).toString())
@@ -74,7 +74,7 @@ package object squants {
     final def apply(c: HCursor): Decoder.Result[A] = {
       // This is sad to use exception, but there is reflection here....
       val results = try {
-        val dimensionCompanionObject = getCompagnonObject[A]
+        val dimensionCompanionObject = getCompanionObject[A]
         val readableOption = c.downField("readable").as[String].toOption
           .flatMap(readable => dimensionCompanionObject.parseString(readable).toOption)
           .orElse({
