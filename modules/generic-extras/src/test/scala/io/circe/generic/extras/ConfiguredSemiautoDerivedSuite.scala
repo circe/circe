@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json, ObjectEncoder }
 import io.circe.generic.extras.semiauto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -139,5 +139,25 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
 
       assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
     }
+  }
+
+  "Semi-automatic derivation" should "support configured strict de-serialization" in forAll { (f: String, b: Double) =>
+    implicit val customConfig: Configuration =
+      Configuration.default.withSnakeCaseMemberNames.withDefaults
+        .withDiscriminator("type_field")
+        .withSnakeCaseConstructorNames
+        .withStrictDeserialization
+
+    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
+
+    val json =
+      json"""
+            {  "type_field": "config_example_foo", "this_is_a_field": $f, "b": $b, "stowaway_field": "I should not be here"}
+        """
+
+    val expectedError =
+      DecodingFailure("Unexpected field: [stowaway_field]. Valid fields: this_is_a_field,a,b,type_field.", Nil)
+
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(expectedError))
   }
 }
