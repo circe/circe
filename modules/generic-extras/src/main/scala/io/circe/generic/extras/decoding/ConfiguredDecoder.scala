@@ -14,7 +14,7 @@ abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecode
   private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
     new ConcurrentHashMap[String, String]()
 
-  protected[this] def constructorNameTransformer(value: String): String = {
+  protected[ConfiguredDecoder] def constructorNameTransformer(value: String): String = {
     val current = constructorNameCache.get(value)
 
     if (current eq null) {
@@ -38,7 +38,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     private[this] val memberNameCache: ConcurrentHashMap[String, String] =
       new ConcurrentHashMap[String, String]()
 
-    private[this] def memberNameTransformer(value: String): String = {
+    private[ConfiguredDecoder] def memberNameTransformer(value: String): String = {
       val current = memberNameCache.get(value)
 
       if (current eq null) {
@@ -117,16 +117,42 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     val defaultMap: Map[String, Any] =
       if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
+    val keyNames = fieldsToList(fields()).map(_.name)
+
     val keyAnnotationMap: Map[String, String] =
-      fieldsToList(fields())
-        .map(_.name)
+      keyNames
         .zip(keysToList(keys()))
         .collect {
           case (field, Some(keyAnnotation)) => (field, keyAnnotation.value)
         }
         .toMap
 
-    new CaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyAnnotationMap)
+    val nonStrict = new CaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyAnnotationMap)
+
+    if (config.strictDeserialization) {
+      val expectedFields =
+        keyNames.map(nonStrict.memberNameTransformer) ++ config.discriminator.map(nonStrict.constructorNameTransformer)
+
+      val expectedFieldsStr = expectedFields.mkString(",")
+      val strictDecoder = nonStrict.validate { cursor: HCursor =>
+        val maybeUnexpectedErrors = for {
+          json <- cursor.focus
+          jsonKeys <- json.hcursor.keys
+          unexpected = jsonKeys.toSet -- expectedFields
+        } yield {
+          unexpected.toList map { unexpectedField =>
+            s"Unexpected field: [$unexpectedField]. Valid fields: $expectedFieldsStr."
+          }
+        }
+
+        maybeUnexpectedErrors.getOrElse {
+          "Couldn't determine decoded fields." :: Nil
+        }
+      }
+      new ConfiguredDecoder[A](config) {
+        override def apply(c: HCursor): Decoder.Result[A] = strictDecoder(c)
+      }
+    } else nonStrict
   }
 
   implicit def decodeAdt[A, R <: Coproduct](
