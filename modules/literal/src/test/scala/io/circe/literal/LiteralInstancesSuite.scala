@@ -1,10 +1,11 @@
 package io.circe.literal
 
 import io.circe.{ Decoder, Encoder }
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.Matchers
+import org.scalatest.funspec.AnyFunSpec
 import shapeless.Witness
 
-class LiteralInstancesSuite extends FunSpec with Matchers {
+class LiteralInstancesSuite extends AnyFunSpec with Matchers {
   describe("A literal String codec") {
     it("should round-trip values") {
       val w = Witness("foo")
