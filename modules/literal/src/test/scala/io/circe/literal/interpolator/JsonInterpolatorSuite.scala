@@ -4,10 +4,11 @@ import io.circe.{ Encoder, Json }
 import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
-import org.scalatest.{ FunSpec, Matchers }
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.Matchers
+import org.scalatest.check.ScalaCheckDrivenPropertyChecks
+import org.scalatest.funspec.AnyFunSpec
 
-class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
   describe("The json string interpolater") {
     it("should fail to compile with invalid JSON") {
       "json\"\"\"1a2b3c\"\"\"" shouldNot compile

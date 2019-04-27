@@ -2,12 +2,12 @@ package io.circe.numbers
 
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import java.math.{ BigDecimal, BigInteger }
-import org.scalatest.FlatSpec
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.check.ScalaCheckDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 
-class BiggerDecimalSuite extends FlatSpec with GeneratorDrivenPropertyChecks {
+class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(
     minSuccessful = 1000,
     sizeRange = 10000
