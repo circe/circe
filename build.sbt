@@ -22,15 +22,17 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "1.6.0"
-val jawnVersion = "0.14.1"
+val catsVersion = "2.0.0-M1"
+val jawnVersion = "0.14.2"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.4"
+val refinedVersion = "0.9.5"
 
 val paradiseVersion = "2.1.1"
-val scalaTestVersion = "3.0.7"
-val scalaCheckVersion = "1.13.5"
-val disciplineVersion = "0.9.0"
+
+val claimantVersion = "0.1.0"
+val scalaTestVersion = "3.1.0-SNAP9"
+val scalaCheckVersion = "1.14.0"
+val disciplineVersion = "0.11.2-M1"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -41,12 +43,6 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case Some((2, minor)) if minor < 13 => true
     case _                              => false
   }
-
-def scalaCheckVersionFor(scalaVersion: String): String =
-  if (priorTo2_13(scalaVersion)) scalaCheckVersion else "1.14.0"
-
-def disciplineVersionFor(scalaVersion: String): String =
-  if (priorTo2_13(scalaVersion)) disciplineVersion else "0.10.0"
 
 val previousCirceVersion = Some("0.11.0")
 val scalaFiddleCirceVersion = "0.9.1"
@@ -253,7 +249,7 @@ lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previou
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
-  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value),
+  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
   coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
 )
 
@@ -263,8 +259,9 @@ lazy val numbersTestingJS = numbersTestingBase.js
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % "1.0.0-SNAP4" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -403,7 +400,7 @@ lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlug
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.9"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.10"
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -416,10 +413,12 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersionFor(scalaVersion.value) % Test,
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % "1.0.0-SNAP4",
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersionFor(scalaVersion.value)
+      "org.typelevel" %%% "claimant" % claimantVersion,
+      "org.typelevel" %%% "discipline" % disciplineVersion
     )
   )
   .settings(
