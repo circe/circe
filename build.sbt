@@ -29,7 +29,6 @@ val refinedVersion = "0.9.5"
 
 val paradiseVersion = "2.1.1"
 
-val claimantVersion = "0.1.0"
 val scalaTestVersion = "3.1.0-SNAP9"
 val scalaCheckVersion = "1.14.0"
 val disciplineVersion = "0.11.2-M1"
@@ -417,7 +416,6 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % "1.0.0-SNAP4",
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "claimant" % claimantVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion
     )
   )
