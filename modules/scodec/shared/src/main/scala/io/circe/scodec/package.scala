@@ -11,11 +11,13 @@ package object scodec {
 
   final def decodeBitVectorWithNames(bitsName: String, lengthName: String): Decoder[BitVector] =
     Decoder.instance { c =>
-      val bits: Decoder.Result[BitVector] = c.get[String](bitsName).right.flatMap { bs =>
-        BitVector.fromBase64Descriptive(bs) match {
-          case r @ Right(_)  => r.asInstanceOf[Decoder.Result[BitVector]]
-          case Left(message) => Left(DecodingFailure(message, c.history))
-        }
+      val bits: Decoder.Result[BitVector] = c.get[String](bitsName) match {
+        case Right(bs) =>
+          BitVector.fromBase64Descriptive(bs) match {
+            case r @ Right(_)  => r.asInstanceOf[Decoder.Result[BitVector]]
+            case Left(message) => Left(DecodingFailure(message, c.history))
+          }
+        case Left(err) => Left(err)
       }
 
       Decoder.resultInstance.map2(bits, c.get[Long](lengthName))(_.take(_))
