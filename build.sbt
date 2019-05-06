@@ -260,8 +260,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4" % Test
+      "org.typelevel" %%% "claimant" % claimantVersion % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
