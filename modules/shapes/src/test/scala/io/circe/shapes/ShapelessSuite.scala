@@ -48,7 +48,7 @@ class ShapelessSuite extends CirceSuite {
   val recordDecoder = Decoder[Record.`'foo -> String, 'bar -> Int`.T]
 
   "A record decoder" should "decode an object as a record" in forAll { (foo: String, bar: Int) =>
-    val expected = 'foo ->> foo :: 'bar ->> bar :: HNil
+    val expected = Symbol("foo") ->> foo :: Symbol("bar") ->> bar :: HNil
     val result = recordDecoder.decodeJson(json"""{ "foo": $foo, "bar": $bar }""")
 
     assert(result === Right(expected))
