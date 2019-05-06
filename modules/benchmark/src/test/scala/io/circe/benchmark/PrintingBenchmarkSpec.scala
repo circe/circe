@@ -3,9 +3,10 @@ package io.circe.benchmark
 import io.circe.jawn.decode
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
-import org.scalatest.FlatSpec
+import org.scalacheck.Properties
+import org.typelevel.claimant.Claim
 
-class PrintingBenchmarkSpec extends FlatSpec {
+class PrintingBenchmarkSuite extends Properties("PrintingBenchmark") {
   val benchmark: PrintingBenchmark = new PrintingBenchmark
 
   import benchmark._
@@ -17,27 +18,27 @@ class PrintingBenchmarkSpec extends FlatSpec {
     new String(bytes, UTF_8)
   }
 
-  "The string printer" should "correctly decode Foos" in {
-    assert(decode[Map[String, Foo]](printFoosToString) === Right(foos))
-  }
+  property("The string printer should correctly decode Foos") = Claim(
+    decode[Map[String, Foo]](printFoosToString) == Right(foos)
+  )
 
-  it should "correctly encode Ints" in {
-    assert(decode[List[Int]](printIntsToString) === Right(ints))
-  }
+  property("The string printer should correctly encode Ints") = Claim(
+    decode[List[Int]](printIntsToString) == Right(ints)
+  )
 
-  it should "correctly encode Booleans" in {
-    assert(decode[List[Boolean]](printBooleansToString) === Right(booleans))
-  }
+  property("The string printer should correctly encode Booleans") = Claim(
+    decode[List[Boolean]](printBooleansToString) == Right(booleans)
+  )
 
-  "The byte buffer printer" should "correctly decode Foos" in {
-    assert(decode[Map[String, Foo]](byteBufferToString(printFoosToByteBuffer)) === Right(foos))
-  }
+  property("The byte buffer printer should correctly decode Foos") = Claim(
+    decode[Map[String, Foo]](byteBufferToString(printFoosToByteBuffer)) == Right(foos)
+  )
 
-  it should "correctly encode Ints" in {
-    assert(decode[List[Int]](byteBufferToString(printIntsToByteBuffer)) === Right(ints))
-  }
+  property("The byte buffer printer should correctly encode Ints") = Claim(
+    decode[List[Int]](byteBufferToString(printIntsToByteBuffer)) == Right(ints)
+  )
 
-  it should "correctly encode Booleans" in {
-    assert(decode[List[Boolean]](byteBufferToString(printBooleansToByteBuffer)) === Right(booleans))
-  }
+  property("The byte buffer printer should correctly encode Booleans") = Claim(
+    decode[List[Boolean]](byteBufferToString(printBooleansToByteBuffer)) == Right(booleans)
+  )
 }

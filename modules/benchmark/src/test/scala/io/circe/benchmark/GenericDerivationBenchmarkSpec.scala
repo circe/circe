@@ -1,25 +1,26 @@
 package io.circe.benchmark
 
-import org.scalatest.FlatSpec
+import org.scalacheck.Properties
+import org.typelevel.claimant.Claim
 
-class GenericDerivationBenchmarkSpec extends FlatSpec {
+class GenericDerivationBenchmarkSuite extends Properties("GenericDerivationBenchmark") {
   val benchmark: GenericDerivationBenchmark = new GenericDerivationBenchmark
 
   import benchmark._
 
-  "The derived codecs" should "correctly decode Foos" in {
-    assert(decodeDerived === Right(exampleFoo))
-  }
+  property("The derived codecs should correctly decode Foos") = Claim(
+    decodeDerived == Right(exampleFoo)
+  )
 
-  it should "correctly encode Foos" in {
-    assert(encodeDerived === exampleFooJson)
-  }
+  property("The derived codecs should correctly encode Foos") = Claim(
+    encodeDerived == exampleFooJson
+  )
 
-  "The non-derived codecs" should "correctly decode Foos" in {
-    assert(decodeNonDerived === Right(exampleFoo))
-  }
+  property("The non-derived codecs should correctly decode Foos") = Claim(
+    decodeNonDerived == Right(exampleFoo)
+  )
 
-  it should "correctly encode Foos" in {
-    assert(encodeNonDerived === exampleFooJson)
-  }
+  property("The non-derived codecs should correctly encode Foos") = Claim(
+    encodeNonDerived == exampleFooJson
+  )
 }

@@ -1,40 +1,41 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonObject }
-import org.scalatest.FlatSpec
+import org.scalacheck.Properties
+import org.typelevel.claimant.Claim
 
-class JsonObjectBenchmarkSpec extends FlatSpec {
+class JsonObjectBenchmarkSuite extends Properties("JsonObjectBenchmark") {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark
 
-  "buildWithFromIterable" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithFromIterable === benchmark.valueFromIterable)
-  }
+  property("buildWithFromIterable should build the correct JsonObject") = Claim(
+    benchmark.buildWithFromIterable == benchmark.valueFromIterable
+  )
 
-  "buildWithFromFoldable" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithFromFoldable === benchmark.valueFromIterable)
-  }
+  property("buildWithFromFoldable should build the correct JsonObject") = Claim(
+    benchmark.buildWithFromFoldable == benchmark.valueFromIterable
+  )
 
-  "buildWithAdd" should "build the correct JsonObject" in {
-    assert(benchmark.buildWithAdd === benchmark.valueFromIterable)
-  }
+  property("buildWithAdd should build the correct JsonObject") = Claim(
+    benchmark.buildWithAdd == benchmark.valueFromIterable
+  )
 
-  "lookupGoodFromIterable" should "return the correct result" in {
-    assert(benchmark.lookupGoodFromIterable === Some(Json.fromInt(50)))
-  }
+  property("lookupGoodFromIterable should return the correct result") = Claim(
+    benchmark.lookupGoodFromIterable == Some(Json.fromInt(50))
+  )
 
-  "lookupBadFromIterable" should "return the correct result" in {
-    assert(benchmark.lookupBadFromIterable === None)
-  }
+  property("lookupBadFromIterable should return the correct result") = Claim(
+    benchmark.lookupBadFromIterable == None
+  )
 
-  "lookupGoodFromFoldable" should "return the correct result" in {
-    assert(benchmark.lookupGoodFromFoldable === Some(Json.fromInt(50)))
-  }
+  property("lookupGoodFromFoldable should return the correct result") = Claim(
+    benchmark.lookupGoodFromFoldable == Some(Json.fromInt(50))
+  )
 
-  "lookupBadFromFoldable" should "return the correct result" in {
-    assert(benchmark.lookupBadFromFoldable === None)
-  }
+  property("lookupBadFromFoldable should return the correct result") = Claim(
+    benchmark.lookupBadFromFoldable == None
+  )
 
-  "remove" should "return the correct result" in {
+  property("remove should return the correct result") = {
     val expected = benchmark.fields.flatMap {
       case ("0", _)     => None
       case ("50", _)    => None
@@ -43,6 +44,6 @@ class JsonObjectBenchmarkSpec extends FlatSpec {
       case (key, value) => Some((key, value))
     }
 
-    assert(benchmark.remove === JsonObject.fromIterable(expected))
+    Claim(benchmark.remove == JsonObject.fromIterable(expected))
   }
 }
