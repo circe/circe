@@ -20,11 +20,12 @@ final object EnumerationDecoder {
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       c.as[String] match {
         case Right(s) if s == wit.value.name => Right(Inl(field[K](gv.from(HNil))))
-        case Right(_)                        => dr.apply(c) match {
-          case Right(v) => Right(Inr(v))
-          case Left(err) => Left(err)
-        }
-        case Left(err)                       => Left(DecodingFailure("Enumeration", c.history))
+        case Right(_) =>
+          dr.apply(c) match {
+            case Right(v)  => Right(Inr(v))
+            case Left(err) => Left(err)
+          }
+        case Left(err) => Left(DecodingFailure("Enumeration", c.history))
       }
   }
 
@@ -35,7 +36,7 @@ final object EnumerationDecoder {
   ): EnumerationDecoder[A] =
     new EnumerationDecoder[A] {
       def apply(c: HCursor): Decoder.Result[A] = rr(c) match {
-        case Right(v) => Right(gen.from(v))
+        case Right(v)  => Right(gen.from(v))
         case Left(err) => Left(err)
       }
     }
