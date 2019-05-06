@@ -52,8 +52,8 @@ lazy val baseSettings = Seq(
     else
       compilerOptions.flatMap {
         case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
-        case "-Xfuture" => Nil
-        case other => Seq(other)
+        case "-Xfuture"             => Nil
+        case other                  => Seq(other)
       }
   },
   scalacOptions in (Compile, console) ~= {
