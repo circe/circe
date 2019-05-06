@@ -368,7 +368,14 @@ lazy val shapesJS = shapesBase.js
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
-  .settings(libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion % Test)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4" % Test
+    )
+  )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
 
@@ -412,9 +419,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4",
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline" % disciplineVersion
     )
@@ -434,7 +439,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion
+      "com.chuusai" %%% "shapeless" % shapelessVersion,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion,
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
