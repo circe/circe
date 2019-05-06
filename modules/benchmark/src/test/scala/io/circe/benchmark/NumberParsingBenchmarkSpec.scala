@@ -1,9 +1,9 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonNumber }
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class NumberParsingBenchmarkSpec extends FlatSpec {
+class NumberParsingBenchmarkSpec extends AnyFlatSpec {
   val benchmark: NumberParsingBenchmark = new NumberParsingBenchmark
 
   val expectedBigDecimal = BigDecimal(benchmark.inputBigDecimal)

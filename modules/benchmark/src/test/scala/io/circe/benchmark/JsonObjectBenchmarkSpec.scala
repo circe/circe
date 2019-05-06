@@ -1,9 +1,9 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonObject }
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class JsonObjectBenchmarkSpec extends FlatSpec {
+class JsonObjectBenchmarkSpec extends AnyFlatSpec {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark
 
   "buildWithFromIterable" should "build the correct JsonObject" in {
