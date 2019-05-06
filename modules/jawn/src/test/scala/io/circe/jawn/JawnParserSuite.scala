@@ -1,8 +1,9 @@
 package io.circe.jawn
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.Matchers
+import org.scalatest.funspec.AnyFunSpec
 
-class JawnParserSuite extends FunSpec with Matchers {
+class JawnParserSuite extends AnyFunSpec with Matchers {
   describe("JawnParser") {
     it("should respect maxValueSize for numbers") {
       val parser = JawnParser(10)

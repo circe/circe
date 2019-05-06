@@ -1,8 +1,8 @@
 package io.circe.benchmark
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class FoldingBenchmarkSpec extends FlatSpec {
+class FoldingBenchmarkSpec extends AnyFlatSpec {
   val benchmark: FoldingBenchmark = new FoldingBenchmark
 
   "withFoldWith" should "give the correct result" in {
