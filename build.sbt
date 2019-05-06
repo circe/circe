@@ -484,7 +484,7 @@ lazy val hygieneJS = hygieneBase.js
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+      "org.typelevel" %% "claimant" % claimantVersion % Test,
       "org.typelevel" %% "jawn-parser" % jawnVersion
     )
   )
