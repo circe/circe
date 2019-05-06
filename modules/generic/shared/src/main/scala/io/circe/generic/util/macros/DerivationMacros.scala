@@ -227,10 +227,15 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       (
         q"""
         ${decodeSubtype(label, instanceName)} match {
-          case _root_.scala.Some(result) => result.right.map(v =>
-           $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
-          )
-          case _root_.scala.None => $acc.right.map(_root_.shapeless.Inr(_))
+          case _root_.scala.Some(result) => result match {
+            case _root_.scala.util.Right(v) =>
+              _root_.scala.util.Right($ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v))
+            case _root_.scala.util.Left(err) => _root_.scala.util.Left(err)
+          }
+          case _root_.scala.None => $acc match {
+            case _root_.scala.util.Right(v) => _root_.scala.util.Right(_root_.shapeless.Inr(v))
+            case _root_.scala.util.Left(err) => _root_.scala.util.Left(err)
+          }
         }
       """,
         q"""
