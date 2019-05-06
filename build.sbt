@@ -50,9 +50,10 @@ lazy val baseSettings = Seq(
   scalacOptions ++= {
     if (priorTo2_13(scalaVersion.value)) compilerOptions
     else
-      compilerOptions.map {
-        case "-Ywarn-unused-import" ⇒ "-Ywarn-unused:imports"
-        case other => other
+      compilerOptions.flatMap {
+        case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
+        case "-Xfuture" => Nil
+        case other => Seq(other)
       }
   },
   scalacOptions in (Compile, console) ~= {
