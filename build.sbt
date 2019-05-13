@@ -261,7 +261,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -374,7 +374,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5" % Test
     )
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
@@ -442,7 +442,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP4"
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=

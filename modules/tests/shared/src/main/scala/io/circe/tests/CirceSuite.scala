@@ -3,8 +3,8 @@ package io.circe.tests
 import cats.instances.AllInstances
 import cats.syntax.{ AllSyntax, EitherOps }
 import io.circe.testing.{ ArbitraryInstances, EqInstances }
-import org.scalatest.check.{ Checkers, ScalaCheckDrivenPropertyChecks }
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatestplus.scalacheck.{ Checkers, ScalaCheckDrivenPropertyChecks }
 import org.typelevel.discipline.Laws
 import scala.language.implicitConversions
 
