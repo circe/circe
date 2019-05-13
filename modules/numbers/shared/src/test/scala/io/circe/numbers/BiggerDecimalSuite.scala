@@ -3,7 +3,7 @@ package io.circe.numbers
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import java.math.{ BigDecimal, BigInteger }
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.check.ScalaCheckDrivenPropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 

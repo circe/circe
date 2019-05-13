@@ -5,8 +5,8 @@ import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
 import org.scalatest.Matchers
-import org.scalatest.check.ScalaCheckDrivenPropertyChecks
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
   describe("The json string interpolater") {

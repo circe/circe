@@ -1,7 +1,7 @@
 package io.circe
 import io.circe.tests.PrinterSuite
 import org.scalacheck.Prop
-import org.scalatest.check.Checkers
+import org.scalatestplus.scalacheck.Checkers
 
 trait SortedKeysSuite { this: PrinterSuite =>
   "Printer with sortKeys" should "sort the object keys (example)" in {
