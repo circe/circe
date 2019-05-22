@@ -5,12 +5,10 @@ import java.io.Serializable
 import java.util.LinkedHashMap
 import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
 
-final object CirceSupportParser extends CirceSupportParser(None)
-
-class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] with Serializable {
+class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends SupportParser[Json] with Serializable {
   implicit final val facade: RawFacade[Json] = maxValueSize match {
-    case Some(size) => new LimitedFacade(size)
-    case None       => new UnlimitedFacade
+    case Some(size) => new LimitedFacade(size, allowDuplicateKeys)
+    case None       => new UnlimitedFacade(allowDuplicateKeys)
   }
 
   private[this] abstract class BaseFacade extends RawFacade[Json] with Serializable {
@@ -35,7 +33,7 @@ class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] 
     }
   }
 
-  private[this] final class LimitedFacade(maxValueSize: Int) extends BaseFacade {
+  private[this] final class LimitedFacade(maxValueSize: Int, allowDuplicateKeys: Boolean) extends BaseFacade {
     final def jnum(s: CharSequence, decIndex: Int, expIndex: Int, index: Int): Json =
       if (s.length > maxValueSize) {
         throw new IllegalArgumentException(s"JSON number length (${s.length}) exceeds limit ($maxValueSize)")
@@ -64,11 +62,11 @@ class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] 
             key = s.toString
           }
         } else {
-          m.put(key, jstring(s, index))
+          safePut(key, jstring(s, index), m, allowDuplicateKeys)
           key = null
         }
       final def add(v: Json, index: Int): Unit = {
-        m.put(key, v)
+        safePut(key, v, m, allowDuplicateKeys)
         key = null
       }
       final def finish(index: Int): Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
@@ -76,7 +74,7 @@ class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] 
     }
   }
 
-  private[this] final class UnlimitedFacade extends BaseFacade {
+  private[this] final class UnlimitedFacade(allowDuplicateKeys: Boolean) extends BaseFacade {
     final def jnum(s: CharSequence, decIndex: Int, expIndex: Int, index: Int): Json =
       if (decIndex < 0 && expIndex < 0) {
         Json.fromJsonNumber(JsonNumber.fromIntegralStringUnsafe(s.toString))
@@ -93,16 +91,24 @@ class CirceSupportParser(maxValueSize: Option[Int]) extends SupportParser[Json] 
         if (key.eq(null)) {
           key = s.toString
         } else {
-          m.put(key, jstring(s, index))
+          safePut(key, jstring(s, index), m, allowDuplicateKeys)
           key = null
         }
       final def add(v: Json, index: Int): Unit = {
-        m.put(key, v)
+        safePut(key, v, m, allowDuplicateKeys)
         key = null
       }
       final def finish(index: Int): Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
       final def isObj: Boolean = true
     }
   }
+
+  private def safePut[K, V](key: K, value: V, map: LinkedHashMap[K, V], allowDuplicateKeys: Boolean): V = {
+    val oldValue = map.put(key, value)
+    if (oldValue != null && !allowDuplicateKeys)
+      throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
+    else oldValue
+  }
+
 
 }
