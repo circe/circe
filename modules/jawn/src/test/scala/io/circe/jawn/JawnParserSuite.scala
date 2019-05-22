@@ -36,5 +36,12 @@ class JawnParserSuite extends AnyFunSpec with Matchers {
 
       parser.parse("""{ "10000000000": "foo" }""").isLeft shouldBe true
     }
+
+    it("should respect allowedDuplicateKeys") {
+      JawnParser(allowDuplicateKeys = true).parse("""{ "a": "b", "a": "c" }""").isLeft shouldBe false
+
+      JawnParser(allowDuplicateKeys = false).parse("""{ "a": "b", "a": "c" }""").isLeft shouldBe true
+
+    }
   }
 }
