@@ -3,6 +3,7 @@ package io.circe
 import cats.{ Eq, Show }
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
+import scala.collection.mutable.ListBuffer
 
 /**
  * A data type representing possible JSON values.
@@ -202,18 +203,19 @@ sealed abstract class Json extends Product with Serializable {
    * The Play docs, from which this method was inspired, reads:
    *   "Lookup for fieldName in the current object and all descendants."
    */
-  final def findAllByKey(key: String): List[Json] = keyValues(this).collect {
-    case (k, v) if (k == key) => v
+  final def findAllByKey(key: String): List[Json] = {
+    val hh: ListBuffer[Json] = ListBuffer.empty[Json]
+    @tailrec
+    def loop(js: Json): Unit = jsom match {
+      case JObject(obj)  => obj.foreach.flatMap { case (k, v) =>
+        if (k == key) hh += v
+        loop(v)
+      }
+      case JArray(elems) => elems.foreach(loop)
+      case _             => ()
+    }
+    hh.toList
   }
-
-  private def keyValues(json: Json): List[(String, Json)] = json match {
-    case JObject(obj)  => obj.toList.flatMap { case (k, v) => keyValuesHelper(k, v) }
-    case JArray(elems) => elems.toList.flatMap(keyValues)
-    case _             => Nil
-  }
-
-  private def keyValuesHelper(key: String, value: Json): List[(String, Json)] =
-    (key, value) :: keyValues(value)
 }
 
 final object Json {
