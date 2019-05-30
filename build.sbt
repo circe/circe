@@ -22,16 +22,16 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "2.0.0-M1"
-val jawnVersion = "0.14.2"
+val catsVersion = "2.0.0-M2"
+val jawnVersion = "0.14.3"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.5"
+val refinedVersion = "0.9.6"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.1.0-SNAP10"
+val scalaTestVersion = "3.1.0-SNAP11"
 val scalaCheckVersion = "1.14.0"
-val disciplineVersion = "0.11.2-M1"
+val disciplineVersion = "0.12.0-M1"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -73,7 +73,7 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("snapshots")
   ),
   coverageHighlighting := true,
-  coverageScalacPluginVersion := "1.3.1",
+  coverageScalacPluginVersion := "1.4.0-RC2",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += CompileTime.hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
@@ -261,7 +261,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -374,7 +374,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6" % Test
     )
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
@@ -407,7 +407,7 @@ lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlug
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.10"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.11"
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -422,7 +422,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline" % disciplineVersion
+      "org.typelevel" %%% "discipline-core" % disciplineVersion
     )
   )
   .settings(
@@ -442,7 +442,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP5"
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
@@ -500,7 +500,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2"
   )
 
 lazy val java8 = java8Base.jvm
