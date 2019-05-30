@@ -1,3 +1,4 @@
+dist: xenial
 language: scala
 
 scala:
@@ -6,7 +7,7 @@ scala:
   - 2.12.8
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 cache:
   directories:
