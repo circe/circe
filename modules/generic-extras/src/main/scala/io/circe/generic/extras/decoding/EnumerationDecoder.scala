@@ -1,6 +1,7 @@
 package io.circe.generic.extras.decoding
 
 import io.circe.{ Decoder, DecodingFailure, HCursor }
+import io.circe.generic.extras.Configuration
 import shapeless.{ :+:, CNil, Coproduct, HNil, Inl, Inr, LabelledGeneric, Witness }
 import shapeless.labelled.{ field, FieldType }
 
@@ -15,11 +16,13 @@ final object EnumerationDecoder {
     implicit
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
-    dr: EnumerationDecoder[R]
+    dr: EnumerationDecoder[R],
+    config: Configuration
   ): EnumerationDecoder[FieldType[K, V] :+: R] = new EnumerationDecoder[FieldType[K, V] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       c.as[String] match {
-        case Right(s) if s == wit.value.name => Right(Inl(field[K](gv.from(HNil))))
+        case Right(s) if s == config.transformConstructorNames(wit.value.name) =>
+          Right(Inl(field[K](gv.from(HNil))))
         case Right(_) =>
           dr.apply(c) match {
             case Right(v)  => Right(Inr(v))

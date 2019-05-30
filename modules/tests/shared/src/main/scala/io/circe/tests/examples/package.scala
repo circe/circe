@@ -72,6 +72,13 @@ package examples {
   case class Baz(xs: List[String]) extends Foo
   case class Bam(w: Wub, d: Double) extends Foo
 
+  sealed trait Mary
+  case object HadA extends Mary
+  case object LittleLamb extends Mary
+  object Mary {
+    implicit val eqMary: Eq[Mary] = Eq.fromUniversalEquals[Mary]
+  }
+
   object Bar {
     implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
     implicit val arbitraryBar: Arbitrary[Bar] = Arbitrary(
