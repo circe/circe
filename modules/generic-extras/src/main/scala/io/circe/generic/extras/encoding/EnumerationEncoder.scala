@@ -17,7 +17,7 @@ final object EnumerationEncoder {
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
     dr: EnumerationEncoder[R],
-    config: Configuration
+    config: Configuration = Configuration.default
   ): EnumerationEncoder[FieldType[K, V] :+: R] = new EnumerationEncoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
       case Inl(l) => Json.fromString(config.transformConstructorNames(wit.value.name))

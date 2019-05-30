@@ -17,7 +17,7 @@ final object EnumerationDecoder {
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
     dr: EnumerationDecoder[R],
-    config: Configuration
+    config: Configuration = Configuration.default
   ): EnumerationDecoder[FieldType[K, V] :+: R] = new EnumerationDecoder[FieldType[K, V] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       c.as[String] match {
