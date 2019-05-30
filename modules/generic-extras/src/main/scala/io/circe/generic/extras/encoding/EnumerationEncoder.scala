@@ -1,6 +1,7 @@
 package io.circe.generic.extras.encoding
 
 import io.circe.{ Encoder, Json }
+import io.circe.generic.extras.Configuration
 import shapeless.{ :+:, CNil, Coproduct, HNil, Inl, Inr, LabelledGeneric, Witness }
 import shapeless.labelled.FieldType
 
@@ -15,10 +16,11 @@ final object EnumerationEncoder {
     implicit
     wit: Witness.Aux[K],
     gv: LabelledGeneric.Aux[V, HNil],
-    dr: EnumerationEncoder[R]
+    dr: EnumerationEncoder[R],
+    config: Configuration
   ): EnumerationEncoder[FieldType[K, V] :+: R] = new EnumerationEncoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
-      case Inl(l) => Json.fromString(wit.value.name)
+      case Inl(l) => Json.fromString(config.transformConstructorNames(wit.value.name))
       case Inr(r) => dr(r)
     }
   }
