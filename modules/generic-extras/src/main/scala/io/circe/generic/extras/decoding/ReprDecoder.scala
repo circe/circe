@@ -2,6 +2,7 @@ package io.circe.generic.extras.decoding
 
 import cats.data.Validated
 import io.circe.{ AccumulatingDecoder, ACursor, Decoder, HCursor }
+import io.circe.Json.JNull
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.collection.immutable.Map
 import scala.language.experimental.macros
@@ -36,8 +37,8 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     defaults: Map[String, Any]
   ): Decoder.Result[B] = {
     decoder.tryDecode(c) match {
-      case r @ Right(_) if r ne Decoder.keyMissingNone => r
-      case l @ Left(_) if c.succeeded                  => l
+      case r @ Right(_) if r ne Decoder.keyMissingNone            => r
+      case l @ Left(_) if c.succeeded && !c.focus.contains(JNull) => l
       case r =>
         defaults.get(name) match {
           case Some(d: B @unchecked) => Right(d)
@@ -53,8 +54,8 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     defaults: Map[String, Any]
   ): AccumulatingDecoder.Result[B] = {
     decoder.tryDecodeAccumulating(c) match {
-      case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating => r
-      case l @ Validated.Invalid(_) if c.succeeded                           => l
+      case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating   => r
+      case l @ Validated.Invalid(_) if c.succeeded && !c.focus.contains(JNull) => l
       case r =>
         defaults.get(name) match {
           case Some(d: B @unchecked) => Validated.valid(d)

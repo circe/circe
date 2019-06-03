@@ -126,6 +126,12 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
       assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
     }
 
+    "Value with default" should "be default value if value is null" in {
+      val json = json"""{"b": null}"""
+      assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
+      assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
+    }
+
     "Option[T] with default" should "fail to decode if type in json is not correct" in {
       val json = json"""{"a": "NotAnInt"}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("Int", List(DownField("a")))))
