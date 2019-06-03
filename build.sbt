@@ -22,16 +22,16 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "2.0.0-M2"
+val catsVersion = "2.0.0-M3"
 val jawnVersion = "0.14.2"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.6"
+val refinedVersion = "0.9.7"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.1.0-SNAP11"
+val scalaTestVersion = "3.1.0-SNAP12"
 val scalaCheckVersion = "1.14.0"
-val disciplineVersion = "0.12.0-M1"
+val disciplineVersion = "0.12.0-M2"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -261,7 +261,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -354,7 +354,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7" % Test
     )
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
@@ -422,7 +422,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP6"
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
