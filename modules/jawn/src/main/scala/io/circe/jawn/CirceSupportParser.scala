@@ -5,10 +5,40 @@ import java.io.Serializable
 import java.util.LinkedHashMap
 import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
 
-class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends SupportParser[Json] with Serializable {
+class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
+    extends SupportParser[Json]
+    with Serializable {
   implicit final val facade: RawFacade[Json] = maxValueSize match {
-    case Some(size) => new LimitedFacade(size, allowDuplicateKeys)
-    case None       => new UnlimitedFacade(allowDuplicateKeys)
+    case Some(size) =>
+      if (allowDuplicateKeys) {
+        new LimitedFacade(size) {
+          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
+            map.put(key, value)
+        }
+      } else {
+        new LimitedFacade(size) {
+          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
+            if (map.put(key, value).ne(null)) {
+              throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
+            }
+          }
+        }
+      }
+    case None =>
+      if (allowDuplicateKeys) {
+        new UnlimitedFacade {
+          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
+            map.put(key, value)
+        }
+      } else {
+        new UnlimitedFacade {
+          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
+            if (map.put(key, value).ne(null)) {
+              throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
+            }
+          }
+        }
+      }
   }
 
   private[this] abstract class BaseFacade extends RawFacade[Json] with Serializable {
@@ -31,9 +61,11 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       final def finish(index: Int): Json = Json.fromValues(vs.result())
       final def isObj: Boolean = false
     }
+
+    protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit
   }
 
-  private[this] final class LimitedFacade(maxValueSize: Int, allowDuplicateKeys: Boolean) extends BaseFacade {
+  private[this] abstract class LimitedFacade(maxValueSize: Int) extends BaseFacade {
     final def jnum(s: CharSequence, decIndex: Int, expIndex: Int, index: Int): Json =
       if (s.length > maxValueSize) {
         throw new IllegalArgumentException(s"JSON number length (${s.length}) exceeds limit ($maxValueSize)")
@@ -62,11 +94,11 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
             key = s.toString
           }
         } else {
-          safePut(key, jstring(s, index), m, allowDuplicateKeys)
+          mapPut(m, key, jstring(s, index))
           key = null
         }
       final def add(v: Json, index: Int): Unit = {
-        safePut(key, v, m, allowDuplicateKeys)
+        mapPut(m, key, v)
         key = null
       }
       final def finish(index: Int): Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
@@ -74,7 +106,7 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
     }
   }
 
-  private[this] final class UnlimitedFacade(allowDuplicateKeys: Boolean) extends BaseFacade {
+  private[this] abstract class UnlimitedFacade extends BaseFacade {
     final def jnum(s: CharSequence, decIndex: Int, expIndex: Int, index: Int): Json =
       if (decIndex < 0 && expIndex < 0) {
         Json.fromJsonNumber(JsonNumber.fromIntegralStringUnsafe(s.toString))
@@ -91,24 +123,15 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
         if (key.eq(null)) {
           key = s.toString
         } else {
-          safePut(key, jstring(s, index), m, allowDuplicateKeys)
+          mapPut(m, key, jstring(s, index))
           key = null
         }
       final def add(v: Json, index: Int): Unit = {
-        safePut(key, v, m, allowDuplicateKeys)
+        mapPut(m, key, v)
         key = null
       }
       final def finish(index: Int): Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
       final def isObj: Boolean = true
     }
   }
-
-  private def safePut[K, V](key: K, value: V, map: LinkedHashMap[K, V], allowDuplicateKeys: Boolean): V = {
-    val oldValue = map.put(key, value)
-    if (oldValue != null && !allowDuplicateKeys)
-      throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
-    else oldValue
-  }
-
-
 }
