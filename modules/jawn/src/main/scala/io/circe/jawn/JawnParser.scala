@@ -21,25 +21,20 @@ final object JawnParser {
   def apply(maxValueSize: Int): JawnParser = new JawnParser(Some(maxValueSize), allowDuplicateKeys = true)
 
   /**
-    * Returns a parser that fails on:
-    * <ul>
-    *   <li>JSON strings, object keys, or numbers that exceed a given length </li>
-    *   <li>encountering duplicate keys as per JSONlint</li>
-    * </ul>
-    *
-    * In some cases excessively long values (e.g. JSON numbers with millions of
-    * digits) may support denial-of-service attacks. For example, the string
-    * constructor for Java's `BigInteger` is quadratic with the length of the
-    * input, and decoding a ten-million digit JSON number into a `BigInteger` may
-    * take minutes.
-    */
-  def apply(maxValueSize: Int, allowDuplicateKeys: Boolean): JawnParser = new JawnParser(Some(maxValueSize), allowDuplicateKeys)
-
-
-  /**
-    * Returns a parser that fails on encountering duplicate keys as per JSONlint.
-    */
-  def apply(allowDuplicateKeys: Boolean): JawnParser = new JawnParser(None, allowDuplicateKeys)
+   * Returns a parser that fails on:
+   * <ul>
+   *   <li>JSON strings, object keys, or numbers that exceed a given length </li>
+   *   <li>encountering duplicate keys as per JSONlint</li>
+   * </ul>
+   *
+   * In some cases excessively long values (e.g. JSON numbers with millions of
+   * digits) may support denial-of-service attacks. For example, the string
+   * constructor for Java's `BigInteger` is quadratic with the length of the
+   * input, and decoding a ten-million digit JSON number into a `BigInteger` may
+   * take minutes.
+   */
+  def apply(maxValueSize: Int, allowDuplicateKeys: Boolean): JawnParser =
+    new JawnParser(Some(maxValueSize), allowDuplicateKeys)
 }
 
 class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends Parser {
