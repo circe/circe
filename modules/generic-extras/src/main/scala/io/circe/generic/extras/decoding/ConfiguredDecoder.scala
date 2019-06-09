@@ -14,7 +14,7 @@ abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecode
   private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
     new ConcurrentHashMap[String, String]()
 
-  protected[ConfiguredDecoder] def constructorNameTransformer(value: String): String = {
+  protected def constructorNameTransformer(value: String): String = {
     val current = constructorNameCache.get(value)
 
     if (current eq null) {
@@ -129,11 +129,11 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     val nonStrict = new CaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyAnnotationMap)
 
-    if (config.strictDeserialization) {
+    if (config.strictDecoding) {
       val expectedFields =
         keyNames.map(nonStrict.memberNameTransformer) ++ config.discriminator.map(nonStrict.constructorNameTransformer)
 
-      val expectedFieldsStr = expectedFields.mkString(",")
+      val expectedFieldsStr = expectedFields.mkString(", ")
       val strictDecoder = nonStrict.validate { cursor: HCursor =>
         val maybeUnexpectedErrors = for {
           json <- cursor.focus
@@ -141,12 +141,12 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
           unexpected = jsonKeys.toSet -- expectedFields
         } yield {
           unexpected.toList map { unexpectedField =>
-            s"Unexpected field: [$unexpectedField]. Valid fields: $expectedFieldsStr."
+            s"Unexpected field: [$unexpectedField]; valid fields: $expectedFieldsStr"
           }
         }
 
         maybeUnexpectedErrors.getOrElse {
-          "Couldn't determine decoded fields." :: Nil
+          "Couldn't determine decoded fields" :: Nil
         }
       }
       new ConfiguredDecoder[A](config) {

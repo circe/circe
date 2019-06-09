@@ -67,7 +67,7 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
-  "Semi-automatice derivation" should "call field modification times equal to field count" in {
+  it should "call field modification times equal to field count" in {
     var transformMemberNamesCallCount, transformConstructorCallCount = 0
     implicit val customConfig: Configuration =
       Configuration.default.copy(
@@ -97,6 +97,26 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
       assert(transformMemberNamesCallCount === fieldCount * 2)
       assert(transformConstructorCallCount === decodeConstructorCount + encodeConstructorCount)
     }
+  }
+
+  it should "support configured strict decoding" in forAll { (f: String, b: Double) =>
+    implicit val customConfig: Configuration =
+      Configuration.default.withSnakeCaseMemberNames.withDefaults
+        .withDiscriminator("type_field")
+        .withSnakeCaseConstructorNames
+        .withStrictDecoding
+
+    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
+
+    val json =
+      json"""
+            {"type_field": "config_example_foo", "this_is_a_field": $f, "b": $b, "stowaway_field": "I should not be here"}
+        """
+
+    val expectedError =
+      DecodingFailure("Unexpected field: [stowaway_field]; valid fields: this_is_a_field, a, b, type_field", Nil)
+
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(expectedError))
   }
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
@@ -139,25 +159,5 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
 
       assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
     }
-  }
-
-  "Semi-automatic derivation" should "support configured strict de-serialization" in forAll { (f: String, b: Double) =>
-    implicit val customConfig: Configuration =
-      Configuration.default.withSnakeCaseMemberNames.withDefaults
-        .withDiscriminator("type_field")
-        .withSnakeCaseConstructorNames
-        .withStrictDeserialization
-
-    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
-
-    val json =
-      json"""
-            {  "type_field": "config_example_foo", "this_is_a_field": $f, "b": $b, "stowaway_field": "I should not be here"}
-        """
-
-    val expectedError =
-      DecodingFailure("Unexpected field: [stowaway_field]. Valid fields: this_is_a_field,a,b,type_field.", Nil)
-
-    assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(expectedError))
   }
 }
