@@ -14,14 +14,14 @@ import java.util.regex.Pattern
  *                      the contents of the ADT are stored as an object.
  * @param transformConstructorNames Transforms the value of any constructor names in the JSON allowing, for example,
  *                                  formatting or case changes.
- * @param strictDeserialization Whether to fail when superfluous fields are found.
+ * @param strictDecoding Whether to fail when superfluous fields are found.
  */
 final case class Configuration(
   transformMemberNames: String => String,
   transformConstructorNames: String => String,
   useDefaults: Boolean,
   discriminator: Option[String],
-  strictDeserialization: Boolean = false
+  strictDecoding: Boolean = false
 ) {
   def withSnakeCaseMemberNames: Configuration = copy(
     transformMemberNames = Configuration.snakeCaseTransformation
@@ -42,7 +42,7 @@ final case class Configuration(
   def withDefaults: Configuration = copy(useDefaults = true)
   def withDiscriminator(discriminator: String): Configuration = copy(discriminator = Some(discriminator))
 
-  def withStrictDeserialization: Configuration = copy(strictDeserialization = true)
+  def withStrictDecoding: Configuration = copy(strictDecoding = true)
 }
 
 final object Configuration {
