@@ -14,7 +14,7 @@ abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecode
   private[this] val constructorNameCache: ConcurrentHashMap[String, String] =
     new ConcurrentHashMap[String, String]()
 
-  protected def constructorNameTransformer(value: String): String = {
+  protected[this] def constructorNameTransformer(value: String): String = {
     val current = constructorNameCache.get(value)
 
     if (current eq null) {
@@ -28,17 +28,14 @@ abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecode
 }
 
 final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
-  private[this] class CaseClassConfiguredDecoder[A, R <: HList](
-    gen: LabelledGeneric.Aux[A, R],
-    decodeR: Lazy[ReprDecoder[R]],
+  private[this] abstract class CaseClassConfiguredDecoder[A, R <: HList](
     config: Configuration,
-    defaultMap: Map[String, Any],
     keyAnnotationMap: Map[String, String]
   ) extends ConfiguredDecoder[A](config) {
     private[this] val memberNameCache: ConcurrentHashMap[String, String] =
       new ConcurrentHashMap[String, String]()
 
-    private[ConfiguredDecoder] def memberNameTransformer(value: String): String = {
+    protected[this] def memberNameTransformer(value: String): String = {
       val current = memberNameCache.get(value)
 
       if (current eq null) {
@@ -54,7 +51,15 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
         current
       }
     }
+  }
 
+  private[this] class NonStrictCaseClassConfiguredDecoder[A, R <: HList](
+    gen: LabelledGeneric.Aux[A, R],
+    decodeR: Lazy[ReprDecoder[R]],
+    config: Configuration,
+    defaultMap: Map[String, Any],
+    keyAnnotationMap: Map[String, String]
+  ) extends CaseClassConfiguredDecoder[A, R](config, keyAnnotationMap) {
     final def apply(c: HCursor): Decoder.Result[A] = decodeR.value.configuredDecode(c)(
       memberNameTransformer,
       constructorNameTransformer,
@@ -74,6 +79,40 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
           None
         )
         .map(gen.from)
+  }
+
+  private[this] class StrictCaseClassConfiguredDecoder[A, R <: HList](
+    gen: LabelledGeneric.Aux[A, R],
+    decodeR: Lazy[ReprDecoder[R]],
+    config: Configuration,
+    defaultMap: Map[String, Any],
+    keyNames: List[String],
+    keyAnnotationMap: Map[String, String]
+  ) extends CaseClassConfiguredDecoder[A, R](config, keyAnnotationMap) {
+    private[this] val expectedFields =
+      keyNames.map(memberNameTransformer) ++ config.discriminator.map(constructorNameTransformer)
+
+    private[this] val expectedFieldsStr = expectedFields.mkString(", ")
+
+    private[this] val wrapped: Decoder[A] =
+      new NonStrictCaseClassConfiguredDecoder[A, R](gen, decodeR, config, defaultMap, keyAnnotationMap).validate {
+        cursor: HCursor =>
+          val maybeUnexpectedErrors = for {
+            json <- cursor.focus
+            jsonKeys <- json.hcursor.keys
+            unexpected = jsonKeys.toSet -- expectedFields
+          } yield {
+            unexpected.toList.map { unexpectedField =>
+              s"Unexpected field: [$unexpectedField]; valid fields: $expectedFieldsStr"
+            }
+          }
+
+          maybeUnexpectedErrors.getOrElse(Nil)
+      }
+
+    final def apply(c: HCursor): Decoder.Result[A] = wrapped.apply(c)
+
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = wrapped.decodeAccumulating(c)
   }
 
   private[this] class AdtConfiguredDecoder[A, R <: Coproduct](
@@ -117,7 +156,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
     val defaultMap: Map[String, Any] =
       if (config.useDefaults) defaultMapper(defaults()) else Map.empty
 
-    val keyNames = fieldsToList(fields()).map(_.name)
+    val keyNames: List[String] = fieldsToList(fields()).map(_.name)
 
     val keyAnnotationMap: Map[String, String] =
       keyNames
@@ -127,32 +166,11 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
         }
         .toMap
 
-    val nonStrict = new CaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyAnnotationMap)
-
     if (config.strictDecoding) {
-      val expectedFields =
-        keyNames.map(nonStrict.memberNameTransformer) ++ config.discriminator.map(nonStrict.constructorNameTransformer)
-
-      val expectedFieldsStr = expectedFields.mkString(", ")
-      val strictDecoder = nonStrict.validate { cursor: HCursor =>
-        val maybeUnexpectedErrors = for {
-          json <- cursor.focus
-          jsonKeys <- json.hcursor.keys
-          unexpected = jsonKeys.toSet -- expectedFields
-        } yield {
-          unexpected.toList map { unexpectedField =>
-            s"Unexpected field: [$unexpectedField]; valid fields: $expectedFieldsStr"
-          }
-        }
-
-        maybeUnexpectedErrors.getOrElse {
-          "Couldn't determine decoded fields" :: Nil
-        }
-      }
-      new ConfiguredDecoder[A](config) {
-        override def apply(c: HCursor): Decoder.Result[A] = strictDecoder(c)
-      }
-    } else nonStrict
+      new StrictCaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyNames, keyAnnotationMap)
+    } else {
+      new NonStrictCaseClassConfiguredDecoder[A, R](gen, decodeR.value, config, defaultMap, keyAnnotationMap)
+    }
   }
 
   implicit def decodeAdt[A, R <: Coproduct](
