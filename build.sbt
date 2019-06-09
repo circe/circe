@@ -46,6 +46,8 @@ def priorTo2_13(scalaVersion: String): Boolean =
 val previousCirceVersion = Some("0.11.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
+val moneyVersion = "0.6.2"
+
 lazy val baseSettings = Seq(
   scalacOptions ++= {
     if (priorTo2_13(scalaVersion.value)) compilerOptions
@@ -194,7 +196,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (scodec, scodecJS),
   (testing, testingJS),
   (tests, testsJS),
-  (hygiene, hygieneJS)
+  (hygiene, hygieneJS),
+  (monies, moniesJS)
 )
 
 lazy val circeJsModules = Seq[Project](scalajs)
@@ -496,6 +499,15 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     )
   )
   .dependsOn(core)
+
+lazy val moniesBase = circeCrossModule("monies", mima = previousCirceVersion)
+  .settings(
+    libraryDependencies += "com.lambdista" %% "money" % moneyVersion
+  )
+  .dependsOn(coreBase, genericBase, testsBase % Test)
+
+lazy val monies = moniesBase.jvm
+lazy val moniesJS = moniesBase.js
 
 lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
   .dependsOn(coreBase, testsBase % Test)
