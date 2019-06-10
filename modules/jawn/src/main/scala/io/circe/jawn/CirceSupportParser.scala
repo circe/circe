@@ -11,33 +11,15 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
   implicit final val facade: RawFacade[Json] = maxValueSize match {
     case Some(size) =>
       if (allowDuplicateKeys) {
-        new LimitedFacade(size) {
-          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
-            map.put(key, value)
-        }
+        new LimitedFacade(size) with DuplicatesFacade
       } else {
-        new LimitedFacade(size) {
-          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
-            if (map.put(key, value).ne(null)) {
-              throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
-            }
-          }
-        }
+        new LimitedFacade(size) with NoDuplicatesFacade
       }
     case None =>
       if (allowDuplicateKeys) {
-        new UnlimitedFacade {
-          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
-            map.put(key, value)
-        }
+        new UnlimitedFacade with DuplicatesFacade
       } else {
-        new UnlimitedFacade {
-          protected[this] def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
-            if (map.put(key, value).ne(null)) {
-              throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
-            }
-          }
-        }
+        new UnlimitedFacade with NoDuplicatesFacade
       }
   }
 
@@ -132,6 +114,19 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       }
       final def finish(index: Int): Json = Json.fromJsonObject(JsonObject.fromLinkedHashMap(m))
       final def isObj: Boolean = true
+    }
+  }
+
+  private[this] trait DuplicatesFacade extends BaseFacade {
+    protected[this] final def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
+      map.put(key, value)
+  }
+
+  private[this] trait NoDuplicatesFacade extends BaseFacade {
+    protected[this] final def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
+      if (map.put(key, value).ne(null)) {
+        throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
+      }
     }
   }
 }
