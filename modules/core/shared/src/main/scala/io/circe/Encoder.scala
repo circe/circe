@@ -125,8 +125,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
    *
    * @group Utilities
    */
-  final def encodeFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): ArrayEncoder[F[A]] =
-    new ArrayEncoder[F[A]] {
+  final def encodeFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): AsArray[F[A]] =
+    new AsArray[F[A]] {
       final def encodeArray(a: F[A]): Vector[Json] =
         F.foldLeft(a, Vector.empty[Json])((list, v) => e(v) +: list).reverse
     }
@@ -141,7 +141,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Encoding
    */
-  implicit final val encodeJsonObject: ObjectEncoder[JsonObject] = new ObjectEncoder[JsonObject] {
+  implicit final val encodeJsonObject: AsObject[JsonObject] = new AsObject[JsonObject] {
     final def encodeObject(a: JsonObject): JsonObject = a
   }
 
@@ -162,7 +162,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Encoding
    */
-  implicit final val encodeUnit: ObjectEncoder[Unit] = new ObjectEncoder[Unit] {
+  implicit final val encodeUnit: AsObject[Unit] = new AsObject[Unit] {
     final def encodeObject(a: Unit): JsonObject = JsonObject.empty
   }
 
@@ -322,64 +322,64 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Collection
    */
-  implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): ArrayEncoder[Seq[A]] =
-    new IterableArrayEncoder[A, Seq](encodeA) {
+  implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): AsArray[Seq[A]] =
+    new IterableAsArrayEncoder[A, Seq](encodeA) {
       final protected def toIterator(a: Seq[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeSet[A](implicit encodeA: Encoder[A]): ArrayEncoder[Set[A]] =
-    new IterableArrayEncoder[A, Set](encodeA) {
+  implicit final def encodeSet[A](implicit encodeA: Encoder[A]): AsArray[Set[A]] =
+    new IterableAsArrayEncoder[A, Set](encodeA) {
       final protected def toIterator(a: Set[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeList[A](implicit encodeA: Encoder[A]): ArrayEncoder[List[A]] =
-    new IterableArrayEncoder[A, List](encodeA) {
+  implicit final def encodeList[A](implicit encodeA: Encoder[A]): AsArray[List[A]] =
+    new IterableAsArrayEncoder[A, List](encodeA) {
       final protected def toIterator(a: List[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[Vector[A]] =
-    new IterableArrayEncoder[A, Vector](encodeA) {
+  implicit final def encodeVector[A](implicit encodeA: Encoder[A]): AsArray[Vector[A]] =
+    new IterableAsArrayEncoder[A, Vector](encodeA) {
       final protected def toIterator(a: Vector[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[Chain[A]] =
-    new IterableArrayEncoder[A, Chain](encodeA) {
+  implicit final def encodeChain[A](implicit encodeA: Encoder[A]): AsArray[Chain[A]] =
+    new IterableAsArrayEncoder[A, Chain](encodeA) {
       final protected def toIterator(a: Chain[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyList[A]] =
-    new ArrayEncoder[NonEmptyList[A]] {
+  implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
+    new AsArray[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyVector[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyVector[A]] =
-    new ArrayEncoder[NonEmptyVector[A]] {
+  implicit final def encodeNonEmptyVector[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyVector[A]] =
+    new AsArray[NonEmptyVector[A]] {
       final def encodeArray(a: NonEmptyVector[A]): Vector[Json] = a.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptySet[A]] =
-    new ArrayEncoder[NonEmptySet[A]] {
+  implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySet[A]] =
+    new AsArray[NonEmptySet[A]] {
       final def encodeArray(a: NonEmptySet[A]): Vector[Json] = a.toSortedSet.toVector.map(encodeA(_))
     }
 
@@ -390,8 +390,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
-  ): ObjectEncoder[NonEmptyMap[K, V]] =
-    new ObjectEncoder[NonEmptyMap[K, V]] {
+  ): AsObject[NonEmptyMap[K, V]] =
+    new AsObject[NonEmptyMap[K, V]] {
       final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
         encodeMap[K, V].encodeObject(a.toSortedMap)
     }
@@ -399,8 +399,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): ArrayEncoder[NonEmptyChain[A]] =
-    new ArrayEncoder[NonEmptyChain[A]] {
+  implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyChain[A]] =
+    new AsArray[NonEmptyChain[A]] {
       final def encodeArray(a: NonEmptyChain[A]): Vector[Json] = a.toChain.toVector.map(encodeA(_))
     }
 
@@ -411,8 +411,8 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
-  ): ArrayEncoder[OneAnd[C, A]] = new ArrayEncoder[OneAnd[C, A]] {
-    private[this] val encoder: ArrayEncoder[Vector[A]] = encodeVector[A]
+  ): AsArray[OneAnd[C, A]] = new AsArray[OneAnd[C, A]] {
+    private[this] val encoder: AsArray[Vector[A]] = encodeVector[A]
 
     final def encodeArray(a: OneAnd[C, A]): Vector[Json] = encoder.encodeArray(a.head +: ev(a.tail).toVector)
   }
@@ -426,7 +426,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
-  ): ObjectEncoder[ImmutableMap[K, V]] =
+  ): AsObject[ImmutableMap[K, V]] =
     encodeMapLike[K, V, ImmutableMap](encodeK, encodeV, identity)
 
   /**
@@ -439,7 +439,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V],
     ev: M[K, V] => Iterable[(K, V)]
-  ): ObjectEncoder[M[K, V]] = new IterableObjectEncoder[K, V, M](encodeK, encodeV) {
+  ): AsObject[M[K, V]] = new IterableAsObjectEncoder[K, V, M](encodeK, encodeV) {
     final protected def toIterator(a: M[K, V]): Iterator[(K, V)] = ev(a).iterator
   }
 
@@ -450,7 +450,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     implicit
     ea: Encoder[A],
     eb: Encoder[B]
-  ): ObjectEncoder[Either[A, B]] = new ObjectEncoder[Either[A, B]] {
+  ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
     final def encodeObject(a: Either[A, B]): JsonObject = a match {
       case Left(a)  => JsonObject.singleton(leftKey, ea(a))
       case Right(b) => JsonObject.singleton(rightKey, eb(b))
@@ -464,7 +464,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
     implicit
     ee: Encoder[E],
     ea: Encoder[A]
-  ): ObjectEncoder[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
+  ): AsObject[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
     case Validated.Invalid(e) => Left(e)
     case Validated.Valid(a)   => Right(a)
   }
@@ -490,10 +490,10 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * Note that this implementation assumes that the collection does not contain duplicate keys.
    */
-  private[this] abstract class IterableObjectEncoder[K, V, M[_, _]](
+  private[this] abstract class IterableAsObjectEncoder[K, V, M[_, _]](
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
-  ) extends ObjectEncoder[M[K, V]] {
+  ) extends AsObject[M[K, V]] {
     protected def toIterator(a: M[K, V]): Iterator[(K, V)]
 
     final def encodeObject(a: M[K, V]): JsonObject = {
@@ -701,6 +701,206 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   implicit final val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
     final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
+
+  /**
+   * A subtype of `Encoder` that statically verifies that the instance encodes
+   * either a JSON array or an object.
+   *
+   * @author Travis Brown
+   */
+  trait AsRoot[A] extends Encoder[A]
+
+  /**
+   * Utilities and instances for [[AsRoot]].
+   *
+   * @groupname Utilities Defining encoders
+   * @groupprio Utilities 1
+   *
+   * @groupname Prioritization Instance prioritization
+   * @groupprio Prioritization 2
+   *
+   * @author Travis Brown
+   */
+  final object AsRoot extends LowPriorityAsRootEncoders {
+
+    /**
+     * Return an instance for a given type.
+     *
+     * @group Utilities
+     */
+    final def apply[A](implicit instance: AsRoot[A]): AsRoot[A] = instance
+  }
+
+  private[circe] class LowPriorityAsRootEncoders {
+
+    /**
+     * @group Prioritization
+     */
+    implicit final def importedAsRootEncoder[A](implicit exported: Exported[AsRoot[A]]): AsRoot[A] =
+      exported.instance
+  }
+
+  /**
+   * A type class that provides a conversion from a value of type `A` to a JSON
+   * array.
+   *
+   * @author Travis Brown
+   */
+  trait AsArray[A] extends AsRoot[A] { self =>
+    final def apply(a: A): Json = Json.fromValues(encodeArray(a))
+
+    /**
+     * Convert a value to a JSON array.
+     */
+    def encodeArray(a: A): Vector[Json]
+
+    /**
+     * Create a new [[AsArray]] by applying a function to a value of type `B` before encoding as
+     * an `A`.
+     */
+    final def contramapArray[B](f: B => A): AsArray[B] = new AsArray[B] {
+      final def encodeArray(a: B) = self.encodeArray(f(a))
+    }
+
+    /**
+     * Create a new [[AsArray]] by applying a function to the output of this
+     * one.
+     */
+    final def mapJsonArray(f: Vector[Json] => Vector[Json]): AsArray[A] = new AsArray[A] {
+      final def encodeArray(a: A): Vector[Json] = f(self.encodeArray(a))
+    }
+  }
+
+  /**
+   * Utilities and instances for [[AsArray]].
+   *
+   * @groupname Utilities Defining encoders
+   * @groupprio Utilities 1
+   *
+   * @groupname Instances Type class instances
+   * @groupprio Instances 2
+   *
+   * @groupname Prioritization Instance prioritization
+   * @groupprio Prioritization 3
+   *
+   * @author Travis Brown
+   */
+  final object AsArray extends LowPriorityAsArrayEncoders {
+
+    /**
+     * Return an instance for a given type.
+     *
+     * @group Utilities
+     */
+    final def apply[A](implicit instance: AsArray[A]): AsArray[A] = instance
+
+    /**
+     * Construct an instance from a function.
+     *
+     * @group Utilities
+     */
+    final def instance[A](f: A => Vector[Json]): AsArray[A] = new AsArray[A] {
+      final def encodeArray(a: A): Vector[Json] = f(a)
+    }
+
+    /**
+     * @group Instances
+     */
+    implicit final val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
+      final def contramap[A, B](e: AsArray[A])(f: B => A): AsArray[B] = e.contramapArray(f)
+    }
+  }
+
+  private[circe] class LowPriorityAsArrayEncoders {
+
+    /**
+     * @group Prioritization
+     */
+    implicit final def importedAsArrayEncoder[A](implicit exported: Exported[AsArray[A]]): AsArray[A] =
+      exported.instance
+  }
+
+  /**
+   * A type class that provides a conversion from a value of type `A` to a
+   * [[JsonObject]].
+   *
+   * @author Travis Brown
+   */
+  trait AsObject[A] extends AsRoot[A] { self =>
+    final def apply(a: A): Json = Json.fromJsonObject(encodeObject(a))
+
+    /**
+     * Convert a value to a JSON object.
+     */
+    def encodeObject(a: A): JsonObject
+
+    /**
+     * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
+     * `A`.
+     */
+    final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
+      final def encodeObject(a: B) = self.encodeObject(f(a))
+    }
+
+    /**
+     * Create a new [[AsObject]] by applying a function to the output of this
+     * one.
+     */
+    final def mapJsonObject(f: JsonObject => JsonObject): AsObject[A] = new AsObject[A] {
+      final def encodeObject(a: A): JsonObject = f(self.encodeObject(a))
+    }
+  }
+
+  /**
+   * Utilities and instances for [[Encoder.AsObject]].
+   *
+   * @groupname Utilities Defining encoders
+   * @groupprio Utilities 1
+   *
+   * @groupname Instances Type class instances
+   * @groupprio Instances 2
+   *
+   * @groupname Prioritization Instance prioritization
+   * @groupprio Prioritization 3
+   *
+   * @author Travis Brown
+   */
+  final object AsObject extends LowPriorityAsObjectEncoders {
+
+    /**
+     * Return an instance for a given type.
+     *
+     * @group Utilities
+     */
+    final def apply[A](implicit instance: AsObject[A]): AsObject[A] = instance
+
+    /**
+     * Construct an instance from a function.
+     *
+     * @group Utilities
+     */
+    final def instance[A](f: A => JsonObject): AsObject[A] = new AsObject[A] {
+      final def encodeObject(a: A): JsonObject = f(a)
+    }
+
+    /**
+     * @group Instances
+     */
+    implicit final val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
+      final def contramap[A, B](e: AsObject[A])(f: B => A): AsObject[B] = e.contramapObject(f)
+    }
+  }
+
+  private[circe] class LowPriorityAsObjectEncoders {
+
+    /**
+     * @group Prioritization
+     */
+    implicit final def importedAsObjectEncoder[A](
+      implicit
+      exported: Exported[AsObject[A]]
+    ): AsObject[A] = exported.instance
+  }
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
@@ -712,11 +912,11 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
     implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
-  ): ArrayEncoder[C[A]] = new IterableArrayEncoder[A, C](encodeA) {
+  ): Encoder.AsArray[C[A]] = new IterableAsArrayEncoder[A, C](encodeA) {
     final protected def toIterator(a: C[A]): Iterator[A] = ev(a).iterator
   }
 
-  protected[this] abstract class IterableArrayEncoder[A, C[_]](encodeA: Encoder[A]) extends ArrayEncoder[C[A]] {
+  protected[this] abstract class IterableAsArrayEncoder[A, C[_]](encodeA: Encoder[A]) extends Encoder.AsArray[C[A]] {
     protected def toIterator(a: C[A]): Iterator[A]
 
     final def encodeArray(a: C[A]): Vector[Json] = {
