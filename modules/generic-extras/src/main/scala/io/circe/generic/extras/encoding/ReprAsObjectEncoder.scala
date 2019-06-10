@@ -9,7 +9,7 @@ import scala.language.experimental.macros
  *
  * Note that users typically will not work with instances of this class.
  */
-abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
+trait ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
   def configuredEncodeObject(a: A)(
     transformMemberNames: String => String,
     transformDiscriminator: String => String,
