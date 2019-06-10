@@ -11,7 +11,7 @@ package io.circe
  */
 trait Codec[A] extends Decoder[A] with Encoder[A]
 
-final object Codec {
+final object Codec extends ProductCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
