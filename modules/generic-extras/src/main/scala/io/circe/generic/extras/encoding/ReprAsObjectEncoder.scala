@@ -26,7 +26,7 @@ abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
     case Some(disc) =>
       encode match {
         case oe: Encoder.AsObject[B] @unchecked => oe.encodeObject(value).add(disc, Json.fromString(name))
-        case _                               => JsonObject.singleton(name, encode(value))
+        case _                                  => JsonObject.singleton(name, encode(value))
       }
   }
 
