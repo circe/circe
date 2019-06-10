@@ -167,8 +167,8 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): ArrayEncoder[${`(A..N)`}] =
-        -    new ArrayEncoder[${`(A..N)`}] {
+        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder.AsArray[${`(A..N)`}] =
+        -    new Encoder.AsArray[${`(A..N)`}] {
         -      final def encodeArray(a: ${`(A..N)`}): Vector[Json] = Vector($applied)
         -    }
         |}
@@ -273,8 +273,8 @@ object Boilerplate {
         -   */
         -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
-        -  ): ObjectEncoder[Source] =
-        -    new ObjectEncoder[Source] {
+        -  ): Encoder.AsObject[Source] =
+        -    new Encoder.AsObject[Source] {
         -      final def encodeObject(a: Source): JsonObject = {
         -        val members = f(a)
         -        JsonObject.fromIterable(Vector($kvs))

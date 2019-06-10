@@ -27,13 +27,13 @@ object disjunctionCodecs {
     implicit
     ea: Encoder[A],
     eb: Encoder[B]
-  ): ObjectEncoder[Either[A, B]] =
+  ): Encoder.AsObject[Either[A, B]] =
     Encoder.encodeEither(leftKey, rightKey)
 
   implicit final def encodeValidated[E, A](
     implicit
     ee: Encoder[E],
     ea: Encoder[A]
-  ): ObjectEncoder[Validated[E, A]] =
+  ): Encoder.AsObject[Validated[E, A]] =
     Encoder.encodeValidated(failureKey, successKey)
 }

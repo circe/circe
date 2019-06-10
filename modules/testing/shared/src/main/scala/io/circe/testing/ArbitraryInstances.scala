@@ -2,7 +2,6 @@ package io.circe.testing
 
 import cats.instances.list._
 import io.circe.{
-  ArrayEncoder,
   Decoder,
   DecodingFailure,
   Encoder,
@@ -11,8 +10,7 @@ import io.circe.{
   JsonNumber,
   JsonObject,
   KeyDecoder,
-  KeyEncoder,
-  ObjectEncoder
+  KeyEncoder
 }
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
@@ -118,12 +116,12 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Arbitrary.arbitrary[Json => Either[DecodingFailure, A]].map(f => Decoder.instance(c => f(c.value)))
   )
 
-  implicit def arbitraryObjectEncoder[A: Cogen]: Arbitrary[ObjectEncoder[A]] = Arbitrary(
-    Arbitrary.arbitrary[A => JsonObject].map(ObjectEncoder.instance)
+  implicit def arbitraryAsObjectEncoder[A: Cogen]: Arbitrary[Encoder.AsObject[A]] = Arbitrary(
+    Arbitrary.arbitrary[A => JsonObject].map(Encoder.AsObject.instance)
   )
 
-  implicit def arbitraryArrayEncoder[A: Cogen]: Arbitrary[ArrayEncoder[A]] = Arbitrary(
-    Arbitrary.arbitrary[A => Vector[Json]].map(ArrayEncoder.instance)
+  implicit def arbitraryAsArrayEncoder[A: Cogen]: Arbitrary[Encoder.AsArray[A]] = Arbitrary(
+    Arbitrary.arbitrary[A => Vector[Json]].map(Encoder.AsArray.instance)
   )
 
   implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] = {

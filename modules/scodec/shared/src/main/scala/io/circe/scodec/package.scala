@@ -53,8 +53,8 @@ package object scodec {
    * }
    * }}}
    */
-  final def encodeBitVectorWithNames(bitsName: String, lengthName: String): ObjectEncoder[BitVector] =
-    ObjectEncoder.instance { bv =>
+  final def encodeBitVectorWithNames(bitsName: String, lengthName: String): Encoder.AsObject[BitVector] =
+    Encoder.AsObject.instance { bv =>
       JsonObject
         .singleton(bitsName, Json.fromString(bv.toBase64))
         .add(

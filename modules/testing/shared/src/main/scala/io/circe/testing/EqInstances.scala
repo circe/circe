@@ -4,7 +4,7 @@ import cats.instances.either._
 import cats.instances.option._
 import cats.instances.string._
 import cats.kernel.Eq
-import io.circe.{ ArrayEncoder, Decoder, Encoder, Json, KeyDecoder, KeyEncoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder, Json, KeyDecoder, KeyEncoder }
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>
@@ -39,11 +39,11 @@ trait EqInstances { this: ArbitraryInstances =>
       .forall(json => Eq[Decoder.Result[A]].eqv(d1(json.hcursor), d2(json.hcursor)))
   }
 
-  implicit def eqObjectEncoder[A: Arbitrary]: Eq[ObjectEncoder[A]] = Eq.instance { (e1, e2) =>
+  implicit def eqAsObjectEncoder[A: Arbitrary]: Eq[Encoder.AsObject[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => Eq[Json].eqv(e1(a), e2(a)))
   }
 
-  implicit def eqArrayEncoder[A: Arbitrary]: Eq[ArrayEncoder[A]] = Eq.instance { (e1, e2) =>
+  implicit def eqAsArrayEncoder[A: Arbitrary]: Eq[Encoder.AsArray[A]] = Eq.instance { (e1, e2) =>
     arbitraryValues[A].take(codecEqualityCheckCount).forall(a => Eq[Json].eqv(e1(a), e2(a)))
   }
 }

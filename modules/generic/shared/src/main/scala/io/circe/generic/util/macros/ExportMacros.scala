@@ -1,9 +1,9 @@
 package io.circe.generic.util.macros
 
-import io.circe.{ Decoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.export.Exported
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.generic.encoding.DerivedAsObjectEncoder
 import scala.reflect.macros.blackbox
 
 class ExportMacros(val c: blackbox.Context) {
@@ -25,18 +25,18 @@ class ExportMacros(val c: blackbox.Context) {
     }
   }
 
-  final def exportEncoder[E[x] <: DerivedObjectEncoder[x], A](
+  final def exportEncoder[E[x] <: DerivedAsObjectEncoder[x], A](
     implicit
     E: c.WeakTypeTag[E[_]],
     A: c.WeakTypeTag[A]
-  ): c.Expr[Exported[ObjectEncoder[A]]] = {
+  ): c.Expr[Exported[Encoder.AsObject[A]]] = {
     val target = appliedType(E.tpe.typeConstructor, A.tpe)
 
     c.typecheck(q"_root_.shapeless.lazily[$target]", silent = true) match {
       case EmptyTree => c.abort(c.enclosingPosition, s"Unable to infer value of type $target")
       case t =>
-        c.Expr[Exported[ObjectEncoder[A]]](
-          q"new _root_.io.circe.export.Exported($t: _root_.io.circe.ObjectEncoder[$A])"
+        c.Expr[Exported[Encoder.AsObject[A]]](
+          q"new _root_.io.circe.export.Exported($t: _root_.io.circe.Encoder.AsObject[$A])"
         )
     }
   }

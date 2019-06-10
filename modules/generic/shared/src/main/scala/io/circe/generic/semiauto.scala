@@ -1,8 +1,8 @@
 package io.circe.generic
 
-import io.circe.{ Decoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.generic.decoding.{ DerivedDecoder, ReprDecoder }
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.generic.encoding.DerivedAsObjectEncoder
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ HList, LabelledGeneric, Lazy }
 import shapeless.ops.function.FnFromProduct
@@ -29,7 +29,7 @@ import shapeless.ops.record.RemoveAll
  */
 final object semiauto {
   final def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
-  final def deriveEncoder[A](implicit encode: Lazy[DerivedObjectEncoder[A]]): ObjectEncoder[A] = encode.value
+  final def deriveEncoder[A](implicit encode: Lazy[DerivedAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 

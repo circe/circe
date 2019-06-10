@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -77,7 +77,7 @@ class ConfiguredJsonCodecSuite extends CirceSuite {
   "@ConfiguredJsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
     @ConfiguredJsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
-    ObjectEncoder[CaseClassEncodeOnly]
+    Encoder.AsObject[CaseClassEncodeOnly]
     assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
   }
 

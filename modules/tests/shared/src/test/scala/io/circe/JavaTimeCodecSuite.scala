@@ -14,7 +14,7 @@ object JavaTimeCaseClass {
   implicit val decodeJavaTimeCaseClass: Decoder[JavaTimeCaseClass] =
     Decoder.forProduct3("foo", "bar", "baz")(JavaTimeCaseClass.apply)
 
-  implicit val encodeJavaTimeCaseClass: ObjectEncoder[JavaTimeCaseClass] =
+  implicit val encodeJavaTimeCaseClass: Encoder.AsObject[JavaTimeCaseClass] =
     Encoder.forProduct3("foo", "bar", "baz") { (value: JavaTimeCaseClass) =>
       (value.foo, value.bar, value.baz)
     }

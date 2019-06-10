@@ -1,6 +1,6 @@
 package io.circe.generic.util.macros
 
-import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import scala.reflect.macros.blackbox
 
 abstract class JsonCodecMacros {
@@ -37,7 +37,7 @@ abstract class JsonCodecMacros {
 
   private[this] val DecoderClass = typeOf[Decoder[_]].typeSymbol.asType
   private[this] val EncoderClass = typeOf[Encoder[_]].typeSymbol.asType
-  private[this] val ObjectEncoderClass = typeOf[ObjectEncoder[_]].typeSymbol.asType
+  private[this] val AsObjectEncoderClass = typeOf[Encoder.AsObject[_]].typeSymbol.asType
 
   private[this] val macroName: Tree = {
     c.prefix.tree match {
@@ -66,7 +66,7 @@ abstract class JsonCodecMacros {
       val Type = tpname
       (
         q"""implicit val $decodeNme: $DecoderClass[$Type] = $semiautoObj.deriveDecoder[$Type]""",
-        q"""implicit val $encodeNme: $ObjectEncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]"""
+        q"""implicit val $encodeNme: $AsObjectEncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]"""
       )
     } else {
       val tparamNames = tparams.map(_.name)
@@ -83,7 +83,7 @@ abstract class JsonCodecMacros {
       (
         q"""implicit def $decodeNme[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
            $semiautoObj.deriveDecoder[$Type]""",
-        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): $ObjectEncoderClass[$Type] =
+        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): $AsObjectEncoderClass[$Type] =
            $semiautoObj.deriveEncoder[$Type]"""
       )
     }
