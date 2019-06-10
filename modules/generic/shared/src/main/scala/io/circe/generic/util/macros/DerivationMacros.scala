@@ -7,17 +7,20 @@ import scala.reflect.macros.blackbox
 import shapeless.{ CNil, Coproduct, HList, HNil, Lazy }
 import shapeless.labelled.KeyTag
 
-abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
+abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
   val c: blackbox.Context
 
   import c.universe._
 
   protected[this] def RD: TypeTag[RD[_]]
   protected[this] def RE: TypeTag[RE[_]]
+  protected[this] def RC: TypeTag[RC[_]]
   protected[this] def DD: TypeTag[DD[_]]
   protected[this] def DE: TypeTag[DE[_]]
+  protected[this] def DC: TypeTag[DC[_]]
 
   protected[this] def hnilReprDecoder: Tree
+  protected[this] def hnilReprCodec: Tree
 
   protected[this] def decodeMethodName: TermName
   protected[this] def decodeMethodArgs: List[Tree] = Nil
@@ -73,14 +76,14 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
      * Fold over the elements of this (co-)product while accumulating instances
      * of some type class for each.
      */
-    def fold[Z](resolver: Type => Tree)(init: Z)(f: (Member, TermName, Z) => Z): (List[Tree], Z) = {
+    def fold[Z](namePrefix: String)(resolver: Type => Tree)(init: Z)(f: (Member, TermName, Z) => Z): (List[Tree], Z) = {
       val (instanceList, result) = underlying.foldRight((List.empty[(Type, (TermName, Tree))], init)) {
         case (member @ Member(label, _, valueType, _, _), (instanceList, acc)) =>
           val (newInstanceList, instanceName) =
             instanceList.find(_._1 =:= valueType) match {
               case Some(result) => (instanceList, result._2._1)
               case None =>
-                val newName = TermName(s"circeGenericInstanceFor$label").encodedName.toTermName
+                val newName = TermName(s"$namePrefix$label").encodedName.toTermName
                 val newInstance = resolver(valueType)
 
                 ((valueType, (newName, newInstance)) :: instanceList, newName)
@@ -178,12 +181,13 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
 
   val ReprDecoderUtils = symbolOf[ReprDecoder.type].asClass.module
 
-  private[this] def hlistDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
-    resolveInstance(List((typeOf[Decoder[_]], false)))
-  )((q"$ReprDecoderUtils.hnilResult": Tree, q"$ReprDecoderUtils.hnilResultAccumulating": Tree)) {
-    case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) =>
-      (
-        q"""
+  private[this] def hlistDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) =
+    members.fold("circeGenericDecoderFor")(
+      resolveInstance(List((typeOf[Decoder[_]], false)))
+    )((q"$ReprDecoderUtils.hnilResult": Tree, q"$ReprDecoderUtils.hnilResultAccumulating": Tree)) {
+      case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) =>
+        (
+          q"""
         $ReprDecoderUtils.consResults[
           _root_.io.circe.Decoder.Result,
           $nameTpe,
@@ -194,7 +198,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           $acc
         )(_root_.io.circe.Decoder.resultInstance)
       """,
-        q"""
+          q"""
         $ReprDecoderUtils.consResults[
           _root_.io.circe.Decoder.AccumulatingResult,
           $nameTpe,
@@ -205,8 +209,8 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           $accAccumulating
         )(_root_.io.circe.Decoder.accumulatingResultInstance)
       """
-      )
-  }
+        )
+    }
 
   private[this] val cnilResult: Tree = q"""
     _root_.scala.util.Left[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
@@ -220,12 +224,13 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     )
   """
 
-  private[this] def coproductDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
-    resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
-  )((cnilResult, cnilResultAccumulating)) {
-    case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) =>
-      (
-        q"""
+  private[this] def coproductDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) =
+    members.fold("circeGenericDecoderFor")(
+      resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
+    )((cnilResult, cnilResultAccumulating)) {
+      case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) =>
+        (
+          q"""
         ${decodeSubtype(label, instanceName)} match {
           case _root_.scala.Some(result) => result match {
             case _root_.scala.util.Right(v) =>
@@ -238,7 +243,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           }
         }
       """,
-        q"""
+          q"""
         ${decodeSubtypeAccumulating(label, instanceName)} match {
           case _root_.scala.Some(result) => result.map(v =>
             $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
@@ -246,8 +251,8 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           case _root_.scala.None => $accAccumulating.map(_root_.shapeless.Inr(_))
         }
       """
-      )
-  }
+        )
+    }
 
   protected[this] def constructDecoder[R](implicit R: c.WeakTypeTag[R]): c.Tree = {
     val isHList = R.tpe <:< HListType
@@ -281,17 +286,18 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   }
 
   protected[this] def hlistEncoderParts(members: Members): (List[c.Tree], c.Tree) = {
-    val (instanceDefs, (pattern, fields)) = members.fold(resolveInstance(List((typeOf[Encoder[_]], false))))(
-      (pq"_root_.shapeless.HNil": Tree, List.empty[Tree])
-    ) {
-      case (Member(label, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
-        val currentName = TermName(s"circeGenericHListBindingFor$label").encodedName.toTermName
+    val (instanceDefs, (pattern, fields)) =
+      members.fold("circeGenericEncoderFor")(resolveInstance(List((typeOf[Encoder[_]], false))))(
+        (pq"_root_.shapeless.HNil": Tree, List.empty[Tree])
+      ) {
+        case (Member(label, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
+          val currentName = TermName(s"circeGenericHListBindingFor$label").encodedName.toTermName
 
-        (
-          pq"_root_.shapeless.::($currentName, $patternAcc)",
-          encodeField(label, instanceName, currentName) :: fieldsAcc
-        )
-    }
+          (
+            pq"_root_.shapeless.::($currentName, $patternAcc)",
+            encodeField(label, instanceName, currentName) :: fieldsAcc
+          )
+      }
 
     (
       instanceDefs,
@@ -305,7 +311,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   }
 
   private[this] def coproductEncoderParts(members: Members): (List[c.Tree], c.Tree) = {
-    val (instanceDefs, patternAndCase) = members.fold(
+    val (instanceDefs, patternAndCase) = members.fold("circeGenericEncoderFor")(
       resolveInstance(List((typeOf[Encoder[_]], false), (DE.tpe, true)))
     )(
       cq"""_root_.shapeless.Inr(_) => _root_.scala.sys.error("Cannot encode CNil")"""
@@ -346,6 +352,45 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
           final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject = $instanceImpl
         }: $instanceType
       """
+    }
+  }
+
+  protected[this] def constructCodec[R](implicit R: c.WeakTypeTag[R]): c.Tree = {
+    val isHList = R.tpe <:< HListType
+    val isCoproduct = !isHList && R.tpe <:< CoproductType
+
+    if (!isHList && !isCoproduct) fail(R.tpe)
+    else {
+      val members = Members.fromType(R.tpe)
+
+      if (isHList && members.underlying.isEmpty) q"$hnilReprCodec"
+      else {
+        val (encoderInstanceDefs, (result, resultAccumulating)) =
+          if (isHList) hlistDecoderParts(members) else coproductDecoderParts(members)
+
+        val (decoderInstanceDefs, encoderInstanceImpl) =
+          if (isHList) hlistEncoderParts(members) else coproductEncoderParts(members)
+
+        val instanceType = appliedType(RC.tpe.typeConstructor, List(R.tpe))
+
+        q"""
+          new $instanceType {
+            ..$encoderInstanceDefs
+            ..$decoderInstanceDefs
+
+            final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject =
+              $encoderInstanceImpl
+
+            final def $decodeMethodName(
+              ...${fullDecodeMethodArgs(R.tpe)}
+            ): _root_.io.circe.Decoder.Result[$R] = $result
+
+            final override def $decodeAccumulatingMethodName(
+              ...${fullDecodeAccumulatingMethodArgs(R.tpe)}
+            ): _root_.io.circe.Decoder.AccumulatingResult[$R] = $resultAccumulating
+          }: $instanceType
+        """
+      }
     }
   }
 }

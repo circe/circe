@@ -1,24 +1,36 @@
 package io.circe.generic.extras
 
+import io.circe.generic.extras.codec.{ ConfiguredAsObjectCodec, ReprAsObjectCodec }
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, ReprDecoder }
 import io.circe.generic.extras.encoding.{ ConfiguredAsObjectEncoder, ReprAsObjectEncoder }
 import io.circe.generic.util.macros.DerivationMacros
 import scala.reflect.macros.whitebox
 
 class ConfigurableDeriver(val c: whitebox.Context)
-    extends DerivationMacros[ReprDecoder, ReprAsObjectEncoder, ConfiguredDecoder, ConfiguredAsObjectEncoder] {
+    extends DerivationMacros[
+      ReprDecoder,
+      ReprAsObjectEncoder,
+      ReprAsObjectCodec,
+      ConfiguredDecoder,
+      ConfiguredAsObjectEncoder,
+      ConfiguredAsObjectCodec
+    ] {
   import c.universe._
 
   def deriveDecoder[R: c.WeakTypeTag]: c.Expr[ReprDecoder[R]] = c.Expr[ReprDecoder[R]](constructDecoder[R])
   def deriveEncoder[R: c.WeakTypeTag]: c.Expr[ReprAsObjectEncoder[R]] =
     c.Expr[ReprAsObjectEncoder[R]](constructEncoder[R])
+  def deriveCodec[R: c.WeakTypeTag]: c.Expr[ReprAsObjectCodec[R]] = c.Expr[ReprAsObjectCodec[R]](constructCodec[R])
 
   protected[this] val RD: TypeTag[ReprDecoder[_]] = c.typeTag
   protected[this] val RE: TypeTag[ReprAsObjectEncoder[_]] = c.typeTag
+  protected[this] val RC: TypeTag[ReprAsObjectCodec[_]] = c.typeTag
   protected[this] val DD: TypeTag[ConfiguredDecoder[_]] = c.typeTag
   protected[this] val DE: TypeTag[ConfiguredAsObjectEncoder[_]] = c.typeTag
+  protected[this] val DC: TypeTag[ConfiguredAsObjectCodec[_]] = c.typeTag
 
   protected[this] val hnilReprDecoder: Tree = q"_root_.io.circe.generic.extras.decoding.ReprDecoder.hnilReprDecoder"
+  protected[this] val hnilReprCodec: Tree = q"_root_.io.circe.generic.extras.codec.ReprAsObjectCodec.hnilReprCodec"
 
   protected[this] val decodeMethodName: TermName = TermName("configuredDecode")
   protected[this] val decodeAccumulatingMethodName: TermName = TermName("configuredDecodeAccumulating")

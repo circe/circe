@@ -1,6 +1,7 @@
 package io.circe.generic.extras
 
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Codec, Decoder, Encoder }
+import io.circe.generic.extras.codec.ConfiguredAsObjectCodec
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder }
 import io.circe.generic.extras.encoding.{ ConfiguredAsObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
 import io.circe.generic.extras.util.RecordToMap
@@ -31,6 +32,7 @@ import shapeless.ops.record.RemoveAll
 final object semiauto {
   final def deriveDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] = decode.value
   final def deriveEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
+  final def deriveCodec[A](implicit codec: Lazy[ConfiguredAsObjectCodec[A]]): Codec.AsObject[A] = codec.value
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
