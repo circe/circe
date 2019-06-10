@@ -16,5 +16,6 @@ import scala.language.experimental.macros
  */
 trait AutoDerivation {
   implicit def exportDecoder[A]: Exported[Decoder[A]] = macro ExportMacros.exportDecoder[DerivedDecoder, A]
-  implicit def exportEncoder[A]: Exported[Encoder.AsObject[A]] = macro ExportMacros.exportEncoder[DerivedAsObjectEncoder, A]
+  implicit def exportEncoder[A]: Exported[Encoder.AsObject[A]] =
+    macro ExportMacros.exportEncoder[DerivedAsObjectEncoder, A]
 }

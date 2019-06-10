@@ -21,10 +21,11 @@ class EncoderSuite extends CirceSuite {
     assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
   }
 
-  "Encoder.AsObject#mapJsonObject" should "transform encoded output" in forAll { (m: Map[String, Int], k: String, v: Int) =>
-    val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))
+  "Encoder.AsObject#mapJsonObject" should "transform encoded output" in forAll {
+    (m: Map[String, Int], k: String, v: Int) =>
+      val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))
 
-    assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
+      assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
   }
 
   "Encoder[Enumeration]" should "write Scala Enumerations" in {

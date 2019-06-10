@@ -10,7 +10,8 @@ class Deriver(val c: whitebox.Context)
   import c.universe._
 
   def deriveDecoder[R: c.WeakTypeTag]: c.Expr[ReprDecoder[R]] = c.Expr[ReprDecoder[R]](constructDecoder[R])
-  def deriveEncoder[R: c.WeakTypeTag]: c.Expr[ReprAsObjectEncoder[R]] = c.Expr[ReprAsObjectEncoder[R]](constructEncoder[R])
+  def deriveEncoder[R: c.WeakTypeTag]: c.Expr[ReprAsObjectEncoder[R]] =
+    c.Expr[ReprAsObjectEncoder[R]](constructEncoder[R])
 
   protected[this] val RD: TypeTag[ReprDecoder[_]] = c.typeTag
   protected[this] val RE: TypeTag[ReprAsObjectEncoder[_]] = c.typeTag
