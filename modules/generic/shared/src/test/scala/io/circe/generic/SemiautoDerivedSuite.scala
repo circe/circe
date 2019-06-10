@@ -1,9 +1,9 @@
 package io.circe.generic
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.decoding.DerivedDecoder
-import io.circe.generic.encoding.DerivedObjectEncoder
+import io.circe.generic.encoding.DerivedAsObjectEncoder
 import io.circe.generic.semiauto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -20,9 +20,9 @@ object SemiautoDerivedSuite {
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
 
   implicit val decodeWub: Decoder[Wub] = deriveDecoder
-  implicit val encodeWub: ObjectEncoder[Wub] = deriveEncoder
+  implicit val encodeWub: Encoder.AsObject[Wub] = deriveEncoder
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
-  implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder
+  implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
@@ -50,7 +50,7 @@ object SemiautoDerivedSuite {
       Arbitrary(atDepth(0))
 
     implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
-    implicit val encodeRecursiveAdtExample: ObjectEncoder[RecursiveAdtExample] = deriveEncoder
+    implicit val encodeRecursiveAdtExample: Encoder.AsObject[RecursiveAdtExample] = deriveEncoder
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
@@ -73,7 +73,7 @@ object SemiautoDerivedSuite {
     implicit val decodeRecursiveWithOptionExample: Decoder[RecursiveWithOptionExample] =
       deriveDecoder
 
-    implicit val encodeRecursiveWithOptionExample: ObjectEncoder[RecursiveWithOptionExample] =
+    implicit val encodeRecursiveWithOptionExample: Encoder.AsObject[RecursiveWithOptionExample] =
       deriveEncoder
   }
 
@@ -153,13 +153,13 @@ class SemiautoDerivedSuite extends CirceSuite {
     implicitly[DerivedDecoder[OvergenerationExampleInner]]
     illTyped("Decoder[OvergenerationExampleInner]")
 
-    implicitly[DerivedObjectEncoder[OvergenerationExampleInner]]
-    illTyped("ObjectEncoder[OvergenerationExampleInner]")
+    implicitly[DerivedAsObjectEncoder[OvergenerationExampleInner]]
+    illTyped("Encoder.AsObject[OvergenerationExampleInner]")
 
     illTyped("Decoder[OvergenerationExampleOuter0]")
-    illTyped("ObjectEncoder[OvergenerationExampleOuter0]")
+    illTyped("Encoder.AsObject[OvergenerationExampleOuter0]")
     illTyped("Decoder[OvergenerationExampleOuter1]")
-    illTyped("ObjectEncoder[OvergenerationExampleOuter1]")
+    illTyped("Encoder.AsObject[OvergenerationExampleOuter1]")
   }
 
   it should "require instances for all parts" in {

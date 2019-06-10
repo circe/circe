@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json, ObjectEncoder }
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import io.circe.generic.extras.semiauto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -50,7 +50,7 @@ object ConfiguredSemiautoDerivedSuite {
   implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
 
   implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
-  implicit val encodeConfigExampleBase: ObjectEncoder[ConfigExampleBase] = deriveEncoder
+  implicit val encodeConfigExampleBase: Encoder.AsObject[ConfigExampleBase] = deriveEncoder
 }
 
 class ConfiguredSemiautoDerivedSuite extends CirceSuite {

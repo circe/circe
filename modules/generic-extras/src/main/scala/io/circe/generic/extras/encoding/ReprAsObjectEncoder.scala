@@ -1,6 +1,6 @@
 package io.circe.generic.extras.encoding
 
-import io.circe.{ Encoder, Json, JsonObject, ObjectEncoder }
+import io.circe.{ Encoder, Json, JsonObject }
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.language.experimental.macros
 
@@ -9,7 +9,7 @@ import scala.language.experimental.macros
  *
  * Note that users typically will not work with instances of this class.
  */
-abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
+abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
   def configuredEncodeObject(a: A)(
     transformMemberNames: String => String,
     transformDiscriminator: String => String,
@@ -25,7 +25,7 @@ abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
     case None => JsonObject.singleton(name, encode(value))
     case Some(disc) =>
       encode match {
-        case oe: ObjectEncoder[B] @unchecked => oe.encodeObject(value).add(disc, Json.fromString(name))
+        case oe: Encoder.AsObject[B] @unchecked => oe.encodeObject(value).add(disc, Json.fromString(name))
         case _                               => JsonObject.singleton(name, encode(value))
       }
   }
@@ -33,6 +33,6 @@ abstract class ReprObjectEncoder[A] extends ObjectEncoder[A] {
   final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, Predef.identity, None)
 }
 
-final object ReprObjectEncoder {
-  implicit def deriveReprObjectEncoder[R]: ReprObjectEncoder[R] = macro ConfigurableDeriver.deriveEncoder[R]
+final object ReprAsObjectEncoder {
+  implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] = macro ConfigurableDeriver.deriveEncoder[R]
 }

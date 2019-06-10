@@ -2,7 +2,7 @@ package io.circe.generic
 
 import cats.kernel.Eq
 import cats.instances.AllInstances
-import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceSuite, MissingInstances }
@@ -165,15 +165,15 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkLaws("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkLaws("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 
-  "@JsonCodec" should "provide ObjectEncoder instances" in {
-    ObjectEncoder[Simple]
-    ObjectEncoder[Single]
-    ObjectEncoder[Typed1[Int]]
-    ObjectEncoder[Typed2[Int, Long]]
-    ObjectEncoder[AccessModifier]
-    ObjectEncoder[Hierarchy]
-    ObjectEncoder[RecursiveHierarchy]
-    ObjectEncoder[SelfRecursiveWithOption]
+  "@JsonCodec" should "provide Encoder.AsObject instances" in {
+    Encoder.AsObject[Simple]
+    Encoder.AsObject[Single]
+    Encoder.AsObject[Typed1[Int]]
+    Encoder.AsObject[Typed2[Int, Long]]
+    Encoder.AsObject[AccessModifier]
+    Encoder.AsObject[Hierarchy]
+    Encoder.AsObject[RecursiveHierarchy]
+    Encoder.AsObject[SelfRecursiveWithOption]
   }
 
   it should "allow only one, named argument set to true" in {
@@ -188,7 +188,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   "@JsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
     @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
-    ObjectEncoder[CaseClassEncodeOnly]
+    Encoder.AsObject[CaseClassEncodeOnly]
     assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
   }
 

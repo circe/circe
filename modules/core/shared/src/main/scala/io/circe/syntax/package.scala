@@ -6,7 +6,7 @@ package io.circe
 package object syntax {
   implicit final class EncoderOps[A](val wrappedEncodeable: A) extends AnyVal {
     final def asJson(implicit encoder: Encoder[A]): Json = encoder(wrappedEncodeable)
-    final def asJsonObject(implicit encoder: ObjectEncoder[A]): JsonObject =
+    final def asJsonObject(implicit encoder: Encoder.AsObject[A]): JsonObject =
       encoder.encodeObject(wrappedEncodeable)
   }
   implicit final class KeyOps[K](val key: K) extends AnyVal {

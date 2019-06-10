@@ -1,8 +1,8 @@
 package io.circe.generic.extras
 
-import io.circe.{ Decoder, Encoder, ObjectEncoder }
+import io.circe.{ Decoder, Encoder }
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder }
-import io.circe.generic.extras.encoding.{ ConfiguredObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
+import io.circe.generic.extras.encoding.{ ConfiguredAsObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
 import io.circe.generic.extras.util.RecordToMap
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ Default, HList, LabelledGeneric, Lazy }
@@ -12,7 +12,7 @@ import shapeless.ops.record.RemoveAll
 /**
  * Semi-automatic codec derivation.
  *
- * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.ObjectEncoder]]
+ * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.Encoder.AsObject]]
  * instances for case classes, "incomplete" case classes, sealed trait hierarchies, etc.
  *
  * Typical usage will look like the following:
@@ -24,13 +24,13 @@ import shapeless.ops.record.RemoveAll
  *
  *   object Foo {
  *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
- *     implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+ *     implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder[Foo]
  *   }
  * }}}
  */
 final object semiauto {
   final def deriveDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] = decode.value
-  final def deriveEncoder[A](implicit encode: Lazy[ConfiguredObjectEncoder[A]]): ObjectEncoder[A] = encode.value
+  final def deriveEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 

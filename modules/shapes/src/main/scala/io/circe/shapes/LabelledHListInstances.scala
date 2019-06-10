@@ -2,7 +2,15 @@ package io.circe.shapes
 
 import cats.data.Validated
 import cats.kernel.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, JsonObject, KeyDecoder, KeyEncoder, ObjectEncoder }
+import io.circe.{
+  Decoder,
+  DecodingFailure,
+  Encoder,
+  HCursor,
+  JsonObject,
+  KeyDecoder,
+  KeyEncoder
+}
 import shapeless.{ ::, HList, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 
@@ -42,8 +50,8 @@ trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
     implicit
     witK: Witness.Aux[K],
     encodeV: Encoder[V],
-    encodeT: ObjectEncoder[T]
-  ): ObjectEncoder[FieldType[K, V] :: T] = new ObjectEncoder[FieldType[K, V] :: T] {
+    encodeT: Encoder.AsObject[T]
+  ): Encoder.AsObject[FieldType[K, V] :: T] = new Encoder.AsObject[FieldType[K, V] :: T] {
     def encodeObject(a: FieldType[K, V] :: T): JsonObject =
       encodeT.encodeObject(a.tail).add(witK.value.name, encodeV(a.head))
   }
@@ -91,8 +99,8 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
     widenK: Widen.Aux[K, W],
     encodeW: KeyEncoder[W],
     encodeV: Encoder[V],
-    encodeT: ObjectEncoder[T]
-  ): ObjectEncoder[FieldType[K, V] :: T] = new ObjectEncoder[FieldType[K, V] :: T] {
+    encodeT: Encoder.AsObject[T]
+  ): Encoder.AsObject[FieldType[K, V] :: T] = new Encoder.AsObject[FieldType[K, V] :: T] {
     private[this] val widened = widenK(witK.value)
 
     def encodeObject(a: FieldType[K, V] :: T): JsonObject =

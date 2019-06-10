@@ -1,6 +1,6 @@
 package io.circe.generic.encoding
 
-import io.circe.ObjectEncoder
+import io.circe.Encoder
 import io.circe.generic.Deriver
 import scala.language.experimental.macros
 
@@ -9,8 +9,8 @@ import scala.language.experimental.macros
  *
  * Note that users typically will not work with instances of this class.
  */
-abstract class ReprObjectEncoder[A] extends ObjectEncoder[A]
+abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A]
 
-final object ReprObjectEncoder {
-  implicit def deriveReprObjectEncoder[R]: ReprObjectEncoder[R] = macro Deriver.deriveEncoder[R]
+final object ReprAsObjectEncoder {
+  implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] = macro Deriver.deriveEncoder[R]
 }
