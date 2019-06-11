@@ -23,8 +23,13 @@ install:
   - gem install jekyll -v 3.8.5
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
-  - sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
+  - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
+  - sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
+  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+    else echo "Skipping code coverage reporting on 2.13";
+    fi
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
