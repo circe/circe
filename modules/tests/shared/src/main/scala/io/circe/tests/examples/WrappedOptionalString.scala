@@ -6,7 +6,7 @@ import org.scalacheck.Arbitrary
 
 case class OptionalString(value: String) {
   def toOption: Option[String] = value match {
-    case "" => None
+    case ""    => None
     case other => Some(other)
   }
 }

@@ -34,6 +34,7 @@ import java.io.Serializable
  * @author Travis Brown
  */
 abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
+
   /**
    * The current location in the document.
    *
@@ -344,8 +345,8 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def getOrElse[A](k: String)(fallback: => A)(implicit d: Decoder[A]): Decoder.Result[A] =
     get[Option[A]](k) match {
       case Right(Some(a)) => Right(a)
-      case Right(None) => Right(fallback)
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
+      case Right(None)    => Right(fallback)
+      case l @ Left(_)    => l.asInstanceOf[Decoder.Result[A]]
     }
 
   /**
@@ -354,31 +355,31 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group Utilities
    */
   final def replayOne(op: CursorOp): ACursor = op match {
-    case CursorOp.MoveLeft => left
-    case CursorOp.MoveRight => right
-    case CursorOp.MoveFirst => first
-    case CursorOp.MoveLast => last
-    case CursorOp.MoveUp => up
-    case CursorOp.LeftN(n) => leftN(n)
-    case CursorOp.RightN(n) => rightN(n)
-    case CursorOp.LeftAt(p) => leftAt(p)
-    case CursorOp.RightAt(p) => rightAt(p)
-    case CursorOp.Find(p) => find(p)
-    case CursorOp.Field(k) => field(k)
-    case CursorOp.DownField(k) => downField(k)
-    case CursorOp.DownArray => downArray
-    case CursorOp.DownAt(p) => downAt(p)
-    case CursorOp.DownN(n) => downN(n)
-    case CursorOp.DeleteGoParent => delete
-    case CursorOp.DeleteGoLeft => deleteGoLeft
-    case CursorOp.DeleteGoRight => deleteGoRight
-    case CursorOp.DeleteGoFirst => deleteGoFirst
-    case CursorOp.DeleteGoLast => deleteGoLast
+    case CursorOp.MoveLeft         => left
+    case CursorOp.MoveRight        => right
+    case CursorOp.MoveFirst        => first
+    case CursorOp.MoveLast         => last
+    case CursorOp.MoveUp           => up
+    case CursorOp.LeftN(n)         => leftN(n)
+    case CursorOp.RightN(n)        => rightN(n)
+    case CursorOp.LeftAt(p)        => leftAt(p)
+    case CursorOp.RightAt(p)       => rightAt(p)
+    case CursorOp.Find(p)          => find(p)
+    case CursorOp.Field(k)         => field(k)
+    case CursorOp.DownField(k)     => downField(k)
+    case CursorOp.DownArray        => downArray
+    case CursorOp.DownAt(p)        => downAt(p)
+    case CursorOp.DownN(n)         => downN(n)
+    case CursorOp.DeleteGoParent   => delete
+    case CursorOp.DeleteGoLeft     => deleteGoLeft
+    case CursorOp.DeleteGoRight    => deleteGoRight
+    case CursorOp.DeleteGoFirst    => deleteGoFirst
+    case CursorOp.DeleteGoLast     => deleteGoLast
     case CursorOp.DeleteGoField(k) => deleteGoField(k)
-    case CursorOp.DeleteLefts => deleteLefts
-    case CursorOp.DeleteRights => deleteRights
-    case CursorOp.SetLefts(js) => setLefts(js)
-    case CursorOp.SetRights(js) => setRights(js)
+    case CursorOp.DeleteLefts      => deleteLefts
+    case CursorOp.DeleteRights     => deleteRights
+    case CursorOp.SetLefts(js)     => setLefts(js)
+    case CursorOp.SetRights(js)    => setRights(js)
   }
 
   /**
@@ -392,7 +393,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
 final object ACursor {
   private[this] val jsonOptionEq: Eq[Option[Json]] = cats.kernel.instances.option.catsKernelStdEqForOption(Json.eqJson)
 
-  implicit val eqACursor: Eq[ACursor] = Eq.instance((a, b) =>
-    jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history)
-  )
+  implicit val eqACursor: Eq[ACursor] =
+    Eq.instance((a, b) => jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history))
 }

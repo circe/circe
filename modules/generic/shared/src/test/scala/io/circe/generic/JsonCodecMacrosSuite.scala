@@ -2,14 +2,13 @@ package io.circe.generic
 
 import cats.kernel.Eq
 import cats.instances.AllInstances
-import io.circe.{Decoder, Encoder, ObjectEncoder}
+import io.circe.{ Decoder, Encoder, ObjectEncoder }
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
-package object jsoncodecmacrossuiteaux extends AnyRef
-  with AllInstances with ArbitraryInstances with MissingInstances
+package object jsoncodecmacrossuiteaux extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
 
 package jsoncodecmacrossuiteaux {
 
@@ -65,8 +64,7 @@ package jsoncodecmacrossuiteaux {
   object Typed2 {
     implicit def eqTyped2[A: Eq, B: Eq]: Eq[Typed2[A, B]] = Eq.by(t => (t.i, t.a, t.b, t.j))
 
-    implicit def arbitraryTyped2[A, B](implicit A: Arbitrary[A], B: Arbitrary[B])
-    : Arbitrary[Typed2[A, B]] =
+    implicit def arbitraryTyped2[A, B](implicit A: Arbitrary[A], B: Arbitrary[B]): Arbitrary[Typed2[A, B]] =
       Arbitrary(
         for {
           i <- Arbitrary.arbitrary[Int]
@@ -74,6 +72,21 @@ package jsoncodecmacrossuiteaux {
           b <- B.arbitrary
           j <- Arbitrary.arbitrary[Int]
         } yield Typed2(i, a, b, j)
+      )
+  }
+
+  // Access modifier
+
+  @JsonCodec private[circe] final case class AccessModifier(a: Int)
+
+  private[circe] object AccessModifier {
+    implicit def eqAccessModifier: Eq[AccessModifier] = Eq.fromUniversalEquals
+
+    implicit def arbitraryAccessModifier: Arbitrary[AccessModifier] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[Int]
+        } yield AccessModifier(a)
       )
   }
 
@@ -115,7 +128,8 @@ package jsoncodecmacrossuiteaux {
       Gen.oneOf(
         Arbitrary.arbitrary[String].map(BaseRecursiveHierarchy(_)),
         atDepth(depth + 1).map(NestedRecursiveHierarchy(_))
-      ) else Arbitrary.arbitrary[String].map(BaseRecursiveHierarchy(_))
+      )
+    else Arbitrary.arbitrary[String].map(BaseRecursiveHierarchy(_))
 
     implicit val arbitraryRecursiveHierarchy: Arbitrary[RecursiveHierarchy] =
       Arbitrary(atDepth(0))
@@ -129,9 +143,12 @@ package jsoncodecmacrossuiteaux {
     implicit val eqSelfRecursiveWithOption: Eq[SelfRecursiveWithOption] = Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[SelfRecursiveWithOption] = if (depth < 3)
-      Arbitrary.arbitrary[Option[SelfRecursiveWithOption]].map(
-        SelfRecursiveWithOption(_)
-      ) else Gen.const(SelfRecursiveWithOption(None))
+      Arbitrary
+        .arbitrary[Option[SelfRecursiveWithOption]]
+        .map(
+          SelfRecursiveWithOption(_)
+        )
+    else Gen.const(SelfRecursiveWithOption(None))
 
     implicit val arbitrarySelfRecursiveWithOption: Arbitrary[SelfRecursiveWithOption] =
       Arbitrary(atDepth(0))
@@ -143,6 +160,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkLaws("Codec[Single]", CodecTests[Single].codec)
   checkLaws("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
   checkLaws("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
+  checkLaws("Codec[AccessModifier]", CodecTests[AccessModifier].codec)
   checkLaws("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
   checkLaws("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkLaws("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
@@ -152,6 +170,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
     ObjectEncoder[Single]
     ObjectEncoder[Typed1[Int]]
     ObjectEncoder[Typed2[Int, Long]]
+    ObjectEncoder[AccessModifier]
     ObjectEncoder[Hierarchy]
     ObjectEncoder[RecursiveHierarchy]
     ObjectEncoder[SelfRecursiveWithOption]

@@ -14,22 +14,33 @@ class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escap
   }
 }
 
-class Spaces2PrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.spaces2.copy(reuseWriters = true),
-  parser.`package`
-)
+class Spaces2PrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.spaces2.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class Spaces4PrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.spaces4.copy(reuseWriters = true),
-  parser.`package`
-)
+class Spaces4PrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.spaces4.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class NoSpacesPrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.noSpaces.copy(reuseWriters = true),
-  parser.`package`
-)
+class NoSpacesPrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.noSpaces.copy(reuseWriters = true),
+      parser.`package`
+    )
 
-class UnicodeEscapePrinterWithWriterReuseSuite extends PrinterSuite(
-  Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
-  parser.`package`
-)
+class UnicodeEscapePrinterWithWriterReuseSuite
+    extends PrinterSuite(
+      Printer.noSpaces.copy(reuseWriters = true, escapeNonAscii = true),
+      parser.`package`
+    )
+
+class Spaces2SortKeysPrinterSuite extends PrinterSuite(Printer.spaces2SortKeys, parser.`package`) with SortedKeysSuite
+class Spaces4SortKeysPrinterSuite extends PrinterSuite(Printer.spaces4SortKeys, parser.`package`) with SortedKeysSuite
+class NoSpacesSortKeysPrinterSuite extends PrinterSuite(Printer.noSpacesSortKeys, parser.`package`) with SortedKeysSuite
+class CustomIndentWithSortKeysPrinterSuite
+    extends PrinterSuite(Printer.indented("   ").withSortedKeys, parser.`package`)
+    with SortedKeysSuite

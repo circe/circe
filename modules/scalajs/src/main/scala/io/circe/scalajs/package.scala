@@ -1,23 +1,25 @@
 package io.circe
 
 import scala.scalajs.js
-import scala.scalajs.js.JSConverters.{ JSRichGenMap, JSRichGenTraversableOnce }
+import scala.scalajs.js.JSConverters._
 import scala.util.control.NonFatal
 
 package object scalajs {
+
   /**
    * Attempt to convert a value to [[Json]].
    */
   private[this] def convertAnyToJsonUnsafe(input: Any): Json = input match {
-    case s: String => Json.fromString(s)
-    case n: Double => Json.fromDoubleOrNull(n)
-    case true => Json.True
-    case false => Json.False
-    case null => Json.Null
+    case s: String      => Json.fromString(s)
+    case n: Double      => Json.fromDoubleOrNull(n)
+    case true           => Json.True
+    case false          => Json.False
+    case null           => Json.Null
     case a: js.Array[_] => Json.fromValues(a.map(convertAnyToJsonUnsafe(_: Any)))
-    case o: js.Object => Json.fromFields(
-      o.asInstanceOf[js.Dictionary[_]].mapValues(convertAnyToJsonUnsafe).toSeq
-    )
+    case o: js.Object =>
+      Json.fromFields(
+        o.asInstanceOf[js.Dictionary[_]].mapValues(convertAnyToJsonUnsafe).toSeq
+      )
     case other if js.isUndefined(other) => Json.Null
   }
 
@@ -25,7 +27,8 @@ package object scalajs {
    * Convert [[scala.scalajs.js.Any]] to [[Json]].
    */
   final def convertJsToJson(input: js.Any): Either[Throwable, Json] =
-    try Right(convertAnyToJsonUnsafe(input)) catch {
+    try Right(convertAnyToJsonUnsafe(input))
+    catch {
       case NonFatal(exception) => Left(exception)
     }
 
@@ -46,12 +49,12 @@ package object scalajs {
     def onNumber(value: JsonNumber): js.Any = value.toDouble
     def onString(value: String): js.Any = value
     def onArray(value: Vector[Json]): js.Any = value.map(this).toJSArray
-    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toJSDictionary
+    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toMap.toJSDictionary
   }
 
-   /**
-    * Convert [[Json]] to [[scala.scalajs.js.Any]].
-    */
+  /**
+   * Convert [[Json]] to [[scala.scalajs.js.Any]].
+   */
   final def convertJsonToJs(input: Json): js.Any = input.foldWith(toJsAnyFolder)
 
   implicit final class EncoderJsOps[A](val wrappedEncodeable: A) extends AnyVal {

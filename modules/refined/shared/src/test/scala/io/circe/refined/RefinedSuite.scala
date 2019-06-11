@@ -122,9 +122,7 @@ class RefinedFieldsSuite extends CirceSuite {
 
 class RefinedKeysSuite extends CirceSuite {
   "Refined keys" should "be encoded as Map keys" in {
-    val example: Map[String Refined NonEmpty, Int] = Map(
-      refineMV[NonEmpty]("a") -> 1,
-      refineMV[NonEmpty]("b") -> 2)
+    val example: Map[String Refined NonEmpty, Int] = Map(refineMV[NonEmpty]("a") -> 1, refineMV[NonEmpty]("b") -> 2)
 
     val expectedJson = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
 
@@ -133,9 +131,7 @@ class RefinedKeysSuite extends CirceSuite {
 
   it should "decode when valid" in {
     val json = Json.obj("a" -> 1.asJson, "b" -> 2.asJson)
-    val expected: Map[String Refined NonEmpty, Int] = Map(
-      refineMV[NonEmpty]("a") -> 1,
-      refineMV[NonEmpty]("b") -> 2)
+    val expected: Map[String Refined NonEmpty, Int] = Map(refineMV[NonEmpty]("a") -> 1, refineMV[NonEmpty]("b") -> 2)
     assert(json.as[Map[String Refined NonEmpty, Int]] === Right(expected))
   }
 

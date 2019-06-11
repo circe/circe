@@ -115,16 +115,18 @@ class JsonObjectSuite extends CirceSuite {
   "values" should "return all values" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
-    val expected: List[Json] = fields.foldLeft(List.empty[(String, Json)]) {
-      case (acc, (key, value)) =>
-        val index = acc.indexWhere(_._1 == key)
+    val expected: List[Json] = fields
+      .foldLeft(List.empty[(String, Json)]) {
+        case (acc, (key, value)) =>
+          val index = acc.indexWhere(_._1 == key)
 
-        if (index < 0) {
-          acc :+ (key -> value)
-        } else {
-          acc.updated(index, (key, value))
-        }
-    }.map(_._2)
+          if (index < 0) {
+            acc :+ (key -> value)
+          } else {
+            acc.updated(index, (key, value))
+          }
+      }
+      .map(_._2)
 
     assert(result1.values.toList === expected)
     assert(result2.values.toList === expected)
@@ -208,9 +210,9 @@ class JsonObjectSuite extends CirceSuite {
   "add, +:, and remove" should "be applied correctly" in {
     forAll { (original: JsonObject, operations: List[Either[String, (String, Json, Boolean)]]) =>
       val result = operations.foldLeft(original) {
-        case (acc, Right((key, value, true))) => acc.add(key, value)
+        case (acc, Right((key, value, true)))  => acc.add(key, value)
         case (acc, Right((key, value, false))) => (key, value) +: acc
-        case (acc, Left(key)) => acc.remove(key)
+        case (acc, Left(key))                  => acc.remove(key)
       }
 
       val expected = operations.foldLeft(original.toList) {
@@ -304,7 +306,7 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   "filterKeys" should "be consistent with Map#filterKeys" in forAll { (value: JsonObject, pred: String => Boolean) =>
-    assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred))
+    assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred).toMap)
   }
 
   "Eq[JsonObject]" should "be consistent with comparing fields" in {

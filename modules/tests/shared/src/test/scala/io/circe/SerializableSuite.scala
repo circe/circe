@@ -17,8 +17,8 @@ class SerializableSuite extends CirceSuite {
   checkLaws("Encoder[Int]", SerializableTests.serializable(Encoder[Int]))
 
   checkLaws(
-  	"ObjectEncoder[Map[String, Int]]",
-  	SerializableTests.serializable(ObjectEncoder[Map[String, Int]])
+    "ObjectEncoder[Map[String, Int]]",
+    SerializableTests.serializable(ObjectEncoder[Map[String, Int]])
   )
 
   checkLaws("Parser", SerializableTests.serializable(parser.`package`))

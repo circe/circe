@@ -1,13 +1,13 @@
+dist: xenial
 language: scala
-sudo: required
-dist: trusty
 
 scala:
   - 2.11.12
-  - 2.12.6
+  - 2.13.0-RC2
+  - 2.12.8
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 cache:
   directories:
@@ -17,10 +17,24 @@ cache:
 
 install:
   - pip install --user codecov
+  - rvm use 2.6.0 --install --fuzzy
+  - gem update --system
+  - gem install sass
+  - gem install jekyll -v 3.8.5
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
+  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION java8JVM/test;
+    else echo "Skipping java8 module tests on 2.13";
+    fi
   - sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
+    else echo "Skipping docs on 2.11 and 2.13";
+    fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION clean validateJS;

@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json, ObjectEncoder }
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json, ObjectEncoder }
 import io.circe.generic.extras.semiauto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -67,16 +67,19 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Right(foo))
   }
 
-  "Semi-automatice derivation" should "call field modification times equal to field count" in {
+  it should "call field modification times equal to field count" in {
     var transformMemberNamesCallCount, transformConstructorCallCount = 0
     implicit val customConfig: Configuration =
-      Configuration.default.copy(transformMemberNames = v => {
-        transformMemberNamesCallCount = transformMemberNamesCallCount + 1
-        Configuration.snakeCaseTransformation(v)
-      }, transformConstructorNames = v => {
-        transformConstructorCallCount = transformConstructorCallCount + 1
-        Configuration.snakeCaseTransformation(v)
-      })
+      Configuration.default.copy(
+        transformMemberNames = v => {
+          transformMemberNamesCallCount = transformMemberNamesCallCount + 1
+          Configuration.snakeCaseTransformation(v)
+        },
+        transformConstructorNames = v => {
+          transformConstructorCallCount = transformConstructorCallCount + 1
+          Configuration.snakeCaseTransformation(v)
+        }
+      )
 
     val fieldCount = 3
     val decodeConstructorCount = 2
@@ -96,23 +99,49 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
     }
   }
 
+  it should "support configured strict decoding" in forAll { (f: String, b: Double) =>
+    implicit val customConfig: Configuration =
+      Configuration.default.withSnakeCaseMemberNames.withDefaults
+        .withDiscriminator("type_field")
+        .withSnakeCaseConstructorNames
+        .withStrictDecoding
+
+    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
+
+    val json =
+      json"""
+            {"type_field": "config_example_foo", "this_is_a_field": $f, "b": $b, "stowaway_field": "I should not be here"}
+        """
+
+    val expectedError =
+      DecodingFailure("Unexpected field: [stowaway_field]; valid fields: this_is_a_field, a, b, type_field", Nil)
+
+    assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(expectedError))
+  }
+
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    val result = Json
+      .obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      )
+      .as[Int => Qux[String]]
+      .map(_(i))
 
     assert(result === Right(Qux(i, s, j)))
   }
 
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
     forAll { (i: Int, s: String, j: Int) =>
-      val result = Json.obj(
-        "i" -> Json.fromInt(i),
-        "a" -> Json.fromString(s)
-      ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
-         _(field(j))
-      )
+      val result = Json
+        .obj(
+          "i" -> Json.fromInt(i),
+          "a" -> Json.fromString(s)
+        )
+        .as[FieldType[Witness.`'j`.T, Int] => Qux[String]]
+        .map(
+          _(field(j))
+        )
 
       assert(result === Right(Qux(i, s, j)))
     }

@@ -10,7 +10,19 @@ import io.circe.export.Exported
  */
 trait RootEncoder[A] extends Encoder[A]
 
+/**
+ * Utilities and instances for [[RootEncoder]].
+ *
+ * @groupname Utilities Defining encoders
+ * @groupprio Utilities 1
+ *
+ * @groupname Prioritization Instance prioritization
+ * @groupprio Prioritization 2
+ *
+ * @author Travis Brown
+ */
 final object RootEncoder extends LowPriorityRootEncoders {
+
   /**
    * Return an instance for a given type.
    *
@@ -20,6 +32,10 @@ final object RootEncoder extends LowPriorityRootEncoders {
 }
 
 private[circe] trait LowPriorityRootEncoders {
-  implicit final def importedRootEncoder[A](implicit exported: Exported[ObjectEncoder[A]]): RootEncoder[A] =
+
+  /**
+   * @group Prioritization
+   */
+  implicit final def importedRootEncoder[A](implicit exported: Exported[RootEncoder[A]]): RootEncoder[A] =
     exported.instance
 }

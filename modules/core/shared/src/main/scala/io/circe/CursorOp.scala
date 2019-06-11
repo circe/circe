@@ -4,6 +4,7 @@ import cats.{ Eq, Show }
 import java.io.Serializable
 
 sealed abstract class CursorOp extends Product with Serializable {
+
   /**
    * Does this operation require the current focus (not context) to be an
    * object?
@@ -59,31 +60,31 @@ final object CursorOp {
   final case class SetRights(js: Vector[Json]) extends UnconstrainedOp
 
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
-    case MoveLeft => "<-"
-    case MoveRight => "->"
-    case MoveFirst => "|<-"
-    case MoveLast => "->|"
-    case MoveUp => "_/"
-    case LeftN(n) => "-<-:(" + n + ")"
-    case RightN(n) => ":->-(" + n + ")"
-    case LeftAt(_) => "?<-:"
-    case RightAt(_) => ":->?"
-    case Find(_) => "find"
-    case Field(f) => "--(" + f + ")"
-    case DownField(f) => "--\\(" + f + ")"
-    case DownArray => "\\\\"
-    case DownAt(_) => "-\\"
-    case DownN(n) => "=\\(" + n + ")"
-    case DeleteGoParent => "!_/"
-    case DeleteGoLeft => "<-!"
-    case DeleteGoRight => "!->"
-    case DeleteGoFirst => "|<-!"
-    case DeleteGoLast => "!->|"
+    case MoveLeft         => "<-"
+    case MoveRight        => "->"
+    case MoveFirst        => "|<-"
+    case MoveLast         => "->|"
+    case MoveUp           => "_/"
+    case LeftN(n)         => "-<-:(" + n + ")"
+    case RightN(n)        => ":->-(" + n + ")"
+    case LeftAt(_)        => "?<-:"
+    case RightAt(_)       => ":->?"
+    case Find(_)          => "find"
+    case Field(f)         => "--(" + f + ")"
+    case DownField(f)     => "--\\(" + f + ")"
+    case DownArray        => "\\\\"
+    case DownAt(_)        => "-\\"
+    case DownN(n)         => "=\\(" + n + ")"
+    case DeleteGoParent   => "!_/"
+    case DeleteGoLeft     => "<-!"
+    case DeleteGoRight    => "!->"
+    case DeleteGoFirst    => "|<-!"
+    case DeleteGoLast     => "!->|"
     case DeleteGoField(f) => "!--(" + f + ")"
-    case DeleteLefts => "!<"
-    case DeleteRights => ">!"
-    case SetLefts(_) => "!<.."
-    case SetRights(_) => "..>!"
+    case DeleteLefts      => "!<"
+    case DeleteRights     => ">!"
+    case SetLefts(_)      => "!<.."
+    case SetRights(_)     => "..>!"
   }
 
   implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
@@ -116,7 +117,7 @@ final object CursorOp {
     selections.foldLeft("") {
       case (str, SelectField(f)) => s".$f$str"
       case (str, SelectIndex(i)) => s"[$i]$str"
-      case (str, Op(op))         => s"{${ Show[CursorOp].show(op) }}$str"
+      case (str, Op(op))         => s"{${Show[CursorOp].show(op)}}$str"
     }
   }
 }

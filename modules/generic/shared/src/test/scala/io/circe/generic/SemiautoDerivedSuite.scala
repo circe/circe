@@ -43,7 +43,8 @@ object SemiautoDerivedSuite {
       Gen.oneOf(
         Arbitrary.arbitrary[String].map(BaseAdtExample(_)),
         atDepth(depth + 1).map(NestedAdtExample(_))
-      ) else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
+      )
+    else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
 
     implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
       Arbitrary(atDepth(0))
@@ -59,9 +60,12 @@ object SemiautoDerivedSuite {
       Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
-      Arbitrary.arbitrary[Option[RecursiveWithOptionExample]].map(
-        RecursiveWithOptionExample(_)
-      ) else Gen.const(RecursiveWithOptionExample(None))
+      Arbitrary
+        .arbitrary[Option[RecursiveWithOptionExample]]
+        .map(
+          RecursiveWithOptionExample(_)
+        )
+    else Gen.const(RecursiveWithOptionExample(None))
 
     implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
       Arbitrary(atDepth(0))
@@ -92,10 +96,13 @@ class SemiautoDerivedSuite extends CirceSuite {
   checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json.obj(
-      "a" -> Json.fromString(s),
-      "j" -> Json.fromInt(j)
-    ).as[Int => Qux[String]].map(_(i))
+    val result = Json
+      .obj(
+        "a" -> Json.fromString(s),
+        "j" -> Json.fromInt(j)
+      )
+      .as[Int => Qux[String]]
+      .map(_(i))
 
     assert(result === Right(Qux(i, s, j)))
   }
@@ -108,12 +115,15 @@ class SemiautoDerivedSuite extends CirceSuite {
 
   "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
     forAll { (i: Int, s: String, j: Int) =>
-      val result = Json.obj(
-        "i" -> Json.fromInt(i),
-        "a" -> Json.fromString(s)
-      ).as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(
-         _(field(j))
-      )
+      val result = Json
+        .obj(
+          "i" -> Json.fromInt(i),
+          "a" -> Json.fromString(s)
+        )
+        .as[FieldType[Witness.`'j`.T, Int] => Qux[String]]
+        .map(
+          _(field(j))
+        )
 
       assert(result === Right(Qux(i, s, j)))
     }

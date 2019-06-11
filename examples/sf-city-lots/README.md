@@ -39,9 +39,9 @@ definitions evaluated together.
 import io.circe.Decoder, io.circe.generic.auto._
 ```
 
-If we were on Scala 2.10 or 2.11, we'd also need to import `cats.syntax.either._` here since we're
-using `map` and `flatMap` on `Either` values below. This is no longer necessary on Scala 2.12, since
-`Either` is now right-biased.
+If we were on Scala 2.11, we'd also need to import `cats.syntax.either._` here since we're
+using `map` and `flatMap` on `Either` values below. This is no longer necessary since Scala 2.12, which
+introduced right-biasing for `Either`.
 
 We'll start with a type representing a coordinate pair. We want this decoder to recognize either of
 the following formats:
@@ -153,17 +153,15 @@ in order to keep things simple I've gone with the `for`-comprehension.
 ## Streaming
 
 circe-iteratee provides generic enumeratees for parsing and decoding that work over any type
-constructor with a `MonadError` instance. We'll use Monix's `Task` since we need to read from a
+constructor with a `MonadError` instance. We'll use cats-effect's `IO` since we need to read from a
 file.
 
 ```scala
-import io.circe.iteratee._
-import io.iteratee.monix.task._
+import cats.effect.IO
+import io.circe.iteratee.{ byteArrayParser, decoder }
+import io.iteratee.{ Enumeratee, Iteratee }
+import io.iteratee.files.readBytes
 import java.io.File
-import monix.eval.Task
-import monix.execution.Scheduler.Implicits.global
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 ```
 
 And then we can define an `Enumerator` that will let us read lines from the file, parse them
@@ -179,10 +177,10 @@ lots that we can process with an iteratee. For example, we can count the number 
 `length`:
 
 ```scala
-scala> val task = lots.into(length)
-task: monix.eval.Task[Long] = Task.FlatMap(Task@464564415, io.iteratee.Enumerator$$Lambda$4368/1828535352@33c49757)
+scala> val countLots = lots.into(Iteratee.length)
+countLots: cats.effect.IO[Long] = IO$1659916113
 
-scala> Await.result(task.runAsync, Duration.Inf)
+scala> countLots.unsafeRunSync
 res0: Long = 206560
 ```
 
@@ -193,22 +191,22 @@ scala> import cats.instances.int._, cats.instances.map._
 import cats.instances.int._
 import cats.instances.map._
 
-scala> val task: Task[Map[String, Int]] = lots.through(
-     |   collect {
+scala> val countTypes: IO[Map[String, Int]] = lots.through(
+     |   Enumeratee.collect {
      |     case Lot(_, _, Some(Polygon(_))) => Map("Polygon" -> 1)
      |     case Lot(_, _, Some(MultiPolygon(_))) => Map("MultiPolygon" -> 1)
      |   }
-     | ).into(sum)
-task: monix.eval.Task[Map[String,Int]] = Task.FlatMap(Task@1472992396, io.iteratee.Enumerator$$Lambda$4368/1828535352@6812cc02)
+     | ).into(Iteratee.sum)
+countTypes: cats.effect.IO[Map[String,Int]] = IO$2090607373
 
-scala> val res: Map[String, Int] = Await.result(task.runAsync, Duration.Inf)
-res: Map[String,Int] = Map(MultiPolygon -> 120, Polygon -> 206434)
+scala> countTypes.unsafeRunSync
+res1: Map[String,Int] = Map(MultiPolygon -> 120, Polygon -> 206434)
 ```
 
 Or simply gather the first few lots into a sequence:
 
 ```scala
-scala> val first3 = Await.result(lots.into(takeI(3)).runAsync, Duration.Inf)
+val first3 = lots.into(Iteratee.take(3)).unsafeRunSync
 first3: Vector[Lot] = Vector(Lot(Feature,Map(MAPBLKLOT -> 0001001, ...
 ```
 

@@ -1,6 +1,15 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, NonEmptyStream, NonEmptyVector, Validated }
+import cats.data.{
+  Chain,
+  NonEmptyChain,
+  NonEmptyList,
+  NonEmptyMap,
+  NonEmptySet,
+  NonEmptyStream,
+  NonEmptyVector,
+  Validated
+}
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import io.circe.testing.CodecTests
@@ -8,24 +17,23 @@ import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
-import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable.SortedMap
-import scala.collection.mutable.{ ArrayBuilder, Builder, HashMap }
-import scala.reflect.ClassTag
+import scala.collection.mutable.HashMap
 
 trait SpecialEqForFloatAndDouble {
+
   /**
-    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
-    * `NaN` from itself.
-    */
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
+   * `NaN` from itself.
+   */
   val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
-    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
-    * `NaN` from itself.
-    */
+   * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
+   * `NaN` from itself.
+   */
   val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
@@ -43,18 +51,26 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 }
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
-  import java.{lang => jl}
-  import java.{math => jm}
+  import java.{ lang => jl }
+  import java.{ math => jm }
 
-  private def JavaCodecTests[ScalaPrimitive, JavaBoxed]
-    (wrap: ScalaPrimitive => JavaBoxed, unwrap: JavaBoxed => ScalaPrimitive, eq: Eq[JavaBoxed] = Eq.fromUniversalEquals[JavaBoxed])
-    (implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
+  private def JavaCodecTests[ScalaPrimitive, JavaBoxed](
+    wrap: ScalaPrimitive => JavaBoxed,
+    unwrap: JavaBoxed => ScalaPrimitive,
+    eq: Eq[JavaBoxed] = Eq.fromUniversalEquals[JavaBoxed]
+  )(implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
     CodecTests[JavaBoxed].codec(Arbitrary(scalaArb.arbitrary.map(wrap)), implicitly, eq, implicitly, implicitly)
 
   checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue()))
   checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue()))
-  checkLaws("Codec[java.lang.Float]", JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue())))
-  checkLaws("Codec[java.lang.Double]", JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue())))
+  checkLaws(
+    "Codec[java.lang.Float]",
+    JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue()))
+  )
+  checkLaws(
+    "Codec[java.lang.Double]",
+    JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue()))
+  )
   checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue()))
   checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue()))
   checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue()))
@@ -63,16 +79,7 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
-   */
-  implicit def canBuildFromRefArraySerializable[A <: AnyRef: ClassTag]: CanBuildFrom[Array[A], A, Array[A]] =
-    new CanBuildFrom[Array[A], A, Array[A]] with Serializable {
-      def apply(from: Array[A]): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-      def apply(): Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
-    }
-
+class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
@@ -142,19 +149,14 @@ class StdLibCodecSuite extends CirceSuite {
   }
 }
 
-class CatsCodecSuite extends CirceSuite {
-  /**
-   * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
-   */
-  implicit def canBuildFromStreamSerializable[A]: CanBuildFrom[Stream[A], A, Stream[A]] =
-    new CanBuildFrom[Stream[A], A, Stream[A]] with Serializable {
-      def apply(from: Stream[A]): Builder[A, Stream[A]] = Stream.newBuilder[A]
-      def apply(): Builder[A, Stream[A]] = Stream.newBuilder[A]
-    }
-
+class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
+  checkLaws("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
+  checkLaws("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
+  checkLaws("Codec[NonEmptyMap[Int, String]]", CodecTests[NonEmptyMap[Int, String]].unserializableCodec)
+  checkLaws("Codec[NonEmptyChain[Int]]", CodecTests[NonEmptyChain[Int]].codec)
 }
 
 class CirceCodecSuite extends CirceSuite {

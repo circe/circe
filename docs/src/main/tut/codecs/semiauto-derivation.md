@@ -45,20 +45,18 @@ NOTE: You will need the [Macro Paradise](https://docs.scala-lang.org/overviews/m
 It's also possible to construct encoders and decoders for case class-like types
 in a relatively boilerplate-free way without generic derivation:
 
-```tut:silent
+```tut:book
 import io.circe.{ Decoder, Encoder }
 
 case class User(id: Long, firstName: String, lastName: String)
 
-object UserCodec {
-  implicit val decodeUser: Decoder[User] =
-    Decoder.forProduct3("id", "first_name", "last_name")(User.apply)
+implicit val decodeUser: Decoder[User] =
+  Decoder.forProduct3("id", "first_name", "last_name")(User.apply)
 
-  implicit val encodeUser: Encoder[User] =
-    Encoder.forProduct3("id", "first_name", "last_name")(u =>
-      (u.id, u.firstName, u.lastName)
-    )
-}
+implicit val encodeUser: Encoder[User] =
+  Encoder.forProduct3("id", "first_name", "last_name")(u =>
+    (u.id, u.firstName, u.lastName)
+  )
 ```
 
 It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing but `circe-core`, and if you need a custom name mapping it's currently the best solution (although `0.6.0` introduces experimental configurable generic derivation in the `circe-generic-extras` module).

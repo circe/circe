@@ -24,6 +24,7 @@ import scala.collection.immutable.Map
  * @groupprio Other 3
  */
 sealed abstract class JsonObject extends Serializable {
+
   /**
    * Return the JSON value associated with the given key, with undefined behavior if there is none.
    *
@@ -171,7 +172,7 @@ sealed abstract class JsonObject extends Serializable {
    * @group Other
    */
   final override def toString: String = toIterable.map {
-    case (k, v) => s"$k -> ${ Json.showJson.show(v) }"
+    case (k, v) => s"$k -> ${Json.showJson.show(v)}"
   }.mkString("object[", ",", "]")
 
   /**
@@ -193,6 +194,7 @@ sealed abstract class JsonObject extends Serializable {
  * Constructors, type class instances, and other utilities for [[JsonObject]].
  */
 final object JsonObject {
+
   /**
    * Construct a [[JsonObject]] from the given key-value pairs.
    */
@@ -225,7 +227,10 @@ final object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(map: Map[String, Json]): JsonObject = new MapAndVectorJsonObject(map, map.keys.toVector)
+  final def fromMap(map: Map[String, Json]): JsonObject = fromMapAndVector(map, map.keys.toVector)
+
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
+    new MapAndVectorJsonObject(map, keys)
 
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     new LinkedHashMapJsonObject(map)
@@ -303,14 +308,15 @@ final object JsonObject {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
-      val iterator = fields.entrySet.iterator
+      val iterable = if (folder.sortKeys) toIterable.toVector.sortBy(_._1) else toIterable
+      val iterator = iterable.iterator
 
       folder.writer.append(p.lBraces)
 
       while (iterator.hasNext) {
         val next = iterator.next()
-        val key = next.getKey
-        val value = next.getValue
+        val key = next._1
+        val value = next._2
 
         if (!folder.dropNullValues || !value.isNull) {
           if (!first) folder.writer.append(p.objectCommas)
@@ -401,13 +407,18 @@ final object JsonObject {
     )(mappedFields => new MapAndVectorJsonObject(mappedFields, orderedKeys))
 
     final def mapValues(f: Json => Json): JsonObject =
-      new MapAndVectorJsonObject(fields.mapValues(f).view.force, orderedKeys)
+      new MapAndVectorJsonObject(
+        fields.map {
+          case (key, value) => (key, f(value))
+        },
+        orderedKeys
+      )
 
     final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
-      val keyIterator = orderedKeys.iterator
+      val keyIterator = if (folder.sortKeys) orderedKeys.sorted.iterator else orderedKeys.iterator
 
       folder.writer.append(p.lBraces)
 

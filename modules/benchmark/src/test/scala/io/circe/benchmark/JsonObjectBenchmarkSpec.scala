@@ -1,9 +1,9 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonObject }
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class JsonObjectBenchmarkSpec extends FlatSpec {
+class JsonObjectBenchmarkSpec extends AnyFlatSpec {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark
 
   "buildWithFromIterable" should "build the correct JsonObject" in {
@@ -36,10 +36,10 @@ class JsonObjectBenchmarkSpec extends FlatSpec {
 
   "remove" should "return the correct result" in {
     val expected = benchmark.fields.flatMap {
-      case ("0", _) => None
-      case ("50", _) => None
-      case ("51", _) => None
-      case ("99", _) => None
+      case ("0", _)     => None
+      case ("50", _)    => None
+      case ("51", _)    => None
+      case ("99", _)    => None
       case (key, value) => Some((key, value))
     }
 

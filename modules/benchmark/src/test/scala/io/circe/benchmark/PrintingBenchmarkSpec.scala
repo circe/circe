@@ -3,9 +3,9 @@ package io.circe.benchmark
 import io.circe.jawn.decode
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class PrintingBenchmarkSpec extends FlatSpec {
+class PrintingBenchmarkSpec extends AnyFlatSpec {
   val benchmark: PrintingBenchmark = new PrintingBenchmark
 
   import benchmark._

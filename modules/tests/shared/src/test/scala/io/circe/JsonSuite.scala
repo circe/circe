@@ -85,39 +85,39 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     assert(merged.asObject.map(_.toList) === Some(fields.reverse))
   }
 
-  val key    = "x"
+  val key = "x"
   val value1 = "fizz"
   val value2 = "foobar"
 
-  """findAllByKey and its alias, \\"""  should "return all values matching the given key with key-value pairs at heights 0 and 1." in {
+  """findAllByKey and its alias, \\""" should "return all values matching the given key with key-value pairs at heights 0 and 1." in {
     val expected = List(Json.fromString(value1), Json.fromString(value2), Json.Null)
-    val at0         = (key, Json.fromString(value1))
-    val at1         = (key, Json.fromString(value2))
-    val at1_2       = (key, Json.Null)
-    val json        = Json.obj(at0, "y" -> Json.obj(at1), "z" -> Json.obj(at1_2))
-    val result      = json.findAllByKey(key)
+    val at0 = (key, Json.fromString(value1))
+    val at1 = (key, Json.fromString(value2))
+    val at1_2 = (key, Json.Null)
+    val json = Json.obj(at0, "y" -> Json.obj(at1), "z" -> Json.obj(at1_2))
+    val result = json.findAllByKey(key)
     val resultAlias = json \\ key
 
     assert(result === expected && resultAlias === expected)
   }
 
-  """findAllByKey and its alias, \\"""  should "return a List of a single, empty object for a Json value with only that (key, value) matching." in {
-    val expected    = List(Json.fromJsonObject(JsonObject.empty))
-    val emptyJson   = (key, Json.fromJsonObject(JsonObject.empty))
-    val json        = Json.obj(emptyJson)
-    val result      = json.findAllByKey(key)
+  """findAllByKey and its alias, \\""" should "return a List of a single, empty object for a Json value with only that (key, value) matching." in {
+    val expected = List(Json.fromJsonObject(JsonObject.empty))
+    val emptyJson = (key, Json.fromJsonObject(JsonObject.empty))
+    val json = Json.obj(emptyJson)
+    val result = json.findAllByKey(key)
     val resultAlias = json \\ key
 
     assert(result === expected && resultAlias === expected)
   }
 
-  """findAllByKey and its alias, \\"""  should "return an empty List when used on a Json that's not an array or object" in {
-    val number  = Json.fromLong(42L)
-    val string  = Json.fromString("foobar")
+  """findAllByKey and its alias, \\""" should "return an empty List when used on a Json that's not an array or object" in {
+    val number = Json.fromLong(42L)
+    val string = Json.fromString("foobar")
     val boolean = Json.fromBoolean(true)
-    val `null`  = Json.Null
+    val `null` = Json.Null
 
-    val results      = List(number, string, boolean, `null`).map(json => json.findAllByKey("meaninglesskey"))
+    val results = List(number, string, boolean, `null`).map(json => json.findAllByKey("meaninglesskey"))
     val resultsAlias = List(number, string, boolean, `null`).map(json => json.\\("meaninglesskey"))
     assert(results.forall(_ == Nil))
     assert(resultsAlias.forall(_ == Nil))
@@ -125,13 +125,13 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
 
   val value3 = 42L
 
-  """findAllByKey and its alias, \\"""  should "return all values matching the given key with key-value pairs at heights  0, 1, and 2." in {
-    val expected    = List(Json.arr(Json.fromString(value1)), Json.fromString(value2), Json.fromLong(value3))
-    val `0`         = (key, Json.arr(Json.fromString(value1)))
-    val `1`         = (key, Json.fromString(value2))
-    val `2`         = (key, Json.fromLong(value3))
-    val json        = Json.obj(`0`, "y" -> Json.obj(`1`), "z" -> Json.obj(`2`))
-    val result      = json.findAllByKey(key)
+  """findAllByKey and its alias, \\""" should "return all values matching the given key with key-value pairs at heights  0, 1, and 2." in {
+    val expected = List(Json.arr(Json.fromString(value1)), Json.fromString(value2), Json.fromLong(value3))
+    val `0` = (key, Json.arr(Json.fromString(value1)))
+    val `1` = (key, Json.fromString(value2))
+    val `2` = (key, Json.fromLong(value3))
+    val json = Json.obj(`0`, "y" -> Json.obj(`1`), "z" -> Json.obj(`2`))
+    val result = json.findAllByKey(key)
     val resultAlias = json \\ key
 
     assert(result === expected && resultAlias === expected)
@@ -228,5 +228,14 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
       )
     )
     assert(actual === expected)
+  }
+
+  "printer shortcuts" should "print the object" in forAll { (json: Json) =>
+    assert(json.noSpaces === Printer.noSpaces.pretty(json))
+    assert(json.spaces2 === Printer.spaces2.pretty(json))
+    assert(json.spaces4 === Printer.spaces4.pretty(json))
+    assert(json.noSpacesSortKeys === Printer.noSpacesSortKeys.pretty(json))
+    assert(json.spaces2SortKeys === Printer.spaces2SortKeys.pretty(json))
+    assert(json.spaces4SortKeys === Printer.spaces4SortKeys.pretty(json))
   }
 }

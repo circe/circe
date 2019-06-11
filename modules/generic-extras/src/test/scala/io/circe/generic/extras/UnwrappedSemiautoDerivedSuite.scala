@@ -9,7 +9,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 
 object UnwrappedSemiautoDerivedSuite {
-  case class Foo(value: String) extends AnyVal
+  case class Foo(value: String)
 
   object Foo {
     implicit val eq: Eq[Foo] = Eq.fromUniversalEquals
@@ -25,21 +25,21 @@ class UnwrappedSemiautoDerivedSuite extends CirceSuite {
 
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
 
-  "Semi-automatic derivation" should "encode valueclasses" in forAll { (s: String) =>
+  "Semi-automatic derivation" should "encode value classes" in forAll { (s: String) =>
     val foo = Foo(s)
     val expected = Json.fromString(s)
 
     assert(Encoder[Foo].apply(foo) === expected)
   }
 
-  "Semi-automatic derivation" should "decode valueclasses" in forAll { (s: String) =>
+  it should "decode value classes" in forAll { (s: String) =>
     val json = Json.fromString(s)
     val expected = Right(Foo(s))
 
     assert(Decoder[Foo].decodeJson(json) === expected)
   }
 
-  "Semi-automatic derivation" should "fail decoding incompatible json" in forAll { (i: Int, s: String) =>
+  it should "fail decoding incompatible JSON" in forAll { (i: Int, s: String) =>
     val json = Json.fromInt(i)
     val expected = Left(DecodingFailure("String", List()))
 

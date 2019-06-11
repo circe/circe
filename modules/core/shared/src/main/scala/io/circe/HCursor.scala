@@ -21,12 +21,12 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
   final def values: Option[Iterable[Json]] = value match {
     case Json.JArray(vs) => Some(vs)
-    case _ => None
+    case _               => None
   }
 
   final def keys: Option[Iterable[String]] = value match {
     case Json.JObject(o) => Some(o.keys)
-    case _ => None
+    case _               => None
   }
 
   final def top: Option[Json] = {
@@ -47,7 +47,8 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
   final def downField(k: String): ACursor = value match {
     case Json.JObject(o) =>
-      if (!o.contains(k)) fail(CursorOp.DownField(k)) else {
+      if (!o.contains(k)) fail(CursorOp.DownField(k))
+      else {
         new ObjectCursor(o, k, this, false)(this, CursorOp.DownField(k))
       }
     case _ => fail(CursorOp.DownField(k))
@@ -59,14 +60,16 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => fail(CursorOp.DownN(n))
   }
 
-  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n) else {
+  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n)
+  else {
     @tailrec
     def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
 
     go(n, this)
   }
 
-  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n) else {
+  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n)
+  else {
     @tailrec
     def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.right)
 
@@ -77,7 +80,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     @tailrec
     def go(c: ACursor): ACursor = c match {
       case success: HCursor => if (p(success.value)) success else go(success.left)
-      case other => other
+      case other            => other
     }
 
     go(left)
@@ -89,7 +92,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     @tailrec
     def go(c: ACursor): ACursor = c match {
       case success: HCursor => if (p(success.value)) success else go(success.right)
-      case other => other
+      case other            => other
     }
 
     go(this)

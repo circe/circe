@@ -3,7 +3,7 @@
 [![Build status](https://img.shields.io/travis/circe/circe/master.svg)](https://travis-ci.org/circe/circe)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/circe/circe)
-[![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.11)
+[![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.12)
 
 circe is a JSON library for Scala (and [Scala.js][scala-js]).
 
@@ -16,6 +16,7 @@ about why circe exists and how to use it.
 
 Are you using circe? Please consider opening a pull request to list your organization here:
 
+* [Abacus](https://abacusprotocol.com/)
 * [Anduin Transactions](https://anduintransact.com/)
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
@@ -23,28 +24,44 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
+* [ClearScore](https://www.clearscore.com)
+* [Codacy](https://www.codacy.com)
+* [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
 * [Datalogue](https://datalogue.io)
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
-* [The Guardian](https://www.theguardian.com)
+* [FOLIO](https://folio-sec.com/)
 * [Gutefrage](https://www.gutefrage.net)
 * [HolidayCheck](https://www.holidaycheck.de)
+* [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Indix](https://www.indix.com)
+* [ITV](https://www.itv.com/)
+* [MatchesFashion](https://www.matchesfashion.com)
+* [Metacommerce](https://www.metacommerce.ru)
+* [Ocado Technology](https://ocadotechnology.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
+* [Permutive](http://permutive.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
+* [Raster Foundry](https://github.com/raster-foundry/raster-foundry/)
 * [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
 * [REA Group - realestate.com.au](https://www.realestate.com.au/)
 * [Reonomy](https://reonomy.com/)
+* [Resilient plc](https://resilientplc.com/)
 * [Sigma](https://sig.ma)
+* [Sky](https://www.sky.com/)
 * [Snowplow Analytics](https://snowplowanalytics.com/)
 * [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
 * [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
+* [SpotX](https://www.spotx.tv/)
 * [Stripe](https://stripe.com)
 * [Stylight](https://stylight.de)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
+* [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [VEACT](https://veact.net/)
+* [WeWork](https://www.wework.com)
 * [Whisk](https://whisk.com)
 * [Zalando](https://zalando.de)
 * [Zendesk](https://zendesk.com)
@@ -73,6 +90,7 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
+* [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
 * [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
@@ -92,6 +110,7 @@ The following open source projects are either built on circe or provide circe su
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
+* [ohNoMyCirce][ohNoMyCirce]: Friendly compile error messages for [shapeless][shapeless]'s Generic, [circe][circe-org]'s Encoder & Decoder and [slick][slick]'s case class mapping.
 * [play-circe][play-circe]: circe support for [Play!][play].
 * [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
@@ -104,6 +123,7 @@ The following open source projects are either built on circe or provide circe su
 * [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
 * [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
 * [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
+* [shaclex][shaclex]: RDF validation using SHACL or ShEx. 
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [sttp][sttp]: Scala HTTP client.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
@@ -118,6 +138,7 @@ The following projects provide examples, templates, or benchmarks that include c
 * https://github.com/gvolpe/simple-http4s-api
 * https://github.com/vitorsvieira/akka-http-circe-json-template
 * https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
+* https://github.com/pauljamescleary/scala-pet-store
 
 ## Contributors and participation
 
@@ -129,7 +150,7 @@ circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archamb
 and [Vladimir Kostyukov][vkostyukov]. After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
-The circe project supports the [Typelevel][typelevel] [code of conduct][code-of-conduct] and wants
+The circe project supports the [Scala code of conduct][code-of-conduct] and wants
 all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
 Please see the [contributors' guide](CONTRIBUTING.md) for details on how to submit a pull request.
@@ -160,11 +181,12 @@ limitations under the License.
 [circe-fs2]: https://github.com/circe/circe-fs2
 [circe-iteratee]: https://github.com/circe/circe-iteratee
 [circe-jackson]: https://github.com/circe/circe-jackson
+[circe-kafka]: https://github.com/NeQuissimus/circe-kafka
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
 [circe-yaml]: https://github.com/circe/circe-yaml
 [crjdt]: https://github.com/fthomas/crjdt
-[code-of-conduct]: http://typelevel.org/conduct.html
+[code-of-conduct]: https://www.scala-lang.org/conduct/
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
@@ -197,6 +219,7 @@ limitations under the License.
 [markhibberd]: https://github.com/markhibberd
 [msgpack]: https://github.com/msgpack/msgpack/blob/master/spec.md
 [msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
+[ohNoMyCirce]: https://github.com/djx314/ohNoMyCirce
 [play]: https://www.playframework.com/
 [play-circe]: https://github.com/jilen/play-circe
 [pulsar]: https://pulsar.apache.org/
@@ -207,12 +230,14 @@ limitations under the License.
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
 [scala-js]: http://www.scala-js.org/
-[scala-jsonapi]: https://github.com/zalando/scala-jsonapi
+[scala-jsonapi]: https://github.com/scala-jsonapi/scala-jsonapi
 [scala-json-rpc]: https://github.com/shogowada/scala-json-rpc
 [scalatest-json-circe]: https://github.com/stephennancekivell/scalatest-json
 [scalist]: https://github.com/vpavkin/scalist
 [scio]: https://github.com/spotify/scio
 [seals]: https://github.com/durban/seals/
+[shapeless]: https://github.com/milessabin/shapeless
+[shaclex]: https://github.com/labra/shaclex
 [slick]: http://slick.lightbend.com/
 [slick-pg]: https://github.com/tminglei/slick-pg
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml

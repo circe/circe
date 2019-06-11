@@ -1,7 +1,8 @@
 package io.circe.generic.extras.decoding
 
 import cats.data.Validated
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ AccumulatingDecoder, ACursor, Decoder, HCursor }
+import io.circe.Json.JNull
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.collection.immutable.Map
 import scala.language.experimental.macros
@@ -30,26 +31,36 @@ abstract class ReprDecoder[A] extends Decoder[A] {
   ): AccumulatingDecoder.Result[A]
 
   final protected[this] def orDefault[B](
-    result: Decoder.Result[B],
+    c: ACursor,
+    decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): Decoder.Result[B] = result match {
-    case r @ Right(_) => r
-    case l @ Left(_) => defaults.get(name) match {
-      case Some(d: B @unchecked) => Right(d)
-      case _ => l
+  ): Decoder.Result[B] = {
+    decoder.tryDecode(c) match {
+      case r @ Right(_) if r ne Decoder.keyMissingNone            => r
+      case l @ Left(_) if c.succeeded && !c.focus.contains(JNull) => l
+      case r =>
+        defaults.get(name) match {
+          case Some(d: B @unchecked) => Right(d)
+          case _                     => r
+        }
     }
   }
 
   final protected[this] def orDefaultAccumulating[B](
-    result: AccumulatingDecoder.Result[B],
+    c: ACursor,
+    decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): AccumulatingDecoder.Result[B] = result match {
-    case r @ Validated.Valid(_) => r
-    case l @ Validated.Invalid(_) => defaults.get(name) match {
-      case Some(d: B @unchecked) => Validated.valid(d)
-      case _ => l
+  ): AccumulatingDecoder.Result[B] = {
+    decoder.tryDecodeAccumulating(c) match {
+      case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating   => r
+      case l @ Validated.Invalid(_) if c.succeeded && !c.focus.contains(JNull) => l
+      case r =>
+        defaults.get(name) match {
+          case Some(d: B @unchecked) => Validated.valid(d)
+          case _                     => r
+        }
     }
   }
 
@@ -66,9 +77,9 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     case Some(disc) =>
       c.get[String](disc) match {
         case Right(leafType) if leafType == name => Some(decode(c))
-        case Right(_) => None
-        case l @ Left(_) => Some(l.asInstanceOf[Decoder.Result[V]])
-    }
+        case Right(_)                            => None
+        case l @ Left(_)                         => Some(l.asInstanceOf[Decoder.Result[V]])
+      }
   }
 
   final protected[this] def withDiscriminatorAccumulating[V](
@@ -85,9 +96,9 @@ abstract class ReprDecoder[A] extends Decoder[A] {
       c.get[String](disc) match {
         case Right(leafType) if leafType == name =>
           Some(decode.tryDecodeAccumulating(c))
-        case Right(_) => None
+        case Right(_)  => None
         case Left(err) => Some(Validated.invalidNel(err))
-    }
+      }
   }
 
   final def apply(c: HCursor): Decoder.Result[A] =

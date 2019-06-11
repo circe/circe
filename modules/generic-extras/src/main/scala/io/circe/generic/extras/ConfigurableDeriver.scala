@@ -38,7 +38,8 @@ class ConfigurableDeriver(val c: whitebox.Context)
 
   protected[this] def decodeField(name: String, decode: TermName): Tree = q"""
     orDefault(
-      $decode.tryDecode(c.downField(transformMemberNames($name))),
+      c.downField(transformMemberNames($name)),
+      $decode,
       $name,
       defaults
     )
@@ -46,7 +47,8 @@ class ConfigurableDeriver(val c: whitebox.Context)
 
   protected[this] def decodeFieldAccumulating(name: String, decode: TermName): Tree = q"""
     orDefaultAccumulating(
-      $decode.tryDecodeAccumulating(c.downField(transformMemberNames($name))),
+      c.downField(transformMemberNames($name)),
+      $decode,
       $name,
       defaults
     )

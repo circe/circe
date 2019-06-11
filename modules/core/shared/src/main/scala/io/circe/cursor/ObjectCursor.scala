@@ -16,21 +16,23 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
   def lefts: Option[Vector[Json]] = None
   def rights: Option[Vector[Json]] = None
 
-  def up: ACursor = if (!changed) parent.addOp(this, CursorOp.MoveUp) else {
+  def up: ACursor = if (!changed) parent.addOp(this, CursorOp.MoveUp)
+  else {
     parent.replace(Json.fromJsonObject(obj), this, CursorOp.MoveUp)
   }
 
   def delete: ACursor = parent.replace(Json.fromJsonObject(obj.remove(key)), this, CursorOp.DeleteGoParent)
 
   def field(k: String): ACursor = {
-    if (!obj.contains(k)) fail(CursorOp.Field(k)) else {
+    if (!obj.contains(k)) fail(CursorOp.Field(k))
+    else {
       new ObjectCursor(obj, k, parent, changed)(this, CursorOp.Field(k))
     }
   }
 
   def deleteGoField(k: String): ACursor = {
     if (obj.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true)(this, CursorOp.DeleteGoField(k))
-      else fail(CursorOp.DeleteGoField(k))
+    else fail(CursorOp.DeleteGoField(k))
   }
 
   def left: ACursor = fail(CursorOp.MoveLeft)

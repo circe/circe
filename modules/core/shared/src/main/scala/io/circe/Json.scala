@@ -3,6 +3,7 @@ package io.circe
 import cats.{ Eq, Show }
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
+import scala.collection.mutable.ListBuffer
 
 /**
  * A data type representing possible JSON values.
@@ -126,6 +127,24 @@ sealed abstract class Json extends Product with Serializable {
   final def spaces4: String = Printer.spaces4.pretty(this)
 
   /**
+   * Pretty-print this JSON value to a string with no spaces, with object keys
+   * sorted alphabetically.
+   */
+  final def noSpacesSortKeys: String = Printer.noSpacesSortKeys.pretty(this)
+
+  /**
+   * Pretty-print this JSON value to a string indentation of two spaces, with
+   * object keys sorted alphabetically.
+   */
+  final def spaces2SortKeys: String = Printer.spaces2SortKeys.pretty(this)
+
+  /**
+   * Pretty-print this JSON value to a string indentation of four spaces, with
+   * object keys sorted alphabetically.
+   */
+  final def spaces4SortKeys: String = Printer.spaces4SortKeys.pretty(this)
+
+  /**
    * Perform a deep merge of this JSON value with another JSON value.
    *
    * Objects are merged by key, values from the argument JSON take
@@ -142,11 +161,20 @@ sealed abstract class Json extends Product with Serializable {
         fromJsonObject(
           lhs.toList.foldLeft(rhs) {
             case (acc, (key, value)) =>
-              rhs(key).fold(acc.add(key, value)) { r => acc.add(key, value.deepMerge(r)) }
+              rhs(key).fold(acc.add(key, value)) { r =>
+                acc.add(key, value.deepMerge(r))
+              }
           }
         )
       case _ => that
     }
+
+  /**
+   * Drop the entries with a null value if this is an object.
+   *
+   * Note that this does not apply recursively.
+   */
+  def dropNullValues: Json = this.mapObject(_.filter { case (_, v) => !v.isNull })
 
   /**
    * Compute a `String` representation for this JSON value.
@@ -158,7 +186,7 @@ sealed abstract class Json extends Product with Serializable {
    */
   override final def equals(that: Any): Boolean = that match {
     case that: Json => Json.eqJson.eqv(this, that)
-    case _ => false
+    case _          => false
   }
 
   /**
@@ -175,21 +203,25 @@ sealed abstract class Json extends Product with Serializable {
    * The Play docs, from which this method was inspired, reads:
    *   "Lookup for fieldName in the current object and all descendants."
    */
-  final def findAllByKey(key: String): List[Json] = keyValues(this).collect {
-    case (k, v) if (k == key) => v
+  final def findAllByKey(key: String): List[Json] = {
+    val hh: ListBuffer[Json] = ListBuffer.empty[Json]
+    def loop(json: Json): Unit = json match {
+      case JObject(obj) =>
+        obj.toIterable.foreach {
+          case (k, v) =>
+            if (k == key) hh += v
+            loop(v)
+        }
+      case JArray(elems) => elems.foreach(loop)
+      case _             => // do nothing
+    }
+    loop(this)
+    hh.toList
   }
-
-  private def keyValues(json: Json): List[(String, Json)] = json match {
-    case JObject(obj)  => obj.toList.flatMap { case (k, v) => keyValuesHelper(k, v) }
-    case JArray(elems) => elems.toList.flatMap(keyValues)
-    case _             => Nil
-  }
-
-  private def keyValuesHelper(key: String, value: Json): List[(String, Json)] =
-    (key, value) :: keyValues(value)
 }
 
 final object Json {
+
   /**
    * Represents a set of operations for reducing a [[Json]] instance to a value.
    */
@@ -527,12 +559,12 @@ final object Json {
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {
-    case ( JObject(a),  JObject(b)) => JsonObject.eqJsonObject.eqv(a, b)
-    case ( JString(a),  JString(b)) => a == b
-    case ( JNumber(a),  JNumber(b)) => JsonNumber.eqJsonNumber.eqv(a, b)
+    case (JObject(a), JObject(b))   => JsonObject.eqJsonObject.eqv(a, b)
+    case (JString(a), JString(b))   => a == b
+    case (JNumber(a), JNumber(b))   => JsonNumber.eqJsonNumber.eqv(a, b)
     case (JBoolean(a), JBoolean(b)) => a == b
-    case (  JArray(a),   JArray(b)) => arrayEq(a, b)
-    case (          x,           y) => x.isNull && y.isNull
+    case (JArray(a), JArray(b))     => arrayEq(a, b)
+    case (x, y)                     => x.isNull && y.isNull
   }
 
   implicit final val showJson: Show[Json] = Show.fromToString[Json]

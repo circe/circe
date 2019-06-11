@@ -30,7 +30,8 @@ object CodecLaws {
 trait CodecTests[A] extends Laws {
   def laws: CodecLaws[A]
 
-  def codec(implicit
+  def codec(
+    implicit
     arbitraryA: Arbitrary[A],
     shrinkA: Shrink[A],
     eqA: Eq[A],
@@ -49,7 +50,8 @@ trait CodecTests[A] extends Laws {
     "encoder serializability" -> SerializableLaws.serializable(laws.encode)
   )
 
-  def unserializableCodec(implicit
+  def unserializableCodec(
+    implicit
     arbitraryA: Arbitrary[A],
     shrinkA: Shrink[A],
     eqA: Eq[A],

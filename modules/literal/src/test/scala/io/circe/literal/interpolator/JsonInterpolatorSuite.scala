@@ -4,10 +4,11 @@ import io.circe.{ Encoder, Json }
 import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
-import org.scalatest.{ FunSpec, Matchers }
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.Matchers
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
   describe("The json string interpolater") {
     it("should fail to compile with invalid JSON") {
       "json\"\"\"1a2b3c\"\"\"" shouldNot compile
@@ -85,7 +86,7 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
       }
 
       it("should work with interpolated literals") {
-        val interpolated = json"""{ "k": ${ 1 } }"""
+        val interpolated = json"""{ "k": ${1} }"""
         val parsed = parse(s"""{ "k": 1 }""")
 
         parsed shouldBe Right(interpolated)
@@ -104,7 +105,7 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
         forAll { (key: String, value: Json) =>
           val interpolated = json"{ $key: $value }"
           val escapedKey = Encoder[String].apply(key).noSpaces
-          val parsed = parse(s"{ $escapedKey: ${ value.noSpaces } }")
+          val parsed = parse(s"{ $escapedKey: ${value.noSpaces} }")
 
           parsed shouldBe Right(interpolated)
         }
@@ -113,14 +114,14 @@ class JsonInterpolatorSuite extends FunSpec with Matchers with GeneratorDrivenPr
       it("should work with interpolated non-string variables") {
         forAll { (key: Int, value: Json) =>
           val interpolated = json"{ $key: $value }"
-          val parsed = parse(s"""{ "${ key.toString }": ${ value.noSpaces } }""")
+          val parsed = parse(s"""{ "${key.toString}": ${value.noSpaces} }""")
 
           parsed shouldBe Right(interpolated)
         }
       }
 
       it("should work with interpolated literals") {
-        val interpolated = json"""{ ${ 1 }: "v" }"""
+        val interpolated = json"""{ ${1}: "v" }"""
         val parsed = parse(s"""{ "1": "v" }""")
 
         parsed shouldBe Right(interpolated)

@@ -17,7 +17,8 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
     new ArrayCursor(values, index, parent, changed)(cursor, op)
 
   def up: ACursor =
-    if (!changed) parent.addOp(this, CursorOp.MoveUp) else {
+    if (!changed) parent.addOp(this, CursorOp.MoveUp)
+    else {
       parent.replace(Json.fromValues(values), this, CursorOp.MoveUp)
     }
 
@@ -26,30 +27,36 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
   def lefts: Option[Vector[Json]] = Some(values.take(index).reverse)
   def rights: Option[Vector[Json]] = Some(values.drop(index + 1))
 
-  def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft) else {
+  def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft)
+  else {
     new ArrayCursor(values, index - 1, parent, changed)(this, CursorOp.MoveLeft)
   }
 
-  def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight) else {
+  def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight)
+  else {
     new ArrayCursor(values, index + 1, parent, changed)(this, CursorOp.MoveRight)
   }
 
   def first: ACursor = new ArrayCursor(values, 0, parent, changed)(this, CursorOp.MoveFirst)
   def last: ACursor = new ArrayCursor(values, values.size - 1, parent, changed)(this, CursorOp.MoveLast)
 
-  def deleteGoLeft: ACursor = if (index == 0) fail(CursorOp.DeleteGoLeft) else {
+  def deleteGoLeft: ACursor = if (index == 0) fail(CursorOp.DeleteGoLeft)
+  else {
     new ArrayCursor(valuesExcept, index - 1, parent, true)(this, CursorOp.DeleteGoLeft)
   }
 
-  def deleteGoRight: ACursor = if (index == values.size - 1) fail(CursorOp.DeleteGoRight) else {
+  def deleteGoRight: ACursor = if (index == values.size - 1) fail(CursorOp.DeleteGoRight)
+  else {
     new ArrayCursor(valuesExcept, index, parent, true)(this, CursorOp.DeleteGoRight)
   }
 
-  def deleteGoFirst: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoFirst) else {
+  def deleteGoFirst: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoFirst)
+  else {
     new ArrayCursor(valuesExcept, 0, parent, true)(this, CursorOp.DeleteGoFirst)
   }
 
-  def deleteGoLast: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoLast) else {
+  def deleteGoLast: ACursor = if (values.size == 1) fail(CursorOp.DeleteGoLast)
+  else {
     new ArrayCursor(valuesExcept, values.size - 2, parent, true)(this, CursorOp.DeleteGoLast)
   }
 

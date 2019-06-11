@@ -68,6 +68,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
    * that's more convenient to work with.
    */
   private[this] class Members(val underlying: List[Member]) {
+
     /**
      * Fold over the elements of this (co-)product while accumulating instances
      * of some type class for each.
@@ -114,33 +115,36 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
 
     object Entry {
       def unapply(tpe: Type): Option[(String, Type, Type)] = tpe.dealias match {
+
         /**
          * Before Scala 2.12 the `RefinedType` extractor returns the field type
          * (including any refinements) as the first result in the list.
          */
         case RefinedType(List(fieldType, TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType))), _)
-          if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
-            tagType.dealias match {
-              case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+            if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
+          tagType.dealias match {
+            case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                 if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
-                  Some((fieldKey, tagType, fieldType))
-              case _ => None
-            }
+              Some((fieldKey, tagType, fieldType))
+            case _ => None
+          }
+
         /**
          * In Scala 2.12 the `RefinedType` extractor returns a refined type with
          * each individual refinement as a separate element in the list.
          */
-        case RefinedType(parents, scope) => parents.reverse match {
-          case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
-            if lt =:= ShapelessLabelledType && internal.refinedType(refs.reverse, scope) =:= taggedFieldType =>
+        case RefinedType(parents, scope) =>
+          parents.reverse match {
+            case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
+                if lt =:= ShapelessLabelledType && internal.refinedType(refs.reverse, scope) =:= taggedFieldType =>
               tagType.dealias match {
                 case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
-                  if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
-                    Some((fieldKey, tagType, taggedFieldType))
+                    if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
+                  Some((fieldKey, tagType, taggedFieldType))
                 case _ => None
               }
-          case _ => None
-        }
+            case _ => None
+          }
         case _ => None
       }
     }
@@ -165,9 +169,9 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       val inferred = c.inferImplicitValue(target, silent = true)
 
       inferred match {
-        case EmptyTree => resolveInstance(rest)(tpe)
+        case EmptyTree          => resolveInstance(rest)(tpe)
         case instance if lazily => q"{ $instance }.value"
-        case instance => instance
+        case instance           => instance
       }
     case Nil => fail(tpe)
   }
@@ -177,30 +181,31 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   private[this] def hlistDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
     resolveInstance(List((typeOf[Decoder[_]], false)))
   )((q"$ReprDecoderUtils.hnilResult": Tree, q"$ReprDecoderUtils.hnilResultAccumulating": Tree)) {
-    case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) => (
-      q"""
+    case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) =>
+      (
+        q"""
         $ReprDecoderUtils.consResults[
           _root_.io.circe.Decoder.Result,
           $nameTpe,
           $tpe,
           $accTail
         ](
-          ${ decodeField(label, instanceName) },
+          ${decodeField(label, instanceName)},
           $acc
         )(_root_.io.circe.Decoder.resultInstance)
       """,
-      q"""
+        q"""
         $ReprDecoderUtils.consResults[
           _root_.io.circe.AccumulatingDecoder.Result,
           $nameTpe,
           $tpe,
           $accTail
         ](
-          ${ decodeFieldAccumulating(label, instanceName) },
+          ${decodeFieldAccumulating(label, instanceName)},
           $accAccumulating
         )(_root_.io.circe.AccumulatingDecoder.resultInstance)
       """
-    )
+      )
   }
 
   private[this] val cnilResult: Tree = q"""
@@ -218,34 +223,42 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
   private[this] def coproductDecoderParts(members: Members): (List[c.Tree], (c.Tree, c.Tree)) = members.fold(
     resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
   )((cnilResult, cnilResultAccumulating)) {
-    case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) => (
-      q"""
-        ${ decodeSubtype(label, instanceName) } match {
-          case _root_.scala.Some(result) => result.right.map(v =>
-           $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
-          )
-          case _root_.scala.None => $acc.right.map(_root_.shapeless.Inr(_))
+    case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) =>
+      (
+        q"""
+        ${decodeSubtype(label, instanceName)} match {
+          case _root_.scala.Some(result) => result match {
+            case _root_.scala.util.Right(v) =>
+              _root_.scala.util.Right($ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v))
+            case _root_.scala.util.Left(err) => _root_.scala.util.Left(err)
+          }
+          case _root_.scala.None => $acc match {
+            case _root_.scala.util.Right(v) => _root_.scala.util.Right(_root_.shapeless.Inr(v))
+            case _root_.scala.util.Left(err) => _root_.scala.util.Left(err)
+          }
         }
       """,
-      q"""
-        ${ decodeSubtypeAccumulating(label, instanceName) } match {
+        q"""
+        ${decodeSubtypeAccumulating(label, instanceName)} match {
           case _root_.scala.Some(result) => result.map(v =>
             $ReprDecoderUtils.injectLeftValue[$nameTpe, $tpe, $accTail](v)
           )
           case _root_.scala.None => $accAccumulating.map(_root_.shapeless.Inr(_))
         }
       """
-    )
+      )
   }
 
   protected[this] def constructDecoder[R](implicit R: c.WeakTypeTag[R]): c.Tree = {
     val isHList = R.tpe <:< HListType
     val isCoproduct = !isHList && R.tpe <:< CoproductType
 
-    if (!isHList && !isCoproduct) fail(R.tpe) else {
+    if (!isHList && !isCoproduct) fail(R.tpe)
+    else {
       val members = Members.fromType(R.tpe)
 
-      if (isHList && members.underlying.isEmpty) q"$hnilReprDecoder" else {
+      if (isHList && members.underlying.isEmpty) q"$hnilReprDecoder"
+      else {
         val (instanceDefs, (result, resultAccumulating)) =
           if (isHList) hlistDecoderParts(members) else coproductDecoderParts(members)
         val instanceType = appliedType(RD.tpe.typeConstructor, List(R.tpe))
@@ -255,11 +268,11 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
             ..$instanceDefs
 
             final def $decodeMethodName(
-              ...${ fullDecodeMethodArgs(R.tpe) }
+              ...${fullDecodeMethodArgs(R.tpe)}
             ): _root_.io.circe.Decoder.Result[$R] = $result
 
             final override def $decodeAccumulatingMethodName(
-              ...${ fullDecodeAccumulatingMethodArgs(R.tpe) }
+              ...${fullDecodeAccumulatingMethodArgs(R.tpe)}
             ): _root_.io.circe.AccumulatingDecoder.Result[$R] = $resultAccumulating
           }: $instanceType
         """
@@ -304,7 +317,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
         cq"""
           _root_.shapeless.Inr($inrName) => $inrName match {
             case _root_.shapeless.Inl($inlName) =>
-              ${ encodeSubtype(label, instanceName, inlName) }
+              ${encodeSubtype(label, instanceName, inlName)}
             case $acc
           }
         """
@@ -317,7 +330,8 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
     val isHList = R.tpe <:< HListType
     val isCoproduct = !isHList && R.tpe <:< CoproductType
 
-    if (!isHList && !isCoproduct) fail(R.tpe) else {
+    if (!isHList && !isCoproduct) fail(R.tpe)
+    else {
       val members = Members.fromType(R.tpe)
 
       val (instanceDefs, instanceImpl) =
@@ -329,7 +343,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
         new $instanceType {
           ..$instanceDefs
 
-          final def $encodeMethodName(...${ fullEncodeMethodArgs(R.tpe) }): _root_.io.circe.JsonObject = $instanceImpl
+          final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject = $instanceImpl
         }: $instanceType
       """
     }

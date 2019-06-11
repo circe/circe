@@ -14,7 +14,7 @@ trait Spaces2PrinterExample { this: Spaces2PrinterSuite =>
 
       Json.obj(i.toString -> acc, "data" -> Json.fromValues(strings ++ doubles))
     case (acc, i) if i % 3 == 1 => Json.obj(i.toString -> acc, "data" -> Json.True)
-    case (acc, i) => Json.obj(i.toString -> acc)
+    case (acc, i)               => Json.obj(i.toString -> acc)
   }
 
   val source = Source.fromInputStream(getClass.getResourceAsStream("/io/circe/spaces2-example.json"))

@@ -72,6 +72,13 @@ package examples {
   case class Baz(xs: List[String]) extends Foo
   case class Bam(w: Wub, d: Double) extends Foo
 
+  sealed trait Mary
+  case object HadA extends Mary
+  case object LittleLamb extends Mary
+  object Mary {
+    implicit val eqMary: Eq[Mary] = Eq.fromUniversalEquals[Mary]
+  }
+
   object Bar {
     implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
     implicit val arbitraryBar: Arbitrary[Bar] = Arbitrary(
@@ -109,7 +116,7 @@ package examples {
     )
 
     val decodeBam: Decoder[Bam] = Decoder.forProduct2("w", "d")(Bam.apply)(Wub.decodeWub, implicitly)
-    val encodeBam: Encoder[Bam] = Encoder.forProduct2[Wub, Double, Bam]("w", "d") {
+    val encodeBam: Encoder[Bam] = Encoder.forProduct2[Bam, Wub, Double]("w", "d") {
       case Bam(w, d) => (w, d)
     }(Wub.encodeWub, implicitly)
   }
@@ -127,7 +134,7 @@ package examples {
 
     val encodeFoo: Encoder[Foo] = Encoder.instance {
       case bar @ Bar(_, _) => Json.obj("Bar" -> Bar.encodeBar(bar))
-      case baz @ Baz(_) => Json.obj("Baz" -> Baz.encodeBaz(baz))
+      case baz @ Baz(_)    => Json.obj("Baz" -> Baz.encodeBaz(baz))
       case bam @ Bam(_, _) => Json.obj("Bam" -> Bam.encodeBam(bam))
     }
 
@@ -136,7 +143,7 @@ package examples {
         case Some(Vector("Bar")) => c.get("Bar")(Bar.decodeBar.widen)
         case Some(Vector("Baz")) => c.get("Baz")(Baz.decodeBaz.widen)
         case Some(Vector("Bam")) => c.get("Bam")(Bam.decodeBam.widen)
-        case _ => Left(DecodingFailure("Foo", c.history))
+        case _                   => Left(DecodingFailure("Foo", c.history))
       }
     }
   }
