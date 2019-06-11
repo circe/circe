@@ -4,6 +4,32 @@ import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.export.Exported
 import java.io.Serializable
+import java.time.{
+  Duration,
+  Instant,
+  LocalDate,
+  LocalDateTime,
+  LocalTime,
+  MonthDay,
+  OffsetDateTime,
+  OffsetTime,
+  Period,
+  Year,
+  YearMonth,
+  ZonedDateTime,
+  ZoneId,
+  ZoneOffset
+}
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.{
+  ISO_LOCAL_DATE,
+  ISO_LOCAL_DATE_TIME,
+  ISO_LOCAL_TIME,
+  ISO_OFFSET_DATE_TIME,
+  ISO_OFFSET_TIME,
+  ISO_ZONED_DATE_TIME
+}
+import java.time.temporal.TemporalAccessor
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
@@ -76,7 +102,7 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEncoders with MidPriorityEncoders {
+final object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
 
   /**
    * Return an instance for a given type `A`.
@@ -367,7 +393,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
   ): ObjectEncoder[NonEmptyMap[K, V]] =
     new ObjectEncoder[NonEmptyMap[K, V]] {
       final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
-        encodeMap.encodeObject(a.toSortedMap)
+        encodeMap[K, V].encodeObject(a.toSortedMap)
     }
 
   /**
@@ -484,6 +510,196 @@ final object Encoder extends TupleEncoders with ProductEncoders with JavaTimeEnc
 
       JsonObject.fromMapAndVector(builder.result(), keysBuilder.result())
     }
+  }
+
+  private[this] abstract class JavaTimeEncoder[A <: TemporalAccessor] extends Encoder[A] {
+    protected[this] def format: DateTimeFormatter
+
+    final def apply(a: A): Json = Json.fromString(format.format(a))
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeDuration: Encoder[Duration] = new Encoder[Duration] {
+    final def apply(a: Duration) = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeInstant: Encoder[Instant] = new Encoder[Instant] {
+    final def apply(a: Instant): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodePeriod: Encoder[Period] = new Encoder[Period] {
+    final def apply(a: Period): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeZoneId: Encoder[ZoneId] = new Encoder[ZoneId] {
+    final def apply(a: ZoneId): Json = Json.fromString(a.getId)
+  }
+
+  /**
+   * @group Time
+   */
+  final def encodeLocalDateWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDate] =
+    new JavaTimeEncoder[LocalDate] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeLocalTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalTime] =
+    new JavaTimeEncoder[LocalTime] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeLocalDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
+    new JavaTimeEncoder[LocalDateTime] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeMonthDayWithFormatter(formatter: DateTimeFormatter): Encoder[MonthDay] =
+    new JavaTimeEncoder[MonthDay] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetTime] =
+    new JavaTimeEncoder[OffsetTime] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeOffsetDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetDateTime] =
+    new JavaTimeEncoder[OffsetDateTime] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeYearWithFormatter(formatter: DateTimeFormatter): Encoder[Year] =
+    new JavaTimeEncoder[Year] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeYearMonthWithFormatter(formatter: DateTimeFormatter): Encoder[YearMonth] =
+    new JavaTimeEncoder[YearMonth] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
+    new JavaTimeEncoder[ZonedDateTime] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  final def encodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Encoder[ZoneOffset] =
+    new JavaTimeEncoder[ZoneOffset] {
+      protected[this] final def format: DateTimeFormatter = formatter
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeLocalDate: Encoder[LocalDate] =
+    new JavaTimeEncoder[LocalDate] {
+      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeLocalTime: Encoder[LocalTime] =
+    new JavaTimeEncoder[LocalTime] {
+      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_TIME
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeLocalDateTime: Encoder[LocalDateTime] =
+    new JavaTimeEncoder[LocalDateTime] {
+      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE_TIME
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeMonthDay: Encoder[MonthDay] = new Encoder[MonthDay] {
+    final def apply(a: MonthDay): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeOffsetTime: Encoder[OffsetTime] =
+    new JavaTimeEncoder[OffsetTime] {
+      protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeOffsetDateTime: Encoder[OffsetDateTime] =
+    new JavaTimeEncoder[OffsetDateTime] {
+      protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeYear: Encoder[Year] = new Encoder[Year] {
+    final def apply(a: Year): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
+    final def apply(a: YearMonth): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeZonedDateTime: Encoder[ZonedDateTime] =
+    new JavaTimeEncoder[ZonedDateTime] {
+      protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
+    }
+
+  /**
+   * @group Time
+   */
+  implicit final val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
+    final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
 }
 
