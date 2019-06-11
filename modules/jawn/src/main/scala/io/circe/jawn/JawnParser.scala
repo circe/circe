@@ -9,16 +9,24 @@ import scala.util.{ Failure, Success, Try }
 final object JawnParser {
 
   /**
-   * Returns a parser that fails on JSON strings, object keys, or numbers that
-   * exceed a given length.
+   * Returns a parser that fails on:
+   * <ul>
+   *   <li>JSON strings, object keys, or numbers that exceed a given length </li>
+   *   <li>encountering duplicate keys as per JSONlint</li>
+   * </ul>
    *
    * In some cases excessively long values (e.g. JSON numbers with millions of
    * digits) may support denial-of-service attacks. For example, the string
    * constructor for Java's `BigInteger` is quadratic with the length of the
    * input, and decoding a ten-million digit JSON number into a `BigInteger` may
    * take minutes.
+   *
+   * If `allowDuplicateKeys` is set to `true`, the parser will fail if it encounters an object
+   * containing duplicate keys. Note that duplicate keys are not prohibited by the JSON
+   * specification, but many linters and other processors do not handle them.
    */
-  def apply(maxValueSize: Int): JawnParser = new JawnParser(Some(maxValueSize), allowDuplicateKeys = true)
+  def apply(maxValueSize: Int, allowDuplicateKeys: Boolean): JawnParser =
+    new JawnParser(Some(maxValueSize), allowDuplicateKeys)
 
   /**
    * Returns a parser that fails on:
@@ -33,8 +41,14 @@ final object JawnParser {
    * input, and decoding a ten-million digit JSON number into a `BigInteger` may
    * take minutes.
    */
-  def apply(maxValueSize: Int, allowDuplicateKeys: Boolean): JawnParser =
-    new JawnParser(Some(maxValueSize), allowDuplicateKeys)
+  def apply(maxValueSize: Int): JawnParser = JawnParser(maxValueSize, true)
+
+  /**
+   * If `allowDuplicateKeys` is set to `true`, the parser will fail if it encounters an object
+   * containing duplicate keys. Note that duplicate keys are not prohibited by the JSON
+   * specification, but many linters and other processors do not handle them.
+   */
+  def apply(allowDuplicateKeys: Boolean): JawnParser = new JawnParser(None, allowDuplicateKeys)
 }
 
 class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends Parser {

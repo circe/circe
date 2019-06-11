@@ -582,7 +582,7 @@ credentials ++= (
 
 lazy val CompileTime = config("compile-time")
 
-val jvmTestProjects = jvmProjects.filterNot(Set(core, jawn, parser))
+val jvmTestProjects = jvmProjects.filterNot(Set(core, parser))
 val jsTestProjects = jsProjects.filterNot(Set(core, parser, scalajs))
 
 val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalastyle"
