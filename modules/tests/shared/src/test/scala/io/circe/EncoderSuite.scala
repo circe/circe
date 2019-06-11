@@ -25,9 +25,9 @@ class EncoderSuite extends CirceSuite {
       val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
     }
 
-    implicit val encoder = Encoder.enumEncoder(WeekDay)
+    implicit val encoder = Encoder.encodeEnumeration(WeekDay)
     val json = WeekDay.Fri.asJson
-    val decoder = Decoder.enumDecoder(WeekDay)
+    val decoder = Decoder.decodeEnumeration(WeekDay)
     assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
   }
 

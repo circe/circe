@@ -316,7 +316,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
     }
 
-    val decoder = Decoder.enumDecoder(WeekDay)
+    val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Fri\"")
     assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
   }
@@ -327,7 +327,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
     }
 
-    val decoder = Decoder.enumDecoder(WeekDay)
+    val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Friday\"")
 
     assert(decoder.apply(friday.hcursor).isEmpty)

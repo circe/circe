@@ -479,13 +479,23 @@ final object Encoder extends TupleEncoders with ProductEncoders with MidPriority
   /**
    * {{{
    *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayEncoder = Encoder.encodeEnumeration(WeekDay)
+   * }}}
+   * @group Utilities
+   */
+  final def encodeEnumeration[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
+    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+  }
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
    *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
    * }}}
    * @group Utilities
    */
-  final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
-    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
-  }
+  @deprecated("Use encodeEnumeration", "0.12.0")
+  final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = encodeEnumeration[E](enum)
 
   /**
    * Note that this implementation assumes that the collection does not contain duplicate keys.
