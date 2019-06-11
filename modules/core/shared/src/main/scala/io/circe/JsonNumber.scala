@@ -31,6 +31,14 @@ sealed abstract class JsonNumber extends Serializable {
   def toDouble: Double
 
   /**
+   * Convert this number to its best [[scala.Float]] approximation.
+   *
+   * Anything over `Float.MaxValue` will be rounded to `Float.PositiveInfinity` and anything below
+   * `Float.MinValue` is rounded to `Float.NegativeInfinity`.
+   */
+  def toFloat: Float
+
+  /**
    * Return this number as a [[scala.Byte]] if it's a valid [[scala.Byte]].
    */
   final def toByte: Option[Byte] = toLong match {
@@ -84,7 +92,6 @@ sealed abstract class JsonNumber extends Serializable {
 private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
-  def toDouble: Double = toBiggerDecimal.toDouble
   final def toLong: Option[Long] = toBiggerDecimal.toLong
 }
 
@@ -100,13 +107,16 @@ private[circe] final case class JsonDecimal(value: String) extends BiggerDecimal
     } else result
   }
 
-  override final def toDouble: Double = java.lang.Double.parseDouble(value)
+  final def toDouble: Double = java.lang.Double.parseDouble(value)
+  final def toFloat: Float = java.lang.Float.parseFloat(value)
   override def toString: String = value
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
 }
 
 private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal) extends BiggerDecimalJsonNumber {
   private[circe] def toBiggerDecimal: BiggerDecimal = value
+  final def toDouble: Double = toBiggerDecimal.toDouble
+  final def toFloat: Float = toBiggerDecimal.toFloat
   override def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = value.appendToStringBuilder(builder)
 }
@@ -119,6 +129,7 @@ private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends Js
   final def toBigDecimal: Option[BigDecimal] = Some(new BigDecimal(value))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toDouble: Double = value.doubleValue
+  final def toFloat: Float = value.floatValue
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   override final def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
@@ -132,6 +143,7 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toBigDecimal: Option[BigDecimal] = Some(BigDecimal(value))
   final def toBigInt: Option[BigInt] = Some(BigInt(value))
   final def toDouble: Double = value.toDouble
+  final def toFloat: Float = value.toFloat
   final def toLong: Option[Long] = Some(value)
   override final def toString: String = java.lang.Long.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
@@ -152,6 +164,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   }
 
   final def toDouble: Double = value
+  final def toFloat: Float = value.toFloat
 
   final def toLong: Option[Long] = {
     val asBigDecimal = toJavaBigDecimal
@@ -179,6 +192,8 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 
   // Don't use `value.toFloat` due to floating point errors.
   final def toDouble: Double = toJavaBigDecimal.doubleValue
+
+  final def toFloat: Float = value
 
   final def toLong: Option[Long] = {
     val asBigDecimal = toJavaBigDecimal

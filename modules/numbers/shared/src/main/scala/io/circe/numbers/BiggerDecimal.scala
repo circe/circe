@@ -57,6 +57,11 @@ sealed abstract class BiggerDecimal extends Serializable {
   def toDouble: Double
 
   /**
+   * Convert to the nearest [[scala.Float]].
+   */
+  def toFloat: Float
+
+  /**
    * Convert to a [[scala.Long]] if this is a valid `Long` value.
    */
   def toLong: Option[Long]
@@ -99,6 +104,10 @@ private[numbers] final class SigAndExp(
   def toDouble: Double = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
     new BigDecimal(unscaled, scale.intValue).doubleValue
   } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
+
+  def toFloat: Float = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
+    new BigDecimal(unscaled, scale.intValue).floatValue
+  } else (if (scale.signum == 1) 0.0f else Float.PositiveInfinity) * unscaled.signum
 
   def toLong: Option[Long] = if (!this.isWhole) None
   else {
@@ -156,6 +165,7 @@ final object BiggerDecimal {
   private[this] val UnsignedZero: BiggerDecimal = new Zero {
     final def isNegativeZero: Boolean = false
     final def toDouble: Double = 0.0
+    final def toFloat: Float = 0.0f
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => !other.isNegativeZero
@@ -168,6 +178,7 @@ final object BiggerDecimal {
   val NegativeZero: BiggerDecimal = new Zero {
     final def isNegativeZero: Boolean = true
     final def toDouble: Double = -0.0
+    final def toFloat: Float = -0.0f
 
     final override def equals(that: Any): Boolean = that match {
       case other: Zero => other.isNegativeZero
