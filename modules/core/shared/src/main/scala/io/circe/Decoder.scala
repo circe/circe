@@ -10,7 +10,8 @@ import cats.data.{
   NonEmptySet,
   NonEmptyVector,
   StateT,
-  Validated
+  Validated,
+  ValidatedNel
 }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
@@ -836,6 +837,7 @@ final object Decoder
   }
 
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
+  private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
 
   private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
   private[circe] final val keyMissingNoneAccumulating: AccumulatingDecoder.Result[Option[Nothing]] =
@@ -861,17 +863,17 @@ final object Decoder
 
     final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Option[A]] = tryDecodeAccumulating(c)
 
-    final override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[Option[A]] = {
-      val result = tryDecode(c)
-
-      if (result eq keyMissingNone) {
-        keyMissingNoneAccumulating
-      } else {
-        result match {
-          case Right(v) => Validated.valid(v)
-          case Left(e)  => Validated.invalidNel(e)
-        }
-      }
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[Option[A]] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) validNone
+        else
+          d.decodeAccumulating(c) match {
+            case Valid(a)       => Valid(Some(a))
+            case i @ Invalid(_) => i
+          }
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNoneAccumulating
+        else Validated.invalidNel(DecodingFailure("[A]Option[A]", c.history))
     }
   }
 
