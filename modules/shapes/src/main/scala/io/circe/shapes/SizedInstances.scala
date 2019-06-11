@@ -1,7 +1,7 @@
 package io.circe.shapes
 
 import cats.data.Validated
-import io.circe.{ AccumulatingDecoder, Decoder, DecodingFailure, Encoder, HCursor }
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor }
 import scala.collection.GenTraversable
 import shapeless.{ AdditiveCollection, Nat, Sized }
 import shapeless.ops.nat.ToInt
@@ -28,14 +28,14 @@ trait SizedInstances {
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[Sized[C[A], L]]]
       }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Sized[C[A], L]] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Sized[C[A], L]] =
       decodeCA.decodeAccumulating(c) match {
         case Validated.Valid(as) =>
           checkSize(as) match {
             case Some(s) => Validated.valid(s)
             case None    => Validated.invalidNel(failure(c))
           }
-        case l @ Validated.Invalid(_) => l.asInstanceOf[AccumulatingDecoder.Result[Sized[C[A], L]]]
+        case l @ Validated.Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[Sized[C[A], L]]]
       }
   }
 

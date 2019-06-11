@@ -19,7 +19,7 @@ trait Parser extends Serializable {
     decoder: Decoder[A]
   ): ValidatedNel[Error, A] = input match {
     case Right(json) =>
-      decoder.accumulating(json.hcursor).leftMap {
+      decoder.decodeAccumulating(json.hcursor).leftMap {
         case NonEmptyList(h, t) => NonEmptyList(h, t)
       }
     case Left(error) => Validated.invalidNel(error)

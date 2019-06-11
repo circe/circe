@@ -123,20 +123,20 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
     "Option[T] with default" should "be default value if missing key decoded" in {
       val json = json"""{}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
-      assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
+      assert(Decoder[FooWithDefault].decodeAccumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
     }
 
     "Value with default" should "be default value if value is null" in {
       val json = json"""{"b": null}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Right(FooWithDefault(Some(0), "b")))
-      assert(Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
+      assert(Decoder[FooWithDefault].decodeAccumulating(json.hcursor) === Validated.valid(FooWithDefault(Some(0), "b")))
     }
 
     "Option[T] with default" should "fail to decode if type in json is not correct" in {
       val json = json"""{"a": "NotAnInt"}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("Int", List(DownField("a")))))
       assert(
-        Decoder[FooWithDefault].accumulating(json.hcursor)
+        Decoder[FooWithDefault].decodeAccumulating(json.hcursor)
           === Validated.invalidNel(DecodingFailure("Int", List(DownField("a"))))
       )
     }
@@ -145,7 +145,7 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
       val json = json"""{"b": 1}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("String", List(DownField("b")))))
       assert(
-        Decoder[FooWithDefault].accumulating(json.hcursor) === Validated.invalidNel(
+        Decoder[FooWithDefault].decodeAccumulating(json.hcursor) === Validated.invalidNel(
           DecodingFailure("String", List(DownField("b")))
         )
       )

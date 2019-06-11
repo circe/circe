@@ -196,14 +196,14 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
       """,
         q"""
         $ReprDecoderUtils.consResults[
-          _root_.io.circe.AccumulatingDecoder.Result,
+          _root_.io.circe.Decoder.AccumulatingResult,
           $nameTpe,
           $tpe,
           $accTail
         ](
           ${decodeFieldAccumulating(label, instanceName)},
           $accAccumulating
-        )(_root_.io.circe.AccumulatingDecoder.resultInstance)
+        )(_root_.io.circe.Decoder.accumulatingResultInstance)
       """
       )
   }
@@ -273,7 +273,7 @@ abstract class DerivationMacros[RD[_], RE[_], DD[_], DE[_]] {
 
             final override def $decodeAccumulatingMethodName(
               ...${fullDecodeAccumulatingMethodArgs(R.tpe)}
-            ): _root_.io.circe.AccumulatingDecoder.Result[$R] = $resultAccumulating
+            ): _root_.io.circe.Decoder.AccumulatingResult[$R] = $resultAccumulating
           }: $instanceType
         """
       }

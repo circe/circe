@@ -1,6 +1,6 @@
 package io.circe.generic.decoding
 
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ Decoder, HCursor }
 import io.circe.generic.util.PatchWithOptions
 import shapeless.{ HList, LabelledGeneric }
 import shapeless.ops.function.FnFromProduct
@@ -19,7 +19,7 @@ private[circe] trait IncompleteDerivedDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[F]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[F] =
       decode.decodeAccumulating(c).map(r => ffp(p => gen.from(removeAll.reinsert((p, r)))))
   }
 
@@ -34,7 +34,7 @@ private[circe] trait IncompleteDerivedDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A => A]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A => A] =
       decode.decodeAccumulating(c).map(o => a => gen.from(patch(gen.to(a), o)))
   }
 }

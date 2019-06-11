@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ MonadError, SemigroupK }
+import cats.{ ApplicativeError, MonadError, SemigroupK }
 import cats.data.{
   Chain,
   Kleisli,
@@ -31,7 +31,7 @@ trait Decoder[A] extends Serializable { self =>
    */
   def apply(c: HCursor): Decoder.Result[A]
 
-  private[circe] def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = apply(c) match {
+  def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = apply(c) match {
     case Right(a) => Validated.valid(a)
     case Left(e)  => Validated.invalidNel(e)
   }
@@ -51,7 +51,7 @@ trait Decoder[A] extends Serializable { self =>
       )
   }
 
-  def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] = c match {
+  def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
@@ -64,7 +64,8 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
 
-  final def accumulating: AccumulatingDecoder[A] = AccumulatingDecoder.fromDecoder(self)
+  @deprecated("Use decodeAccumulating", "0.12.0")
+  final def accumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
 
   /**
    * Map a function over this [[Decoder]].
@@ -75,10 +76,10 @@ trait Decoder[A] extends Serializable { self =>
       case Right(a)    => Right(f(a))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c).map(f)
   }
 
@@ -96,10 +97,10 @@ trait Decoder[A] extends Serializable { self =>
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
 
-    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c).andThen(result => f(result).tryDecodeAccumulating(c))
   }
 
@@ -114,8 +115,8 @@ trait Decoder[A] extends Serializable { self =>
     final def apply(c: HCursor): Decoder.Result[A] =
       Decoder.resultInstance.handleErrorWith(self(c))(failure => f(failure)(c))
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
-      AccumulatingDecoder.resultInstance.handleErrorWith(self.decodeAccumulating(c))(
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
+      Decoder.accumulatingResultInstance.handleErrorWith(self.decodeAccumulating(c))(
         failures => f(failures.head).decodeAccumulating(c)
       )
   }
@@ -129,7 +130,7 @@ trait Decoder[A] extends Serializable { self =>
       case Left(e)      => Left(e.withMessage(message))
     }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       self.decodeAccumulating(c).leftMap(_.map(_.withMessage(message)))
   }
 
@@ -146,7 +147,7 @@ trait Decoder[A] extends Serializable { self =>
       case l @ Left(_)  => l
     }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c) match {
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = self.decodeAccumulating(c) match {
       case v @ Valid(a)   => if (pred(a)) v else Validated.invalidNel(DecodingFailure(message, c.history))
       case i @ Invalid(_) => i
     }
@@ -169,7 +170,7 @@ trait Decoder[A] extends Serializable { self =>
       case l @ Left(_) => l
     }
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = self.decodeAccumulating(c) match {
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = self.decodeAccumulating(c) match {
       case v @ Valid(a) =>
         errors(a).map(DecodingFailure(_, c.history)) match {
           case Nil    => v
@@ -195,7 +196,7 @@ trait Decoder[A] extends Serializable { self =>
         Left(DecodingFailure(message, c.history))
       } getOrElse self(c)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       errors(c).map(DecodingFailure(_, c.history)) match {
         case Nil    => self.decodeAccumulating(c)
         case h :: t => Validated.invalid(NonEmptyList(h, t))
@@ -228,8 +229,8 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def product[B](fb: Decoder[B]): Decoder[(A, B)] = new Decoder[(A, B)] {
     final def apply(c: HCursor): Decoder.Result[(A, B)] = Decoder.resultInstance.product(self(c), fb(c))
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[(A, B)] =
-      AccumulatingDecoder.resultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[(A, B)] =
+      Decoder.accumulatingResultInstance.product(self.decodeAccumulating(c), fb.decodeAccumulating(c))
   }
 
   /**
@@ -262,9 +263,9 @@ trait Decoder[A] extends Serializable { self =>
   final def prepare(f: ACursor => ACursor): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
     override def tryDecode(c: ACursor): Decoder.Result[A] = self.tryDecode(f(c))
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
       self.tryDecodeAccumulating(f(c))
   }
 
@@ -286,17 +287,17 @@ trait Decoder[A] extends Serializable { self =>
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
       }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c) match {
         case Valid(a) =>
           f(a) match {
             case Right(b)      => Validated.valid(b)
             case Left(message) => Validated.invalidNel(DecodingFailure(message, c.history))
           }
-        case l @ Invalid(_) => l.asInstanceOf[AccumulatingDecoder.Result[B]]
+        case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[B]]
       }
   }
 
@@ -318,17 +319,17 @@ trait Decoder[A] extends Serializable { self =>
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
       }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[B] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[B] =
+    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c) match {
         case Valid(a) =>
           f(a) match {
             case Success(b) => Validated.valid(b)
             case Failure(t) => Validated.invalidNel(DecodingFailure.fromThrowable(t, c.history))
           }
-        case l @ Invalid(_) => l.asInstanceOf[AccumulatingDecoder.Result[B]]
+        case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[B]]
       }
   }
 }
@@ -385,7 +386,25 @@ final object Decoder
   /**
    * @group Aliases
    */
-  type Result[A] = Either[DecodingFailure, A]
+  final type Result[A] = Either[DecodingFailure, A]
+
+  /**
+   * @group Aliases
+   */
+  final type AccumulatingResult[A] = ValidatedNel[DecodingFailure, A]
+
+  /**
+   * @group Instances
+   */
+  final val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
+
+  /**
+   * @group Instances
+   */
+  final val accumulatingResultInstance: ApplicativeError[AccumulatingResult, NonEmptyList[DecodingFailure]] =
+    Validated.catsDataApplicativeErrorForValidated[NonEmptyList[DecodingFailure]](
+      NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]
+    )
 
   private[circe] val resultSemigroupK: SemigroupK[Result] = catsStdSemigroupKForEither[DecodingFailure]
 
@@ -407,7 +426,7 @@ final object Decoder
    */
   final def const[A](a: A): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = Right(a)
-    final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    final override def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
       Validated.valid(a)
   }
 
@@ -452,9 +471,9 @@ final object Decoder
 
     override def tryDecode(c: ACursor): Decoder.Result[A] = f(c)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = tryDecodeAccumulating(c)
+    override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = tryDecodeAccumulating(c)
 
-    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] = f(c) match {
+    override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[A] = f(c) match {
       case Right(v) => Validated.valid(v)
       case Left(e)  => Validated.invalidNel(e)
     }
@@ -467,7 +486,7 @@ final object Decoder
    */
   final def failed[A](failure: DecodingFailure): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = Left(failure)
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override final def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
       Validated.invalidNel(failure)
   }
 
@@ -478,7 +497,7 @@ final object Decoder
    */
   final def failedWithMessage[A](message: String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = Left(DecodingFailure(message, c.history))
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override final def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
       Validated.invalidNel(DecodingFailure(message, c.history))
   }
 
@@ -840,7 +859,7 @@ final object Decoder
   private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
 
   private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
-  private[circe] final val keyMissingNoneAccumulating: AccumulatingDecoder.Result[Option[Nothing]] =
+  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[Option[Nothing]] =
     Validated.valid(None)
 
   /**
@@ -861,9 +880,9 @@ final object Decoder
         if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
     }
 
-    final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Option[A]] = tryDecodeAccumulating(c)
+    final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[A]] = tryDecodeAccumulating(c)
 
-    final override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[Option[A]] = c match {
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
@@ -1053,11 +1072,6 @@ final object Decoder
       failureKey,
       successKey
     ).map(Validated.fromEither).withErrorMessage("[E, A]Validated[E, A]")
-
-  /**
-   * @group Instances
-   */
-  final val resultInstance: MonadError[Result, DecodingFailure] = catsStdInstancesForEither[DecodingFailure]
 
   /**
    * @group Instances

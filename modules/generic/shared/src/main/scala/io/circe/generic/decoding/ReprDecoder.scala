@@ -2,7 +2,7 @@ package io.circe.generic.decoding
 
 import cats.Apply
 import cats.data.Validated
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ Decoder, HCursor }
 import io.circe.generic.Deriver
 import scala.language.experimental.macros
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
@@ -28,5 +28,5 @@ final object ReprDecoder {
   def injectLeftValue[K, V, R <: Coproduct](v: V): FieldType[K, V] :+: R = Inl(field[K].apply[V](v))
 
   val hnilResult: Decoder.Result[HNil] = Right(HNil)
-  val hnilResultAccumulating: AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)
+  val hnilResultAccumulating: Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
 }

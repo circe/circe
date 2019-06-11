@@ -17,7 +17,7 @@ trait CodecLaws[A] {
     encode(a).as(decode) <-> Right(a)
 
   def codecAccumulatingConsistency(json: Json): IsEq[Decoder.Result[A]] =
-    decode(json.hcursor) <-> decode.accumulating(json.hcursor).leftMap(_.head).toEither
+    decode(json.hcursor) <-> decode.decodeAccumulating(json.hcursor).leftMap(_.head).toEither
 }
 
 object CodecLaws {

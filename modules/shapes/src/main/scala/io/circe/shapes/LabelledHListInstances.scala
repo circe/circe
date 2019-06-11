@@ -2,17 +2,7 @@ package io.circe.shapes
 
 import cats.data.Validated
 import cats.kernel.Eq
-import io.circe.{
-  AccumulatingDecoder,
-  Decoder,
-  DecodingFailure,
-  Encoder,
-  HCursor,
-  JsonObject,
-  KeyDecoder,
-  KeyEncoder,
-  ObjectEncoder
-}
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, JsonObject, KeyDecoder, KeyEncoder, ObjectEncoder }
 import shapeless.{ ::, HList, Widen, Witness }
 import shapeless.labelled.{ field, FieldType }
 
@@ -35,8 +25,8 @@ trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
       decodeT(c)
     )((h, t) => field[K](h) :: t)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[FieldType[K, V] :: T] =
-      AccumulatingDecoder.resultInstance.map2(
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, V] :: T] =
+      Decoder.accumulatingResultInstance.map2(
         decodeV.tryDecodeAccumulating(c.downField(witK.value.name)),
         decodeT.decodeAccumulating(c)
       )((h, t) => field[K](h) :: t)
@@ -83,11 +73,11 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
       decodeT(c)
     )((h, t) => field[K](h) :: t)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[FieldType[K, V] :: T] =
-      AccumulatingDecoder.resultInstance.map2(
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, V] :: T] =
+      Decoder.accumulatingResultInstance.map2(
         c.keys
           .flatMap(_.find(isK))
-          .fold[AccumulatingDecoder.Result[String]](
+          .fold[Decoder.AccumulatingResult[String]](
             Validated.invalidNel(DecodingFailure("Record", c.history))
           )(Validated.valid)
           .andThen(k => decodeV.tryDecodeAccumulating(c.downField(k))),

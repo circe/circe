@@ -38,7 +38,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val decoder = transformation(Decoder[Int])
     forAll { (i: Int) =>
       assert(decoder.decodeJson(i.asJson) === Right(i))
-      assert(decoder.accumulating(i.asJson.hcursor) === Validated.valid(i))
+      assert(decoder.decodeAccumulating(i.asJson.hcursor) === Validated.valid(i))
     }
   }
 
@@ -47,7 +47,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val failure = DecodingFailure("Some message", Nil)
     forAll { (i: Int) =>
       assert(decoder.decodeJson(i.asJson) === Left(failure))
-      assert(decoder.accumulating(i.asJson.hcursor) === Validated.invalidNel(failure))
+      assert(decoder.decodeAccumulating(i.asJson.hcursor) === Validated.invalidNel(failure))
     }
   }
 
@@ -63,7 +63,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
       case class Test(a: Option[String])
       assert(Decoder[Test].decodeJson(Json.obj()) === Right(Test(None)))
-      assert(Decoder[Test].accumulating(Json.obj().hcursor) === Validated.valid(Test(None)))
+      assert(Decoder[Test].decodeAccumulating(Json.obj().hcursor) === Validated.valid(Test(None)))
     }
 
   "prepare" should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
@@ -199,7 +199,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   "A nested optional decoder" should "accumulate failures" in {
     val pair = Json.arr(Json.fromInt(1), Json.fromInt(2))
 
-    val result = Decoder[Option[(String, String)]].accumulating(pair.hcursor)
+    val result = Decoder[Option[(String, String)]].decodeAccumulating(pair.hcursor)
     val expected = Validated.invalid(
       NonEmptyList.of(DecodingFailure("String", List(DownN(0))), DecodingFailure("String", List(DownN(1))))
     )
@@ -436,7 +436,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val decoder: Decoder[Foo] = new Decoder[Foo] {
       override def apply(c: HCursor): Decoder.Result[Foo] = Right(new Foo {})
 
-      override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Foo] = Invalid(
+      override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Foo] = Invalid(
         NonEmptyList.one(DecodingFailure(message, c.history))
       )
     }

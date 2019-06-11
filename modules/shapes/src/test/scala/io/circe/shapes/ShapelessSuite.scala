@@ -40,7 +40,7 @@ class ShapelessSuite extends CirceSuite {
   }
 
   it should "accumulate errors" in forAll { (foo: String, bar: Int, baz: List[Char]) =>
-    val result = hlistDecoder.accumulating(json"""[ $foo, $baz, $bar ]""".hcursor)
+    val result = hlistDecoder.decodeAccumulating(json"""[ $foo, $baz, $bar ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
   }
@@ -55,7 +55,7 @@ class ShapelessSuite extends CirceSuite {
   }
 
   it should "accumulate errors" in forAll { (foo: String, bar: Int) =>
-    val result = recordDecoder.accumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
+    val result = recordDecoder.decodeAccumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
   }
@@ -72,7 +72,7 @@ class ShapelessSuite extends CirceSuite {
   it should "accumulate errors" in forAll { (a: Int, b: String, c: Int, d: String) =>
     val notIntB = b + "z"
     val notIntD = "a" + d
-    val result = sizedDecoder.accumulating(json"""[ $a, $notIntB, $c, $notIntD ]""".hcursor)
+    val result = sizedDecoder.decodeAccumulating(json"""[ $a, $notIntB, $c, $notIntD ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
   }

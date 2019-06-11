@@ -1,6 +1,6 @@
 package io.circe.generic.decoding
 
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ Decoder, HCursor }
 import shapeless.{ LabelledGeneric, Lazy }
 
 abstract class DerivedDecoder[A] extends Decoder[A]
@@ -15,7 +15,7 @@ final object DerivedDecoder extends IncompleteDerivedDecoders {
       case Right(r)    => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
     }
-    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       decode.value.decodeAccumulating(c).map(gen.from)
   }
 }

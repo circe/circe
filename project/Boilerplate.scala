@@ -119,7 +119,7 @@ object Boilerplate {
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingApplied.map(Tuple1(_))"
-        else s"AccumulatingDecoder.resultInstance.tuple$arity($accumulatingApplied)"
+        else s"Decoder.accumulatingResultInstance.tuple$arity($accumulatingApplied)"
 
       block"""
         |package io.circe
@@ -137,7 +137,7 @@ object Boilerplate {
         -        case _ => Left(DecodingFailure("${`(A..N)`}", c.history))
         -      }
         -
-        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[${`(A..N)`}] = c.value match {
+        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[${`(A..N)`}] = c.value match {
         -        case Json.JArray(values) if values.size == $arity => $accumulatingResult
         -        case _ => Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
         -      }
@@ -222,7 +222,7 @@ object Boilerplate {
 
       val accumulatingResult =
         if (arity == 1) s"$accumulatingResults.map(f)"
-        else s"AccumulatingDecoder.resultInstance.map$arity($accumulatingResults)(f)"
+        else s"Decoder.accumulatingResultInstance.map$arity($accumulatingResults)(f)"
 
       block"""
         |package io.circe
@@ -237,7 +237,7 @@ object Boilerplate {
         -    new Decoder[Target] {
         -      final def apply(c: HCursor): Decoder.Result[Target] = $result
         -
-        -      override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Target] =
+        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Target] =
         -        $accumulatingResult
         -    }
         |}

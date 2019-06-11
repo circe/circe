@@ -47,7 +47,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
       if (failed.eq(null)) Right(builder.result) else Left(failed)
   }
 
-  final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[M[K, V]] = c.keys match {
+  final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[M[K, V]] = c.keys match {
     case None => Validated.invalidNel[DecodingFailure, M[K, V]](MapDecoder.failure(c))
     case Some(keys) =>
       val it = keys.iterator
