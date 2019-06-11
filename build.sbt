@@ -25,13 +25,13 @@ val compilerOptions = Seq(
 val catsVersion = "2.0.0-M3"
 val jawnVersion = "0.14.2"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.7"
+val refinedVersion = "0.9.8"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.1.0-SNAP12"
+val scalaTestVersion = "3.1.0-SNAP13"
 val scalaCheckVersion = "1.14.0"
-val disciplineVersion = "0.12.0-M2"
+val disciplineVersion = "0.12.0-M3"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -261,7 +261,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
@@ -354,7 +354,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7" % Test
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8" % Test
     )
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
@@ -387,7 +387,7 @@ lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlug
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.11"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.12"
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -422,7 +422,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP7"
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
