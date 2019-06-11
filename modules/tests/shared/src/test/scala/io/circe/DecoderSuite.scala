@@ -4,7 +4,7 @@ import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.DownArray
+import io.circe.CursorOp.{ DownArray, DownN }
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -194,6 +194,17 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
           }
       )
     }
+  }
+
+  "A nested optional decoder" should "accumulate failures" in {
+    val pair = Json.arr(Json.fromInt(1), Json.fromInt(2))
+
+    val result = Decoder[Option[(String, String)]].accumulating(pair.hcursor)
+    val expected = Validated.invalid(
+      NonEmptyList.of(DecodingFailure("String", List(DownN(0))), DecodingFailure("String", List(DownN(1))))
+    )
+
+    assert(result === expected)
   }
 
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
