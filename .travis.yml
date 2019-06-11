@@ -24,11 +24,6 @@ install:
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM;
-  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
-    then
-      sbt ++$TRAVIS_SCALA_VERSION java8JVM/test;
-    else echo "Skipping java8 module tests on 2.13";
-    fi
   - sbt ++$TRAVIS_SCALA_VERSION benchmark/test coverageReport && codecov;
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
     then

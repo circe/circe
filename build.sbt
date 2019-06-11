@@ -115,7 +115,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ java8 :+ java8JS :+ tests).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ tests).map(p => p: ProjectReference)
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
@@ -284,26 +284,6 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
       }
     }
   )
-  .jvmSettings(
-    Compile / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor <= 11 => extraDirs("-no-jdk8")
-        case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
-        case _                               => Nil
-      }
-    }
-  )
-  .jsSettings(
-    Compile / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
-      extraDirs("-no-jdk8")
-    }
-  )
   .dependsOn(numbersBase)
 
 lazy val core = coreBase.jvm
@@ -462,16 +442,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
   .jvmSettings(
-    fork := true,
-    Test / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor >= 12 => extraDirs("-with-jdk8")
-        case _                               => Nil
-      }
-    }
+    fork := true
   )
   .dependsOn(coreBase, parserBase, testingBase)
 
@@ -496,15 +467,6 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     )
   )
   .dependsOn(core)
-
-lazy val java8Base = circeCrossModule("java8", mima = previousCirceVersion, CrossType.Pure)
-  .dependsOn(coreBase, testsBase % Test)
-  .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2"
-  )
-
-lazy val java8 = java8Base.jvm
-lazy val java8JS = java8Base.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
