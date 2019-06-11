@@ -582,19 +582,16 @@ credentials ++= (
 
 lazy val CompileTime = config("compile-time")
 
-val jvmTestProjects = jvmProjects.filterNot(Set(core, parser))
-val jsTestProjects = jsProjects.filterNot(Set(core, parser, scalajs))
-
 val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalastyle"
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
   "validateJVM",
-  ";buildJVM" + jvmTestProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJVM" + jvmProjects.map(";" + _.id + "/test").mkString + formatCommands
 )
 addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
   "validateJS",
-  ";buildJS" + jsTestProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJS" + jsProjects.map(";" + _.id + "/test").mkString + formatCommands
 )
 addCommandAlias("validate", ";validateJVM;validateJS")
