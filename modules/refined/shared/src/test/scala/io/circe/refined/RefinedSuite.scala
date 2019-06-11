@@ -82,12 +82,11 @@ object RefinedFieldsSuite {
         st <- Arbitrary.arbitrary[String]
         (l0, l1, l2) <- Arbitrary.arbitrary[(Int, Int, Int)]
         lr <- Arbitrary.arbitrary[List[Int]]
-      } yield
-        RefinedFields(
-          RefType[Refined].unsafeWrap(i),
-          RefType[Refined].unsafeWrap(sh + st),
-          RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
-        )
+      } yield RefinedFields(
+        RefType[Refined].unsafeWrap(i),
+        RefType[Refined].unsafeWrap(sh + st),
+        RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
+      )
     )
 
     implicit val decodeRefinedFields: Decoder[RefinedFields] = Decoder.forProduct3("i", "s", "l")(RefinedFields.apply)
