@@ -621,9 +621,9 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
    */
   implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.value match {
-      case Json.JNumber(number) => Right(number.toDouble.toFloat)
+      case Json.JNumber(number) => Right(number.toFloat)
       case Json.JString(string) =>
-        JsonNumber.fromString(string).map(_.toDouble.toFloat) match {
+        JsonNumber.fromString(string).map(_.toFloat) match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
