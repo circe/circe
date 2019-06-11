@@ -22,10 +22,10 @@ private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](decodeA: Decoder[A]
     }
   }
 
-  private[circe] final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[S] = {
+  final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[S] = {
     val arr = c.downArray
 
-    AccumulatingDecoder.resultInstance.map2(
+    Decoder.accumulatingResultInstance.map2(
       decodeA.tryDecodeAccumulating(arr),
       decodeCA.tryDecodeAccumulating(arr.delete)
     )(create)

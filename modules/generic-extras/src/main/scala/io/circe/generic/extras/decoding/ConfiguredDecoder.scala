@@ -1,6 +1,6 @@
 package io.circe.generic.extras.decoding
 
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ Decoder, HCursor }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.extras.{ Configuration, JsonKey }
 import io.circe.generic.extras.util.RecordToMap
@@ -70,7 +70,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       decodeR.value
         .configuredDecodeAccumulating(c)(
           memberNameTransformer,
@@ -112,7 +112,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
 
     final def apply(c: HCursor): Decoder.Result[A] = wrapped.apply(c)
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] = wrapped.decodeAccumulating(c)
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = wrapped.decodeAccumulating(c)
   }
 
   private[this] class AdtConfiguredDecoder[A, R <: Coproduct](
@@ -130,7 +130,7 @@ final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       decodeR.value
         .configuredDecodeAccumulating(c)(
           Predef.identity,

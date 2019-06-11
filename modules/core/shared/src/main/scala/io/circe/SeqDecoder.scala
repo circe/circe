@@ -31,7 +31,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
     }
   }
 
-  override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[C[A]] = {
+  override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[C[A]] = {
     var current = c.downArray
 
     if (current.succeeded) {

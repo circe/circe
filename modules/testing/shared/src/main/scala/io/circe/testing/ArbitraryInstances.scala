@@ -1,10 +1,7 @@
 package io.circe.testing
 
-import cats.data.ValidatedNel
 import cats.instances.list._
-import cats.laws.discipline.arbitrary._
 import io.circe.{
-  AccumulatingDecoder,
   ArrayEncoder,
   Decoder,
   DecodingFailure,
@@ -129,11 +126,6 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Arbitrary.arbitrary[A => Vector[Json]].map(ArrayEncoder.instance)
   )
 
-  implicit def arbitraryAccumulatingDecoder[A: Arbitrary]: Arbitrary[AccumulatingDecoder[A]] = Arbitrary(
-    Arbitrary
-      .arbitrary[Json => ValidatedNel[DecodingFailure, A]]
-      .map(f => AccumulatingDecoder.instance(c => f(c.value)))
-  )
   implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] = {
     Arbitrary(
       Gen.oneOf[JsonF[A]](

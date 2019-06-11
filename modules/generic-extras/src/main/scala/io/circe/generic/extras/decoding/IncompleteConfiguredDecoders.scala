@@ -1,6 +1,6 @@
 package io.circe.generic.extras.decoding
 
-import io.circe.{ AccumulatingDecoder, Decoder, HCursor }
+import io.circe.{ Decoder, HCursor }
 import io.circe.generic.extras.Configuration
 import io.circe.generic.extras.util.RecordToMap
 import io.circe.generic.util.PatchWithOptions
@@ -32,7 +32,7 @@ private[circe] trait IncompleteConfiguredDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[F]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[F] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[F] =
       decode
         .configuredDecodeAccumulating(c)(
           config.transformMemberNames,
@@ -64,7 +64,7 @@ private[circe] trait IncompleteConfiguredDecoders {
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A => A]]
     }
 
-    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A => A] =
+    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A => A] =
       decode
         .configuredDecodeAccumulating(c)(
           config.transformMemberNames,

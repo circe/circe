@@ -1,7 +1,7 @@
 package io.circe.generic.extras.decoding
 
 import cats.data.Validated
-import io.circe.{ AccumulatingDecoder, ACursor, Decoder, HCursor }
+import io.circe.{ ACursor, Decoder, HCursor }
 import io.circe.Json.JNull
 import io.circe.generic.extras.ConfigurableDeriver
 import scala.collection.immutable.Map
@@ -28,7 +28,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     transformConstructorNames: String => String,
     defaults: Map[String, Any],
     discriminator: Option[String]
-  ): AccumulatingDecoder.Result[A]
+  ): Decoder.AccumulatingResult[A]
 
   final protected[this] def orDefault[B](
     c: ACursor,
@@ -52,7 +52,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): AccumulatingDecoder.Result[B] = {
+  ): Decoder.AccumulatingResult[B] = {
     decoder.tryDecodeAccumulating(c) match {
       case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating   => r
       case l @ Validated.Invalid(_) if c.succeeded && !c.focus.contains(JNull) => l
@@ -87,7 +87,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     c: HCursor,
     name: String,
     discriminator: Option[String]
-  ): Option[AccumulatingDecoder.Result[V]] = discriminator match {
+  ): Option[Decoder.AccumulatingResult[V]] = discriminator match {
     case None =>
       val result = c.downField(name)
 
@@ -104,7 +104,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
   final def apply(c: HCursor): Decoder.Result[A] =
     configuredDecode(c)(Predef.identity, Predef.identity, Map.empty, None)
 
-  final override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
+  final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
     configuredDecodeAccumulating(c)(Predef.identity, Predef.identity, Map.empty, None)
 }
 
@@ -124,6 +124,6 @@ final object ReprDecoder {
       transformConstructorNames: String => String,
       defaults: Map[String, Any],
       discriminator: Option[String]
-    ): AccumulatingDecoder.Result[HNil] = Validated.valid(HNil)
+    ): Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
   }
 }
