@@ -1374,17 +1374,28 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
   /**
    * {{{
    *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
+   *   implicit val weekDayDecoder = Decoder.decodeEnumeration(WeekDay)
    * }}}
    *
    * @group Utilities
    */
-  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] =
+  final def decodeEnumeration[E <: Enumeration](enum: E): Decoder[E#Value] =
     Decoder.decodeString.flatMap { str =>
       Decoder.instanceTry { _ =>
         Try(enum.withName(str))
       }
     }
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
+   * }}}
+   *
+   * @group Utilities
+   */
+  @deprecated("Use decodeEnumeration", "0.12.0")
+  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] = decodeEnumeration[E](enum)
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
