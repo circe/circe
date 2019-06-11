@@ -444,6 +444,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
   .jvmSettings(
     fork := true
   )
+  .jsSettings(
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
+  )
   .dependsOn(coreBase, parserBase, testingBase)
 
 lazy val tests = testsBase.jvm
