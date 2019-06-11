@@ -17,7 +17,7 @@ class SerializableSuite extends CirceSuite {
   checkLaws("Encoder[Int]", SerializableTests.serializable(Encoder[Int]))
 
   checkLaws(
-    "Encoder.AsArray[Map[String, Int]]",
+    "Encoder.AsArray[List[String]]",
     SerializableTests.serializable(Encoder.AsArray[List[String]])
   )
 
