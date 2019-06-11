@@ -298,6 +298,23 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(Decoder[Float].apply(json.hcursor) === Right(d))
   }
 
+  it should "match the rounding of Float.parseFloat (#1063)" in forAll { (d: Double) =>
+    val Right(json) = parse(d.toString)
+
+    assert(Decoder[Float].apply(json.hcursor) === Right(java.lang.Float.parseFloat(d.toString)))
+  }
+
+  it should "match the rounding of Float.parseFloat for known problematic inputs (#1063)" in {
+    val bad1 = "1.199999988079071"
+    val bad2 = "7.038531E-26"
+
+    val Right(json1) = parse(bad1)
+    val Right(json2) = parse(bad2)
+
+    assert(Decoder[Float].apply(json1.hcursor) === Right(java.lang.Float.parseFloat(bad1)))
+    assert(Decoder[Float].apply(json2.hcursor) === Right(java.lang.Float.parseFloat(bad2)))
+  }
+
   "Decoder[Double]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Double) =>
     val Right(json) = parse("\"" + d.toString + "\"")
 
