@@ -11,15 +11,13 @@ final object DerivedAsObjectCodec {
     gen: LabelledGeneric.Aux[A, R],
     codec: Lazy[ReprAsObjectCodec[R]]
   ): DerivedAsObjectCodec[A] = new DerivedAsObjectCodec[A] {
-    private[this] val reprCodec: ReprAsObjectCodec[R] = codec.value
-
-    final def apply(c: HCursor): Decoder.Result[A] = reprCodec.apply(c) match {
+    final def apply(c: HCursor): Decoder.Result[A] = codec.value.apply(c) match {
       case Right(r)    => Right(gen.from(r))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[A]]
     }
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-      reprCodec.decodeAccumulating(c).map(gen.from)
+      codec.value.decodeAccumulating(c).map(gen.from)
 
-    final def encodeObject(a: A): JsonObject = reprCodec.encodeObject(gen.to(a))
+    final def encodeObject(a: A): JsonObject = codec.value.encodeObject(gen.to(a))
   }
 }
