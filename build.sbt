@@ -310,7 +310,12 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
     },
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
+      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
+    )
+  )
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val generic = genericBase.jvm
@@ -330,7 +335,12 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousC
       }
     }
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
+      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
+    )
+  )
   .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
 
@@ -343,7 +353,12 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
+      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
+    )
+  )
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
 lazy val shapes = shapesBase.jvm
@@ -359,7 +374,12 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8" % Test
     )
   )
-  .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
+      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
+    )
+  )
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
 
 lazy val literal = literalBase.jvm
@@ -372,6 +392,11 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
     ),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
+    )
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -392,6 +417,11 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.12",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
+    )
   )
   .dependsOn(coreBase, testsBase % Test)
 
