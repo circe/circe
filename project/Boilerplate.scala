@@ -380,8 +380,22 @@ object Boilerplate {
         -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
+        -    val codecForCc$arity: Codec[Cc$arity] =
+        -      Codec.forProduct$arity($memberNames)(Cc$arity.apply)((Cc$arity.unapply _).andThen(_.get))
         -  }
         -  checkLaws("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
+        -  checkLaws(
+        -    "Codec[Cc$arity] via Codec",
+        -    CodecTests[Cc$arity](Cc$arity.codecForCc$arity, Cc$arity.codecForCc$arity).unserializableCodec
+        -  )
+        -  checkLaws(
+        -    "Codec[Cc$arity] via Decoder and Codec",
+        -    CodecTests[Cc$arity](Cc$arity.decodeCc$arity, Cc$arity.codecForCc$arity).unserializableCodec
+        -  )
+        -  checkLaws(
+        -    "Codec[Cc$arity] via Encoder and Codec",
+        -    CodecTests[Cc$arity](Cc$arity.codecForCc$arity, Cc$arity.encodeCc$arity).unserializableCodec
+        -  )
         |}
       """
     }
