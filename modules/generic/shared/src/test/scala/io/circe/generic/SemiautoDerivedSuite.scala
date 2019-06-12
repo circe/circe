@@ -1,7 +1,7 @@
 package io.circe.generic
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedAsObjectEncoder
 import io.circe.generic.semiauto._
@@ -15,14 +15,19 @@ import shapeless.test.illTyped
 object SemiautoDerivedSuite {
   implicit def decodeBox[A: Decoder]: Decoder[Box[A]] = deriveDecoder
   implicit def encodeBox[A: Encoder]: Encoder[Box[A]] = deriveEncoder
+  def codecForBox[A: Decoder: Encoder]: Codec[Box[A]] = deriveCodec
 
   implicit def decodeQux[A: Decoder]: Decoder[Qux[A]] = deriveDecoder
   implicit def encodeQux[A: Encoder]: Encoder[Qux[A]] = deriveEncoder
+  def codecForQux[A: Decoder: Encoder]: Codec[Qux[A]] = deriveCodec
 
   implicit val decodeWub: Decoder[Wub] = deriveDecoder
   implicit val encodeWub: Encoder.AsObject[Wub] = deriveEncoder
+  val codecForWub: Codec.AsObject[Wub] = deriveCodec
+
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
   implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder
+  val codecForFoo: Codec.AsObject[Foo] = deriveCodec
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
     deriveFor[Int => Qux[String]].incomplete
@@ -51,6 +56,7 @@ object SemiautoDerivedSuite {
 
     implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
     implicit val encodeRecursiveAdtExample: Encoder.AsObject[RecursiveAdtExample] = deriveEncoder
+    val codecForRecursiveAdtExample: Codec.AsObject[RecursiveAdtExample] = deriveCodec
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
@@ -75,6 +81,9 @@ object SemiautoDerivedSuite {
 
     implicit val encodeRecursiveWithOptionExample: Encoder.AsObject[RecursiveWithOptionExample] =
       deriveEncoder
+
+    val codecForRecursiveWithOptionExample: Codec.AsObject[RecursiveWithOptionExample] =
+      deriveCodec
   }
 
   case class OvergenerationExampleInner(i: Int)
@@ -88,12 +97,51 @@ class SemiautoDerivedSuite extends CirceSuite {
   checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
   checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
   checkLaws("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
+  checkLaws("Codec[Box[Int]] via Codec", CodecTests[Box[Int]](codecForBox[Int], codecForBox[Int]).codec)
+  checkLaws("Codec[Box[Int]] via Decoder and Codec", CodecTests[Box[Int]](implicitly, codecForBox[Int]).codec)
+  checkLaws("Codec[Box[Int]] via Encoder and Codec", CodecTests[Box[Int]](codecForBox[Int], implicitly).codec)
   checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkLaws("Codec[Qux[Int]] via Codec", CodecTests[Qux[Int]](codecForQux[Int], codecForQux[Int]).codec)
+  checkLaws("Codec[Qux[Int]] via Decoder and Codec", CodecTests[Qux[Int]](implicitly, codecForQux[Int]).codec)
+  checkLaws("Codec[Qux[Int]] via Encoder and Codec", CodecTests[Qux[Int]](codecForQux[Int], implicitly).codec)
   checkLaws("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
   checkLaws("Codec[Baz]", CodecTests[Baz].codec)
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  checkLaws("Codec[Foo] via Codec", CodecTests[Foo](codecForFoo, codecForFoo).codec)
+  checkLaws("Codec[Foo] via Decoder and Codec", CodecTests[Foo](implicitly, codecForFoo).codec)
+  checkLaws("Codec[Foo] via Encoder and Codec", CodecTests[Foo](codecForFoo, implicitly).codec)
   checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkLaws(
+    "Codec[RecursiveAdtExample] via Codec",
+    CodecTests[RecursiveAdtExample](
+      RecursiveAdtExample.codecForRecursiveAdtExample,
+      RecursiveAdtExample.codecForRecursiveAdtExample
+    ).codec
+  )
+  checkLaws(
+    "Codec[RecursiveAdtExample] via Decoder and Codec",
+    CodecTests[RecursiveAdtExample](implicitly, RecursiveAdtExample.codecForRecursiveAdtExample).codec
+  )
+  checkLaws(
+    "Codec[RecursiveAdtExample] via Encoder and Codec",
+    CodecTests[RecursiveAdtExample](RecursiveAdtExample.codecForRecursiveAdtExample, implicitly).codec
+  )
   checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkLaws(
+    "Codec[RecursiveWithOptionExample] via Codec",
+    CodecTests[RecursiveWithOptionExample](
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample,
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample
+    ).codec
+  )
+  checkLaws(
+    "Codec[RecursiveWithOptionExample] via Decoder and Codec",
+    CodecTests[RecursiveWithOptionExample](implicitly, RecursiveWithOptionExample.codecForRecursiveWithOptionExample).codec
+  )
+  checkLaws(
+    "Codec[RecursiveWithOptionExample] via Encoder and Codec",
+    CodecTests[RecursiveWithOptionExample](RecursiveWithOptionExample.codecForRecursiveWithOptionExample, implicitly).codec
+  )
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
     val result = Json
