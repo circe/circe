@@ -32,6 +32,7 @@ val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.1.0-SNAP13"
 val scalaCheckVersion = "1.14.0"
 val disciplineVersion = "0.12.0-M3"
+val scalaJavaTimeVersion = "2.0.0-RC2"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -311,10 +312,10 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
-    )
+    libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
@@ -336,10 +337,10 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousC
     }
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
-    )
+    libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .jvmSettings(fork in Test := true)
   .dependsOn(genericBase, testsBase % Test, literalBase % Test)
@@ -354,10 +355,10 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
-    )
+    libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
 
@@ -375,10 +376,10 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
     )
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test,
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test
-    )
+    libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
 
@@ -394,9 +395,9 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
-    )
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -419,9 +420,9 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
   )
   .jsSettings(
-    libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
-    )
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -479,7 +480,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     fork := true
   )
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC2" % Test
+    libraryDependencies ++= (if (priorTo2_13(scalaVersion.value))
+                               Seq("io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test)
+                             else Nil)
   )
   .dependsOn(coreBase, parserBase, testingBase)
 
