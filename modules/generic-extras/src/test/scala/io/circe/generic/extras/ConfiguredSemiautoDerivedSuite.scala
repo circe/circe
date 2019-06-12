@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import cats.kernel.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
+import io.circe.{ Codec, Decoder, DecodingFailure, Encoder, Json }
 import io.circe.generic.extras.semiauto._
 import io.circe.literal._
 import io.circe.testing.CodecTests
@@ -51,12 +51,25 @@ object ConfiguredSemiautoDerivedSuite {
 
   implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
   implicit val encodeConfigExampleBase: Encoder.AsObject[ConfigExampleBase] = deriveEncoder
+  val codecForConfigExampleBase: Codec.AsObject[ConfigExampleBase] = deriveCodec
 }
 
 class ConfiguredSemiautoDerivedSuite extends CirceSuite {
   import ConfiguredSemiautoDerivedSuite._, localExamples._
 
   checkLaws("Codec[ConfigExampleBase]", CodecTests[ConfigExampleBase].codec)
+  checkLaws(
+    "Codec[ConfigExampleBase] via Codec",
+    CodecTests[ConfigExampleBase](codecForConfigExampleBase, codecForConfigExampleBase).codec
+  )
+  checkLaws(
+    "Codec[ConfigExampleBase] via Decoder and Codec",
+    CodecTests[ConfigExampleBase](implicitly, codecForConfigExampleBase).codec
+  )
+  checkLaws(
+    "Codec[ConfigExampleBase] via Encoder and Codec",
+    CodecTests[ConfigExampleBase](codecForConfigExampleBase, implicitly).codec
+  )
 
   "Semi-automatic derivation" should "support configuration" in forAll { (f: String, b: Double) =>
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)
