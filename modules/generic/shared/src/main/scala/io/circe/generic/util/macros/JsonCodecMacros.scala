@@ -73,15 +73,15 @@ abstract class JsonCodecMacros {
       )
     } else {
       val tparamNames = tparams.map(_.name)
-      def mkImplicitParams(typeSymbol: TypeSymbol) =
+      def mkImplicitParams(prefix: String, typeSymbol: TypeSymbol) =
         tparamNames.zipWithIndex.map {
           case (tparamName, i) =>
-            val paramName = TermName(s"instance$i")
+            val paramName = TermName(s"$prefix$i")
             val paramType = tq"$typeSymbol[$tparamName]"
             q"$paramName: $paramType"
         }
-      val decodeParams = mkImplicitParams(DecoderClass)
-      val encodeParams = mkImplicitParams(EncoderClass)
+      val decodeParams = mkImplicitParams("decode", DecoderClass)
+      val encodeParams = mkImplicitParams("encode", EncoderClass)
       val Type = tq"$tpname[..$tparamNames]"
       (
         q"""implicit def $decodeName[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
