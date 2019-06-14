@@ -5,6 +5,8 @@ import java.io.Serializable
 import java.util.LinkedHashMap
 import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
 
+final object CirceSupportParser extends CirceSupportParser(None, true)
+
 class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
     extends SupportParser[Json]
     with Serializable {
