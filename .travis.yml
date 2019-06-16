@@ -41,6 +41,9 @@ script:
     else echo "Skipping Scala.js build";
     fi
 
-  # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
+before_cache:
+  # See https://www.scala-sbt.org/1.x/docs/Travis-CI-with-sbt.html
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - rm -f $HOME/.ivy2/.sbt.ivy.lock
