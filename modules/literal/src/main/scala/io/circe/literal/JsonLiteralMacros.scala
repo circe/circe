@@ -40,13 +40,12 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     protected[this] def invokeWithoutArgs: String => Object
     protected[this] def invokeWithArgs: (String, Array[Class[_]], Array[Object]) => Object
 
-    final def invoke(proxy: Object, method: Method, args: Array[Object]): Object = {
+    final def invoke(proxy: Object, method: Method, args: Array[Object]): Object =
       if (args.eq(null)) {
         invokeWithoutArgs(method.getName)
       } else {
         invokeWithArgs(method.getName, method.getParameterTypes, args)
       }
-    }
     protected[this] final def toJsonKey(s: String): Tree =
       replacements.find(_.placeholder == s).fold(q"$s")(_.asKey)
 

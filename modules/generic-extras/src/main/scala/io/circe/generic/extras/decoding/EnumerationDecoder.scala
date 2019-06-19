@@ -3,7 +3,7 @@ package io.circe.generic.extras.decoding
 import io.circe.{ Decoder, DecodingFailure, HCursor }
 import io.circe.generic.extras.Configuration
 import shapeless.{ :+:, CNil, Coproduct, HNil, Inl, Inr, LabelledGeneric, Witness }
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 
 abstract class EnumerationDecoder[A] extends Decoder[A]
 

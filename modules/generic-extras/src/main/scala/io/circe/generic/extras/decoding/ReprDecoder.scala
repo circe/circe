@@ -35,7 +35,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): Decoder.Result[B] = {
+  ): Decoder.Result[B] =
     decoder.tryDecode(c) match {
       case r @ Right(_) if r ne Decoder.keyMissingNone            => r
       case l @ Left(_) if c.succeeded && !c.focus.contains(JNull) => l
@@ -45,14 +45,13 @@ abstract class ReprDecoder[A] extends Decoder[A] {
           case _                     => r
         }
     }
-  }
 
   final protected[this] def orDefaultAccumulating[B](
     c: ACursor,
     decoder: Decoder[B],
     name: String,
     defaults: Map[String, Any]
-  ): Decoder.AccumulatingResult[B] = {
+  ): Decoder.AccumulatingResult[B] =
     decoder.tryDecodeAccumulating(c) match {
       case r @ Validated.Valid(_) if r ne Decoder.keyMissingNoneAccumulating   => r
       case l @ Validated.Invalid(_) if c.succeeded && !c.focus.contains(JNull) => l
@@ -62,7 +61,6 @@ abstract class ReprDecoder[A] extends Decoder[A] {
           case _                     => r
         }
     }
-  }
 
   final protected[this] def withDiscriminator[V](
     decode: Decoder[V],

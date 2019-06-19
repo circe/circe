@@ -157,9 +157,8 @@ final object BiggerDecimal {
     final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
     final val toLong: Option[Long] = Some(0L)
 
-    private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
+    private[circe] def appendToStringBuilder(builder: StringBuilder): Unit =
       builder.append(toString)
-    }
   }
 
   private[this] val UnsignedZero: BiggerDecimal = new Zero {

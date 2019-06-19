@@ -49,12 +49,11 @@ final object ConfiguredAsObjectEncoder {
         }
         .toMap
 
-    private[this] def memberNameTransformer(value: String): String = {
+    private[this] def memberNameTransformer(value: String): String =
       if (hasKeyAnnotations)
         keyAnnotationMap.getOrElse(value, config.transformMemberNames(value))
       else
         config.transformMemberNames(value)
-    }
 
     private[this] val transformedMemberCache: Map[String, String] = {
       fieldsToList(fields()).map(f => (f.name, memberNameTransformer(f.name))).toMap
