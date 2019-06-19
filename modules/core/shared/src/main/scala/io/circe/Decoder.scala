@@ -223,7 +223,7 @@ trait Decoder[A] extends Serializable { self =>
     final def apply(c: HCursor): Decoder.Result[A] =
       errors(c).headOption.map { message =>
         Left(DecodingFailure(message, c.history))
-      } getOrElse self(c)
+      }.getOrElse(self(c))
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       errors(c).map(DecodingFailure(_, c.history)) match {
