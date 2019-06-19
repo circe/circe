@@ -14,8 +14,8 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
   ): Decoder[FieldType[K, V] :+: R] = new Decoder[FieldType[K, V] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, V] :+: R] =
       Decoder.resultSemigroupK.combineK(
-        c.get[V](witK.value.name).right.map(v => Inl(field[K](v))),
-        decodeR(c).right.map(Inr(_))
+        c.get[V](witK.value.name).map(v => Inl(field[K](v))),
+        decodeR(c).map(Inr(_))
       )
   }
 
@@ -52,9 +52,8 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
           .fold[Decoder.Result[String]](
             Left(DecodingFailure("Record", c.history))
           )(Right(_))
-          .right
-          .flatMap(c.get[V](_).right.map(v => Inl(field[K](v)))),
-        decodeR(c).right.map(Inr(_))
+          .flatMap(c.get[V](_).map(v => Inl(field[K](v)))),
+        decodeR(c).map(Inr(_))
       )
   }
 

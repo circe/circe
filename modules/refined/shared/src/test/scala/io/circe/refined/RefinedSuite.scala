@@ -38,7 +38,7 @@ class RefinedSuite extends CirceSuite {
     val refinedList = refineV[Size[Greater[Nat._3]]](list)
     val expected: Either[String, Json] = Right(list.asJson)
 
-    assert(expected === refinedList.right.map(_.asJson))
+    assert(expected === refinedList.map(_.asJson))
   }
 
   "A refined decoder" should "refuse to decode wrong values" in {
@@ -84,7 +84,7 @@ object RefinedFieldsSuite {
         lr <- Arbitrary.arbitrary[List[Int]]
       } yield RefinedFields(
         RefType[Refined].unsafeWrap(i),
-        RefType[Refined].unsafeWrap(sh + st),
+        RefType[Refined].unsafeWrap(s"$sh$st"),
         RefType[Refined].unsafeWrap(l0 :: l1 :: l2 :: lr)
       )
     )
@@ -106,7 +106,7 @@ class RefinedFieldsSuite extends CirceSuite {
       RefinedFields(
         refineMV(3),
         refineMV("ab"),
-        refineV[Size[Greater[Nat._2]]](List(1, 2, 3, 4)).right.get
+        refineV[Size[Greater[Nat._2]]](List(1, 2, 3, 4)).toOption.get
       )
     )
 

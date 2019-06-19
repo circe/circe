@@ -524,10 +524,6 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 11)) => Seq("-Xexperimental")
-      case _             => Nil
-    }),
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test
     )

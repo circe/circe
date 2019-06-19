@@ -46,7 +46,7 @@ class ScodecSuite extends CirceSuite with Matchers with BitVectorMatchers {
 trait BitVectorMatchers {
   class FailFor(input: String) extends Matcher[Decoder[BitVector]] {
     override def apply(decoder: Decoder[BitVector]): MatchResult = {
-      val json = parse(input).right.get
+      val Right(json) = parse(input)
       MatchResult(decoder.decodeJson(json).isLeft, s"Has not failed for $input", s"Failed for $input")
     }
   }
@@ -55,12 +55,12 @@ trait BitVectorMatchers {
 
   class DecodeTo(input: String, expectedBitVector: BitVector) extends Matcher[Decoder[BitVector]] {
     override def apply(decoder: Decoder[BitVector]): MatchResult = {
-      val json = parse(input).right.get
+      val Right(json) = parse(input)
 
       val decoded = decoder.decodeJson(json)
       val expected = Right(expectedBitVector)
       MatchResult(
-        decoded.right.get == expectedBitVector,
+        decoded == Right(expectedBitVector),
         s"Decoded to [$decoded], expected: [$expected]",
         s"Decoded to [$expected]"
       )

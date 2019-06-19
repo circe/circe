@@ -210,7 +210,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   "instanceTry" should "provide instances that succeed or fail appropriately" in forAll { (json: Json) =>
     val exception = new Exception("Not an Int")
     val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
-    val instance = Decoder.instanceTry(c => Try(c.as[Int].right.getOrElse(throw exception)))
+    val instance = Decoder.instanceTry(c => Try(c.as[Int].getOrElse(throw exception)))
 
     assert(instance.decodeJson(json) === expected)
   }
@@ -423,7 +423,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val message = "Not positive!"
 
     val decodePositiveInt: Decoder[Int] =
-      Decoder[Int].validate(_.as[Int].right.exists(_ > 0), message)
+      Decoder[Int].validate(_.as[Int].exists(_ > 0), message)
 
     val expected = if (i > 0) Right(i) else Left(DecodingFailure(message, Nil))
 
@@ -434,7 +434,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val message = "Not positive!"
 
     val decodePositiveInt: Decoder[Int] =
-      Decoder[Int].validate(_.as[Int].right.exists(_ > 0), message)
+      Decoder[Int].validate(_.as[Int].exists(_ > 0), message)
 
     val expected = if (i > 0) Validated.valid(i) else Validated.invalidNel(DecodingFailure(message, Nil))
 
@@ -476,7 +476,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
     val Right(fooJson) = parse("""{"x":42, "y": "meaning"}""")
 
-    assert(decoder.decodeJson(fooJson).left.get.message === "x,y")
+    assert(decoder.decodeJson(fooJson).swap.exists(_.message === "x,y"))
   }
 
   it should "not fail when the passed errors function returns an empty list" in {
@@ -515,13 +515,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   it should "fail when there are leftover fields" in {
     val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
-    assert(stateful.decodeJson(json).left.get.message === "Leftover keys: c, d")
+    assert(stateful.decodeJson(json).swap.exists(_.message === "Leftover keys: c, d"))
   }
 
   it should "fail normally when a field is missing" in {
     val json = Json.obj("a" -> "1".asJson)
 
-    assert(stateful.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+    assert(stateful.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
   }
 
   private[this] val statefulOpt = {
@@ -549,25 +549,25 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   it should "fail when there are leftover fields and an optional field is missing" in {
     val json = Json.obj("b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
-    assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Leftover keys: c, d"))
   }
 
   it should "fail when there are leftover fields and an optional field is present" in {
     val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson, "c" -> "3".asJson, "d" -> "4".asJson)
 
-    assert(statefulOpt.decodeJson(json).left.get.message === "Leftover keys: c, d")
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Leftover keys: c, d"))
   }
 
   it should "fail normally when a field is missing and an optional field is present" in {
     val json = Json.obj("a" -> "1".asJson)
 
-    assert(statefulOpt.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
   }
 
   it should "fail normally when a field is missing and an optional field is missing" in {
     val json = Json.obj()
 
-    assert(statefulOpt.decodeJson(json).left.get.message === "Attempt to decode value on failed cursor")
+    assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
   }
 
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)

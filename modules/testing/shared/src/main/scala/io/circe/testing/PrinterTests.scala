@@ -14,7 +14,7 @@ trait PrinterLaws[A] {
   def encode: Encoder[A]
 
   def printerRoundTrip(printer: Printer, parser: Parser, a: A): IsEq[Option[A]] =
-    parser.decode(printer.pretty(encode(a)))(decode).right.toOption <-> Some(a)
+    parser.decode(printer.pretty(encode(a)))(decode).toOption <-> Some(a)
 }
 
 object PrinterLaws {
