@@ -127,7 +127,7 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
     val maybeList = jsonArr.as[List[Int]]
     assert(maybeList.isRight)
 
-    val list = maybeList.right.getOrElse(???)
+    val Right(list) = maybeList
     assert(list.length == size)
     assert(list.forall(_ == 1))
   }

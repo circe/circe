@@ -21,11 +21,11 @@ class GenericDerivationBenchmark {
 
   private[this] val nonDerivedDecoder: Decoder[Foo] = new Decoder[Foo] {
     def apply(c: HCursor): Decoder.Result[Foo] = for {
-      s <- c.get[String]("s").right
-      d <- c.get[Double]("d").right
-      i <- c.get[Int]("i").right
-      l <- c.get[Long]("l").right
-      bs <- c.get[List[Boolean]]("bs").right
+      s <- c.get[String]("s")
+      d <- c.get[Double]("d")
+      i <- c.get[Int]("i")
+      l <- c.get[Long]("l")
+      bs <- c.get[List[Boolean]]("bs")
     } yield Foo(s, d, i, l, bs)
   }
 

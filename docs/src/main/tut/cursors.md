@@ -52,7 +52,7 @@ val baz2: Decoder.Result[Double] =
   cursor.downField("values").get[Double]("baz")
 
 val secondQux: Decoder.Result[String] =
-  cursor.downField("values").downField("qux").downArray.right.as[String]
+  cursor.downField("values").downField("qux").downArray.as[String]
 ```
 
 ## Transforming data

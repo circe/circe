@@ -139,8 +139,8 @@ class JavaTimeCodecSuite extends CirceSuite {
 
           assert(decodingResult.isLeft)
           // The middle part of the message depends on the type of zone.
-          assert(decodingResult.left.get.message.contains("ZoneId (Invalid"))
-          assert(decodingResult.left.get.message.contains(s", invalid format: $s)"))
+          assert(decodingResult.swap.exists(_.message.contains("ZoneId (Invalid")))
+          assert(decodingResult.swap.exists(_.message.contains(s", invalid format: $s)")))
         }
     )
   }
@@ -149,90 +149,90 @@ class JavaTimeCodecSuite extends CirceSuite {
     val decodingResult = Decoder[Instant].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[LocalDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[LocalDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[ZonedDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[ZonedDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[OffsetDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[OffsetDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[LocalDate]" should "fail on invalid values" in {
     val decodingResult = Decoder[LocalDate].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[LocalTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[LocalTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[MonthDay]" should "fail on invalid values" in {
     val decodingResult = Decoder[MonthDay].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[OffsetTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[OffsetTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[Period]" should "fail on invalid values" in {
     val decodingResult = Decoder[Period].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(s"Text '$invalidText' cannot be parsed to a Period"))
+    assert(decodingResult.swap.exists(_.message.contains(s"Text '$invalidText' cannot be parsed to a Period")))
   }
 
   "Decoder[Year]" should "fail on invalid values" in {
     val decodingResult = Decoder[Year].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[YearMonth]" should "fail on invalid values" in {
     val decodingResult = Decoder[YearMonth].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(parseExceptionMessage))
+    assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
   "Decoder[Duration]" should "fail on invalid values" in {
     val decodingResult = Decoder[Duration].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains(s"Text '$invalidText' cannot be parsed to a Duration"))
+    assert(decodingResult.swap.exists(_.message.contains(s"Text '$invalidText' cannot be parsed to a Duration")))
   }
 
   "Decoder[ZoneOffset]" should "fail on invalid values" in {
     val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.left.get.message.contains("ZoneOffset (Invalid ID for ZoneOffset, "))
+    assert(decodingResult.swap.exists(_.message.contains("ZoneOffset (Invalid ID for ZoneOffset, ")))
   }
 }

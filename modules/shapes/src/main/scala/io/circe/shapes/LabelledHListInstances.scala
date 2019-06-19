@@ -68,7 +68,6 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
         .fold[Decoder.Result[String]](
           Left(DecodingFailure("Record", c.history))
         )(Right(_))
-        .right
         .flatMap(c.get[V](_)),
       decodeT(c)
     )((h, t) => field[K](h) :: t)

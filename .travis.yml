@@ -2,7 +2,6 @@ dist: xenial
 language: scala
 
 scala:
-  - 2.11.12
   - 2.13.0
   - 2.12.8
 
@@ -27,13 +26,9 @@ script:
   - sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
-    else echo "Skipping code coverage reporting on 2.13";
-    fi
-  - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
-    then
       sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
-    else echo "Skipping docs on 2.11 and 2.13";
+      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+    else echo "Skipping code coverage reporting and docs on 2.13";
     fi
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.13.* ]];
     then
