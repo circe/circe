@@ -2,9 +2,9 @@ package io.circe.refined
 
 import cats.kernel.Eq
 import eu.timepit.refined.{ refineMV, refineV }
-import eu.timepit.refined.api.{ Refined, RefType }
+import eu.timepit.refined.api.{ RefType, Refined }
 import eu.timepit.refined.string.StartsWith
-import eu.timepit.refined.numeric.{ Positive, Greater }
+import eu.timepit.refined.numeric.{ Greater, Positive }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitrary
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
@@ -12,7 +12,7 @@ import io.circe.{ Decoder, Encoder, Json, KeyDecoder, KeyEncoder }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.syntax._
-import org.scalacheck.{ Gen, Arbitrary }
+import org.scalacheck.{ Arbitrary, Gen }
 import shapeless.{ Nat, Witness => W }
 
 class RefinedSuite extends CirceSuite {
