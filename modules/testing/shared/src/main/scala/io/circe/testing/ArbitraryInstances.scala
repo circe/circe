@@ -124,7 +124,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Arbitrary.arbitrary[A => Vector[Json]].map(Encoder.AsArray.instance)
   )
 
-  implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] = {
+  implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] =
     Arbitrary(
       Gen.oneOf[JsonF[A]](
         Arbitrary.arbitrary[Boolean].map(JBooleanF),
@@ -135,5 +135,4 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
         Arbitrary.arbitrary[Vector[A]].map(JArrayF.apply)
       )
     )
-  }
 }

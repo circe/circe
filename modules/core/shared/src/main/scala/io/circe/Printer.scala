@@ -440,7 +440,7 @@ final object Printer {
     private[this] var nextSize: Int = 32
     private[this] var decreasing: Boolean = false
 
-    def recordSize(size: Int): Unit = {
+    def recordSize(size: Int): Unit =
       if (size <= SizeTable(math.max(0, index - 2))) {
         if (decreasing) {
           index = math.max(0, index - 1)
@@ -454,7 +454,6 @@ final object Printer {
         nextSize = SizeTable(index)
         decreasing = false
       }
-    }
 
     def predictSize: Int = nextSize
   }

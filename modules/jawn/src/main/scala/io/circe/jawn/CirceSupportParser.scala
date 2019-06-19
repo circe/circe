@@ -3,7 +3,7 @@ package io.circe.jawn
 import io.circe.{ Json, JsonNumber, JsonObject }
 import java.io.Serializable
 import java.util.LinkedHashMap
-import org.typelevel.jawn.{ RawFacade, RawFContext, SupportParser }
+import org.typelevel.jawn.{ RawFContext, RawFacade, SupportParser }
 
 final object CirceSupportParser extends CirceSupportParser(None, true)
 
@@ -32,16 +32,16 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
 
     final def singleContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
       private[this] final var value: Json = null
-      final def add(s: CharSequence, index: Int): Unit = { value = jstring(s.toString, index) }
-      final def add(v: Json, index: Int): Unit = { value = v }
+      final def add(s: CharSequence, index: Int): Unit = value = jstring(s.toString, index)
+      final def add(v: Json, index: Int): Unit = value = v
       final def finish(index: Int): Json = value
       final def isObj: Boolean = false
     }
 
     final def arrayContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
       private[this] final val vs = Vector.newBuilder[Json]
-      final def add(s: CharSequence, index: Int): Unit = { vs += jstring(s.toString, index) }
-      final def add(v: Json, index: Int): Unit = { vs += v }
+      final def add(s: CharSequence, index: Int): Unit = vs += jstring(s.toString, index)
+      final def add(v: Json, index: Int): Unit = vs += v
       final def finish(index: Int): Json = Json.fromValues(vs.result())
       final def isObj: Boolean = false
     }
@@ -125,10 +125,9 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
   }
 
   private[this] trait NoDuplicatesFacade extends BaseFacade {
-    protected[this] final def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit = {
+    protected[this] final def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
       if (map.put(key, value).ne(null)) {
         throw new IllegalArgumentException(s"Invalid json, duplicate key name found: $key")
       }
-    }
   }
 }

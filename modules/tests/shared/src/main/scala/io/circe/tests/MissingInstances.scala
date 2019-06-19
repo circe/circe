@@ -5,7 +5,7 @@ import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable
 import shapeless.{ :+:, ::, AdditiveCollection, CNil, Coproduct, Generic, HList, HNil, Inl, Inr, IsTuple, Nat, Sized }
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 import shapeless.ops.nat.ToInt
 
 trait MissingInstances {

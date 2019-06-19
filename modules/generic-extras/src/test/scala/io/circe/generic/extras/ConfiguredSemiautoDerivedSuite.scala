@@ -10,7 +10,7 @@ import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
 import shapeless.Witness
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 
 object ConfiguredSemiautoDerivedSuite {
   object localExamples {

@@ -1,7 +1,7 @@
 package io.circe.generic.util
 
 import shapeless._
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 
 trait PatchWithOptions[R <: HList] {
   type Out <: HList

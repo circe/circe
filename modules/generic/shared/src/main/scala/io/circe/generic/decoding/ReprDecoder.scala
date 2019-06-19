@@ -6,7 +6,7 @@ import io.circe.{ Decoder, HCursor }
 import io.circe.generic.Deriver
 import scala.language.experimental.macros
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 
 /**
  * A decoder for a generic representation of a case class or ADT.
