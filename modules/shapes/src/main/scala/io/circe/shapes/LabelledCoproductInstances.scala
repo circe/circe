@@ -3,7 +3,7 @@ package io.circe.shapes
 import cats.kernel.Eq
 import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, KeyDecoder, KeyEncoder }
 import shapeless.{ :+:, Coproduct, Inl, Inr, Widen, Witness }
-import shapeless.labelled.{ field, FieldType }
+import shapeless.labelled.{ FieldType, field }
 
 trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
   implicit final def decodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](
