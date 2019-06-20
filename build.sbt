@@ -324,7 +324,8 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
         case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
         case _                               => Nil
       }
-    }
+    },
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
@@ -356,7 +357,8 @@ lazy val genericExtrasJS = genericExtrasBase.js
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsConfigure(_.settings(libraryDependencies += "org.typelevel" %% "jawn-parser" % jawnVersion % Test))
   .dependsOn(coreBase, testsBase % Test, literalBase % Test)
@@ -378,7 +380,8 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
-    )
+    ),
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .dependsOn(coreBase, testsBase % Test)
 
@@ -397,7 +400,8 @@ lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlug
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.7"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.7",
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .dependsOn(coreBase, testsBase % Test)
 
