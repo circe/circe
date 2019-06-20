@@ -74,12 +74,10 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("snapshots")
   ),
   coverageHighlighting := true,
-  coverageScalacPluginVersion := "1.4.0-RC2",
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += CompileTime.hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
-  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name)),
-  coverageEnabled := { if (priorTo2_13(scalaVersion.value)) coverageEnabled.value else false }
+  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name))
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
