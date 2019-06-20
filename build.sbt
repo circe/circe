@@ -307,7 +307,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
         case _                               => Nil
       }
     },
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -350,7 +350,7 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
   .settings(macroSettings)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -390,7 +390,7 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
     ),
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
@@ -413,7 +413,7 @@ lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlug
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.12",
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.RuntimeDependencies
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
