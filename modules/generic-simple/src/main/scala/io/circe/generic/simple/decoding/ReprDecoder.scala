@@ -2,10 +2,8 @@ package io.circe.generic.simple.decoding
 
 import cats.Apply
 import cats.data.Validated
-import io.circe.{ Decoder, HCursor }
-import io.circe.generic.simple.Deriver
-import scala.language.experimental.macros
-import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
+import io.circe.{ Decoder, DecodingFailure, HCursor }
+import shapeless.{ :+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, Lazy, Witness }
 import shapeless.labelled.{ FieldType, field }
 
 /**
@@ -15,18 +13,105 @@ import shapeless.labelled.{ FieldType, field }
  */
 abstract class ReprDecoder[A] extends Decoder[A]
 
-final object ReprDecoder {
-  implicit def deriveReprDecoder[R]: ReprDecoder[R] = macro Deriver.deriveDecoder[R]
-
-  val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
+final object ReprDecoder extends LowPriorityReprDecoderInstances {
+  implicit val decodeHNil: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
   }
 
-  def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(implicit F: Apply[F]): F[FieldType[K, V] :: T] =
+  implicit def decodeHCons[K <: Symbol, H, T <: HList](
+    implicit
+    key: Witness.Aux[K],
+    decodeH: Decoder[H],
+    decodeT: ReprDecoder[T]
+  ): ReprDecoder[FieldType[K, H] :: T] = new ReprDecoder[FieldType[K, H] :: T] {
+    def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
+      h <- c.get(key.value.name)(decodeH)
+      t <- decodeT(c)
+    } yield field[K](h) :: t
+
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, H] :: T] =
+      consResults[Decoder.AccumulatingResult, K, H, T](
+        decodeH.tryDecodeAccumulating(c.downField(key.value.name)),
+        decodeT.decodeAccumulating(c)
+      )
+  }
+
+  implicit val decodeCNil: ReprDecoder[CNil] = new ReprDecoder[CNil] {
+    def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("CNil", c.history))
+  }
+
+  implicit def decodeCoproduct[K <: Symbol, L, R <: Coproduct](
+    implicit
+    key: Witness.Aux[K],
+    decodeL: Decoder[L],
+    decodeR: ReprDecoder[R]
+  ): ReprDecoder[FieldType[K, L] :+: R] = new ReprDecoder[FieldType[K, L] :+: R] {
+    def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
+      c.downField(key.value.name).focus match {
+        case Some(value) => value.as(decodeL).map(l => Inl(field(l)))
+        case None        => decodeR(c).map(Inr(_))
+      }
+
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
+      val f = c.downField(key.value.name)
+
+      f.focus match {
+        case Some(value) => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
+        case None        => decodeR.decodeAccumulating(c).map(Inr(_))
+      }
+    }
+  }
+
+}
+
+trait LowPriorityReprDecoderInstances {
+  def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
+    implicit F: Apply[F]
+  ): F[FieldType[K, V] :: T] =
     F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
 
   def injectLeftValue[K, V, R <: Coproduct](v: V): FieldType[K, V] :+: R = Inl(field[K].apply[V](v))
 
   val hnilResult: Decoder.Result[HNil] = Right(HNil)
   val hnilResultAccumulating: Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
+
+  implicit def decodeHConsDerived[K <: Symbol, H, T <: HList](
+    implicit
+    key: Witness.Aux[K],
+    decodeH: Lazy[DerivedDecoder[H]],
+    decodeT: Lazy[ReprDecoder[T]]
+  ): ReprDecoder[FieldType[K, H] :: T] = new ReprDecoder[FieldType[K, H] :: T] {
+    def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
+      h <- c.get(key.value.name)(decodeH.value)
+      t <- decodeT.value(c)
+    } yield field[K](h) :: t
+
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, H] :: T] =
+      consResults[Decoder.AccumulatingResult, K, H, T](
+        decodeH.value.tryDecodeAccumulating(c.downField(key.value.name)),
+        decodeT.value.decodeAccumulating(c)
+      )
+  }
+
+  implicit def decodeCoproductDerived[K <: Symbol, L, R <: Coproduct](
+    implicit
+    key: Witness.Aux[K],
+    decodeL: Lazy[DerivedDecoder[L]],
+    decodeR: Lazy[ReprDecoder[R]]
+  ): ReprDecoder[FieldType[K, L] :+: R] = new ReprDecoder[FieldType[K, L] :+: R] {
+    def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
+      c.downField(key.value.name).focus match {
+        case Some(value) => value.as(decodeL.value).map(l => Inl(field(l)))
+        case None        => decodeR.value(c).map(Inr(_))
+      }
+
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
+      val f = c.downField(key.value.name)
+
+      f.focus match {
+        case Some(value) => decodeL.value.tryDecodeAccumulating(f).map(l => Inl(field(l)))
+        case None        => decodeR.value.decodeAccumulating(c).map(Inr(_))
+      }
+    }
+  }
 }
