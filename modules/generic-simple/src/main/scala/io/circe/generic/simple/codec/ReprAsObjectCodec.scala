@@ -3,7 +3,7 @@ package io.circe.generic.simple.codec
 import cats.Apply
 import cats.data.Validated
 import io.circe.{ Codec, Decoder, DecodingFailure, Encoder, HCursor, JsonObject }
-import shapeless.{ :+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, Lazy, Witness }
+import shapeless.{ :+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, Witness }
 import shapeless.labelled.{ FieldType, field }
 
 /**
@@ -92,49 +92,49 @@ trait LowPriorityReprCodecInstances {
   implicit def codecForHConsDerived[K <: Symbol, H, T <: HList](
     implicit
     key: Witness.Aux[K],
-    codecForH: Lazy[DerivedAsObjectCodec[H]],
-    codecForT: Lazy[ReprAsObjectCodec[T]]
+    codecForH: DerivedAsObjectCodec[H],
+    codecForT: ReprAsObjectCodec[T]
   ): ReprAsObjectCodec[FieldType[K, H] :: T] = new ReprAsObjectCodec[FieldType[K, H] :: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
-      h <- c.get(key.value.name)(codecForH.value)
-      t <- codecForT.value(c)
+      h <- c.get(key.value.name)(codecForH)
+      t <- codecForT(c)
     } yield field[K](h) :: t
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, H] :: T] =
       consResults[Decoder.AccumulatingResult, K, H, T](
-        codecForH.value.tryDecodeAccumulating(c.downField(key.value.name)),
-        codecForT.value.decodeAccumulating(c)
+        codecForH.tryDecodeAccumulating(c.downField(key.value.name)),
+        codecForT.decodeAccumulating(c)
       )
 
     def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, codecForH.value(h))) +: codecForT.value.encodeObject(t)
+      case h :: t => ((key.value.name, codecForH(h))) +: codecForT.encodeObject(t)
     }
   }
 
   implicit def codecForCoproductDerived[K <: Symbol, L, R <: Coproduct](
     implicit
     key: Witness.Aux[K],
-    codecForL: Lazy[DerivedAsObjectCodec[L]],
-    codecForR: Lazy[ReprAsObjectCodec[R]]
+    codecForL: DerivedAsObjectCodec[L],
+    codecForR: ReprAsObjectCodec[R]
   ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
-        case Some(value) => value.as(codecForL.value).map(l => Inl(field(l)))
-        case None        => codecForR.value(c).map(Inr(_))
+        case Some(value) => value.as(codecForL).map(l => Inl(field(l)))
+        case None        => codecForR(c).map(Inr(_))
       }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
       val f = c.downField(key.value.name)
 
       f.focus match {
-        case Some(value) => codecForL.value.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => codecForR.value.decodeAccumulating(c).map(Inr(_))
+        case Some(value) => codecForL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
+        case None        => codecForR.decodeAccumulating(c).map(Inr(_))
       }
     }
 
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
-      case Inl(l) => JsonObject.singleton(key.value.name, codecForL.value(l))
-      case Inr(r) => codecForR.value.encodeObject(r)
+      case Inl(l) => JsonObject.singleton(key.value.name, codecForL(l))
+      case Inr(r) => codecForR.encodeObject(r)
     }
   }
 }

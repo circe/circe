@@ -1,7 +1,7 @@
 package io.circe.generic.simple.encoding
 
 import io.circe.{ Encoder, JsonObject }
-import shapeless.{ :+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, Lazy, Witness }
+import shapeless.{ :+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, Witness }
 import shapeless.labelled.FieldType
 
 /**
@@ -19,11 +19,11 @@ final object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances
   implicit def encodeHCons[K <: Symbol, H, T <: HList](
     implicit
     key: Witness.Aux[K],
-    encodeH: Lazy[Encoder[H]],
-    encodeT: Lazy[ReprAsObjectEncoder[T]]
+    encodeH: Encoder[H],
+    encodeT: ReprAsObjectEncoder[T]
   ): ReprAsObjectEncoder[FieldType[K, H] :: T] = new ReprAsObjectEncoder[FieldType[K, H] :: T] {
     def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, encodeH.value(h))) +: encodeT.value.encodeObject(t)
+      case h :: t => ((key.value.name, encodeH(h))) +: encodeT.encodeObject(t)
     }
   }
 
@@ -35,12 +35,12 @@ final object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances
   implicit def encodeCoproduct[K <: Symbol, L, R <: Coproduct](
     implicit
     key: Witness.Aux[K],
-    encodeL: Lazy[Encoder[L]],
-    encodeR: Lazy[ReprAsObjectEncoder[R]]
+    encodeL: Encoder[L],
+    encodeR: ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
-      case Inl(l) => JsonObject.singleton(key.value.name, encodeL.value(l))
-      case Inr(r) => encodeR.value.encodeObject(r)
+      case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
+      case Inr(r) => encodeR.encodeObject(r)
     }
   }
 }
@@ -49,23 +49,23 @@ private[circe] trait LowPriorityReprAsObjectEncoderInstances {
   implicit def encodeHConsDerived[K <: Symbol, H, T <: HList](
     implicit
     key: Witness.Aux[K],
-    encodeH: Lazy[DerivedAsObjectEncoder[H]],
-    encodeT: Lazy[ReprAsObjectEncoder[T]]
+    encodeH: DerivedAsObjectEncoder[H],
+    encodeT: ReprAsObjectEncoder[T]
   ): ReprAsObjectEncoder[FieldType[K, H] :: T] = new ReprAsObjectEncoder[FieldType[K, H] :: T] {
     def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, encodeH.value(h))) +: encodeT.value.encodeObject(t)
+      case h :: t => ((key.value.name, encodeH(h))) +: encodeT.encodeObject(t)
     }
   }
 
   implicit def encodeCoproductDerived[K <: Symbol, L, R <: Coproduct](
     implicit
     key: Witness.Aux[K],
-    encodeL: Lazy[DerivedAsObjectEncoder[L]],
-    encodeR: Lazy[ReprAsObjectEncoder[R]]
+    encodeL: DerivedAsObjectEncoder[L],
+    encodeR: ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
-      case Inl(l) => JsonObject.singleton(key.value.name, encodeL.value(l))
-      case Inr(r) => encodeR.value.encodeObject(r)
+      case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
+      case Inr(r) => encodeR.encodeObject(r)
     }
   }
 }

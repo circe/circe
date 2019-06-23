@@ -5,7 +5,7 @@ import io.circe.generic.simple.codec.DerivedAsObjectCodec
 import io.circe.generic.simple.decoding.{ DerivedDecoder, ReprDecoder }
 import io.circe.generic.simple.encoding.DerivedAsObjectEncoder
 import io.circe.generic.simple.util.PatchWithOptions
-import shapeless.{ HList, LabelledGeneric, Lazy }
+import shapeless.{ HList, LabelledGeneric }
 import shapeless.ops.function.FnFromProduct
 import shapeless.ops.record.RemoveAll
 
@@ -29,9 +29,9 @@ import shapeless.ops.record.RemoveAll
  * }}}
  */
 final object semiauto {
-  final def deriveDecoder[A](implicit decode: Lazy[DerivedDecoder[A]]): Decoder[A] = decode.value
-  final def deriveEncoder[A](implicit encode: Lazy[DerivedAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
-  final def deriveCodec[A](implicit codec: Lazy[DerivedAsObjectCodec[A]]): Codec.AsObject[A] = codec.value
+  final def deriveDecoder[A](implicit decode: => DerivedDecoder[A]): Decoder[A] = decode
+  final def deriveEncoder[A](implicit encode: => DerivedAsObjectEncoder[A]): Encoder.AsObject[A] = encode
+  final def deriveCodec[A](implicit codec: => DerivedAsObjectCodec[A]): Codec.AsObject[A] = codec
 
   final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
