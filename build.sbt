@@ -346,6 +346,24 @@ lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousC
 lazy val genericExtras = genericExtrasBase.jvm
 lazy val genericExtrasJS = genericExtrasBase.js
 
+lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
+  .settings(macroSettings)
+  .settings(
+    crossScalaVersions := Seq("2.13.0"),
+    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+    )
+  )
+  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
+
+lazy val genericSimple = genericSimpleBase.jvm
+lazy val genericSimpleJS = genericSimpleBase.js
+
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
