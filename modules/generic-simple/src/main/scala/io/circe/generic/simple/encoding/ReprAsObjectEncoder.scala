@@ -36,7 +36,7 @@ final object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances
     implicit
     key: Witness.Aux[K],
     encodeL: Encoder[L],
-    encodeR: ReprAsObjectEncoder[R]
+    encodeR: => ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
@@ -61,7 +61,7 @@ private[circe] trait LowPriorityReprAsObjectEncoderInstances {
     implicit
     key: Witness.Aux[K],
     encodeL: DerivedAsObjectEncoder[L],
-    encodeR: ReprAsObjectEncoder[R]
+    encodeR: => ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))

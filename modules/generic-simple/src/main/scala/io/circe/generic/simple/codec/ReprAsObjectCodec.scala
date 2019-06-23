@@ -53,7 +53,7 @@ final object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
     key: Witness.Aux[K],
     decodeL: Decoder[L],
     encodeL: Encoder[L],
-    codecForR: ReprAsObjectCodec[R]
+    codecForR: => ReprAsObjectCodec[R]
   ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
@@ -115,7 +115,7 @@ trait LowPriorityReprCodecInstances {
     implicit
     key: Witness.Aux[K],
     codecForL: DerivedAsObjectCodec[L],
-    codecForR: ReprAsObjectCodec[R]
+    codecForR: => ReprAsObjectCodec[R]
   ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {

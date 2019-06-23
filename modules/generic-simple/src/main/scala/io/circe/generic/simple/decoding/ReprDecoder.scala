@@ -22,7 +22,7 @@ final object ReprDecoder extends LowPriorityReprDecoderInstances {
     implicit
     key: Witness.Aux[K],
     decodeH: Decoder[H],
-    decodeT: => ReprDecoder[T]
+    decodeT: ReprDecoder[T]
   ): ReprDecoder[FieldType[K, H] :: T] = new ReprDecoder[FieldType[K, H] :: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
       h <- c.get(key.value.name)(decodeH)
@@ -79,7 +79,7 @@ trait LowPriorityReprDecoderInstances {
     implicit
     key: Witness.Aux[K],
     decodeH: DerivedDecoder[H],
-    decodeT: => ReprDecoder[T]
+    decodeT: ReprDecoder[T]
   ): ReprDecoder[FieldType[K, H] :: T] = new ReprDecoder[FieldType[K, H] :: T] {
     def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
       h <- c.get(key.value.name)(decodeH)
