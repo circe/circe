@@ -114,7 +114,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ tests).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS).map(p => p: ProjectReference)
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
