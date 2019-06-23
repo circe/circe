@@ -35,6 +35,11 @@ script:
       sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
     else echo "Skipping docs on 2.11 and 2.13";
     fi
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.13.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION genericSimpleJVM/test;
+    else echo "Skipping generic-simple on 2.11 and 2.12";
+    fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
