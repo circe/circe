@@ -14,30 +14,25 @@ import org.scalacheck.Arbitrary.arbitrary
 
 object ConfiguredAutoDerivedSuite {
 
-  /**
-   * This nesting is necessary on 2.10 (possibly related to SI-7406).
-   */
-  object localExamples {
-    sealed trait ConfigExampleBase
-    case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, b: Double) extends ConfigExampleBase
-    case object ConfigExampleBar extends ConfigExampleBase
+  sealed trait ConfigExampleBase
+  case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, b: Double) extends ConfigExampleBase
+  case object ConfigExampleBar extends ConfigExampleBase
 
-    object ConfigExampleFoo {
-      implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
-      val genConfigExampleFoo: Gen[ConfigExampleFoo] = for {
-        thisIsAField <- arbitrary[String]
-        a <- arbitrary[Int]
-        b <- arbitrary[Double]
-      } yield ConfigExampleFoo(thisIsAField, a, b)
-      implicit val arbitraryConfigExampleFoo: Arbitrary[ConfigExampleFoo] = Arbitrary(genConfigExampleFoo)
-    }
+  object ConfigExampleFoo {
+    implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
+    val genConfigExampleFoo: Gen[ConfigExampleFoo] = for {
+      thisIsAField <- arbitrary[String]
+      a <- arbitrary[Int]
+      b <- arbitrary[Double]
+    } yield ConfigExampleFoo(thisIsAField, a, b)
+    implicit val arbitraryConfigExampleFoo: Arbitrary[ConfigExampleFoo] = Arbitrary(genConfigExampleFoo)
+  }
 
-    object ConfigExampleBase {
-      implicit val eqConfigExampleBase: Eq[ConfigExampleBase] = Eq.fromUniversalEquals
-      val genConfigExampleBase: Gen[ConfigExampleBase] =
-        Gen.oneOf(Gen.const(ConfigExampleBar), ConfigExampleFoo.genConfigExampleFoo)
-      implicit val arbitraryConfigExampleBase: Arbitrary[ConfigExampleBase] = Arbitrary(genConfigExampleBase)
-    }
+  object ConfigExampleBase {
+    implicit val eqConfigExampleBase: Eq[ConfigExampleBase] = Eq.fromUniversalEquals
+    val genConfigExampleBase: Gen[ConfigExampleBase] =
+      Gen.oneOf(Gen.const(ConfigExampleBar), ConfigExampleFoo.genConfigExampleFoo)
+    implicit val arbitraryConfigExampleBase: Arbitrary[ConfigExampleBase] = Arbitrary(genConfigExampleBase)
   }
 
   val genConfiguration: Gen[Configuration] = for {
@@ -50,7 +45,7 @@ object ConfiguredAutoDerivedSuite {
 }
 
 class ConfiguredAutoDerivedSuite extends CirceSuite {
-  import ConfiguredAutoDerivedSuite._, localExamples._
+  import ConfiguredAutoDerivedSuite._
 
   {
     implicit val config: Configuration = Configuration.default
