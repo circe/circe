@@ -205,10 +205,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
       case NonFatal(e) => Left(e)
     }
 
-  /**
-   * Using `Tree` here instead of `c.Expr` fails to compile on 2.10.
-   */
-  final def jsonStringContext(args: c.Expr[Any]*): c.Expr[Json] = c.prefix.tree match {
+  final def jsonStringContext(args: c.Expr[Any]*): Tree = c.prefix.tree match {
     case Apply(_, Apply(_, parts) :: Nil) =>
       val stringParts = parts.map {
         case Literal(Constant(part: String)) => part
@@ -234,21 +231,19 @@ class JsonLiteralMacros(val c: blackbox.Context) {
             s"$acc$part$qm$placeholder$qm"
         } + stringParts.last
 
-        c.Expr[Json](
-          parse(jsonString, replacements) match {
-            case Right(tree) => tree
-            case Left(_: ClassNotFoundException) =>
-              c.abort(
-                c.enclosingPosition,
-                "The json interpolator requires jawn to be available at compile time"
-              )
-            case Left(t: Throwable) =>
-              val sw = new StringWriter
-              t.printStackTrace(new PrintWriter(sw))
+        parse(jsonString, replacements) match {
+          case Right(tree) => tree
+          case Left(_: ClassNotFoundException) =>
+            c.abort(
+              c.enclosingPosition,
+              "The json interpolator requires jawn to be available at compile time"
+            )
+          case Left(t: Throwable) =>
+            val sw = new StringWriter
+            t.printStackTrace(new PrintWriter(sw))
 
-              c.abort(c.enclosingPosition, s"Invalid JSON in interpolated string, ${sw.toString}")
-          }
-        )
+            c.abort(c.enclosingPosition, s"Invalid JSON in interpolated string, ${sw.toString}")
+        }
       }
     case _ => c.abort(c.enclosingPosition, "Invalid use of the json interpolator")
   }

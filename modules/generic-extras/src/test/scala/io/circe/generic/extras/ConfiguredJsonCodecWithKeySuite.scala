@@ -12,36 +12,30 @@ object ConfiguredJsonCodecWithKeySuite {
   implicit val customConfig: Configuration =
     Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
-  /**
-   * This nesting is necessary on 2.10 (possibly related to SI-7406).
-   */
-  object localExamples {
-    @ConfiguredJsonCodec
-    sealed trait ConfigExampleBase
-    case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, @JsonKey("myField") b: Double)
-        extends ConfigExampleBase
+  @ConfiguredJsonCodec
+  sealed trait ConfigExampleBase
+  case class ConfigExampleFoo(thisIsAField: String, a: Int = 0, @JsonKey("myField") b: Double) extends ConfigExampleBase
 
-    object ConfigExampleFoo {
-      implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
-      val genConfigExampleFoo: Gen[ConfigExampleFoo] = for {
-        thisIsAField <- arbitrary[String]
-        a <- arbitrary[Int]
-        b <- arbitrary[Double]
-      } yield ConfigExampleFoo(thisIsAField, a, b)
-      implicit val arbitraryConfigExampleFoo: Arbitrary[ConfigExampleFoo] = Arbitrary(genConfigExampleFoo)
-    }
+  object ConfigExampleFoo {
+    implicit val eqConfigExampleFoo: Eq[ConfigExampleFoo] = Eq.fromUniversalEquals
+    val genConfigExampleFoo: Gen[ConfigExampleFoo] = for {
+      thisIsAField <- arbitrary[String]
+      a <- arbitrary[Int]
+      b <- arbitrary[Double]
+    } yield ConfigExampleFoo(thisIsAField, a, b)
+    implicit val arbitraryConfigExampleFoo: Arbitrary[ConfigExampleFoo] = Arbitrary(genConfigExampleFoo)
+  }
 
-    object ConfigExampleBase {
-      implicit val eqConfigExampleBase: Eq[ConfigExampleBase] = Eq.fromUniversalEquals
-      val genConfigExampleBase: Gen[ConfigExampleBase] =
-        ConfigExampleFoo.genConfigExampleFoo
-      implicit val arbitraryConfigExampleBase: Arbitrary[ConfigExampleBase] = Arbitrary(genConfigExampleBase)
-    }
+  object ConfigExampleBase {
+    implicit val eqConfigExampleBase: Eq[ConfigExampleBase] = Eq.fromUniversalEquals
+    val genConfigExampleBase: Gen[ConfigExampleBase] =
+      ConfigExampleFoo.genConfigExampleFoo
+    implicit val arbitraryConfigExampleBase: Arbitrary[ConfigExampleBase] = Arbitrary(genConfigExampleBase)
   }
 }
 
 class ConfiguredJsonCodecWithKeySuite extends CirceSuite {
-  import ConfiguredJsonCodecWithKeySuite._, localExamples._
+  import ConfiguredJsonCodecWithKeySuite._
 
   checkLaws("Codec[ConfigExampleBase]", CodecTests[ConfigExampleBase].codec)
 
