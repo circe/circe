@@ -271,17 +271,7 @@ lazy val numbersJS = numbersBase.js
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
-    Compile / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
-        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _                               => Nil
-      }
-    }
+    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
   )
   .dependsOn(numbersBase)
 
@@ -297,16 +287,6 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroSettings)
   .settings(
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
-    Test / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
-        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _                               => Nil
-      }
-    },
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -322,18 +302,6 @@ lazy val genericJS = genericBase.js
 
 lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
-  .settings(
-    Test / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Pure.sharedSrcDir(baseDir, "test").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
-        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _                               => Nil
-      }
-    }
-  )
   .jsSettings(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
@@ -473,17 +441,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
-      file("modules/tests") / "shared" / "src" / "main" / "resources",
-    Compile / unmanagedSourceDirectories ++= {
-      val baseDir = baseDirectory.value
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDir, "main").toList.map(f => file(f.getPath + suffix))
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor <= 12 => extraDirs("-2.12-")
-        case Some((2, minor)) if minor >= 13 => extraDirs("-2.13+")
-        case _                               => Nil
-      }
-    }
+      file("modules/tests") / "shared" / "src" / "main" / "resources"
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
