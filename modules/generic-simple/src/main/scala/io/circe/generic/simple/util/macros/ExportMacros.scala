@@ -13,7 +13,7 @@ trait Lazy[+A] extends Serializable {
 object Lazy {
   implicit def apply[A](implicit A: => A): Lazy[A] =
     new Lazy[A] {
-      val value = A
+      lazy val value = A
     }
   def lazily[A](implicit L: Lazy[A]): A = L.value
 }

@@ -38,9 +38,11 @@ final object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances
     encodeL: Encoder[L],
     encodeR: => ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
+
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
-      case Inr(r) => encodeR.encodeObject(r)
+      case Inr(r) => cachedEncodeR.encodeObject(r)
     }
   }
 }
@@ -63,9 +65,11 @@ private[circe] trait LowPriorityReprAsObjectEncoderInstances {
     encodeL: DerivedAsObjectEncoder[L],
     encodeR: => ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
+
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
-      case Inr(r) => encodeR.encodeObject(r)
+      case Inr(r) => cachedEncodeR.encodeObject(r)
     }
   }
 }

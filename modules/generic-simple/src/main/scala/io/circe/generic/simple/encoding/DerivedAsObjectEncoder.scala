@@ -9,8 +9,9 @@ final object DerivedAsObjectEncoder {
   implicit def deriveEncoder[A, R](
     implicit
     gen: LabelledGeneric.Aux[A, R],
-    encode: => ReprAsObjectEncoder[R]
+    encodeR: => ReprAsObjectEncoder[R]
   ): DerivedAsObjectEncoder[A] = new DerivedAsObjectEncoder[A] {
-    final def encodeObject(a: A): JsonObject = encode.encodeObject(gen.to(a))
+    private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
+    final def encodeObject(a: A): JsonObject = cachedEncodeR.encodeObject(gen.to(a))
   }
 }
