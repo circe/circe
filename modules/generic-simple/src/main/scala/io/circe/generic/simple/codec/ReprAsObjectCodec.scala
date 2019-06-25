@@ -55,10 +55,12 @@ final object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
     encodeL: Encoder[L],
     codecForR: => ReprAsObjectCodec[R]
   ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedCodecForR: Codec.AsObject[R] = codecForR
+
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
         case Some(value) => value.as(decodeL).map(l => Inl(field(l)))
-        case None        => codecForR(c).map(Inr(_))
+        case None        => cachedCodecForR(c).map(Inr(_))
       }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
@@ -66,13 +68,13 @@ final object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
 
       f.focus match {
         case Some(value) => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => codecForR.decodeAccumulating(c).map(Inr(_))
+        case None        => cachedCodecForR.decodeAccumulating(c).map(Inr(_))
       }
     }
 
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
-      case Inr(r) => codecForR.encodeObject(r)
+      case Inr(r) => cachedCodecForR.encodeObject(r)
     }
   }
 
@@ -117,10 +119,12 @@ trait LowPriorityReprCodecInstances {
     codecForL: DerivedAsObjectCodec[L],
     codecForR: => ReprAsObjectCodec[R]
   ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedCodecForR: Codec.AsObject[R] = codecForR
+
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
         case Some(value) => value.as(codecForL).map(l => Inl(field(l)))
-        case None        => codecForR(c).map(Inr(_))
+        case None        => cachedCodecForR(c).map(Inr(_))
       }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
@@ -128,13 +132,13 @@ trait LowPriorityReprCodecInstances {
 
       f.focus match {
         case Some(value) => codecForL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => codecForR.decodeAccumulating(c).map(Inr(_))
+        case None        => cachedCodecForR.decodeAccumulating(c).map(Inr(_))
       }
     }
 
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, codecForL(l))
-      case Inr(r) => codecForR.encodeObject(r)
+      case Inr(r) => cachedCodecForR.encodeObject(r)
     }
   }
 }

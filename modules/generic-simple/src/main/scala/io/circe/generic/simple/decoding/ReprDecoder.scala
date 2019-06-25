@@ -46,10 +46,12 @@ final object ReprDecoder extends LowPriorityReprDecoderInstances {
     decodeL: Decoder[L],
     decodeR: => ReprDecoder[R]
   ): ReprDecoder[FieldType[K, L] :+: R] = new ReprDecoder[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedDecodeR: Decoder[R] = decodeR
+
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
         case Some(value) => value.as(decodeL).map(l => Inl(field(l)))
-        case None        => decodeR(c).map(Inr(_))
+        case None        => cachedDecodeR(c).map(Inr(_))
       }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
@@ -57,7 +59,7 @@ final object ReprDecoder extends LowPriorityReprDecoderInstances {
 
       f.focus match {
         case Some(value) => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => decodeR.decodeAccumulating(c).map(Inr(_))
+        case None        => cachedDecodeR.decodeAccumulating(c).map(Inr(_))
       }
     }
   }
@@ -99,10 +101,12 @@ trait LowPriorityReprDecoderInstances {
     decodeL: DerivedDecoder[L],
     decodeR: => ReprDecoder[R]
   ): ReprDecoder[FieldType[K, L] :+: R] = new ReprDecoder[FieldType[K, L] :+: R] {
+    private[this] lazy val cachedDecodeR: Decoder[R] = decodeR
+
     def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
       c.downField(key.value.name).focus match {
         case Some(value) => value.as(decodeL).map(l => Inl(field(l)))
-        case None        => decodeR(c).map(Inr(_))
+        case None        => cachedDecodeR(c).map(Inr(_))
       }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
@@ -110,7 +114,7 @@ trait LowPriorityReprDecoderInstances {
 
       f.focus match {
         case Some(value) => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => decodeR.decodeAccumulating(c).map(Inr(_))
+        case None        => cachedDecodeR.decodeAccumulating(c).map(Inr(_))
       }
     }
   }
