@@ -201,42 +201,11 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def rightN(n: Int): ACursor
 
   /**
-   * If the focus is an element in a JSON array, move to the left until the given predicate matches
-   * the new focus.
-   *
-   * @group ArrayNavigation
-   */
-  def leftAt(p: Json => Boolean): ACursor
-
-  /**
-   * If the focus is an element in a JSON array, move to the right until the given predicate matches
-   * the new focus.
-   *
-   * @group ArrayNavigation
-   */
-  def rightAt(p: Json => Boolean): ACursor
-
-  /**
-   * If the focus is an element in a JSON array, find the first element at or to its right that
-   * matches the given predicate.
-   *
-   * @group ArrayNavigation
-   */
-  def find(p: Json => Boolean): ACursor
-
-  /**
    * If the focus is a JSON array, move to its first element.
    *
    * @group ArrayNavigation
    */
   def downArray: ACursor
-
-  /**
-   * If the focus is a JSON array, move to the first element that satisfies the given predicate.
-   *
-   * @group ArrayNavigation
-   */
-  def downAt(p: Json => Boolean): ACursor
 
   /**
    * If the focus is a JSON array, move to the element at the given index.
@@ -299,13 +268,9 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
     case CursorOp.MoveUp         => up
     case CursorOp.LeftN(n)       => leftN(n)
     case CursorOp.RightN(n)      => rightN(n)
-    case CursorOp.LeftAt(p)      => leftAt(p)
-    case CursorOp.RightAt(p)     => rightAt(p)
-    case CursorOp.Find(p)        => find(p)
     case CursorOp.Field(k)       => field(k)
     case CursorOp.DownField(k)   => downField(k)
     case CursorOp.DownArray      => downArray
-    case CursorOp.DownAt(p)      => downAt(p)
     case CursorOp.DownN(n)       => downN(n)
     case CursorOp.DeleteGoParent => delete
   }

@@ -76,30 +76,6 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     go(n, this)
   }
 
-  final def leftAt(p: Json => Boolean): ACursor = {
-    @tailrec
-    def go(c: ACursor): ACursor = c match {
-      case success: HCursor => if (p(success.value)) success else go(success.left)
-      case other            => other
-    }
-
-    go(left)
-  }
-
-  final def rightAt(p: Json => Boolean): ACursor = right.find(p)
-
-  final def find(p: Json => Boolean): ACursor = {
-    @tailrec
-    def go(c: ACursor): ACursor = c match {
-      case success: HCursor => if (p(success.value)) success else go(success.right)
-      case other            => other
-    }
-
-    go(this)
-  }
-
-  final def downAt(p: Json => Boolean): ACursor = downArray.find(p)
-
   /**
    * Create a new cursor that has failed on the given operation.
    *
