@@ -26,13 +26,9 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def rights: Option[Vector[Json]] = None
 
   def downArray: ACursor = this
-  def downAt(p: Json => Boolean): ACursor = this
   def downField(k: String): ACursor = this
   def downN(n: Int): ACursor = this
-  def find(p: Json => Boolean): ACursor = this
-  def leftAt(p: Json => Boolean): ACursor = this
   def leftN(n: Int): ACursor = this
-  def rightAt(p: Json => Boolean): ACursor = this
   def rightN(n: Int): ACursor = this
   def up: ACursor = this
 

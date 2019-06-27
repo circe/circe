@@ -255,44 +255,6 @@ class ACursorSuite extends CirceSuite {
     assert(result.failed && result.history === List(CursorOp.MoveLast))
   }
 
-  "leftAt" should "successfully select an existing value" in {
-    val result = for {
-      c <- cursor.downField("a").success
-      a <- c.downN(3).success
-      l <- a.leftAt(_.as[Int].right.exists(_ == 1)).success
-    } yield l
-
-    assert(result.flatMap(_.focus) === Some(1.asJson))
-  }
-
-  it should "fail to select a value that doesn't exist" in {
-    val result = for {
-      c <- cursor.downField("b").success
-      l <- c.leftAt(_.as[Int].right.exists(_ == 1)).success
-    } yield l
-
-    assert(result.flatMap(_.focus) === None)
-  }
-
-  "rightAt" should "successfully select an existing value" in {
-    val result = for {
-      c <- cursor.downField("a").success
-      a <- c.downN(3).success
-      r <- a.rightAt(_.as[Int].right.exists(_ == 5)).success
-    } yield r
-
-    assert(result.flatMap(_.focus) === Some(5.asJson))
-  }
-
-  it should "fail to select a value that doesn't exist" in {
-    val result = for {
-      c <- cursor.downField("b").success
-      r <- c.rightAt(_.as[Int].right.exists(_ == 5)).success
-    } yield r
-
-    assert(result.flatMap(_.focus) === None)
-  }
-
   "field" should "successfully select an existing value" in {
     val result = for {
       c <- cursor.downField("c").success

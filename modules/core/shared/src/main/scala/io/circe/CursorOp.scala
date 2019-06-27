@@ -40,13 +40,9 @@ final object CursorOp {
   final case object MoveUp extends UnconstrainedOp
   final case class LeftN(n: Int) extends UnconstrainedOp
   final case class RightN(n: Int) extends UnconstrainedOp
-  final case class LeftAt(p: Json => Boolean) extends UnconstrainedOp
-  final case class RightAt(p: Json => Boolean) extends UnconstrainedOp
-  final case class Find(p: Json => Boolean) extends UnconstrainedOp
   final case class Field(k: String) extends UnconstrainedOp
   final case class DownField(k: String) extends ObjectOp
   final case object DownArray extends ArrayOp
-  final case class DownAt(p: Json => Boolean) extends ArrayOp
   final case class DownN(n: Int) extends ArrayOp
   final case object DeleteGoParent extends UnconstrainedOp
 
@@ -58,13 +54,9 @@ final object CursorOp {
     case MoveUp         => "_/"
     case LeftN(n)       => "-<-:(" + n + ")"
     case RightN(n)      => ":->-(" + n + ")"
-    case LeftAt(_)      => "?<-:"
-    case RightAt(_)     => ":->?"
-    case Find(_)        => "find"
     case Field(f)       => "--(" + f + ")"
     case DownField(f)   => "--\\(" + f + ")"
     case DownArray      => "\\\\"
-    case DownAt(_)      => "-\\"
     case DownN(n)       => "=\\(" + n + ")"
     case DeleteGoParent => "!_/"
   }
