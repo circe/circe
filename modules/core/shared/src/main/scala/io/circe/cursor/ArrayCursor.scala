@@ -24,9 +24,6 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
 
   def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), this, CursorOp.DeleteGoParent)
 
-  def lefts: Option[Vector[Json]] = Some(values.take(index).reverse)
-  def rights: Option[Vector[Json]] = Some(values.drop(index + 1))
-
   def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft)
   else {
     new ArrayCursor(values, index - 1, parent, changed)(this, CursorOp.MoveLeft)

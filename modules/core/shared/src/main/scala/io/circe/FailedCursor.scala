@@ -22,8 +22,6 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
 
   def values: Option[Iterable[Json]] = None
   def keys: Option[Iterable[String]] = None
-  def lefts: Option[Vector[Json]] = None
-  def rights: Option[Vector[Json]] = None
 
   def downArray: ACursor = this
   def downField(k: String): ACursor = this

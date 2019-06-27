@@ -113,20 +113,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def set(j: Json): ACursor = withFocus(_ => j)
 
   /**
-   * If the focus is a JSON array, return the elements to the left.
-   *
-   * @group ArrayAccess
-   */
-  def lefts: Option[Vector[Json]]
-
-  /**
-   * If the focus is a JSON array, return the elements to the right.
-   *
-   * @group ArrayAccess
-   */
-  def rights: Option[Vector[Json]]
-
-  /**
    * If the focus is a JSON array, return its elements.
    *
    * @group ObjectAccess

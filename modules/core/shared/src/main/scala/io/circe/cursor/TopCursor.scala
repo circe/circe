@@ -9,9 +9,6 @@ private[circe] final class TopCursor(val value: Json)(
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor = new TopCursor(newValue)(cursor, op)
   def addOp(cursor: HCursor, op: CursorOp): HCursor = new TopCursor(value)(cursor, op)
 
-  def lefts: Option[Vector[Json]] = None
-  def rights: Option[Vector[Json]] = None
-
   def up: ACursor = fail(CursorOp.MoveUp)
   def delete: ACursor = fail(CursorOp.DeleteGoParent)
 
