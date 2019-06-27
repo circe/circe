@@ -30,7 +30,6 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
 
   it should "produce the expected output on a larger example" in {
     val ops = List(
-      DeleteGoFirst,
       MoveLeft,
       LeftN(2),
       RightN(5),
@@ -44,7 +43,7 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
       DownField("foo")
     )
 
-    val expected = "DecodingFailure at .foo.bar[0][2]{|<-!}: the message"
+    val expected = "DecodingFailure at .foo.bar[0][2]: the message"
     assert(DecodingFailure("the message", ops).show === expected)
   }
 

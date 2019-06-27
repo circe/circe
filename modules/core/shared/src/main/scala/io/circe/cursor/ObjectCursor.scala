@@ -29,22 +29,8 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
       new ObjectCursor(obj, k, parent, changed)(this, CursorOp.Field(k))
     }
 
-  def deleteGoField(k: String): ACursor =
-    if (obj.contains(k)) new ObjectCursor(obj.remove(key), k, parent, true)(this, CursorOp.DeleteGoField(k))
-    else fail(CursorOp.DeleteGoField(k))
-
   def left: ACursor = fail(CursorOp.MoveLeft)
   def right: ACursor = fail(CursorOp.MoveRight)
   def first: ACursor = fail(CursorOp.MoveFirst)
   def last: ACursor = fail(CursorOp.MoveLast)
-
-  def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
-  def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
-  def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
-  def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
-  def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
-  def deleteRights: ACursor = fail(CursorOp.DeleteRights)
-
-  def setLefts(x: Vector[Json]): ACursor = fail(CursorOp.SetLefts(x))
-  def setRights(x: Vector[Json]): ACursor = fail(CursorOp.SetRights(x))
 }
