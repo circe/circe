@@ -18,7 +18,6 @@ private[circe] final class TopCursor(val value: Json)(
   def left: ACursor = fail(CursorOp.MoveLeft)
   def right: ACursor = fail(CursorOp.MoveRight)
   def first: ACursor = fail(CursorOp.MoveFirst)
-  def last: ACursor = fail(CursorOp.MoveLast)
 
   def field(k: String): ACursor = fail(CursorOp.Field(k))
 }

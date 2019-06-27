@@ -173,14 +173,8 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayNavigation
    */
+  @deprecated("Use up and downArray", "0.12.0")
   def first: ACursor
-
-  /**
-   * If the focus is an element in a JSON array, move to the last element.
-   *
-   * @group ArrayNavigation
-   */
-  def last: ACursor
 
   /**
    * If the focus is an element in JSON array, move to the left the given number of times.
@@ -266,7 +260,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
     case CursorOp.MoveLeft       => left
     case CursorOp.MoveRight      => right
     case CursorOp.MoveFirst      => first
-    case CursorOp.MoveLast       => last
     case CursorOp.MoveUp         => up
     case CursorOp.LeftN(n)       => leftN(n)
     case CursorOp.RightN(n)      => rightN(n)

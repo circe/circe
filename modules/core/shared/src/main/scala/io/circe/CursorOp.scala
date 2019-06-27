@@ -35,8 +35,8 @@ final object CursorOp {
 
   final case object MoveLeft extends UnconstrainedOp
   final case object MoveRight extends UnconstrainedOp
+  @deprecated("Use Up and DownArray", "0.12.0")
   final case object MoveFirst extends UnconstrainedOp
-  final case object MoveLast extends UnconstrainedOp
   final case object MoveUp extends UnconstrainedOp
   @deprecated("Use MoveRight", "0.12.0")
   final case class LeftN(n: Int) extends UnconstrainedOp
@@ -52,7 +52,6 @@ final object CursorOp {
     case MoveLeft       => "<-"
     case MoveRight      => "->"
     case MoveFirst      => "|<-"
-    case MoveLast       => "->|"
     case MoveUp         => "_/"
     case LeftN(n)       => "-<-:(" + n + ")"
     case RightN(n)      => ":->-(" + n + ")"
