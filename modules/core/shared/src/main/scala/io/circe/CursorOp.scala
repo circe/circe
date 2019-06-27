@@ -38,7 +38,9 @@ final object CursorOp {
   final case object MoveFirst extends UnconstrainedOp
   final case object MoveLast extends UnconstrainedOp
   final case object MoveUp extends UnconstrainedOp
+  @deprecated("Use MoveRight", "0.12.0")
   final case class LeftN(n: Int) extends UnconstrainedOp
+  @deprecated("Use MoveLeft", "0.12.0")
   final case class RightN(n: Int) extends UnconstrainedOp
   final case class Field(k: String) extends UnconstrainedOp
   final case class DownField(k: String) extends ObjectOp

@@ -189,6 +189,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayNavigation
    */
+  @deprecated("Use left", "0.12.0")
   def leftN(n: Int): ACursor
 
   /**
@@ -198,6 +199,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayNavigation
    */
+  @deprecated("Use right", "0.12.0")
   def rightN(n: Int): ACursor
 
   /**
