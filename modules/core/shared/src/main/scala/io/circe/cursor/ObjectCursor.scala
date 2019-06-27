@@ -13,9 +13,6 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
 
   def addOp(cursor: HCursor, op: CursorOp): HCursor = new ObjectCursor(obj, key, parent, changed)(cursor, op)
 
-  def lefts: Option[Vector[Json]] = None
-  def rights: Option[Vector[Json]] = None
-
   def up: ACursor = if (!changed) parent.addOp(this, CursorOp.MoveUp)
   else {
     parent.replace(Json.fromJsonObject(obj), this, CursorOp.MoveUp)

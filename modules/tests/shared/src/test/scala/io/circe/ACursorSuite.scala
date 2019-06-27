@@ -119,34 +119,6 @@ class ACursorSuite extends CirceSuite {
     assert(result.flatMap(_.top) === Some(j3))
   }
 
-  "lefts" should "return the expected values" in {
-    val result = for {
-      c <- cursor.downField("a").success
-      a <- c.downN(3).success
-      l <- a.lefts
-    } yield l
-
-    assert(result === Some(Vector(3.asJson, 2.asJson, 1.asJson)))
-  }
-
-  it should "fail at the top" in forAll { (j: Json) =>
-    assert(HCursor.fromJson(j).lefts === None)
-  }
-
-  "rights" should "return the expected values" in {
-    val result = for {
-      c <- cursor.downField("a").success
-      a <- c.downN(3).success
-      l <- a.rights
-    } yield l
-
-    assert(result === Some(Vector(5.asJson)))
-  }
-
-  it should "fail at the top" in forAll { (j: Json) =>
-    assert(HCursor.fromJson(j).rights === None)
-  }
-
   "values" should "return the expected values" in {
     assert(cursor.downField("a").values.map(_.toVector) === Some((1 to 5).toVector.map(_.asJson)))
   }
