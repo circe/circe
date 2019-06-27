@@ -260,69 +260,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def downField(k: String): ACursor
 
   /**
-   * Delete the focus and move to the left in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteGoLeft: ACursor
-
-  /**
-   * Delete the focus and move to the right in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteGoRight: ACursor
-
-  /**
-   * Delete the focus and move to the first element in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteGoFirst: ACursor
-
-  /**
-   * Delete the focus and move to the last element in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteGoLast: ACursor
-
-  /**
-   * Delete all values to the left of the focus in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteLefts: ACursor
-
-  /**
-   * Delete all values to the right of the focus in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def deleteRights: ACursor
-
-  /**
-   * Replace all values to the left of the focus in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def setLefts(x: Vector[Json]): ACursor
-
-  /**
-   * Replace all values to the right of the focus in a JSON array.
-   *
-   * @group ArrayModification
-   */
-  def setRights(x: Vector[Json]): ACursor
-
-  /**
-   * Delete the focus and move to the sibling with the given key in a JSON object.
-   *
-   * @group ObjectModification
-   */
-  def deleteGoField(k: String): ACursor
-
-  /**
    * Attempt to decode the focus as an `A`.
    *
    * @group Decoding
@@ -355,31 +292,22 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group Utilities
    */
   final def replayOne(op: CursorOp): ACursor = op match {
-    case CursorOp.MoveLeft         => left
-    case CursorOp.MoveRight        => right
-    case CursorOp.MoveFirst        => first
-    case CursorOp.MoveLast         => last
-    case CursorOp.MoveUp           => up
-    case CursorOp.LeftN(n)         => leftN(n)
-    case CursorOp.RightN(n)        => rightN(n)
-    case CursorOp.LeftAt(p)        => leftAt(p)
-    case CursorOp.RightAt(p)       => rightAt(p)
-    case CursorOp.Find(p)          => find(p)
-    case CursorOp.Field(k)         => field(k)
-    case CursorOp.DownField(k)     => downField(k)
-    case CursorOp.DownArray        => downArray
-    case CursorOp.DownAt(p)        => downAt(p)
-    case CursorOp.DownN(n)         => downN(n)
-    case CursorOp.DeleteGoParent   => delete
-    case CursorOp.DeleteGoLeft     => deleteGoLeft
-    case CursorOp.DeleteGoRight    => deleteGoRight
-    case CursorOp.DeleteGoFirst    => deleteGoFirst
-    case CursorOp.DeleteGoLast     => deleteGoLast
-    case CursorOp.DeleteGoField(k) => deleteGoField(k)
-    case CursorOp.DeleteLefts      => deleteLefts
-    case CursorOp.DeleteRights     => deleteRights
-    case CursorOp.SetLefts(js)     => setLefts(js)
-    case CursorOp.SetRights(js)    => setRights(js)
+    case CursorOp.MoveLeft       => left
+    case CursorOp.MoveRight      => right
+    case CursorOp.MoveFirst      => first
+    case CursorOp.MoveLast       => last
+    case CursorOp.MoveUp         => up
+    case CursorOp.LeftN(n)       => leftN(n)
+    case CursorOp.RightN(n)      => rightN(n)
+    case CursorOp.LeftAt(p)      => leftAt(p)
+    case CursorOp.RightAt(p)     => rightAt(p)
+    case CursorOp.Find(p)        => find(p)
+    case CursorOp.Field(k)       => field(k)
+    case CursorOp.DownField(k)   => downField(k)
+    case CursorOp.DownArray      => downArray
+    case CursorOp.DownAt(p)      => downAt(p)
+    case CursorOp.DownN(n)       => downN(n)
+    case CursorOp.DeleteGoParent => delete
   }
 
   /**

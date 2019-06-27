@@ -49,42 +49,24 @@ final object CursorOp {
   final case class DownAt(p: Json => Boolean) extends ArrayOp
   final case class DownN(n: Int) extends ArrayOp
   final case object DeleteGoParent extends UnconstrainedOp
-  final case object DeleteGoLeft extends UnconstrainedOp
-  final case object DeleteGoRight extends UnconstrainedOp
-  final case object DeleteGoFirst extends UnconstrainedOp
-  final case object DeleteGoLast extends UnconstrainedOp
-  final case class DeleteGoField(k: String) extends UnconstrainedOp
-  final case object DeleteLefts extends UnconstrainedOp
-  final case object DeleteRights extends UnconstrainedOp
-  final case class SetLefts(js: Vector[Json]) extends UnconstrainedOp
-  final case class SetRights(js: Vector[Json]) extends UnconstrainedOp
 
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
-    case MoveLeft         => "<-"
-    case MoveRight        => "->"
-    case MoveFirst        => "|<-"
-    case MoveLast         => "->|"
-    case MoveUp           => "_/"
-    case LeftN(n)         => "-<-:(" + n + ")"
-    case RightN(n)        => ":->-(" + n + ")"
-    case LeftAt(_)        => "?<-:"
-    case RightAt(_)       => ":->?"
-    case Find(_)          => "find"
-    case Field(f)         => "--(" + f + ")"
-    case DownField(f)     => "--\\(" + f + ")"
-    case DownArray        => "\\\\"
-    case DownAt(_)        => "-\\"
-    case DownN(n)         => "=\\(" + n + ")"
-    case DeleteGoParent   => "!_/"
-    case DeleteGoLeft     => "<-!"
-    case DeleteGoRight    => "!->"
-    case DeleteGoFirst    => "|<-!"
-    case DeleteGoLast     => "!->|"
-    case DeleteGoField(f) => "!--(" + f + ")"
-    case DeleteLefts      => "!<"
-    case DeleteRights     => ">!"
-    case SetLefts(_)      => "!<.."
-    case SetRights(_)     => "..>!"
+    case MoveLeft       => "<-"
+    case MoveRight      => "->"
+    case MoveFirst      => "|<-"
+    case MoveLast       => "->|"
+    case MoveUp         => "_/"
+    case LeftN(n)       => "-<-:(" + n + ")"
+    case RightN(n)      => ":->-(" + n + ")"
+    case LeftAt(_)      => "?<-:"
+    case RightAt(_)     => ":->?"
+    case Find(_)        => "find"
+    case Field(f)       => "--(" + f + ")"
+    case DownField(f)   => "--\\(" + f + ")"
+    case DownArray      => "\\\\"
+    case DownAt(_)      => "-\\"
+    case DownN(n)       => "=\\(" + n + ")"
+    case DeleteGoParent => "!_/"
   }
 
   implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals

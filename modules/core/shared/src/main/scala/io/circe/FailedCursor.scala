@@ -42,16 +42,6 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def last: ACursor = this
 
   def delete: ACursor = this
-  def deleteGoLeft: ACursor = this
-  def deleteGoRight: ACursor = this
-  def deleteGoFirst: ACursor = this
-  def deleteGoLast: ACursor = this
-  def deleteLefts: ACursor = this
-  def deleteRights: ACursor = this
-
-  def setLefts(x: Vector[Json]): ACursor = this
-  def setRights(x: Vector[Json]): ACursor = this
 
   def field(k: String): ACursor = this
-  def deleteGoField(q: String): ACursor = this
 }

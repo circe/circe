@@ -20,16 +20,5 @@ private[circe] final class TopCursor(val value: Json)(
   def first: ACursor = fail(CursorOp.MoveFirst)
   def last: ACursor = fail(CursorOp.MoveLast)
 
-  def deleteGoLeft: ACursor = fail(CursorOp.DeleteGoLeft)
-  def deleteGoRight: ACursor = fail(CursorOp.DeleteGoRight)
-  def deleteGoFirst: ACursor = fail(CursorOp.DeleteGoFirst)
-  def deleteGoLast: ACursor = fail(CursorOp.DeleteGoLast)
-  def deleteLefts: ACursor = fail(CursorOp.DeleteLefts)
-  def deleteRights: ACursor = fail(CursorOp.DeleteRights)
-
-  def setLefts(x: Vector[Json]): ACursor = fail(CursorOp.SetLefts(x))
-  def setRights(x: Vector[Json]): ACursor = fail(CursorOp.SetRights(x))
-
   def field(k: String): ACursor = fail(CursorOp.Field(k))
-  def deleteGoField(k: String): ACursor = fail(CursorOp.DeleteGoField(k))
 }
