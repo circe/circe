@@ -1,6 +1,5 @@
 package io.circe.literal
 
-import io.circe.Json
 import java.io.{ PrintWriter, StringWriter }
 import java.lang.reflect.{ InvocationHandler, Method, Proxy }
 import java.util.UUID
