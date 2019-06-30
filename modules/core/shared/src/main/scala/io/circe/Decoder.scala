@@ -1057,6 +1057,9 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
     da: Decoder[A],
     db: Decoder[B]
   ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
+    private[this] def failure(c: HCursor): Decoder.Result[Either[A, B]] =
+      Left(DecodingFailure("[A, B]Either[A, B]", c.history))
+
     final def apply(c: HCursor): Result[Either[A, B]] = {
       val lf = c.downField(leftKey)
       val rf = c.downField(rightKey)
@@ -1064,21 +1067,21 @@ final object Decoder extends CollectionDecoders with TupleDecoders with ProductD
       lf match {
         case lc: HCursor =>
           rf match {
-            case rc: HCursor => Left(DecodingFailure("[A, B]Either[A, B]", c.history))
+            case _: HCursor => failure(c)
             case rc =>
               da(lc) match {
                 case Right(v)    => Right(Left(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
               }
           }
-        case lc =>
+        case _ =>
           rf match {
             case rc: HCursor =>
               db(rc) match {
                 case Right(v)    => Right(Right(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
               }
-            case rc => Left(DecodingFailure("[A, B]Either[A, B]", c.history))
+            case rc => failure(c)
           }
       }
     }
