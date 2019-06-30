@@ -279,6 +279,16 @@ final object Printer {
    */
   final val spaces4SortKeys: Printer = indented("    ", true)
 
+  private[this] final def writeEscapedChar(writer: Appendable, c: Char): Unit =
+    writer
+      .append('u')
+      .append(toHex((c >> 12) & 15))
+      .append(toHex((c >> 8) & 15))
+      .append(toHex((c >> 4) & 15))
+      .append(toHex(c & 15))
+
+  private[this] final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
+
   private[circe] abstract class PrintingFolder(
     private[circe] val writer: Appendable,
     private[circe] val pieces: PiecesAtDepth,
@@ -311,14 +321,7 @@ final object Printer {
         }
         if (esc != 0) {
           writer.append(value, offset, i).append('\\')
-          if (esc != 1) writer.append(esc)
-          else
-            writer
-              .append('u')
-              .append(toHex((c >> 12) & 15))
-              .append(toHex((c >> 8) & 15))
-              .append(toHex((c >> 4) & 15))
-              .append(toHex(c & 15))
+          if (esc != 1) writer.append(esc) else writeEscapedChar(writer, c)
           offset = i + 1
         }
 
@@ -328,8 +331,6 @@ final object Printer {
       if (offset < i) writer.append(value, offset, i)
       writer.append('"')
     }
-
-    final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
 
     final def onArray(value: Vector[Json]): Unit = {
       val orig = depth
