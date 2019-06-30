@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
+import io.circe.cursor.ObjectCursor
 import scala.collection.Map
 import scala.collection.mutable.Builder
 
@@ -16,51 +17,55 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
 
   protected def createBuilder(): Builder[(K, V), M[K, V]]
 
-  final def apply(c: HCursor): Decoder.Result[M[K, V]] = c.keys match {
-    case None => Left[DecodingFailure, M[K, V]](MapDecoder.failure(c))
-    case Some(keys) =>
-      val it = keys.iterator
-      val builder = createBuilder()
-      var failed: DecodingFailure = null
-
-      while (failed.eq(null) && it.hasNext) {
-        val key = it.next
-        val atH = c.downField(key)
-
-        if (alwaysDecodeK.ne(null)) {
-          atH.as(decodeV) match {
-            case Right(value) => builder += ((alwaysDecodeK.decodeSafe(key), value))
-            case Left(error)  => failed = error
-          }
-        } else {
-          decodeK(key) match {
-            case None => failed = MapDecoder.failure(atH)
-            case Some(k) =>
-              atH.as(decodeV) match {
-                case Right(value) => builder += ((k, value))
-                case Left(error)  => failed = error
-              }
-          }
-        }
-      }
-
-      if (failed.eq(null)) Right(builder.result) else Left(failed)
+  final def apply(c: HCursor): Decoder.Result[M[K, V]] = c.value match {
+    case Json.JObject(obj) => decodeJsonObject(c, obj)
+    case _                 => MapDecoder.failureResult[M[K, V]](c)
   }
 
-  final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[M[K, V]] = c.keys match {
-    case None => Validated.invalidNel[DecodingFailure, M[K, V]](MapDecoder.failure(c))
-    case Some(keys) =>
-      val it = keys.iterator
+  private[this] final def createObjectCursor(c: HCursor, obj: JsonObject, key: String): HCursor =
+    new ObjectCursor(obj, key, c, false)(c, CursorOp.DownField(key))
+
+  private[this] final def handleResult(key: K, c: HCursor, builder: Builder[(K, V), M[K, V]]): DecodingFailure =
+    decodeV(c) match {
+      case Right(value) => builder += ((key, value)); null
+      case Left(error)  => error
+    }
+
+  private[this] final def decodeJsonObject(c: HCursor, obj: JsonObject): Decoder.Result[M[K, V]] = {
+    val it = obj.keys.iterator
+    val builder = createBuilder()
+    var failed: DecodingFailure = null
+
+    while (failed.eq(null) && it.hasNext) {
+      val key = it.next
+      val atH = createObjectCursor(c, obj, key)
+
+      failed = if (alwaysDecodeK.ne(null)) {
+        handleResult(alwaysDecodeK.decodeSafe(key), atH, builder)
+      } else {
+        decodeK(key) match {
+          case None    => MapDecoder.failure(atH)
+          case Some(k) => handleResult(k, atH, builder)
+        }
+      }
+    }
+
+    if (failed.eq(null)) Right(builder.result) else Left(failed)
+  }
+
+  final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[M[K, V]] = c.value match {
+    case Json.JObject(obj) =>
+      val it = obj.keys.iterator
       val builder = createBuilder()
       var failed = false
       val failures = List.newBuilder[DecodingFailure]
 
       while (it.hasNext) {
         val key = it.next
-        val atH = c.downField(key)
+        val atH = createObjectCursor(c, obj, key)
 
         if (alwaysDecodeK.ne(null)) {
-          decodeV.tryDecodeAccumulating(atH) match {
+          decodeV.decodeAccumulating(atH) match {
             case Validated.Valid(value) => if (!failed) builder += ((alwaysDecodeK.decodeSafe(key), value))
             case Validated.Invalid(es) =>
               failed = true
@@ -70,7 +75,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         } else {
           decodeK(key) match {
             case Some(k) =>
-              decodeV.tryDecodeAccumulating(atH) match {
+              decodeV.decodeAccumulating(atH) match {
                 case Validated.Valid(value) => if (!failed) builder += ((k, value))
                 case Validated.Invalid(es) =>
                   failed = true
@@ -91,9 +96,13 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
           case Nil    => Validated.valid(builder.result)
         }
       }
+    case _ => MapDecoder.failureAccumulatingResult[M[K, V]](c)
   }
 }
 
 private[circe] final object MapDecoder {
-  def failure(c: ACursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
+  final def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
+  final def failureResult[A](c: HCursor): Decoder.Result[A] = Left[DecodingFailure, A](failure(c))
+  final def failureAccumulatingResult[A](c: HCursor): Decoder.AccumulatingResult[A] =
+    Validated.invalidNel[DecodingFailure, A](failure(c))
 }
