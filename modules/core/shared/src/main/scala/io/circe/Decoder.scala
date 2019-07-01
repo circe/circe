@@ -400,12 +400,20 @@ trait Decoder[A] extends Serializable { self =>
  * @groupname Time Java date and time instances
  * @groupprio Time 8
  *
+ * @groupname Literal Literal type instances
+ * @groupprio Literal 9
+ *
  * @groupname Prioritization Instance prioritization
  * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
-final object Decoder extends CollectionDecoders with TupleDecoders with ProductDecoders with LowPriorityDecoders {
+final object Decoder
+    extends CollectionDecoders
+    with TupleDecoders
+    with ProductDecoders
+    with LiteralDecoders
+    with LowPriorityDecoders {
 
   /**
    * @group Aliases
