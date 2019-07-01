@@ -97,12 +97,15 @@ trait Encoder[A] extends Serializable { self =>
  * @groupname Time Java date and time instances
  * @groupprio Time 8
  *
+ * @groupname Literal Literal type instances
+ * @groupprio Literal 9
+ *
  * @groupname Prioritization Instance prioritization
  * @groupprio Prioritization 10
  *
  * @author Travis Brown
  */
-final object Encoder extends TupleEncoders with ProductEncoders with MidPriorityEncoders {
+final object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders with MidPriorityEncoders {
 
   /**
    * Return an instance for a given type `A`.
