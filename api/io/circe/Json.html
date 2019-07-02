@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -298,21 +314,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -358,10 +374,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -373,10 +385,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -1109,6 +1117,23 @@ recursed.</p><p>Null, Array, Boolean, String and Number are treated as values,
 and values from the argument JSON completely replace values
 from this JSON.
 </p></div></div>
+    </li><li name="io.circe.Json#dropNullValues" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dropNullValues:io.circe.Json"></a><a id="dropNullValues:Json"></a>
+      <span class="permalink">
+      <a href="../../io/circe/Json.html#dropNullValues:io.circe.Json" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dropNullValues</span><span class="result">: <a href="" class="extype" name="io.circe.Json">Json</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Drop the entries with a null value if this is an object.</p><div class="fullcomment"><div class="comment cmt"><p>Drop the entries with a null value if this is an object.</p><p>Note that this does not apply recursively.
+</p></div></div>
     </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a><a id="ensuring((Json)⇒Boolean,⇒Any):Json"></a>
       <span class="permalink">
@@ -1419,6 +1444,23 @@ from this JSON.
       </span>
       
       <p class="shortcomment cmt">Pretty-print this JSON value to a string with no spaces.</p>
+    </li><li name="io.circe.Json#noSpacesSortKeys" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="noSpacesSortKeys:String"></a>
+      <span class="permalink">
+      <a href="../../io/circe/Json.html#noSpacesSortKeys:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">noSpacesSortKeys</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Pretty-print this JSON value to a string with no spaces, with object keys
+sorted alphabetically.</p>
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
@@ -1521,6 +1563,23 @@ from this JSON.
       </span>
       
       <p class="shortcomment cmt">Pretty-print this JSON value to a string indentation of two spaces.</p>
+    </li><li name="io.circe.Json#spaces2SortKeys" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="spaces2SortKeys:String"></a>
+      <span class="permalink">
+      <a href="../../io/circe/Json.html#spaces2SortKeys:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">spaces2SortKeys</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Pretty-print this JSON value to a string indentation of two spaces, with
+object keys sorted alphabetically.</p>
     </li><li name="io.circe.Json#spaces4" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="spaces4:String"></a>
       <span class="permalink">
@@ -1537,6 +1596,23 @@ from this JSON.
       </span>
       
       <p class="shortcomment cmt">Pretty-print this JSON value to a string indentation of four spaces.</p>
+    </li><li name="io.circe.Json#spaces4SortKeys" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="spaces4SortKeys:String"></a>
+      <span class="permalink">
+      <a href="../../io/circe/Json.html#spaces4SortKeys:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">spaces4SortKeys</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Pretty-print this JSON value to a string indentation of four spaces, with
+object keys sorted alphabetically.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">

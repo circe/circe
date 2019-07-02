@@ -137,21 +137,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -197,10 +197,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -212,10 +208,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -313,6 +305,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       <span class="symbol">
         <a title="" href="numbers/index.html"><span class="name">numbers</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
@@ -567,7 +575,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<a href="http://typelevel.org/cats/api/cats/data/Validated.html#cats.data.Validated" class="extype" name="cats.data.Validated">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]]</span>
+        <span class="name">decodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="de">de: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>]</span>, <span name="da">da: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="cats.data.Validated">Validated</span>[<span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.decodeValidated.A">A</span>]]</span>
       </span>
       
       
@@ -588,9 +596,9 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       
     </li><li name="io.circe.disjunctionCodecs#encodeEither" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encodeEither[A,B](implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.ObjectEncoder[Either[A,B]]"></a><a id="encodeEither[A,B](Encoder[A],Encoder[B]):ObjectEncoder[Either[A,B]]"></a>
+      <a id="encodeEither[A,B](implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.Encoder.AsObject[Either[A,B]]"></a><a id="encodeEither[A,B](Encoder[A],Encoder[B]):AsObject[Either[A,B]]"></a>
       <span class="permalink">
-      <a href="../../io/circe/disjunctionCodecs$.html#encodeEither[A,B](implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.ObjectEncoder[Either[A,B]]" title="Permalink">
+      <a href="../../io/circe/disjunctionCodecs$.html#encodeEither[A,B](implicitea:io.circe.Encoder[A],impliciteb:io.circe.Encoder[B]):io.circe.Encoder.AsObject[Either[A,B]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -599,14 +607,14 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeEither</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.B">B</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeEither.B">B</span>]]</span>
+        <span class="name">encodeEither</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.A">A</span>]</span>, <span name="eb">eb: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.B">B</span>]</span>)</span><span class="result">: <a href="Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="io.circe.disjunctionCodecs.encodeEither.A">A</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeEither.B">B</span>]]</span>
       </span>
       
       
     </li><li name="io.circe.disjunctionCodecs#encodeValidated" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encodeValidated[E,A](implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.ObjectEncoder[cats.data.Validated[E,A]]"></a><a id="encodeValidated[E,A](Encoder[E],Encoder[A]):ObjectEncoder[Validated[E,A]]"></a>
+      <a id="encodeValidated[E,A](implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.Encoder.AsObject[cats.data.Validated[E,A]]"></a><a id="encodeValidated[E,A](Encoder[E],Encoder[A]):AsObject[Validated[E,A]]"></a>
       <span class="permalink">
-      <a href="../../io/circe/disjunctionCodecs$.html#encodeValidated[E,A](implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.ObjectEncoder[cats.data.Validated[E,A]]" title="Permalink">
+      <a href="../../io/circe/disjunctionCodecs$.html#encodeValidated[E,A](implicitee:io.circe.Encoder[E],implicitea:io.circe.Encoder[A]):io.circe.Encoder.AsObject[cats.data.Validated[E,A]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -615,7 +623,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<a href="http://typelevel.org/cats/api/cats/data/Validated.html#cats.data.Validated" class="extype" name="cats.data.Validated">Validated</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]]</span>
+        <span class="name">encodeValidated</span><span class="tparams">[<span name="E">E</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ee">ee: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>]</span>, <span name="ea">ea: <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]</span>)</span><span class="result">: <a href="Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="cats.data.Validated">Validated</span>[<span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.E">E</span>, <span class="extype" name="io.circe.disjunctionCodecs.encodeValidated.A">A</span>]]</span>
       </span>
       
       

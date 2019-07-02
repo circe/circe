@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -297,21 +313,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -357,10 +373,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -372,10 +384,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -478,26 +486,10 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       <p class="shortcomment cmt">A zipper that represents a position in a JSON document and supports navigation and modification.</p><div class="fullcomment"><div class="comment cmt"><p>A zipper that represents a position in a JSON document and supports navigation and modification.</p><p>The <code>focus</code> represents the current position of the cursor; it may be updated with <code>withFocus</code> or
 changed using navigation methods like <code>left</code> and <code>right</code>.
 </p></div></div>
-    </li><li name="io.circe.AccumulatingDecoder" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="AccumulatingDecoder[A]extendsSerializable"></a><a id="AccumulatingDecoder[A]:AccumulatingDecoder[A]"></a>
+    </li><li name="io.circe.Codec" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Codec[A]extendsDecoder[A]withEncoder[A]"></a><a id="Codec[A]:Codec[A]"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#AccumulatingDecoder[A]extendsSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="AccumulatingDecoder.html"><span class="name">AccumulatingDecoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="java.io.Serializable">Serializable</span></span>
-      </span>
-      
-      
-    </li><li name="io.circe.ArrayEncoder" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ArrayEncoder[A]extendsRootEncoder[A]"></a><a id="ArrayEncoder[A]:ArrayEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#ArrayEncoder[A]extendsRootEncoder[A]" title="Permalink">
+      <a href="../../io/circe/index.html#Codec[A]extendsDecoder[A]withEncoder[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -506,11 +498,14 @@ changed using navigation methods like <code>left</code> and <code>right</code>.
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="A type class that provides a conversion from a value of type A to a JSON array." href="ArrayEncoder.html"><span class="name">ArrayEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.ArrayEncoder.A">A</span>]</span>
+        <a title="A type class that provides back and forth conversion between values of type A and the Json format." href="Codec.html"><span class="name">Codec</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.Codec.A">A</span>] with <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.Codec.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a JSON
-array.</p>
+      <p class="shortcomment cmt">A type class that provides back and forth conversion between values of type <code>A</code>
+and the <a href="Json.html" class="extype" name="io.circe.Json">Json</a> format.</p><div class="fullcomment"><div class="comment cmt"><p>A type class that provides back and forth conversion between values of type <code>A</code>
+and the <a href="Json.html" class="extype" name="io.circe.Json">Json</a> format.</p><p>Note that this type class is only intended to make instance definition more
+convenient; it generally should not be used as a constraint.</p><p>Instances should obey the laws defined in <a href="testing/CodecLaws.html" class="extype" name="io.circe.testing.CodecLaws">io.circe.testing.CodecLaws</a>.
+</p></div></div>
     </li><li name="io.circe.CursorOp" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="CursorOpextendsProductwithSerializable"></a><a id="CursorOp:CursorOp"></a>
       <span class="permalink">
@@ -539,10 +534,10 @@ array.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="" href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="java.io.Serializable">Serializable</span></span>
+        <a title="A type class that provides a way to produce a value of type A from a Json value." href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="java.io.Serializable">Serializable</span></span>
       </span>
       
-      
+      <p class="shortcomment cmt">A type class that provides a way to produce a value of type <code>A</code> from a <a href="Json.html" class="extype" name="io.circe.Json">Json</a> value.</p>
     </li><li name="io.circe.DecodingFailure" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="DecodingFailureextendsError"></a><a id="DecodingFailure:DecodingFailure"></a>
       <span class="permalink">
@@ -725,23 +720,6 @@ value of type <code>A</code>.</p>
 <code>Map[A, ?]</code> instances as JSON.</p><p>Note that if more than one value maps to the same string, the resulting JSON
 object may have fewer fields than the original map.
 </p></div></div>
-    </li><li name="io.circe.ObjectEncoder" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ObjectEncoder[A]extendsRootEncoder[A]"></a><a id="ObjectEncoder[A]:ObjectEncoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#ObjectEncoder[A]extendsRootEncoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a title="A type class that provides a conversion from a value of type A to a JsonObject." href="ObjectEncoder.html"><span class="name">ObjectEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>[<span class="extype" name="io.circe.ObjectEncoder.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">A type class that provides a conversion from a value of type <code>A</code> to a
-<a href="JsonObject.html" class="extype" name="io.circe.JsonObject">JsonObject</a>.</p>
     </li><li name="io.circe.Parser" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ParserextendsSerializable"></a><a id="Parser:Parser"></a>
       <span class="permalink">
@@ -787,30 +765,70 @@ provided by the parsing library.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="A pretty-printer for JSON values." href="Printer.html"><span class="name">Printer</span></a><span class="params">(<span name="preserveOrder">preserveOrder: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="dropNullValues">dropNullValues: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="indent">indent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lbraceLeft">lbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbraceRight">lbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceLeft">rbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceRight">rbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketLeft">lbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketRight">lbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketLeft">rbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketRight">rbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lrbracketsEmpty">lrbracketsEmpty: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaLeft">arrayCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaRight">arrayCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaLeft">objectCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaRight">objectCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonLeft">colonLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonRight">colonRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="reuseWriters">reuseWriters: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="predictSize">predictSize: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="escapeNonAscii">escapeNonAscii: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="A pretty-printer for JSON values." href="Printer.html"><span class="name">Printer</span></a><span class="params">(<span name="dropNullValues">dropNullValues: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="indent">indent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lbraceLeft">lbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbraceRight">lbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceLeft">rbraceLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbraceRight">rbraceRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketLeft">lbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lbracketRight">lbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketLeft">rbracketLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="rbracketRight">rbracketRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="lrbracketsEmpty">lrbracketsEmpty: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaLeft">arrayCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="arrayCommaRight">arrayCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaLeft">objectCommaLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="objectCommaRight">objectCommaRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonLeft">colonLeft: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="colonRight">colonRight: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="reuseWriters">reuseWriters: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="predictSize">predictSize: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="escapeNonAscii">escapeNonAscii: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="sortKeys">sortKeys: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A pretty-printer for JSON values.</p><div class="fullcomment"><div class="comment cmt"><p>A pretty-printer for JSON values.
-</p></div><dl class="paramcmts block"><dt class="param">preserveOrder</dt><dd class="cmt"><p>Determines if field ordering should be preserved.</p></dd><dt class="param">dropNullValues</dt><dd class="cmt"><p>Determines if object fields with values of null are dropped from the output.</p></dd><dt class="param">indent</dt><dd class="cmt"><p>The indentation to use if any format strings contain a new line.</p></dd><dt class="param">lbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left brace.</p></dd><dt class="param">lbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a left brace.</p></dd><dt class="param">rbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right brace.</p></dd><dt class="param">rbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a right brace.</p></dd><dt class="param">lbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left bracket.</p></dd><dt class="param">lbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a left bracket.</p></dd><dt class="param">rbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right bracket.</p></dd><dt class="param">rbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a right bracket.</p></dd><dt class="param">lrbracketsEmpty</dt><dd class="cmt"><p>Spaces to insert for an empty array.</p></dd><dt class="param">arrayCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an array.</p></dd><dt class="param">arrayCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an array.</p></dd><dt class="param">objectCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an object.</p></dd><dt class="param">objectCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an object.</p></dd><dt class="param">colonLeft</dt><dd class="cmt"><p>Spaces to insert to left of a colon.</p></dd><dt class="param">colonRight</dt><dd class="cmt"><p>Spaces to insert to right of a colon.</p></dd><dt class="param">reuseWriters</dt><dd class="cmt"><p>Determines whether the printer will reuse Appendables via thread-local
+</p></div><dl class="paramcmts block"><dt class="param">dropNullValues</dt><dd class="cmt"><p>Determines if object fields with values of null are dropped from the output.</p></dd><dt class="param">indent</dt><dd class="cmt"><p>The indentation to use if any format strings contain a new line.</p></dd><dt class="param">lbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left brace.</p></dd><dt class="param">lbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a left brace.</p></dd><dt class="param">rbraceLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right brace.</p></dd><dt class="param">rbraceRight</dt><dd class="cmt"><p>Spaces to insert to right of a right brace.</p></dd><dt class="param">lbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a left bracket.</p></dd><dt class="param">lbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a left bracket.</p></dd><dt class="param">rbracketLeft</dt><dd class="cmt"><p>Spaces to insert to left of a right bracket.</p></dd><dt class="param">rbracketRight</dt><dd class="cmt"><p>Spaces to insert to right of a right bracket.</p></dd><dt class="param">lrbracketsEmpty</dt><dd class="cmt"><p>Spaces to insert for an empty array.</p></dd><dt class="param">arrayCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an array.</p></dd><dt class="param">arrayCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an array.</p></dd><dt class="param">objectCommaLeft</dt><dd class="cmt"><p>Spaces to insert to left of a comma in an object.</p></dd><dt class="param">objectCommaRight</dt><dd class="cmt"><p>Spaces to insert to right of a comma in an object.</p></dd><dt class="param">colonLeft</dt><dd class="cmt"><p>Spaces to insert to left of a colon.</p></dd><dt class="param">colonRight</dt><dd class="cmt"><p>Spaces to insert to right of a colon.</p></dd><dt class="param">reuseWriters</dt><dd class="cmt"><p>Determines whether the printer will reuse Appendables via thread-local
        storage.</p></dd><dt class="param">predictSize</dt><dd class="cmt"><p>Uses an adaptive size predictor to avoid grow-and-copy steps while printing
-       into a binary output.</p></dd><dt class="param">escapeNonAscii</dt><dd class="cmt"><p>Unicode-escape any non-ASCII characters in strings.</p></dd></dl></div>
-    </li><li name="io.circe.RootEncoder" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="RootEncoder[A]extendsEncoder[A]"></a><a id="RootEncoder[A]:RootEncoder[A]"></a>
+       into a binary output.</p></dd><dt class="param">escapeNonAscii</dt><dd class="cmt"><p>Unicode-escape any non-ASCII characters in strings.</p></dd><dt class="param">sortKeys</dt><dd class="cmt"><p>Determines whether the fields should be sorted.</p></dd></dl></div>
+    </li><li name="io.circe.ArrayEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ArrayEncoder[A]=io.circe.Encoder.AsArray[A]"></a><a id="ArrayEncoder[A]:ArrayEncoder[A]"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#RootEncoder[A]extendsEncoder[A]" title="Permalink">
+      <a href="../../io/circe/index.html#ArrayEncoder[A]=io.circe.Encoder.AsArray[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <a title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object." href="RootEncoder.html"><span class="name">RootEncoder</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.RootEncoder.A">A</span>]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsArray">ArrayEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Encoder$$AsArray.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>[<span class="extype" name="io.circe.ArrayEncoder.A">A</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">A subtype of <code>Encoder</code> that statically verifies that the instance encodes
-either a JSON array or an object.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsArray</p></dd></dl></div>
+    </li><li name="io.circe.ObjectEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ObjectEncoder[A]=io.circe.Encoder.AsObject[A]"></a><a id="ObjectEncoder[A]:ObjectEncoder[A]"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#ObjectEncoder[A]=io.circe.Encoder.AsObject[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsObject">ObjectEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="io.circe.ObjectEncoder.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsObject</p></dd></dl></div>
+    </li><li name="io.circe.RootEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RootEncoder[A]=io.circe.Encoder.AsRoot[A]"></a><a id="RootEncoder[A]:RootEncoder[A]"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#RootEncoder[A]=io.circe.Encoder.AsRoot[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsRoot">RootEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="Encoder$$AsRoot.html" class="extype" name="io.circe.Encoder.AsRoot">AsRoot</a>[<span class="extype" name="io.circe.RootEncoder.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsRoot</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -835,10 +853,10 @@ either a JSON array or an object.</p>
       </span>
       
       
-    </li><li name="io.circe.AccumulatingDecoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AccumulatingDecoder"></a><a id="AccumulatingDecoder:AccumulatingDecoder"></a>
+    </li><li name="io.circe.Codec" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Codec"></a><a id="Codec:Codec"></a>
       <span class="permalink">
-      <a href="../../io/circe/index.html#AccumulatingDecoder" title="Permalink">
+      <a href="../../io/circe/index.html#Codec" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -847,26 +865,10 @@ either a JSON array or an object.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="AccumulatingDecoder$.html"><span class="name">AccumulatingDecoder</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Codec$.html"><span class="name">Codec</span></a><span class="result"> extends <span class="extype" name="io.circe.ProductCodecs">ProductCodecs</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
-    </li><li name="io.circe.ArrayEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ArrayEncoder"></a><a id="ArrayEncoder:ArrayEncoder"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#ArrayEncoder" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Utilities and instances for ArrayEncoder." href="ArrayEncoder$.html"><span class="name">ArrayEncoder</span></a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityArrayEncoders">LowPriorityArrayEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Utilities and instances for <a href="ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>.</p>
     </li><li name="io.circe.CursorOp" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="CursorOp"></a><a id="CursorOp:CursorOp"></a>
       <span class="permalink">
@@ -895,7 +897,7 @@ either a JSON array or an object.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Utilities and instances for Decoder." href="Decoder$.html"><span class="name">Decoder</span></a><span class="result"> extends <span class="extype" name="io.circe.CollectionDecoders">CollectionDecoders</span> with <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.JavaTimeDecoders">JavaTimeDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Utilities and instances for Decoder." href="Decoder$.html"><span class="name">Decoder</span></a><span class="result"> extends <span class="extype" name="io.circe.CollectionDecoders">CollectionDecoders</span> with <span class="extype" name="io.circe.TupleDecoders">TupleDecoders</span> with <span class="extype" name="io.circe.ProductDecoders">ProductDecoders</span> with <span class="extype" name="io.circe.LiteralDecoders">LiteralDecoders</span> with <span class="extype" name="io.circe.LowPriorityDecoders">LowPriorityDecoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Utilities and instances for <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>.</p>
@@ -927,7 +929,7 @@ either a JSON array or an object.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Utilities and instances for Encoder." href="Encoder$.html"><span class="name">Encoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.JavaTimeEncoders">JavaTimeEncoders</span> with <span class="extype" name="io.circe.MidPriorityEncoders">MidPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Utilities and instances for Encoder." href="Encoder$.html"><span class="name">Encoder</span></a><span class="result"> extends <span class="extype" name="io.circe.TupleEncoders">TupleEncoders</span> with <span class="extype" name="io.circe.ProductEncoders">ProductEncoders</span> with <span class="extype" name="io.circe.LiteralEncoders">LiteralEncoders</span> with <span class="extype" name="io.circe.MidPriorityEncoders">MidPriorityEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Utilities and instances for <a href="Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>.</p>
@@ -1043,22 +1045,6 @@ either a JSON array or an object.</p>
       </span>
       
       
-    </li><li name="io.circe.ObjectEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ObjectEncoder"></a><a id="ObjectEncoder:ObjectEncoder"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#ObjectEncoder" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Utilities and instances for ObjectEncoder." href="ObjectEncoder$.html"><span class="name">ObjectEncoder</span></a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityObjectEncoders">LowPriorityObjectEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Utilities and instances for <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>.</p>
     </li><li name="io.circe.ParsingFailure" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ParsingFailure"></a><a id="ParsingFailure:ParsingFailure"></a>
       <span class="permalink">
@@ -1091,22 +1077,6 @@ either a JSON array or an object.</p>
       </span>
       
       
-    </li><li name="io.circe.RootEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RootEncoder"></a><a id="RootEncoder:RootEncoder"></a>
-      <span class="permalink">
-      <a href="../../io/circe/index.html#RootEncoder" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Utilities and instances for RootEncoder." href="RootEncoder$.html"><span class="name">RootEncoder</span></a><span class="result"> extends <span class="extype" name="io.circe.LowPriorityRootEncoders">LowPriorityRootEncoders</span> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Utilities and instances for <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>.</p>
     </li><li name="io.circe.disjunctionCodecs" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="disjunctionCodecs"></a><a id="disjunctionCodecs:disjunctionCodecs"></a>
       <span class="permalink">
@@ -1129,7 +1099,86 @@ either a JSON array or an object.</p>
 
         
 
-        
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe#ArrayEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ArrayEncoder:io.circe.Encoder.AsArray.type"></a><a id="ArrayEncoder:AsArray.type"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#ArrayEncoder:io.circe.Encoder.AsArray.type" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsArray">ArrayEncoder</span><span class="result">: <a href="Encoder$$AsArray$.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>.type</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsArray</p></dd></dl></div>
+    </li><li name="io.circe#ObjectEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ObjectEncoder:io.circe.Encoder.AsObject.type"></a><a id="ObjectEncoder:AsObject.type"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#ObjectEncoder:io.circe.Encoder.AsObject.type" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsObject">ObjectEncoder</span><span class="result">: <a href="Encoder$$AsObject$.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>.type</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsObject</p></dd></dl></div>
+    </li><li name="io.circe#RootEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RootEncoder:io.circe.Encoder.AsRoot.type"></a><a id="RootEncoder:AsRoot.type"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#RootEncoder:io.circe.Encoder.AsRoot.type" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Encoder.AsRoot">RootEncoder</span><span class="result">: <a href="Encoder$$AsRoot$.html" class="extype" name="io.circe.Encoder.AsRoot">AsRoot</a>.type</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Encoder.AsRoot</p></dd></dl></div>
+    </li><li name="io.circe.AccumulatingDecoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="AccumulatingDecoder"></a><a id="AccumulatingDecoder:AccumulatingDecoder"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#AccumulatingDecoder" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="AccumulatingDecoder$.html"><span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Decoder">AccumulatingDecoder</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Decoder</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

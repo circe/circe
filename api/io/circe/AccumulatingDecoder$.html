@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -298,21 +314,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -358,10 +374,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -374,10 +386,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
                         <a href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides.">disjunctionCodecs</a>
@@ -388,16 +396,14 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
           <div id="content">
             <body class="object value">
       <div id="definition">
-        <a href="AccumulatingDecoder.html" title="See companion trait"><div class="big-circle object-companion-trait">o</div></a>
+        <div class="big-circle object">o</div>
         <p id="owner"><a href="../index.html" class="extype" name="io">io</a>.<a href="index.html" class="extype" name="io.circe">circe</a></p>
-        <h1><a href="AccumulatingDecoder.html" title="See companion trait">AccumulatingDecoder</a><span class="permalink">
+        <h1>AccumulatingDecoder<span class="permalink">
       <a href="../../io/circe/AccumulatingDecoder$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"><div>
-            Companion <a href="AccumulatingDecoder.html" title="See companion trait">trait AccumulatingDecoder</a>
-          </div></span></h3>
+        <h3><span class="morelinks"></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
@@ -406,16 +412,19 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">AccumulatingDecoder</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Decoder">AccumulatingDecoder</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/core/shared/src/main/scala/io/circe/AccumulatingDecoder.scala" target="_blank">AccumulatingDecoder.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Decoder</p></dd><dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/core/shared/src/main/scala/io/circe/AccumulatingDecoder.scala" target="_blank">AccumulatingDecoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.8/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -441,7 +450,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="io.circe.AccumulatingDecoder"><span>AccumulatingDecoder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="io.circe.AccumulatingDecoder"><span>AccumulatingDecoder</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -463,10 +472,10 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="io.circe.AccumulatingDecoder.Result" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]"></a><a id="Result[A]:Result[A]"></a>
+              <ol><li name="io.circe.AccumulatingDecoder.Result" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Result[A]=io.circe.Decoder.AccumulatingResult[A]"></a><a id="Result[A]:Result[A]"></a>
       <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" title="Permalink">
+      <a href="../../io/circe/AccumulatingDecoder$.html#Result[A]=io.circe.Decoder.AccumulatingResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -475,10 +484,13 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <a href="http://typelevel.org/cats/api/cats/data/Validated.html#cats.data.Validated" class="extype" name="cats.data.Validated">Validated</a>[<a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>], <span class="extype" name="io.circe.AccumulatingDecoder.Result.A">A</span>]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Decoder.AccumulatingResult">Result</span><span class="tparams">[<span name="A">A</span>]</span><span class="result alias"> = <span class="extype" name="cats.data.Validated">Validated</span>[<a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>], <span class="extype" name="io.circe.AccumulatingDecoder.Result.A">A</span>]</span>
       </span>
       
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Decoder.AccumulatingResult</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -535,38 +547,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.AccumulatingDecoder#accumulatingDecoderInstances" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="accumulatingDecoderInstances:cats.SemigroupK[io.circe.AccumulatingDecoder]withcats.ApplicativeError[io.circe.AccumulatingDecoder,cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a><a id="accumulatingDecoderInstances:SemigroupK[AccumulatingDecoder]withApplicativeError[AccumulatingDecoder,NonEmptyList[DecodingFailure]]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#accumulatingDecoderInstances:cats.SemigroupK[io.circe.AccumulatingDecoder]withcats.ApplicativeError[io.circe.AccumulatingDecoder,cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accumulatingDecoderInstances</span><span class="result">: <a href="http://typelevel.org/cats/api/cats/SemigroupK.html#cats.SemigroupK" class="extype" name="cats.SemigroupK">SemigroupK</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>] with <a href="http://typelevel.org/cats/api/cats/ApplicativeError.html#cats.ApplicativeError" class="extype" name="cats.ApplicativeError">ApplicativeError</a>[<a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>, <a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
-      </span>
-      
-      
-    </li><li name="io.circe.AccumulatingDecoder#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply[A](implicitd:io.circe.AccumulatingDecoder[A]):io.circe.AccumulatingDecoder[A]"></a><a id="apply[A](AccumulatingDecoder[A]):AccumulatingDecoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#apply[A](implicitd:io.circe.AccumulatingDecoder[A]):io.circe.AccumulatingDecoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.apply.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.apply.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Return an instance for a given type.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -639,38 +619,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.AccumulatingDecoder#failed" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="failed[A](e:cats.data.NonEmptyList[io.circe.DecodingFailure]):io.circe.AccumulatingDecoder[A]"></a><a id="failed[A](NonEmptyList[DecodingFailure]):AccumulatingDecoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#failed[A](e:cats.data.NonEmptyList[io.circe.DecodingFailure]):io.circe.AccumulatingDecoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">failed</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.failed.A">A</span>]</span>
-      </span>
-      
-      
-    </li><li name="io.circe.AccumulatingDecoder#failureNelInstance" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="failureNelInstance:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a><a id="failureNelInstance:Semigroup[NonEmptyList[DecodingFailure]]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#failureNelInstance:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">failureNelInstance</span><span class="result">: <span class="extype" name="cats.Semigroup">Semigroup</span>[<a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
@@ -693,22 +641,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.AccumulatingDecoder#fromDecoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="fromDecoder[A](implicitdecode:io.circe.Decoder[A]):io.circe.AccumulatingDecoder[A]"></a><a id="fromDecoder[A](Decoder[A]):AccumulatingDecoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#fromDecoder[A](implicitdecode:io.circe.Decoder[A]):io.circe.AccumulatingDecoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromDecoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="decode">decode: <a href="Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.fromDecoder.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.fromDecoder.A">A</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
@@ -747,22 +679,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.AccumulatingDecoder#instance" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="instance[A](f:io.circe.HCursor=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder[A]"></a><a id="instance[A]((HCursor)⇒Result[A]):AccumulatingDecoder[A]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#instance[A](f:io.circe.HCursor=&gt;io.circe.AccumulatingDecoder.Result[A]):io.circe.AccumulatingDecoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">instance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<a href="HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a>) ⇒ <a href="#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.AccumulatingDecoder.instance.A">A</span>]</span>)</span><span class="result">: <a href="AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.AccumulatingDecoder.instance.A">A</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Construct an instance from a function.</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
@@ -833,22 +749,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.AccumulatingDecoder#resultInstance" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="resultInstance:cats.ApplicativeError[io.circe.AccumulatingDecoder.Result,cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a><a id="resultInstance:ApplicativeError[Result,NonEmptyList[DecodingFailure]]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/AccumulatingDecoder$.html#resultInstance:cats.ApplicativeError[io.circe.AccumulatingDecoder.Result,cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">resultInstance</span><span class="result">: <a href="http://typelevel.org/cats/api/cats/ApplicativeError.html#cats.ApplicativeError" class="extype" name="cats.ApplicativeError">ApplicativeError</a>[<a href="#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>, <a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -955,15 +855,52 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
 
         
 
-        
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.AccumulatingDecoder#failureNelInstance" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="failureNelInstance:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a><a id="failureNelInstance:Semigroup[NonEmptyList[DecodingFailure]]"></a>
+      <span class="permalink">
+      <a href="../../io/circe/AccumulatingDecoder$.html#failureNelInstance:cats.Semigroup[cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]">failureNelInstance</span><span class="result">: <span class="extype" name="cats.Semigroup">Semigroup</span>[<a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]</p></dd></dl></div>
+    </li><li name="io.circe.AccumulatingDecoder#resultInstance" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="resultInstance:cats.ApplicativeError[io.circe.AccumulatingDecoder.Result,cats.data.NonEmptyList[io.circe.DecodingFailure]]"></a><a id="resultInstance:ApplicativeError[Result,NonEmptyList[DecodingFailure]]"></a>
+      <span class="permalink">
+      <a href="../../io/circe/AccumulatingDecoder$.html#resultInstance:cats.ApplicativeError[io.circe.AccumulatingDecoder.Result,cats.data.NonEmptyList[io.circe.DecodingFailure]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Decoder.accumulatingResultInstance">resultInstance</span><span class="result">: <a href="http://typelevel.org/cats/api/cats/ApplicativeError.html#cats.ApplicativeError" class="extype" name="cats.ApplicativeError">ApplicativeError</a>[<a href="#Result[A]=io.circe.Decoder.AccumulatingResult[A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>, <a href="http://typelevel.org/cats/api/cats/data/NonEmptyList.html#cats.data.NonEmptyList" class="extype" name="cats.data.NonEmptyList">NonEmptyList</a>[<a href="DecodingFailure.html" class="extype" name="io.circe.DecodingFailure">DecodingFailure</a>]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Decoder.accumulatingResultInstance</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.8/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>

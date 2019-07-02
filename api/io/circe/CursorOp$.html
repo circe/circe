@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -298,21 +314,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -358,10 +374,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -373,10 +385,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -479,38 +487,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
-    </li><li name="io.circe.CursorOp.DeleteGoField" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteGoFieldextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="DeleteGoField:DeleteGoField"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteGoFieldextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteGoField.html"><span class="name">DeleteGoField</span></a><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.DownAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DownAtextendsCursorOp.ArrayOpwithProductwithSerializable"></a><a id="DownAt:DownAt"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DownAtextendsCursorOp.ArrayOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DownAt.html"><span class="name">DownAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result"> extends <a href="CursorOp$$ArrayOp.html" class="extype" name="io.circe.CursorOp.ArrayOp">ArrayOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
     </li><li name="io.circe.CursorOp.DownField" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DownFieldextendsCursorOp.ObjectOpwithProductwithSerializable"></a><a id="DownField:DownField"></a>
       <span class="permalink">
@@ -559,54 +535,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
-    </li><li name="io.circe.CursorOp.Find" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="FindextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="Find:Find"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#FindextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$Find.html"><span class="name">Find</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.LeftAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LeftAtextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="LeftAt:LeftAt"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#LeftAtextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$LeftAt.html"><span class="name">LeftAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.LeftN" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LeftNextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="LeftN:LeftN"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#LeftNextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$LeftN.html"><span class="name">LeftN</span></a><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.8/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
     </li><li name="io.circe.CursorOp.ObjectOp" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ObjectOpextendsCursorOp"></a><a id="ObjectOp:ObjectOp"></a>
       <span class="permalink">
@@ -620,70 +548,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       <span class="symbol">
         <a title="" href="CursorOp$$ObjectOp.html"><span class="name">ObjectOp</span></a><span class="result"> extends <a href="CursorOp.html" class="extype" name="io.circe.CursorOp">CursorOp</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.RightAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RightAtextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="RightAt:RightAt"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#RightAtextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$RightAt.html"><span class="name">RightAt</span></a><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.RightN" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RightNextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="RightN:RightN"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#RightNextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$RightN.html"><span class="name">RightN</span></a><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.8/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.SetLefts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SetLeftsextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="SetLefts:SetLefts"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#SetLeftsextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$SetLefts.html"><span class="name">SetLefts</span></a><span class="params">(<span name="js">js: <span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.SetRights" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SetRightsextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="SetRights:SetRights"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#SetRightsextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$SetRights.html"><span class="name">SetRights</span></a><span class="params">(<span name="js">js: <span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -703,6 +567,44 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
+    </li><li name="io.circe.CursorOp.LeftN" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="LeftNextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="LeftN:LeftN"></a>
+      <span class="permalink">
+      <a href="../../io/circe/CursorOp$.html#LeftNextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="CursorOp$$LeftN.html"><span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use MoveRight">LeftN</span></a><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.8/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use MoveRight</p></dd></dl></div>
+    </li><li name="io.circe.CursorOp.RightN" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RightNextendsCursorOp.UnconstrainedOpwithProductwithSerializable"></a><a id="RightN:RightN"></a>
+      <span class="permalink">
+      <a href="../../io/circe/CursorOp$.html#RightNextendsCursorOp.UnconstrainedOpwithProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="CursorOp$$RightN.html"><span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use MoveLeft">RightN</span></a><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.12.8/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use MoveLeft</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -1125,54 +1027,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.CursorOp.DeleteGoFirst" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteGoFirst"></a><a id="DeleteGoFirst:DeleteGoFirst"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteGoFirst" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteGoFirst$.html"><span class="name">DeleteGoFirst</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.DeleteGoLast" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteGoLast"></a><a id="DeleteGoLast:DeleteGoLast"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteGoLast" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteGoLast$.html"><span class="name">DeleteGoLast</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.DeleteGoLeft" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteGoLeft"></a><a id="DeleteGoLeft:DeleteGoLeft"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteGoLeft" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteGoLeft$.html"><span class="name">DeleteGoLeft</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
     </li><li name="io.circe.CursorOp.DeleteGoParent" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DeleteGoParent"></a><a id="DeleteGoParent:DeleteGoParent"></a>
       <span class="permalink">
@@ -1189,54 +1043,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
-    </li><li name="io.circe.CursorOp.DeleteGoRight" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteGoRight"></a><a id="DeleteGoRight:DeleteGoRight"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteGoRight" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteGoRight$.html"><span class="name">DeleteGoRight</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.DeleteLefts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteLefts"></a><a id="DeleteLefts:DeleteLefts"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteLefts" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteLefts$.html"><span class="name">DeleteLefts</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.DeleteRights" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteRights"></a><a id="DeleteRights:DeleteRights"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#DeleteRights" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$DeleteRights$.html"><span class="name">DeleteRights</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
     </li><li name="io.circe.CursorOp.DownArray" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DownArray"></a><a id="DownArray:DownArray"></a>
       <span class="permalink">
@@ -1250,38 +1056,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       <span class="symbol">
         <a title="" href="CursorOp$$DownArray$.html"><span class="name">DownArray</span></a><span class="result"> extends <a href="CursorOp$$ArrayOp.html" class="extype" name="io.circe.CursorOp.ArrayOp">ArrayOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.MoveFirst" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MoveFirst"></a><a id="MoveFirst:MoveFirst"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#MoveFirst" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$MoveFirst$.html"><span class="name">MoveFirst</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
-      </span>
-      
-      
-    </li><li name="io.circe.CursorOp.MoveLast" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MoveLast"></a><a id="MoveLast:MoveLast"></a>
-      <span class="permalink">
-      <a href="../../io/circe/CursorOp$.html#MoveLast" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="CursorOp$$MoveLast$.html"><span class="name">MoveLast</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -1339,7 +1113,29 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
 
         
 
-        
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.CursorOp.MoveFirst" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MoveFirst"></a><a id="MoveFirst:MoveFirst"></a>
+      <span class="permalink">
+      <a href="../../io/circe/CursorOp$.html#MoveFirst" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="CursorOp$$MoveFirst$.html"><span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use Up and DownArray">MoveFirst</span></a><span class="result"> extends <a href="CursorOp$$UnconstrainedOp.html" class="extype" name="io.circe.CursorOp.UnconstrainedOp">UnconstrainedOp</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use Up and DownArray</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

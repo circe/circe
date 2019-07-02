@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -298,21 +314,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -358,10 +374,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -373,10 +385,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -421,7 +429,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
             <span class="toggle">
               Known Subclasses
             </span>
-            <div class="subClasses hiddenContent"><a href="ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>, <a href="ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>, <a href="RootEncoder.html" class="extype" name="io.circe.RootEncoder">RootEncoder</a>, <a href="generic/encoding/DerivedObjectEncoder.html" class="extype" name="io.circe.generic.encoding.DerivedObjectEncoder">DerivedObjectEncoder</a>, <a href="generic/encoding/ReprObjectEncoder.html" class="extype" name="io.circe.generic.encoding.ReprObjectEncoder">ReprObjectEncoder</a>, <a href="generic/extras/encoding/ConfiguredObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ConfiguredObjectEncoder">ConfiguredObjectEncoder</a>, <a href="generic/extras/encoding/EnumerationEncoder.html" class="extype" name="io.circe.generic.extras.encoding.EnumerationEncoder">EnumerationEncoder</a>, <a href="generic/extras/encoding/ReprObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ReprObjectEncoder">ReprObjectEncoder</a>, <a href="generic/extras/encoding/UnwrappedEncoder.html" class="extype" name="io.circe.generic.extras.encoding.UnwrappedEncoder">UnwrappedEncoder</a></div>
+            <div class="subClasses hiddenContent"><a href="Codec.html" class="extype" name="io.circe.Codec">Codec</a>, <a href="Codec$$AsArray.html" class="extype" name="io.circe.Codec.AsArray">AsArray</a>, <a href="Codec$$AsObject.html" class="extype" name="io.circe.Codec.AsObject">AsObject</a>, <a href="Codec$$AsRoot.html" class="extype" name="io.circe.Codec.AsRoot">AsRoot</a>, <a href="Encoder$$AsArray.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>, <a href="Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>, <a href="Encoder$$AsRoot.html" class="extype" name="io.circe.Encoder.AsRoot">AsRoot</a>, <a href="generic/codec/DerivedAsObjectCodec.html" class="extype" name="io.circe.generic.codec.DerivedAsObjectCodec">DerivedAsObjectCodec</a>, <a href="generic/codec/ReprAsObjectCodec.html" class="extype" name="io.circe.generic.codec.ReprAsObjectCodec">ReprAsObjectCodec</a>, <a href="generic/encoding/DerivedAsObjectEncoder.html" class="extype" name="io.circe.generic.encoding.DerivedAsObjectEncoder">DerivedAsObjectEncoder</a>, <a href="generic/encoding/ReprAsObjectEncoder.html" class="extype" name="io.circe.generic.encoding.ReprAsObjectEncoder">ReprAsObjectEncoder</a>, <a href="generic/extras/codec/ConfiguredAsObjectCodec.html" class="extype" name="io.circe.generic.extras.codec.ConfiguredAsObjectCodec">ConfiguredAsObjectCodec</a>, <a href="generic/extras/codec/ReprAsObjectCodec.html" class="extype" name="io.circe.generic.extras.codec.ReprAsObjectCodec">ReprAsObjectCodec</a>, <a href="generic/extras/encoding/ConfiguredAsObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ConfiguredAsObjectEncoder">ConfiguredAsObjectEncoder</a>, <a href="generic/extras/encoding/EnumerationEncoder.html" class="extype" name="io.circe.generic.extras.encoding.EnumerationEncoder">EnumerationEncoder</a>, <a href="generic/extras/encoding/ReprAsObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ReprAsObjectEncoder">ReprAsObjectEncoder</a>, <a href="generic/extras/encoding/UnwrappedEncoder.html" class="extype" name="io.circe.generic.extras.encoding.UnwrappedEncoder">UnwrappedEncoder</a></div>
           </div></div>
         
 

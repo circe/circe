@@ -148,6 +148,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe.generic">generic</a></dd></dl></div>
+    </li><li name="io.circe.generic.extras.codec" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="codec"></a><a id="codec:codec"></a>
+      <span class="permalink">
+      <a href="../../../../io/circe/generic/extras/index.html#codec" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="codec/index.html"><span class="name">codec</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe.generic.extras">extras</a></dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="decoding"></a><a id="decoding:decoding"></a>
       <span class="permalink">
@@ -249,7 +265,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Configuration</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="useDefaults">useDefaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name">Configuration</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="useDefaults">useDefaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="strictDecoding">strictDecoding: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.8/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.8/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
@@ -260,7 +276,7 @@ with the <a href="ConfiguredJsonCodec.html" class="extype" name="io.circe.generi
                             formatting or case changes.</p></dd><dt class="param">transformConstructorNames</dt><dd class="cmt"><p>Transforms the value of any constructor names in the JSON allowing, for example,
                                  formatting or case changes.</p></dd><dt class="param">useDefaults</dt><dd class="cmt"><p>Whether to allow default values as specified for any case-class members.</p></dd><dt class="param">discriminator</dt><dd class="cmt"><p>Optional key name that, when given, will be used to store the name of the constructor of an ADT
                      in a nested field with this name. If not given, the name is instead stored as a key under which
-                     the contents of the ADT are stored as an object.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/generic-extras/src/main/scala/io/circe/generic/extras/Configuration.scala" target="_blank">Configuration.scala</a></dd></dl><div class="toggleContainer block">
+                     the contents of the ADT are stored as an object.</p></dd><dt class="param">strictDecoding</dt><dd class="cmt"><p>Whether to fail when superfluous fields are found.</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/generic-extras/src/main/scala/io/circe/generic/extras/Configuration.scala" target="_blank">Configuration.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -316,9 +332,9 @@ with the <a href="ConfiguredJsonCodec.html" class="extype" name="io.circe.generi
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="io.circe.generic.extras.Configuration#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,useDefaults:Boolean,discriminator:Option[String]):io.circe.generic.extras.Configuration"></a><a id="&lt;init&gt;:Configuration"></a>
+      <a id="&lt;init&gt;(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,useDefaults:Boolean,discriminator:Option[String],strictDecoding:Boolean):io.circe.generic.extras.Configuration"></a><a id="&lt;init&gt;:Configuration"></a>
       <span class="permalink">
-      <a href="../../../../io/circe/generic/extras/Configuration.html#&lt;init&gt;(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,useDefaults:Boolean,discriminator:Option[String]):io.circe.generic.extras.Configuration" title="Permalink">
+      <a href="../../../../io/circe/generic/extras/Configuration.html#&lt;init&gt;(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,useDefaults:Boolean,discriminator:Option[String],strictDecoding:Boolean):io.circe.generic.extras.Configuration" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -327,14 +343,14 @@ with the <a href="ConfiguredJsonCodec.html" class="extype" name="io.circe.generi
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Configuration</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="useDefaults">useDefaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">Configuration</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="useDefaults">useDefaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="strictDecoding">strictDecoding: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">transformMemberNames</dt><dd class="cmt"><p>Transforms the names of any case class members in the JSON allowing, for example,
                             formatting or case changes.</p></dd><dt class="param">transformConstructorNames</dt><dd class="cmt"><p>Transforms the value of any constructor names in the JSON allowing, for example,
                                  formatting or case changes.</p></dd><dt class="param">useDefaults</dt><dd class="cmt"><p>Whether to allow default values as specified for any case-class members.</p></dd><dt class="param">discriminator</dt><dd class="cmt"><p>Optional key name that, when given, will be used to store the name of the constructor of an ADT
                      in a nested field with this name. If not given, the name is instead stored as a key under which
-                     the contents of the ADT are stored as an object.</p></dd></dl></div>
+                     the contents of the ADT are stored as an object.</p></dd><dt class="param">strictDecoding</dt><dd class="cmt"><p>Whether to fail when superfluous fields are found.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -722,6 +738,22 @@ with the <a href="ConfiguredJsonCodec.html" class="extype" name="io.circe.generi
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.generic.extras.Configuration#strictDecoding" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="strictDecoding:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../io/circe/generic/extras/Configuration.html#strictDecoding:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">strictDecoding</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -947,6 +979,22 @@ with the <a href="ConfiguredJsonCodec.html" class="extype" name="io.circe.generi
       </span>
       <span class="symbol">
         <span class="name">withSnakeCaseMemberNames</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.Configuration">Configuration</a></span>
+      </span>
+      
+      
+    </li><li name="io.circe.generic.extras.Configuration#withStrictDecoding" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="withStrictDecoding:io.circe.generic.extras.Configuration"></a><a id="withStrictDecoding:Configuration"></a>
+      <span class="permalink">
+      <a href="../../../../io/circe/generic/extras/Configuration.html#withStrictDecoding:io.circe.generic.extras.Configuration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withStrictDecoding</span><span class="result">: <a href="" class="extype" name="io.circe.generic.extras.Configuration">Configuration</a></span>
       </span>
       
       

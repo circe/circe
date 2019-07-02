@@ -148,6 +148,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe.generic">generic</a></dd></dl></div>
+    </li><li name="io.circe.generic.extras.codec" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="codec"></a><a id="codec:codec"></a>
+      <span class="permalink">
+      <a href="../../../../io/circe/generic/extras/index.html#codec" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="codec/index.html"><span class="name">codec</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe.generic.extras">extras</a></dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="decoding"></a><a id="decoding:decoding"></a>
       <span class="permalink">
@@ -252,14 +268,14 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">io.circe.ObjectEncoder</a>
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Semi-automatic codec derivation.</p><p>This object provides helpers for creating <a href="../../Decoder.html" class="extype" name="io.circe.Decoder">io.circe.Decoder</a> and <a href="../../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">io.circe.Encoder.AsObject</a>
 instances for case classes, &quot;incomplete&quot; case classes, sealed trait hierarchies, etc.</p><p>Typical usage will look like the following:</p><pre><span class="kw">import</span> io.circe._, io.circe.generic.semiauto._
 
 <span class="kw">case</span> <span class="kw">class</span> Foo(i: <span class="std">Int</span>, p: (<span class="std">String</span>, <span class="std">Double</span>))
 
 <span class="kw">object</span> Foo {
   <span class="kw">implicit</span> <span class="kw">val</span> decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
-  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+  <span class="kw">implicit</span> <span class="kw">val</span> encodeFoo: Encoder.AsObject[Foo] = deriveEncoder[Foo]
 }</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/circe/circe/tree/master/modules/generic-extras/src/main/scala/io/circe/generic/extras/semiauto.scala" target="_blank">semiauto.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
@@ -424,6 +440,22 @@ instances for case classes, &quot;incomplete&quot; case classes, sealed trait hi
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="io.circe.generic.extras.semiauto#deriveCodec" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="deriveCodec[A](implicitcodec:shapeless.Lazy[io.circe.generic.extras.codec.ConfiguredAsObjectCodec[A]]):io.circe.Codec.AsObject[A]"></a><a id="deriveCodec[A](Lazy[ConfiguredAsObjectCodec[A]]):AsObject[A]"></a>
+      <span class="permalink">
+      <a href="../../../../io/circe/generic/extras/semiauto$.html#deriveCodec[A](implicitcodec:shapeless.Lazy[io.circe.generic.extras.codec.ConfiguredAsObjectCodec[A]]):io.circe.Codec.AsObject[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deriveCodec</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="codec">codec: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="codec/ConfiguredAsObjectCodec.html" class="extype" name="io.circe.generic.extras.codec.ConfiguredAsObjectCodec">ConfiguredAsObjectCodec</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveCodec.A">A</span>]]</span>)</span><span class="result">: <a href="../../Codec$$AsObject.html" class="extype" name="io.circe.Codec.AsObject">AsObject</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveCodec.A">A</span>]</span>
+      </span>
+      
+      
     </li><li name="io.circe.generic.extras.semiauto#deriveDecoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="deriveDecoder[A](implicitdecode:shapeless.Lazy[io.circe.generic.extras.decoding.ConfiguredDecoder[A]]):io.circe.Decoder[A]"></a><a id="deriveDecoder[A](Lazy[ConfiguredDecoder[A]]):Decoder[A]"></a>
       <span class="permalink">
@@ -441,9 +473,9 @@ instances for case classes, &quot;incomplete&quot; case classes, sealed trait hi
       
       
     </li><li name="io.circe.generic.extras.semiauto#deriveEncoder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.extras.encoding.ConfiguredObjectEncoder[A]]):io.circe.ObjectEncoder[A]"></a><a id="deriveEncoder[A](Lazy[ConfiguredObjectEncoder[A]]):ObjectEncoder[A]"></a>
+      <a id="deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.extras.encoding.ConfiguredAsObjectEncoder[A]]):io.circe.Encoder.AsObject[A]"></a><a id="deriveEncoder[A](Lazy[ConfiguredAsObjectEncoder[A]]):AsObject[A]"></a>
       <span class="permalink">
-      <a href="../../../../io/circe/generic/extras/semiauto$.html#deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.extras.encoding.ConfiguredObjectEncoder[A]]):io.circe.ObjectEncoder[A]" title="Permalink">
+      <a href="../../../../io/circe/generic/extras/semiauto$.html#deriveEncoder[A](implicitencode:shapeless.Lazy[io.circe.generic.extras.encoding.ConfiguredAsObjectEncoder[A]]):io.circe.Encoder.AsObject[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -452,7 +484,7 @@ instances for case classes, &quot;incomplete&quot; case classes, sealed trait hi
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deriveEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encode">encode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="encoding/ConfiguredObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ConfiguredObjectEncoder">ConfiguredObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveEncoder.A">A</span>]]</span>)</span><span class="result">: <a href="../../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveEncoder.A">A</span>]</span>
+        <span class="name">deriveEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encode">encode: <span class="extype" name="shapeless.Lazy">Lazy</span>[<a href="encoding/ConfiguredAsObjectEncoder.html" class="extype" name="io.circe.generic.extras.encoding.ConfiguredAsObjectEncoder">ConfiguredAsObjectEncoder</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveEncoder.A">A</span>]]</span>)</span><span class="result">: <a href="../../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="io.circe.generic.extras.semiauto.deriveEncoder.A">A</span>]</span>
       </span>
       
       

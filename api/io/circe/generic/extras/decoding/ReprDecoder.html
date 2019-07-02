@@ -218,7 +218,12 @@ which allow passing in an untyped map of default field values).
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent"><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>], <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="../codec/ReprAsObjectCodec.html" class="extype" name="io.circe.generic.extras.codec.ReprAsObjectCodec">ReprAsObjectCodec</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -308,9 +313,9 @@ which allow passing in an untyped map of default field values).
       
       
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#configuredDecodeAccumulating" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="configuredDecodeAccumulating(c:io.circe.HCursor)(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,defaults:scala.collection.immutable.Map[String,Any],discriminator:Option[String]):io.circe.AccumulatingDecoder.Result[A]"></a><a id="configuredDecodeAccumulating(HCursor)((String)⇒String,(String)⇒String,Map[String,Any],Option[String]):Result[A]"></a>
+      <a id="configuredDecodeAccumulating(c:io.circe.HCursor)(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,defaults:scala.collection.immutable.Map[String,Any],discriminator:Option[String]):io.circe.Decoder.AccumulatingResult[A]"></a><a id="configuredDecodeAccumulating(HCursor)((String)⇒String,(String)⇒String,Map[String,Any],Option[String]):AccumulatingResult[A]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#configuredDecodeAccumulating(c:io.circe.HCursor)(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,defaults:scala.collection.immutable.Map[String,Any],discriminator:Option[String]):io.circe.AccumulatingDecoder.Result[A]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#configuredDecodeAccumulating(c:io.circe.HCursor)(transformMemberNames:String=&gt;String,transformConstructorNames:String=&gt;String,defaults:scala.collection.immutable.Map[String,Any],discriminator:Option[String]):io.circe.Decoder.AccumulatingResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -319,7 +324,7 @@ which allow passing in an untyped map of default field values).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configuredDecodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
+        <span class="name">configuredDecodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="params">(<span name="transformMemberNames">transformMemberNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="transformConstructorNames">transformConstructorNames: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
       </span>
       
       
@@ -420,22 +425,6 @@ which allow passing in an untyped map of default field values).
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="io.circe.Decoder#accumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="accumulating:io.circe.AccumulatingDecoder[A]"></a><a id="accumulating:AccumulatingDecoder[A]"></a>
-      <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#accumulating:io.circe.AccumulatingDecoder[A]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">accumulating</span><span class="result">: <a href="../../../AccumulatingDecoder.html" class="extype" name="io.circe.AccumulatingDecoder">AccumulatingDecoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="apply(c:io.circe.HCursor):io.circe.Decoder.Result[A]"></a><a id="apply(HCursor):Result[A]"></a>
       <span class="permalink">
@@ -494,9 +483,9 @@ which allow passing in an untyped map of default field values).
               
         </dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#decodeAccumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeAccumulating(c:io.circe.HCursor):io.circe.AccumulatingDecoder.Result[A]"></a><a id="decodeAccumulating(HCursor):Result[A]"></a>
+      <a id="decodeAccumulating(c:io.circe.HCursor):io.circe.Decoder.AccumulatingResult[A]"></a><a id="decodeAccumulating(HCursor):AccumulatingResult[A]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#decodeAccumulating(c:io.circe.HCursor):io.circe.AccumulatingDecoder.Result[A]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#decodeAccumulating(c:io.circe.HCursor):io.circe.Decoder.AccumulatingResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -505,7 +494,7 @@ which allow passing in an untyped map of default field values).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="result">: <a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
+        <span class="name">decodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="result">: <a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.generic.extras.decoding.ReprDecoder">ReprDecoder</a> → <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
@@ -971,9 +960,9 @@ be used in recovery.
       <p class="shortcomment cmt">Choose the first succeeding decoder.</p><div class="fullcomment"><div class="comment cmt"><p>Choose the first succeeding decoder.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#orDefault" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="orDefault[B](result:io.circe.Decoder.Result[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.Result[B]"></a><a id="orDefault[B](Result[B],String,Map[String,Any]):Result[B]"></a>
+      <a id="orDefault[B](c:io.circe.ACursor,decoder:io.circe.Decoder[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.Result[B]"></a><a id="orDefault[B](ACursor,Decoder[B],String,Map[String,Any]):Result[B]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#orDefault[B](result:io.circe.Decoder.Result[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.Result[B]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#orDefault[B](c:io.circe.ACursor,decoder:io.circe.Decoder[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.Result[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -982,14 +971,14 @@ be used in recovery.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">orDefault</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="result">result: <a href="../../../Decoder$.html#Result[A]=Either[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefault.B">B</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>)</span><span class="result">: <a href="../../../Decoder$.html#Result[A]=Either[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefault.B">B</span>]</span>
+        <span class="name">orDefault</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="c">c: <a href="../../../ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="decoder">decoder: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefault.B">B</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>)</span><span class="result">: <a href="../../../Decoder$.html#Result[A]=Either[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefault.B">B</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#orDefaultAccumulating" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="orDefaultAccumulating[B](result:io.circe.AccumulatingDecoder.Result[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.AccumulatingDecoder.Result[B]"></a><a id="orDefaultAccumulating[B](Result[B],String,Map[String,Any]):Result[B]"></a>
+      <a id="orDefaultAccumulating[B](c:io.circe.ACursor,decoder:io.circe.Decoder[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.AccumulatingResult[B]"></a><a id="orDefaultAccumulating[B](ACursor,Decoder[B],String,Map[String,Any]):AccumulatingResult[B]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#orDefaultAccumulating[B](result:io.circe.AccumulatingDecoder.Result[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.AccumulatingDecoder.Result[B]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#orDefaultAccumulating[B](c:io.circe.ACursor,decoder:io.circe.Decoder[B],name:String,defaults:scala.collection.immutable.Map[String,Any]):io.circe.Decoder.AccumulatingResult[B]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -998,7 +987,7 @@ be used in recovery.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">orDefaultAccumulating</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="result">result: <a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefaultAccumulating.B">B</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>)</span><span class="result">: <a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefaultAccumulating.B">B</span>]</span>
+        <span class="name">orDefaultAccumulating</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="c">c: <a href="../../../ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>, <span name="decoder">decoder: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefaultAccumulating.B">B</span>]</span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defaults">defaults: <a href="http://www.scala-lang.org/api/2.12.8/scala/collection/immutable/Map.html#scala.collection.immutable.Map" class="extype" name="scala.collection.immutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://www.scala-lang.org/api/2.12.8/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a>]</span>)</span><span class="result">: <a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.orDefaultAccumulating.B">B</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
@@ -1088,9 +1077,9 @@ sure to override <code>tryDecodeAccumulating</code> in order for fail-fast and
 accumulating decoding to be consistent.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
     </li><li name="io.circe.Decoder#tryDecodeAccumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tryDecodeAccumulating(c:io.circe.ACursor):io.circe.AccumulatingDecoder.Result[A]"></a><a id="tryDecodeAccumulating(ACursor):Result[A]"></a>
+      <a id="tryDecodeAccumulating(c:io.circe.ACursor):io.circe.Decoder.AccumulatingResult[A]"></a><a id="tryDecodeAccumulating(ACursor):AccumulatingResult[A]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#tryDecodeAccumulating(c:io.circe.ACursor):io.circe.AccumulatingDecoder.Result[A]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#tryDecodeAccumulating(c:io.circe.ACursor):io.circe.Decoder.AccumulatingResult[A]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1099,7 +1088,7 @@ accumulating decoding to be consistent.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tryDecodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>)</span><span class="result">: <a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
+        <span class="name">tryDecodeAccumulating</span><span class="params">(<span name="c">c: <a href="../../../ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>)</span><span class="result">: <a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd></dl></div>
@@ -1234,9 +1223,9 @@ returned).
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
     </li><li name="io.circe.generic.extras.decoding.ReprDecoder#withDiscriminatorAccumulating" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="withDiscriminatorAccumulating[V](decode:io.circe.Decoder[V],c:io.circe.HCursor,name:String,discriminator:Option[String]):Option[io.circe.AccumulatingDecoder.Result[V]]"></a><a id="withDiscriminatorAccumulating[V](Decoder[V],HCursor,String,Option[String]):Option[Result[V]]"></a>
+      <a id="withDiscriminatorAccumulating[V](decode:io.circe.Decoder[V],c:io.circe.HCursor,name:String,discriminator:Option[String]):Option[io.circe.Decoder.AccumulatingResult[V]]"></a><a id="withDiscriminatorAccumulating[V](Decoder[V],HCursor,String,Option[String]):Option[AccumulatingResult[V]]"></a>
       <span class="permalink">
-      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#withDiscriminatorAccumulating[V](decode:io.circe.Decoder[V],c:io.circe.HCursor,name:String,discriminator:Option[String]):Option[io.circe.AccumulatingDecoder.Result[V]]" title="Permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#withDiscriminatorAccumulating[V](decode:io.circe.Decoder[V],c:io.circe.HCursor,name:String,discriminator:Option[String]):Option[io.circe.Decoder.AccumulatingResult[V]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1245,7 +1234,7 @@ returned).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withDiscriminatorAccumulating</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="decode">decode: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.withDiscriminatorAccumulating.V">V</span>]</span>, <span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="../../../AccumulatingDecoder$.html#Result[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.AccumulatingDecoder.Result">Result</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.withDiscriminatorAccumulating.V">V</span>]]</span>
+        <span class="name">withDiscriminatorAccumulating</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="decode">decode: <a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.withDiscriminatorAccumulating.V">V</span>]</span>, <span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="discriminator">discriminator: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.withDiscriminatorAccumulating.V">V</span>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
@@ -1292,7 +1281,29 @@ returned).
 
         
 
-        
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="io.circe.Decoder#accumulating" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="accumulating(c:io.circe.HCursor):io.circe.Decoder.AccumulatingResult[A]"></a><a id="accumulating(HCursor):AccumulatingResult[A]"></a>
+      <span class="permalink">
+      <a href="../../../../../io/circe/generic/extras/decoding/ReprDecoder.html#accumulating(c:io.circe.HCursor):io.circe.Decoder.AccumulatingResult[A]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use decodeAccumulating">accumulating</span><span class="params">(<span name="c">c: <a href="../../../HCursor.html" class="extype" name="io.circe.HCursor">HCursor</a></span>)</span><span class="result">: <a href="../../../Decoder$.html#AccumulatingResult[A]=cats.data.ValidatedNel[io.circe.DecodingFailure,A]" class="extmbr" name="io.circe.Decoder.AccumulatingResult">AccumulatingResult</a>[<span class="extype" name="io.circe.generic.extras.decoding.ReprDecoder.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../Decoder.html" class="extype" name="io.circe.Decoder">Decoder</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use decodeAccumulating</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

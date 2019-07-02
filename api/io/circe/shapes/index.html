@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -676,9 +692,9 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CoproductInstances.html" class="extype" name="io.circe.shapes.CoproductInstances">CoproductInstances</a></dd></dl></div>
     </li><li name="io.circe.shapes.LowPriorityHListInstances#encodeHCons" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeHCons[H,T&lt;:shapeless.HList](implicitencodeH:io.circe.Encoder[H],implicitencodeT:io.circe.ArrayEncoder[T]):io.circe.ArrayEncoder[H::T]"></a><a id="encodeHCons[H,T&lt;:HList](Encoder[H],ArrayEncoder[T]):ArrayEncoder[::[H,T]]"></a>
+      <a id="encodeHCons[H,T&lt;:shapeless.HList](implicitencodeH:io.circe.Encoder[H],implicitencodeT:io.circe.Encoder.AsArray[T]):io.circe.Encoder.AsArray[H::T]"></a><a id="encodeHCons[H,T&lt;:HList](Encoder[H],AsArray[T]):AsArray[::[H,T]]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/shapes/index.html#encodeHCons[H,T&lt;:shapeless.HList](implicitencodeH:io.circe.Encoder[H],implicitencodeT:io.circe.ArrayEncoder[T]):io.circe.ArrayEncoder[H::T]" title="Permalink">
+      <a href="../../../io/circe/shapes/index.html#encodeHCons[H,T&lt;:shapeless.HList](implicitencodeH:io.circe.Encoder[H],implicitencodeT:io.circe.Encoder.AsArray[T]):io.circe.Encoder.AsArray[H::T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -687,14 +703,14 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeHCons</span><span class="tparams">[<span name="H">H</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encodeH">encodeH: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.H">H</span>]</span>, <span name="encodeT">encodeT: <a href="../ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.T">T</span>]</span>)</span><span class="result">: <a href="../ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.H">H</span>, <span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.T">T</span>]]</span>
+        <span class="name">encodeHCons</span><span class="tparams">[<span name="H">H</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encodeH">encodeH: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.H">H</span>]</span>, <span name="encodeT">encodeT: <a href="../Encoder$$AsArray.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.T">T</span>]</span>)</span><span class="result">: <a href="../Encoder$$AsArray.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.H">H</span>, <span class="extype" name="io.circe.shapes.LowPriorityHListInstances.encodeHCons.T">T</span>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>LowPriorityHListInstances</dd></dl></div>
     </li><li name="io.circe.shapes.LowPriorityHListInstances#encodeHNil" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeHNil:io.circe.ObjectEncoder[shapeless.HNil]"></a><a id="encodeHNil:ObjectEncoder[HNil]"></a>
+      <a id="encodeHNil:io.circe.Encoder.AsObject[shapeless.HNil]"></a><a id="encodeHNil:AsObject[HNil]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/shapes/index.html#encodeHNil:io.circe.ObjectEncoder[shapeless.HNil]" title="Permalink">
+      <a href="../../../io/circe/shapes/index.html#encodeHNil:io.circe.Encoder.AsObject[shapeless.HNil]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -703,7 +719,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeHNil</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
+        <span class="name">encodeHNil</span><span class="result">: <a href="../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>LowPriorityHListInstances</dd></dl></div>
@@ -724,9 +740,9 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>LowPriorityLabelledCoproductInstances</dd></dl></div>
     </li><li name="io.circe.shapes.LowPriorityLabelledHListInstances#encodeLabelledHCons" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeLabelledHCons[K,W&gt;:K,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitwidenK:shapeless.Widen.Aux[K,W],implicitencodeW:io.circe.KeyEncoder[W],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.ObjectEncoder[T]):io.circe.ObjectEncoder[shapeless.labelled.FieldType[K,V]::T]"></a><a id="encodeLabelledHCons[K,W&gt;:K,V,T&lt;:HList](Aux[K],Aux[K,W],KeyEncoder[W],Encoder[V],ObjectEncoder[T]):ObjectEncoder[::[FieldType[K,V],T]]"></a>
+      <a id="encodeLabelledHCons[K,W&gt;:K,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitwidenK:shapeless.Widen.Aux[K,W],implicitencodeW:io.circe.KeyEncoder[W],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.Encoder.AsObject[T]):io.circe.Encoder.AsObject[shapeless.labelled.FieldType[K,V]::T]"></a><a id="encodeLabelledHCons[K,W&gt;:K,V,T&lt;:HList](Aux[K],Aux[K,W],KeyEncoder[W],Encoder[V],AsObject[T]):AsObject[::[FieldType[K,V],T]]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/shapes/index.html#encodeLabelledHCons[K,W&gt;:K,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitwidenK:shapeless.Widen.Aux[K,W],implicitencodeW:io.circe.KeyEncoder[W],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.ObjectEncoder[T]):io.circe.ObjectEncoder[shapeless.labelled.FieldType[K,V]::T]" title="Permalink">
+      <a href="../../../io/circe/shapes/index.html#encodeLabelledHCons[K,W&gt;:K,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitwidenK:shapeless.Widen.Aux[K,W],implicitencodeW:io.circe.KeyEncoder[W],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.Encoder.AsObject[T]):io.circe.Encoder.AsObject[shapeless.labelled.FieldType[K,V]::T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -735,14 +751,14 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeLabelledHCons</span><span class="tparams">[<span name="K">K</span>, <span name="W">W &gt;: <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span></span>, <span name="V">V</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="witK">witK: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>]</span>, <span name="widenK">widenK: <span class="extype" name="shapeless.Widen.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.W">W</span>]</span>, <span name="encodeW">encodeW: <a href="../KeyEncoder.html" class="extype" name="io.circe.KeyEncoder">KeyEncoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.W">W</span>]</span>, <span name="encodeV">encodeV: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.V">V</span>]</span>, <span name="encodeT">encodeT: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.T">T</span>]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.V">V</span>], <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.T">T</span>]]</span>
+        <span class="name">encodeLabelledHCons</span><span class="tparams">[<span name="K">K</span>, <span name="W">W &gt;: <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span></span>, <span name="V">V</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="witK">witK: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>]</span>, <span name="widenK">widenK: <span class="extype" name="shapeless.Widen.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.W">W</span>]</span>, <span name="encodeW">encodeW: <a href="../KeyEncoder.html" class="extype" name="io.circe.KeyEncoder">KeyEncoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.W">W</span>]</span>, <span name="encodeV">encodeV: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.V">V</span>]</span>, <span name="encodeT">encodeT: <a href="../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.T">T</span>]</span>)</span><span class="result">: <a href="../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.V">V</span>], <span class="extype" name="io.circe.shapes.LowPriorityLabelledHListInstances.encodeLabelledHCons.T">T</span>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>LowPriorityLabelledHListInstances</dd></dl></div>
     </li><li name="io.circe.shapes.HListInstances#encodeSingletonHList" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeSingletonHList[H](implicitencodeH:io.circe.Encoder[H]):io.circe.ArrayEncoder[H::shapeless.HNil]"></a><a id="encodeSingletonHList[H](Encoder[H]):ArrayEncoder[::[H,HNil]]"></a>
+      <a id="encodeSingletonHList[H](implicitencodeH:io.circe.Encoder[H]):io.circe.Encoder.AsArray[H::shapeless.HNil]"></a><a id="encodeSingletonHList[H](Encoder[H]):AsArray[::[H,HNil]]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/shapes/index.html#encodeSingletonHList[H](implicitencodeH:io.circe.Encoder[H]):io.circe.ArrayEncoder[H::shapeless.HNil]" title="Permalink">
+      <a href="../../../io/circe/shapes/index.html#encodeSingletonHList[H](implicitencodeH:io.circe.Encoder[H]):io.circe.Encoder.AsArray[H::shapeless.HNil]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -751,7 +767,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeSingletonHList</span><span class="tparams">[<span name="H">H</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encodeH">encodeH: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.HListInstances.encodeSingletonHList.H">H</span>]</span>)</span><span class="result">: <a href="../ArrayEncoder.html" class="extype" name="io.circe.ArrayEncoder">ArrayEncoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="io.circe.shapes.HListInstances.encodeSingletonHList.H">H</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]</span>
+        <span class="name">encodeSingletonHList</span><span class="tparams">[<span name="H">H</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="encodeH">encodeH: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.HListInstances.encodeSingletonHList.H">H</span>]</span>)</span><span class="result">: <a href="../Encoder$$AsArray.html" class="extype" name="io.circe.Encoder.AsArray">AsArray</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="io.circe.shapes.HListInstances.encodeSingletonHList.H">H</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HListInstances.html" class="extype" name="io.circe.shapes.HListInstances">HListInstances</a></dd></dl></div>
@@ -788,9 +804,9 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LabelledCoproductInstances.html" class="extype" name="io.circe.shapes.LabelledCoproductInstances">LabelledCoproductInstances</a></dd></dl></div>
     </li><li name="io.circe.shapes.LabelledHListInstances#encodeSymbolLabelledHCons" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.ObjectEncoder[T]):io.circe.ObjectEncoder[shapeless.labelled.FieldType[K,V]::T]"></a><a id="encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:HList](Aux[K],Encoder[V],ObjectEncoder[T]):ObjectEncoder[::[FieldType[K,V],T]]"></a>
+      <a id="encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.Encoder.AsObject[T]):io.circe.Encoder.AsObject[shapeless.labelled.FieldType[K,V]::T]"></a><a id="encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:HList](Aux[K],Encoder[V],AsObject[T]):AsObject[::[FieldType[K,V],T]]"></a>
       <span class="permalink">
-      <a href="../../../io/circe/shapes/index.html#encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.ObjectEncoder[T]):io.circe.ObjectEncoder[shapeless.labelled.FieldType[K,V]::T]" title="Permalink">
+      <a href="../../../io/circe/shapes/index.html#encodeSymbolLabelledHCons[K&lt;:Symbol,V,T&lt;:shapeless.HList](implicitwitK:shapeless.Witness.Aux[K],implicitencodeV:io.circe.Encoder[V],implicitencodeT:io.circe.Encoder.AsObject[T]):io.circe.Encoder.AsObject[shapeless.labelled.FieldType[K,V]::T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -799,7 +815,7 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeSymbolLabelledHCons</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="V">V</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="witK">witK: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.K">K</span>]</span>, <span name="encodeV">encodeV: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.V">V</span>]</span>, <span name="encodeT">encodeT: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.T">T</span>]</span>)</span><span class="result">: <a href="../ObjectEncoder.html" class="extype" name="io.circe.ObjectEncoder">ObjectEncoder</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.V">V</span>], <span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.T">T</span>]]</span>
+        <span class="name">encodeSymbolLabelledHCons</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="scala.Symbol">Symbol</span></span>, <span name="V">V</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="witK">witK: <span class="extype" name="shapeless.Witness.Aux">Aux</span>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.K">K</span>]</span>, <span name="encodeV">encodeV: <a href="../Encoder.html" class="extype" name="io.circe.Encoder">Encoder</a>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.V">V</span>]</span>, <span name="encodeT">encodeT: <a href="../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.T">T</span>]</span>)</span><span class="result">: <a href="../Encoder$$AsObject.html" class="extype" name="io.circe.Encoder.AsObject">AsObject</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.labelled.FieldType">FieldType</span>[<span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.K">K</span>, <span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.V">V</span>], <span class="extype" name="io.circe.shapes.LabelledHListInstances.encodeSymbolLabelledHCons.T">T</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Encode a record element with a symbol key.</p><div class="fullcomment"><div class="comment cmt"><p>Encode a record element with a symbol key.</p><p>This is provided as a special case because of type inference issues with

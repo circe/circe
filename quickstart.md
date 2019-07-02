@@ -1,10 +1,10 @@
 ## Quick start
 
-circe is published to [Maven Central][maven-central] and cross-built for Scala 2.10, 2.11, and 2.12,
+circe is published to [Maven Central][maven-central] and cross-built for Scala 2.12 and 2.13,
 so you can just add the following to your build:
 
 ```scala
-val circeVersion = "0.10.0"
+val circeVersion = "0.11.1"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -13,9 +13,8 @@ libraryDependencies ++= Seq(
 ).map(_ % circeVersion)
 ```
 
-If you're using circe's generic derivation with Scala 2.10, or `@JsonCodec` the macro annotation
-(with any Scala version), you'll also need to include the [Macro Paradise][paradise] compiler
-plugin in your build:
+If you're using circe-generic-extra's `@JsonCodec` macro annotation (with any Scala version before 2.13),
+you'll also need to include the [Macro Paradise][paradise] compiler plugin in your build:
 
 ```scala
 addCompilerPlugin(

@@ -228,6 +228,22 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
+    </li><li name="io.circe.rs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rs"></a><a id="rs:rs"></a>
+      <span class="permalink">
+      <a href="../../io/circe/index.html#rs" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="rs/index.html"><span class="name">rs</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="io.circe">circe</a></dd></dl></div>
     </li><li name="io.circe.scalajs" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scalajs"></a><a id="scalajs:scalajs"></a>
       <span class="permalink">
@@ -298,21 +314,21 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="class" href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification."></a>
                         <a href="ACursor.html" title="A zipper that represents a position in a JSON document and supports navigation and modification.">ACursor</a>
                       </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="object" href="AccumulatingDecoder$.html" title=""></a>
-                        <a class="trait" href="AccumulatingDecoder.html" title=""></a>
-                        <a href="AccumulatingDecoder.html" title="">AccumulatingDecoder</a>
+                        <a href="AccumulatingDecoder$.html" title="">AccumulatingDecoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ArrayEncoder$.html" title="Utilities and instances for ArrayEncoder."></a>
-                        <a class="trait" href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array."></a>
-                        <a href="ArrayEncoder.html" title="A type class that provides a conversion from a value of type A to a JSON array.">ArrayEncoder</a>
+                        <a class="object" href="Codec$.html" title=""></a>
+                        <a class="trait" href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format."></a>
+                        <a href="Codec.html" title="A type class that provides back and forth conversion between values of type A and the Json format.">Codec</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="CursorOp$.html" title=""></a>
                         <a class="class" href="CursorOp.html" title=""></a>
                         <a href="CursorOp.html" title="">CursorOp</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="Decoder$.html" title="Utilities and instances for Decoder."></a>
-                        <a class="trait" href="Decoder.html" title=""></a>
-                        <a href="Decoder.html" title="">Decoder</a>
+                        <a class="trait" href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value."></a>
+                        <a href="Decoder.html" title="A type class that provides a way to produce a value of type A from a Json value.">Decoder</a>
                       </li><li class="current-entities indented2">
                         <a class="object" href="DecodingFailure$.html" title=""></a>
                         <a class="class" href="DecodingFailure.html" title="An exception representing a decoding failure and (lazily) capturing the decoding history resulting in the failure."></a>
@@ -358,10 +374,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="trait" href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string."></a>
                         <a href="KeyEncoder.html" title="A type class that provides a conversion from a value of type A to a string.">KeyEncoder</a>
                       </li><li class="current-entities indented2">
-                        <a class="object" href="ObjectEncoder$.html" title="Utilities and instances for ObjectEncoder."></a>
-                        <a class="trait" href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject."></a>
-                        <a href="ObjectEncoder.html" title="A type class that provides a conversion from a value of type A to a JsonObject.">ObjectEncoder</a>
-                      </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="trait" href="Parser.html" title=""></a>
                         <a href="Parser.html" title="">Parser</a>
@@ -373,10 +385,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
                         <a class="object" href="Printer$.html" title=""></a>
                         <a class="class" href="Printer.html" title="A pretty-printer for JSON values."></a>
                         <a href="Printer.html" title="A pretty-printer for JSON values.">Printer</a>
-                      </li><li class="current-entities indented2">
-                        <a class="object" href="RootEncoder$.html" title="Utilities and instances for RootEncoder."></a>
-                        <a class="trait" href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object."></a>
-                        <a href="RootEncoder.html" title="A subtype of Encoder that statically verifies that the instance encodes either a JSON array or an object.">RootEncoder</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="disjunctionCodecs$.html" title="Decoder and Encoder instances for disjunction types with reasonable names for the sides."></a>
@@ -522,125 +530,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <p class="shortcomment cmt">Delete the focus and move to its parent.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to its parent.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteGoField" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ObjectModification">
-      <a id="deleteGoField(k:String):io.circe.ACursor"></a><a id="deleteGoField(String):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteGoField(k:String):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteGoField</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete the focus and move to the sibling with the given key in a JSON object.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the sibling with the given key in a JSON object.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteGoFirst" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteGoFirst:io.circe.ACursor"></a><a id="deleteGoFirst:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteGoFirst:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteGoFirst</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete the focus and move to the first element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the first element in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteGoLast" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteGoLast:io.circe.ACursor"></a><a id="deleteGoLast:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteGoLast:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteGoLast</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete the focus and move to the last element in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the last element in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteGoLeft" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteGoLeft:io.circe.ACursor"></a><a id="deleteGoLeft:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteGoLeft:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteGoLeft</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete the focus and move to the left in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the left in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteGoRight" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteGoRight:io.circe.ACursor"></a><a id="deleteGoRight:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteGoRight:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteGoRight</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete the focus and move to the right in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete the focus and move to the right in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteLefts" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteLefts:io.circe.ACursor"></a><a id="deleteLefts:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteLefts:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteLefts</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the left of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#deleteRights" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="deleteRights:io.circe.ACursor"></a><a id="deleteRights:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#deleteRights:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteRights</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Delete all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Delete all values to the right of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.ACursor#field" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ObjectNavigation">
       <a id="field(k:String):io.circe.ACursor"></a><a id="field(String):ACursor"></a>
       <span class="permalink">
@@ -658,40 +547,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <p class="shortcomment cmt">If the focus is a value in a JSON object, move to a sibling with the given key.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a value in a JSON object, move to a sibling with the given key.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#first" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayNavigation">
-      <a id="first:io.circe.ACursor"></a><a id="first:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#first:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">first</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the first element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#last" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayNavigation">
-      <a id="last:io.circe.ACursor"></a><a id="last:ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#last:io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">last</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the last element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the last element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.ACursor#left" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayNavigation">
       <a id="left:io.circe.ACursor"></a><a id="left:ACursor"></a>
       <span class="permalink">
@@ -708,23 +563,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#lefts" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayAccess">
-      <a id="lefts:Option[Vector[io.circe.Json]]"></a><a id="lefts:Option[Vector[Json]]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#lefts:Option[Vector[io.circe.Json]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">lefts</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the left.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the left.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#replace" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="replace(newValue:io.circe.Json,cursor:io.circe.HCursor,op:io.circe.CursorOp):io.circe.HCursor"></a><a id="replace(Json,HCursor,CursorOp):HCursor"></a>
@@ -759,57 +597,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       
       <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#rights" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayAccess">
-      <a id="rights:Option[Vector[io.circe.Json]]"></a><a id="rights:Option[Vector[Json]]"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#rights:Option[Vector[io.circe.Json]]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">rights</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.8/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]]</span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is a JSON array, return the elements to the right.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, return the elements to the right.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#setLefts" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="setLefts(x:Vector[io.circe.Json]):io.circe.ACursor"></a><a id="setLefts(Vector[Json]):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#setLefts(x:Vector[io.circe.Json]):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setLefts</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Replace all values to the left of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the left of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.ACursor#setRights" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayModification">
-      <a id="setRights(x:Vector[io.circe.Json]):io.circe.ACursor"></a><a id="setRights(Vector[Json]):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#setRights(x:Vector[io.circe.Json]):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setRights</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Vector">Vector</span>[<a href="Json.html" class="extype" name="io.circe.Json">Json</a>]</span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Replace all values to the right of the focus in a JSON array.</p><div class="fullcomment"><div class="comment cmt"><p>Replace all values to the right of the focus in a JSON array.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.ACursor#up" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Access">
       <a id="up:io.circe.ACursor"></a><a id="up:ACursor"></a>
       <span class="permalink">
@@ -843,6 +630,26 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       
+    </li><li name="io.circe.ACursor#first" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="ArrayNavigation">
+      <a id="first:io.circe.ACursor"></a><a id="first:ACursor"></a>
+      <span class="permalink">
+      <a href="../../io/circe/HCursor.html#first:io.circe.ACursor" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.12.0) Use up and downArray">first</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the first element.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.12.0)</i> Use up and downArray</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -1013,23 +820,6 @@ detailed introduction to the library.</p></div><dl class="attributes block"> <dt
       </span>
       
       <p class="shortcomment cmt">If the focus is a JSON array, move to its first element.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to its first element.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.HCursor#downAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
-      <a id="downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a><a id="downAt((Json)⇒Boolean):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#downAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">downAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is a JSON array, move to the first element that satisfies the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON array, move to the first element that satisfies the given predicate.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#downField" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ObjectNavigation">
       <a id="downField(k:String):io.circe.ACursor"></a><a id="downField(String):ACursor"></a>
@@ -1235,25 +1025,6 @@ operation.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="io.circe.HCursor#find" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
-      <a id="find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a><a id="find((Json)⇒Boolean):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#find(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is an element in a JSON array, find the first element at or to its right that
-matches the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, find the first element at or to its right that
-matches the given predicate.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#focus" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Access">
       <a id="focus:Option[io.circe.Json]"></a><a id="focus:Option[Json]"></a>
       <span class="permalink">
@@ -1417,25 +1188,6 @@ If the field <code>k</code> is missing, then use the <code>fallback</code> inste
       
       <p class="shortcomment cmt">If the focus is a JSON object, return its field names in their original order.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is a JSON object, return its field names in their original order.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.HCursor#leftAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
-      <a id="leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a><a id="leftAt((Json)⇒Boolean):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#leftAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">leftAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the left until the given predicate matches
-the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the left until the given predicate matches
-the new focus.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#leftN" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="leftN(n:Int):io.circe.ACursor"></a><a id="leftN(Int):ACursor"></a>
       <span class="permalink">
@@ -1541,25 +1293,6 @@ the new focus.
       
       <p class="shortcomment cmt">Replay an operation against this cursor.</p><div class="fullcomment"><div class="comment cmt"><p>Replay an operation against this cursor.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
-    </li><li name="io.circe.HCursor#rightAt" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
-      <a id="rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor"></a><a id="rightAt((Json)⇒Boolean):ACursor"></a>
-      <span class="permalink">
-      <a href="../../io/circe/HCursor.html#rightAt(p:io.circe.Json=&gt;Boolean):io.circe.ACursor" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">rightAt</span><span class="params">(<span name="p">p: (<a href="Json.html" class="extype" name="io.circe.Json">Json</a>) ⇒ <a href="http://www.scala-lang.org/api/2.12.8/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>)</span><span class="result">: <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">If the focus is an element in a JSON array, move to the right until the given predicate matches
-the new focus.</p><div class="fullcomment"><div class="comment cmt"><p>If the focus is an element in a JSON array, move to the right until the given predicate matches
-the new focus.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="io.circe.HCursor">HCursor</a> → <a href="ACursor.html" class="extype" name="io.circe.ACursor">ACursor</a></dd></dl></div>
     </li><li name="io.circe.HCursor#rightN" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="ArrayNavigation">
       <a id="rightN(n:Int):io.circe.ACursor"></a><a id="rightN(Int):ACursor"></a>
       <span class="permalink">
@@ -1866,9 +1599,6 @@ operation.
             </div><div class="group" name="Modification">
               <h3>Modification</h3>
               
-            </div><div class="group" name="ArrayAccess">
-              <h3>Array access</h3>
-              
             </div><div class="group" name="ObjectAccess">
               <h3>Object access</h3>
               
@@ -1877,12 +1607,6 @@ operation.
               
             </div><div class="group" name="ObjectNavigation">
               <h3>Object navigation</h3>
-              
-            </div><div class="group" name="ArrayModification">
-              <h3>Array modification</h3>
-              
-            </div><div class="group" name="ObjectModification">
-              <h3>Object modification</h3>
               
             </div><div class="group" name="Decoding">
               <h3>Decoding</h3>
