@@ -36,6 +36,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
+* [Latitude Financial Services](https://www.latitudefinancial.com.au/)
 * [MatchesFashion](https://www.matchesfashion.com)
 * [Merit](https://merits.com)
 * [Metacommerce](https://www.metacommerce.ru)
