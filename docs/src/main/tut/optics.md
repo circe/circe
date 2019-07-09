@@ -118,6 +118,23 @@ val modifiedJson = doubleQuantities(json)
 
 The result is a copy of the original JSON with only the `quantity` fields updated.
 
+## Recursively modifying JSON
+
+Sometimes you may need to recursively modify JSON. Let assume you need to transform all numbers into
+strings in the example JSON:
+
+```tut:book
+import io.circe.optics.JsonOptics._
+import monocle.function.Plated
+
+Plated.transform[Json] { j =>
+  json.asNumber match {
+    case Some(n) => Json.fromString(n.toString)
+    case None    => j
+  }
+}(json)
+```
+
 ## Dynamic
 
 Some of the code above may look quite magical at first glance. How are we calling methods like
