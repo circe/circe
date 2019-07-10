@@ -42,6 +42,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Ocado Technology](https://ocadotechnology.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
+* [Opt Technologies](https://opt-technologies.jp/)
 * [Panaseer](https://panaseer.com)
 * [Permutive](http://permutive.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
