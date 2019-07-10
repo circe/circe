@@ -151,7 +151,8 @@ package jsoncodecmacrossuiteaux {
     else Gen.const(SelfRecursiveWithOption(None))
 
     implicit val arbitrarySelfRecursiveWithOption: Arbitrary[SelfRecursiveWithOption] =
-      Arbitrary(atDepth(0))
+      Arbitrary(Gen.sized(atDepth(_)))
+
   }
 }
 
