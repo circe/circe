@@ -7,7 +7,7 @@ import shapeless.labelled.FieldType
 
 abstract class EnumerationEncoder[A] extends Encoder[A]
 
-final object EnumerationEncoder {
+object EnumerationEncoder {
   implicit val encodeEnumerationCNil: EnumerationEncoder[CNil] = new EnumerationEncoder[CNil] {
     def apply(a: CNil): Json = sys.error("Cannot encode CNil")
   }

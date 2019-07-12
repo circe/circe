@@ -106,7 +106,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
     configuredDecodeAccumulating(c)(Predef.identity, Predef.identity, Map.empty, None)
 }
 
-final object ReprDecoder {
+object ReprDecoder {
   implicit def deriveReprDecoder[R]: ReprDecoder[R] = macro ConfigurableDeriver.deriveDecoder[R]
 
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {

@@ -7,7 +7,7 @@ import org.scalacheck.{ Arbitrary, Gen }
  */
 final case class JsonNumberString(value: String)
 
-final object JsonNumberString {
+object JsonNumberString {
   implicit val arbitraryJsonNumberString: Arbitrary[JsonNumberString] = Arbitrary(
     for {
       sign <- Gen.oneOf("", "-")

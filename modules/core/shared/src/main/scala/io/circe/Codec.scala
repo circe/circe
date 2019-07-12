@@ -11,7 +11,7 @@ package io.circe
  */
 trait Codec[A] extends Decoder[A] with Encoder[A]
 
-final object Codec extends ProductCodecs {
+object Codec extends ProductCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
@@ -22,13 +22,13 @@ final object Codec extends ProductCodecs {
 
   trait AsRoot[A] extends Codec[A] with Encoder.AsRoot[A]
 
-  final object AsRoot {
+  object AsRoot {
     def apply[A](implicit instance: AsRoot[A]): AsRoot[A] = instance
   }
 
   trait AsArray[A] extends AsRoot[A] with Encoder.AsArray[A]
 
-  final object AsArray {
+  object AsArray {
     def apply[A](implicit instance: AsArray[A]): AsArray[A] = instance
 
     def from[A](decodeA: Decoder[A], encodeA: Encoder.AsArray[A]): AsArray[A] =
@@ -40,7 +40,7 @@ final object Codec extends ProductCodecs {
 
   trait AsObject[A] extends AsRoot[A] with Encoder.AsObject[A]
 
-  final object AsObject {
+  object AsObject {
     def apply[A](implicit instance: AsObject[A]): AsObject[A] = instance
 
     def from[A](decodeA: Decoder[A], encodeA: Encoder.AsObject[A]): AsObject[A] =

@@ -84,6 +84,6 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   protected[this] final def fail(op: CursorOp): ACursor = new FailedCursor(this, op)
 }
 
-final object HCursor {
+object HCursor {
   def fromJson(value: Json): HCursor = new TopCursor(value)(null, null)
 }

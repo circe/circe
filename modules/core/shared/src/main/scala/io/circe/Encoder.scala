@@ -105,7 +105,7 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-final object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders with MidPriorityEncoders {
+object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders with MidPriorityEncoders {
 
   /**
    * Return an instance for a given type `A`.
@@ -734,7 +734,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with LiteralEnco
    *
    * @author Travis Brown
    */
-  final object AsRoot extends LowPriorityAsRootEncoders {
+  object AsRoot extends LowPriorityAsRootEncoders {
 
     /**
      * Return an instance for a given type.
@@ -798,7 +798,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with LiteralEnco
    *
    * @author Travis Brown
    */
-  final object AsArray extends LowPriorityAsArrayEncoders {
+  object AsArray extends LowPriorityAsArrayEncoders {
 
     /**
      * Return an instance for a given type.
@@ -878,7 +878,7 @@ final object Encoder extends TupleEncoders with ProductEncoders with LiteralEnco
    *
    * @author Travis Brown
    */
-  final object AsObject extends LowPriorityAsObjectEncoders {
+  object AsObject extends LowPriorityAsObjectEncoders {
 
     /**
      * Return an instance for a given type.

@@ -5,7 +5,7 @@ import shapeless.LabelledGeneric
 
 abstract class DerivedAsObjectCodec[A] extends Codec.AsObject[A]
 
-final object DerivedAsObjectCodec {
+object DerivedAsObjectCodec {
   implicit def deriveCodec[A, R](
     implicit
     gen: LabelledGeneric.Aux[A, R],

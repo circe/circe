@@ -26,7 +26,7 @@ abstract class ConfiguredAsObjectEncoder[A](config: Configuration) extends Deriv
   }
 }
 
-final object ConfiguredAsObjectEncoder {
+object ConfiguredAsObjectEncoder {
   implicit def encodeCaseClass[A, R <: HList, F <: HList, K <: HList](
     implicit
     gen: LabelledGeneric.Aux[A, R],

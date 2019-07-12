@@ -4,7 +4,7 @@ import cats.{ ApplicativeError, Semigroup }
 import cats.data.NonEmptyList
 
 @deprecated("Use Decoder", "0.12.0")
-final object AccumulatingDecoder {
+object AccumulatingDecoder {
   @deprecated("Use Decoder.AccumulatingResult", "0.12.0")
   final type Result[A] = Decoder.AccumulatingResult[A]
 

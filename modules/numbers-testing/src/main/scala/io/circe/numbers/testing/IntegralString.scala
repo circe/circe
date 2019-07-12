@@ -8,7 +8,7 @@ import org.scalacheck.{ Arbitrary, Gen }
  */
 final case class IntegralString(value: String)
 
-final object IntegralString {
+object IntegralString {
   implicit val arbitraryIntegralString: Arbitrary[IntegralString] = Arbitrary(
     for {
       sign <- Gen.oneOf("", "-")

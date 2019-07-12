@@ -13,7 +13,7 @@ import shapeless.labelled.{ FieldType, field }
  */
 abstract class ReprAsObjectCodec[A] extends Codec.AsObject[A]
 
-final object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
+object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
   implicit val codecForHNil: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
     def encodeObject(a: HNil): JsonObject = JsonObject.empty

@@ -28,7 +28,7 @@ trait KeyEncoder[A] extends Serializable { self =>
   }
 }
 
-final object KeyEncoder {
+object KeyEncoder {
   @inline def apply[A](implicit A: KeyEncoder[A]): KeyEncoder[A] = A
 
   def instance[A](f: A => String): KeyEncoder[A] = new KeyEncoder[A] {

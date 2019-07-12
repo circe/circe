@@ -7,7 +7,7 @@ import shapeless.labelled.{ FieldType, field }
 
 abstract class EnumerationDecoder[A] extends Decoder[A]
 
-final object EnumerationDecoder {
+object EnumerationDecoder {
   implicit val decodeEnumerationCNil: EnumerationDecoder[CNil] = new EnumerationDecoder[CNil] {
     def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("Enumeration", c.history))
   }

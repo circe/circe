@@ -32,7 +32,7 @@ trait KeyDecoder[A] extends Serializable { self =>
   }
 }
 
-final object KeyDecoder {
+object KeyDecoder {
   def apply[A](implicit A: KeyDecoder[A]): KeyDecoder[A] = A
 
   def instance[A](f: String => Option[A]): KeyDecoder[A] = new KeyDecoder[A] {

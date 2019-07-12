@@ -28,7 +28,7 @@ final case class ParsingFailure(message: String, underlying: Throwable) extends 
   final override def getMessage: String = message
 }
 
-final object ParsingFailure {
+object ParsingFailure {
   implicit final val eqParsingFailure: Eq[ParsingFailure] = Eq.instance {
     case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
   }
@@ -65,7 +65,7 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
   override final def hashCode: Int = message.hashCode
 }
 
-final object DecodingFailure {
+object DecodingFailure {
   def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(message) {
     final lazy val history: List[CursorOp] = ops
   }
@@ -99,7 +99,7 @@ final object DecodingFailure {
 
 }
 
-final object Error {
+object Error {
   implicit final val eqError: Eq[Error] = Eq.instance {
     case (pf1: ParsingFailure, pf2: ParsingFailure)   => ParsingFailure.eqParsingFailure.eqv(pf1, pf2)
     case (df1: DecodingFailure, df2: DecodingFailure) => DecodingFailure.eqDecodingFailure.eqv(df1, df2)

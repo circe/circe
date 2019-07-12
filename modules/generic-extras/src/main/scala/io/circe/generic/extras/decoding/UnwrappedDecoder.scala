@@ -5,7 +5,7 @@ import shapeless.{ ::, Generic, HNil, Lazy }
 
 abstract class UnwrappedDecoder[A] extends Decoder[A]
 
-final object UnwrappedDecoder {
+object UnwrappedDecoder {
   implicit def decodeUnwrapped[A, R](
     implicit
     gen: Lazy[Generic.Aux[A, R :: HNil]],

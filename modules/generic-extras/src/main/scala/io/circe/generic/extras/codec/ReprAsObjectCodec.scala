@@ -16,7 +16,7 @@ import shapeless.HNil
  */
 abstract class ReprAsObjectCodec[A] extends ReprDecoder[A] with ReprAsObjectEncoder[A]
 
-final object ReprAsObjectCodec {
+object ReprAsObjectCodec {
   implicit def deriveReprAsObjectCodec[R]: ReprAsObjectCodec[R] = macro ConfigurableDeriver.deriveCodec[R]
 
   val hnilReprDecoder: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {

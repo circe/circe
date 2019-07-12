@@ -142,7 +142,7 @@ private[numbers] final class SigAndExp(
   }
 }
 
-final object BiggerDecimal {
+object BiggerDecimal {
   private[numbers] val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
 
   private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)

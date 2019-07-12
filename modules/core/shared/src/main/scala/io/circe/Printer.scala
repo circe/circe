@@ -225,7 +225,7 @@ final case class Printer(
   final def withSortedKeys: Printer = copy(sortKeys = true)
 }
 
-final object Printer {
+object Printer {
 
   /**
    * A pretty-printer configuration that inserts no spaces.

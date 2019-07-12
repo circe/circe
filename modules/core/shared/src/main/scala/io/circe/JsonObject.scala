@@ -178,10 +178,9 @@ sealed abstract class JsonObject extends Serializable {
   /**
    * @group Other
    */
-  final override def equals(that: Any): Boolean = if (that.isInstanceOf[JsonObject]) {
-    toMap == that.asInstanceOf[JsonObject].toMap
-  } else {
-    false
+  final override def equals(that: Any): Boolean = that match {
+    case that: JsonObject => toMap == that.toMap
+    case _                => false
   }
 
   /**
@@ -193,7 +192,7 @@ sealed abstract class JsonObject extends Serializable {
 /**
  * Constructors, type class instances, and other utilities for [[JsonObject]].
  */
-final object JsonObject {
+object JsonObject {
 
   /**
    * Construct a [[JsonObject]] from the given key-value pairs.

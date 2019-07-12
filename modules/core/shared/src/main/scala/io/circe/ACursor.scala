@@ -264,7 +264,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
 }
 
-final object ACursor {
+object ACursor {
   private[this] val jsonOptionEq: Eq[Option[Json]] = cats.kernel.instances.option.catsKernelStdEqForOption(Json.eqJson)
 
   implicit val eqACursor: Eq[ACursor] =

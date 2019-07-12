@@ -5,7 +5,7 @@ import shapeless.{ LabelledGeneric, Lazy }
 
 abstract class DerivedDecoder[A] extends Decoder[A]
 
-final object DerivedDecoder extends IncompleteDerivedDecoders {
+object DerivedDecoder extends IncompleteDerivedDecoders {
   implicit def deriveDecoder[A, R](
     implicit
     gen: LabelledGeneric.Aux[A, R],

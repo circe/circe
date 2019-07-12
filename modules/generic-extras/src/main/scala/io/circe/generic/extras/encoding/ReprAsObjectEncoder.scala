@@ -33,6 +33,6 @@ trait ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
   final def encodeObject(a: A): JsonObject = configuredEncodeObject(a)(Predef.identity, Predef.identity, None)
 }
 
-final object ReprAsObjectEncoder {
+object ReprAsObjectEncoder {
   implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] = macro ConfigurableDeriver.deriveEncoder[R]
 }

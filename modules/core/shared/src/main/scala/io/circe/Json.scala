@@ -220,7 +220,7 @@ sealed abstract class Json extends Product with Serializable {
   }
 }
 
-final object Json {
+object Json {
 
   /**
    * Represents a set of operations for reducing a [[Json]] instance to a value.
