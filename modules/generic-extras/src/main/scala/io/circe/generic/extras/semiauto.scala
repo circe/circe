@@ -29,7 +29,7 @@ import shapeless.ops.record.RemoveAll
  *   }
  * }}}
  */
-final object semiauto {
+object semiauto {
   final def deriveDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] = decode.value
   final def deriveEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
   final def deriveCodec[A](implicit codec: Lazy[ConfiguredAsObjectCodec[A]]): Codec.AsObject[A] = codec.value

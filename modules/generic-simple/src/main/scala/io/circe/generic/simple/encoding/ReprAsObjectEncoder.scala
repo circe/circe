@@ -11,7 +11,7 @@ import shapeless.labelled.FieldType
  */
 abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A]
 
-final object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances {
+object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances {
   implicit val encodeHNil: ReprAsObjectEncoder[HNil] = new ReprAsObjectEncoder[HNil] {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }

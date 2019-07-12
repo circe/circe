@@ -11,6 +11,6 @@ import scala.language.experimental.macros
  */
 abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A]
 
-final object ReprAsObjectEncoder {
+object ReprAsObjectEncoder {
   implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] = macro Deriver.deriveEncoder[R]
 }

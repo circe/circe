@@ -13,7 +13,7 @@ import shapeless.labelled.{ FieldType, field }
  */
 abstract class ReprDecoder[A] extends Decoder[A]
 
-final object ReprDecoder extends LowPriorityReprDecoderInstances {
+object ReprDecoder extends LowPriorityReprDecoderInstances {
   implicit val decodeHNil: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
   }

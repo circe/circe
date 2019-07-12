@@ -6,7 +6,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import scala.util.{ Failure, Success, Try }
 
-final object JawnParser {
+object JawnParser {
 
   /**
    * Returns a parser that fails on:

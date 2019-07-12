@@ -45,7 +45,7 @@ final case class Configuration(
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
 }
 
-final object Configuration {
+object Configuration {
 
   val default: Configuration = Configuration(Predef.identity, Predef.identity, false, None)
   private val basePattern: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
@@ -62,6 +62,6 @@ final object Configuration {
   }
 }
 
-final object defaults {
+object defaults {
   implicit val defaultGenericConfiguration: Configuration = Configuration.default
 }

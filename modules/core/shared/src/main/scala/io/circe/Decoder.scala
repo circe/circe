@@ -408,7 +408,7 @@ trait Decoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-final object Decoder
+object Decoder
     extends CollectionDecoders
     with TupleDecoders
     with ProductDecoders
@@ -1417,7 +1417,7 @@ final object Decoder
    *
    * @group Utilities
    */
-  final object state {
+  object state {
 
     /**
      * Attempt to decode a value at key `k` and remove it from the [[ACursor]].

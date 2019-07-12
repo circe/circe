@@ -12,7 +12,7 @@ import shapeless.ops.record.Keys
 
 abstract class ConfiguredAsObjectCodec[A] extends DerivedAsObjectCodec[A]
 
-final object ConfiguredAsObjectCodec {
+object ConfiguredAsObjectCodec {
   implicit def codecForCaseClass[A, R <: HList, D <: HList, F <: HList, K <: HList](
     implicit
     gen: LabelledGeneric.Aux[A, R],

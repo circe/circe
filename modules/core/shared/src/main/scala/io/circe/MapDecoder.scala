@@ -9,10 +9,9 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
   decodeK: KeyDecoder[K],
   decodeV: Decoder[V]
 ) extends Decoder[M[K, V]] {
-  private[this] val alwaysDecodeK = if (decodeK.isInstanceOf[KeyDecoder.AlwaysKeyDecoder[K]]) {
-    decodeK.asInstanceOf[KeyDecoder.AlwaysKeyDecoder[K]]
-  } else {
-    null
+  private[this] val alwaysDecodeK = decodeK match {
+    case decodeK: KeyDecoder.AlwaysKeyDecoder[K] => decodeK
+    case _                                       => null
   }
 
   protected def createBuilder(): Builder[(K, V), M[K, V]]
@@ -100,7 +99,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
   }
 }
 
-private[circe] final object MapDecoder {
+private[circe] object MapDecoder {
   final def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
   final def failureResult[A](c: HCursor): Decoder.Result[A] = Left[DecodingFailure, A](failure(c))
   final def failureAccumulatingResult[A](c: HCursor): Decoder.AccumulatingResult[A] =

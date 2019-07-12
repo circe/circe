@@ -17,7 +17,7 @@ sealed abstract class CursorOp extends Product with Serializable {
   def requiresArray: Boolean
 }
 
-final object CursorOp {
+object CursorOp {
   abstract sealed class ObjectOp extends CursorOp {
     final def requiresObject: Boolean = true
     final def requiresArray: Boolean = false

@@ -27,7 +27,7 @@ abstract class ConfiguredDecoder[A](config: Configuration) extends DerivedDecode
   }
 }
 
-final object ConfiguredDecoder extends IncompleteConfiguredDecoders {
+object ConfiguredDecoder extends IncompleteConfiguredDecoders {
   private[this] abstract class CaseClassConfiguredDecoder[A, R <: HList](
     config: Configuration,
     keyAnnotationMap: Map[String, String]

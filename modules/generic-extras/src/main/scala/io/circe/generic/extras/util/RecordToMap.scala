@@ -8,7 +8,7 @@ abstract class RecordToMap[R <: HList] {
   def apply(r: R): Map[String, Any]
 }
 
-final object RecordToMap {
+object RecordToMap {
   implicit val hnilRecordToMap: RecordToMap[HNil] = new RecordToMap[HNil] {
     def apply(r: HNil): Map[String, Any] = Map.empty
   }
