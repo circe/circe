@@ -570,6 +570,20 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(statefulOpt.decodeJson(json).swap.exists(_.message === "The field b is missing"))
   }
 
+  it should "fail when a nested field is missing" in {
+    case class Foo(x: Int, bar: Bar)
+    case class Bar(nested: String)
+    val decoder: Decoder[Foo] = new Decoder[Foo] {
+      override def apply(c: HCursor): Decoder.Result[Foo] =
+        for {
+          x <- c.downField("x").as[Int]
+          a <- c.downField("bar").downField("nested").as[String]
+        } yield Foo(x, Bar(a))
+    }
+    val Right(fooJson) = parse("""{"x":42, "bar": {}}""")
+    assert(decoder.decodeJson(fooJson).swap.exists(_.message === "The field bar.nested is missing"))
+  }
+
   checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 
   "decodeSet" should "match sequence decoders" in forAll { (xs: List[Int]) =>
