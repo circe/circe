@@ -11,7 +11,7 @@ import cats.data.{
   NonEmptyVector,
   StateT,
   Validated,
-  ValidatedNel
+  ValidatedNec
 }
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
@@ -62,7 +62,7 @@ trait Decoder[A] extends Serializable { self =>
 
   def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = apply(c) match {
     case Right(a) => Validated.valid(a)
-    case Left(e)  => Validated.invalidNel(e)
+    case Left(e)  => Validated.invalidNec(e)
   }
 
   /**
@@ -83,7 +83,7 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
-      Validated.invalidNel(
+      Validated.invalidNec(
         DecodingFailure("Attempt to decode value on failed cursor", c.history)
       )
   }
@@ -177,7 +177,7 @@ trait Decoder[A] extends Serializable { self =>
     }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = self.decodeAccumulating(c) match {
-      case v @ Valid(a)   => if (pred(a)) v else Validated.invalidNel(DecodingFailure(message, c.history))
+      case v @ Valid(a)   => if (pred(a)) v else Validated.invalidNec(DecodingFailure(message, c.history))
       case i @ Invalid(_) => i
     }
   }
@@ -203,7 +203,7 @@ trait Decoder[A] extends Serializable { self =>
       case v @ Valid(a) =>
         errors(a).map(DecodingFailure(_, c.history)) match {
           case Nil    => v
-          case h :: t => Validated.invalid(NonEmptyList(h, t))
+          case h :: t => Validated.invalid(NonEmptyChain(h, t: _*))
         }
       case i @ Invalid(_) => i
     }
@@ -228,7 +228,7 @@ trait Decoder[A] extends Serializable { self =>
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       errors(c).map(DecodingFailure(_, c.history)) match {
         case Nil    => self.decodeAccumulating(c)
-        case h :: t => Validated.invalid(NonEmptyList(h, t))
+        case h :: t => Validated.invalid(NonEmptyChain(h, t: _*))
       }
   }
 
@@ -324,7 +324,7 @@ trait Decoder[A] extends Serializable { self =>
         case Valid(a) =>
           f(a) match {
             case Right(b)      => Validated.valid(b)
-            case Left(message) => Validated.invalidNel(DecodingFailure(message, c.history))
+            case Left(message) => Validated.invalidNec(DecodingFailure(message, c.history))
           }
         case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[B]]
       }
@@ -356,7 +356,7 @@ trait Decoder[A] extends Serializable { self =>
         case Valid(a) =>
           f(a) match {
             case Success(b) => Validated.valid(b)
-            case Failure(t) => Validated.invalidNel(DecodingFailure.fromThrowable(t, c.history))
+            case Failure(t) => Validated.invalidNec(DecodingFailure.fromThrowable(t, c.history))
           }
         case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[B]]
       }
@@ -423,7 +423,7 @@ object Decoder
   /**
    * @group Aliases
    */
-  final type AccumulatingResult[A] = ValidatedNel[DecodingFailure, A]
+  final type AccumulatingResult[A] = ValidatedNec[DecodingFailure, A]
 
   /**
    * @group Instances
@@ -433,9 +433,9 @@ object Decoder
   /**
    * @group Instances
    */
-  final val accumulatingResultInstance: ApplicativeError[AccumulatingResult, NonEmptyList[DecodingFailure]] =
-    Validated.catsDataApplicativeErrorForValidated[NonEmptyList[DecodingFailure]](
-      NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]
+  final val accumulatingResultInstance: ApplicativeError[AccumulatingResult, NonEmptyChain[DecodingFailure]] =
+    Validated.catsDataApplicativeErrorForValidated[NonEmptyChain[DecodingFailure]](
+      NonEmptyChain.catsDataSemigroupForNonEmptyChain[DecodingFailure]
     )
 
   private[circe] val resultSemigroupK: SemigroupK[Result] = catsStdSemigroupKForEither[DecodingFailure]
@@ -507,7 +507,7 @@ object Decoder
 
     override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[A] = f(c) match {
       case Right(v) => Validated.valid(v)
-      case Left(e)  => Validated.invalidNel(e)
+      case Left(e)  => Validated.invalidNec(e)
     }
   }
 
@@ -519,7 +519,7 @@ object Decoder
   final def failed[A](failure: DecodingFailure): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = Left(failure)
     override final def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
-      Validated.invalidNel(failure)
+      Validated.invalidNec(failure)
   }
 
   /**
@@ -530,7 +530,7 @@ object Decoder
   final def failedWithMessage[A](message: String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = Left(DecodingFailure(message, c.history))
     override final def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
-      Validated.invalidNel(DecodingFailure(message, c.history))
+      Validated.invalidNec(DecodingFailure(message, c.history))
   }
 
   /**
@@ -888,7 +888,7 @@ object Decoder
   }
 
   private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
-  private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
+  private[this] final val validNone: ValidatedNec[DecodingFailure, Option[Nothing]] = Validated.valid(None)
 
   private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
   private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[Option[Nothing]] =
@@ -924,7 +924,7 @@ object Decoder
           }
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNoneAccumulating
-        else Validated.invalidNel(DecodingFailure("[A]Option[A]", c.history))
+        else Validated.invalidNec(DecodingFailure("[A]Option[A]", c.history))
     }
   }
 

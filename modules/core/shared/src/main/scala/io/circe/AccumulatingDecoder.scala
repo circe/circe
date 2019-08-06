@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.{ ApplicativeError, Semigroup }
-import cats.data.NonEmptyList
+import cats.data.NonEmptyChain
 
 @deprecated("Use Decoder", "0.12.0")
 object AccumulatingDecoder {
@@ -9,10 +9,10 @@ object AccumulatingDecoder {
   final type Result[A] = Decoder.AccumulatingResult[A]
 
   @deprecated("Use NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]", "0.12.0")
-  final val failureNelInstance: Semigroup[NonEmptyList[DecodingFailure]] =
-    NonEmptyList.catsDataSemigroupForNonEmptyList[DecodingFailure]
+  final val failureNecInstance: Semigroup[NonEmptyChain[DecodingFailure]] =
+    NonEmptyChain.catsDataSemigroupForNonEmptyChain[DecodingFailure]
 
   @deprecated("Use Decoder.accumulatingResultInstance", "0.12.0")
-  final val resultInstance: ApplicativeError[Result, NonEmptyList[DecodingFailure]] =
+  final val resultInstance: ApplicativeError[Result, NonEmptyChain[DecodingFailure]] =
     Decoder.accumulatingResultInstance
 }

@@ -77,7 +77,7 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
         c.keys
           .flatMap(_.find(isK))
           .fold[Decoder.AccumulatingResult[String]](
-            Validated.invalidNel(DecodingFailure("Record", c.history))
+            Validated.invalidNec(DecodingFailure("Record", c.history))
           )(Validated.valid)
           .andThen(k => decodeV.tryDecodeAccumulating(c.downField(k))),
         decodeT.decodeAccumulating(c)

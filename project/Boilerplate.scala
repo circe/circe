@@ -140,7 +140,7 @@ object Boilerplate {
         -
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[${`(A..N)`}] = c.value match {
         -        case Json.JArray(values) if values.size == $arity => $accumulatingResult
-        -        case _ => Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
+        -        case _ => Validated.invalidNec(DecodingFailure("${`(A..N)`}", c.history))
         -      }
         -    }
         |}

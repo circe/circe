@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated }
+import cats.data.{ NonEmptyChain, Validated }
 import scala.collection.mutable.Builder
 
 private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends Decoder[C[A]] {
@@ -44,7 +44,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
           case Validated.Invalid(es) =>
             failed = true
             failures += es.head
-            failures ++= es.tail
+            failures ++= es.tail.iterator
           case Validated.Valid(a) =>
             if (!failed) builder += a
         }
@@ -54,14 +54,14 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
       if (!failed) Validated.valid(builder.result)
       else {
         failures.result match {
-          case h :: t => Validated.invalid(NonEmptyList(h, t))
+          case h :: t => Validated.invalid(NonEmptyChain(h, t: _*))
           case Nil    => Validated.valid(builder.result)
         }
       }
     } else {
       if (c.value.isArray) Validated.valid(createBuilder().result)
       else {
-        Validated.invalidNel(DecodingFailure("C[A]", c.history))
+        Validated.invalidNec(DecodingFailure("C[A]", c.history))
       }
     }
   }

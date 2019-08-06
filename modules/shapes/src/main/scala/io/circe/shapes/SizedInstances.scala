@@ -33,7 +33,7 @@ trait SizedInstances {
         case Validated.Valid(as) =>
           checkSize(as) match {
             case Some(s) => Validated.valid(s)
-            case None    => Validated.invalidNel(failure(c))
+            case None    => Validated.invalidNec(failure(c))
           }
         case l @ Validated.Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[Sized[C[A], L]]]
       }

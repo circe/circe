@@ -219,7 +219,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
   """
 
   private[this] val cnilResultAccumulating: Tree = q"""
-    _root_.cats.data.Validated.invalidNel[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
+    _root_.cats.data.Validated.invalidNec[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
       _root_.io.circe.DecodingFailure("CNil", c.history)
     )
   """

@@ -1,6 +1,6 @@
 package io.circe.jawn
 
-import cats.data.ValidatedNel
+import cats.data.ValidatedNec
 import io.circe.{ Decoder, Error, Json, Parser, ParsingFailure }
 import java.io.File
 import java.nio.ByteBuffer
@@ -77,12 +77,12 @@ class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends
   final def decodeByteBuffer[A: Decoder](buffer: ByteBuffer): Either[Error, A] =
     finishDecode[A](parseByteBuffer(buffer))
 
-  final def decodeByteBufferAccumulating[A: Decoder](buffer: ByteBuffer): ValidatedNel[Error, A] =
+  final def decodeByteBufferAccumulating[A: Decoder](buffer: ByteBuffer): ValidatedNec[Error, A] =
     finishDecodeAccumulating[A](parseByteBuffer(buffer))
 
   final def decodeFile[A: Decoder](file: File): Either[Error, A] =
     finishDecode[A](parseFile(file))
 
-  final def decodeFileAccumulating[A: Decoder](file: File): ValidatedNel[Error, A] =
+  final def decodeFileAccumulating[A: Decoder](file: File): ValidatedNec[Error, A] =
     finishDecodeAccumulating[A](parseFile(file))
 }

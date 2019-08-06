@@ -1,6 +1,6 @@
 package io.circe.testing
 
-import cats.data.{ Validated, ValidatedNel }
+import cats.data.{ Validated, ValidatedNec }
 import cats.instances.either._
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
@@ -24,8 +24,8 @@ case class ParserLaws[P <: Parser](parser: P) {
 
   def decodingAccumulatingRoundTrip[A](json: Json)(
     encode: Json => A,
-    decode: P => (A => ValidatedNel[Error, Json])
-  ): IsEq[ValidatedNel[Error, Json]] =
+    decode: P => (A => ValidatedNec[Error, Json])
+  ): IsEq[ValidatedNec[Error, Json]] =
     decode(parser)(encode(json)) <-> Validated.valid(json)
 }
 
@@ -44,7 +44,7 @@ case class ParserTests[P <: Parser](p: P) extends Laws {
     serialize: String => A,
     parse: P => A => Either[ParsingFailure, Json],
     decode: P => A => Either[Error, Json],
-    decodeAccumulating: P => A => ValidatedNel[Error, Json]
+    decodeAccumulating: P => A => ValidatedNec[Error, Json]
   )(implicit arbitraryJson: Arbitrary[Json], shrinkJson: Shrink[Json]): RuleSet = new DefaultRuleSet(
     name = s"parser[$name]",
     parent = None,

@@ -95,7 +95,7 @@ abstract class ReprDecoder[A] extends Decoder[A] {
         case Right(leafType) if leafType == name =>
           Some(decode.tryDecodeAccumulating(c))
         case Right(_)  => None
-        case Left(err) => Some(Validated.invalidNel(err))
+        case Left(err) => Some(Validated.invalidNec(err))
       }
   }
 

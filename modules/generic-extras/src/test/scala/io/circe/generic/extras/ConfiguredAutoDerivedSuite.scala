@@ -132,7 +132,7 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
       assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("Int", List(DownField("a")))))
       assert(
         Decoder[FooWithDefault].decodeAccumulating(json.hcursor)
-          === Validated.invalidNel(DecodingFailure("Int", List(DownField("a"))))
+          === Validated.invalidNec(DecodingFailure("Int", List(DownField("a"))))
       )
     }
 
@@ -140,7 +140,7 @@ class ConfiguredAutoDerivedSuite extends CirceSuite {
       val json = json"""{"b": 1}"""
       assert(Decoder[FooWithDefault].decodeJson(json) === Left(DecodingFailure("String", List(DownField("b")))))
       assert(
-        Decoder[FooWithDefault].decodeAccumulating(json.hcursor) === Validated.invalidNel(
+        Decoder[FooWithDefault].decodeAccumulating(json.hcursor) === Validated.invalidNec(
           DecodingFailure("String", List(DownField("b")))
         )
       )

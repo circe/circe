@@ -1,4 +1,3 @@
-import ReleaseTransformations._
 import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }

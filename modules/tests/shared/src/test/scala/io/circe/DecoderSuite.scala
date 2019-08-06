@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{ Chain, NonEmptyList, Validated }
+import cats.data.{ Chain, NonEmptyChain, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.{ DownArray, DownN }
@@ -47,7 +47,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val failure = DecodingFailure("Some message", Nil)
     forAll { (i: Int) =>
       assert(decoder.decodeJson(i.asJson) === Left(failure))
-      assert(decoder.decodeAccumulating(i.asJson.hcursor) === Validated.invalidNel(failure))
+      assert(decoder.decodeAccumulating(i.asJson.hcursor) === Validated.invalidNec(failure))
     }
   }
 
@@ -201,7 +201,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
     val result = Decoder[Option[(String, String)]].decodeAccumulating(pair.hcursor)
     val expected = Validated.invalid(
-      NonEmptyList.of(DecodingFailure("String", List(DownN(0))), DecodingFailure("String", List(DownN(1))))
+      NonEmptyChain(DecodingFailure("String", List(DownN(0))), DecodingFailure("String", List(DownN(1))))
     )
 
     assert(result === expected)
@@ -373,10 +373,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       if (isOdd(i)) {
         Validated.valid(i)
       } else {
-        Validated.invalidNel(DecodingFailure(oddMessage, Nil))
+        Validated.invalidNec(DecodingFailure(oddMessage, Nil))
       }
     } else {
-      Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
+      Validated.invalidNec(DecodingFailure(positiveMessage, Nil))
     }
 
     assert(badDecodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
@@ -386,7 +386,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val decodePositiveInt: Decoder[Int] =
       Decoder[Int].ensure(isPositive, "Not positive!")
 
-    val expected = Validated.invalidNel(DecodingFailure("Int", Nil))
+    val expected = Validated.invalidNec(DecodingFailure("Int", Nil))
 
     assert(decodePositiveInt.decodeAccumulating(Json.Null.hcursor) === expected)
   }
@@ -406,13 +406,13 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       if (isOdd(i)) {
         Validated.valid(i)
       } else {
-        Validated.invalidNel(DecodingFailure(oddMessage, Nil))
+        Validated.invalidNec(DecodingFailure(oddMessage, Nil))
       }
     } else {
       if (isOdd(i)) {
-        Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
+        Validated.invalidNec(DecodingFailure(positiveMessage, Nil))
       } else {
-        Validated.invalid(NonEmptyList.of(DecodingFailure(positiveMessage, Nil), DecodingFailure(oddMessage, Nil)))
+        Validated.invalid(NonEmptyChain(DecodingFailure(positiveMessage, Nil), DecodingFailure(oddMessage, Nil)))
       }
     }
 
@@ -436,7 +436,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val decodePositiveInt: Decoder[Int] =
       Decoder[Int].validate(_.as[Int].exists(_ > 0), message)
 
-    val expected = if (i > 0) Validated.valid(i) else Validated.invalidNel(DecodingFailure(message, Nil))
+    val expected = if (i > 0) Validated.valid(i) else Validated.invalidNec(DecodingFailure(message, Nil))
 
     assert(decodePositiveInt.decodeAccumulating(Json.fromInt(i).hcursor) === expected)
   }
@@ -454,7 +454,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       override def apply(c: HCursor): Decoder.Result[Foo] = Right(new Foo {})
 
       override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Foo] = Invalid(
-        NonEmptyList.one(DecodingFailure(message, c.history))
+        NonEmptyChain.one(DecodingFailure(message, c.history))
       )
     }
 

@@ -5,7 +5,7 @@ import cats.laws.discipline.arbitrary._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
-class AccumulatingDecoderSpec extends CirceSuite {
+class AccumulatingDecoderSuite extends CirceSuite {
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
   private object BadSample {
@@ -30,7 +30,7 @@ class AccumulatingDecoderSpec extends CirceSuite {
       val decoded = Decoder[List[String]].decodeAccumulating(json.hcursor)
       val intElems = xs.collect { case Left(elem) => elem }
 
-      assert(decoded.fold(_.tail.size + 1, _ => 0) === intElems.size)
+      assert(decoded.fold(_.tail.size.toInt + 1, _ => 0) === intElems.size)
     }
   }
 

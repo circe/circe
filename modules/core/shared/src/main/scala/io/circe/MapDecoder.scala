@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated }
+import cats.data.{ NonEmptyChain, Validated }
 import io.circe.cursor.ObjectCursor
 import scala.collection.Map
 import scala.collection.mutable.Builder
@@ -69,7 +69,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
             case Validated.Invalid(es) =>
               failed = true
               failures += es.head
-              failures ++= es.tail
+              failures ++= es.tail.iterator
           }
         } else {
           decodeK(key) match {
@@ -79,7 +79,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
                 case Validated.Invalid(es) =>
                   failed = true
                   failures += es.head
-                  failures ++= es.tail
+                  failures ++= es.tail.iterator
               }
             case None =>
               failed = true
@@ -91,7 +91,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
       if (!failed) Validated.valid(builder.result)
       else {
         failures.result match {
-          case h :: t => Validated.invalid(NonEmptyList(h, t))
+          case h :: t => Validated.invalid(NonEmptyChain(h, t: _*))
           case Nil    => Validated.valid(builder.result)
         }
       }
@@ -103,5 +103,5 @@ private[circe] object MapDecoder {
   final def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
   final def failureResult[A](c: HCursor): Decoder.Result[A] = Left[DecodingFailure, A](failure(c))
   final def failureAccumulatingResult[A](c: HCursor): Decoder.AccumulatingResult[A] =
-    Validated.invalidNel[DecodingFailure, A](failure(c))
+    Validated.invalidNec[DecodingFailure, A](failure(c))
 }
