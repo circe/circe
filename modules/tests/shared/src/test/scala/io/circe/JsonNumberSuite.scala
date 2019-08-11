@@ -159,4 +159,9 @@ class JsonNumberSuite extends CirceSuite {
   it should "fail on Float.NegativeInfinity" in {
     assert(Json.fromFloat(Float.NegativeInfinity) === None)
   }
+
+  "toString" should "produce the same encoding as BigDecimal#toString" in forAll { (input: BigDecimal) =>
+    assert(JsonNumber.fromString(input.toString).get.toString == input.toString)
+    assert(Json.fromBigDecimal(input).asNumber.get.toString == input.toString)
+  }
 }
