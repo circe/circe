@@ -528,7 +528,9 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
    */
-  final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
+  final def fromBigInt(value: BigInt): Json = JNumber(
+    JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying), value.toString)
+  )
 
   /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
