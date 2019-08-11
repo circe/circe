@@ -60,6 +60,39 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(l.toString).flatMap(_.toInt).isEmpty === invalid)
   }
 
+  "toBigDecimal" should "produce correct results" in forAll { (n: JsonNumber) =>
+    whenever(n != Json.fromDouble(-0.0).flatMap(_.asNumber).get) {
+      assert(n.toBigDecimal.forall(value => Json.fromBigDecimal(value).asNumber.get == n))
+    }
+  }
+
+  it should "work for zero with a large exponent" in {
+    val n = JsonNumber.fromString(s"0e${Int.MaxValue.toLong + 2L}")
+
+    assert(n.flatMap(_.toBigDecimal).get === BigDecimal(0))
+  }
+
+  it should "work for other bad numbers" in {
+    import java.math.{ BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger }
+    val badNumber = s"0.1e${Int.MaxValue.toLong + 2L}"
+    val n = JsonNumber.fromString(badNumber)
+    val expected = BigDecimal(new JavaBigDecimal(JavaBigInteger.ONE, Int.MinValue))
+
+    assert(n.flatMap(_.toBigDecimal).get === expected)
+  }
+
+  "toBigInt" should "produce correct results" in forAll { (n: JsonNumber) =>
+    whenever(n != Json.fromDouble(-0.0).flatMap(_.asNumber).get) {
+      assert(n.toBigInt.forall(value => Json.fromBigInt(value).asNumber.get == n))
+    }
+  }
+
+  it should "work for zero with a large exponent" in {
+    val n = JsonNumber.fromString(s"0e${Int.MaxValue.toLong + 1L}")
+
+    assert(n.flatMap(_.toBigInt).get === BigInt(0))
+  }
+
   "JsonFloat.toLong" should "return None if outside of Long bounds" in forAll { (f: Float) =>
     if (f < Long.MinValue || f > Long.MaxValue) {
       assert(JsonFloat(f).toLong === None)
