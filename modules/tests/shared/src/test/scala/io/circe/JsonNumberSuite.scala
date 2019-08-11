@@ -68,8 +68,8 @@ class JsonNumberSuite extends CirceSuite {
 
   "JsonFloat.toBigInt" should "return None if it loses precision" in forAll { (f: Float) =>
     val j = JsonFloat(f)
-    val expected = j.toBiggerDecimal match {
-      case d if d.isWhole => Some(BigDecimal(f.toString).toBigInt)
+    val expected = BigDecimal(f.toString) match {
+      case d if d.isWhole => Some(d.toBigInt)
       case _              => None
     }
     assert(j.toBigInt === expected)
