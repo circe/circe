@@ -32,7 +32,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
       Arbitrary.arbitrary[Double].map(BiggerDecimal.fromDoubleUnsafe),
       Arbitrary.arbitrary[BigInt].map(_.underlying).map(BiggerDecimal.fromBigInteger),
       Arbitrary.arbitrary[BigDecimal].map(_.underlying).map(BiggerDecimal.fromBigDecimal),
-      Gen.const(BiggerDecimal.NegativeZero)
+      Gen.const(BiggerDecimal.fromDoubleUnsafe(-0.0))
     )
   )
 
