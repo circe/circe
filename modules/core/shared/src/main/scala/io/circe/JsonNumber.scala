@@ -74,14 +74,6 @@ sealed abstract class JsonNumber extends Serializable {
   def toLong: Option[Long]
 
   /**
-   * Universal equality derived from our type-safe equality.
-   */
-  override final def equals(that: Any): Boolean = that match {
-    case that: JsonNumber => JsonNumber.eqJsonNumber.eqv(this, that)
-    case _                => false
-  }
-
-  /**
    * Hashing that is consistent with our universal equality.
    */
   override final def hashCode: Int = toBiggerDecimal.hashCode
@@ -93,6 +85,11 @@ private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber 
   final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toLong: Option[Long] = toBiggerDecimal.toLong
+
+  override final def equals(that: Any): Boolean = that match {
+    case other: JsonNumber => toBiggerDecimal == other.toBiggerDecimal
+    case _                 => false
+  }
 }
 
 /**
@@ -133,6 +130,12 @@ private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends Js
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   override final def toString: String = value.toString
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
+
+  override final def equals(that: Any): Boolean = that match {
+    case other: JsonBigDecimal => value.compareTo(other.value) == 0
+    case other: JsonNumber     => toBiggerDecimal == other.toBiggerDecimal
+    case _                     => false
+  }
 }
 
 /**
@@ -147,6 +150,12 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toLong: Option[Long] = Some(value)
   override final def toString: String = java.lang.Long.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+
+  override final def equals(that: Any): Boolean = that match {
+    case other: JsonLong   => value == other.value
+    case other: JsonNumber => toBiggerDecimal == other.toBiggerDecimal
+    case _                 => false
+  }
 }
 
 /**
@@ -174,6 +183,12 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
 
   override final def toString: String = java.lang.Double.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+
+  override final def equals(that: Any): Boolean = that match {
+    case other: JsonDouble => java.lang.Double.compare(value, other.value) == 0
+    case other: JsonNumber => toBiggerDecimal == other.toBiggerDecimal
+    case _                 => false
+  }
 }
 
 /**
@@ -203,6 +218,12 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 
   override final def toString: String = java.lang.Float.toString(value)
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+
+  override final def equals(that: Any): Boolean = that match {
+    case other: JsonFloat  => java.lang.Float.compare(value, other.value) == 0
+    case other: JsonNumber => toBiggerDecimal == other.toBiggerDecimal
+    case _                 => false
+  }
 }
 
 /**
@@ -251,11 +272,5 @@ object JsonNumber {
   private[circe] def bigDecimalIsValidLong(value: JavaBigDecimal): Boolean =
     bigDecimalIsWhole(value) && value.compareTo(bigDecimalMinLong) >= 0 && value.compareTo(bigDecimalMaxLong) <= 0
 
-  implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.instance {
-    case (JsonLong(x), JsonLong(y))             => x == y
-    case (JsonDouble(x), JsonDouble(y))         => java.lang.Double.compare(x, y) == 0
-    case (JsonFloat(x), JsonFloat(y))           => java.lang.Float.compare(x, y) == 0
-    case (JsonBigDecimal(x), JsonBigDecimal(y)) => x.compareTo(y) == 0
-    case (a, b)                                 => a.toBiggerDecimal == b.toBiggerDecimal
-  }
+  implicit final val eqJsonNumber: Eq[JsonNumber] = Eq.fromUniversalEquals
 }
