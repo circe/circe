@@ -164,4 +164,9 @@ class JsonNumberSuite extends CirceSuite {
     assert(JsonNumber.fromString(input.toString).get.toString == input.toString)
     assert(Json.fromBigDecimal(input).asNumber.get.toString == input.toString)
   }
+
+  it should "produce the same encoding as BigInt#toString" in forAll { (input: BigInt) =>
+    assert(JsonNumber.fromString(input.toString).get.toString == input.toString)
+    assert(Json.fromBigInt(input).asNumber.get.toString == input.toString)
+  }
 }
