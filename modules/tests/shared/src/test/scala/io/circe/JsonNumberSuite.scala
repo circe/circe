@@ -1,7 +1,8 @@
 package io.circe
 
-import io.circe.numbers.testing.JsonNumberString
+import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import io.circe.tests.CirceSuite
+import scala.util.Try
 
 class JsonNumberSuite extends CirceSuite {
   "fromString" should "parse valid JSON numbers" in forAll { (jsn: JsonNumberString) =>
@@ -158,5 +159,9 @@ class JsonNumberSuite extends CirceSuite {
 
   it should "fail on Float.NegativeInfinity" in {
     assert(Json.fromFloat(Float.NegativeInfinity) === None)
+  }
+
+  "fromIntegralStringUnsafe" should "agree with toLong" in forAll { (input: IntegralString) =>
+    assert(JsonNumber.fromIntegralStringUnsafe(input.value).toLong === Try(input.value.toLong).toOption)
   }
 }

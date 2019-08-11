@@ -17,10 +17,17 @@ import scala.annotation.switch
  * doesn't support many operations on these values). It also makes it possible to distinguish
  * between positive and negative zeros (unlike `BigDecimal`), which may be useful in some
  * applications.
+ *
+ * This representation is the same as that used by `java.math.BigDecimal`, with two differences.
+ * First, the scale is a `java.math.BigInteger`, not a [[scala.Int]], and the unscaled value will
+ * never be an exact multiple of ten (in order to facilitate comparison).
  */
-sealed abstract class BiggerDecimal extends Serializable {
-  def isWhole: Boolean
-  def isNegativeZero: Boolean
+final class BiggerDecimal(
+  private[this] val _unscaled: BigInteger,
+  private[this] val _scale: BigInteger,
+  private[this] val _isNegativeZero: Boolean
+) extends Serializable {
+  def isWhole: Boolean = _scale.signum < 1
 
   /**
    * The sign of this value.
@@ -29,18 +36,34 @@ sealed abstract class BiggerDecimal extends Serializable {
    * equal to 0. Note that this follows the behavior of [[scala.Double]] for
    * negative zero (returning 0).
    */
-  def signum: Int
+  def signum: Int = unscaled.signum
+
+  @inline private[this] def scaleIsInt: Boolean =
+    _scale.compareTo(BiggerDecimal.MaxInt) <= 0 && _scale.compareTo(BiggerDecimal.MinInt) >= 0
 
   /**
    * Convert to a `java.math.BigDecimal` if the `scale` is within the range of [[scala.Int]].
    */
-  def toBigDecimal: Option[BigDecimal]
+  def toBigDecimal: Option[BigDecimal] =
+    if (scaleIsInt) {
+      Some(new BigDecimal(_unscaled, _scale.intValue))
+    } else None
 
   /**
    * Convert to a `java.math.BigInteger` if this is a sufficiently small whole number.
    *
    */
-  def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger]
+  def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
+    if (!isWhole) None
+    else {
+      val digits = BigInteger.valueOf(_unscaled.abs.toString.length.toLong).subtract(_scale)
+
+      if (digits.compareTo(maxDigits) > 0) None
+      else
+        Some(
+          new BigDecimal(_unscaled, _scale.intValue).toBigInteger
+        )
+    }
 
   /**
    * Convert to a `java.math.BigInteger` if this is a sufficiently small whole number.
@@ -49,66 +72,31 @@ sealed abstract class BiggerDecimal extends Serializable {
    * may require excessive processing power. Larger values may be converted to `BigInteger` with
    * [[toBigIntegerWithMaxDigits]] or via [[toBigDecimal]].
    */
-  final def toBigInteger: Option[BigInteger] = toBigIntegerWithMaxDigits(BiggerDecimal.MaxBigIntegerDigits)
+  def toBigInteger: Option[BigInteger] = toBigIntegerWithMaxDigits(BiggerDecimal.MaxBigIntegerDigits)
 
   /**
    * Convert to the nearest [[scala.Double]].
    */
-  def toDouble: Double
+  def toDouble: Double =
+    if (_isNegativeZero) {
+      -0.0
+    } else if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
+      new BigDecimal(unscaled, scale.intValue).doubleValue
+    } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
 
   /**
    * Convert to the nearest [[scala.Float]].
    */
-  def toFloat: Float
+  def toFloat: Float =
+    if (_isNegativeZero) {
+      -0.0f
+    } else if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
+      new BigDecimal(unscaled, scale.intValue).floatValue
+    } else (if (scale.signum == 1) 0.0f else Float.PositiveInfinity) * unscaled.signum
 
   /**
    * Convert to a [[scala.Long]] if this is a valid `Long` value.
    */
-  def toLong: Option[Long]
-
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
-}
-
-/**
- * Represents numbers as an unscaled value and a scale.
- *
- * This representation is the same as that used by `java.math.BigDecimal`, with two differences.
- * First, the scale is a `java.math.BigInteger`, not a [[scala.Int]], and the unscaled value will
- * never be an exact multiple of ten (in order to facilitate comparison).
- */
-private[numbers] final class SigAndExp(
-  val unscaled: BigInteger,
-  val scale: BigInteger
-) extends BiggerDecimal {
-  def isWhole: Boolean = scale.signum < 1
-  def isNegativeZero: Boolean = false
-  def signum: Int = unscaled.signum
-
-  def toBigDecimal: Option[BigDecimal] =
-    if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
-      Some(new BigDecimal(unscaled, scale.intValue))
-    } else None
-
-  def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] =
-    if (!isWhole) None
-    else {
-      val digits = BigInteger.valueOf(unscaled.abs.toString.length.toLong).subtract(scale)
-
-      if (digits.compareTo(maxDigits) > 0) None
-      else
-        Some(
-          new BigDecimal(unscaled, scale.intValue).toBigInteger
-        )
-    }
-
-  def toDouble: Double = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
-    new BigDecimal(unscaled, scale.intValue).doubleValue
-  } else (if (scale.signum == 1) 0.0 else Double.PositiveInfinity) * unscaled.signum
-
-  def toFloat: Float = if (scale.compareTo(BiggerDecimal.MaxInt) <= 0 && scale.compareTo(BiggerDecimal.MinInt) >= 0) {
-    new BigDecimal(unscaled, scale.intValue).floatValue
-  } else (if (scale.signum == 1) 0.0f else Float.PositiveInfinity) * unscaled.signum
-
   def toLong: Option[Long] = if (!this.isWhole) None
   else {
     toBigInteger match {
@@ -120,72 +108,46 @@ private[numbers] final class SigAndExp(
     }
   }
 
+  protected def unscaled: BigInteger = _unscaled
+  protected def scale: BigInteger = _scale
+  protected def isNegativeZero: Boolean = _isNegativeZero
+
   override def equals(that: Any): Boolean = that match {
-    case other: SigAndExp => unscaled == other.unscaled && scale == other.scale
-    case _                => false
+    case other: BiggerDecimal =>
+      _unscaled == other.unscaled && _scale == other.scale && _isNegativeZero == other.isNegativeZero
+    case _ => false
   }
 
-  override def hashCode: Int = scale.hashCode + unscaled.hashCode
+  override def hashCode: Int = _scale.hashCode + _unscaled.hashCode
 
-  override def toString: String = if (scale == BigInteger.ZERO) unscaled.toString
+  override def toString: String = if (_isNegativeZero) "-0"
+  else if (_scale == BigInteger.ZERO) _unscaled.toString
   else {
-    s"${unscaled}e${scale.negate}"
+    s"${_unscaled}e${_scale.negate}"
   }
 
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
-    builder.append(unscaled)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit =
+    if (_isNegativeZero) builder.append("-0")
+    else {
+      builder.append(_unscaled)
 
-    if (scale != BigInteger.ZERO) {
-      builder.append('e')
-      builder.append(scale.negate)
+      if (_scale != BigInteger.ZERO) {
+        builder.append('e')
+        builder.append(_scale.negate)
+      }
     }
-  }
 }
 
 object BiggerDecimal {
-  private[numbers] val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
+  private val MaxBigIntegerDigits: BigInteger = BigInteger.valueOf(1L << 18)
 
-  private[numbers] val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
-  private[numbers] val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
-  private[numbers] val MaxLong: BigDecimal = new BigDecimal(Long.MaxValue)
-  private[numbers] val MinLong: BigDecimal = new BigDecimal(Long.MinValue)
+  private val MaxInt: BigInteger = BigInteger.valueOf(Int.MaxValue)
+  private val MinInt: BigInteger = BigInteger.valueOf(Int.MinValue)
+  private val MaxLong: BigDecimal = new BigDecimal(Long.MaxValue)
+  private val MinLong: BigDecimal = new BigDecimal(Long.MinValue)
 
-  private[this] abstract class Zero extends BiggerDecimal {
-    final def isWhole: Boolean = true
-    final def signum: Int = 0
-    final val toBigDecimal: Option[BigDecimal] = Some(BigDecimal.ZERO)
-    final def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger] = Some(BigInteger.ZERO)
-    final val toLong: Option[Long] = Some(0L)
-
-    private[circe] def appendToStringBuilder(builder: StringBuilder): Unit =
-      builder.append(toString)
-  }
-
-  private[this] val UnsignedZero: BiggerDecimal = new Zero {
-    final def isNegativeZero: Boolean = false
-    final def toDouble: Double = 0.0
-    final def toFloat: Float = 0.0f
-
-    final override def equals(that: Any): Boolean = that match {
-      case other: Zero => !other.isNegativeZero
-      case _           => false
-    }
-    final override def hashCode: Int = (0.0).hashCode
-    final override def toString: String = "0"
-  }
-
-  val NegativeZero: BiggerDecimal = new Zero {
-    final def isNegativeZero: Boolean = true
-    final def toDouble: Double = -0.0
-    final def toFloat: Float = -0.0f
-
-    final override def equals(that: Any): Boolean = that match {
-      case other: Zero => other.isNegativeZero
-      case _           => false
-    }
-    final override def hashCode: Int = (-0.0).hashCode
-    final override def toString: String = "-0"
-  }
+  private[this] val UnsignedZero: BiggerDecimal = new BiggerDecimal(BigInteger.ZERO, BigInteger.ZERO, false)
+  private[this] val NegativeZero: BiggerDecimal = new BiggerDecimal(BigInteger.ZERO, BigInteger.ZERO, true)
 
   private[this] def fromUnscaledAndScale(unscaled: BigInteger, scale: Long): BiggerDecimal =
     if (unscaled == BigInteger.ZERO) UnsignedZero
@@ -201,7 +163,7 @@ object BiggerDecimal {
         divAndRem = current.divideAndRemainder(BigInteger.TEN)
       }
 
-      new SigAndExp(current, BigInteger.valueOf(depth))
+      new BiggerDecimal(current, BigInteger.valueOf(depth), false)
     }
 
   def fromBigInteger(i: BigInteger): BiggerDecimal = fromUnscaledAndScale(i, 0L)
@@ -221,21 +183,6 @@ object BiggerDecimal {
   def fromFloat(f: Float): BiggerDecimal = if (java.lang.Float.compare(f, -0.0f) == 0) {
     NegativeZero
   } else fromBigDecimal(new BigDecimal(java.lang.Float.toString(f)))
-
-  private[this] final val MaxLongString = "9223372036854775807"
-  private[this] final val MinLongString = "-9223372036854775808"
-
-  /**
-   * Is a string representing an integral value a valid [[scala.Long]]?
-   *
-   * Note that this method assumes that the input is a valid integral JSON
-   * number string (e.g. that it does have leading zeros).
-   */
-  def integralIsValidLong(s: String): Boolean = {
-    val bound = if (s.charAt(0) == '-') MinLongString else MaxLongString
-
-    s.length < bound.length || (s.length == bound.length && s.compareTo(bound) <= 0)
-  }
 
   private[this] final val FAILED = 0
   private[this] final val START = 1
@@ -389,7 +336,7 @@ object BiggerDecimal {
               rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
             }
 
-          new SigAndExp(unscaled, scale)
+          new BiggerDecimal(unscaled, scale, false)
         }
       }
     }

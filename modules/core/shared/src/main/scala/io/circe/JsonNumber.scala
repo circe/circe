@@ -240,6 +240,21 @@ object JsonNumber {
    */
   final def fromDecimalStringUnsafe(value: String): JsonNumber = JsonDecimal(value)
 
+  private[this] final val MaxLongString = "9223372036854775807"
+  private[this] final val MinLongString = "-9223372036854775808"
+
+  /**
+   * Is a string representing an integral value a valid [[scala.Long]]?
+   *
+   * Note that this method assumes that the input is a valid integral JSON
+   * number string (e.g. that it does have leading zeros).
+   */
+  private[this] def integralIsValidLong(s: String): Boolean = {
+    val bound = if (s.charAt(0) == '-') MinLongString else MaxLongString
+
+    s.length < bound.length || (s.length == bound.length && s.compareTo(bound) <= 0)
+  }
+
   /**
    * Return a `JsonNumber` whose value is the valid integral JSON number in `value`.
    *
@@ -249,7 +264,7 @@ object JsonNumber {
    * already been verified.
    */
   final def fromIntegralStringUnsafe(value: String): JsonNumber =
-    if (!BiggerDecimal.integralIsValidLong(value)) JsonDecimal(value)
+    if (!integralIsValidLong(value)) JsonDecimal(value)
     else {
       val longValue = java.lang.Long.parseLong(value)
 
