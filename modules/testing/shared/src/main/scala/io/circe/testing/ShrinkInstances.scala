@@ -1,6 +1,6 @@
 package io.circe.testing
 
-import io.circe.{ Json, JsonBigDecimal, JsonNumber, JsonObject }
+import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.rs.JsonF
 import org.scalacheck.Shrink
 
@@ -30,7 +30,7 @@ private[testing] trait ShrinkInstances {
             zero #:: interleave(hs, hs.map(h => -h))
           }
 
-        ns.map(value => JsonBigDecimal(value.underlying))
+        ns.map(value => JsonNumber.fromBigDecimal(value.underlying))
       case None => Stream(jn)
     }
   }

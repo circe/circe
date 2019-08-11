@@ -1,17 +1,7 @@
 package io.circe.testing
 
 import cats.instances.list._
-import io.circe.{
-  Decoder,
-  DecodingFailure,
-  Encoder,
-  Json,
-  JsonBiggerDecimal,
-  JsonNumber,
-  JsonObject,
-  KeyDecoder,
-  KeyEncoder
-}
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json, JsonNumber, JsonObject, KeyDecoder, KeyEncoder }
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
 import io.circe.rs.JsonF
@@ -51,7 +41,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
       .oneOf(
         Arbitrary.arbitrary[IntegralString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
         Arbitrary.arbitrary[JsonNumberString].map(input => JsonNumber.fromDecimalStringUnsafe(input.value)),
-        Arbitrary.arbitrary[BiggerDecimal].map(JsonBiggerDecimal(_)),
+        Arbitrary.arbitrary[BiggerDecimal].map(JsonNumber.fromBiggerDecimal(_)),
         Arbitrary.arbitrary[BigDecimal].map(Json.fromBigDecimal(_).asNumber.get),
         Arbitrary.arbitrary[BigInt].map(Json.fromBigInt(_).asNumber.get),
         Arbitrary.arbitrary[Long].map(Json.fromLong(_).asNumber.get),

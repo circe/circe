@@ -62,12 +62,12 @@ class JsonNumberSuite extends CirceSuite {
 
   "JsonFloat.toLong" should "return None if outside of Long bounds" in forAll { (f: Float) =>
     if (f < Long.MinValue || f > Long.MaxValue) {
-      assert(JsonFloat(f).toLong === None)
+      assert(JsonNumber.fromFloatUnsafe(f).toLong === None)
     }
   }
 
   "JsonFloat.toBigInt" should "return None if it loses precision" in forAll { (f: Float) =>
-    val j = JsonFloat(f)
+    val j = JsonNumber.fromFloatUnsafe(f)
     val expected = BigDecimal(f.toString) match {
       case d if d.isWhole => Some(d.toBigInt)
       case _              => None
@@ -117,15 +117,15 @@ class JsonNumberSuite extends CirceSuite {
   }
 
   it should "compare Float and Long" in forAll { (f: Float, l: Long) =>
-    runCompareTest(JsonFloat, f, JsonLong, l)
+    runCompareTest(JsonNumber.fromFloatUnsafe, f, JsonNumber.fromLong, l)
   }
 
   it should "compare Float and Double" in forAll { (f: Float, d: Double) =>
-    runCompareTest(JsonFloat, f, JsonDouble, d)
+    runCompareTest(JsonNumber.fromFloatUnsafe, f, JsonNumber.fromDoubleUnsafe, d)
   }
 
   it should "compare Float and Float" in forAll { (f1: Float, f2: Float) =>
-    runCompareTest(JsonFloat, f1, JsonFloat, f2)
+    runCompareTest(JsonNumber.fromFloatUnsafe, f1, JsonNumber.fromFloatUnsafe, f2)
   }
 
   private def runCompareTest[A, B](f1: A => JsonNumber, v1: A, f2: B => JsonNumber, v2: B) = {

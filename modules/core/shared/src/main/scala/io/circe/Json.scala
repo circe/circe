@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.{ Eq, Show }
-import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
 import scala.collection.mutable.ListBuffer
 
@@ -469,26 +468,28 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
    */
-  final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
+  final def fromInt(value: Int): Json = fromLong(value.toLong)
 
   /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
-  final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+  final def fromLong(value: Long): Json = JNumber(JsonNumber.fromLong(value))
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Double`.
    *
    * The result is empty if the argument cannot be represented as a JSON number.
    */
-  final def fromDouble(value: Double): Option[Json] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
+  final def fromDouble(value: Double): Option[Json] =
+    if (isReal(value)) Some(JNumber(JsonNumber.fromDoubleUnsafe(value))) else None
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Float`.
    *
    * The result is empty if the argument cannot be represented as a JSON number.
    */
-  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
+  final def fromFloat(value: Float): Option[Json] =
+    if (isReal(value)) Some(JNumber(JsonNumber.fromFloatUnsafe(value))) else None
 
   /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
@@ -496,7 +497,8 @@ object Json {
    * The result is a JSON null if the argument cannot be represented as a JSON
    * number.
    */
-  final def fromDoubleOrNull(value: Double): Json = if (isReal(value)) JNumber(JsonDouble(value)) else Null
+  final def fromDoubleOrNull(value: Double): Json =
+    if (isReal(value)) JNumber(JsonNumber.fromDoubleUnsafe(value)) else Null
 
   /**
    * Create a `Json` value representing a JSON number or null from a `Float`.
@@ -505,7 +507,7 @@ object Json {
    * number.
    */
   final def fromFloatOrNull(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else Null
+    if (isReal(value)) JNumber(JsonNumber.fromFloatUnsafe(value)) else Null
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -514,7 +516,7 @@ object Json {
    * number.
    */
   final def fromDoubleOrString(value: Double): Json =
-    if (isReal(value)) JNumber(JsonDouble(value)) else fromString(java.lang.Double.toString(value))
+    if (isReal(value)) JNumber(JsonNumber.fromDoubleUnsafe(value)) else fromString(java.lang.Double.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Float`.
@@ -523,17 +525,17 @@ object Json {
    * number.
    */
   final def fromFloatOrString(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else fromString(java.lang.Float.toString(value))
+    if (isReal(value)) JNumber(JsonNumber.fromFloatUnsafe(value)) else fromString(java.lang.Float.toString(value))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigInt`.
    */
-  final def fromBigInt(value: BigInt): Json = JNumber(JsonBiggerDecimal(BiggerDecimal.fromBigInteger(value.underlying)))
+  final def fromBigInt(value: BigInt): Json = JNumber(JsonNumber.fromBigInteger(value.underlying))
 
   /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
-  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
+  final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonNumber.fromBigDecimal(value.underlying))
 
   /**
    * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
