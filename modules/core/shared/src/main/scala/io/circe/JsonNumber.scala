@@ -89,36 +89,35 @@ sealed abstract class JsonNumber extends Serializable {
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit
 }
 
-private[circe] sealed abstract class BiggerDecimalJsonNumber extends JsonNumber {
-  final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(BigDecimal(_))
+private sealed abstract class BiggerDecimalJsonNumber(input: String) extends JsonNumber {
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
+  final def toBigDecimal: Option[BigDecimal] = toBiggerDecimal.toBigDecimal.map(_ => BigDecimal(input))
   final def toLong: Option[Long] = toBiggerDecimal.toLong
+  override final def toString: String = input
+  private[circe] final def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(input)
 }
 
 /**
  * Represent a valid JSON number as a `String`.
  */
-private[circe] final case class JsonDecimal(value: String) extends BiggerDecimalJsonNumber {
+private[circe] final case class JsonDecimal(input: String) extends BiggerDecimalJsonNumber(input) {
   private[circe] lazy val toBiggerDecimal: BiggerDecimal = {
-    val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)
+    val result = BiggerDecimal.parseBiggerDecimalUnsafe(input)
 
     if (result.eq(null)) {
-      throw new NumberFormatException("For input string \"" + value + "\"")
+      throw new NumberFormatException("For input string \"" + input + "\"")
     } else result
   }
 
-  final def toDouble: Double = java.lang.Double.parseDouble(value)
-  final def toFloat: Float = java.lang.Float.parseFloat(value)
-  override def toString: String = value
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+  final def toDouble: Double = java.lang.Double.parseDouble(input)
+  final def toFloat: Float = java.lang.Float.parseFloat(input)
 }
 
-private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal) extends BiggerDecimalJsonNumber {
+private[circe] final case class JsonBiggerDecimal(value: BiggerDecimal, input: String)
+    extends BiggerDecimalJsonNumber(input) {
   private[circe] def toBiggerDecimal: BiggerDecimal = value
   final def toDouble: Double = toBiggerDecimal.toDouble
   final def toFloat: Float = toBiggerDecimal.toFloat
-  override def toString: String = value.toString
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = value.appendToStringBuilder(builder)
 }
 
 /**
@@ -239,7 +238,7 @@ object JsonNumber {
   final def fromString(value: String): Option[JsonNumber] = {
     val result = BiggerDecimal.parseBiggerDecimalUnsafe(value)
 
-    if (result.eq(null)) None else Some(JsonBiggerDecimal(result))
+    if (result.eq(null)) None else Some(JsonBiggerDecimal(result, value))
   }
 
   private[this] val bigDecimalMinLong: JavaBigDecimal = new JavaBigDecimal(Long.MinValue)
