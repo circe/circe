@@ -14,23 +14,23 @@ object EnumerationEncoder {
 
   implicit def encodeEnumerationCCons[K <: Symbol, V, R <: Coproduct](
     implicit
-    wit: Witness.Aux[K],
-    gv: LabelledGeneric.Aux[V, HNil],
-    dr: EnumerationEncoder[R],
+    witK: Witness.Aux[K],
+    gen: LabelledGeneric.Aux[V, HNil],
+    encodeR: EnumerationEncoder[R],
     config: Configuration = Configuration.default
   ): EnumerationEncoder[FieldType[K, V] :+: R] = new EnumerationEncoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
-      case Inl(l) => Json.fromString(config.transformConstructorNames(wit.value.name))
-      case Inr(r) => dr(r)
+      case Inl(l) => Json.fromString(config.transformConstructorNames(witK.value.name))
+      case Inr(r) => encodeR(r)
     }
   }
 
   implicit def encodeEnumeration[A, Repr <: Coproduct](
     implicit
     gen: LabelledGeneric.Aux[A, Repr],
-    rr: EnumerationEncoder[Repr]
+    encodeR: EnumerationEncoder[Repr]
   ): EnumerationEncoder[A] =
     new EnumerationEncoder[A] {
-      def apply(a: A): Json = rr(gen.to(a))
+      def apply(a: A): Json = encodeR(gen.to(a))
     }
 }

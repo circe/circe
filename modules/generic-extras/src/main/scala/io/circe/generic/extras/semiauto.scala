@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import io.circe.{ Codec, Decoder, Encoder }
-import io.circe.generic.extras.codec.{ ConfiguredAsObjectCodec, UnwrappedCodec }
+import io.circe.generic.extras.codec.{ ConfiguredAsObjectCodec, EnumerationCodec, UnwrappedCodec }
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder }
 import io.circe.generic.extras.encoding.{ ConfiguredAsObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
 import io.circe.generic.extras.util.RecordToMap
@@ -51,6 +51,14 @@ object semiauto {
    * the ADT are represented as JSON strings.
    */
   def deriveEnumerationEncoder[A](implicit encode: Lazy[EnumerationEncoder[A]]): Encoder[A] = encode.value
+
+  /**
+   * Derive a codec for a sealed trait hierarchy made up of case objects.
+   *
+   * Note that this differs from the usual derived encoder in that the leaves of
+   * the ADT are represented as JSON strings.
+   */
+  def deriveEnumerationCodec[A](implicit codec: Lazy[EnumerationCodec[A]]): Codec[A] = codec.value
 
   /**
    * Derive a decoder for a value class.
