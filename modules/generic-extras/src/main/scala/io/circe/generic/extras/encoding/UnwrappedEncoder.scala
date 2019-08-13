@@ -9,9 +9,9 @@ object UnwrappedEncoder {
   implicit def encodeUnwrapped[A, R](
     implicit
     gen: Lazy[Generic.Aux[A, R :: HNil]],
-    encode: Encoder[R]
+    encodeR: Encoder[R]
   ): UnwrappedEncoder[A] = new UnwrappedEncoder[A] {
     override def apply(a: A): Json =
-      encode(gen.value.to(a).head)
+      encodeR(gen.value.to(a).head)
   }
 }
