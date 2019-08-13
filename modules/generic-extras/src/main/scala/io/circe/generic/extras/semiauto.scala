@@ -1,7 +1,7 @@
 package io.circe.generic.extras
 
 import io.circe.{ Codec, Decoder, Encoder }
-import io.circe.generic.extras.codec.ConfiguredAsObjectCodec
+import io.circe.generic.extras.codec.{ ConfiguredAsObjectCodec, UnwrappedCodec }
 import io.circe.generic.extras.decoding.{ ConfiguredDecoder, EnumerationDecoder, ReprDecoder, UnwrappedDecoder }
 import io.circe.generic.extras.encoding.{ ConfiguredAsObjectEncoder, EnumerationEncoder, UnwrappedEncoder }
 import io.circe.generic.extras.util.RecordToMap
@@ -61,6 +61,11 @@ object semiauto {
    * Derive an encoder for a value class.
    */
   def deriveUnwrappedEncoder[A](implicit encode: Lazy[UnwrappedEncoder[A]]): Encoder[A] = encode.value
+
+  /**
+   * Derive a codec for a value class.
+   */
+  def deriveUnwrappedCodec[A](implicit codec: Lazy[UnwrappedCodec[A]]): Codec[A] = codec.value
 
   final class DerivationHelper[A] {
     final def incomplete[P <: HList, C, D <: HList, T <: HList, R <: HList](

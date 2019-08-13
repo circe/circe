@@ -15,6 +15,8 @@ object UnwrappedSemiautoDerivedSuite {
     implicit val eq: Eq[Foo] = Eq.fromUniversalEquals
     implicit val encoder: Encoder[Foo] = deriveUnwrappedEncoder
     implicit val decoder: Decoder[Foo] = deriveUnwrappedDecoder
+    val codec: Codec[Foo] = deriveUnwrappedCodec
+
     val fooGen: Gen[Foo] = arbitrary[String].map(Foo(_))
     implicit val arbitraryFoo: Arbitrary[Foo] = Arbitrary(fooGen)
   }
@@ -24,6 +26,9 @@ class UnwrappedSemiautoDerivedSuite extends CirceSuite {
   import UnwrappedSemiautoDerivedSuite._
 
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
+  checkLaws("Codec[Foo] via Codec", CodecTests[Foo](Foo.codec, Foo.codec).codec)
+  checkLaws("Codec[Foo] via Decoder and Codec", CodecTests[Foo](implicitly, Foo.codec).codec)
+  checkLaws("Codec[Foo] via Encoder and Codec", CodecTests[Foo](Foo.codec, implicitly).codec)
 
   "Semi-automatic derivation" should "encode value classes" in forAll { (s: String) =>
     val foo = Foo(s)
