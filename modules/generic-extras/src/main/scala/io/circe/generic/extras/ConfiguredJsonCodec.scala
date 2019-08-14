@@ -15,6 +15,7 @@ private[generic] class ConfiguredJsonCodecMacros(val c: blackbox.Context) extend
   import c.universe._
 
   protected[this] def semiautoObj: Symbol = symbolOf[semiauto.type].asClass.module
+  protected[this] def deriveFunctionPrefix: String = "deriveConfigured"
 
   def jsonCodecAnnotationMacro(annottees: Tree*): Tree = constructJsonCodec(annottees: _*)
 }

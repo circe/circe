@@ -24,17 +24,32 @@ import shapeless.ops.record.RemoveAll
  *   case class Foo(i: Int, p: (String, Double))
  *
  *   object Foo {
- *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
- *     implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder[Foo]
+ *     implicit val decodeFoo: Decoder[Foo] = deriveConfiguredDecoder[Foo]
+ *     implicit val encodeFoo: Encoder.AsObject[Foo] = deriveConfiguredEncoder[Foo]
  *   }
  * }}}
  */
 object semiauto {
-  final def deriveDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] = decode.value
-  final def deriveEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] = encode.value
-  final def deriveCodec[A](implicit codec: Lazy[ConfiguredAsObjectCodec[A]]): Codec.AsObject[A] = codec.value
+  @deprecated("Use deriveConfiguredDecoder", "0.12.0")
+  final def deriveDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] =
+    deriveConfiguredDecoder
+  @deprecated("Use deriveConfiguredEncoder", "0.12.0")
+  final def deriveEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] =
+    deriveConfiguredEncoder
+  @deprecated("Use deriveConfiguredCodec", "0.12.0")
+  final def deriveCodec[A](implicit codec: Lazy[ConfiguredAsObjectCodec[A]]): Codec.AsObject[A] =
+    deriveConfiguredCodec
+  @deprecated("Use deriveConfiguredFor", "0.12.0")
+  final def deriveFor[A]: DerivationHelper[A] = deriveConfiguredFor
 
-  final def deriveFor[A]: DerivationHelper[A] = new DerivationHelper[A]
+  final def deriveConfiguredDecoder[A](implicit decode: Lazy[ConfiguredDecoder[A]]): Decoder[A] =
+    decode.value
+  final def deriveConfiguredEncoder[A](implicit encode: Lazy[ConfiguredAsObjectEncoder[A]]): Encoder.AsObject[A] =
+    encode.value
+  final def deriveConfiguredCodec[A](implicit codec: Lazy[ConfiguredAsObjectCodec[A]]): Codec.AsObject[A] =
+    codec.value
+
+  final def deriveConfiguredFor[A]: DerivationHelper[A] = new DerivationHelper[A]
 
   /**
    * Derive a decoder for a sealed trait hierarchy made up of case objects.
