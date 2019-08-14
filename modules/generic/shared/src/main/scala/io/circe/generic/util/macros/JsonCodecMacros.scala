@@ -9,7 +9,7 @@ abstract class JsonCodecMacros {
   import c.universe._
 
   protected[this] def semiautoObj: Symbol
-  protected[this] def deriveFunctionPrefix: String
+  protected[this] def deriveMethodPrefix: String
 
   private[this] def isCaseClassOrSealed(clsDef: ClassDef) =
     clsDef.mods.hasFlag(Flag.CASE) || clsDef.mods.hasFlag(Flag.SEALED)
@@ -65,7 +65,7 @@ abstract class JsonCodecMacros {
     val decodeName = TermName("decode" + tpname.decodedName)
     val encodeName = TermName("encode" + tpname.decodedName)
     val codecName = TermName("codecFor" + tpname.decodedName)
-    def deriveName(suffix: String) = TermName(deriveFunctionPrefix + suffix)
+    def deriveName(suffix: String) = TermName(deriveMethodPrefix + suffix)
     val (decoder, encoder, codec) = if (tparams.isEmpty) {
       val Type = tpname
       (
