@@ -34,5 +34,6 @@ trait ReprAsObjectEncoder[A] extends Encoder.AsObject[A] {
 }
 
 object ReprAsObjectEncoder {
-  implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] = macro ConfigurableDeriver.deriveEncoder[R]
+  implicit def deriveReprAsObjectEncoder[R]: ReprAsObjectEncoder[R] =
+    macro ConfigurableDeriver.deriveConfiguredEncoder[R]
 }

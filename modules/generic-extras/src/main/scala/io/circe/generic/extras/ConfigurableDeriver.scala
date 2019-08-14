@@ -17,10 +17,12 @@ class ConfigurableDeriver(val c: whitebox.Context)
     ] {
   import c.universe._
 
-  def deriveDecoder[R: c.WeakTypeTag]: c.Expr[ReprDecoder[R]] = c.Expr[ReprDecoder[R]](constructDecoder[R])
-  def deriveEncoder[R: c.WeakTypeTag]: c.Expr[ReprAsObjectEncoder[R]] =
+  def deriveConfiguredDecoder[R: c.WeakTypeTag]: c.Expr[ReprDecoder[R]] =
+    c.Expr[ReprDecoder[R]](constructDecoder[R])
+  def deriveConfiguredEncoder[R: c.WeakTypeTag]: c.Expr[ReprAsObjectEncoder[R]] =
     c.Expr[ReprAsObjectEncoder[R]](constructEncoder[R])
-  def deriveCodec[R: c.WeakTypeTag]: c.Expr[ReprAsObjectCodec[R]] = c.Expr[ReprAsObjectCodec[R]](constructCodec[R])
+  def deriveConfiguredCodec[R: c.WeakTypeTag]: c.Expr[ReprAsObjectCodec[R]] =
+    c.Expr[ReprAsObjectCodec[R]](constructCodec[R])
 
   protected[this] val RD: TypeTag[ReprDecoder[_]] = c.typeTag
   protected[this] val RE: TypeTag[ReprAsObjectEncoder[_]] = c.typeTag

@@ -38,16 +38,16 @@ object ConfiguredSemiautoDerivedSuite {
     Configuration.default.withSnakeCaseMemberNames.withDefaults.withDiscriminator("type").withSnakeCaseConstructorNames
 
   implicit val decodeIntlessQux: Decoder[Int => Qux[String]] =
-    deriveFor[Int => Qux[String]].incomplete
+    deriveConfiguredFor[Int => Qux[String]].incomplete
 
   implicit val decodeJlessQux: Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] =
-    deriveFor[FieldType[Witness.`'j`.T, Int] => Qux[String]].incomplete
+    deriveConfiguredFor[FieldType[Witness.`'j`.T, Int] => Qux[String]].incomplete
 
-  implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveFor[Qux[String]].patch
+  implicit val decodeQuxPatch: Decoder[Qux[String] => Qux[String]] = deriveConfiguredFor[Qux[String]].patch
 
-  implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
-  implicit val encodeConfigExampleBase: Encoder.AsObject[ConfigExampleBase] = deriveEncoder
-  val codecForConfigExampleBase: Codec.AsObject[ConfigExampleBase] = deriveCodec
+  implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveConfiguredDecoder
+  implicit val encodeConfigExampleBase: Encoder.AsObject[ConfigExampleBase] = deriveConfiguredEncoder
+  val codecForConfigExampleBase: Codec.AsObject[ConfigExampleBase] = deriveConfiguredCodec
 }
 
 class ConfiguredSemiautoDerivedSuite extends CirceSuite {
@@ -94,8 +94,8 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
     val decodeConstructorCount = 2
     val encodeConstructorCount = 1
 
-    val encoder: Encoder[ConfigExampleBase] = deriveEncoder
-    val decoder: Decoder[ConfigExampleBase] = deriveDecoder
+    val encoder: Encoder[ConfigExampleBase] = deriveConfiguredEncoder
+    val decoder: Decoder[ConfigExampleBase] = deriveConfiguredDecoder
     for {
       _ <- 1 until 100
     } {
@@ -115,7 +115,7 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
         .withSnakeCaseConstructorNames
         .withStrictDecoding
 
-    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveDecoder
+    implicit val decodeConfigExampleBase: Decoder[ConfigExampleBase] = deriveConfiguredDecoder
 
     val json =
       json"""

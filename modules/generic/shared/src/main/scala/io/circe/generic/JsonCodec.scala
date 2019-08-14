@@ -15,6 +15,7 @@ private[generic] final class GenericJsonCodecMacros(val c: blackbox.Context) ext
   import c.universe._
 
   protected[this] def semiautoObj: Symbol = symbolOf[semiauto.type].asClass.module
+  protected[this] def deriveFunctionPrefix: String = "derive"
 
   def jsonCodecAnnotationMacro(annottees: Tree*): Tree = constructJsonCodec(annottees: _*)
 }

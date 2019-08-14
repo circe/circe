@@ -9,6 +9,7 @@ abstract class JsonCodecMacros {
   import c.universe._
 
   protected[this] def semiautoObj: Symbol
+  protected[this] def deriveFunctionPrefix: String
 
   private[this] def isCaseClassOrSealed(clsDef: ClassDef) =
     clsDef.mods.hasFlag(Flag.CASE) || clsDef.mods.hasFlag(Flag.SEALED)
@@ -64,12 +65,13 @@ abstract class JsonCodecMacros {
     val decodeName = TermName("decode" + tpname.decodedName)
     val encodeName = TermName("encode" + tpname.decodedName)
     val codecName = TermName("codecFor" + tpname.decodedName)
+    def deriveName(suffix: String) = TermName(deriveFunctionPrefix + suffix)
     val (decoder, encoder, codec) = if (tparams.isEmpty) {
       val Type = tpname
       (
-        q"""implicit val $decodeName: $DecoderClass[$Type] = $semiautoObj.deriveDecoder[$Type]""",
-        q"""implicit val $encodeName: $AsObjectEncoderClass[$Type] = $semiautoObj.deriveEncoder[$Type]""",
-        q"""implicit val $codecName: $AsObjectCodecClass[$Type] = $semiautoObj.deriveCodec[$Type]"""
+        q"""implicit val $decodeName: $DecoderClass[$Type] = $semiautoObj.${deriveName("Decoder")}[$Type]""",
+        q"""implicit val $encodeName: $AsObjectEncoderClass[$Type] = $semiautoObj.${deriveName("Encoder")}[$Type]""",
+        q"""implicit val $codecName: $AsObjectCodecClass[$Type] = $semiautoObj.${deriveName("Codec")}[$Type]"""
       )
     } else {
       val tparamNames = tparams.map(_.name)
