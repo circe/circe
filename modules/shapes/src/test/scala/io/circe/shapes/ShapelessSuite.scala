@@ -1,6 +1,6 @@
 package io.circe.shapes
 
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
@@ -43,6 +43,10 @@ class ShapelessSuite extends CirceSuite {
     val result = hlistDecoder.decodeAccumulating(json"""[ $foo, $baz, $bar ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
+  }
+
+  "The hnil decoder" should "not accept non-objects" in forAll { (j: Json) =>
+    assert(Decoder[HNil].decodeJson(j).isRight == j.isObject)
   }
 
   val recordDecoder = Decoder[Record.`'foo -> String, 'bar -> Int`.T]
