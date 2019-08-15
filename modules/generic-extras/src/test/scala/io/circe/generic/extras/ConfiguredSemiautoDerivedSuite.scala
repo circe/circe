@@ -169,4 +169,11 @@ class ConfiguredSemiautoDerivedSuite extends CirceSuite {
       assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
     }
   }
+
+  "A generically derived codec for an empty case class" should "not accept non-objects" in forAll { (j: Json) =>
+    case class EmptyCc()
+
+    assert(deriveConfiguredDecoder[EmptyCc].decodeJson(j).isRight == j.isObject)
+    assert(deriveConfiguredCodec[EmptyCc].decodeJson(j).isRight == j.isObject)
+  }
 }

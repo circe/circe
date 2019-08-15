@@ -215,4 +215,11 @@ class SemiautoDerivedSuite extends CirceSuite {
     illTyped("deriveEncoder[OvergenerationExampleInner0]")
     illTyped("deriveEncoder[OvergenerationExampleInner1]")
   }
+
+  "A generically derived codec for an empty case class" should "not accept non-objects" in forAll { (j: Json) =>
+    case class EmptyCc()
+
+    assert(deriveDecoder[EmptyCc].decodeJson(j).isRight == j.isObject)
+    assert(deriveCodec[EmptyCc].decodeJson(j).isRight == j.isObject)
+  }
 }
