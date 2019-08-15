@@ -2,7 +2,7 @@ package io.circe.generic.decoding
 
 import cats.Apply
 import cats.data.Validated
-import io.circe.{ Decoder, HCursor }
+import io.circe.{ Decoder, DecodingFailure, HCursor }
 import io.circe.generic.Deriver
 import scala.language.experimental.macros
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
@@ -19,7 +19,8 @@ object ReprDecoder {
   implicit def deriveReprDecoder[R]: ReprDecoder[R] = macro Deriver.deriveDecoder[R]
 
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
-    def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
+    def apply(c: HCursor): Decoder.Result[HNil] =
+      if (c.value.isObject) Right(HNil) else Left(DecodingFailure("HNil", c.history))
   }
 
   def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(implicit F: Apply[F]): F[FieldType[K, V] :: T] =
