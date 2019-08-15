@@ -19,7 +19,7 @@ abstract class ReprAsObjectCodec[A] extends ReprDecoder[A] with ReprAsObjectEnco
 object ReprAsObjectCodec {
   implicit def deriveReprAsObjectCodec[R]: ReprAsObjectCodec[R] = macro ConfigurableDeriver.deriveConfiguredCodec[R]
 
-  val hnilReprDecoder: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
+  val hnilReprCodec: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def configuredDecode(c: HCursor)(
       transformMemberNames: String => String,
       transformConstructorNames: String => String,
