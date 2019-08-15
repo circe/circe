@@ -1,6 +1,6 @@
 package io.circe.shapes
 
-import io.circe.{ Decoder, Encoder, HCursor, Json, JsonObject }
+import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, JsonObject }
 import shapeless.{ ::, HList, HNil }
 
 trait HListInstances extends LowPriorityHListInstances {
@@ -14,7 +14,11 @@ trait HListInstances extends LowPriorityHListInstances {
 }
 
 private[shapes] trait LowPriorityHListInstances {
-  implicit final val decodeHNil: Decoder[HNil] = Decoder.const(HNil)
+  implicit final val decodeHNil: Decoder[HNil] = new Decoder[HNil] {
+    def apply(c: HCursor): Decoder.Result[HNil] =
+      if (c.value.isObject) Right(HNil) else Left(DecodingFailure("HNil", c.history))
+  }
+
   implicit final val encodeHNil: Encoder.AsObject[HNil] = new Encoder.AsObject[HNil] {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
