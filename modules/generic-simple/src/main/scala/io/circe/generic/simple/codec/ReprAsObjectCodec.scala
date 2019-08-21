@@ -14,15 +14,10 @@ import shapeless.labelled.{ FieldType, field }
 abstract class ReprAsObjectCodec[A] extends Codec.AsObject[A]
 
 object ReprAsObjectCodec {
-  def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
+  private[this] def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
     implicit F: Apply[F]
   ): F[FieldType[K, V] :: T] =
     F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
-
-  def injectLeftValue[K, V, R <: Coproduct](v: V): FieldType[K, V] :+: R = Inl(field[K].apply[V](v))
-
-  val hnilResult: Decoder.Result[HNil] = Right(HNil)
-  val hnilResultAccumulating: Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
 
   implicit val codecForHNil: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
