@@ -25,6 +25,10 @@ object SemiautoDerivedSuite {
   implicit val encodeWub: Encoder.AsObject[Wub] = deriveEncoder
   val codecForWub: Codec.AsObject[Wub] = deriveCodec
 
+  implicit val codecForBar: Codec.AsObject[Bar] = deriveCodec
+  implicit val codecForBaz: Codec.AsObject[Baz] = deriveCodec
+  implicit val codecForBam: Codec.AsObject[Bam] = deriveCodec
+
   implicit val decodeFoo: Decoder[Foo] = deriveDecoder
   implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder
   val codecForFoo: Codec.AsObject[Foo] = deriveCodec
@@ -53,6 +57,9 @@ object SemiautoDerivedSuite {
 
     implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
       Arbitrary(atDepth(0))
+
+    implicit val codecForBaseAdtExample: Codec.AsObject[BaseAdtExample] = deriveCodec
+    implicit val codecForNestedAdtExample: Codec.AsObject[NestedAdtExample] = deriveCodec
 
     implicit val decodeRecursiveAdtExample: Decoder[RecursiveAdtExample] = deriveDecoder
     implicit val encodeRecursiveAdtExample: Encoder.AsObject[RecursiveAdtExample] = deriveEncoder

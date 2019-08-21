@@ -93,9 +93,9 @@ package jsoncodecmacrossuiteaux {
   // Hierarchy
 
   @JsonCodec sealed trait Hierarchy
-  final case class Hierarchy1(i: Int, s: String) extends Hierarchy
-  final case class Hierarchy2(xs: List[String]) extends Hierarchy
-  final case class Hierarchy3(s: Single, d: Double) extends Hierarchy
+  @JsonCodec final case class Hierarchy1(i: Int, s: String) extends Hierarchy
+  @JsonCodec final case class Hierarchy2(xs: List[String]) extends Hierarchy
+  @JsonCodec final case class Hierarchy3(s: Single, d: Double) extends Hierarchy
 
   object Hierarchy {
     implicit val eqHierarchy: Eq[Hierarchy] = Eq.fromUniversalEquals
@@ -118,8 +118,8 @@ package jsoncodecmacrossuiteaux {
   // RecursiveHierarchy
 
   @JsonCodec sealed trait RecursiveHierarchy
-  final case class BaseRecursiveHierarchy(a: String) extends RecursiveHierarchy
-  final case class NestedRecursiveHierarchy(r: RecursiveHierarchy) extends RecursiveHierarchy
+  @JsonCodec final case class BaseRecursiveHierarchy(a: String) extends RecursiveHierarchy
+  @JsonCodec final case class NestedRecursiveHierarchy(r: RecursiveHierarchy) extends RecursiveHierarchy
 
   object RecursiveHierarchy {
     implicit val eqRecursiveHierarchy: Eq[RecursiveHierarchy] = Eq.fromUniversalEquals
