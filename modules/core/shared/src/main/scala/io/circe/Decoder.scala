@@ -1062,8 +1062,8 @@ object Decoder
    */
   final def decodeEither[A, B](leftKey: String, rightKey: String)(
     implicit
-    da: Decoder[A],
-    db: Decoder[B]
+    decodeA: Decoder[A],
+    decodeB: Decoder[B]
   ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
     private[this] def failure(c: HCursor): Decoder.Result[Either[A, B]] =
       Left(DecodingFailure("[A, B]Either[A, B]", c.history))
@@ -1077,7 +1077,7 @@ object Decoder
           rf match {
             case _: HCursor => failure(c)
             case rc =>
-              da(lc) match {
+              decodeA(lc) match {
                 case Right(v)    => Right(Left(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
               }
@@ -1085,7 +1085,7 @@ object Decoder
         case _ =>
           rf match {
             case rc: HCursor =>
-              db(rc) match {
+              decodeB(rc) match {
                 case Right(v)    => Right(Right(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
               }
@@ -1100,8 +1100,8 @@ object Decoder
    */
   final def decodeValidated[E, A](failureKey: String, successKey: String)(
     implicit
-    de: Decoder[E],
-    da: Decoder[A]
+    decodeE: Decoder[E],
+    decodeA: Decoder[A]
   ): Decoder[Validated[E, A]] =
     decodeEither[E, A](
       failureKey,
