@@ -39,42 +39,6 @@ object AutoDerivedSuite extends AllSyntax {
       )
   }
 
-  sealed trait RecursiveAdtExample
-  case class BaseAdtExample(a: String) extends RecursiveAdtExample
-  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample
-
-  object RecursiveAdtExample {
-    implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
-
-    private def atDepth(depth: Int): Gen[RecursiveAdtExample] = if (depth < 3)
-      Gen.oneOf(
-        Arbitrary.arbitrary[String].map(BaseAdtExample(_)),
-        atDepth(depth + 1).map(NestedAdtExample(_))
-      )
-    else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
-
-    implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
-      Arbitrary(atDepth(0))
-  }
-
-  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample])
-
-  object RecursiveWithOptionExample {
-    implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
-      Eq.fromUniversalEquals
-
-    private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
-      Gen
-        .option(atDepth(depth + 1))
-        .map(
-          RecursiveWithOptionExample(_)
-        )
-    else Gen.const(RecursiveWithOptionExample(None))
-
-    implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
-      Arbitrary(atDepth(0))
-  }
-
   import shapeless.tag
   import shapeless.tag.@@
 
@@ -125,8 +89,6 @@ class AutoDerivedSuite extends CirceSuite {
   checkLaws("Codec[Baz]", CodecTests[Baz].codec)
   checkLaws("Codec[Foo]", CodecTests[Foo].codec)
   checkLaws("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
-  checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
-  checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
     val result = Json
