@@ -173,6 +173,33 @@ class DisjunctionCodecSuite extends CirceSuite {
   checkLaws("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
 }
 
+class EnumerationCodecSuite extends CirceSuite {
+  object WeekDay extends Enumeration {
+    type WeekDay = Value
+    val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+
+    implicit val arbitraryWeekDay: Arbitrary[WeekDay.WeekDay] = Arbitrary(
+      Gen.oneOf(WeekDay.Mon, WeekDay.Tue, WeekDay.Wed, WeekDay.Thu, WeekDay.Fri, WeekDay.Sat, WeekDay.Sun)
+    )
+    implicit val eqWeekDay: Eq[WeekDay.WeekDay] = Eq.fromUniversalEquals
+  }
+
+  val decoder = Decoder.decodeEnumeration(WeekDay)
+  val encoder = Encoder.encodeEnumeration(WeekDay)
+  val codec = Codec.codecForEnumeration(WeekDay)
+
+  checkLaws("Codec[WeekDay.WeekDay]", CodecTests[WeekDay.WeekDay](decoder, encoder).unserializableCodec)
+  checkLaws("Codec[WeekDay.WeekDay] via Codec", CodecTests[WeekDay.WeekDay](codec, codec).unserializableCodec)
+  checkLaws(
+    "Codec[WeekDay.WeekDay] via Decoder and Codec",
+    CodecTests[WeekDay.WeekDay](decoder, codec).unserializableCodec
+  )
+  checkLaws(
+    "Codec[WeekDay.WeekDay] via Encoder and Codec",
+    CodecTests[WeekDay.WeekDay](codec, encoder).unserializableCodec
+  )
+}
+
 class DecodingFailureSuite extends CirceSuite {
   val n = Json.fromInt(10)
   val b = Json.True

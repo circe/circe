@@ -1,5 +1,7 @@
 package io.circe
 
+import scala.util.{ Failure, Success, Try }
+
 /**
  * A type class that provides back and forth conversion between values of type `A`
  * and the [[Json]] format.
@@ -13,6 +15,23 @@ trait Codec[A] extends Decoder[A] with Encoder[A]
 
 object Codec extends ProductCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayCodec = Codec.codecForEnumeration(WeekDay)
+   * }}}
+   * @group Utilities
+   */
+  final def codecForEnumeration[E <: Enumeration](enum: E): Codec[E#Value] = new Codec[E#Value] {
+    final def apply(c: HCursor): Decoder.Result[E#Value] = Decoder.decodeString(c).flatMap { str =>
+      Try(enum.withName(str)) match {
+        case Success(a) => Right(a)
+        case Failure(t) => Left(DecodingFailure(t.getMessage, c.history))
+      }
+    }
+    final def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+  }
 
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
     new Codec[A] {

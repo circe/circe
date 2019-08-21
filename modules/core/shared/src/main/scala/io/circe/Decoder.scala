@@ -1393,12 +1393,14 @@ object Decoder
    *
    * @group Utilities
    */
-  final def decodeEnumeration[E <: Enumeration](enum: E): Decoder[E#Value] =
-    Decoder.decodeString.flatMap { str =>
-      Decoder.instanceTry { _ =>
-        Try(enum.withName(str))
+  final def decodeEnumeration[E <: Enumeration](enum: E): Decoder[E#Value] = new Decoder[E#Value] {
+    final def apply(c: HCursor): Decoder.Result[E#Value] = Decoder.decodeString(c).flatMap { str =>
+      Try(enum.withName(str)) match {
+        case Success(a) => Right(a)
+        case Failure(t) => Left(DecodingFailure(t.getMessage, c.history))
       }
     }
+  }
 
   /**
    * {{{
