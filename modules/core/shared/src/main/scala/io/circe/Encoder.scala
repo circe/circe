@@ -451,12 +451,12 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    */
   final def encodeEither[A, B](leftKey: String, rightKey: String)(
     implicit
-    ea: Encoder[A],
-    eb: Encoder[B]
+    encodeA: Encoder[A],
+    encodeB: Encoder[B]
   ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
     final def encodeObject(a: Either[A, B]): JsonObject = a match {
-      case Left(a)  => JsonObject.singleton(leftKey, ea(a))
-      case Right(b) => JsonObject.singleton(rightKey, eb(b))
+      case Left(a)  => JsonObject.singleton(leftKey, encodeA(a))
+      case Right(b) => JsonObject.singleton(rightKey, encodeB(b))
     }
   }
 
@@ -465,8 +465,8 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    */
   final def encodeValidated[E, A](failureKey: String, successKey: String)(
     implicit
-    ee: Encoder[E],
-    ea: Encoder[A]
+    encodeE: Encoder[E],
+    encodeA: Encoder[A]
   ): AsObject[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
     case Validated.Invalid(e) => Left(e)
     case Validated.Valid(a)   => Right(a)
