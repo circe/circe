@@ -1,5 +1,6 @@
 package io.circe
 
+import cats.data.Validated
 import scala.util.{ Failure, Success, Try }
 
 /**
@@ -31,6 +32,32 @@ object Codec extends ProductCodecs {
       }
     }
     final def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+  }
+
+  final def codecForEither[A, B](leftKey: String, rightKey: String)(
+    implicit
+    decodeA: Decoder[A],
+    encodeA: Encoder[A],
+    decodeB: Decoder[B],
+    encodeB: Encoder[B]
+  ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
+    private[this] val decoder: Decoder[Either[A, B]] = Decoder.decodeEither(leftKey, rightKey)
+    private[this] val encoder: Encoder.AsObject[Either[A, B]] = Encoder.encodeEither(leftKey, rightKey)
+    final def apply(c: HCursor): Decoder.Result[Either[A, B]] = decoder(c)
+    final def encodeObject(a: Either[A, B]): JsonObject = encoder.encodeObject(a)
+  }
+
+  final def codecForValidated[E, A](failureKey: String, successKey: String)(
+    implicit
+    decodeE: Decoder[E],
+    encodeE: Encoder[E],
+    decodeA: Decoder[A],
+    encodeA: Encoder[A]
+  ): AsObject[Validated[E, A]] = new AsObject[Validated[E, A]] {
+    private[this] val decoder: Decoder[Validated[E, A]] = Decoder.decodeValidated(failureKey, successKey)
+    private[this] val encoder: Encoder.AsObject[Validated[E, A]] = Encoder.encodeValidated(failureKey, successKey)
+    final def apply(c: HCursor): Decoder.Result[Validated[E, A]] = decoder(c)
+    final def encodeObject(a: Validated[E, A]): JsonObject = encoder.encodeObject(a)
   }
 
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
