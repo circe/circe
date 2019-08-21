@@ -166,6 +166,34 @@ class CirceCodecSuite extends CirceSuite {
   checkLaws("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
 }
 
+class EitherCodecSuite extends CirceSuite {
+  val decoder = Decoder.decodeEither[Int, String]("L", "R")
+  val encoder = Encoder.encodeEither[Int, String]("L", "R")
+  val codec = Codec.codecForEither[Int, String]("L", "R")
+
+  checkLaws("Codec[Either[Int, String]]", CodecTests[Either[Int, String]](decoder, encoder).codec)
+  checkLaws("Codec[Either[Int, String]] via Codec", CodecTests[Either[Int, String]](codec, codec).codec)
+  checkLaws("Codec[Either[Int, String]] via Decoder and Codec", CodecTests[Either[Int, String]](decoder, codec).codec)
+  checkLaws("Codec[Either[Int, String]] via Encoder and Codec", CodecTests[Either[Int, String]](codec, encoder).codec)
+}
+
+class ValidatedCodecSuite extends CirceSuite {
+  val decoder = Decoder.decodeValidated[Int, String]("E", "A")
+  val encoder = Encoder.encodeValidated[Int, String]("E", "A")
+  val codec = Codec.codecForValidated[Int, String]("E", "A")
+
+  checkLaws("Codec[Validated[Int, String]]", CodecTests[Validated[Int, String]](decoder, encoder).codec)
+  checkLaws("Codec[Validated[Int, String]] via Codec", CodecTests[Validated[Int, String]](codec, codec).codec)
+  checkLaws(
+    "Codec[Validated[Int, String]] via Decoder and Codec",
+    CodecTests[Validated[Int, String]](decoder, codec).codec
+  )
+  checkLaws(
+    "Codec[Validated[Int, String]] via Encoder and Codec",
+    CodecTests[Validated[Int, String]](codec, encoder).codec
+  )
+}
+
 class DisjunctionCodecSuite extends CirceSuite {
   import disjunctionCodecs._
 
