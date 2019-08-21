@@ -13,7 +13,17 @@ import shapeless.labelled.{ FieldType, field }
  */
 abstract class ReprAsObjectCodec[A] extends Codec.AsObject[A]
 
-object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
+object ReprAsObjectCodec {
+  def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
+    implicit F: Apply[F]
+  ): F[FieldType[K, V] :: T] =
+    F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
+
+  def injectLeftValue[K, V, R <: Coproduct](v: V): FieldType[K, V] :+: R = Inl(field[K].apply[V](v))
+
+  val hnilResult: Decoder.Result[HNil] = Right(HNil)
+  val hnilResultAccumulating: Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
+
   implicit val codecForHNil: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
@@ -74,70 +84,6 @@ object ReprAsObjectCodec extends LowPriorityReprCodecInstances {
 
     def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
-      case Inr(r) => cachedCodecForR.encodeObject(r)
-    }
-  }
-
-}
-
-trait LowPriorityReprCodecInstances {
-  def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
-    implicit F: Apply[F]
-  ): F[FieldType[K, V] :: T] =
-    F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
-
-  def injectLeftValue[K, V, R <: Coproduct](v: V): FieldType[K, V] :+: R = Inl(field[K].apply[V](v))
-
-  val hnilResult: Decoder.Result[HNil] = Right(HNil)
-  val hnilResultAccumulating: Decoder.AccumulatingResult[HNil] = Validated.valid(HNil)
-
-  implicit def codecForHConsDerived[K <: Symbol, H, T <: HList](
-    implicit
-    key: Witness.Aux[K],
-    codecForH: DerivedAsObjectCodec[H],
-    codecForT: ReprAsObjectCodec[T]
-  ): ReprAsObjectCodec[FieldType[K, H] :: T] = new ReprAsObjectCodec[FieldType[K, H] :: T] {
-    def apply(c: HCursor): Decoder.Result[FieldType[K, H] :: T] = for {
-      h <- c.get(key.value.name)(codecForH)
-      t <- codecForT(c)
-    } yield field[K](h) :: t
-
-    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, H] :: T] =
-      consResults[Decoder.AccumulatingResult, K, H, T](
-        codecForH.tryDecodeAccumulating(c.downField(key.value.name)),
-        codecForT.decodeAccumulating(c)
-      )
-
-    def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, codecForH(h))) +: codecForT.encodeObject(t)
-    }
-  }
-
-  implicit def codecForCoproductDerived[K <: Symbol, L, R <: Coproduct](
-    implicit
-    key: Witness.Aux[K],
-    codecForL: DerivedAsObjectCodec[L],
-    codecForR: => ReprAsObjectCodec[R]
-  ): ReprAsObjectCodec[FieldType[K, L] :+: R] = new ReprAsObjectCodec[FieldType[K, L] :+: R] {
-    private[this] lazy val cachedCodecForR: Codec.AsObject[R] = codecForR
-
-    def apply(c: HCursor): Decoder.Result[FieldType[K, L] :+: R] =
-      c.downField(key.value.name).focus match {
-        case Some(value) => value.as(codecForL).map(l => Inl(field(l)))
-        case None        => cachedCodecForR(c).map(Inr(_))
-      }
-
-    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[FieldType[K, L] :+: R] = {
-      val f = c.downField(key.value.name)
-
-      f.focus match {
-        case Some(value) => codecForL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
-        case None        => cachedCodecForR.decodeAccumulating(c).map(Inr(_))
-      }
-    }
-
-    def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
-      case Inl(l) => JsonObject.singleton(key.value.name, codecForL(l))
       case Inr(r) => cachedCodecForR.encodeObject(r)
     }
   }

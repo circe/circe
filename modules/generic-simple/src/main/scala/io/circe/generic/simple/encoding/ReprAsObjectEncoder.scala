@@ -11,7 +11,7 @@ import shapeless.labelled.FieldType
  */
 abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A]
 
-object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances {
+object ReprAsObjectEncoder {
   implicit val encodeHNil: ReprAsObjectEncoder[HNil] = new ReprAsObjectEncoder[HNil] {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
@@ -36,33 +36,6 @@ object ReprAsObjectEncoder extends LowPriorityReprAsObjectEncoderInstances {
     implicit
     key: Witness.Aux[K],
     encodeL: Encoder[L],
-    encodeR: => ReprAsObjectEncoder[R]
-  ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
-    private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
-
-    def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
-      case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
-      case Inr(r) => cachedEncodeR.encodeObject(r)
-    }
-  }
-}
-
-private[circe] trait LowPriorityReprAsObjectEncoderInstances {
-  implicit def encodeHConsDerived[K <: Symbol, H, T <: HList](
-    implicit
-    key: Witness.Aux[K],
-    encodeH: DerivedAsObjectEncoder[H],
-    encodeT: ReprAsObjectEncoder[T]
-  ): ReprAsObjectEncoder[FieldType[K, H] :: T] = new ReprAsObjectEncoder[FieldType[K, H] :: T] {
-    def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, encodeH(h))) +: encodeT.encodeObject(t)
-    }
-  }
-
-  implicit def encodeCoproductDerived[K <: Symbol, L, R <: Coproduct](
-    implicit
-    key: Witness.Aux[K],
-    encodeL: DerivedAsObjectEncoder[L],
     encodeR: => ReprAsObjectEncoder[R]
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
