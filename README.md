@@ -42,6 +42,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [MatchesFashion](https://www.matchesfashion.com)
 * [Merit](https://merits.com)
 * [Metacommerce](https://www.metacommerce.ru)
+* [Mobile GmbH](https://www.mobile.de)
 * [Ocado Technology](https://ocadotechnology.com)
 * [OVO Energy](https://www.ovoenergy.com)
 * [Onfocus](https://onfocus.io)
