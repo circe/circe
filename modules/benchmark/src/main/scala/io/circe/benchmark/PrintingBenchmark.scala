@@ -17,26 +17,26 @@ import org.openjdk.jmh.annotations._
 @OutputTimeUnit(TimeUnit.SECONDS)
 class PrintingBenchmark extends ExampleData {
   @Benchmark
-  def printFoosToString: String = Printer.noSpaces.pretty(foosJson)
+  def printFoosToString: String = Printer.noSpaces.print(foosJson)
 
   @Benchmark
-  def printFoosToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(foosJson)
+  def printFoosToByteBuffer: ByteBuffer = Printer.noSpaces.printToByteBuffer(foosJson)
 
   @Benchmark
-  def printHelloWorldToString: String = Printer.noSpaces.pretty(helloWorldJson)
+  def printHelloWorldToString: String = Printer.noSpaces.print(helloWorldJson)
 
   @Benchmark
-  def printHelloWorldToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(helloWorldJson)
+  def printHelloWorldToByteBuffer: ByteBuffer = Printer.noSpaces.printToByteBuffer(helloWorldJson)
 
   @Benchmark
-  def printBooleansToString: String = Printer.noSpaces.pretty(booleansJson)
+  def printBooleansToString: String = Printer.noSpaces.print(booleansJson)
 
   @Benchmark
-  def printBooleansToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(booleansJson)
+  def printBooleansToByteBuffer: ByteBuffer = Printer.noSpaces.printToByteBuffer(booleansJson)
 
   @Benchmark
-  def printIntsToString: String = Printer.noSpaces.pretty(intsJson)
+  def printIntsToString: String = Printer.noSpaces.print(intsJson)
 
   @Benchmark
-  def printIntsToByteBuffer: ByteBuffer = Printer.noSpaces.prettyByteBuffer(intsJson)
+  def printIntsToByteBuffer: ByteBuffer = Printer.noSpaces.printToByteBuffer(intsJson)
 }

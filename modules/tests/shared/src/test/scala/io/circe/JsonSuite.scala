@@ -231,11 +231,11 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
   }
 
   "printer shortcuts" should "print the object" in forAll { (json: Json) =>
-    assert(json.noSpaces === Printer.noSpaces.pretty(json))
-    assert(json.spaces2 === Printer.spaces2.pretty(json))
-    assert(json.spaces4 === Printer.spaces4.pretty(json))
-    assert(json.noSpacesSortKeys === Printer.noSpacesSortKeys.pretty(json))
-    assert(json.spaces2SortKeys === Printer.spaces2SortKeys.pretty(json))
-    assert(json.spaces4SortKeys === Printer.spaces4SortKeys.pretty(json))
+    assert(json.noSpaces === Printer.noSpaces.print(json))
+    assert(json.spaces2 === Printer.spaces2.print(json))
+    assert(json.spaces4 === Printer.spaces4.print(json))
+    assert(json.noSpacesSortKeys === Printer.noSpacesSortKeys.print(json))
+    assert(json.spaces2SortKeys === Printer.spaces2SortKeys.print(json))
+    assert(json.spaces4SortKeys === Printer.spaces4SortKeys.print(json))
   }
 }

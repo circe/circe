@@ -13,12 +13,12 @@ class PrinterWriterReuseSuite extends CirceSuite with ScalaFutures {
     sizeRange = 100
   )
 
-  "Printer#reuseWriters" should "not change the behavior of pretty" in forAll { (values: List[Json]) =>
+  "Printer#reuseWriters" should "not change the behavior of print" in forAll { (values: List[Json]) =>
     val default = Printer.spaces4
     val reusing = default.copy(reuseWriters = true)
-    val expected = values.map(default.pretty)
+    val expected = values.map(default.print)
 
-    whenReady(Future.traverse(values)(value => Future(reusing.pretty(value)))) { result =>
+    whenReady(Future.traverse(values)(value => Future(reusing.print(value)))) { result =>
       assert(result === expected)
     }
   }

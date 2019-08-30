@@ -22,7 +22,7 @@ trait Spaces2PrinterExample { this: Spaces2PrinterSuite =>
   source.close()
 
   "Printer.spaces2" should "generate the expected output for the example doc" in {
-    val printed = Printer.spaces2.pretty(doc) + "\n"
+    val printed = Printer.spaces2.print(doc) + "\n"
 
     assert(printed === expected)
   }

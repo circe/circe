@@ -182,7 +182,7 @@ final case class Printer(
   /**
    * Returns a string representation of a pretty-printed JSON value.
    */
-  final def pretty(json: Json): String = {
+  final def print(json: Json): String = {
     val writer = if (reuseWriters && stringWriter.ne(null)) {
       val w = stringWriter.get()
       w.setLength(0)
@@ -196,6 +196,12 @@ final case class Printer(
     writer.toString
   }
 
+  /**
+   * Returns a string representation of a pretty-printed JSON value.
+   */
+  @deprecated("Use print", "0.12.0")
+  final def pretty(json: Json): String = pretty(json)
+
   @transient
   private[this] final val sizePredictor: ThreadLocal[Printer.SizePredictor] =
     new ThreadLocal[Printer.SizePredictor] {
@@ -203,7 +209,7 @@ final case class Printer(
         new Printer.AdaptiveSizePredictor()
     }
 
-  final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = {
+  final def printToByteBuffer(json: Json, cs: Charset): ByteBuffer = {
     val predictor =
       if (predictSize && sizePredictor.ne(null)) sizePredictor.get()
       else Printer.NoSizePredictor
@@ -216,8 +222,13 @@ final case class Printer(
     writer.toByteBuffer
   }
 
-  final def prettyByteBuffer(json: Json): ByteBuffer =
-    prettyByteBuffer(json, StandardCharsets.UTF_8)
+  final def printToByteBuffer(json: Json): ByteBuffer =
+    printToByteBuffer(json, StandardCharsets.UTF_8)
+  @deprecated("Use printToByteBuffer", "0.12.0")
+  final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = printToByteBuffer(json)
+
+  @deprecated("Use printToByteBuffer", "0.12.0")
+  final def prettyByteBuffer(json: Json): ByteBuffer = printToByteBuffer(json)
 
   /**
    * The same pretty-printer configuration that outputs fields in sorted order.

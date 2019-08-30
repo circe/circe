@@ -109,40 +109,46 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
    */
-  final def pretty(p: Printer): String = p.pretty(this)
+  final def printWith(p: Printer): String = p.print(this)
+
+  /**
+   * Pretty-print this JSON value to a string using the given pretty-printer.
+   */
+  @deprecated("Use printWith", "0.12.0")
+  final def pretty(p: Printer): String = printWith(p)
 
   /**
    * Pretty-print this JSON value to a string with no spaces.
    */
-  final def noSpaces: String = Printer.noSpaces.pretty(this)
+  final def noSpaces: String = Printer.noSpaces.print(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of two spaces.
    */
-  final def spaces2: String = Printer.spaces2.pretty(this)
+  final def spaces2: String = Printer.spaces2.print(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of four spaces.
    */
-  final def spaces4: String = Printer.spaces4.pretty(this)
+  final def spaces4: String = Printer.spaces4.print(this)
 
   /**
    * Pretty-print this JSON value to a string with no spaces, with object keys
    * sorted alphabetically.
    */
-  final def noSpacesSortKeys: String = Printer.noSpacesSortKeys.pretty(this)
+  final def noSpacesSortKeys: String = Printer.noSpacesSortKeys.print(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of two spaces, with
    * object keys sorted alphabetically.
    */
-  final def spaces2SortKeys: String = Printer.spaces2SortKeys.pretty(this)
+  final def spaces2SortKeys: String = Printer.spaces2SortKeys.print(this)
 
   /**
    * Pretty-print this JSON value to a string indentation of four spaces, with
    * object keys sorted alphabetically.
    */
-  final def spaces4SortKeys: String = Printer.spaces4SortKeys.pretty(this)
+  final def spaces4SortKeys: String = Printer.spaces4SortKeys.print(this)
 
   /**
    * Perform a deep merge of this JSON value with another JSON value.
