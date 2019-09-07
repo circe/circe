@@ -156,11 +156,18 @@ trait Decoder[A] extends Serializable { self =>
   final def withErrorMessage(message: String): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = self(c) match {
       case r @ Right(_) => r
-      case Left(e)      => Left(e.withMessage(message))
+      case Left(e)      => e match {
+        case e: SingleDecodingFailure => Left(e.withMessage(message))
+        case e: AggregatedDecodingFailure => Left(e.withMessage(message)) // Not sure I like this
+      }
     }
 
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-      self.decodeAccumulating(c).leftMap(_.map(_.withMessage(message)))
+      self.decodeAccumulating(c).leftMap(_.map( e => e match {
+        case e: SingleDecodingFailure => e.withMessage(message)
+        case e: AggregatedDecodingFailure => e.withMessage(message)
+      }
+      ))
   }
 
   /**
