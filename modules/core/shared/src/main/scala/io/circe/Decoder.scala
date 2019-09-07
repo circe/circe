@@ -158,7 +158,7 @@ trait Decoder[A] extends Serializable { self =>
       case r @ Right(_) => r
       case Left(e)      => e match {
         case e: SingleDecodingFailure => Left(e.withMessage(message))
-        case e: AggregatedDecodingFailure => Left(e.withMessage(message)) // Not sure I like this
+        case e: AggregatedDecodingFailure => Left(e.withMessage(message))
       }
     }
 
