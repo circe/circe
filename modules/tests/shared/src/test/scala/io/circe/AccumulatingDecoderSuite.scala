@@ -104,4 +104,4 @@ class AccumulatingDecoderSpec extends CirceSuite {
   }
 
 }
-*/
+ */

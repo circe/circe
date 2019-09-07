@@ -4,7 +4,7 @@ import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.{ DownArray, DownN, DownField }
+import io.circe.CursorOp.{ DownArray, DownField, DownN }
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -607,20 +607,18 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
   }
 
-
-
   "parallel decoding" should "decode multiple errors" in {
     import cats.Show
     import cats.syntax.show._
     final case class Foo(a: String, j: String, bar: Int)
     implicit val fooShow = Show.fromToString[Foo]
     implicit val fooEq = Eq.fromUniversalEquals[Foo]
-    implicit val decoderFoo = new Decoder[Foo]{
-      def apply(c: HCursor): Decoder.Result[Foo] = 
+    implicit val decoderFoo = new Decoder[Foo] {
+      def apply(c: HCursor): Decoder.Result[Foo] =
         (
           c.downField("a").as[String],
           c.downField("j").as[String],
-          c.downField("bar").as[Int],
+          c.downField("bar").as[Int]
         ).parMapN(Foo(_, _, _))
     }
     val json = Json.obj(
