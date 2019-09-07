@@ -61,7 +61,7 @@ sealed abstract class SingleDecodingFailure(val message: String) extends Decodin
 
   final def withMessage(message: String): SingleDecodingFailure = copy(message = message)
 
-  override final def toString: String = s"SingleDecodingFailure($message, $history)"
+  override final def toString: String = s"DecodingFailure($message, $history)"
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
     case _                      => false
@@ -129,7 +129,7 @@ object DecodingFailure {
   implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { 
     case e: SingleDecodingFailure =>
       val path = CursorOp.opsToPath(e.history)
-      s"SingleDecodingFailure at ${path}: ${e.message}"
+      s"DecodingFailure at ${path}: ${e.message}"
     case e: AggregatedDecodingFailure => 
       s"AggregatedDecodingFailure: ${e.message}"
   }
