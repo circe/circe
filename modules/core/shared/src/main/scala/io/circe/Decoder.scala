@@ -604,7 +604,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaBoolean: Decoder[java.lang.Boolean] = decodeBoolean.map(java.lang.Boolean.valueOf)
+  implicit final lazy val decodeJavaBoolean: Decoder[java.lang.Boolean] = decodeBoolean.map(java.lang.Boolean.valueOf)
 
   /**
    * @group Decoding
@@ -621,7 +621,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaCharacter: Decoder[java.lang.Character] = decodeChar.map(java.lang.Character.valueOf)
+  implicit final lazy val decodeJavaCharacter: Decoder[java.lang.Character] = decodeChar.map(java.lang.Character.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Float]].
@@ -630,7 +630,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
+  implicit final lazy val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.value match {
       case Json.JNumber(number) => Right(number.toFloat)
       case Json.JString(string) =>
@@ -648,7 +648,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaFloat: Decoder[java.lang.Float] = decodeFloat.map(java.lang.Float.valueOf)
+  implicit final lazy val decodeJavaFloat: Decoder[java.lang.Float] = decodeFloat.map(java.lang.Float.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Double]].
@@ -677,7 +677,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaDouble: Decoder[java.lang.Double] = decodeDouble.map(java.lang.Double.valueOf)
+  implicit final lazy val decodeJavaDouble: Decoder[java.lang.Double] = decodeDouble.map(java.lang.Double.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Byte]].
@@ -686,7 +686,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
+  implicit final lazy val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
     final def apply(c: HCursor): Result[Byte] = c.value match {
       case Json.JNumber(number) =>
         number.toByte match {
@@ -707,7 +707,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaByte: Decoder[java.lang.Byte] = decodeByte.map(java.lang.Byte.valueOf)
+  implicit final lazy val decodeJavaByte: Decoder[java.lang.Byte] = decodeByte.map(java.lang.Byte.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Short]].
@@ -716,7 +716,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
+  implicit final lazy val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
     final def apply(c: HCursor): Result[Short] = c.value match {
       case Json.JNumber(number) =>
         number.toShort match {
@@ -737,7 +737,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaShort: Decoder[java.lang.Short] = decodeShort.map(java.lang.Short.valueOf)
+  implicit final lazy val decodeJavaShort: Decoder[java.lang.Short] = decodeShort.map(java.lang.Short.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Int]].
@@ -767,7 +767,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaInteger: Decoder[java.lang.Integer] = decodeInt.map(java.lang.Integer.valueOf)
+  implicit final lazy val decodeJavaInteger: Decoder[java.lang.Integer] = decodeInt.map(java.lang.Integer.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Long]].
@@ -800,7 +800,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaLong: Decoder[java.lang.Long] = decodeLong.map(java.lang.Long.valueOf)
+  implicit final lazy val decodeJavaLong: Decoder[java.lang.Long] = decodeLong.map(java.lang.Long.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.math.BigInt]].
@@ -812,7 +812,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
+  implicit final lazy val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
     final def apply(c: HCursor): Result[BigInt] = c.value match {
       case Json.JNumber(number) =>
         number.toBigInt match {
@@ -833,7 +833,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaBigInteger: Decoder[java.math.BigInteger] = decodeBigInt.map(_.bigInteger)
+  implicit final lazy val decodeJavaBigInteger: Decoder[java.math.BigInteger] = decodeBigInt.map(_.bigInteger)
 
   /**
    * Decode a JSON value into a [[scala.math.BigDecimal]].
@@ -848,7 +848,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
+  implicit final lazy val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
     final def apply(c: HCursor): Result[BigDecimal] = c.value match {
       case Json.JNumber(number) =>
         number.toBigDecimal match {
@@ -869,12 +869,12 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] = decodeBigDecimal.map(_.bigDecimal)
+  implicit final lazy val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] = decodeBigDecimal.map(_.bigDecimal)
 
   /**
    * @group Decoding
    */
-  implicit final val decodeUUID: Decoder[UUID] = new Decoder[UUID] {
+  implicit final lazy val decodeUUID: Decoder[UUID] = new Decoder[UUID] {
     private[this] def fail(c: HCursor): Result[UUID] = Left(DecodingFailure("UUID", c.history))
 
     final def apply(c: HCursor): Result[UUID] = c.value match {
@@ -936,7 +936,7 @@ object Decoder
   /**
    * @group Decoding
    */
-  implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
+  implicit final lazy val decodeNone: Decoder[None.type] = new Decoder[None.type] {
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None)
     else {
       Left(DecodingFailure("None", c.history))
@@ -1141,7 +1141,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeDuration: Decoder[Duration] =
+  implicit final lazy val decodeDuration: Decoder[Duration] =
     new JavaTimeDecoder[Duration]("Duration") {
       protected[this] final def parseUnsafe(input: String): Duration = Duration.parse(input)
 
@@ -1154,7 +1154,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeInstant: Decoder[Instant] =
+  implicit final lazy val decodeInstant: Decoder[Instant] =
     new StandardJavaTimeDecoder[Instant]("Instant") {
       protected[this] final def parseUnsafe(input: String): Instant = Instant.parse(input)
     }
@@ -1162,7 +1162,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodePeriod: Decoder[Period] =
+  implicit final lazy val decodePeriod: Decoder[Period] =
     new JavaTimeDecoder[Period]("Period") {
       protected[this] final def parseUnsafe(input: String): Period = Period.parse(input)
 
@@ -1175,7 +1175,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeZoneId: Decoder[ZoneId] =
+  implicit final lazy val decodeZoneId: Decoder[ZoneId] =
     new StandardJavaTimeDecoder[ZoneId]("ZoneId") {
       protected[this] final def parseUnsafe(input: String): ZoneId = ZoneId.of(input)
     }
@@ -1273,7 +1273,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeLocalDate: Decoder[LocalDate] =
+  implicit final lazy val decodeLocalDate: Decoder[LocalDate] =
     new StandardJavaTimeDecoder[LocalDate]("LocalDate") {
       protected[this] final def parseUnsafe(input: String): LocalDate =
         LocalDate.parse(input, ISO_LOCAL_DATE)
@@ -1282,7 +1282,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeLocalTime: Decoder[LocalTime] =
+  implicit final lazy val decodeLocalTime: Decoder[LocalTime] =
     new StandardJavaTimeDecoder[LocalTime]("LocalTime") {
       protected[this] final def parseUnsafe(input: String): LocalTime =
         LocalTime.parse(input, ISO_LOCAL_TIME)
@@ -1291,7 +1291,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeLocalDateTime: Decoder[LocalDateTime] =
+  implicit final lazy val decodeLocalDateTime: Decoder[LocalDateTime] =
     new StandardJavaTimeDecoder[LocalDateTime]("LocalDateTime") {
       protected[this] final def parseUnsafe(input: String): LocalDateTime =
         LocalDateTime.parse(input, ISO_LOCAL_DATE_TIME)
@@ -1300,7 +1300,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeMonthDay: Decoder[MonthDay] =
+  implicit final lazy val decodeMonthDay: Decoder[MonthDay] =
     new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
       protected[this] final def parseUnsafe(input: String): MonthDay =
         MonthDay.parse(input)
@@ -1309,7 +1309,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeOffsetTime: Decoder[OffsetTime] =
+  implicit final lazy val decodeOffsetTime: Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
       protected[this] final def parseUnsafe(input: String): OffsetTime =
         OffsetTime.parse(input, ISO_OFFSET_TIME)
@@ -1318,7 +1318,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeOffsetDateTime: Decoder[OffsetDateTime] =
+  implicit final lazy val decodeOffsetDateTime: Decoder[OffsetDateTime] =
     new StandardJavaTimeDecoder[OffsetDateTime]("OffsetDateTime") {
       protected[this] final def parseUnsafe(input: String): OffsetDateTime =
         OffsetDateTime.parse(input, ISO_OFFSET_DATE_TIME)
@@ -1327,7 +1327,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeYear: Decoder[Year] =
+  implicit final lazy val decodeYear: Decoder[Year] =
     new StandardJavaTimeDecoder[Year]("Year") {
       protected[this] final def parseUnsafe(input: String): Year =
         Year.parse(input)
@@ -1336,7 +1336,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeYearMonth: Decoder[YearMonth] =
+  implicit final lazy val decodeYearMonth: Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
       protected[this] final def parseUnsafe(input: String): YearMonth =
         YearMonth.parse(input)
@@ -1345,7 +1345,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeZonedDateTime: Decoder[ZonedDateTime] =
+  implicit final lazy val decodeZonedDateTime: Decoder[ZonedDateTime] =
     new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
       protected[this] final def parseUnsafe(input: String): ZonedDateTime =
         ZonedDateTime.parse(input, ISO_ZONED_DATE_TIME)
@@ -1354,7 +1354,7 @@ object Decoder
   /**
    * @group Time
    */
-  implicit final val decodeZoneOffset: Decoder[ZoneOffset] =
+  implicit final lazy val decodeZoneOffset: Decoder[ZoneOffset] =
     new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
       protected[this] final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
     }
@@ -1362,7 +1362,7 @@ object Decoder
   /**
    * @group Instances
    */
-  implicit final val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+  implicit final lazy val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
