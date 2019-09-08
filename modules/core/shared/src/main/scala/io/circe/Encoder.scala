@@ -179,7 +179,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
+  implicit final lazy val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
 
   /**
    * @group Encoding
@@ -191,7 +191,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaCharacter: Encoder[java.lang.Character] = encodeChar.contramap(_.charValue())
+  implicit final lazy val encodeJavaCharacter: Encoder[java.lang.Character] = encodeChar.contramap(_.charValue())
 
   /**
    * Note that on Scala.js the encoding of `Float` values is subject to the
@@ -200,14 +200,14 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    *
    * @group Encoding
    */
-  implicit final val encodeFloat: Encoder[Float] = new Encoder[Float] {
+  implicit final lazy val encodeFloat: Encoder[Float] = new Encoder[Float] {
     final def apply(a: Float): Json = Json.fromFloatOrNull(a)
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaFloat: Encoder[java.lang.Float] = encodeFloat.contramap(_.floatValue())
+  implicit final lazy val encodeJavaFloat: Encoder[java.lang.Float] = encodeFloat.contramap(_.floatValue())
 
   /**
    * @group Encoding
@@ -219,31 +219,31 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaDouble: Encoder[java.lang.Double] = encodeDouble.contramap(_.doubleValue())
+  implicit final lazy val encodeJavaDouble: Encoder[java.lang.Double] = encodeDouble.contramap(_.doubleValue())
 
   /**
    * @group Encoding
    */
-  implicit final val encodeByte: Encoder[Byte] = new Encoder[Byte] {
+  implicit final lazy val encodeByte: Encoder[Byte] = new Encoder[Byte] {
     final def apply(a: Byte): Json = Json.fromInt(a.toInt)
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaByte: Encoder[java.lang.Byte] = encodeByte.contramap(_.byteValue())
+  implicit final lazy val encodeJavaByte: Encoder[java.lang.Byte] = encodeByte.contramap(_.byteValue())
 
   /**
    * @group Encoding
    */
-  implicit final val encodeShort: Encoder[Short] = new Encoder[Short] {
+  implicit final lazy val encodeShort: Encoder[Short] = new Encoder[Short] {
     final def apply(a: Short): Json = Json.fromInt(a.toInt)
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaShort: Encoder[java.lang.Short] = encodeShort.contramap(_.shortValue())
+  implicit final lazy val encodeJavaShort: Encoder[java.lang.Short] = encodeShort.contramap(_.shortValue())
 
   /**
    * @group Encoding
@@ -255,7 +255,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaInteger: Encoder[java.lang.Integer] = encodeInt.contramap(_.intValue())
+  implicit final lazy val encodeJavaInteger: Encoder[java.lang.Integer] = encodeInt.contramap(_.intValue())
 
   /**
    * @group Encoding
@@ -267,36 +267,36 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
+  implicit final lazy val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
 
   /**
    * @group Encoding
    */
-  implicit final val encodeBigInt: Encoder[BigInt] = new Encoder[BigInt] {
+  implicit final lazy val encodeBigInt: Encoder[BigInt] = new Encoder[BigInt] {
     final def apply(a: BigInt): Json = Json.fromBigInt(a)
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaBigInteger: Encoder[java.math.BigInteger] = encodeBigInt.contramap(BigInt.apply)
+  implicit final lazy val encodeJavaBigInteger: Encoder[java.math.BigInteger] = encodeBigInt.contramap(BigInt.apply)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeBigDecimal: Encoder[BigDecimal] = new Encoder[BigDecimal] {
+  implicit final lazy val encodeBigDecimal: Encoder[BigDecimal] = new Encoder[BigDecimal] {
     final def apply(a: BigDecimal): Json = Json.fromBigDecimal(a)
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
+  implicit final lazy val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
+  implicit final lazy val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
   }
 
@@ -318,7 +318,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final val encodeNone: Encoder[None.type] = new Encoder[None.type] {
+  implicit final lazy val encodeNone: Encoder[None.type] = new Encoder[None.type] {
     final def apply(a: None.type): Json = Json.Null
   }
 
@@ -475,7 +475,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Instances
    */
-  implicit final val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
+  implicit final lazy val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 
@@ -534,28 +534,28 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeDuration: Encoder[Duration] = new Encoder[Duration] {
+  implicit final lazy val encodeDuration: Encoder[Duration] = new Encoder[Duration] {
     final def apply(a: Duration) = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodeInstant: Encoder[Instant] = new Encoder[Instant] {
+  implicit final lazy val encodeInstant: Encoder[Instant] = new Encoder[Instant] {
     final def apply(a: Instant): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodePeriod: Encoder[Period] = new Encoder[Period] {
+  implicit final lazy val encodePeriod: Encoder[Period] = new Encoder[Period] {
     final def apply(a: Period): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodeZoneId: Encoder[ZoneId] = new Encoder[ZoneId] {
+  implicit final lazy val encodeZoneId: Encoder[ZoneId] = new Encoder[ZoneId] {
     final def apply(a: ZoneId): Json = Json.fromString(a.getId)
   }
 
@@ -642,7 +642,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeLocalDate: Encoder[LocalDate] =
+  implicit final lazy val encodeLocalDate: Encoder[LocalDate] =
     new JavaTimeEncoder[LocalDate] {
       protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE
     }
@@ -650,7 +650,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeLocalTime: Encoder[LocalTime] =
+  implicit final lazy val encodeLocalTime: Encoder[LocalTime] =
     new JavaTimeEncoder[LocalTime] {
       protected[this] final def format: DateTimeFormatter = ISO_LOCAL_TIME
     }
@@ -658,7 +658,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeLocalDateTime: Encoder[LocalDateTime] =
+  implicit final lazy val encodeLocalDateTime: Encoder[LocalDateTime] =
     new JavaTimeEncoder[LocalDateTime] {
       protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE_TIME
     }
@@ -666,14 +666,14 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeMonthDay: Encoder[MonthDay] = new Encoder[MonthDay] {
+  implicit final lazy val encodeMonthDay: Encoder[MonthDay] = new Encoder[MonthDay] {
     final def apply(a: MonthDay): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodeOffsetTime: Encoder[OffsetTime] =
+  implicit final lazy val encodeOffsetTime: Encoder[OffsetTime] =
     new JavaTimeEncoder[OffsetTime] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
     }
@@ -681,7 +681,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeOffsetDateTime: Encoder[OffsetDateTime] =
+  implicit final lazy val encodeOffsetDateTime: Encoder[OffsetDateTime] =
     new JavaTimeEncoder[OffsetDateTime] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
     }
@@ -689,21 +689,21 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeYear: Encoder[Year] = new Encoder[Year] {
+  implicit final lazy val encodeYear: Encoder[Year] = new Encoder[Year] {
     final def apply(a: Year): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
+  implicit final lazy val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
     final def apply(a: YearMonth): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final val encodeZonedDateTime: Encoder[ZonedDateTime] =
+  implicit final lazy val encodeZonedDateTime: Encoder[ZonedDateTime] =
     new JavaTimeEncoder[ZonedDateTime] {
       protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
     }
@@ -711,7 +711,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
+  implicit final lazy val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
     final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
 
@@ -819,7 +819,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
     /**
      * @group Instances
      */
-    implicit final val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
+    implicit final lazy val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
       final def contramap[A, B](e: AsArray[A])(f: B => A): AsArray[B] = e.contramapArray(f)
     }
   }
@@ -899,7 +899,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
     /**
      * @group Instances
      */
-    implicit final val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
+    implicit final lazy val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
       final def contramap[A, B](e: AsObject[A])(f: B => A): AsObject[B] = e.contramapObject(f)
     }
   }
