@@ -196,7 +196,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (hygiene, hygieneJS)
 )
 
-lazy val circeJsModules = Seq[Project](scalajs)
+lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
 lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 
@@ -395,6 +395,15 @@ lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
 lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).dependsOn(coreJS)
+lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
+  .enablePlugins(ScalaJSPlugin)
+  .settings(noPublishSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
+    )
+  )
+  .dependsOn(coreJS)
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
