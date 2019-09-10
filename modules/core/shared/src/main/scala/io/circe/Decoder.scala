@@ -631,7 +631,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
+  implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.value match {
       case Json.JNumber(number) => Right(number.toFloat)
       case Json.JString(string) =>
@@ -687,7 +687,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
+  implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
     final def apply(c: HCursor): Result[Byte] = c.value match {
       case Json.JNumber(number) =>
         number.toByte match {
@@ -717,7 +717,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
+  implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
     final def apply(c: HCursor): Result[Short] = c.value match {
       case Json.JNumber(number) =>
         number.toShort match {
@@ -813,7 +813,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
+  implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
     final def apply(c: HCursor): Result[BigInt] = c.value match {
       case Json.JNumber(number) =>
         number.toBigInt match {
@@ -849,7 +849,7 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
+  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
     final def apply(c: HCursor): Result[BigDecimal] = c.value match {
       case Json.JNumber(number) =>
         number.toBigDecimal match {
@@ -937,7 +937,7 @@ object Decoder
   /**
    * @group Decoding
    */
-  implicit final lazy val decodeNone: Decoder[None.type] = new Decoder[None.type] {
+  implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None)
     else {
       Left(DecodingFailure("None", c.history))
@@ -1363,7 +1363,7 @@ object Decoder
   /**
    * @group Instances
    */
-  implicit final lazy val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+  implicit final val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
