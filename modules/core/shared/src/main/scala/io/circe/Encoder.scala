@@ -200,7 +200,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    *
    * @group Encoding
    */
-  implicit final lazy val encodeFloat: Encoder[Float] = new Encoder[Float] {
+  implicit final val encodeFloat: Encoder[Float] = new Encoder[Float] {
     final def apply(a: Float): Json = Json.fromFloatOrNull(a)
   }
 
@@ -224,7 +224,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeByte: Encoder[Byte] = new Encoder[Byte] {
+  implicit final val encodeByte: Encoder[Byte] = new Encoder[Byte] {
     final def apply(a: Byte): Json = Json.fromInt(a.toInt)
   }
 
@@ -236,7 +236,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeShort: Encoder[Short] = new Encoder[Short] {
+  implicit final val encodeShort: Encoder[Short] = new Encoder[Short] {
     final def apply(a: Short): Json = Json.fromInt(a.toInt)
   }
 
@@ -272,7 +272,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeBigInt: Encoder[BigInt] = new Encoder[BigInt] {
+  implicit final val encodeBigInt: Encoder[BigInt] = new Encoder[BigInt] {
     final def apply(a: BigInt): Json = Json.fromBigInt(a)
   }
 
@@ -284,7 +284,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeBigDecimal: Encoder[BigDecimal] = new Encoder[BigDecimal] {
+  implicit final val encodeBigDecimal: Encoder[BigDecimal] = new Encoder[BigDecimal] {
     final def apply(a: BigDecimal): Json = Json.fromBigDecimal(a)
   }
 
@@ -319,7 +319,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeNone: Encoder[None.type] = new Encoder[None.type] {
+  implicit final val encodeNone: Encoder[None.type] = new Encoder[None.type] {
     final def apply(a: None.type): Json = Json.Null
   }
 
@@ -476,7 +476,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Instances
    */
-  implicit final lazy val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
+  implicit final val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
 
@@ -820,7 +820,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
     /**
      * @group Instances
      */
-    implicit final lazy val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
+    implicit final val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
       final def contramap[A, B](e: AsArray[A])(f: B => A): AsArray[B] = e.contramapArray(f)
     }
   }
@@ -900,7 +900,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
     /**
      * @group Instances
      */
-    implicit final lazy val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
+    implicit final val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
       final def contramap[A, B](e: AsObject[A])(f: B => A): AsObject[B] = e.contramapObject(f)
     }
   }
