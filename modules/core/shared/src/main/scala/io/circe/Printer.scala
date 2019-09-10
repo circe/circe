@@ -200,7 +200,7 @@ final case class Printer(
    * Returns a string representation of a pretty-printed JSON value.
    */
   @deprecated("Use print", "0.12.0")
-  final def pretty(json: Json): String = pretty(json)
+  final def pretty(json: Json): String = print(json)
 
   @transient
   private[this] final val sizePredictor: ThreadLocal[Printer.SizePredictor] =
