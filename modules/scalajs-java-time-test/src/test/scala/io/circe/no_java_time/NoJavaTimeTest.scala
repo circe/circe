@@ -12,4 +12,3 @@ class NoJavaTimeTest extends FunSuite {
     assert(Encoder[List[String]].apply(Nil) === Json.arr())
   }
 }
-
