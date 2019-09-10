@@ -621,7 +621,8 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaCharacter: Decoder[java.lang.Character] = decodeChar.map(java.lang.Character.valueOf)
+  implicit final lazy val decodeJavaCharacter: Decoder[java.lang.Character] =
+    decodeChar.map(java.lang.Character.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Float]].

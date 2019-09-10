@@ -291,7 +291,8 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] = encodeBigDecimal.contramap(BigDecimal.apply)
+  implicit final lazy val encodeJavaBigDecimal: Encoder[java.math.BigDecimal] =
+    encodeBigDecimal.contramap(BigDecimal.apply)
 
   /**
    * @group Encoding
