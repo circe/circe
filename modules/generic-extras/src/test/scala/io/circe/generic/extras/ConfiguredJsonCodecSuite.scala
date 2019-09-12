@@ -43,6 +43,22 @@ object ConfiguredJsonCodecSuite {
         } yield AccessModifier(a)
       )
   }
+
+  @ConfiguredJsonCodec case class GenericExample[A](a: A, b: Int)
+
+  object GenericExample {
+    implicit def eqGenericExample[A: Eq]: Eq[GenericExample[A]] = Eq.instance {
+      case (GenericExample(a1, b1), GenericExample(a2, b2)) => Eq[A].eqv(a1, a2) && b1 == b2
+    }
+
+    implicit def arbitraryGenericExample[A: Arbitrary]: Arbitrary[GenericExample[A]] =
+      Arbitrary(
+        for {
+          a <- Arbitrary.arbitrary[A]
+          b <- Arbitrary.arbitrary[Int]
+        } yield GenericExample(a, b)
+      )
+  }
 }
 
 class ConfiguredJsonCodecSuite extends CirceSuite {
@@ -50,6 +66,7 @@ class ConfiguredJsonCodecSuite extends CirceSuite {
 
   checkLaws("Codec[ConfigExampleBase]", CodecTests[ConfigExampleBase].codec)
   checkLaws("Codec[AccessModifier]", CodecTests[AccessModifier].codec)
+  checkLaws("Codec[GenericExample[Int]]", CodecTests[GenericExample[Int]].codec)
 
   "ConfiguredJsonCodec" should "support configuration" in forAll { (f: String, b: Double) =>
     val foo: ConfigExampleBase = ConfigExampleFoo(f, 0, b)
@@ -80,5 +97,18 @@ class ConfiguredJsonCodecSuite extends CirceSuite {
     @ConfiguredJsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
     Decoder[CaseClassDecodeOnly]
     assertDoesNotCompile("Encoder[CaseClassDecodeOnly]")
+  }
+
+  "@ConfiguredJsonCodec(encodeOnly = true)" should "only provide Encoder instances for generic case classes" in {
+    @ConfiguredJsonCodec(encodeOnly = true) case class CaseClassEncodeOnly[A](foo: A, bar: Int)
+    Encoder[CaseClassEncodeOnly[Int]]
+    Encoder.AsObject[CaseClassEncodeOnly[Int]]
+    assertDoesNotCompile("Decoder[CaseClassEncodeOnly[Int]]")
+  }
+
+  "@ConfiguredJsonCodec(decodeOnly = true)" should "provide Decoder instances for generic case classes" in {
+    @ConfiguredJsonCodec(decodeOnly = true) case class CaseClassDecodeOnly[A](foo: A, bar: Int)
+    Decoder[CaseClassDecodeOnly[Int]]
+    assertDoesNotCompile("Encoder[CaseClassDecodeOnly[Int]]")
   }
 }
