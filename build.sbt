@@ -165,7 +165,7 @@ lazy val docSettings = allSettings ++ Seq(
 )
 
 lazy val docs = project
-  .dependsOn(core, genericExtras, parser, shapes)
+  .dependsOn(core, parser, shapes)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
@@ -185,7 +185,6 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (core, coreJS),
   (rs, rsJS),
   (generic, genericJS),
-  (genericExtras, genericExtrasJS),
   (shapes, shapesJS),
   (literal, literalJS),
   (refined, refinedJS),
@@ -242,7 +241,7 @@ lazy val circe = project
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, genericExtras, literal, parser, rs)
+  .dependsOn(core, literal, parser, rs)
 
 lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
   scalacOptions ~= {
@@ -299,20 +298,6 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
-
-lazy val genericExtrasBase = circeCrossModule("generic-extras", mima = previousCirceVersion, CrossType.Pure)
-  .settings(macroSettings)
-  .jsSettings(
-    libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
-      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
-    )
-  )
-  .jvmSettings(fork in Test := true)
-  .dependsOn(genericBase, testsBase % Test, literalBase % Test)
-
-lazy val genericExtras = genericExtrasBase.jvm
-lazy val genericExtrasJS = genericExtrasBase.js
 
 lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
@@ -496,7 +481,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn, genericExtras)
+  .dependsOn(core, generic, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
