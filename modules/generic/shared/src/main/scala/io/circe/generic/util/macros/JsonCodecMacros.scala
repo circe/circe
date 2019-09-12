@@ -87,13 +87,13 @@ abstract class JsonCodecMacros {
       val Type = tq"$tpname[..$tparamNames]"
       (
         q"""implicit def $decodeName[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
-            $semiautoObj.deriveDecoder[$Type]""",
+            $semiautoObj.${deriveName("Decoder")}[$Type]""",
         q"""implicit def $encodeName[..$tparams](implicit ..$encodeParams): $AsObjectEncoderClass[$Type] =
-            $semiautoObj.deriveEncoder[$Type]""",
+            $semiautoObj.${deriveName("Encoder")}[$Type]""",
         q"""implicit def $codecName[..$tparams](implicit
             ..${decodeParams ++ encodeParams}
           ): $AsObjectCodecClass[$Type] =
-            $semiautoObj.deriveCodec[$Type]"""
+            $semiautoObj.${deriveName("Codec")}[$Type]"""
       )
     }
     codecType match {
