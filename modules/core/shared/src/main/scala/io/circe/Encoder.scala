@@ -21,14 +21,6 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.{
-  ISO_LOCAL_DATE,
-  ISO_LOCAL_DATE_TIME,
-  ISO_LOCAL_TIME,
-  ISO_OFFSET_DATE_TIME,
-  ISO_OFFSET_TIME,
-  ISO_ZONED_DATE_TIME
-}
 import java.time.temporal.TemporalAccessor
 import java.util.UUID
 import scala.Predef._
@@ -536,7 +528,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    * @group Time
    */
   implicit final lazy val encodeDuration: Encoder[Duration] = new Encoder[Duration] {
-    final def apply(a: Duration) = Json.fromString(a.toString)
+    final def apply(a: Duration): Json = Json.fromString(a.toString)
   }
 
   /**
@@ -643,26 +635,23 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalDate: Encoder[LocalDate] =
-    new JavaTimeEncoder[LocalDate] {
-      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE
-    }
+  implicit final lazy val encodeLocalDate: Encoder[LocalDate] = new Encoder[LocalDate] {
+    final def apply(a: LocalDate): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalTime: Encoder[LocalTime] =
-    new JavaTimeEncoder[LocalTime] {
-      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_TIME
-    }
+  implicit final lazy val encodeLocalTime: Encoder[LocalTime] = new Encoder[LocalTime] {
+    final def apply(a: LocalTime): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalDateTime: Encoder[LocalDateTime] =
-    new JavaTimeEncoder[LocalDateTime] {
-      protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE_TIME
-    }
+  implicit final lazy val encodeLocalDateTime: Encoder[LocalDateTime] = new Encoder[LocalDateTime] {
+    final def apply(a: LocalDateTime): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
@@ -674,18 +663,16 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final lazy val encodeOffsetTime: Encoder[OffsetTime] =
-    new JavaTimeEncoder[OffsetTime] {
-      protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
-    }
+  implicit final lazy val encodeOffsetTime: Encoder[OffsetTime] = new Encoder[OffsetTime] {
+    final def apply(a: OffsetTime): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeOffsetDateTime: Encoder[OffsetDateTime] =
-    new JavaTimeEncoder[OffsetDateTime] {
-      protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
-    }
+  implicit final lazy val encodeOffsetDateTime: Encoder[OffsetDateTime] = new Encoder[OffsetDateTime] {
+    final def apply(a: OffsetDateTime): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
@@ -704,10 +691,9 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   /**
    * @group Time
    */
-  implicit final lazy val encodeZonedDateTime: Encoder[ZonedDateTime] =
-    new JavaTimeEncoder[ZonedDateTime] {
-      protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
-    }
+  implicit final lazy val encodeZonedDateTime: Encoder[ZonedDateTime] = new Encoder[ZonedDateTime] {
+    final def apply(a: ZonedDateTime): Json = Json.fromString(a.toString)
+  }
 
   /**
    * @group Time
