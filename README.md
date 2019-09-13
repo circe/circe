@@ -96,6 +96,7 @@ The following open source projects are either built on circe or provide circe su
   unmarshalling in [Akka HTTP][akka-http].
 * [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
+* [Blackdoor JOSE][jose-json-circe]: circe JSON support for blackdoor JOSE and JWT.
 * [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
@@ -216,6 +217,7 @@ limitations under the License.
 [izumi-r2]: https://github.com/pshirshov/izumi-r2
 [jackson]: https://github.com/FasterXML/jackson
 [jawn]: https://github.com/non/jawn
+[jose-json-circe]: https://github.com/blackdoor/jose
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [json-rpc]: http://www.jsonrpc.org
