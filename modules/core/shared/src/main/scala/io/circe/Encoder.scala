@@ -44,7 +44,7 @@ trait Encoder[A] extends Serializable { self =>
    * `A`.
    */
   final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
-    final def apply(a: B) = self(f(a))
+    final def apply(a: B): Json = self(f(a))
   }
 
   /**
@@ -759,7 +759,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
      * an `A`.
      */
     final def contramapArray[B](f: B => A): AsArray[B] = new AsArray[B] {
-      final def encodeArray(a: B) = self.encodeArray(f(a))
+      final def encodeArray(a: B): Vector[Json] = self.encodeArray(f(a))
     }
 
     /**
@@ -839,7 +839,7 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
-      final def encodeObject(a: B) = self.encodeObject(f(a))
+      final def encodeObject(a: B): JsonObject = self.encodeObject(f(a))
     }
 
     /**
