@@ -198,7 +198,7 @@ sealed abstract class Json extends Product with Serializable {
   /**
    * Use implementations provided by case classes.
    */
-  override def hashCode(): Int
+  def hashCode(): Int
 
   // Alias for `findAllByKey`.
   final def \\(key: String): List[Json] = findAllByKey(key)
@@ -510,8 +510,7 @@ object Json {
    * The result is a JSON null if the argument cannot be represented as a JSON
    * number.
    */
-  final def fromFloatOrNull(value: Float): Json =
-    if (isReal(value)) JNumber(JsonFloat(value)) else Null
+  final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(JsonFloat(value)) else Null
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -544,18 +543,14 @@ object Json {
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
 
   /**
-   * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
-   * explicitly avoid that here.
+   * Calling `.isFinite` directly on the value boxes; we explicitly avoid that here.
    */
-  private[this] def isReal(value: Double): Boolean =
-    (!java.lang.Double.isNaN(value)) && (!java.lang.Double.isInfinite(value))
+  private[this] def isReal(value: Double): Boolean = java.lang.Double.isFinite(value)
 
   /**
-   * Calling `.isNaN` and `.isInfinity` directly on the value boxes; we
-   * explicitly avoid that here.
+   * Calling `.isFinite` directly on the value boxes; we explicitly avoid that here.
    */
-  private[this] def isReal(value: Float): Boolean =
-    (!java.lang.Float.isNaN(value)) && (!java.lang.Float.isInfinite(value))
+  private[this] def isReal(value: Float): Boolean = java.lang.Float.isFinite(value)
 
   private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
     val it0 = x.iterator
