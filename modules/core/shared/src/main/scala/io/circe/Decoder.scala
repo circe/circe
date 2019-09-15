@@ -36,14 +36,6 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.{
-  ISO_LOCAL_DATE,
-  ISO_LOCAL_DATE_TIME,
-  ISO_LOCAL_TIME,
-  ISO_OFFSET_DATE_TIME,
-  ISO_OFFSET_TIME,
-  ISO_ZONED_DATE_TIME
-}
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
@@ -1267,8 +1259,7 @@ object Decoder
    */
   final def decodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Decoder[ZoneOffset] =
     new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
-      protected[this] final def parseUnsafe(input: String): ZoneOffset =
-        ZoneOffset.of(input)
+      protected[this] final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
     }
 
   /**
@@ -1276,8 +1267,7 @@ object Decoder
    */
   implicit final lazy val decodeLocalDate: Decoder[LocalDate] =
     new StandardJavaTimeDecoder[LocalDate]("LocalDate") {
-      protected[this] final def parseUnsafe(input: String): LocalDate =
-        LocalDate.parse(input, ISO_LOCAL_DATE)
+      protected[this] final def parseUnsafe(input: String): LocalDate = LocalDate.parse(input)
     }
 
   /**
@@ -1285,8 +1275,7 @@ object Decoder
    */
   implicit final lazy val decodeLocalTime: Decoder[LocalTime] =
     new StandardJavaTimeDecoder[LocalTime]("LocalTime") {
-      protected[this] final def parseUnsafe(input: String): LocalTime =
-        LocalTime.parse(input, ISO_LOCAL_TIME)
+      protected[this] final def parseUnsafe(input: String): LocalTime = LocalTime.parse(input)
     }
 
   /**
@@ -1294,8 +1283,7 @@ object Decoder
    */
   implicit final lazy val decodeLocalDateTime: Decoder[LocalDateTime] =
     new StandardJavaTimeDecoder[LocalDateTime]("LocalDateTime") {
-      protected[this] final def parseUnsafe(input: String): LocalDateTime =
-        LocalDateTime.parse(input, ISO_LOCAL_DATE_TIME)
+      protected[this] final def parseUnsafe(input: String): LocalDateTime = LocalDateTime.parse(input)
     }
 
   /**
@@ -1303,8 +1291,7 @@ object Decoder
    */
   implicit final lazy val decodeMonthDay: Decoder[MonthDay] =
     new StandardJavaTimeDecoder[MonthDay]("MonthDay") {
-      protected[this] final def parseUnsafe(input: String): MonthDay =
-        MonthDay.parse(input)
+      protected[this] final def parseUnsafe(input: String): MonthDay = MonthDay.parse(input)
     }
 
   /**
@@ -1312,8 +1299,7 @@ object Decoder
    */
   implicit final lazy val decodeOffsetTime: Decoder[OffsetTime] =
     new StandardJavaTimeDecoder[OffsetTime]("OffsetTime") {
-      protected[this] final def parseUnsafe(input: String): OffsetTime =
-        OffsetTime.parse(input, ISO_OFFSET_TIME)
+      protected[this] final def parseUnsafe(input: String): OffsetTime = OffsetTime.parse(input)
     }
 
   /**
@@ -1321,8 +1307,7 @@ object Decoder
    */
   implicit final lazy val decodeOffsetDateTime: Decoder[OffsetDateTime] =
     new StandardJavaTimeDecoder[OffsetDateTime]("OffsetDateTime") {
-      protected[this] final def parseUnsafe(input: String): OffsetDateTime =
-        OffsetDateTime.parse(input, ISO_OFFSET_DATE_TIME)
+      protected[this] final def parseUnsafe(input: String): OffsetDateTime = OffsetDateTime.parse(input)
     }
 
   /**
@@ -1330,8 +1315,7 @@ object Decoder
    */
   implicit final lazy val decodeYear: Decoder[Year] =
     new StandardJavaTimeDecoder[Year]("Year") {
-      protected[this] final def parseUnsafe(input: String): Year =
-        Year.parse(input)
+      protected[this] final def parseUnsafe(input: String): Year = Year.parse(input)
     }
 
   /**
@@ -1339,8 +1323,7 @@ object Decoder
    */
   implicit final lazy val decodeYearMonth: Decoder[YearMonth] =
     new StandardJavaTimeDecoder[YearMonth]("YearMonth") {
-      protected[this] final def parseUnsafe(input: String): YearMonth =
-        YearMonth.parse(input)
+      protected[this] final def parseUnsafe(input: String): YearMonth = YearMonth.parse(input)
     }
 
   /**
@@ -1348,8 +1331,7 @@ object Decoder
    */
   implicit final lazy val decodeZonedDateTime: Decoder[ZonedDateTime] =
     new StandardJavaTimeDecoder[ZonedDateTime]("ZonedDateTime") {
-      protected[this] final def parseUnsafe(input: String): ZonedDateTime =
-        ZonedDateTime.parse(input, ISO_ZONED_DATE_TIME)
+      protected[this] final def parseUnsafe(input: String): ZonedDateTime = ZonedDateTime.parse(input)
     }
 
   /**
