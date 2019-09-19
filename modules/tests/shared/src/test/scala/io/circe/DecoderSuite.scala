@@ -70,6 +70,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) === Right(i))
   }
 
+  "at" should "move appropriately" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
+    assert(Decoder[Int].at(k).decodeJson(m.updated(k, i).asJson) === Right(i))
+  }
+
   "emap" should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
     assert(Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
