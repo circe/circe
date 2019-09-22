@@ -74,6 +74,12 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(Decoder[Int].at(k).decodeJson(m.updated(k, i).asJson) === Right(i))
   }
 
+  it should "accumulate errors" in forAll { (k: String, x: Boolean, xs: List[Boolean], m: Map[String, Int]) =>
+    val json = m.mapValues(_.asJson).updated(k, (x :: xs).asJson).asJson
+
+    assert(Decoder[List[Int]].at(k).decodeAccumulating(json.hcursor).leftMap(_.size) === Validated.invalid(xs.size + 1))
+  }
+
   "emap" should "appropriately transform the result with an operation that can't fail" in forAll { (i: Int) =>
     assert(Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson) === Right(i + 1))
   }
