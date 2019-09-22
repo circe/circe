@@ -73,11 +73,10 @@ object SemiautoDerivedSuite {
       Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
-      Arbitrary
-        .arbitrary[Option[RecursiveWithOptionExample]]
-        .map(
-          RecursiveWithOptionExample(_)
-        )
+      Gen.oneOf(
+        Gen.const(RecursiveWithOptionExample(None)),
+        atDepth(depth + 1)
+      )
     else Gen.const(RecursiveWithOptionExample(None))
 
     implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
