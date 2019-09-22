@@ -92,6 +92,21 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(decoder.decodeJson(i.asJson).isRight == (i % 2 == 0))
   }
 
+  "handleErrorWith" should "respect the underlying decoder's tryDecode (#1271)" in {
+    val decoder: Decoder[Option[String]] =
+      Decoder.decodeOption[String].handleErrorWith(_ => Decoder.const(None)).at("a")
+
+    assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(None))
+    assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(None))
+    assert(decoder.decodeJson(Json.obj("b" := "abc")) === Right(None))
+    assert(decoder.decodeJson(Json.obj("a" := "abc")) === Right(Some("abc")))
+
+    assert(decoder.decodeAccumulating(Json.obj("a" := 1).hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("a" := Json.Null).hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("b" := "abc").hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("a" := "abc").hcursor) === Validated.valid(Some("abc")))
+  }
+
   "failedWithMessage" should "replace the message" in forAll { (json: Json) =>
     assert(Decoder.failedWithMessage[Int]("Bad").decodeJson(json) === Left(DecodingFailure("Bad", Nil)))
   }
@@ -467,6 +482,36 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     }
 
     assert(Decoder[String].either(Decoder[Boolean]).decodeJson(json) === Right(value))
+  }
+
+  it should "respect the underlying decoder's tryDecode (#1271)" in {
+    val decoder: Decoder[Either[Option[String], Boolean]] =
+      Decoder.decodeOption[String].either(Decoder.const(true)).at("a")
+
+    assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(Right(true)))
+    assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(Left(None)))
+    assert(decoder.decodeJson(Json.obj("b" := "abc")) === Right(Left(None)))
+    assert(decoder.decodeJson(Json.obj("a" := "abc")) === Right(Left(Some("abc"))))
+
+    assert(decoder.decodeAccumulating(Json.obj("a" := 1).hcursor) === Validated.valid(Right(true)))
+    assert(decoder.decodeAccumulating(Json.obj("a" := Json.Null).hcursor) === Validated.valid(Left(None)))
+    assert(decoder.decodeAccumulating(Json.obj("b" := "abc").hcursor) === Validated.valid(Left(None)))
+    assert(decoder.decodeAccumulating(Json.obj("a" := "abc").hcursor) === Validated.valid(Left(Some("abc"))))
+  }
+
+  "or" should "respect the underlying decoder's tryDecode (#1271)" in {
+    val decoder: Decoder[Option[String]] =
+      Decoder.decodeOption[String].or(Decoder.const(Option.empty[String])).at("a")
+
+    assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(None))
+    assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(None))
+    assert(decoder.decodeJson(Json.obj("b" := "abc")) === Right(None))
+    assert(decoder.decodeJson(Json.obj("a" := "abc")) === Right(Some("abc")))
+
+    assert(decoder.decodeAccumulating(Json.obj("a" := 1).hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("a" := Json.Null).hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("b" := "abc").hcursor) === Validated.valid(None))
+    assert(decoder.decodeAccumulating(Json.obj("a" := "abc").hcursor) === Validated.valid(Some("abc")))
   }
 
   private[this] val stateful = {
