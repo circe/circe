@@ -75,7 +75,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   }
 
   it should "accumulate errors" in forAll { (k: String, x: Boolean, xs: List[Boolean], m: Map[String, Int]) =>
-    val json = m.mapValues(_.asJson).updated(k, (x :: xs).asJson).asJson
+    val json = m.mapValues(_.asJson).toMap.updated(k, (x :: xs).asJson).asJson
 
     assert(Decoder[List[Int]].at(k).decodeAccumulating(json.hcursor).leftMap(_.size) === Validated.invalid(xs.size + 1))
   }
