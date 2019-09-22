@@ -133,12 +133,15 @@ trait Decoder[A] extends Serializable { self =>
    * be used in recovery.
    */
   final def handleErrorWith(f: DecodingFailure => Decoder[A]): Decoder[A] = new Decoder[A] {
-    final def apply(c: HCursor): Decoder.Result[A] =
-      Decoder.resultInstance.handleErrorWith(self(c))(failure => f(failure)(c))
+    final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
+    override final def tryDecode(c: ACursor): Decoder.Result[A] =
+      Decoder.resultInstance.handleErrorWith(self.tryDecode(c))(failure => f(failure).tryDecode(c))
 
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-      Decoder.accumulatingResultInstance.handleErrorWith(self.decodeAccumulating(c))(
-        failures => f(failures.head).decodeAccumulating(c)
+      tryDecodeAccumulating(c)
+    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
+      Decoder.accumulatingResultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(
+        failures => f(failures.head).tryDecodeAccumulating(c)
       )
   }
 
@@ -258,24 +261,44 @@ trait Decoder[A] extends Serializable { self =>
    * Choose the first succeeding decoder.
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = new Decoder[AA] {
-    final def apply(c: HCursor): Decoder.Result[AA] = self(c) match {
+    final def apply(c: HCursor): Decoder.Result[AA] = tryDecode(c)
+    override def tryDecode(c: ACursor): Decoder.Result[AA] = self.tryDecode(c) match {
       case r @ Right(_) => r
-      case Left(_)      => d(c)
+      case Left(_)      => d.tryDecode(c)
     }
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[AA] =
+      tryDecodeAccumulating(c)
+    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[AA] =
+      self.tryDecodeAccumulating(c) match {
+        case r @ Valid(_) => r
+        case Invalid(_)   => d.tryDecodeAccumulating(c)
+      }
   }
 
   /**
    * Choose the first succeeding decoder, wrapping the result in a disjunction.
    */
   final def either[B](decodeB: Decoder[B]): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
-    final def apply(c: HCursor): Decoder.Result[Either[A, B]] = self(c) match {
+    final def apply(c: HCursor): Decoder.Result[Either[A, B]] = tryDecode(c)
+    override def tryDecode(c: ACursor): Decoder.Result[Either[A, B]] = self.tryDecode(c) match {
       case Right(v) => Right(Left(v))
       case Left(_) =>
-        decodeB(c) match {
+        decodeB.tryDecode(c) match {
           case Right(v)    => Right(Right(v))
           case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
         }
     }
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Either[A, B]] = tryDecodeAccumulating(c)
+    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[Either[A, B]] =
+      self.tryDecodeAccumulating(c) match {
+        case Valid(v) => Valid(Left(v))
+        case Invalid(_) =>
+          decodeB.tryDecodeAccumulating(c) match {
+            case Valid(v)       => Valid(Right(v))
+            case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[Either[A, B]]]
+          }
+      }
+
   }
 
   /**
