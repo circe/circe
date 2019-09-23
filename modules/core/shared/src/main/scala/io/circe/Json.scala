@@ -1,8 +1,10 @@
 package io.circe
 
+import java.io.Serializable
+
 import cats.{ Eq, Show }
 import io.circe.numbers.BiggerDecimal
-import java.io.Serializable
+
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -157,22 +159,48 @@ sealed abstract class Json extends Product with Serializable {
    * precedence over values from this JSON. Nested objects are
    * recursed.
    *
-   * Null, Array, Boolean, String and Number are treated as values,
+   * Null, Boolean, String and Number are treated as values,
    * and values from the argument JSON completely replace values
    * from this JSON.
+   *
+   * `mergeMode` controls the behavior when merging two arrays within JSON.
+   * The Default mode treats Array as value, similar to Null, Boolean,
+   * String or Number above. The Index mode will replace the elements in
+   * this JSON array with the elements in the argument JSON at corresponding
+   * position. The Concat mode will concatenate the elements in this JSON array
+   * and the argument JSON array.
    */
-  def deepMerge(that: Json): Json =
+  def deepMerge(that: Json, mergeMode: MergeMode = MergeMode.Default): Json =
     (asObject, that.asObject) match {
       case (Some(lhs), Some(rhs)) =>
         fromJsonObject(
           lhs.toList.foldLeft(rhs) {
             case (acc, (key, value)) =>
               rhs(key).fold(acc.add(key, value)) { r =>
-                acc.add(key, value.deepMerge(r))
+                acc.add(key, value.deepMerge(r, mergeMode))
               }
           }
         )
-      case _ => that
+      case _ =>
+        mergeMode match {
+          case MergeMode.Default =>
+            that
+          case _ =>
+            (asArray, that.asArray) match {
+              case (Some(lhs), Some(rhs)) =>
+                mergeMode match {
+                  case MergeMode.Concat =>
+                    Json.fromValues(lhs ++ rhs)
+                  case MergeMode.Index =>
+                    if (rhs.size >= lhs.size)
+                      that
+                    else
+                      Json.fromValues(rhs ++ lhs.slice(rhs.size, lhs.size))
+                }
+              case _ =>
+                that
+            }
+        }
     }
 
   /**
@@ -227,6 +255,16 @@ sealed abstract class Json extends Product with Serializable {
 }
 
 object Json {
+
+  /**
+   * Merge strategy used for deepMerge operation when merging two arrays.
+   */
+  sealed trait MergeMode
+  object MergeMode {
+    case object Default extends MergeMode
+    case object Index extends MergeMode
+    case object Concat extends MergeMode
+  }
 
   /**
    * Represents a set of operations for reducing a [[Json]] instance to a value.

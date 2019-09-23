@@ -1,5 +1,6 @@
 package io.circe
 
+import io.circe.Json.MergeMode
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 
@@ -80,9 +81,69 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     }
 
     val reversed = Json.fromFields(fields.reverse)
-    val merged = Json.fromFields(fields).deepMerge(reversed)
 
-    assert(merged.asObject.map(_.toList) === Some(fields.reverse))
+    val merged1 = Json.fromFields(fields).deepMerge(reversed)
+    assert(merged1.asObject.map(_.toList.map(_._1)) === Some(fields.reverse.map(_._1)))
+
+    val merged2 = Json.fromFields(fields).deepMerge(reversed, mergeMode = MergeMode.Concat)
+    assert(merged2.asObject.map(_.toList.map(_._1)) === Some(fields.reverse.map(_._1)))
+
+    val merged3 = Json.fromFields(fields).deepMerge(reversed, mergeMode = MergeMode.Index)
+    assert(merged3.asObject.map(_.toList.map(_._1)) === Some(fields.reverse.map(_._1)))
+  }
+
+  "deepMerge" should "merge with correct mode" in {
+    val json1 = Json.fromFields(
+      Seq(
+        ("a", Json.fromString("1")),
+        ("b", Json.fromValues(Seq(Json.fromString("2"), Json.fromString("3")))),
+        ("d", Json.fromString("99"))
+      )
+    )
+    val json2 = Json.fromFields(
+      Seq(
+        ("a", Json.fromString("10")),
+        ("b", Json.fromValues(Seq(Json.fromString("4")))),
+        ("c", Json.fromString("20"))
+      )
+    )
+
+    val actual1 = json1.deepMerge(json2)
+    val expected1 = Json.fromFields(
+      Seq(
+        ("a", Json.fromString("10")),
+        ("b", Json.fromValues(Seq(Json.fromString("4")))),
+        ("d", Json.fromString("99")),
+        ("c", Json.fromString("20"))
+      )
+    )
+
+    assert(actual1 === expected1)
+
+    val actual2 = json1.deepMerge(json2, mergeMode = MergeMode.Concat)
+    val expected2 = Json.fromFields(
+      Seq(
+        ("a", Json.fromString("10")),
+        ("b", Json.fromValues(Seq(Json.fromString("2"), Json.fromString("3"), Json.fromString("4")))),
+        ("d", Json.fromString("99")),
+        ("c", Json.fromString("20"))
+      )
+    )
+
+    assert(actual2 === expected2)
+
+    val actual3 = json1.deepMerge(json2, mergeMode = MergeMode.Index)
+    val expected3 = Json.fromFields(
+      Seq(
+        ("a", Json.fromString("10")),
+        ("b", Json.fromValues(Seq(Json.fromString("4"), Json.fromString("3")))),
+        ("d", Json.fromString("99")),
+        ("c", Json.fromString("20"))
+      )
+    )
+
+    assert(actual3 === expected3)
+
   }
 
   val key = "x"
