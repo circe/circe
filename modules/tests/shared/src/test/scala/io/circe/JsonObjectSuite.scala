@@ -3,6 +3,7 @@ package io.circe
 import cats.data.Const
 import cats.kernel.Eq
 import io.circe.tests.CirceSuite
+import org.scalatest.exceptions.TestFailedException
 
 class JsonObjectSuite extends CirceSuite {
   "JsonObject.fromIterable" should "drop all but the last instance when fields have the same key" in {
@@ -316,5 +317,31 @@ class JsonObjectSuite extends CirceSuite {
 
       assert(result === expected)
     }
+  }
+
+  "deepMerge" should "merge correctly" in forAll { (left: JsonObject, right: JsonObject) =>
+    val merged = left.deepMerge(right)
+
+    assert(merged.keys.toSet === (left.keys.toSet ++ right.keys.toSet))
+    merged.toList.foreach {
+      case (key, value) =>
+        (left(key), right(key)) match {
+          case (Some(leftVal), Some(rightVal)) => assert(value === leftVal.deepMerge(rightVal))
+          case (Some(leftVal), None)           => assert(value === leftVal)
+          case (None, Some(rightVal))          => assert(value === rightVal)
+          case _                               => throw new TestFailedException("Impossible state reached in deepMerge test", 0)
+        }
+    }
+  }
+
+  it should "preserve argument order" in forAll { js: List[Json] =>
+    val fields = js.zipWithIndex.map {
+      case (j, i) => i.toString -> j
+    }
+
+    val reversed = JsonObject.fromIterable(fields.reverse)
+    val merged = JsonObject.fromIterable(fields).deepMerge(reversed)
+
+    assert(merged.toList === fields.reverse)
   }
 }

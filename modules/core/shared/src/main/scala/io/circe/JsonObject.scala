@@ -166,6 +166,21 @@ sealed abstract class JsonObject extends Serializable {
    */
   final def filterKeys(pred: String => Boolean): JsonObject = filter(field => pred(field._1))
 
+  /**
+   * Perform a deep merge of this JSON object with another JSON object.
+   *
+   * Objects are merged by key, values from the argument JSON take
+   * precedence over values from this JSON. Nested objects are
+   * recursed.
+   */
+  def deepMerge(that: JsonObject): JsonObject =
+    toList.foldLeft(that) {
+      case (acc, (key, value)) =>
+        that(key).fold(acc.add(key, value)) { r =>
+          acc.add(key, value.deepMerge(r))
+        }
+    }
+
   private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit
 
   /**
