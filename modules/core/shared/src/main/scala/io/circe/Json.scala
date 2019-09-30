@@ -165,7 +165,7 @@ sealed abstract class Json extends Product with Serializable {
     (asObject, that.asObject) match {
       case (Some(lhs), Some(rhs)) =>
         fromJsonObject(
-          lhs.toList.foldLeft(rhs) {
+          lhs.toIterable.foldLeft(rhs) {
             case (acc, (key, value)) =>
               rhs(key).fold(acc.add(key, value)) { r =>
                 acc.add(key, value.deepMerge(r))
