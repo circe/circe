@@ -172,6 +172,8 @@ sealed abstract class JsonObject extends Serializable {
    * Objects are merged by key, values from the argument JSON take
    * precedence over values from this JSON. Nested objects are
    * recursed.
+   *
+   * See [[Json.deepMerge]] for behavior of merging values that are not objects.
    */
   def deepMerge(that: JsonObject): JsonObject =
     toIterable.foldLeft(that) {
