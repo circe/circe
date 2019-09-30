@@ -174,7 +174,7 @@ sealed abstract class JsonObject extends Serializable {
    * recursed.
    */
   def deepMerge(that: JsonObject): JsonObject =
-    toList.foldLeft(that) {
+    toIterable.foldLeft(that) {
       case (acc, (key, value)) =>
         that(key).fold(acc.add(key, value)) { r =>
           acc.add(key, value.deepMerge(r))
