@@ -20,6 +20,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Anduin Transactions](https://anduintransact.com/)
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
+* [Babylon Health](https://www.babylonhealth.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
