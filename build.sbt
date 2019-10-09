@@ -44,7 +44,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.12.1")
+val previousCirceVersion = Some("0.12.2")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
@@ -170,7 +170,10 @@ lazy val docs = project
     moduleName := "circe-docs",
     name := "Circe docs",
     crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.13")),
-    libraryDependencies += "io.circe" %% "circe-optics" % "0.11.0"
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-generic-extras" % "0.12.2",
+      "io.circe" %% "circe-optics" % "0.12.0"
+    )
   )
   .settings(docSettings)
   .settings(noPublishSettings)
