@@ -54,13 +54,13 @@ in a relatively boilerplate-free way without generic derivation:</p>
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">decodeUser</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
   <span class="nc">Decoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="nc">User</span><span class="o">.</span><span class="n">apply</span><span class="o">)</span>
-<span class="c1">// decodeUser: io.circe.Decoder[User] = io.circe.ProductDecoders$$anon$3@765ea628
+<span class="c1">// decodeUser: io.circe.Decoder[User] = io.circe.ProductDecoders$$anon$3@76d0204c
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
   <span class="nc">Encoder</span><span class="o">.</span><span class="n">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span>
     <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">firstName</span><span class="o">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lastName</span><span class="o">)</span>
   <span class="o">)</span>
-<span class="c1">// encodeUser: io.circe.Encoder[User] = io.circe.ProductEncoders$$anon$3@7789fd43
+<span class="c1">// encodeUser: io.circe.Encoder[User] = io.circe.ProductEncoders$$anon$3@6cb4036c
 </span></code></pre></div></div>
 
 <p>It’s not as clean or as maintainable as generic derivation, but it’s less magical, it requires nothing but <code class="highlighter-rouge">circe-core</code>, and if you need a custom name mapping it’s currently the best solution (although <code class="highlighter-rouge">0.6.0</code> introduces experimental configurable generic derivation in the <code class="highlighter-rouge">circe-generic-extras</code> module).</p>
