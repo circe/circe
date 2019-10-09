@@ -60,7 +60,7 @@ dependency on <code class="highlighter-rouge">circe-optics</code> to your build:
 <span class="c1">// import io.circe.optics.JsonPath._
 </span>
 <span class="k">val</span> <span class="nc">_phoneNum</span> <span class="k">=</span> <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">customer</span><span class="o">.</span><span class="n">contactDetails</span><span class="o">.</span><span class="n">phone</span><span class="o">.</span><span class="n">string</span>
-<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$2@46cfd66
+<span class="c1">// _phoneNum: monocle.Optional[io.circe.Json,String] = monocle.POptional$$anon$1@fcd6d2d
 </span>
 <span class="k">val</span> <span class="n">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">_phoneNum</span><span class="o">.</span><span class="n">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// phoneNum: Option[String] = Some(0123-456-789)
@@ -115,7 +115,7 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="n">root</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">each</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">int</span><span class="o">.</span><span class="n">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
-<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$7766/498595646@5e6eeacc
+<span class="c1">// doubleQuantities: io.circe.Json =&gt; io.circe.Json = monocle.PTraversal$$Lambda$9383/0x0000000802563040@74ed2401
 </span>
 <span class="k">val</span> <span class="n">modifiedJson</span> <span class="k">=</span> <span class="n">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// modifiedJson: io.circe.Json =
@@ -146,6 +146,50 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 </span></code></pre></div></div>
 
 <p>The result is a copy of the original JSON with only the <code class="highlighter-rouge">quantity</code> fields updated.</p>
+
+<h2 id="recursively-modifying-json">Recursively modifying JSON</h2>
+
+<p>Sometimes you may need to recursively modify JSON. Let assume you need to transform all numbers into
+strings in the example JSON:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonOptics._</span>
+<span class="c1">// import io.circe.optics.JsonOptics._
+</span>
+<span class="k">import</span> <span class="nn">monocle.function.Plated</span>
+<span class="c1">// import monocle.function.Plated
+</span>
+<span class="nc">Plated</span><span class="o">.</span><span class="n">transform</span><span class="o">[</span><span class="kt">Json</span><span class="o">]</span> <span class="o">{</span> <span class="n">j</span> <span class="k">=&gt;</span>
+  <span class="n">json</span><span class="o">.</span><span class="n">asNumber</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Json</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="n">n</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
+    <span class="k">case</span> <span class="nc">None</span>    <span class="k">=&gt;</span> <span class="n">j</span>
+  <span class="o">}</span>
+<span class="o">}(</span><span class="n">json</span><span class="o">)</span>
+<span class="c1">// res0: io.circe.Json =
+// {
+//   "order" : {
+//     "customer" : {
+//       "name" : "Custy McCustomer",
+//       "contactDetails" : {
+//         "address" : "1 Fake Street, London, England",
+//         "phone" : "0123-456-789"
+//       }
+//     },
+//     "items" : [
+//       {
+//         "id" : 123,
+//         "description" : "banana",
+//         "quantity" : 1
+//       },
+//       {
+//         "id" : 456,
+//         "description" : "apple",
+//         "quantity" : 2
+//       }
+//     ],
+//     "total" : 123.45
+//   }
+// }
+</span></code></pre></div></div>
 
 <h2 id="dynamic">Dynamic</h2>
 
