@@ -159,6 +159,13 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
+  "Encoder[LocalDateTime]" should "serialize :00 seconds" in {
+    val expectedValue = "2018-07-10T00:00:00"
+    val encodingResult = Encoder[LocalDateTime].apply(LocalDateTime.parse(expectedValue))
+
+    assert(encodingResult == Json.fromString(expectedValue))
+  }
+
   "Decoder[ZonedDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[ZonedDateTime].apply(invalidJson.hcursor)
 
@@ -166,11 +173,25 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
+  "Encoder[ZonedDateTime]" should "serialize :00 seconds" in {
+    val expectedValue = "2018-07-10T00:00:00Z[UTC]"
+    val encodingResult = Encoder[ZonedDateTime].apply(ZonedDateTime.parse(expectedValue))
+
+    assert(encodingResult == Json.fromString(expectedValue))
+  }
+
   "Decoder[OffsetDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[OffsetDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
+  }
+
+  "Encoder[OffsetDateTime]" should "serialize :00 seconds" in {
+    val expectedValue = "2018-07-10T00:00:00Z"
+    val encodingResult = Encoder[OffsetDateTime].apply(OffsetDateTime.parse(expectedValue))
+
+    assert(encodingResult == Json.fromString(expectedValue))
   }
 
   "Decoder[LocalDate]" should "fail on invalid values" in {
@@ -187,6 +208,13 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
+  "Encoder[LocalTime]" should "serialize :00 seconds" in {
+    val expectedValue = "00:00:00"
+    val encodingResult = Encoder[LocalTime].apply(LocalTime.parse(expectedValue))
+
+    assert(encodingResult == Json.fromString(expectedValue))
+  }
+
   "Decoder[MonthDay]" should "fail on invalid values" in {
     val decodingResult = Decoder[MonthDay].apply(invalidJson.hcursor)
 
@@ -199,6 +227,13 @@ class JavaTimeCodecSuite extends CirceSuite {
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
+  }
+
+  "Encoder[OffsetTime]" should "serialize :00 seconds" in {
+    val expectedValue = "00:00:00Z"
+    val encodingResult = Encoder[OffsetTime].apply(OffsetTime.parse(expectedValue))
+
+    assert(encodingResult == Json.fromString(expectedValue))
   }
 
   "Decoder[Period]" should "fail on invalid values" in {
