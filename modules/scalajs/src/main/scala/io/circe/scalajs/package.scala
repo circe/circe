@@ -57,7 +57,7 @@ package object scalajs {
    */
   final def convertJsonToJs(input: Json): js.Any = input.foldWith(toJsAnyFolder)
 
-  implicit final class EncoderJsOps[A](val wrappedEncodeable: A) extends AnyVal {
+  implicit final class EncoderJsOps[A](private val wrappedEncodeable: A) extends AnyVal {
     def asJsAny(implicit encoder: Encoder[A]): js.Any = convertJsonToJs(encoder(wrappedEncodeable))
   }
 
