@@ -152,6 +152,21 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
+  "Encoder[Instant]" should "serialize 00 seconds and drop zeroes in nanos to millis or micros" in {
+    def check(s: String): Unit =
+      assert(Encoder[Instant].apply(Instant.parse(s)) == Json.fromString(s))
+
+    check("2018-07-10T00:00:00Z")
+    check("2018-07-10T00:00:00.100Z")
+    check("2018-07-10T00:00:00.010Z")
+    check("2018-07-10T00:00:00.001Z")
+    check("2018-07-10T00:00:00.000100Z")
+    check("2018-07-10T00:00:00.000010Z")
+    check("2018-07-10T00:00:00.000001Z")
+    check("2018-07-10T00:00:00.000000100Z")
+    check("2018-07-10T00:00:00.000000010Z")
+  }
+
   "Decoder[LocalDateTime]" should "fail on invalid values" in {
     val decodingResult = Decoder[LocalDateTime].apply(invalidJson.hcursor)
 
@@ -159,11 +174,19 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[LocalDateTime]" should "serialize :00 seconds" in {
-    val expectedValue = "2018-07-10T00:00:00"
-    val encodingResult = Encoder[LocalDateTime].apply(LocalDateTime.parse(expectedValue))
+  "Encoder[LocalDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+    def check(s: String): Unit =
+      assert(Encoder[LocalDateTime].apply(LocalDateTime.parse(s)) == Json.fromString(s))
 
-    assert(encodingResult == Json.fromString(expectedValue))
+    check("2018-07-10T00:00:00")
+    check("2018-07-10T00:00:00.1")
+    check("2018-07-10T00:00:00.01")
+    check("2018-07-10T00:00:00.001")
+    check("2018-07-10T00:00:00.0001")
+    check("2018-07-10T00:00:00.00001")
+    check("2018-07-10T00:00:00.000001")
+    check("2018-07-10T00:00:00.0000001")
+    check("2018-07-10T00:00:00.00000001")
   }
 
   "Decoder[ZonedDateTime]" should "fail on invalid values" in {
@@ -173,11 +196,19 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[ZonedDateTime]" should "serialize :00 seconds" in {
-    val expectedValue = "2018-07-10T00:00:00Z[UTC]"
-    val encodingResult = Encoder[ZonedDateTime].apply(ZonedDateTime.parse(expectedValue))
+  "Encoder[ZonedDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+    def check(s: String): Unit =
+      assert(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)) == Json.fromString(s))
 
-    assert(encodingResult == Json.fromString(expectedValue))
+    check("2018-07-10T00:00:00Z[UTC]")
+    check("2018-07-10T00:00:00.1Z[UTC]")
+    check("2018-07-10T00:00:00.01Z[UTC]")
+    check("2018-07-10T00:00:00.001Z[UTC]")
+    check("2018-07-10T00:00:00.0001Z[UTC]")
+    check("2018-07-10T00:00:00.00001Z[UTC]")
+    check("2018-07-10T00:00:00.000001Z[UTC]")
+    check("2018-07-10T00:00:00.0000001Z[UTC]")
+    check("2018-07-10T00:00:00.00000001Z[UTC]")
   }
 
   "Decoder[OffsetDateTime]" should "fail on invalid values" in {
@@ -187,11 +218,19 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[OffsetDateTime]" should "serialize :00 seconds" in {
-    val expectedValue = "2018-07-10T00:00:00Z"
-    val encodingResult = Encoder[OffsetDateTime].apply(OffsetDateTime.parse(expectedValue))
+  "Encoder[OffsetDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+    def check(s: String): Unit =
+      assert(Encoder[OffsetDateTime].apply(OffsetDateTime.parse(s)) == Json.fromString(s))
 
-    assert(encodingResult == Json.fromString(expectedValue))
+    check("2018-07-10T00:00:00Z")
+    check("2018-07-10T00:00:00.1Z")
+    check("2018-07-10T00:00:00.01Z")
+    check("2018-07-10T00:00:00.001Z")
+    check("2018-07-10T00:00:00.0001Z")
+    check("2018-07-10T00:00:00.00001Z")
+    check("2018-07-10T00:00:00.000001Z")
+    check("2018-07-10T00:00:00.0000001Z")
+    check("2018-07-10T00:00:00.00000001Z")
   }
 
   "Decoder[LocalDate]" should "fail on invalid values" in {
@@ -208,11 +247,19 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[LocalTime]" should "serialize :00 seconds" in {
-    val expectedValue = "00:00:00"
-    val encodingResult = Encoder[LocalTime].apply(LocalTime.parse(expectedValue))
+  "Encoder[LocalTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+    def check(s: String): Unit =
+      assert(Encoder[LocalTime].apply(LocalTime.parse(s)) == Json.fromString(s))
 
-    assert(encodingResult == Json.fromString(expectedValue))
+    check("00:00:00")
+    check("00:00:00.1")
+    check("00:00:00.01")
+    check("00:00:00.001")
+    check("00:00:00.0001")
+    check("00:00:00.00001")
+    check("00:00:00.000001")
+    check("00:00:00.0000001")
+    check("00:00:00.00000001")
   }
 
   "Decoder[MonthDay]" should "fail on invalid values" in {
@@ -229,11 +276,19 @@ class JavaTimeCodecSuite extends CirceSuite {
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[OffsetTime]" should "serialize :00 seconds" in {
-    val expectedValue = "00:00:00Z"
-    val encodingResult = Encoder[OffsetTime].apply(OffsetTime.parse(expectedValue))
+  "Encoder[OffsetTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+    def check(s: String): Unit =
+      assert(Encoder[OffsetTime].apply(OffsetTime.parse(s)) == Json.fromString(s))
 
-    assert(encodingResult == Json.fromString(expectedValue))
+    check("00:00:00Z")
+    check("00:00:00.1Z")
+    check("00:00:00.01Z")
+    check("00:00:00.001Z")
+    check("00:00:00.0001Z")
+    check("00:00:00.00001Z")
+    check("00:00:00.000001Z")
+    check("00:00:00.0000001Z")
+    check("00:00:00.00000001Z")
   }
 
   "Decoder[Period]" should "fail on invalid values" in {
