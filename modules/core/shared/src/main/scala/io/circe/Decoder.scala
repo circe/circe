@@ -473,6 +473,28 @@ object Decoder
     final def fail(c: HCursor): Result[A] = Left(DecodingFailure(name, c.history))
   }
 
+  private[this] class NumberWithStringCoercion[A](name: String)(
+    numericTarget: JsonNumber => Option[A]
+  ) extends DecoderWithFailure[A](name) {
+    override def apply(c: HCursor): Result[A] = {
+      val maybeResult = for {
+        string <- c.value.asString
+        number <- JsonNumber.fromString(string)
+        specificNumber <- numericTarget(number)
+      } yield Right(specificNumber)
+
+      maybeResult.getOrElse(fail(c))
+    }
+  }
+
+  private[this] implicit class NumericDecoderSyntax[A: Numeric](underlying: Decoder[A]) {
+    def withMaybeStringCoercion(name: String)(numericTarget: JsonNumber => Option[A]): Decoder[A] = underlying.or {
+      new NumberWithStringCoercion(name)(numericTarget)
+    }
+    def withStringCoercion(name: String)(numericTarget: JsonNumber => A): Decoder[A] =
+      withMaybeStringCoercion(name)(numericTarget.andThen(Some(_)))
+  }
+
   /**
    * Return an instance for a given type.
    *
@@ -660,25 +682,22 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
+  final val decodeFloat: Decoder[Float] = new DecoderWithFailure[Float]("Float") {
     final def apply(c: HCursor): Result[Float] = c.value match {
-      case Json.JNumber(number) => Right(number.toFloat)
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).map(_.toFloat) match {
-          case Some(v) => Right(v)
-          case None    => fail(c)
-        }
+      case Json.JNumber(number)  => Right(number.toFloat)
       case other if other.isNull => Right(Float.NaN)
       case _                     => fail(c)
     }
   }
+
+  implicit final val coercedDecodeFloat: Decoder[Float] = decodeFloat.withStringCoercion("Float")(_.toFloat)
 
   /**
    * Decode a JSON value into a `java.lang.Float`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaFloat: Decoder[java.lang.Float] = decodeFloat.map(java.lang.Float.valueOf)
+  implicit final lazy val decodeJavaFloat: Decoder[java.lang.Float] = coercedDecodeFloat.map(java.lang.Float.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Double]].
@@ -689,25 +708,23 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
+  final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
     final def apply(c: HCursor): Result[Double] = c.value match {
-      case Json.JNumber(number) => Right(number.toDouble)
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).map(_.toDouble) match {
-          case Some(v) => Right(v)
-          case None    => fail(c)
-        }
+      case Json.JNumber(number)  => Right(number.toDouble)
       case other if other.isNull => Right(Double.NaN)
       case _                     => fail(c)
     }
   }
+
+  implicit final val coercedDecodeDouble: Decoder[Double] = decodeDouble.withStringCoercion("Double")(_.toDouble)
 
   /**
    * Decode a JSON value into a `java.lang.Double`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaDouble: Decoder[java.lang.Double] = decodeDouble.map(java.lang.Double.valueOf)
+  implicit final lazy val decodeJavaDouble: Decoder[java.lang.Double] =
+    coercedDecodeDouble.map(java.lang.Double.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Byte]].
@@ -716,28 +733,25 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
+  final val decodeByte: Decoder[Byte] = new DecoderWithFailure[Byte]("Byte") {
     final def apply(c: HCursor): Result[Byte] = c.value match {
       case Json.JNumber(number) =>
         number.toByte match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toByte) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeByte: Decoder[Byte] = decodeByte.withMaybeStringCoercion("Byte")(_.toByte)
 
   /**
    * Decode a JSON value into a `java.lang.Byte`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaByte: Decoder[java.lang.Byte] = decodeByte.map(java.lang.Byte.valueOf)
+  implicit final lazy val decodeJavaByte: Decoder[java.lang.Byte] = coercedDecodeByte.map(java.lang.Byte.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Short]].
@@ -746,28 +760,25 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
+  final val decodeShort: Decoder[Short] = new DecoderWithFailure[Short]("Short") {
     final def apply(c: HCursor): Result[Short] = c.value match {
       case Json.JNumber(number) =>
         number.toShort match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toShort) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeShort: Decoder[Short] = decodeShort.withMaybeStringCoercion("Short")(_.toShort)
 
   /**
    * Decode a JSON value into a `java.lang.Short`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaShort: Decoder[java.lang.Short] = decodeShort.map(java.lang.Short.valueOf)
+  implicit final lazy val decodeJavaShort: Decoder[java.lang.Short] = coercedDecodeShort.map(java.lang.Short.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Int]].
@@ -776,28 +787,26 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
+  final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
     final def apply(c: HCursor): Result[Int] = c.value match {
       case Json.JNumber(number) =>
         number.toInt match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toInt) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeInt: Decoder[Int] = decodeInt.withMaybeStringCoercion("Int")(_.toInt)
 
   /**
    * Decode a JSON value into a `java.lang.Integer`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaInteger: Decoder[java.lang.Integer] = decodeInt.map(java.lang.Integer.valueOf)
+  implicit final lazy val decodeJavaInteger: Decoder[java.lang.Integer] =
+    coercedDecodeInt.map(java.lang.Integer.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.Long]].
@@ -809,28 +818,25 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
+  final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
     final def apply(c: HCursor): Result[Long] = c.value match {
       case Json.JNumber(number) =>
         number.toLong match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toLong) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeLong: Decoder[Long] = decodeLong.withMaybeStringCoercion("Long")(_.toLong)
 
   /**
    * Decode a JSON value into a `java.lang.Long`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaLong: Decoder[java.lang.Long] = decodeLong.map(java.lang.Long.valueOf)
+  implicit final lazy val decodeJavaLong: Decoder[java.lang.Long] = coercedDecodeLong.map(java.lang.Long.valueOf)
 
   /**
    * Decode a JSON value into a [[scala.math.BigInt]].
@@ -842,28 +848,26 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
+  final val decodeBigInt: Decoder[BigInt] = new DecoderWithFailure[BigInt]("BigInt") {
     final def apply(c: HCursor): Result[BigInt] = c.value match {
       case Json.JNumber(number) =>
         number.toBigInt match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toBigInt) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeBigInt: Decoder[BigInt] =
+    decodeBigInt.withMaybeStringCoercion("BigInt")(_.toBigInt)
 
   /**
    * Decode a JSON value into a `java.math.BigInteger`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaBigInteger: Decoder[java.math.BigInteger] = decodeBigInt.map(_.bigInteger)
+  implicit final lazy val decodeJavaBigInteger: Decoder[java.math.BigInteger] = coercedDecodeBigInt.map(_.bigInteger)
 
   /**
    * Decode a JSON value into a [[scala.math.BigDecimal]].
@@ -878,28 +882,27 @@ object Decoder
    *
    * @group Decoding
    */
-  implicit final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
+  final val decodeBigDecimal: Decoder[BigDecimal] = new DecoderWithFailure[BigDecimal]("BigDecimal") {
     final def apply(c: HCursor): Result[BigDecimal] = c.value match {
       case Json.JNumber(number) =>
         number.toBigDecimal match {
           case Some(v) => Right(v)
           case None    => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toBigDecimal) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
       case _ => fail(c)
     }
   }
+
+  implicit final val coercedDecodeBigDecimal: Decoder[BigDecimal] =
+    decodeBigDecimal.withMaybeStringCoercion("BigDecimal")(_.toBigDecimal)
 
   /**
    * Decode a JSON value into a `java.math.BigDecimal`.
    *
    * @group Decoding
    */
-  implicit final lazy val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] = decodeBigDecimal.map(_.bigDecimal)
+  implicit final lazy val decodeJavaBigDecimal: Decoder[java.math.BigDecimal] =
+    coercedDecodeBigDecimal.map(_.bigDecimal)
 
   /**
    * @group Decoding

@@ -289,6 +289,22 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isEmpty)
   }
 
+  it should "fail to coerce strings in its non-coerced version" in {
+    val x = "42"
+
+    val json = Json.fromString(x)
+    val resultCoerced = Decoder.coercedDecodeInt.apply(json.hcursor)
+    val resultNotCoerced = Decoder.decodeInt.apply(json.hcursor)
+
+    withClue("coerced decoder should decode strings representing integers") {
+      assert(resultCoerced.nonEmpty)
+    }
+
+    withClue("not coerced decoder should fail to decode strings representing integers") {
+      assert(resultNotCoerced.isEmpty)
+    }
+  }
+
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Int].apply(json.hcursor)
@@ -310,6 +326,22 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(if (BigInt(i.toLong) == i) result === Right(i.toLong) else result.isEmpty)
   }
 
+  it should "fail to coerce strings in its non-coerced version" in {
+    val x = "42"
+
+    val json = Json.fromString(x)
+    val resultCoerced = Decoder.coercedDecodeLong.apply(json.hcursor)
+    val resultNotCoerced = Decoder.decodeLong.apply(json.hcursor)
+
+    withClue("coerced decoder should decode strings representing integers") {
+      assert(resultCoerced.nonEmpty)
+    }
+
+    withClue("not coerced decoder should fail to decode strings representing integers") {
+      assert(resultNotCoerced.isEmpty)
+    }
+  }
+
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Long].apply(json.hcursor)
@@ -321,6 +353,22 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val Right(json) = parse("\"" + d.toString + "\"")
 
     assert(Decoder[Float].apply(json.hcursor) === Right(d))
+  }
+
+  it should "fail to coerce strings in its non-coerced version" in {
+    val x = "42.0"
+
+    val json = Json.fromString(x)
+    val resultCoerced = Decoder.coercedDecodeFloat.apply(json.hcursor)
+    val resultNotCoerced = Decoder.decodeFloat.apply(json.hcursor)
+
+    withClue("coerced decoder should decode strings representing integers") {
+      assert(resultCoerced.nonEmpty)
+    }
+
+    withClue("not coerced decoder should fail to decode strings representing integers") {
+      assert(resultNotCoerced.isEmpty)
+    }
   }
 
   it should "match the rounding of Float.parseFloat (#1063)" in forAll { (d: Double) =>
@@ -344,6 +392,22 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val Right(json) = parse("\"" + d.toString + "\"")
 
     assert(Decoder[Double].apply(json.hcursor) === Right(d))
+  }
+
+  it should "fail to coerce strings in its non-coerced version" in {
+    val x = "42.0"
+
+    val json = Json.fromString(x)
+    val resultCoerced = Decoder.coercedDecodeDouble.apply(json.hcursor)
+    val resultNotCoerced = Decoder.decodeDouble.apply(json.hcursor)
+
+    withClue("coerced decoder should decode strings representing integers") {
+      assert(resultCoerced.nonEmpty)
+    }
+
+    withClue("not coerced decoder should fail to decode strings representing integers") {
+      assert(resultNotCoerced.isEmpty)
+    }
   }
 
   "Decoder[BigInt]" should "fail when producing a value would be intractable" in {
