@@ -37,6 +37,7 @@ title:  "Warnings and known issues"
    the derived encoders or decoders simply not being found. Increasing the stack size available to
    the compiler (e.g. with `sbt -J-Xss64m` if you're using SBT) will help in many cases, but we have
    at least [one report](http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168) of a case where it doesn't.
+   It might be simpler and safer to add `.sbtopts` file with SBT parameters (`-J-Xss64m`) in root of project.
 
 4. More generally, the generic derivation provided by the `generic` subproject works for a wide
    range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by

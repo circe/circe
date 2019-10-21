@@ -13,6 +13,9 @@ libraryDependencies ++= Seq(
 ).map(_ % circeVersion)
 ```
 
+In case of large or deep-nested case classes, there is a chance to get stack overflow during compilation,
+please refer to [known-issues](codecs/known-issues.html) for workaround.
+
 If you're using circe-generic-extra's `@JsonCodec` macro annotation (with any Scala version before 2.13),
 you'll also need to include the [Macro Paradise][paradise] compiler plugin in your build:
 
