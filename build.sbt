@@ -244,7 +244,7 @@ lazy val circe = project
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, literal, parser, rs)
+  .dependsOn(core, generic, literal, parser, rs)
 
 lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
   scalacOptions ~= {
