@@ -6,7 +6,6 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
 private[circe] trait CollectionDecoders {
-
   /**
    * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
    *       unless the provided [[scala.collection.generic.CanBuildFrom]] is serializable.

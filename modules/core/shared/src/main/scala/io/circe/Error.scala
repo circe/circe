@@ -96,7 +96,6 @@ object DecodingFailure {
     val path = CursorOp.opsToPath(failure.history)
     s"DecodingFailure at ${path}: ${failure.message}"
   }
-
 }
 
 object Error {

@@ -5,7 +5,6 @@ import scala.collection.mutable.{ ArrayBuilder, Builder }
 import scala.reflect.ClassTag
 
 trait ArrayFactoryInstance {
-
   /**
    * We need serializable `CanBuildFrom` instances for arrays for our `Array` codec tests.
    */
@@ -17,7 +16,6 @@ trait ArrayFactoryInstance {
 }
 
 trait StreamFactoryInstance {
-
   /**
    * We need serializable `CanBuildFrom` instances for streams for our `NonEmptyStream` codec tests.
    */

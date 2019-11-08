@@ -4,7 +4,6 @@ import cats.{ Eq, Show }
 import java.io.Serializable
 
 sealed abstract class CursorOp extends Product with Serializable {
-
   /**
    * Does this operation require the current focus (not context) to be an
    * object?
@@ -76,7 +75,6 @@ object CursorOp {
 
   /** Shows history as JS style selections, i.e. ".foo.bar[3]" */
   def opsToPath(history: List[CursorOp]): String = {
-
     // Fold into sequence of selections (reducing array ops etc. into single selections)
     val selections = history.foldRight(List.empty[Selection]) {
       case (DownField(k), acc)                 => SelectField(k) :: acc

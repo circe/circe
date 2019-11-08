@@ -219,7 +219,6 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
  * Constructors, type class instances, and other utilities for [[JsonNumber]].
  */
 object JsonNumber {
-
   /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *

@@ -101,5 +101,4 @@ class AccumulatingDecoderSpec extends CirceSuite {
       assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
     }
   }
-
 }

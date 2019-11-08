@@ -298,7 +298,6 @@ trait Decoder[A] extends Serializable { self =>
             case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[Either[A, B]]]
           }
       }
-
   }
 
   /**
@@ -443,7 +442,6 @@ object Decoder
     with ProductDecoders
     with LiteralDecoders
     with LowPriorityDecoders {
-
   /**
    * @group Aliases
    */
@@ -1164,7 +1162,6 @@ object Decoder
   }
 
   private[this] abstract class StandardJavaTimeDecoder[A](name: String) extends JavaTimeDecoder[A](name) {
-
     protected[this] final def formatMessage(input: String, message: String): String = message
   }
 
@@ -1440,7 +1437,6 @@ object Decoder
    * @group Utilities
    */
   object state {
-
     /**
      * Attempt to decode a value at key `k` and remove it from the [[ACursor]].
      */
@@ -1475,7 +1471,6 @@ object Decoder
 }
 
 private[circe] trait LowPriorityDecoders {
-
   /**
    * @group Prioritization
    */

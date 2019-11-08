@@ -34,7 +34,6 @@ import java.io.Serializable
  * @author Travis Brown
  */
 abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
-
   /**
    * The current location in the document.
    *

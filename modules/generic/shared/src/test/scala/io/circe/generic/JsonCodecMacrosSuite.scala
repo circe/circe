@@ -11,7 +11,6 @@ import org.scalacheck.{ Arbitrary, Gen }
 package object jsoncodecmacrossuiteaux extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
 
 package jsoncodecmacrossuiteaux {
-
   // Simple
 
   @JsonCodec final case class Simple(i: Int, l: Long, s: String)
