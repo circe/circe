@@ -28,6 +28,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [ClearScore](https://www.clearscore.com)
 * [Codacy](https://www.codacy.com)
 * [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
+* [Coya](https://www.coya.com/)
 * [Datalogue](https://datalogue.io)
 * [Dreamlines](https://www.dreamlines.com/)
 * [DriveTribe](https://drivetribe.com)
