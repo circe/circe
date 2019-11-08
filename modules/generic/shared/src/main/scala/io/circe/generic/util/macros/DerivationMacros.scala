@@ -71,7 +71,6 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
    * that's more convenient to work with.
    */
   private[this] class Members(val underlying: List[Member]) {
-
     /**
      * Fold over the elements of this (co-)product while accumulating instances
      * of some type class for each.
@@ -118,7 +117,6 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
 
     object Entry {
       def unapply(tpe: Type): Option[(String, Type, Type)] = tpe.dealias match {
-
         /**
          * Before Scala 2.12 the `RefinedType` extractor returns the field type
          * (including any refinements) as the first result in the list.

@@ -24,7 +24,6 @@ import scala.collection.immutable.Map
  * @groupprio Other 3
  */
 sealed abstract class JsonObject extends Serializable {
-
   /**
    * Return the JSON value associated with the given key, with undefined behavior if there is none.
    *
@@ -210,7 +209,6 @@ sealed abstract class JsonObject extends Serializable {
  * Constructors, type class instances, and other utilities for [[JsonObject]].
  */
 object JsonObject {
-
   /**
    * Construct a [[JsonObject]] from the given key-value pairs.
    */

@@ -5,7 +5,6 @@ import scala.scalajs.js.JSConverters._
 import scala.util.control.NonFatal
 
 package object scalajs {
-
   /**
    * Attempt to convert a value to [[Json]].
    */

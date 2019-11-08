@@ -26,5 +26,4 @@ trait SortedKeysSuite { this: PrinterSuite =>
       keys.sorted === keys
     })
   }
-
 }

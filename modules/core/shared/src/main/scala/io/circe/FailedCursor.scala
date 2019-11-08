@@ -3,7 +3,6 @@ package io.circe
 import cats.Applicative
 
 final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
-
   /**
    * Indicates whether the last operation failed because the type of the focus
    * was wrong.

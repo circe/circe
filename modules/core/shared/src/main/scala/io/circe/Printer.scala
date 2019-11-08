@@ -237,7 +237,6 @@ final case class Printer(
 }
 
 object Printer {
-
   /**
    * A pretty-printer configuration that inserts no spaces.
    */
@@ -485,7 +484,6 @@ object Printer {
     cs: Charset,
     sizePredictor: SizePredictor
   ) extends Appendable {
-
     private[this] var index = 0
     private[this] var chars = new Array[Char](sizePredictor.predictSize)
 

@@ -105,7 +105,6 @@ trait Encoder[A] extends Serializable { self =>
  * @author Travis Brown
  */
 object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders with MidPriorityEncoders {
-
   /**
    * Return an instance for a given type `A`.
    *
@@ -734,7 +733,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    * @author Travis Brown
    */
   object AsRoot extends LowPriorityAsRootEncoders {
-
     /**
      * Return an instance for a given type.
      *
@@ -744,7 +742,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   }
 
   private[circe] class LowPriorityAsRootEncoders {
-
     /**
      * @group Prioritization
      */
@@ -798,7 +795,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    * @author Travis Brown
    */
   object AsArray extends LowPriorityAsArrayEncoders {
-
     /**
      * Return an instance for a given type.
      *
@@ -824,7 +820,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   }
 
   private[circe] class LowPriorityAsArrayEncoders {
-
     /**
      * @group Prioritization
      */
@@ -878,7 +873,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
    * @author Travis Brown
    */
   object AsObject extends LowPriorityAsObjectEncoders {
-
     /**
      * Return an instance for a given type.
      *
@@ -904,7 +898,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   }
 
   private[circe] class LowPriorityAsObjectEncoders {
-
     /**
      * @group Prioritization
      */
@@ -916,7 +909,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
 }
 
 private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
-
   /**
    * @group Collection
    */
@@ -945,7 +937,6 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
 }
 
 private[circe] trait LowPriorityEncoders {
-
   /**
    * @group Prioritization
    */

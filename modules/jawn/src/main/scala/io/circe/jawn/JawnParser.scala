@@ -7,7 +7,6 @@ import java.nio.ByteBuffer
 import scala.util.{ Failure, Success, Try }
 
 object JawnParser {
-
   /**
    * Returns a parser that fails on:
    * <ul>

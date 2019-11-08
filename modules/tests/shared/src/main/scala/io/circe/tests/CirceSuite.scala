@@ -33,7 +33,6 @@ trait CirceSuite
     with ArbitraryInstances
     with EqInstances
     with MissingInstances {
-
   override def convertToEqualizer[T](left: T): Equalizer[T] =
     sys.error("Intentionally ambiguous implicit for Equalizer")
 
