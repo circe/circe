@@ -128,7 +128,7 @@ import io.circe.optics.JsonOptics._
 import monocle.function.Plated
 
 Plated.transform[Json] { j =>
-  json.asNumber match {
+  j.asNumber match {
     case Some(n) => Json.fromString(n.toString)
     case None    => j
   }
