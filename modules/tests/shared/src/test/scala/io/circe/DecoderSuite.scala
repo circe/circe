@@ -94,7 +94,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "handleErrorWith" should "respect the underlying decoder's tryDecode (#1271)" in {
     val decoder: Decoder[Option[String]] =
-      Decoder.decodeOption[String].handleErrorWith(_ => Decoder.const(None)).at("a")
+      Decoder.decodeOption[String].handleErrorWith(_ => Decoder.const(None)).prepare(_.downField("a"))
 
     assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(None))
     assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(None))
@@ -486,7 +486,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   it should "respect the underlying decoder's tryDecode (#1271)" in {
     val decoder: Decoder[Either[Option[String], Boolean]] =
-      Decoder.decodeOption[String].either(Decoder.const(true)).at("a")
+      Decoder.decodeOption[String].either(Decoder.const(true)).prepare(_.downField("a"))
 
     assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(Right(true)))
     assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(Left(None)))
@@ -501,7 +501,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "or" should "respect the underlying decoder's tryDecode (#1271)" in {
     val decoder: Decoder[Option[String]] =
-      Decoder.decodeOption[String].or(Decoder.const(Option.empty[String])).at("a")
+      Decoder.decodeOption[String].or(Decoder.const(Option.empty[String])).prepare(_.downField("a"))
 
     assert(decoder.decodeJson(Json.obj("a" := 1)) === Right(None))
     assert(decoder.decodeJson(Json.obj("a" := Json.Null)) === Right(None))
