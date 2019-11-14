@@ -114,10 +114,10 @@ trait Decoder[A] extends Serializable { self =>
     override final def tryDecode(c: ACursor): Decoder.Result[A] =
       Decoder.resultInstance.handleErrorWith(self.tryDecode(c))(failure => f(failure).tryDecode(c))
 
-    override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
+    override final def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[A] =
       tryDecodeAccumulating(c)
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
-      Decoder.accumulatingResultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(
+    override final def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[A] =
+      AccumulatingDecoder.resultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(
         failures => f(failures.head).tryDecodeAccumulating(c)
       )
   }
@@ -243,9 +243,9 @@ trait Decoder[A] extends Serializable { self =>
       case r @ Right(_) => r
       case Left(_)      => d.tryDecode(c)
     }
-    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[AA] =
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[AA] =
       tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[AA] =
+    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[AA] =
       self.tryDecodeAccumulating(c) match {
         case r @ Valid(_) => r
         case Invalid(_)   => d.tryDecodeAccumulating(c)
@@ -265,14 +265,14 @@ trait Decoder[A] extends Serializable { self =>
           case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
         }
     }
-    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Either[A, B]] = tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[Either[A, B]] =
+    override def decodeAccumulating(c: HCursor): AccumulatingDecoder.Result[Either[A, B]] = tryDecodeAccumulating(c)
+    override def tryDecodeAccumulating(c: ACursor): AccumulatingDecoder.Result[Either[A, B]] =
       self.tryDecodeAccumulating(c) match {
         case Valid(v) => Valid(Left(v))
         case Invalid(_) =>
           decodeB.tryDecodeAccumulating(c) match {
             case Valid(v)       => Valid(Right(v))
-            case l @ Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[Either[A, B]]]
+            case l @ Invalid(_) => l.asInstanceOf[AccumulatingDecoder.Result[Either[A, B]]]
           }
       }
 
