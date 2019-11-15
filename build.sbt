@@ -51,7 +51,7 @@ def scalaCheckVersionFor(scalaVersion: String): String =
 def disciplineVersionFor(scalaVersion: String): String =
   if (priorTo2_13(scalaVersion)) disciplineVersion else "0.10.0"
 
-val previousCirceVersion = Some("0.11.0")
+val previousCirceVersion = Some("0.11.1")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
