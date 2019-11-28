@@ -29,6 +29,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Codacy](https://www.codacy.com)
 * [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
 * [Coya](https://www.coya.com/)
+* [Criteo](https://www.criteo.com/) ([collecting 200.000 events per second from our banners](https://medium.com/criteo-labs/migrate-a-service-getting-200kqps-from-jackson-to-circe-a475b2718206))
 * [Datalogue](https://datalogue.io)
 * [Dreamlines](https://www.dreamlines.com/)
 * [DriveTribe](https://drivetribe.com)
