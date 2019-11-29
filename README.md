@@ -68,6 +68,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
 * [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
+* [Tranzzo](https://tranzzo.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [VEACT](https://veact.net/)
 * [WeWork](https://www.wework.com)
