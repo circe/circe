@@ -101,6 +101,7 @@ The following open source projects are either built on circe or provide circe su
 * [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
 * [Blackdoor JOSE][jose-json-circe]: circe JSON support for blackdoor JOSE and JWT.
+* [borer][borer]: Allows circe encoders/decoders to be reused for CBOR (de)serialization.
 * [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
@@ -186,6 +187,7 @@ limitations under the License.
 [argonaut]: http://argonaut.io/
 [argonaut-contributors]: https://github.com/argonaut-io/argonaut/graphs/contributors
 [argus]: https://github.com/aishfenton/Argus
+[borer]: https://sirthias.github.io/borer/
 [circe-benchmarks]: https://github.com/circe/circe-benchmarks
 [circe-config]: https://github.com/circe/circe-config
 [circe-derivation]: https://github.com/circe/circe-derivation
