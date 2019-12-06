@@ -24,6 +24,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     private[this] final def generatePlaceholder(): String = UUID.randomUUID().toString
 
     def apply(stringParts: Seq[String], argument: Tree): Replacement = {
+
       /**
        * Generate a unique string that doesn't appear in the JSON literal.
        */

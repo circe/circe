@@ -237,6 +237,7 @@ final case class Printer(
 }
 
 object Printer {
+
   /**
    * A pretty-printer configuration that inserts no spaces.
    */

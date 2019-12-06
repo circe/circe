@@ -140,8 +140,8 @@ trait Decoder[A] extends Serializable { self =>
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       tryDecodeAccumulating(c)
     override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
-      Decoder.accumulatingResultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(
-        failures => f(failures.head).tryDecodeAccumulating(c)
+      Decoder.accumulatingResultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(failures =>
+        f(failures.head).tryDecodeAccumulating(c)
       )
   }
 
@@ -442,6 +442,7 @@ object Decoder
     with ProductDecoders
     with LiteralDecoders
     with LowPriorityDecoders {
+
   /**
    * @group Aliases
    */
@@ -1437,6 +1438,7 @@ object Decoder
    * @group Utilities
    */
   object state {
+
     /**
      * Attempt to decode a value at key `k` and remove it from the [[ACursor]].
      */
@@ -1471,6 +1473,7 @@ object Decoder
 }
 
 private[circe] trait LowPriorityDecoders {
+
   /**
    * @group Prioritization
    */

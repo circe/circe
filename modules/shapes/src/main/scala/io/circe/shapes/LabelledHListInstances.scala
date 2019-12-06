@@ -7,6 +7,7 @@ import shapeless.{ ::, HList, Widen, Witness }
 import shapeless.labelled.{ FieldType, field }
 
 trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
+
   /**
    * Decode a record element with a symbol key.
    *

@@ -33,9 +33,8 @@ class InstantiationBenchmark {
 
   @Benchmark
   def decoderFromInstance: Decoder.Result[String] = {
-    val decoder: Decoder[String] = Decoder.instance[String](
-      (c: HCursor) => c.as[String].left.flatMap(_ => c.get[String]("value"))
-    )
+    val decoder: Decoder[String] =
+      Decoder.instance[String]((c: HCursor) => c.as[String].left.flatMap(_ => c.get[String]("value")))
 
     decoder.decodeJson(input)
   }
@@ -59,9 +58,7 @@ class InstantiationBenchmark {
 
   @Benchmark
   def encoderFromInstance: Json = {
-    val encoder: Encoder[String] = Encoder.instance[String](
-      (s: String) => Json.obj("value" -> Json.fromString(s))
-    )
+    val encoder: Encoder[String] = Encoder.instance[String]((s: String) => Json.obj("value" -> Json.fromString(s)))
 
     encoder("abc")
   }

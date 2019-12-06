@@ -19,6 +19,7 @@ import io.circe.rs.JsonF.{ JArrayF, JBooleanF, JNullF, JNumberF, JObjectF, JStri
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
+
   /**
    * The maximum depth of a generated JSON value.
    */

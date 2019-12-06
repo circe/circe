@@ -4,6 +4,7 @@ import cats.{ Eq, Show }
 import java.io.Serializable
 
 sealed abstract class CursorOp extends Product with Serializable {
+
   /**
    * Does this operation require the current focus (not context) to be an
    * object?
