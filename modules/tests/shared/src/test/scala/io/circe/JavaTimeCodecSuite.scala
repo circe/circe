@@ -132,16 +132,15 @@ class JavaTimeCodecSuite extends CirceSuite {
   val parseExceptionMessage = s"Text '$invalidText'"
 
   "Decoder[ZoneId]" should "fail for invalid ZoneId" in {
-    forAll(
-      (s: String) =>
-        whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
-          val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
+    forAll((s: String) =>
+      whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
+        val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
 
-          assert(decodingResult.isLeft)
-          // The middle part of the message depends on the type of zone.
-          assert(decodingResult.swap.exists(_.message.contains("ZoneId (Invalid")))
-          assert(decodingResult.swap.exists(_.message.contains(s", invalid format: $s)")))
-        }
+        assert(decodingResult.isLeft)
+        // The middle part of the message depends on the type of zone.
+        assert(decodingResult.swap.exists(_.message.contains("ZoneId (Invalid")))
+        assert(decodingResult.swap.exists(_.message.contains(s", invalid format: $s)")))
+      }
     )
   }
 

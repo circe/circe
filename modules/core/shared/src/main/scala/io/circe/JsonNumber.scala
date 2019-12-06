@@ -92,15 +92,14 @@ sealed abstract class JsonNumber extends Serializable {
 private sealed abstract class BiggerDecimalJsonNumber(input: String) extends JsonNumber {
   final def toBigInt: Option[BigInt] = toBiggerDecimal.toBigInteger.map(BigInt(_))
   final def toBigDecimal: Option[BigDecimal] =
-    toBiggerDecimal.toBigDecimal.map(
-      value =>
-        if (value == JavaBigDecimal.ZERO) BigDecimal(JavaBigDecimal.ZERO)
-        else {
-          try BigDecimal(input)
-          catch {
-            case _: NumberFormatException => value
-          }
+    toBiggerDecimal.toBigDecimal.map(value =>
+      if (value == JavaBigDecimal.ZERO) BigDecimal(JavaBigDecimal.ZERO)
+      else {
+        try BigDecimal(input)
+        catch {
+          case _: NumberFormatException => value
         }
+      }
     )
 
   final def toLong: Option[Long] = toBiggerDecimal.toLong
@@ -219,6 +218,7 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
  * Constructors, type class instances, and other utilities for [[JsonNumber]].
  */
 object JsonNumber {
+
   /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *

@@ -21,6 +21,7 @@ import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
 
 trait SpecialEqForFloatAndDouble {
+
   /**
    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
    * `NaN` from itself.

@@ -33,14 +33,12 @@ class SyntaxSuite extends CirceSuite {
         aString: String,
         aBoolean: Boolean
       ) =>
-        {
-          val key = CustomKey("keyComponentOne", 2)
-          val keyStringRepresentation = "keyComponentOne_2"
-          assert((key := m) === (keyStringRepresentation, m.asJson))
-          assert((key := aNumber) === (keyStringRepresentation, aNumber.asJson))
-          assert((key := aString) === (keyStringRepresentation, aString.asJson))
-          assert((key := aBoolean) === (keyStringRepresentation, aBoolean.asJson))
-        }
+        val key = CustomKey("keyComponentOne", 2)
+        val keyStringRepresentation = "keyComponentOne_2"
+        assert((key := m) === (keyStringRepresentation, m.asJson))
+        assert((key := aNumber) === (keyStringRepresentation, aNumber.asJson))
+        assert((key := aString) === (keyStringRepresentation, aString.asJson))
+        assert((key := aBoolean) === (keyStringRepresentation, aBoolean.asJson))
     }
   }
 }
