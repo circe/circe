@@ -4,9 +4,9 @@ import io.circe.{ Encoder, Json }
 import io.circe.literal.JsonStringContext
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
-import org.scalatest.Matchers
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import org.scalatest.matchers.should.Matchers
 
 class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
   describe("The json string interpolater") {
