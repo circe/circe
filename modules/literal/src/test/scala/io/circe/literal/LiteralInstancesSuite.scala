@@ -1,9 +1,9 @@
 package io.circe.literal
 
 import io.circe.{ Decoder, Encoder }
-import org.scalatest.Matchers
 import org.scalatest.funspec.AnyFunSpec
 import shapeless.Witness
+import org.scalatest.matchers.should.Matchers
 
 class LiteralInstancesSuite extends AnyFunSpec with Matchers {
   describe("A literal String codec") {

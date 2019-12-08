@@ -1,7 +1,7 @@
 package io.circe.jawn
 
-import org.scalatest.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 class JawnParserSuite extends AnyFunSpec with Matchers {
   describe("JawnParser") {

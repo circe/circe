@@ -6,9 +6,9 @@ import io.circe.parser.parse
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import org.scalacheck.Arbitrary
-import org.scalatest.Matchers
 import org.scalatest.matchers.{ MatchResult, Matcher }
 import _root_.scodec.bits._
+import org.scalatest.matchers.should.Matchers
 
 class ScodecSuite extends CirceSuite with Matchers with BitVectorMatchers {
   implicit val arbitraryBitVector: Arbitrary[BitVector] =
