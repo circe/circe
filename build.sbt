@@ -123,10 +123,11 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeHighlightTheme := "atom-one-light",
   micrositeHomepage := "https://circe.github.io/circe/",
   micrositeBaseUrl := "/circe",
-  micrositeDocumentationUrl := "/api",
+  micrositeDocumentationUrl := "api",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
   micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositeTheme := "pattern",
   micrositePalette := Map(
     "brand-primary" -> "#5B5988",
     "brand-secondary" -> "#292E53",
