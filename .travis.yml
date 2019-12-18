@@ -16,8 +16,8 @@ cache:
 
 install:
   - pip install --user codecov
-  - rvm use 2.6.0 --install --fuzzy
-  - gem update --system
+  - rvm use 2.6.5 --install --fuzzy
+  - yes | gem update --system --force
   - gem install sass
   - gem install jekyll -v 3.8.5
 
