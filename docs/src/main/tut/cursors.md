@@ -11,7 +11,7 @@ data and for performing modification.
 
 Suppose we have the following JSON document:
 
-```tut:silent
+```scala mdoc:silent
 import cats.syntax.either._
 import io.circe._, io.circe.parser._
 
@@ -36,14 +36,14 @@ val doc: Json = parse(json).getOrElse(Json.Null)
 In order to traverse the document we need to create an `HCursor` with the focus at the document's
 root:
 
-```tut:silent
+```scala mdoc:silent
 val cursor: HCursor = doc.hcursor
 ```
 
 We can then use [various operations][circe-cursor] to move the focus of the cursor around the
 document and extract data from it:
 
-```tut:book
+```scala mdoc
 val baz: Decoder.Result[Double] =
   cursor.downField("values").downField("baz").as[Double]
 
@@ -59,14 +59,14 @@ val secondQux: Decoder.Result[String] =
 
 We can also use a cursor to modify JSON.
 
-```tut:silent
+```scala mdoc:silent
 val reversedNameCursor: ACursor =
   cursor.downField("name").withFocus(_.mapString(_.reverse))
 ```
 
 We can then return to the root of the document and return its value with `top`:
 
-```tut:book
+```scala mdoc
 val reversedName: Option[Json] = reversedNameCursor.top
 ```
 

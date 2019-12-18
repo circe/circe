@@ -22,8 +22,7 @@ Note that this will require your project to depend on both Scalaz and cats.
 
 Suppose we have the following JSON document:
 
-```tut:silent
-import cats.syntax.either._
+```scala mdoc:silent
 import io.circe._, io.circe.parser._
 
 val json: Json = parse("""
@@ -53,8 +52,8 @@ val json: Json = parse("""
 
 If we wanted to get the customer's phone number, we could do it using a cursor as follows:
 
-```tut:book
-val phoneNum: Option[String] = json.hcursor.
+```scala mdoc
+val phoneNumFromCursor: Option[String] = json.hcursor.
       downField("order").
       downField("customer").
       downField("contactDetails").
@@ -64,7 +63,7 @@ val phoneNum: Option[String] = json.hcursor.
 
 This works, but it's a little verbose. We could rewrite it using optics like this:
 
-```tut:book
+```scala mdoc
 import io.circe.optics.JsonPath._
 
 val _phoneNum = root.order.customer.contactDetails.phone.string
@@ -83,8 +82,8 @@ traversals together, and so on.
 Let's look at a more complex example. This time we want to get the quantities of all the
 items in the order. Using a cursor it might look like this:
 
-```tut:book
-val items: Vector[Json] = json.hcursor.
+```scala mdoc
+val itemsFromCursor: Vector[Json] = json.hcursor.
       downField("order").
       downField("items").
       focus.
@@ -92,12 +91,12 @@ val items: Vector[Json] = json.hcursor.
       getOrElse(Vector.empty)
 
 val quantities: Vector[Int] =
-  items.flatMap(_.hcursor.get[Int]("quantity").toOption)
+  itemsFromCursor.flatMap(_.hcursor.get[Int]("quantity").toOption)
 ```
 
 And with optics:
 
-```tut:book
+```scala mdoc
 val items: List[Int] =
   root.order.items.each.quantity.int.getAll(json)
 ```
@@ -109,7 +108,7 @@ Optics can also be used for making modifications to JSON.
 Suppose we decide to have a 2-for-1 sale, so we want to double all the quantities in the order. This
 can be achieved with a small change to the code we wrote for traversal:
 
-```tut:book
+```scala mdoc
 val doubleQuantities: Json => Json =
   root.order.items.each.quantity.int.modify(_ * 2)
 
@@ -123,7 +122,7 @@ The result is a copy of the original JSON with only the `quantity` fields update
 Sometimes you may need to recursively modify JSON. Let assume you need to transform all numbers into
 strings in the example JSON:
 
-```tut:book
+```scala mdoc
 import io.circe.optics.JsonOptics._
 import monocle.function.Plated
 
