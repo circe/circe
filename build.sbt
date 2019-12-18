@@ -122,8 +122,8 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeAuthor := "Travis Brown",
   micrositeHighlightTheme := "atom-one-light",
   micrositeHomepage := "https://circe.github.io/circe/",
-  micrositeBaseUrl := "circe",
-  micrositeDocumentationUrl := "api",
+  micrositeBaseUrl := "/circe",
+  micrositeDocumentationUrl := "/api",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
   micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
@@ -169,7 +169,7 @@ lazy val docs = project
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
-    crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.13")),
+    mdocIn := file("docs/src/main/tut"),
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-generic-extras" % "0.12.2",
       "io.circe" %% "circe-optics" % "0.12.0"

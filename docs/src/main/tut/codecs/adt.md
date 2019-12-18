@@ -9,7 +9,7 @@ The most straightforward way to encode / decode ADTs is by using generic derivat
 
 Consider the following ADT:
 
-```tut:book:silent
+```scala mdoc:silent
 sealed trait Event
 
 case class Foo(i: Int) extends Event
@@ -20,7 +20,7 @@ case class Qux(values: List[String]) extends Event
 
 And the encoder / decoder instances:
 
-```tut:book:silent
+```scala mdoc:silent
 import cats.syntax.functor._
 import io.circe.{ Decoder, Encoder }, io.circe.generic.auto._
 import io.circe.syntax._
@@ -49,7 +49,7 @@ It's also worth noting that our explicit `Encoder` and `Decoder` instances will 
 
 We can use these instances like this:
 
-```tut:book
+```scala mdoc
 import GenericDerivation._
 import io.circe.parser.decode
 
@@ -64,7 +64,7 @@ This works, and if you need to be able to specify the order that the ADT constru
 
 As discussed [on Gitter](https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a), we can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
 
-```tut:book:silent
+```scala mdoc:silent
 // To suppress previously imported inplicit codecs.
 import GenericDerivation.{ decodeEvent => _, encodeEvent => _ }
 
@@ -87,7 +87,7 @@ object ShapesDerivation {
 
 And then:
 
-```tut:book
+```scala mdoc
 import ShapesDerivation._
 import io.circe.parser.decode, io.circe.syntax._
 
@@ -104,7 +104,7 @@ The main drawback of this approach (apart from the extra `circe-shapes` dependen
 
 The `generic-extras` module provides a little more configurability in this respect. We can write the following, for example:
 
-```tut:book:silent
+```scala mdoc:silent
 import io.circe.generic.extras.auto._
 import io.circe.generic.extras.Configuration
 
@@ -114,7 +114,7 @@ implicit val genDevConfig: Configuration =
 
 And then:
 
-```tut:book
+```scala mdoc
 import io.circe.parser.decode, io.circe.syntax._
 
 (Foo(100): Event).asJson.noSpaces

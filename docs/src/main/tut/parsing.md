@@ -16,7 +16,7 @@ libraryDependencies += "io.circe" %% "circe-parser" % circeVersion
 
 Parsing is done as follows.
 
-```tut:book
+```scala mdoc
 import io.circe._, io.circe.parser._
 
 val rawJson: String = """
@@ -36,7 +36,7 @@ corresponding JSON representation.
 
 Let's see what happens when you try to parse invalid JSON:
 
-```tut:book
+```scala mdoc
 val badJson: String = "yolo"
 
 parse(badJson)
@@ -45,7 +45,7 @@ parse(badJson)
 There are a number of ways to extract the parse result from the `Either`. For example you could pattern
 match on it:
 
-```tut:book
+```scala mdoc
 parse(rawJson) match {
   case Left(failure) => println("Invalid JSON :(")
   case Right(json) => println("Yay, got some JSON!")
@@ -54,9 +54,7 @@ parse(rawJson) match {
 
 Or use `getOrElse` (an extension method provided by Cats):
 
-```tut:book
-import cats.syntax.either._
-
+```scala mdoc
 val json: Json = parse(rawJson).getOrElse(Json.Null)
 ```
 

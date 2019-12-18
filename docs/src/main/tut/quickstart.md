@@ -4,7 +4,7 @@ circe is published to [Maven Central][maven-central] and cross-built for Scala 2
 so you can just add the following to your build:
 
 ```scala
-val circeVersion = "0.11.1"
+val circeVersion = "0.12.3"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -16,8 +16,10 @@ libraryDependencies ++= Seq(
 In case of large or deep-nested case classes, there is a chance to get stack overflow during compilation,
 please refer to [known-issues](codecs/known-issues.html) for workaround.
 
-If you're using circe-generic-extra's `@JsonCodec` macro annotation (with any Scala version before 2.13),
-you'll also need to include the [Macro Paradise][paradise] compiler plugin in your build:
+If you're using circe-generic-extra's `@JsonCodec` macro annotations,
+you'll need to add `-Ymacro-annotations` to your compiler options on Scala 2.13,
+or to include the [Macro Paradise][paradise] compiler plugin in your build on
+earlier Scala versions:
 
 ```scala
 addCompilerPlugin(

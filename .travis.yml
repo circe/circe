@@ -19,7 +19,7 @@ install:
   - rvm use 2.6.5 --install --fuzzy
   - yes | gem update --system --force
   - gem install sass
-  - gem install jekyll -v 3.8.5
+  - gem install jekyll -v 4.0.0
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
