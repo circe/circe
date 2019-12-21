@@ -45,6 +45,16 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => fail(CursorOp.DownArray)
   }
 
+  final def find(p: Json => Boolean): ACursor = {
+    @tailrec
+    def go(c: ACursor): ACursor = c match {
+      case success: HCursor => if (p(success.value)) success else go(success.right)
+      case other            => other
+    }
+
+    go(this)
+  }
+
   final def downField(k: String): ACursor = value match {
     case Json.JObject(o) =>
       if (!o.contains(k)) fail(CursorOp.DownField(k))
