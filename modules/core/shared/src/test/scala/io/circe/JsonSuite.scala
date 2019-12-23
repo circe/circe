@@ -14,14 +14,22 @@ class JsonSuite extends AnyFlatSpec {
     assert(actual == Json.fromValues(List(Json.fromString("a"))))
   }
   "Json#deepDropNullValues" should "remove null value for nested object" in {
-    val actual = Json.fromFields(List(
-      "child1" -> Json.fromFields(List("a" -> Json.Null, "b" -> Json.fromString("c"))),
-      "child2" -> Json.fromValues(List(Json.Null, Json.fromString("a")))
-    )).deepDropNullValues
+    val actual = Json
+      .fromFields(
+        List(
+          "child1" -> Json.fromFields(List("a" -> Json.Null, "b" -> Json.fromString("c"))),
+          "child2" -> Json.fromValues(List(Json.Null, Json.fromString("a")))
+        )
+      )
+      .deepDropNullValues
 
-    assert(actual == Json.fromFields(List(
-      "child1" -> Json.fromFields(List("b" -> Json.fromString("c"))),
-      "child2" -> Json.fromValues(List(Json.fromString("a")))
-    )))
+    assert(
+      actual == Json.fromFields(
+        List(
+          "child1" -> Json.fromFields(List("b" -> Json.fromString("c"))),
+          "child2" -> Json.fromValues(List(Json.fromString("a")))
+        )
+      )
+    )
   }
 }
