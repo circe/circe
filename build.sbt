@@ -273,7 +273,10 @@ lazy val numbersJS = numbersBase.js
 
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "cats-core" % catsVersion,
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
+    ),
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
   )
   .dependsOn(numbersBase)
