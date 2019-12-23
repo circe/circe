@@ -183,6 +183,28 @@ sealed abstract class Json extends Product with Serializable {
   def dropNullValues: Json = this.mapObject(_.filter { case (_, v) => !v.isNull })
 
   /**
+   * Drop the entries with a null value if this is an object or array.
+   */
+  def deepDropNullValues: Json = {
+    val folder = new Json.Folder[Json] {
+      def onNull: Json = Json.Null
+      def onBoolean(value: Boolean): Json = Json.fromBoolean(value)
+      def onNumber(value: JsonNumber): Json = Json.fromJsonNumber(value)
+      def onString(value: String): Json = Json.fromString(value)
+      def onArray(value: Vector[Json]): Json =
+        Json.fromValues(value.collect {
+          case v if !v.isNull => v.foldWith(this)
+        })
+      def onObject(value: JsonObject): Json =
+        Json.fromJsonObject(
+          value.filter { case (_, v) => !v.isNull }.mapValues(_.foldWith(this))
+        )
+    }
+
+    this.foldWith(folder)
+  }
+
+  /**
    * Compute a `String` representation for this JSON value.
    */
   override final def toString: String = spaces2
