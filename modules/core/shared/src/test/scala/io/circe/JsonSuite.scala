@@ -4,9 +4,27 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 class JsonSuite extends AnyFlatSpec {
   "Json#deepDropNullValues" should "remove null value for JsonObject" in {
-    val actual = Json.fromFields(List("a" -> Json.Null, "b" -> Json.fromString("c"))).deepDropNullValues
+    val actual = Json
+      .fromFields(
+        List(
+          "a" -> Json.Null,
+          "b" -> Json.fromString("c"),
+          "d" -> Json.fromInt(1),
+          "e" -> Json.True
+        )
+      )
+      .deepDropNullValues
 
-    assert(actual == Json.fromFields(List("b" -> Json.fromString("c"))))
+    assert(
+      actual == Json.fromFields(
+        List(
+          "b" -> Json.fromString("c"),
+          "b" -> Json.fromString("c"),
+          "d" -> Json.fromInt(1),
+          "e" -> Json.True
+        )
+      )
+    )
   }
   "Json#deepDropNullValues" should "remove null value for JsonArray" in {
     val actual = Json.fromValues(List(Json.Null, Json.fromString("a"))).deepDropNullValues
