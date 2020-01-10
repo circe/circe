@@ -34,6 +34,5 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
     new ArrayCursor(values, index + 1, parent, changed)(this, CursorOp.MoveRight)
   }
 
-  def first: ACursor = new ArrayCursor(values, 0, parent, changed)(this, CursorOp.MoveFirst)
   def field(k: String): ACursor = fail(CursorOp.Field(k))
 }
