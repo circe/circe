@@ -32,8 +32,6 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
 
   def left: ACursor = this
   def right: ACursor = this
-  def first: ACursor = this
-  def last: ACursor = this
 
   def delete: ACursor = this
 
