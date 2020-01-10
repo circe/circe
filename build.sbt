@@ -29,8 +29,8 @@ val refinedVersion = "0.9.10"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.1.0-RC3"
-val scalaCheckVersion = "1.14.2"
+val scalaTestVersion = "3.1.0"
+val scalaCheckVersion = "1.14.3"
 val disciplineVersion = "1.0.1"
 val scalaJavaTimeVersion = "2.0.0-RC3"
 
@@ -262,7 +262,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % Test
+      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1" % Test
     )
   )
   .dependsOn(numbersTestingBase % Test)
