@@ -155,34 +155,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def right: ACursor
 
   /**
-   * If the focus is an element in a JSON array, move to the first element.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use up and downArray", "0.12.0")
-  def first: ACursor
-
-  /**
-   * If the focus is an element in JSON array, move to the left the given number of times.
-   *
-   * A negative value will move the cursor right.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use left", "0.12.0")
-  def leftN(n: Int): ACursor
-
-  /**
-   * If the focus is an element in JSON array, move to the right the given number of times.
-   *
-   * A negative value will move the cursor left.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use right", "0.12.0")
-  def rightN(n: Int): ACursor
-
-  /**
    * If the focus is a JSON array, move to its first element.
    *
    * @group ArrayNavigation
