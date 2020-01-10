@@ -491,16 +491,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   }
 
   /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
-   * }}}
-   * @group Utilities
-   */
-  @deprecated("Use encodeEnumeration", "0.12.0")
-  final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = encodeEnumeration[E](enum)
-
-  /**
    * Note that this implementation assumes that the collection does not contain duplicate keys.
    */
   private[this] abstract class IterableAsObjectEncoder[K, V, M[_, _]](
