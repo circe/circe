@@ -217,10 +217,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def replayOne(op: CursorOp): ACursor = op match {
     case CursorOp.MoveLeft       => left
     case CursorOp.MoveRight      => right
-    case CursorOp.MoveFirst      => first
     case CursorOp.MoveUp         => up
-    case CursorOp.LeftN(n)       => leftN(n)
-    case CursorOp.RightN(n)      => rightN(n)
     case CursorOp.Field(k)       => field(k)
     case CursorOp.DownField(k)   => downField(k)
     case CursorOp.DownArray      => downArray

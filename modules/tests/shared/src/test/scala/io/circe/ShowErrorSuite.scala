@@ -8,9 +8,7 @@ trait GenCursorOps {
   val arrayMoves: Gen[List[CursorOp]] = Gen.listOf(
     Gen.oneOf(
       Gen.const(MoveLeft),
-      Gen.const(MoveRight),
-      Gen.choose(1, 10000).map(LeftN),
-      Gen.choose(1, 10000).map(RightN)
+      Gen.const(MoveRight)
     )
   )
 
@@ -31,8 +29,13 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
   it should "produce the expected output on a larger example" in {
     val ops = List(
       MoveLeft,
-      LeftN(2),
-      RightN(5),
+      MoveLeft,
+      MoveLeft,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
       DownArray,
       DownArray,
       DownField("bar"),
@@ -61,8 +64,6 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
     val index = moves.foldLeft(0) {
       case (i, MoveLeft)  => i - 1
       case (i, MoveRight) => i + 1
-      case (i, LeftN(n))  => i - n
-      case (i, RightN(n)) => i + n
       case (i, _)         => i
     }
 
