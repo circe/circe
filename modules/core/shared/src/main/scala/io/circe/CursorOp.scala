@@ -45,10 +45,7 @@ object CursorOp {
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft       => "<-"
     case MoveRight      => "->"
-    case MoveFirst      => "|<-"
     case MoveUp         => "_/"
-    case LeftN(n)       => "-<-:(" + n + ")"
-    case RightN(n)      => ":->-(" + n + ")"
     case Field(f)       => "--(" + f + ")"
     case DownField(f)   => "--\\(" + f + ")"
     case DownArray      => "\\\\"
@@ -77,8 +74,6 @@ object CursorOp {
       case (MoveUp, _ :: tail)                 => tail
       case (MoveRight, SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
       case (MoveLeft, SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
-      case (RightN(n), SelectIndex(i) :: tail) => SelectIndex(i + n) :: tail
-      case (LeftN(n), SelectIndex(i) :: tail)  => SelectIndex(i - n) :: tail
       case (op, acc)                           => Op(op) :: acc
     }
 
