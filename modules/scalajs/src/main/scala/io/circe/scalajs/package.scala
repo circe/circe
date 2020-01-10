@@ -64,7 +64,7 @@ package object scalajs {
   }
 
   implicit final def decodeJsUndefOr[A](implicit d: Decoder[A]): Decoder[js.UndefOr[A]] =
-    Decoder[Option[A]].map(_.fold[js.UndefOr[A]](js.undefined)(js.UndefOr.any2undefOrA))
+    Decoder[Option[A]].map(_.fold[js.UndefOr[A]](js.undefined)(a => a))
 
   implicit final def encodeJsUndefOr[A](implicit e: Encoder[A]): Encoder[js.UndefOr[A]] =
     Encoder.instance(_.fold(Json.Null)(e(_)))
