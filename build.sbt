@@ -344,7 +344,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % Test
+      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1" % Test
     )
   )
   .jsSettings(
@@ -434,7 +434,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
       "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "3.1.0.0-RC2"
+      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
     ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
