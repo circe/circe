@@ -3,14 +3,14 @@ package io.circe.jawn
 import io.circe.{ Json, JsonNumber, JsonObject }
 import java.io.Serializable
 import java.util.LinkedHashMap
-import org.typelevel.jawn.{ RawFContext, RawFacade, SupportParser }
+import org.typelevel.jawn.{ FContext, Facade, SupportParser }
 
 object CirceSupportParser extends CirceSupportParser(None, true)
 
 class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
     extends SupportParser[Json]
     with Serializable {
-  implicit final val facade: RawFacade[Json] = maxValueSize match {
+  implicit final val facade: Facade[Json] = maxValueSize match {
     case Some(size) =>
       if (allowDuplicateKeys) {
         new LimitedFacade(size) with DuplicatesFacade
@@ -25,12 +25,12 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       }
   }
 
-  private[this] abstract class BaseFacade extends RawFacade[Json] with Serializable {
+  private[this] abstract class BaseFacade extends Facade[Json] with Serializable {
     final def jnull(index: Int): Json = Json.Null
     final def jfalse(index: Int): Json = Json.False
     final def jtrue(index: Int): Json = Json.True
 
-    final def singleContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
+    final def singleContext(index: Int): FContext[Json] = new FContext[Json] {
       private[this] final var value: Json = null
       final def add(s: CharSequence, index: Int): Unit = value = jstring(s.toString, index)
       final def add(v: Json, index: Int): Unit = value = v
@@ -38,7 +38,7 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       final def isObj: Boolean = false
     }
 
-    final def arrayContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
+    final def arrayContext(index: Int): FContext[Json] = new FContext[Json] {
       private[this] final val vs = Vector.newBuilder[Json]
       final def add(s: CharSequence, index: Int): Unit = vs += jstring(s.toString, index)
       final def add(v: Json, index: Int): Unit = vs += v
@@ -66,7 +66,7 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       Json.fromString(s.toString)
     }
 
-    final def objectContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
+    final def objectContext(index: Int): FContext[Json] = new FContext[Json] {
       private[this] final var key: String = null
       private[this] final val m = new LinkedHashMap[String, Json]
 
@@ -99,7 +99,7 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
       }
     final def jstring(s: CharSequence, index: Int): Json = Json.fromString(s.toString)
 
-    final def objectContext(index: Int): RawFContext[Json] = new RawFContext[Json] {
+    final def objectContext(index: Int): FContext[Json] = new FContext[Json] {
       private[this] final var key: String = null
       private[this] final val m = new LinkedHashMap[String, Json]
 
