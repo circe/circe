@@ -169,7 +169,7 @@ asynchronously with jawn, and decode them into `Task` values:
 
 ```scala
 val lots =
-  readBytes(new File("data.json")).through(byteArrayParser).through(decoder[Task, Lot])
+  readBytes[IO](new File("data.json")).through(byteArrayParser).through(decoder[IO, Lot])
 ```
 
 This line doesn't do any real work—it doesn't even open the file. It just represents a source of
