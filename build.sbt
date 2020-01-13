@@ -44,7 +44,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.12.2")
+val previousCirceVersion = Some("0.12.3")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(

@@ -1,9 +1,9 @@
-scalaVersion := "2.12.9"
+scalaVersion := "2.13.1"
 
 scalacOptions += "-deprecation"
 
 libraryDependencies ++= Seq(
-  "io.circe"    %% "circe-generic"  % "0.11.1",
-  "io.circe"    %% "circe-iteratee" % "0.12.0",
-  "io.iteratee" %% "iteratee-files" % "0.18.0"
+  "io.circe"    %% "circe-generic"  % "0.13.0-M2",
+  "io.circe"    %% "circe-iteratee" % "0.13.0-M2",
+  "io.iteratee" %% "iteratee-files" % "0.19.0"
 )
