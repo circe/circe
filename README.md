@@ -139,6 +139,7 @@ The following open source projects are either built on circe or provide circe su
 * [shaclex][shaclex]: RDF validation using SHACL or ShEx. 
 * [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
 * [sttp][sttp]: Scala HTTP client.
+* [Synapses][synapses]: A lightweight Neural Network library, for js, jvm and .net.
 * [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
 * [Zenith][zenith]: Functional HTTP library built on circe.
 
@@ -258,6 +259,7 @@ limitations under the License.
 [snakeyaml]: https://bitbucket.org/asomov/snakeyaml
 [spray]: http://spray.io/
 [sttp]: https://github.com/softwaremill/sttp
+[synapses]: https://mrdimosthenis.github.io/Synapses
 [telegram-bot-api]: https://core.telegram.org/bots/api
 [telepooz]: https://github.com/nikdon/telepooz
 [todoist]: https://developer.todoist.com/
