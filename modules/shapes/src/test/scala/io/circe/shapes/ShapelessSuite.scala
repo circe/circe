@@ -10,25 +10,25 @@ import shapeless.record.Record
 import shapeless.syntax.singleton._
 
 class ShapelessSuite extends CirceSuite {
-  checkLaws("Codec[HNil]", CodecTests[HNil].codec)
-  checkLaws("Codec[Int :: HNil]", CodecTests[Int :: HNil].codec)
-  checkLaws("Codec[String :: Int :: HNil]", CodecTests[String :: Int :: HNil].codec)
-  checkLaws("Codec[Record.`'foo -> String, 'bar -> Int`.T]", CodecTests[Record.`'foo -> String, 'bar -> Int`.T].codec)
-  checkLaws(
+  checkAll("Codec[HNil]", CodecTests[HNil].codec)
+  checkAll("Codec[Int :: HNil]", CodecTests[Int :: HNil].codec)
+  checkAll("Codec[String :: Int :: HNil]", CodecTests[String :: Int :: HNil].codec)
+  checkAll("Codec[Record.`'foo -> String, 'bar -> Int`.T]", CodecTests[Record.`'foo -> String, 'bar -> Int`.T].codec)
+  checkAll(
     """Codec[Record.`"a" -> Char, "b" -> Int, "c" -> Char`.T]""",
     CodecTests[Record.`"a" -> Char, "b" -> Int, "c" -> Char`.T].codec
   )
-  checkLaws("Codec[Int :+: String :+: List[Char] :+: CNil]", CodecTests[String :+: Int :+: List[Char] :+: CNil].codec)
-  checkLaws(
+  checkAll("Codec[Int :+: String :+: List[Char] :+: CNil]", CodecTests[String :+: Int :+: List[Char] :+: CNil].codec)
+  checkAll(
     "Codec[FieldType[Witness.`'foo`.T, Int] :+: FieldType[Witness.`'bar`.T, String] :+: CNil]",
     CodecTests[FieldType[Witness.`'foo`.T, Int] :+: FieldType[Witness.`'bar`.T, String] :+: CNil].codec
   )
-  checkLaws(
+  checkAll(
     """Codec[FieldType[Witness.`"a"`.T, Int] :+: FieldType[Witness.`"b"`.T, String] :+: CNil]""",
     CodecTests[FieldType[Witness.`"a"`.T, Int] :+: FieldType[Witness.`"b"`.T, String] :+: CNil].codec
   )
-  checkLaws("Codec[Sized[List[Int], Nat._4]]", CodecTests[Sized[List[Int], Nat._4]].codec)
-  checkLaws("Codec[Sized[Vector[String], Nat._10]]", CodecTests[Sized[Vector[String], Nat._10]].codec)
+  checkAll("Codec[Sized[List[Int], Nat._4]]", CodecTests[Sized[List[Int], Nat._4]].codec)
+  checkAll("Codec[Sized[Vector[String], Nat._10]]", CodecTests[Sized[Vector[String], Nat._10]].codec)
 
   val hlistDecoder = Decoder[String :: Int :: List[Char] :: HNil]
 

@@ -10,8 +10,8 @@ import java.nio.ByteBuffer
 import scala.io.Source
 
 class JawnParserSuite extends CirceSuite {
-  checkLaws("Parser", ParserTests(`package`).fromString)
-  checkLaws(
+  checkAll("Parser", ParserTests(`package`).fromString)
+  checkAll(
     "Parser",
     ParserTests(`package`).fromFunction[ByteBuffer]("fromByteBuffer")(
       s => ByteBuffer.wrap(s.getBytes("UTF-8")),

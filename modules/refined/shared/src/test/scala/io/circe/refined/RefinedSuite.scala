@@ -20,12 +20,12 @@ class RefinedSuite extends CirceSuite {
 
   type Gt2 = Greater[W.`2`.T]
 
-  checkLaws(
+  checkAll(
     "Codec[Int Refined Greater[W.`2`.T]]",
     CodecTests[Int Refined Gt2].codec
   )
 
-  checkLaws(
+  checkAll(
     """Codec[String Refined StartsWith[W.`"a"`.T]]""",
     CodecTests[String Refined StartsWith[W.`"a"`.T]].codec
   )
@@ -99,7 +99,7 @@ object RefinedFieldsSuite {
 class RefinedFieldsSuite extends CirceSuite {
   import RefinedFieldsSuite._
 
-  checkLaws("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
+  checkAll("Codec[RefinedFields]", CodecTests[RefinedFields].codec)
 
   "Refined fields" should "be encoded as simple fields" in {
     val json = Encoder[RefinedFields].apply(

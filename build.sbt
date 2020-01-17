@@ -32,6 +32,7 @@ val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.1.0"
 val scalaCheckVersion = "1.14.3"
 val disciplineVersion = "1.0.2"
+val disciplineScalaTestVersion = "1.0.0-RC4"
 val scalaJavaTimeVersion = "2.0.0-RC3"
 
 /**
@@ -415,7 +416,8 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline-core" % disciplineVersion
+      "org.typelevel" %%% "discipline-core" % disciplineVersion,
+      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion
     )
   )
   .settings(

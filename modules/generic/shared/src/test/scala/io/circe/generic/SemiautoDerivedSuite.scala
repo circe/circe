@@ -93,51 +93,51 @@ object SemiautoDerivedSuite {
 class SemiautoDerivedSuite extends CirceSuite {
   import SemiautoDerivedSuite._
 
-  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
-  checkLaws("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
-  checkLaws("Codec[Box[Int]] via Codec", CodecTests[Box[Int]](codecForBox[Int], codecForBox[Int]).codec)
-  checkLaws("Codec[Box[Int]] via Decoder and Codec", CodecTests[Box[Int]](implicitly, codecForBox[Int]).codec)
-  checkLaws("Codec[Box[Int]] via Encoder and Codec", CodecTests[Box[Int]](codecForBox[Int], implicitly).codec)
-  checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
-  checkLaws("Codec[Qux[Int]] via Codec", CodecTests[Qux[Int]](codecForQux[Int], codecForQux[Int]).codec)
-  checkLaws("Codec[Qux[Int]] via Decoder and Codec", CodecTests[Qux[Int]](implicitly, codecForQux[Int]).codec)
-  checkLaws("Codec[Qux[Int]] via Encoder and Codec", CodecTests[Qux[Int]](codecForQux[Int], implicitly).codec)
-  checkLaws("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
-  checkLaws("Codec[Baz]", CodecTests[Baz].codec)
-  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
-  checkLaws("Codec[Foo] via Codec", CodecTests[Foo](codecForFoo, codecForFoo).codec)
-  checkLaws("Codec[Foo] via Decoder and Codec", CodecTests[Foo](implicitly, codecForFoo).codec)
-  checkLaws("Codec[Foo] via Encoder and Codec", CodecTests[Foo](codecForFoo, implicitly).codec)
-  checkLaws("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
-  checkLaws(
+  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+  checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+  checkAll("Codec[Box[Int]]", CodecTests[Box[Int]].codec)
+  checkAll("Codec[Box[Int]] via Codec", CodecTests[Box[Int]](codecForBox[Int], codecForBox[Int]).codec)
+  checkAll("Codec[Box[Int]] via Decoder and Codec", CodecTests[Box[Int]](implicitly, codecForBox[Int]).codec)
+  checkAll("Codec[Box[Int]] via Encoder and Codec", CodecTests[Box[Int]](codecForBox[Int], implicitly).codec)
+  checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkAll("Codec[Qux[Int]] via Codec", CodecTests[Qux[Int]](codecForQux[Int], codecForQux[Int]).codec)
+  checkAll("Codec[Qux[Int]] via Decoder and Codec", CodecTests[Qux[Int]](implicitly, codecForQux[Int]).codec)
+  checkAll("Codec[Qux[Int]] via Encoder and Codec", CodecTests[Qux[Int]](codecForQux[Int], implicitly).codec)
+  checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
+  checkAll("Codec[Baz]", CodecTests[Baz].codec)
+  checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  checkAll("Codec[Foo] via Codec", CodecTests[Foo](codecForFoo, codecForFoo).codec)
+  checkAll("Codec[Foo] via Decoder and Codec", CodecTests[Foo](implicitly, codecForFoo).codec)
+  checkAll("Codec[Foo] via Encoder and Codec", CodecTests[Foo](codecForFoo, implicitly).codec)
+  checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
+  checkAll(
     "Codec[RecursiveAdtExample] via Codec",
     CodecTests[RecursiveAdtExample](
       RecursiveAdtExample.codecForRecursiveAdtExample,
       RecursiveAdtExample.codecForRecursiveAdtExample
     ).codec
   )
-  checkLaws(
+  checkAll(
     "Codec[RecursiveAdtExample] via Decoder and Codec",
     CodecTests[RecursiveAdtExample](implicitly, RecursiveAdtExample.codecForRecursiveAdtExample).codec
   )
-  checkLaws(
+  checkAll(
     "Codec[RecursiveAdtExample] via Encoder and Codec",
     CodecTests[RecursiveAdtExample](RecursiveAdtExample.codecForRecursiveAdtExample, implicitly).codec
   )
-  checkLaws("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
-  checkLaws(
+  checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkAll(
     "Codec[RecursiveWithOptionExample] via Codec",
     CodecTests[RecursiveWithOptionExample](
       RecursiveWithOptionExample.codecForRecursiveWithOptionExample,
       RecursiveWithOptionExample.codecForRecursiveWithOptionExample
     ).codec
   )
-  checkLaws(
+  checkAll(
     "Codec[RecursiveWithOptionExample] via Decoder and Codec",
     CodecTests[RecursiveWithOptionExample](implicitly, RecursiveWithOptionExample.codecForRecursiveWithOptionExample).codec
   )
-  checkLaws(
+  checkAll(
     "Codec[RecursiveWithOptionExample] via Encoder and Codec",
     CodecTests[RecursiveWithOptionExample](RecursiveWithOptionExample.codecForRecursiveWithOptionExample, implicitly).codec
   )

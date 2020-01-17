@@ -15,8 +15,8 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
 class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDrivenPropertyChecks {
-  checkLaws("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
-  checkLaws("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
+  checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
+  checkAll("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
 
   private[this] def transformations[T] = Table[Decoder[T] => Decoder[T]](
     "transformation",
@@ -624,7 +624,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
   }
 
-  checkLaws("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
+  checkAll("Codec[WrappedOptionalField]", CodecTests[WrappedOptionalField].codec)
 
   "decodeSet" should "match sequence decoders" in forAll { (xs: List[Int]) =>
     assert(Decoder.decodeSet[Int].decodeJson(xs.asJson) === Decoder[Seq[Int]].map(_.toSet).decodeJson(xs.asJson))

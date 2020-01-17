@@ -13,19 +13,19 @@ class SerializableSuite extends CirceSuite {
     SerializableLaws.serializable(j.hcursor); ()
   }
 
-  checkLaws("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))
-  checkLaws("Encoder[Int]", SerializableTests.serializable(Encoder[Int]))
+  checkAll("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))
+  checkAll("Encoder[Int]", SerializableTests.serializable(Encoder[Int]))
 
-  checkLaws(
+  checkAll(
     "Encoder.AsArray[List[String]]",
     SerializableTests.serializable(Encoder.AsArray[List[String]])
   )
 
-  checkLaws(
+  checkAll(
     "Encoder.AsObject[Map[String, Int]]",
     SerializableTests.serializable(Encoder.AsObject[Map[String, Int]])
   )
 
-  checkLaws("Parser", SerializableTests.serializable(parser.`package`))
-  checkLaws("Printer", SerializableTests.serializable(Printer.noSpaces))
+  checkAll("Parser", SerializableTests.serializable(parser.`package`))
+  checkAll("Printer", SerializableTests.serializable(Printer.noSpaces))
 }

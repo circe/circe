@@ -195,8 +195,8 @@ object Boilerplate {
         |import io.circe.tests.CirceSuite
         |
         |class TupleCodecSuite extends CirceSuite {
-        |  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-        -  checkLaws("Codec[$tupleType]", CodecTests[$tupleType].codec)
+        |  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+        -  checkAll("Codec[$tupleType]", CodecTests[$tupleType].codec)
         |}
       """
     }
@@ -383,16 +383,16 @@ object Boilerplate {
         -    val codecForCc$arity: Codec[Cc$arity] =
         -      Codec.forProduct$arity($memberNames)(Cc$arity.apply)((Cc$arity.unapply _).andThen(_.get))
         -  }
-        -  checkLaws("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
-        -  checkLaws(
+        -  checkAll("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
+        -  checkAll(
         -    "Codec[Cc$arity] via Codec",
         -    CodecTests[Cc$arity](Cc$arity.codecForCc$arity, Cc$arity.codecForCc$arity).unserializableCodec
         -  )
-        -  checkLaws(
+        -  checkAll(
         -    "Codec[Cc$arity] via Decoder and Codec",
         -    CodecTests[Cc$arity](Cc$arity.decodeCc$arity, Cc$arity.codecForCc$arity).unserializableCodec
         -  )
-        -  checkLaws(
+        -  checkAll(
         -    "Codec[Cc$arity] via Encoder and Codec",
         -    CodecTests[Cc$arity](Cc$arity.codecForCc$arity, Cc$arity.encodeCc$arity).unserializableCodec
         -  )
