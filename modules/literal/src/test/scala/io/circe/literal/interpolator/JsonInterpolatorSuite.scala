@@ -6,34 +6,33 @@ import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import org.scalatest.matchers.should.Matchers
 
-class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
+class JsonInterpolatorSuite extends AnyFunSpec with ScalaCheckDrivenPropertyChecks {
   describe("The json string interpolater") {
     it("should fail to compile with invalid JSON") {
-      "json\"\"\"1a2b3c\"\"\"" shouldNot compile
+      assertDoesNotCompile("json\"\"\"1a2b3c\"\"\"")
     }
 
     describe("should work with top-level") {
       it("null") {
-        json"null" shouldBe Json.Null
+        assert(json"null" === Json.Null)
       }
 
       it("booleans") {
         forAll { (value: Boolean) =>
-          json"$value" shouldBe Json.fromBoolean(value)
+          assert(json"$value" === Json.fromBoolean(value))
         }
       }
 
       it("strings") {
         forAll { (value: String) =>
-          json"$value" shouldBe Json.fromString(value)
+          assert(json"$value" === Json.fromString(value))
         }
       }
 
       it("numbers") {
         forAll { (value: BigDecimal) =>
-          json"$value" shouldBe Json.fromBigDecimal(value)
+          assert(json"$value" === Json.fromBigDecimal(value))
         }
       }
     }
@@ -61,7 +60,7 @@ class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDriv
         """
       )
 
-      parsed shouldBe Right(interpolated)
+      assert(parsed === Right(interpolated))
     }
 
     describe("with interpolation in JSON value positions") {
@@ -82,21 +81,21 @@ class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDriv
           """
         )
 
-        parsed shouldBe Right(interpolated)
+        assert(parsed === Right(interpolated))
       }
 
       it("should work with interpolated literals") {
         val interpolated = json"""{ "k": ${1} }"""
         val parsed = parse(s"""{ "k": 1 }""")
 
-        parsed shouldBe Right(interpolated)
+        assert(parsed === Right(interpolated))
       }
 
       it("should fail with unencodeable interpolated variables") {
         trait Foo
         val foo = new Foo {}
 
-        "json\"$foo\"" shouldNot compile
+        assertDoesNotCompile("json\"$foo\"")
       }
     }
 
@@ -107,7 +106,7 @@ class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDriv
           val escapedKey = Encoder[String].apply(key).noSpaces
           val parsed = parse(s"{ $escapedKey: ${value.noSpaces} }")
 
-          parsed shouldBe Right(interpolated)
+          assert(parsed === Right(interpolated))
         }
       }
 
@@ -116,7 +115,7 @@ class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDriv
           val interpolated = json"{ $key: $value }"
           val parsed = parse(s"""{ "${key.toString}": ${value.noSpaces} }""")
 
-          parsed shouldBe Right(interpolated)
+          assert(parsed === Right(interpolated))
         }
       }
 
@@ -124,14 +123,14 @@ class JsonInterpolatorSuite extends AnyFunSpec with Matchers with ScalaCheckDriv
         val interpolated = json"""{ ${1}: "v" }"""
         val parsed = parse(s"""{ "1": "v" }""")
 
-        parsed shouldBe Right(interpolated)
+        assert(parsed === Right(interpolated))
       }
 
       it("should fail with unencodeable interpolated variables") {
         trait Foo
         val foo = new Foo {}
 
-        "json\"{ $foo: 1 }\"" shouldNot compile
+        assertDoesNotCompile("json\"{ $foo: 1 }\"")
       }
     }
   }
