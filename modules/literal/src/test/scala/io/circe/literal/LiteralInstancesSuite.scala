@@ -3,14 +3,13 @@ package io.circe.literal
 import io.circe.{ Decoder, Encoder }
 import org.scalatest.funspec.AnyFunSpec
 import shapeless.Witness
-import org.scalatest.matchers.should.Matchers
 
-class LiteralInstancesSuite extends AnyFunSpec with Matchers {
+class LiteralInstancesSuite extends AnyFunSpec {
   describe("A literal String codec") {
     it("should round-trip values") {
       val w = Witness("foo")
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -18,7 +17,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness(0.0)
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -26,7 +25,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness(0.0f)
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -34,7 +33,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness(0L)
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -42,7 +41,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness(0)
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -50,7 +49,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness('a')
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 
@@ -58,7 +57,7 @@ class LiteralInstancesSuite extends AnyFunSpec with Matchers {
     it("should round-trip values") {
       val w = Witness(true)
 
-      Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) shouldBe Right(w.value)
+      assert(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor) === Right(w.value))
     }
   }
 }
