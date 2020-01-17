@@ -154,14 +154,14 @@ package jsoncodecmacrossuiteaux {
 }
 
 class JsonCodecMacrosSuite extends CirceSuite {
-  checkLaws("Codec[Simple]", CodecTests[Simple].codec)
-  checkLaws("Codec[Single]", CodecTests[Single].codec)
-  checkLaws("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
-  checkLaws("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
-  checkLaws("Codec[AccessModifier]", CodecTests[AccessModifier].codec)
-  checkLaws("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
-  checkLaws("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
-  checkLaws("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
+  checkAll("Codec[Simple]", CodecTests[Simple].codec)
+  checkAll("Codec[Single]", CodecTests[Single].codec)
+  checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
+  checkAll("Codec[Typed2[Int, Long]]", CodecTests[Typed2[Int, Long]].codec)
+  checkAll("Codec[AccessModifier]", CodecTests[AccessModifier].codec)
+  checkAll("Codec[Hierarchy]", CodecTests[Hierarchy].codec)
+  checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
+  checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 
   "@JsonCodec" should "provide Encoder.AsObject instances" in {
     Encoder.AsObject[Simple]

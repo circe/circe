@@ -18,8 +18,8 @@ class ScodecSuite extends CirceSuite {
   implicit val eqBitVector: Eq[BitVector] = Eq.fromUniversalEquals
   implicit val eqByteVector: Eq[ByteVector] = Eq.fromUniversalEquals
 
-  checkLaws("Codec[BitVector]", CodecTests[BitVector].codec)
-  checkLaws("Codec[ByteVector]", CodecTests[ByteVector].codec)
+  checkAll("Codec[BitVector]", CodecTests[BitVector].codec)
+  checkAll("Codec[ByteVector]", CodecTests[ByteVector].codec)
 
   "Codec[ByteVector]" should "return failure for Json String" in {
     val json = Json.fromString("mA==")

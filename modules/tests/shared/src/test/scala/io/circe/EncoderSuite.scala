@@ -9,9 +9,9 @@ import org.scalacheck.Arbitrary
 import scala.collection.SortedMap
 
 class EncoderSuite extends CirceSuite {
-  checkLaws("Encoder[Int]", ContravariantTests[Encoder].contravariant[Int, Int, Int])
-  checkLaws("Encoder.AsArray[Int]", ContravariantTests[Encoder.AsArray].contravariant[Int, Int, Int])
-  checkLaws("Encoder.AsObject[Int]", ContravariantTests[Encoder.AsObject].contravariant[Int, Int, Int])
+  checkAll("Encoder[Int]", ContravariantTests[Encoder].contravariant[Int, Int, Int])
+  checkAll("Encoder.AsArray[Int]", ContravariantTests[Encoder.AsArray].contravariant[Int, Int, Int])
+  checkAll("Encoder.AsObject[Int]", ContravariantTests[Encoder.AsObject].contravariant[Int, Int, Int])
 
   "mapJson" should "transform encoded output" in forAll { (m: Map[String, Int], k: String, v: Int) =>
     val newEncoder = Encoder[Map[String, Int]].mapJson(

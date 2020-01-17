@@ -82,13 +82,13 @@ object AutoDerivedSuite extends AllSyntax {
 class AutoDerivedSuite extends CirceSuite {
   import AutoDerivedSuite._
 
-  checkLaws("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
-  checkLaws("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
-  checkLaws("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
-  checkLaws("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
-  checkLaws("Codec[Baz]", CodecTests[Baz].codec)
-  checkLaws("Codec[Foo]", CodecTests[Foo].codec)
-  checkLaws("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
+  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
+  checkAll("Codec[(Int, Int, Foo)]", CodecTests[(Int, Int, Foo)].codec)
+  checkAll("Codec[Qux[Int]]", CodecTests[Qux[Int]].codec)
+  checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
+  checkAll("Codec[Baz]", CodecTests[Baz].codec)
+  checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
     val result = Json
@@ -160,6 +160,6 @@ class AutoDerivedSuite extends CirceSuite {
     assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
   }
 
-  checkLaws("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
-  checkLaws("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)
+  checkAll("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
+  checkAll("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)
 }

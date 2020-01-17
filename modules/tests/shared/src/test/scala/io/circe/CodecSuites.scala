@@ -39,15 +39,15 @@ trait SpecialEqForFloatAndDouble {
   }
 }
 class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
-  checkLaws("Codec[Unit]", CodecTests[Unit].codec)
-  checkLaws("Codec[Boolean]", CodecTests[Boolean].codec)
-  checkLaws("Codec[Char]", CodecTests[Char].codec)
-  checkLaws("Codec[Float]", CodecTests[Float].codec(implicitly, implicitly, eqFloat, implicitly, implicitly))
-  checkLaws("Codec[Double]", CodecTests[Double].codec(implicitly, implicitly, eqDouble, implicitly, implicitly))
-  checkLaws("Codec[Byte]", CodecTests[Byte].codec)
-  checkLaws("Codec[Short]", CodecTests[Short].codec)
-  checkLaws("Codec[Int]", CodecTests[Int].codec)
-  checkLaws("Codec[Long]", CodecTests[Long].codec)
+  checkAll("Codec[Unit]", CodecTests[Unit].codec)
+  checkAll("Codec[Boolean]", CodecTests[Boolean].codec)
+  checkAll("Codec[Char]", CodecTests[Char].codec)
+  checkAll("Codec[Float]", CodecTests[Float].codec(implicitly, implicitly, eqFloat, implicitly, implicitly))
+  checkAll("Codec[Double]", CodecTests[Double].codec(implicitly, implicitly, eqDouble, implicitly, implicitly))
+  checkAll("Codec[Byte]", CodecTests[Byte].codec)
+  checkAll("Codec[Short]", CodecTests[Short].codec)
+  checkAll("Codec[Int]", CodecTests[Int].codec)
+  checkAll("Codec[Long]", CodecTests[Long].codec)
 }
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
@@ -61,22 +61,22 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   )(implicit scalaArb: Arbitrary[ScalaPrimitive], decoder: Decoder[JavaBoxed], encoder: Encoder[JavaBoxed]) =
     CodecTests[JavaBoxed].codec(Arbitrary(scalaArb.arbitrary.map(wrap)), implicitly, eq, implicitly, implicitly)
 
-  checkLaws("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue()))
-  checkLaws("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue()))
-  checkLaws(
+  checkAll("Codec[java.lang.Boolean]", JavaCodecTests[Boolean, jl.Boolean](jl.Boolean.valueOf, _.booleanValue()))
+  checkAll("Codec[java.lang.Character]", JavaCodecTests[Char, jl.Character](jl.Character.valueOf, _.charValue()))
+  checkAll(
     "Codec[java.lang.Float]",
     JavaCodecTests[Float, jl.Float](jl.Float.valueOf, _.floatValue(), eqFloat.contramap(_.floatValue()))
   )
-  checkLaws(
+  checkAll(
     "Codec[java.lang.Double]",
     JavaCodecTests[Double, jl.Double](jl.Double.valueOf, _.doubleValue(), eqDouble.contramap(_.doubleValue()))
   )
-  checkLaws("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue()))
-  checkLaws("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue()))
-  checkLaws("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue()))
-  checkLaws("Codec[java.lang.Integer]", JavaCodecTests[Int, jl.Integer](jl.Integer.valueOf, _.intValue()))
-  checkLaws("Codec[java.math.BigDecimal]", JavaCodecTests[BigDecimal, jm.BigDecimal](_.bigDecimal, BigDecimal.apply))
-  checkLaws("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
+  checkAll("Codec[java.lang.Byte]", JavaCodecTests[Byte, jl.Byte](jl.Byte.valueOf, _.byteValue()))
+  checkAll("Codec[java.lang.Short]", JavaCodecTests[Short, jl.Short](jl.Short.valueOf, _.shortValue()))
+  checkAll("Codec[java.lang.Long]", JavaCodecTests[Long, jl.Long](jl.Long.valueOf, _.longValue()))
+  checkAll("Codec[java.lang.Integer]", JavaCodecTests[Int, jl.Integer](jl.Integer.valueOf, _.intValue()))
+  checkAll("Codec[java.math.BigDecimal]", JavaCodecTests[BigDecimal, jm.BigDecimal](_.bigDecimal, BigDecimal.apply))
+  checkAll("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
 class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
@@ -84,26 +84,26 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
 
-  checkLaws("Codec[String]", CodecTests[String].codec)
-  checkLaws("Codec[BigInt]", CodecTests[BigInt].codec)
-  checkLaws("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
-  checkLaws("Codec[UUID]", CodecTests[UUID].codec)
-  checkLaws("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
-  checkLaws("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
-  checkLaws("Codec[None.type]", CodecTests[None.type].codec)
-  checkLaws("Codec[List[Int]]", CodecTests[List[Int]].codec)
-  checkLaws("Codec[Seq[Int]]", CodecTests[Seq[Int]].codec)
-  checkLaws("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
-  checkLaws("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
-  checkLaws("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
-  checkLaws("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
-  checkLaws("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
-  checkLaws("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
-  checkLaws("Codec[Map[Long, Int]]", CodecTests[Map[Long, Int]].codec)
-  checkLaws("Codec[HashMap[Long, Int]]", CodecTests[HashMap[Long, Int]].unserializableCodec)
-  checkLaws("Codec[SortedMap[Long, Int]]", CodecTests[SortedMap[Long, Int]].unserializableCodec)
-  checkLaws("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
-  checkLaws("Codec[Array[String]]", CodecTests[Array[String]].codec)
+  checkAll("Codec[String]", CodecTests[String].codec)
+  checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
+  checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
+  checkAll("Codec[UUID]", CodecTests[UUID].codec)
+  checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
+  checkAll("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
+  checkAll("Codec[None.type]", CodecTests[None.type].codec)
+  checkAll("Codec[List[Int]]", CodecTests[List[Int]].codec)
+  checkAll("Codec[Seq[Int]]", CodecTests[Seq[Int]].codec)
+  checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
+  checkAll("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
+  checkAll("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
+  checkAll("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
+  checkAll("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
+  checkAll("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
+  checkAll("Codec[Map[Long, Int]]", CodecTests[Map[Long, Int]].codec)
+  checkAll("Codec[HashMap[Long, Int]]", CodecTests[HashMap[Long, Int]].unserializableCodec)
+  checkAll("Codec[SortedMap[Long, Int]]", CodecTests[SortedMap[Long, Int]].unserializableCodec)
+  checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
+  checkAll("Codec[Array[String]]", CodecTests[Array[String]].codec)
 
   "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
@@ -150,20 +150,20 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
 }
 
 class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
-  checkLaws("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
-  checkLaws("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
-  checkLaws("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
-  checkLaws("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
-  checkLaws("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
-  checkLaws("Codec[NonEmptyMap[Int, String]]", CodecTests[NonEmptyMap[Int, String]].unserializableCodec)
-  checkLaws("Codec[NonEmptyChain[Int]]", CodecTests[NonEmptyChain[Int]].codec)
+  checkAll("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
+  checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
+  checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
+  checkAll("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
+  checkAll("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
+  checkAll("Codec[NonEmptyMap[Int, String]]", CodecTests[NonEmptyMap[Int, String]].unserializableCodec)
+  checkAll("Codec[NonEmptyChain[Int]]", CodecTests[NonEmptyChain[Int]].codec)
 }
 
 class CirceCodecSuite extends CirceSuite {
-  checkLaws("Codec[Json]", CodecTests[Json].codec)
-  checkLaws("Codec[JsonObject]", CodecTests[JsonObject].codec)
-  checkLaws("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
-  checkLaws("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
+  checkAll("Codec[Json]", CodecTests[Json].codec)
+  checkAll("Codec[JsonObject]", CodecTests[JsonObject].codec)
+  checkAll("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
+  checkAll("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
 }
 
 class EitherCodecSuite extends CirceSuite {
@@ -171,10 +171,10 @@ class EitherCodecSuite extends CirceSuite {
   val encoder = Encoder.encodeEither[Int, String]("L", "R")
   val codec = Codec.codecForEither[Int, String]("L", "R")
 
-  checkLaws("Codec[Either[Int, String]]", CodecTests[Either[Int, String]](decoder, encoder).codec)
-  checkLaws("Codec[Either[Int, String]] via Codec", CodecTests[Either[Int, String]](codec, codec).codec)
-  checkLaws("Codec[Either[Int, String]] via Decoder and Codec", CodecTests[Either[Int, String]](decoder, codec).codec)
-  checkLaws("Codec[Either[Int, String]] via Encoder and Codec", CodecTests[Either[Int, String]](codec, encoder).codec)
+  checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]](decoder, encoder).codec)
+  checkAll("Codec[Either[Int, String]] via Codec", CodecTests[Either[Int, String]](codec, codec).codec)
+  checkAll("Codec[Either[Int, String]] via Decoder and Codec", CodecTests[Either[Int, String]](decoder, codec).codec)
+  checkAll("Codec[Either[Int, String]] via Encoder and Codec", CodecTests[Either[Int, String]](codec, encoder).codec)
 }
 
 class ValidatedCodecSuite extends CirceSuite {
@@ -182,13 +182,13 @@ class ValidatedCodecSuite extends CirceSuite {
   val encoder = Encoder.encodeValidated[Int, String]("E", "A")
   val codec = Codec.codecForValidated[Int, String]("E", "A")
 
-  checkLaws("Codec[Validated[Int, String]]", CodecTests[Validated[Int, String]](decoder, encoder).codec)
-  checkLaws("Codec[Validated[Int, String]] via Codec", CodecTests[Validated[Int, String]](codec, codec).codec)
-  checkLaws(
+  checkAll("Codec[Validated[Int, String]]", CodecTests[Validated[Int, String]](decoder, encoder).codec)
+  checkAll("Codec[Validated[Int, String]] via Codec", CodecTests[Validated[Int, String]](codec, codec).codec)
+  checkAll(
     "Codec[Validated[Int, String]] via Decoder and Codec",
     CodecTests[Validated[Int, String]](decoder, codec).codec
   )
-  checkLaws(
+  checkAll(
     "Codec[Validated[Int, String]] via Encoder and Codec",
     CodecTests[Validated[Int, String]](codec, encoder).codec
   )
@@ -197,8 +197,8 @@ class ValidatedCodecSuite extends CirceSuite {
 class DisjunctionCodecSuite extends CirceSuite {
   import disjunctionCodecs._
 
-  checkLaws("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
-  checkLaws("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
+  checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
+  checkAll("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
 }
 
 class EnumerationCodecSuite extends CirceSuite {
@@ -216,13 +216,13 @@ class EnumerationCodecSuite extends CirceSuite {
   val encoder = Encoder.encodeEnumeration(WeekDay)
   val codec = Codec.codecForEnumeration(WeekDay)
 
-  checkLaws("Codec[WeekDay.WeekDay]", CodecTests[WeekDay.WeekDay](decoder, encoder).unserializableCodec)
-  checkLaws("Codec[WeekDay.WeekDay] via Codec", CodecTests[WeekDay.WeekDay](codec, codec).unserializableCodec)
-  checkLaws(
+  checkAll("Codec[WeekDay.WeekDay]", CodecTests[WeekDay.WeekDay](decoder, encoder).unserializableCodec)
+  checkAll("Codec[WeekDay.WeekDay] via Codec", CodecTests[WeekDay.WeekDay](codec, codec).unserializableCodec)
+  checkAll(
     "Codec[WeekDay.WeekDay] via Decoder and Codec",
     CodecTests[WeekDay.WeekDay](decoder, codec).unserializableCodec
   )
-  checkLaws(
+  checkAll(
     "Codec[WeekDay.WeekDay] via Encoder and Codec",
     CodecTests[WeekDay.WeekDay](codec, encoder).unserializableCodec
   )
