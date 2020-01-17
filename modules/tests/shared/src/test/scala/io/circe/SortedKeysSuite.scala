@@ -1,7 +1,6 @@
 package io.circe
 import io.circe.tests.PrinterSuite
 import org.scalacheck.Prop
-import org.scalatestplus.scalacheck.Checkers
 
 trait SortedKeysSuite { this: PrinterSuite =>
   "Printer with sortKeys" should "sort the object keys (example)" in {
@@ -19,11 +18,11 @@ trait SortedKeysSuite { this: PrinterSuite =>
   }
 
   "Printer with sortKeys" should "sort the object keys" in {
-    Checkers.check(Prop.forAll { value: Map[String, List[Int]] =>
+    forAll { value: Map[String, List[Int]] =>
       val printed = printer.print(implicitly[Encoder[Map[String, List[Int]]]].apply(value))
       val parsed = parser.parse(printed).toOption.flatMap(_.asObject).get
       val keys = parsed.keys.toVector
-      keys.sorted === keys
-    })
+      assert(keys.sorted === keys)
+    }
   }
 }
