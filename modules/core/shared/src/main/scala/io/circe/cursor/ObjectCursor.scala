@@ -28,4 +28,5 @@ private[circe] final class ObjectCursor(obj: JsonObject, key: String, parent: HC
 
   def left: ACursor = fail(CursorOp.MoveLeft)
   def right: ACursor = fail(CursorOp.MoveRight)
+  def first: ACursor = fail(CursorOp.MoveFirst)
 }
