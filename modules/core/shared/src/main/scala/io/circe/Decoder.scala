@@ -85,6 +85,9 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
 
+  @deprecated("Use decodeAccumulating", "0.12.0")
+  final def accumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
+
   /**
    * Map a function over this [[Decoder]].
    */
@@ -1416,6 +1419,17 @@ object Decoder
       }
     }
   }
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
+   * }}}
+   *
+   * @group Utilities
+   */
+  @deprecated("Use decodeEnumeration", "0.12.0")
+  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] = decodeEnumeration[E](enum)
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
