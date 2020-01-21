@@ -19,7 +19,6 @@ class JsonSuite extends AnyFlatSpec {
       actual == Json.fromFields(
         List(
           "b" -> Json.fromString("c"),
-          "b" -> Json.fromString("c"),
           "d" -> Json.fromInt(1),
           "e" -> Json.True
         )
