@@ -16,7 +16,7 @@ import cats.data.{
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
-import io.circe.export.Exported
+import io.circe.`export`.Exported
 import java.io.Serializable
 import java.time.{
   DateTimeException,
@@ -441,6 +441,7 @@ object Decoder
     with TupleDecoders
     with ProductDecoders
     with LiteralDecoders
+    with EnumerationDecoders
     with LowPriorityDecoders {
 
   /**
@@ -1402,34 +1403,6 @@ object Decoder
         final def apply(c: HCursor): Result[B] = step(c, a)
       }
     }
-
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayDecoder = Decoder.decodeEnumeration(WeekDay)
-   * }}}
-   *
-   * @group Utilities
-   */
-  final def decodeEnumeration[E <: Enumeration](enum: E): Decoder[E#Value] = new Decoder[E#Value] {
-    final def apply(c: HCursor): Decoder.Result[E#Value] = Decoder.decodeString(c).flatMap { str =>
-      Try(enum.withName(str)) match {
-        case Success(a) => Right(a)
-        case Failure(t) => Left(DecodingFailure(t.getMessage, c.history))
-      }
-    }
-  }
-
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
-   * }}}
-   *
-   * @group Utilities
-   */
-  @deprecated("Use decodeEnumeration", "0.12.0")
-  final def enumDecoder[E <: Enumeration](enum: E): Decoder[E#Value] = decodeEnumeration[E](enum)
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform

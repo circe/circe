@@ -2,7 +2,7 @@ package io.circe
 
 import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
-import io.circe.export.Exported
+import io.circe.`export`.Exported
 import java.io.Serializable
 import java.time.{
   Duration,
@@ -104,7 +104,12 @@ trait Encoder[A] extends Serializable { self =>
  *
  * @author Travis Brown
  */
-object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders with MidPriorityEncoders {
+object Encoder
+    extends TupleEncoders
+    with ProductEncoders
+    with LiteralEncoders
+    with EnumerationEncoders
+    with MidPriorityEncoders {
 
   /**
    * Return an instance for a given type `A`.
@@ -478,27 +483,6 @@ object Encoder extends TupleEncoders with ProductEncoders with LiteralEncoders w
   implicit final val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
     final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
   }
-
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayEncoder = Encoder.encodeEnumeration(WeekDay)
-   * }}}
-   * @group Utilities
-   */
-  final def encodeEnumeration[E <: Enumeration](enum: E): Encoder[E#Value] = new Encoder[E#Value] {
-    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
-  }
-
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
-   * }}}
-   * @group Utilities
-   */
-  @deprecated("Use encodeEnumeration", "0.12.0")
-  final def enumEncoder[E <: Enumeration](enum: E): Encoder[E#Value] = encodeEnumeration[E](enum)
 
   /**
    * Note that this implementation assumes that the collection does not contain duplicate keys.

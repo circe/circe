@@ -1,17 +1,18 @@
 package io.circe.generic.simple
 
 import cats.kernel.Eq
-import cats.syntax.AllSyntax
+import cats.syntax.contravariant._
+import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.simple.auto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
-object AutoDerivedSuite extends AllSyntax {
+object AutoDerivedSuite {
   case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
   case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
 

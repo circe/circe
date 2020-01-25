@@ -1,5 +1,6 @@
 package io.circe.shapes
 
+import cats.kernel.instances.all._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.literal._
 import io.circe.testing.CodecTests

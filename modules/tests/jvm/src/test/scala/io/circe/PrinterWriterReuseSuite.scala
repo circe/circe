@@ -1,5 +1,7 @@
 package io.circe
 
+import cats.instances.all._
+import cats.syntax.eq._
 import io.circe.tests.CirceSuite
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Millis, Span }
