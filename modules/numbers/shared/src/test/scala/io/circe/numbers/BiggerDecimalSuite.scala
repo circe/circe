@@ -8,7 +8,7 @@ import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 
 class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
-  implicit override val generatorDrivenConfig = PropertyCheckConfiguration(
+  implicit override val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
     minSuccessful = 1000,
     sizeRange = 10000
   )
@@ -52,13 +52,13 @@ class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks
   it should "agree with Long" in forAll { (value: Long) =>
     val d = BiggerDecimal.fromLong(value)
 
-    assert(d.signum == value.signum)
+    assert(d.signum == value.sign)
   }
 
   it should "agree with Double" in forAll { (value: Double) =>
     val d = BiggerDecimal.fromDoubleUnsafe(value)
 
-    assert(d.signum == value.signum)
+    assert(d.signum == value.sign)
   }
 
   "fromLong" should "round-trip Long values" in forAll { (value: Long) =>
