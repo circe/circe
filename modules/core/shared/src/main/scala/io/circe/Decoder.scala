@@ -437,7 +437,8 @@ trait Decoder[A] extends Serializable { self =>
  * @author Travis Brown
  */
 object Decoder
-    extends CollectionDecoders
+    extends DecoderDerivation
+    with CollectionDecoders
     with TupleDecoders
     with ProductDecoders
     with LiteralDecoders
