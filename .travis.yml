@@ -25,7 +25,7 @@ install:
 script:
   - if [[ "$TRAVIS_SCALA_VERSION" == 0.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION numbersJVM/test coreJVM/test testsJVM/test;
+      sbt ++$TRAVIS_SCALA_VERSION numbersJVM/test coreJVM/test genericJVM/test jawn/test testsJVM/test;
     else
       sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test &&
       sbt ++$TRAVIS_SCALA_VERSION benchmark/test;

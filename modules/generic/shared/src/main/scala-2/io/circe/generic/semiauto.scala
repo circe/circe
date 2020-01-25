@@ -24,7 +24,7 @@ import shapeless.ops.record.RemoveAll
  *
  *   object Foo {
  *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
- *     implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+ *     implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder[Foo]
  *   }
  * }}}
  */
