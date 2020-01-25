@@ -105,7 +105,8 @@ trait Encoder[A] extends Serializable { self =>
  * @author Travis Brown
  */
 object Encoder
-    extends TupleEncoders
+    extends EncoderDerivation
+    with TupleEncoders
     with ProductEncoders
     with LiteralEncoders
     with EnumerationEncoders

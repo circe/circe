@@ -13,7 +13,7 @@ import cats.data.Validated
  */
 trait Codec[A] extends Decoder[A] with Encoder[A]
 
-object Codec extends ProductCodecs with EnumerationCodecs {
+object Codec extends CodecDerivation with ProductCodecs with EnumerationCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   final def codecForEither[A, B](leftKey: String, rightKey: String)(

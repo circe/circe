@@ -455,9 +455,17 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       file("modules/tests") / "shared" / "src" / "main" / "resources",
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
-        List("main", "test")
-          .flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _))
-          .map(f => file(f.getPath + suffix))
+        List("main").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    },
+    Test / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        List("test").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
@@ -509,6 +517,16 @@ lazy val benchmark = circeModule("benchmark", mima = None)
   )
   .enablePlugins(JmhPlugin)
   .dependsOn(core, generic, jawn)
+
+lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
+  .settings(noPublishSettings)
+  .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    }
+  )
+  .enablePlugins(JmhPlugin)
+  .dependsOn(core, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
