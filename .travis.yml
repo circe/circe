@@ -2,6 +2,7 @@ dist: xenial
 language: scala
 
 scala:
+  - 0.22.0-RC1
   - 2.13.0
   - 2.12.10
 
@@ -22,18 +23,23 @@ install:
   - gem install jekyll -v 4.0.0
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
-  - sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
-  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
+  - if [[ "$TRAVIS_SCALA_VERSION" == 0.* ]];
+    then
+      sbt ++$TRAVIS_SCALA_VERSION numbersJVM/test coreJVM/test testsJVM/test;
+    else
+      sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
+      sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
+    fi
+  - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
       sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
-    else echo "Skipping code coverage reporting and docs on 2.13";
+    else echo "Skipping code coverage reporting and docs on non-2.12 build";
     fi
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.13.* ]];
     then
       sbt ++$TRAVIS_SCALA_VERSION genericSimpleJVM/test;
-    else echo "Skipping generic-simple on 2.11 and 2.12";
+    else echo "Skipping generic-simple on non-2.13 build";
     fi
   - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
     then
