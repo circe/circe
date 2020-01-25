@@ -191,6 +191,8 @@ object Boilerplate {
       block"""
         |package io.circe
         |
+        |import cats.kernel.instances.int._
+        |import cats.kernel.instances.tuple._
         |import io.circe.testing.CodecTests
         |import io.circe.tests.CirceSuite
         |
@@ -357,6 +359,7 @@ object Boilerplate {
 
       val members = (0 until arity).map(i => s"s$i: String").mkString(", ")
       val memberNames = (0 until arity).map(i => "\"" + s"s$i" + "\"").mkString(", ")
+      val memberTypes = (0 until arity).map(_ => "String").mkString(", ")
 
       val memberVariableNames = (0 until arity).map(i => s"s$i").mkString(", ")
       val memberArbitraryItems = (0 until arity).map(i => s"s$i <- Arbitrary.arbitrary[String]").mkString("; ")
@@ -376,12 +379,15 @@ object Boilerplate {
         -    implicit val arbitraryCc$arity: Arbitrary[Cc$arity] = Arbitrary(
         -      for { $memberArbitraryItems } yield Cc$arity($memberVariableNames)
         -    )
+        -    private def toTuple(cc: Cc$arity): ($memberTypes) = cc match {
+        -      case Cc$arity($memberVariableNames) => ($memberVariableNames)
+        -    }
         -    implicit val encodeCc$arity: Encoder[Cc$arity] =
-        -      Encoder.forProduct$arity($memberNames)((Cc$arity.unapply _).andThen(_.get))
+        -      Encoder.forProduct$arity($memberNames)(toTuple)
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
         -    val codecForCc$arity: Codec[Cc$arity] =
-        -      Codec.forProduct$arity($memberNames)(Cc$arity.apply)((Cc$arity.unapply _).andThen(_.get))
+        -      Codec.forProduct$arity($memberNames)(Cc$arity.apply)(toTuple)
         -  }
         -  checkAll("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
         -  checkAll(

@@ -1,6 +1,8 @@
 package io.circe.refined
 
 import cats.kernel.Eq
+import cats.kernel.instances.all._
+import cats.syntax.eq._
 import eu.timepit.refined.{ refineMV, refineV }
 import eu.timepit.refined.api.{ RefType, Refined }
 import eu.timepit.refined.string.StartsWith

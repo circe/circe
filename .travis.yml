@@ -27,12 +27,12 @@ script:
     then
       sbt ++$TRAVIS_SCALA_VERSION numbersJVM/test coreJVM/test testsJVM/test;
     else
-      sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
+      sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test &&
       sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
     fi
   - if [[ "$TRAVIS_SCALA_VERSION" == 2.12.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
+      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite &&
       sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
     else echo "Skipping code coverage reporting and docs on non-2.12 build";
     fi

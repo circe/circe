@@ -1,5 +1,7 @@
 package io.circe
 
+import cats.instances.all._
+import cats.syntax.eq._
 import scala.io.Source
 import scala.util.Random
 

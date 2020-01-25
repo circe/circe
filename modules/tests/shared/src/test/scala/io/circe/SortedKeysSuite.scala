@@ -1,6 +1,10 @@
 package io.circe
+
+import cats.kernel.instances.list._
+import cats.kernel.instances.string._
+import cats.kernel.instances.vector._
+import cats.syntax.eq._
 import io.circe.tests.PrinterSuite
-import org.scalacheck.Prop
 
 trait SortedKeysSuite { this: PrinterSuite =>
   "Printer with sortKeys" should "sort the object keys (example)" in {
@@ -18,7 +22,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
   }
 
   "Printer with sortKeys" should "sort the object keys" in {
-    forAll { value: Map[String, List[Int]] =>
+    forAll { (value: Map[String, List[Int]]) =>
       val printed = printer.print(implicitly[Encoder[Map[String, List[Int]]]].apply(value))
       val parsed = parser.parse(printed).toOption.flatMap(_.asObject).get
       val keys = parsed.keys.toVector

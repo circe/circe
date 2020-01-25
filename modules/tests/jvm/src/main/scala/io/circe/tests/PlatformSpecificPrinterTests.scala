@@ -1,5 +1,6 @@
 package io.circe.tests
 
+import cats.kernel.instances.long._
 import io.circe.testing.PrinterTests
 
 trait PlatformSpecificPrinterTests { self: PrinterSuite =>
