@@ -1,11 +1,13 @@
 package io.circe
 
+import cats.kernel.instances.all._
+import cats.syntax.eq._
 import io.circe.numbers.testing.JsonNumberString
 import io.circe.tests.CirceSuite
 
 class JsonNumberSuite extends CirceSuite {
-  "fromString" should "parse valid JSON numbers" in forAll { (jsn: JsonNumberString) =>
-    assert(JsonNumber.fromString(jsn.value).nonEmpty)
+  "fromString" should "parse valid JSON numbers" in forAll { (jns: JsonNumberString) =>
+    assert(JsonNumber.fromString(jns.value).nonEmpty)
   }
 
   it should "match Json.fromDouble" in forAll { (d: Double) =>

@@ -1,8 +1,11 @@
 package io.circe
 
-import org.scalacheck.Gen
+import cats.kernel.instances.string._
+import cats.syntax.eq._
+import cats.syntax.show._
 import io.circe.CursorOp._
 import io.circe.tests.CirceSuite
+import org.scalacheck.Gen
 
 trait GenCursorOps {
   val arrayMoves: Gen[List[CursorOp]] = Gen.listOf(
@@ -53,7 +56,8 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
       case (_, s)            => s
     }
 
-    assert(DecodingFailure("the message", moves).show === s"DecodingFailure at $selection: the message")
+    val expected = s"DecodingFailure at $selection: the message"
+    assert(DecodingFailure("the message", moves).show === expected)
   }
 
   it should "display array indexing" in forAll(arrayMoves) { moves =>
@@ -66,6 +70,7 @@ class ShowErrorSuite extends CirceSuite with GenCursorOps {
       case (i, _)         => i
     }
 
-    assert(DecodingFailure("the message", ops).show === s"DecodingFailure at [$index]: the message")
+    val expected = s"DecodingFailure at [$index]: the message"
+    assert(DecodingFailure("the message", ops).show === expected)
   }
 }

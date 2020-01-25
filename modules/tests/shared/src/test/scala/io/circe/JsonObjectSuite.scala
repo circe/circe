@@ -1,7 +1,9 @@
 package io.circe
 
 import cats.data.Const
+import cats.instances.all._
 import cats.kernel.Eq
+import cats.syntax.eq._
 import io.circe.tests.CirceSuite
 import org.scalatest.exceptions.TestFailedException
 
@@ -296,7 +298,7 @@ class JsonObjectSuite extends CirceSuite {
     assert(result2 === Some(expected))
   }
 
-  it should "return values in order" in forAll { value: JsonObject =>
+  it should "return values in order" in forAll { (value: JsonObject) =>
     val result = value.traverse[({ type L[x] = Const[List[Json], x] })#L](a => Const(List(a))).getConst
 
     assert(result === value.values.toList)
@@ -334,7 +336,7 @@ class JsonObjectSuite extends CirceSuite {
     }
   }
 
-  it should "preserve argument order" in forAll { js: List[Json] =>
+  it should "preserve argument order" in forAll { (js: List[Json]) =>
     val fields = js.zipWithIndex.map {
       case (j, i) => i.toString -> j
     }

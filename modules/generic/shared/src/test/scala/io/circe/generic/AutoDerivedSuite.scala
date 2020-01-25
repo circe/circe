@@ -1,7 +1,8 @@
 package io.circe.generic
 
 import cats.kernel.Eq
-import cats.syntax.AllSyntax
+import cats.syntax.contravariant._
+import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.testing.CodecTests
@@ -11,7 +12,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
-object AutoDerivedSuite extends AllSyntax {
+object AutoDerivedSuite {
   case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
   case class OuterCaseClassExample(a: String, inner: InnerCaseClassExample)
 

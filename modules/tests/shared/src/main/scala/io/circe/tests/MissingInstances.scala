@@ -93,5 +93,7 @@ trait MissingInstances {
     ev: C[A] => Traversable[A],
     toInt: ToInt[L]
   ): Arbitrary[Sized[C[A], L]] =
-    Arbitrary(Gen.containerOfN[C, A](toInt(), A.arbitrary).filter(_.size == toInt()).map(Sized.wrap[C[A], L]))
+    Arbitrary(
+      Gen.containerOfN[C, A](toInt(), A.arbitrary).filter(ca => ev(ca).size == toInt()).map(Sized.wrap[C[A], L])
+    )
 }
