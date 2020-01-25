@@ -44,7 +44,7 @@ object JsonF {
 
   private[this] type Field[A] = (String, A)
   private[this] type Fields[A] = Vector[(String, A)]
-  private[this] val fieldInstance: Traverse[Fields] = catsStdInstancesForVector.compose[Field]
+  private[this] val fieldInstance: Traverse[Fields] = catsStdInstancesForVector.compose[Field](Traverse[Field])
 
   implicit val jsonFTraverseInstance: Traverse[JsonF] = new Traverse[JsonF] {
     override def traverse[G[_], A, B](fa: JsonF[A])(f: A => G[B])(implicit G: Applicative[G]): G[JsonF[B]] = fa match {
