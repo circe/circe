@@ -111,6 +111,19 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     )
 }
 
+def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
+  val dep =
+    if (isDotty.value)
+      (
+        "dev.travisbrown" %% "discipline-scalatest" % (disciplineScalaTestVersion + "-20200123-9982f0d-NIGHTLY")
+      )
+    else
+      (
+        "org.typelevel" %% "discipline-scalatest" % disciplineScalaTestVersion
+      )
+  if (testScope) dep % Test else dep
+}
+
 /**
  * We omit all Scala.js projects from Unidoc generation.
  */
@@ -252,7 +265,7 @@ lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previou
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
-  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+  libraryDependencies += ("org.scalacheck" %%% "scalacheck" % scalaCheckVersion).withDottyCompat(scalaVersion.value),
   coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
 )
 
@@ -260,13 +273,8 @@ lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
 
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1" % Test
-    )
-  )
+  .settings(addDisciplineScalaTest(true))
+  .settings(scalacOptions in Test += "-language:implicitConversions")
   .dependsOn(numbersTestingBase % Test)
 
 lazy val numbers = numbersBase.jvm
@@ -274,8 +282,18 @@ lazy val numbersJS = numbersBase.js
 
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue
+    libraryDependencies += ("org.typelevel" %%% "cats-core" % catsVersion).withDottyCompat(scalaVersion.value),
+    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
+    Compile / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    }
   )
   .dependsOn(numbersBase)
 
@@ -397,7 +415,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.12",
+    libraryDependencies += ("org.scodec" %%% "scodec-bits" % "1.1.12").withDottyCompat(scalaVersion.value),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -416,9 +434,9 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
-      "org.typelevel" %%% "discipline-core" % disciplineVersion,
-      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion
-    )
+      "org.typelevel" %%% "discipline-core" % disciplineVersion
+    ).map(_.withDottyCompat(scalaVersion.value)),
+    addDisciplineScalaTest(false)
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
@@ -434,14 +452,25 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
+    scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion,
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
-    ),
+      "com.chuusai" %%% "shapeless" % shapelessVersion
+    ).map(_.withDottyCompat(scalaVersion.value)),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
-      file("modules/tests") / "shared" / "src" / "main" / "resources"
+      file("modules/tests") / "shared" / "src" / "main" / "resources",
+    Compile / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        List("main", "test")
+          .flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _))
+          .map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    }
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
@@ -469,10 +498,8 @@ lazy val hygieneJS = hygieneBase.js
 
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-      "org.typelevel" %% "jawn-parser" % jawnVersion
-    )
+    libraryDependencies += ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
+    addDisciplineScalaTest(true)
   )
   .dependsOn(core)
 
