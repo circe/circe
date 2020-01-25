@@ -128,7 +128,9 @@ def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS :+ benchmarkDotty).map(p =>
+    p: ProjectReference
+  )
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
@@ -302,8 +304,28 @@ lazy val coreJS = coreBase.js
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroSettings)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
+    libraryDependencies ++= (if (isDotty.value) Nil else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars,
+    Compile / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    },
+    Test / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        CrossType.Full.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    }
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -311,7 +333,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
-  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
@@ -455,9 +477,17 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       file("modules/tests") / "shared" / "src" / "main" / "resources",
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
-        List("main", "test")
-          .flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _))
-          .map(f => file(f.getPath + suffix))
+        List("main").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    },
+    Test / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        List("test").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
@@ -509,6 +539,16 @@ lazy val benchmark = circeModule("benchmark", mima = None)
   )
   .enablePlugins(JmhPlugin)
   .dependsOn(core, generic, jawn)
+
+lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
+  .settings(noPublishSettings)
+  .settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    }
+  )
+  .enablePlugins(JmhPlugin)
+  .dependsOn(core, jawn)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,

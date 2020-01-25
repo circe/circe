@@ -861,7 +861,7 @@ object Encoder
    *
    * @author Travis Brown
    */
-  object AsObject extends LowPriorityAsObjectEncoders {
+  object AsObject extends LowPriorityAsObjectEncoders with EncoderDerivation {
 
     /**
      * Return an instance for a given type.

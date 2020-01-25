@@ -68,7 +68,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
 
   trait AsObject[A] extends AsRoot[A] with Encoder.AsObject[A]
 
-  object AsObject {
+  object AsObject extends CodecDerivation {
     def apply[A](implicit instance: AsObject[A]): AsObject[A] = instance
 
     def from[A](decodeA: Decoder[A], encodeA: Encoder.AsObject[A]): AsObject[A] =
