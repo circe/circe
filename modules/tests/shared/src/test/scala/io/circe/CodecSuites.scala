@@ -10,8 +10,11 @@ import cats.data.{
   NonEmptyVector,
   Validated
 }
+import cats.instances.all._
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
+import cats.syntax.contravariant._
+import cats.syntax.eq._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import io.circe.tests.examples.Foo
@@ -26,7 +29,7 @@ trait SpecialEqForFloatAndDouble {
    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Float]] that does not distinguish
    * `NaN` from itself.
    */
-  val eqFloat: Eq[Float] = Eq.instance { (a, b) =>
+  val eqFloat: Eq[Float] = Eq.instance[Float] { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
@@ -34,7 +37,7 @@ trait SpecialEqForFloatAndDouble {
    * We provide a special [[cats.kernel.Eq]] instance for [[scala.Double]] that does not distinguish
    * `NaN` from itself.
    */
-  val eqDouble: Eq[Double] = Eq.instance { (a, b) =>
+  val eqDouble: Eq[Double] = Eq.instance[Double] { (a, b) =>
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
 }
@@ -199,33 +202,6 @@ class DisjunctionCodecSuite extends CirceSuite {
 
   checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
   checkAll("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
-}
-
-class EnumerationCodecSuite extends CirceSuite {
-  object WeekDay extends Enumeration {
-    type WeekDay = Value
-    val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
-
-    implicit val arbitraryWeekDay: Arbitrary[WeekDay.WeekDay] = Arbitrary(
-      Gen.oneOf(WeekDay.Mon, WeekDay.Tue, WeekDay.Wed, WeekDay.Thu, WeekDay.Fri, WeekDay.Sat, WeekDay.Sun)
-    )
-    implicit val eqWeekDay: Eq[WeekDay.WeekDay] = Eq.fromUniversalEquals
-  }
-
-  val decoder = Decoder.decodeEnumeration(WeekDay)
-  val encoder = Encoder.encodeEnumeration(WeekDay)
-  val codec = Codec.codecForEnumeration(WeekDay)
-
-  checkAll("Codec[WeekDay.WeekDay]", CodecTests[WeekDay.WeekDay](decoder, encoder).unserializableCodec)
-  checkAll("Codec[WeekDay.WeekDay] via Codec", CodecTests[WeekDay.WeekDay](codec, codec).unserializableCodec)
-  checkAll(
-    "Codec[WeekDay.WeekDay] via Decoder and Codec",
-    CodecTests[WeekDay.WeekDay](decoder, codec).unserializableCodec
-  )
-  checkAll(
-    "Codec[WeekDay.WeekDay] via Encoder and Codec",
-    CodecTests[WeekDay.WeekDay](codec, encoder).unserializableCodec
-  )
 }
 
 class DecodingFailureSuite extends CirceSuite {

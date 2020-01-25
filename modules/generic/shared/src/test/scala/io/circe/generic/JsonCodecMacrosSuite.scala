@@ -1,14 +1,14 @@
 package io.circe.generic
 
 import cats.kernel.Eq
-import cats.instances.AllInstances
+import cats.kernel.instances.all._
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
-package object jsoncodecmacrossuiteaux extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
+package object jsoncodecmacrossuiteaux extends AnyRef with ArbitraryInstances with MissingInstances
 
 package jsoncodecmacrossuiteaux {
   // Simple

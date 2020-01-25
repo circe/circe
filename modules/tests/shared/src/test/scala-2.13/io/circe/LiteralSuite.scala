@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.kernel.Eq
+import cats.kernel.instances.all._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }

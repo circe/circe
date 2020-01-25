@@ -1,5 +1,6 @@
 package io.circe.tests
 
+import cats.kernel.instances.all._
 import io.circe.{ Json, Parser, Printer }
 import io.circe.testing.PrinterTests
 import java.nio.charset.StandardCharsets.UTF_8
@@ -23,6 +24,6 @@ class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceSuite 
     val asString = new String(bytes, UTF_8)
     val expected = printer.print(json)
 
-    assert(asString === expected)
+    assert(asString == expected)
   }
 }

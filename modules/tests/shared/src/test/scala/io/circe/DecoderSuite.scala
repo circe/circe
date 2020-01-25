@@ -2,8 +2,11 @@ package io.circe
 
 import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
+import cats.instances.all._
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import cats.syntax.eq._
+import cats.syntax.foldable._
 import io.circe.CursorOp.{ DownArray, DownN }
 import io.circe.parser.parse
 import io.circe.syntax._
@@ -62,8 +65,9 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       }
 
       case class Test(a: Option[String])
-      assert(Decoder[Test].decodeJson(Json.obj()) === Right(Test(None)))
-      assert(Decoder[Test].decodeAccumulating(Json.obj().hcursor) === Validated.valid(Test(None)))
+      // Dotty crashes here with `CyclicReference` on `assert`.
+      assertResult(Decoder[Test].decodeJson(Json.obj()))(Right(Test(None)))
+      assertResult(Decoder[Test].decodeAccumulating(Json.obj().hcursor))(Validated.valid(Test(None)))
     }
 
   "prepare" should "move appropriately with downField" in forAll { (i: Int, k: String, m: Map[String, Int]) =>
@@ -244,14 +248,14 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val json = Json.fromLong(l)
     val result = Decoder[Byte].apply(json.hcursor)
 
-    assert(if (l.toByte.toLong == l) result === Right(l.toByte) else result.isEmpty)
+    assert(if (l.toByte.toLong == l) result === Right(l.toByte) else result.isLeft)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Byte].apply(json.hcursor)
 
-    assert(d.isWhole || result.isEmpty)
+    assert(d.isWhole || result.isLeft)
   }
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Byte, n: Byte) =>
@@ -265,14 +269,14 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val json = Json.fromLong(l)
     val result = Decoder[Short].apply(json.hcursor)
 
-    assert(if (l.toShort.toLong == l) result === Right(l.toShort) else result.isEmpty)
+    assert(if (l.toShort.toLong == l) result === Right(l.toShort) else result.isLeft)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Short].apply(json.hcursor)
 
-    assert(d.isWhole || result.isEmpty)
+    assert(d.isWhole || result.isLeft)
   }
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Short, n: Byte) =>
@@ -286,14 +290,14 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val json = Json.fromLong(l)
     val result = Decoder[Int].apply(json.hcursor)
 
-    assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isEmpty)
+    assert(if (l.toInt.toLong == l) result === Right(l.toInt) else result.isLeft)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Int].apply(json.hcursor)
 
-    assert(d.isWhole || result.isEmpty)
+    assert(d.isWhole || result.isLeft)
   }
 
   it should "succeed on whole decimal values (#83)" in forAll { (v: Int, n: Byte) =>
@@ -307,14 +311,14 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     val json = Json.fromBigDecimal(BigDecimal(i))
     val result = Decoder[Long].apply(json.hcursor)
 
-    assert(if (BigInt(i.toLong) == i) result === Right(i.toLong) else result.isEmpty)
+    assert(if (BigInt(i.toLong) == i) result === Right(i.toLong) else result.isLeft)
   }
 
   it should "fail on non-whole values (#83)" in forAll { (d: Double) =>
     val json = Json.fromDoubleOrNull(d)
     val result = Decoder[Long].apply(json.hcursor)
 
-    assert(d.isWhole || result.isEmpty)
+    assert(d.isWhole || result.isLeft)
   }
 
   "Decoder[Float]" should "attempt to parse string values as doubles (#173)" in forAll { (d: Float) =>
@@ -349,30 +353,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   "Decoder[BigInt]" should "fail when producing a value would be intractable" in {
     val Right(bigNumber) = parse("1e2147483647")
 
-    assert(Decoder[BigInt].apply(bigNumber.hcursor).isEmpty)
-  }
-
-  "Decoder[Enumeration]" should "parse Scala Enumerations" in {
-    object WeekDay extends Enumeration {
-      type WeekDay = Value
-      val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
-    }
-
-    val decoder = Decoder.decodeEnumeration(WeekDay)
-    val Right(friday) = parse("\"Fri\"")
-    assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
-  }
-
-  "Decoder[Enumeration]" should "fail on unknown values in Scala Enumerations" in {
-    object WeekDay extends Enumeration {
-      type WeekDay = Value
-      val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
-    }
-
-    val decoder = Decoder.decodeEnumeration(WeekDay)
-    val Right(friday) = parse("\"Friday\"")
-
-    assert(decoder.apply(friday.hcursor).isEmpty)
+    assert(Decoder[BigInt].apply(bigNumber.hcursor).isLeft)
   }
 
   val isPositive: Int => Boolean = _ > 0

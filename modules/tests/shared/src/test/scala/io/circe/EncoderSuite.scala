@@ -1,8 +1,15 @@
 package io.circe
 
 import cats.data.Chain
+import cats.kernel.instances.float._
+import cats.kernel.instances.int._
+import cats.kernel.instances.list._
+import cats.kernel.instances.map._
+import cats.kernel.instances.string._
+import cats.kernel.instances.tuple._
 import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.ContravariantTests
+import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 import org.scalacheck.Arbitrary
@@ -26,18 +33,6 @@ class EncoderSuite extends CirceSuite {
       val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))
 
       assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
-  }
-
-  "Encoder[Enumeration]" should "write Scala Enumerations" in {
-    object WeekDay extends Enumeration {
-      type WeekDay = Value
-      val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
-    }
-
-    implicit val encoder = Encoder.encodeEnumeration(WeekDay)
-    val json = WeekDay.Fri.asJson
-    val decoder = Decoder.decodeEnumeration(WeekDay)
-    assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
   }
 
   "encodeSet" should "match sequence encoders" in forAll { (xs: Set[Int]) =>
@@ -75,7 +70,7 @@ class EncoderSuite extends CirceSuite {
     assert(Encoder.encodeChain[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toList))
   }
 
-  "encodeFloat" should "match string representation" in forAll { x: Float =>
+  "encodeFloat" should "match string representation" in forAll { (x: Float) =>
     // All Float values should be encoded in a way that match the original value.
     assert(Encoder[Float].apply(x).toString.toFloat === x)
 
