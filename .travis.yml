@@ -2,7 +2,7 @@ dist: xenial
 language: scala
 
 scala:
-  - 0.22.0-bin-20200123-9982f0d-NIGHTLY
+  - 0.22.0-bin-20200125-c8371e4-NIGHTLY
   - 2.13.0
   - 2.12.10
 
