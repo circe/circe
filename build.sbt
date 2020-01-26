@@ -128,7 +128,9 @@ def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS).map(p => p: ProjectReference)
+  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS :+ benchmarkDotty).map(p =>
+    p: ProjectReference
+  )
 
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
