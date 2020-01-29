@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ Eq, Show }
+import cats.{ Eq, Semigroup, Show }
 import cats.data.NonEmptyList
 
 /**
@@ -42,20 +42,24 @@ object ParsingFailure {
  * An exception representing a decoding failure and (lazily) capturing the
  * decoding history resulting in the failure.
  */
-sealed abstract class DecodingFailure(val message: String) extends Error {
+sealed trait DecodingFailure extends Error {
+  val message: String
+}
+
+sealed abstract class SingleDecodingFailure(val message: String) extends DecodingFailure {
   def history: List[CursorOp]
 
   final override def getMessage: String =
     if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
 
-  final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure = {
+  final def copy(message: String = message, history: => List[CursorOp] = history): SingleDecodingFailure = {
     def newHistory = history
-    new DecodingFailure(message) {
+    new SingleDecodingFailure(message) {
       final lazy val history: List[CursorOp] = newHistory
     }
   }
 
-  final def withMessage(message: String): DecodingFailure = copy(message = message)
+  final def withMessage(message: String): SingleDecodingFailure = copy(message = message)
 
   override final def toString: String = s"DecodingFailure($message, $history)"
   override final def equals(that: Any): Boolean = that match {
@@ -65,15 +69,42 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
   override final def hashCode: Int = message.hashCode
 }
 
+object SingleDecodingFailure {
+  def unapply(error: Error): Option[(String, List[CursorOp])] = error match {
+    case ParsingFailure(_, _)         => None
+    case _: AggregatedDecodingFailure => None
+    case other: SingleDecodingFailure => Some((other.message, other.history))
+  }
+}
+
+sealed abstract class AggregatedDecodingFailure(
+  val failures: NonEmptyList[DecodingFailure],
+  val optionalMessage: Option[String]
+) extends DecodingFailure {
+
+  val message = optionalMessage.getOrElse(s"${failures.map(_.message)}")
+
+  final def withMessage(message: String): AggregatedDecodingFailure = new AggregatedDecodingFailure(
+    failures,
+    Some(message)
+  ) {}
+}
+
+object AggregatedDecodingFailure {
+  def unapply(error: Error): Option[NonEmptyList[DecodingFailure]] = error match {
+    case ParsingFailure(_, _)             => None
+    case _: SingleDecodingFailure         => None
+    case other: AggregatedDecodingFailure => Some(other.failures)
+  }
+}
+
 object DecodingFailure {
-  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(message) {
+  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new SingleDecodingFailure(message) {
     final lazy val history: List[CursorOp] = ops
   }
 
-  def unapply(error: Error): Option[(String, List[CursorOp])] = error match {
-    case ParsingFailure(_, _)   => None
-    case other: DecodingFailure => Some((other.message, other.history))
-  }
+  def combine(x: DecodingFailure, y: DecodingFailure): DecodingFailure =
+    new AggregatedDecodingFailure(NonEmptyList.of(x, y), None) {}
 
   def fromThrowable(t: Throwable, ops: => List[CursorOp]): DecodingFailure = t match {
     case (d: DecodingFailure) => d
@@ -85,16 +116,27 @@ object DecodingFailure {
   }
 
   implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
-    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
+    case (SingleDecodingFailure(m1, h1), SingleDecodingFailure(m2, h2)) =>
+      m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
+    case (AggregatedDecodingFailure(e1), AggregatedDecodingFailure(e2)) => e1 == e2
+    case (_, _)                                                         => false
+  }
+
+  implicit val semigroupDecodingFailure: Semigroup[DecodingFailure] = new Semigroup[DecodingFailure] {
+    def combine(x: DecodingFailure, y: DecodingFailure): DecodingFailure =
+      DecodingFailure.combine(x, y)
   }
 
   /**
    * Creates compact, human readable string representations for DecodingFailure
    * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
    */
-  implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { failure =>
-    val path = CursorOp.opsToPath(failure.history)
-    s"DecodingFailure at ${path}: ${failure.message}"
+  implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show {
+    case e: SingleDecodingFailure =>
+      val path = CursorOp.opsToPath(e.history)
+      s"DecodingFailure at ${path}: ${e.message}"
+    case e: AggregatedDecodingFailure =>
+      s"AggregatedDecodingFailure: ${e.message}"
   }
 }
 

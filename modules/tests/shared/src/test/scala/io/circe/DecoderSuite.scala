@@ -4,7 +4,7 @@ import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.{ DownArray, DownN }
+import io.circe.CursorOp.{ DownArray, DownField, DownN }
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -647,7 +647,7 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
   "HCursor#history" should "be stack safe" in {
     val size = 10000
     val json = List.fill(size)(1).asJson.mapArray(_ :+ true.asJson)
-    val Left(DecodingFailure(_, history)) = Decoder[List[Int]].decodeJson(json)
+    val Left(SingleDecodingFailure(_, history)) = Decoder[List[Int]].decodeJson(json)
 
     assert(history.size === size + 1)
   }
@@ -659,5 +659,30 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
     decoder =>
       val json = Json.arr(Json.obj("a" -> 1.asJson))
       assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
+  }
+
+  "parallel decoding" should "decode multiple errors" in {
+    import cats.Show
+    import cats.syntax.show._
+    final case class Foo(a: String, j: String, bar: Int)
+    implicit val fooShow = Show.fromToString[Foo]
+    implicit val fooEq = Eq.fromUniversalEquals[Foo]
+    implicit val decoderFoo = new Decoder[Foo] {
+      def apply(c: HCursor): Decoder.Result[Foo] =
+        (
+          c.downField("a").as[String],
+          c.downField("j").as[String],
+          c.downField("bar").as[Int]
+        ).parMapN(Foo(_, _, _))
+    }
+    val json = Json.obj(
+      "j" -> Json.fromString("yellow")
+    )
+    val expected = DecodingFailure.combine(
+      DecodingFailure("Attempt to decode value on failed cursor", List(DownField("a"))),
+      DecodingFailure("Attempt to decode value on failed cursor", List(DownField("bar")))
+    )
+    val test = decoderFoo.decodeJson(json)
+    test === Left(expected)
   }
 }
