@@ -14,8 +14,6 @@ import io.circe.{
 }
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
-import io.circe.rs.JsonF
-import io.circe.rs.JsonF.{ JArrayF, JBooleanF, JNullF, JNumberF, JObjectF, JStringF }
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
@@ -123,16 +121,4 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   implicit def arbitraryAsArrayEncoder[A: Cogen]: Arbitrary[Encoder.AsArray[A]] = Arbitrary(
     Arbitrary.arbitrary[A => Vector[Json]].map(Encoder.AsArray.instance)
   )
-
-  implicit def arbitraryJsonF[A: Arbitrary]: Arbitrary[JsonF[A]] =
-    Arbitrary(
-      Gen.oneOf[JsonF[A]](
-        Arbitrary.arbitrary[Boolean].map(JBooleanF),
-        Arbitrary.arbitrary[JsonNumber].map(JNumberF),
-        Gen.const(JNullF),
-        Arbitrary.arbitrary[String].map(JStringF),
-        Arbitrary.arbitrary[Vector[(String, A)]].map(_.groupBy(_._1).mapValues(_.head._2).toVector).map(JObjectF.apply),
-        Arbitrary.arbitrary[Vector[A]].map(JArrayF.apply)
-      )
-    )
 }
