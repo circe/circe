@@ -46,4 +46,15 @@ class JawnParserSuite extends CirceSuite {
     assert(decodeByteBufferAccumulating[Json](ByteBuffer.wrap(bytes)) == Validated.valid(glossary))
     assert(parseByteBuffer(ByteBuffer.wrap(bytes)) === Right(glossary))
   }
+
+  "parseByteArray and decodeByteArray(Accumulating)" should "parse a byte array" in {
+    val stream = getClass.getResourceAsStream("/io/circe/tests/examples/glossary.json")
+    val source = Source.fromInputStream(stream)
+    val bytes = source.map(_.toByte).toArray
+    source.close()
+
+    assert(decodeByteArray[Json](bytes) === Right(glossary))
+    assert(decodeByteArrayAccumulating[Json](bytes) == Validated.valid(glossary))
+    assert(parseByteArray(bytes) === Right(glossary))
+  }
 }

@@ -74,11 +74,20 @@ class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends
   final def parseByteBuffer(buffer: ByteBuffer): Either[ParsingFailure, Json] =
     fromTry(supportParser.parseFromByteBuffer(buffer))
 
+  final def parseByteArray(bytes: Array[Byte]): Either[ParsingFailure, Json] =
+    fromTry(supportParser.parseFromByteArray(bytes))
+
   final def decodeByteBuffer[A: Decoder](buffer: ByteBuffer): Either[Error, A] =
     finishDecode[A](parseByteBuffer(buffer))
 
   final def decodeByteBufferAccumulating[A: Decoder](buffer: ByteBuffer): ValidatedNel[Error, A] =
     finishDecodeAccumulating[A](parseByteBuffer(buffer))
+
+  final def decodeByteArray[A: Decoder](bytes: Array[Byte]): Either[Error, A] =
+    finishDecode[A](parseByteArray(bytes))
+
+  final def decodeByteArrayAccumulating[A: Decoder](bytes: Array[Byte]): ValidatedNel[Error, A] =
+    finishDecodeAccumulating[A](parseByteArray(bytes))
 
   final def decodeFile[A: Decoder](file: File): Either[Error, A] =
     finishDecode[A](parseFile(file))
