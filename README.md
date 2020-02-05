@@ -34,6 +34,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Dreamlines](https://www.dreamlines.com/)
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
+* [Elastic](https://www.elastic.co)
 * [FOLIO](https://folio-sec.com/)
 * [Gympass](https://www.gympass.com/)
 * [Gutefrage](https://www.gutefrage.net)
