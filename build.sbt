@@ -119,7 +119,7 @@ def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
       )
     else
       (
-        "org.typelevel" %% "discipline-scalatest" % disciplineScalaTestVersion
+        "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion
       )
   if (testScope) dep % Test else dep
 }
