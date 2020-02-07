@@ -230,18 +230,22 @@ lazy val aggregatedProjects: Seq[ProjectReference] = (
 ).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
-  libraryDependencies ++= Seq(
-    scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
-    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
-  ) ++ (
-    if (priorTo2_13(scalaVersion.value)) {
-      Seq(
-        compilerPlugin(("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch))
-      )
-    } else Nil
-  ),
+  libraryDependencies ++= (if (isDotty.value) Nil
+                           else
+                             (Seq(
+                               scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
+                               scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
+                             ) ++ (
+                               if (priorTo2_13(scalaVersion.value)) {
+                                 Seq(
+                                   compilerPlugin(
+                                     ("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch)
+                                   )
+                                 )
+                               } else Nil
+                             ))),
   scalacOptions ++= (
-    if (priorTo2_13(scalaVersion.value)) Nil else Seq("-Ymacro-annotations")
+    if (priorTo2_13(scalaVersion.value) || isDotty.value) Nil else Seq("-Ymacro-annotations")
   )
 )
 
