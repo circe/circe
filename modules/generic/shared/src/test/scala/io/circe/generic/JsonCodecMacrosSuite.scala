@@ -174,6 +174,16 @@ class JsonCodecMacrosSuite extends CirceSuite {
     Encoder.AsObject[SelfRecursiveWithOption]
   }
 
+  it should "only require necessary element instances for generic case classes" in {
+    @JsonCodec case class GenericCaseClass[A](a: A)
+    trait OnlyEncoder
+    trait OnlyDecoder
+    implicit def encodeOnlyEncoder: Encoder[OnlyEncoder] = Encoder[Unit].contramap(_ => ())
+    implicit def decodeOnlyDecoder: Decoder[OnlyDecoder] = Decoder[Unit].map(_ => new OnlyDecoder {})
+    Encoder.AsObject[GenericCaseClass[OnlyEncoder]]
+    Decoder[GenericCaseClass[OnlyDecoder]]
+  }
+
   it should "allow only one, named argument set to true" in {
     // Can't supply both
     assertDoesNotCompile("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)")
