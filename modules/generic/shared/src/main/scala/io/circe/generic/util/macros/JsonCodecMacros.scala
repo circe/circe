@@ -19,7 +19,7 @@ abstract class JsonCodecMacros {
       q"""
        $clsDef
        object ${clsDef.name.toTermName} {
-         ${codec(clsDef)}
+         ..${codec(clsDef)}
        }
        """
     case List(
@@ -30,7 +30,7 @@ abstract class JsonCodecMacros {
        $clsDef
        $mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
          ..$objDefs
-         ${codec(clsDef)}
+         ..${codec(clsDef)}
        }
        """
     case _ => c.abort(c.enclosingPosition, "Invalid annotation target: must be a case class or a sealed trait/class")
@@ -59,19 +59,25 @@ abstract class JsonCodecMacros {
     }
   }
 
-  private[this] def codec(clsDef: ClassDef): Tree = {
+  private[this] def codec(clsDef: ClassDef): List[Tree] = {
     val tpname = clsDef.name
     val tparams = clsDef.tparams
     val decodeName = TermName("decode" + tpname.decodedName)
     val encodeName = TermName("encode" + tpname.decodedName)
     val codecName = TermName("codecFor" + tpname.decodedName)
     def deriveName(suffix: String) = TermName(deriveMethodPrefix + suffix)
-    val (decoder, encoder, codec) = if (tparams.isEmpty) {
+    if (tparams.isEmpty) {
       val Type = tpname
-      (
-        q"""implicit val $decodeName: $DecoderClass[$Type] = $semiautoObj.${deriveName("Decoder")}[$Type]""",
-        q"""implicit val $encodeName: $AsObjectEncoderClass[$Type] = $semiautoObj.${deriveName("Encoder")}[$Type]""",
-        q"""implicit val $codecName: $AsObjectCodecClass[$Type] = $semiautoObj.${deriveName("Codec")}[$Type]"""
+
+      List(
+        codecType match {
+          case JsonCodecType.Both =>
+            q"""implicit val $codecName: $AsObjectCodecClass[$Type] = $semiautoObj.${deriveName("Codec")}[$Type]"""
+          case JsonCodecType.DecodeOnly =>
+            q"""implicit val $decodeName: $DecoderClass[$Type] = $semiautoObj.${deriveName("Decoder")}[$Type]"""
+          case JsonCodecType.EncodeOnly =>
+            q"""implicit val $encodeName: $AsObjectEncoderClass[$Type] = $semiautoObj.${deriveName("Encoder")}[$Type]"""
+        }
       )
     } else {
       val tparamNames = tparams.map(_.name)
@@ -85,21 +91,18 @@ abstract class JsonCodecMacros {
       val decodeParams = mkImplicitParams("decode", DecoderClass)
       val encodeParams = mkImplicitParams("encode", EncoderClass)
       val Type = tq"$tpname[..$tparamNames]"
-      (
+      val (decoder, encoder) = (
         q"""implicit def $decodeName[..$tparams](implicit ..$decodeParams): $DecoderClass[$Type] =
             $semiautoObj.${deriveName("Decoder")}[$Type]""",
         q"""implicit def $encodeName[..$tparams](implicit ..$encodeParams): $AsObjectEncoderClass[$Type] =
-            $semiautoObj.${deriveName("Encoder")}[$Type]""",
-        q"""implicit def $codecName[..$tparams](implicit
-            ..${decodeParams ++ encodeParams}
-          ): $AsObjectCodecClass[$Type] =
-            $semiautoObj.${deriveName("Codec")}[$Type]"""
+            $semiautoObj.${deriveName("Encoder")}[$Type]"""
       )
-    }
-    codecType match {
-      case JsonCodecType.Both       => codec
-      case JsonCodecType.DecodeOnly => decoder
-      case JsonCodecType.EncodeOnly => encoder
+
+      codecType match {
+        case JsonCodecType.Both       => List(decoder, encoder)
+        case JsonCodecType.DecodeOnly => List(decoder)
+        case JsonCodecType.EncodeOnly => List(encoder)
+      }
     }
   }
 }
