@@ -87,6 +87,30 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     assert(merged.asObject.map(_.toList) === Some(fields.reverse))
   }
 
+  "dropEmptyValues" should "remove empty values for JsonObject" in {
+    val actual = Json
+      .fromFields(
+        List(
+          "a" -> Json.fromFields(Nil),
+          "b" -> Json.fromValues(Nil),
+          "c" -> Json.fromValues(List(Json.fromInt(1))),
+          "d" -> Json.fromFields(List("a" -> Json.fromInt(1))),
+          "e" -> Json.fromInt(1)
+        )
+      )
+      .dropEmptyValues
+
+    assert(
+      actual == Json.fromFields(
+        List(
+          "c" -> Json.fromValues(List(Json.fromInt(1))),
+          "d" -> Json.fromFields(List("a" -> Json.fromInt(1))),
+          "e" -> Json.fromInt(1)
+        )
+      )
+    )
+  }
+
   "deepDropNullValues" should "remove null value for JsonObject" in {
     val actual = Json
       .fromFields(
