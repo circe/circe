@@ -1,5 +1,5 @@
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.32")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.0.1")
 
 addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.0")
 addSbtPlugin("com.47deg" % "sbt-microsites" % "1.1.2")
