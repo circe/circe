@@ -111,8 +111,10 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     )
 }
 
-def addDisciplineScalaTest = libraryDependencies += {
-  (if (isDotty.value) "dev.travisbrown" else "org.typelevel") %%% "discipline-scalatest" % disciplineScalaTestVersion % Test
+def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
+  val dep =
+    (if (isDotty.value) "dev.travisbrown" else "org.typelevel") %%% "discipline-scalatest" % disciplineScalaTestVersion
+  if (testScope) dep % Test else dep
 }
 
 /**
@@ -269,7 +271,7 @@ lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
 
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
-  .settings(addDisciplineScalaTest)
+  .settings(addDisciplineScalaTest(true))
   .settings(scalacOptions in Test += "-language:implicitConversions")
   .dependsOn(numbersTestingBase % Test)
 
@@ -447,7 +449,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline-core" % disciplineVersion
     ).map(_.withDottyCompat(scalaVersion.value)),
-    addDisciplineScalaTest
+    addDisciplineScalaTest(true)
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
@@ -491,6 +493,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       }
     }
   )
+  .settings(addDisciplineScalaTest(false))
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
@@ -518,7 +521,7 @@ lazy val hygieneJS = hygieneBase.js
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
     libraryDependencies += ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
-    addDisciplineScalaTest
+    addDisciplineScalaTest(true)
   )
   .dependsOn(core)
 
