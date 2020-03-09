@@ -33,7 +33,7 @@ val scalaTestVersion = "3.1.1"
 val scalaCheckVersion = "1.14.3"
 val disciplineVersion = "1.0.2"
 val disciplineScalaTestVersion = "1.0.1"
-val scalaJavaTimeVersion = "2.0.0-RC3"
+val scalaJavaTimeVersion = "2.0.0-RC5"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
