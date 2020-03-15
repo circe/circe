@@ -64,3 +64,27 @@ implicit val encodeUser: Encoder[User] =
 ```
 
 It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing but `circe-core`, and if you need a custom name mapping it's currently the best solution (although `0.6.0` introduces experimental configurable generic derivation in the `circe-generic-extras` module).
+
+### Support for Value Classes
+
+There's also a support for Value Classes. It's available within `circe-generic-extras`:
+
+```scala mdoc
+import io.circe.Encoder
+import io.circe.syntax._
+import io.circe.generic.extras.semiauto._
+import io.circe.generic.extras.defaults._
+
+implicit val ProfileEncoder: Encoder[Profile]   = deriveConfiguredEncoder
+implicit val UserIdEncoder: Encoder[UserId]     = deriveUnwrappedEncoder
+implicit val UserNameEncoder: Encoder[UserName] = deriveUnwrappedEncoder
+
+case class UserId(id: Int) extends AnyVal
+case class UserName(name: String) extends AnyVal
+case class Profile(userId: UserId, userName: UserName)
+
+val pr = Profile(UserId(1446), UserName("User Name"))
+
+pr.asJson
+
+```
