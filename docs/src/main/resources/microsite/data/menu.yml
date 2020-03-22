@@ -18,6 +18,8 @@ options:
       url: codecs/custom-codecs.html
     - title: ADT (Algebraic Data Types)
       url: codecs/adt.html
+    - title: Codec testing
+      url: codecs/testing.html
     - title: Warnings and known issues
       url: codecs/known-issues.html
 
