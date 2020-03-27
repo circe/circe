@@ -1,6 +1,7 @@
 package io.circe
 
 import eu.timepit.refined.api.{ RefType, Validate }
+import io.circe.refined.info.TypeInfo
 
 /**
  * Provides codecs for [[https://github.com/fthomas/refined refined]] types.
@@ -24,13 +25,23 @@ package object refined {
     implicit
     underlying: Decoder[T],
     validate: Validate[T, P],
-    refType: RefType[F]
+    refType: RefType[F],
+    P: TypeInfo[P] = TypeInfo.empty[P],
+    T: TypeInfo[T] = TypeInfo.empty[T]
   ): Decoder[F[T, P]] =
     Decoder.instance { c =>
       underlying(c) match {
         case Right(t0) =>
           refType.refine(t0) match {
-            case Left(err)    => Left(DecodingFailure(err, c.history))
+            case Left(err) =>
+              val refinementInfo = mapNonEmpty(P.describe, ifEmpty = " ")(addSpaces)
+              val tpeInfo = mapNonEmpty(T.describe)(t => s" of raw type $t")
+              Left(
+                DecodingFailure(
+                  s"Failed to verify${refinementInfo}refinement for value $t0${tpeInfo} - $err",
+                  c.history
+                )
+              )
             case r @ Right(t) => r.asInstanceOf[Decoder.Result[F[T, P]]]
           }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[F[T, P]]]
@@ -65,4 +76,12 @@ package object refined {
     refType: RefType[F]
   ): KeyEncoder[F[T, P]] =
     underlying.contramap(refType.unwrap)
+
+  private def mapNonEmpty(s: String, ifEmpty: => String = "")(f: String => String): String = {
+    val trimmed = s.trim
+    if (trimmed.isEmpty) ifEmpty
+    else f(trimmed)
+  }
+
+  private val addSpaces: String => String = str => s" $str "
 }

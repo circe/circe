@@ -3,18 +3,19 @@ package io.circe.refined
 import cats.kernel.Eq
 import cats.kernel.instances.all._
 import cats.syntax.eq._
-import eu.timepit.refined.{ refineMV, refineV }
 import eu.timepit.refined.api.{ RefType, Refined }
-import eu.timepit.refined.string.StartsWith
-import eu.timepit.refined.numeric.{ Greater, Positive }
 import eu.timepit.refined.collection.{ NonEmpty, Size }
+import eu.timepit.refined.numeric.{ Greater, Positive }
 import eu.timepit.refined.scalacheck.numeric.greaterArbitrary
 import eu.timepit.refined.scalacheck.string.startsWithArbitrary
-import io.circe.{ Decoder, Encoder, Json, KeyDecoder, KeyEncoder }
+import eu.timepit.refined.string.{ MatchesRegex, StartsWith }
+import eu.timepit.refined.{ refineMV, refineV }
+import io.circe.syntax._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import io.circe.syntax._
+import io.circe._
 import org.scalacheck.{ Arbitrary, Gen }
+import org.scalatest.EitherValues._
 import shapeless.{ Nat, Witness => W }
 
 class RefinedSuite extends CirceSuite {
@@ -49,6 +50,27 @@ class RefinedSuite extends CirceSuite {
 
     assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ab".asJson).isRight)
     assert(Decoder[String Refined StartsWith[W.`"a"`.T]].decodeJson("ba".asJson).isLeft)
+  }
+
+  it should "provide error message with minimal verbosity" in {
+    val intDecoder = Decoder[Int Refined Gt2]
+    val stringDecoder = Decoder[String Refined MatchesRegex[W.`"[A-z0-9]+"`.T]]
+
+    assert(
+      intDecoder.decodeJson(1.asJson).left.value ==
+        DecodingFailure(
+          message = "Failed to verify refinement for value 1 - Predicate failed: (1 > 2).",
+          ops = Nil
+        )
+    )
+    assert(
+      stringDecoder.decodeJson("io.circe".asJson).left.value ==
+        DecodingFailure(
+          message =
+            """Failed to verify refinement for value io.circe - Predicate failed: "io.circe".matches("[A-z0-9]+").""",
+          ops = Nil
+        )
+    )
   }
 
   "A refined key encoder" should "encode as string" in {
