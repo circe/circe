@@ -6,6 +6,7 @@ import io.circe.testing.{ ArbitraryInstances, EqInstances }
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import org.typelevel.discipline.scalatest.FlatSpecDiscipline
+import scala.language.implicitConversions
 
 /**
  * An opinionated stack of traits to improve consistency and reduce boilerplate in circe tests.
