@@ -205,6 +205,17 @@ sealed abstract class Json extends Product with Serializable {
   }
 
   /**
+   * Drop the entries with an empty value if this is an array or object.
+   *
+   * Note that this does not apply recursively.
+   */
+  def dropEmptyValues: Json = this.mapObject(_.filter {
+    case (_, JArray(vec))  => vec.nonEmpty
+    case (_, JObject(obj)) => obj.nonEmpty
+    case _                 => true
+  })
+
+  /**
    * Compute a `String` representation for this JSON value.
    */
   override final def toString: String = spaces2
