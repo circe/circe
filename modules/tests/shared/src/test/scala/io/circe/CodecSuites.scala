@@ -18,7 +18,7 @@ import cats.syntax.invariant._
 import cats.syntax.eq._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import io.circe.tests.examples.{Foo, Wub}
+import io.circe.tests.examples.{ Foo, Wub }
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.collection.immutable.SortedMap
