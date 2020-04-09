@@ -1,5 +1,6 @@
 package io.circe
 
+import cats.Invariant
 import cats.data.Validated
 
 /**
@@ -11,10 +12,25 @@ import cats.data.Validated
  *
  * Instances should obey the laws defined in [[io.circe.testing.CodecLaws]].
  */
-trait Codec[A] extends Decoder[A] with Encoder[A]
+trait Codec[A] extends Decoder[A] with Encoder[A] {
+
+  /**
+   * Variant of `imap` which allows the [[Decoder]] to fail.
+   * @param f decode value
+   * @param g encode value
+   * @tparam B the type of the new [[Codec]]
+   * @return a codec for [[B]]
+   */
+  def iemap[B](f: A => Either[String, B])(g: B => A): Codec[B] = Codec.from(emap(f), contramap(g))
+
+}
 
 object Codec extends ProductCodecs with EnumerationCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
+
+  implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {
+    override def imap[A, B](fa: Codec[A])(f: A => B)(g: B => A): Codec[B] = Codec.from(fa.map(f), fa.contramap(g))
+  }
 
   final def codecForEither[A, B](leftKey: String, rightKey: String)(
     implicit

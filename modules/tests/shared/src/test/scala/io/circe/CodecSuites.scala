@@ -14,10 +14,11 @@ import cats.instances.all._
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import cats.syntax.contravariant._
+import cats.syntax.invariant._
 import cats.syntax.eq._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import io.circe.tests.examples.Foo
+import io.circe.tests.examples.{Foo, Wub}
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.collection.immutable.SortedMap
@@ -167,6 +168,14 @@ class CirceCodecSuite extends CirceSuite {
   checkAll("Codec[JsonObject]", CodecTests[JsonObject].codec)
   checkAll("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
   checkAll("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
+}
+
+class InvariantCodecSuite extends CirceSuite {
+  val wubCodec = Codec.from(Decoder[Long], Encoder[Long]).imap(Wub(_))(_.x)
+  val wubCodecE = Codec.from(Decoder[Long], Encoder[Long]).iemap(l => Right(Wub(l)))(_.x)
+
+  checkAll("Codec[Wub] via imap", CodecTests[Wub](wubCodec, wubCodec).codec)
+  checkAll("Codec[Wub] via iemap", CodecTests[Wub](wubCodecE, wubCodecE).codec)
 }
 
 class EitherCodecSuite extends CirceSuite {
