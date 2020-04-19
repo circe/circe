@@ -208,7 +208,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 )
 
 lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
-lazy val circeJvmModules = Seq[Project](benchmark, jawn)
+lazy val circeJvmModules = Seq[Project](benchmark, jawn, extras)
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
@@ -524,6 +524,9 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     addDisciplineScalaTest(true)
   )
   .dependsOn(core)
+
+lazy val extras = circeModule("extras", mima = previousCirceVersion)
+  .dependsOn(core, tests % Test)
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
