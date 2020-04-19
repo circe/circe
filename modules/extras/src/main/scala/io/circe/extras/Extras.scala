@@ -7,8 +7,7 @@ import scala.collection.immutable.{ Map, Set }
 object Extras {
 
   /**
-   * For a [[Json]], sanitize any [[JsonObject]]'s key's values if
-   * @keysToSanitize contains it.
+   * For a [[Json]], sanitize any [[JsonObject]]'s key's values not in the whitelist.
    *
    * The original author's motivation for this function should explain why someone may want to use it.
    *
@@ -38,7 +37,7 @@ object Extras {
    * { "x" : true, "y" : 42, "z" : "X" }
    *
    * @param json JSON to sanitize
-   * @param keysToSanitize Set of JSON Objects' keys to sanitize
+   * @param whitelist Set of JSON Objects' keys whose values can be shown as-is
    * @param onBoolean Sanitizing function used if the key's value is a [[Boolean]]
    * @param onNull Sanitizing function used if the key's value is a [[Json.Null]]
    * @param onString Sanitizing function used if the key's value is a [[String]]
@@ -47,7 +46,7 @@ object Extras {
    */
   def sanitizeKeys(
     json: Json,
-    keysToSanitize: Set[String],
+    whitelist: Set[String],
     onBoolean: Boolean => Json,
     onNull: Json,
     onString: String => Json,
@@ -56,24 +55,25 @@ object Extras {
     json.withArray { arr: Vector[Json] =>
       val sanitized: Vector[Json] =
         arr.map { j: Json =>
-          sanitizeKeys(j, keysToSanitize, onBoolean, onNull, onString, onNumber)
+          sanitizeKeys(j, whitelist, onBoolean, onNull, onString, onNumber)
         }
       Json.fromValues(sanitized)
     }.withObject { obj: JsonObject =>
       val map: Map[String, Json] = obj.toMap
       val sanitized: Map[String, Json] = map.collect {
         case (key, value) =>
-          if (keysToSanitize.contains(key)) {
+          // Remember: if the key is whitelisted, then the key's value must be shown as-is
+          if (whitelist.contains(key)) {
+            (key, value)
+          } else { // Otherwise, sanitize the key's value since it's not whitelisted
             val newValue: Json =
               value.withArray { _ =>
-                sanitizeKeys(value, keysToSanitize, onBoolean, onNull, onString, onNumber)
+                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
               }.withObject { _ =>
-                sanitizeKeys(value, keysToSanitize, onBoolean, onNull, onString, onNumber)
+                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
               }.withBoolean(onBoolean).withNull(onNull).withString(onString).withNumber(onNumber)
 
             (key, newValue)
-          } else {
-            (key, value)
           }
       }
       Json.fromJsonObject(
