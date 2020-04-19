@@ -1,25 +1,35 @@
 package io.circe.extras
 
-import io.circe.{ Json, JsonNumber }
+import io.circe.{Json, JsonNumber, JsonObject}
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 
 class ExtrasSpec extends CirceSuite {
 
-  "sanitizeKeys" should "return input JSON for an empty 'keysToSanitize' argument" in {
-    forAll[Json, Boolean](arbitraryJson.arbitrary) { input: Json =>
-      val output: Json =
-        Extras.sanitizeKeys(
-          input,
-          Set.empty,
-          _ => ???,
-          Json.fromString(("not used")),
-          _ => ???,
-          _ => ???
-        )
-      input == output
-    }
+  "sanitizeKeys" should "return input JSON if all of the JSON Object's keys are in the whitelist" in {
+    forAll[Set[String], String, Boolean](Gen.listOf(Gen.alphaNumStr).map(_.toSet), Gen.alphaNumStr) {
+      (keys: Set[String], str: String) =>
+
+        val withValues: Set[(String, Json)] =
+          keys.map { s: String => (s, Json.JString(str))}
+
+        val input: Json = Json.fromJsonObject {
+          JsonObject.fromMap(withValues.toMap)
+        }
+
+        val output: Json =
+          Extras.sanitizeKeys(
+            input,
+            keys,
+            _ => ???,
+            Json.fromString(("not used")),
+            _ => ???,
+            _ => ???
+          )
+
+        input == output
+      }
   }
 
   "sanitizeKeys" should "return sanitized values for keys' values of a JSON Object" in {
@@ -55,7 +65,7 @@ class ExtrasSpec extends CirceSuite {
       )
 
       val output: Json =
-        Extras.sanitizeKeys(input, Set("hi", "there", "ciao"), onBoolean, onNull, onString, onNumber)
+        Extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
 
       expected == output
     }
@@ -110,7 +120,7 @@ class ExtrasSpec extends CirceSuite {
       }
 
       val output: Json =
-        Extras.sanitizeKeys(input, Set("hi", "there", "ciao"), onBoolean, onNull, onString, onNumber)
+        Extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
 
       expected == output
     }
