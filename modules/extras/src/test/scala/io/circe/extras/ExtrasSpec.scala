@@ -71,7 +71,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "santize each value within an array" in {
+  "sanitizeKeys" should "sanitize each value within an array" in {
     forAll[Boolean, String, JsonNumber, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr,
