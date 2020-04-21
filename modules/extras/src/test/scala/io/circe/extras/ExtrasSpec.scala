@@ -125,4 +125,55 @@ class ExtrasSpec extends CirceSuite {
       expected == output
     }
   }
+
+    "sanitizeKeys" should "sanitize arrays and objects of whitelisted and non-whitelisted keys" in {
+      forAll[Boolean, String, Boolean](
+        Arbitrary.arbBool.arbitrary,
+        Gen.alphaNumStr
+      ) { (bool: Boolean, str: String) =>
+
+        def onBoolean(b: Boolean): Json = Json.fromBoolean(!b)
+        def onString(s: String): Json = Json.fromString(s.reverse)
+
+        val inputInnerObj: Json = Json.obj(
+          "whitelisted"     := bool,
+          "non-whitelisted" := str
+        )
+
+        val input: Json = Json.obj(
+          "whitelistedObject"    := inputInnerObj,
+          "nonWhitelistedObject" := inputInnerObj,
+          "whitelistedArray"     := Json.arr(inputInnerObj),
+          "nonWhitelistedArray"  := Json.arr(inputInnerObj),
+        )
+
+        val expectedInnerObj: Json = Json.obj(
+          "whitelisted"     := bool,
+          "non-whitelisted" := str.reverse
+        )
+
+        val expected: Json = Json.obj(
+          "whitelistedObject"    := expectedInnerObj,
+          "nonWhitelistedObject" := expectedInnerObj,
+          "whitelistedArray"     := Json.arr(expectedInnerObj),
+          "nonWhitelistedArray"  := Json.arr(expectedInnerObj),
+        )
+
+        val output: Json =
+          Extras.sanitizeKeys(
+            input,
+            Set("whitelistedObject", "whitelistedArray", "whitelisted"),
+            onBoolean,
+            Json.Null,
+            onString,
+            _ => ???
+          )
+
+        println(expected.spaces2)
+
+        println(output.spaces2)
+
+        expected == output
+      }
+    }
 }
