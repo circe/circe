@@ -126,7 +126,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "sanitize arrays and objects of whitelisted and non-whitelisted keys" in {
+  "sanitizeKeys" should "sanitize arrays and objects of whitelisted and non-whitelisted keys' values" in {
     forAll[Boolean, String, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr
