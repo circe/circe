@@ -59,8 +59,7 @@ object Extras {
         }
       Json.fromValues(sanitized)
     }.withObject { obj: JsonObject =>
-      val map: Map[String, Json] = obj.toMap
-      val sanitized: Map[String, Json] = map.collect {
+      val sanitized: Map[String, Json] = obj.toMap.map {
         case (key, value) =>
           // Remember: if the key is whitelisted, then the key's value must be shown as-is
           if (whitelist.contains(key)) {
