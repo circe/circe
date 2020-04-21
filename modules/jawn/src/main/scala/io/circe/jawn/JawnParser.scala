@@ -21,7 +21,7 @@ object JawnParser {
    * input, and decoding a ten-million digit JSON number into a `BigInteger` may
    * take minutes.
    *
-   * If `allowDuplicateKeys` is set to `true`, the parser will fail if it encounters an object
+   * If `allowDuplicateKeys` is set to `true`, the parser will not fail if it encounters an object
    * containing duplicate keys. Note that duplicate keys are not prohibited by the JSON
    * specification, but many linters and other processors do not handle them.
    */
@@ -44,7 +44,7 @@ object JawnParser {
   def apply(maxValueSize: Int): JawnParser = JawnParser(maxValueSize, true)
 
   /**
-   * If `allowDuplicateKeys` is set to `true`, the parser will fail if it encounters an object
+   * If `allowDuplicateKeys` is set to `true`, the parser will not fail if it encounters an object
    * containing duplicate keys. Note that duplicate keys are not prohibited by the JSON
    * specification, but many linters and other processors do not handle them.
    */
