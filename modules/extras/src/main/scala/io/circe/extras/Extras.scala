@@ -63,7 +63,14 @@ object Extras {
         case (key, value) =>
           // Remember: if the key is whitelisted, then the key's value must be shown as-is
           if (whitelist.contains(key)) {
-            (key, value)
+            val newValue: Json =
+              value.withArray { _ =>
+                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
+              }.withObject { _ =>
+                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
+              }
+
+            (key, newValue)
           } else { // Otherwise, sanitize the key's value since it's not whitelisted
             val newValue: Json =
               value.withArray { _ =>
