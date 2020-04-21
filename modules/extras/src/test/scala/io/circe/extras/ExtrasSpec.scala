@@ -169,10 +169,6 @@ class ExtrasSpec extends CirceSuite {
           _ => ???
         )
 
-      println(expected.spaces2)
-
-      println(output.spaces2)
-
       expected == output
     }
   }
