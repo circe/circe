@@ -21,15 +21,15 @@ object disjunctionCodecs {
     da: Decoder[A]
   ): Decoder[Validated[E, A]] = Decoder.decodeValidated(failureKey, successKey)
 
-  implicit final def encodeEither[A, B](implicit
-    ea: Encoder[A],
-    eb: Encoder[B]
-  ): Encoder.AsObject[Either[A, B]] =
+  implicit final def encodeEither[A, B, J](implicit
+    ea: Encoder[A, J],
+    eb: Encoder[B, J]
+  ): Encoder.AsObject[Either[A, B], J] =
     Encoder.encodeEither(leftKey, rightKey)
 
-  implicit final def encodeValidated[E, A](implicit
-    ee: Encoder[E],
-    ea: Encoder[A]
-  ): Encoder.AsObject[Validated[E, A]] =
+  implicit final def encodeValidated[E, A, J](implicit
+    ee: Encoder[E, J],
+    ea: Encoder[A, J]
+  ): Encoder.AsObject[Validated[E, A], J] =
     Encoder.encodeValidated(failureKey, successKey)
 }

@@ -39,7 +39,7 @@ trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
    */
   implicit final def encodeSymbolLabelledHCons[K <: Symbol, V, T <: HList](implicit
     witK: Witness.Aux[K],
-    encodeV: Encoder[V],
+    encodeV: Encoder[V, J],
     encodeT: Encoder.AsObject[T]
   ): Encoder.AsObject[FieldType[K, V] :: T] = new Encoder.AsObject[FieldType[K, V] :: T] {
     def encodeObject(a: FieldType[K, V] :: T): JsonObject[Json] =
@@ -81,11 +81,11 @@ private[shapes] trait LowPriorityLabelledHListInstances extends HListInstances {
       )((h, t) => field[K](h) :: t)
   }
 
-  implicit final def encodeLabelledHCons[K, W >: K, V, T <: HList](implicit
+  implicit final def encodeLabelledHCons[K, W >: K, V, T <: HList, J](implicit
     witK: Witness.Aux[K],
     widenK: Widen.Aux[K, W],
     encodeW: KeyEncoder[W],
-    encodeV: Encoder[V],
+    encodeV: Encoder[V, J],
     encodeT: Encoder.AsObject[T]
   ): Encoder.AsObject[FieldType[K, V] :: T] = new Encoder.AsObject[FieldType[K, V] :: T] {
     private[this] val widened = widenK(witK.value)

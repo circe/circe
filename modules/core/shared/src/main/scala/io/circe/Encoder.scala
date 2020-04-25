@@ -37,27 +37,29 @@ import scala.collection.immutable.{ Map => ImmutableMap, Set }
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
  *
+ * @tparam A the type of value that we are encoding into a Json-like representation. 
+ * @tparam J The data type in which the Json is represented.
  * @author Travis Brown
  */
-trait Encoder[A] extends Serializable { self =>
+trait Encoder[A, J] extends Serializable { self =>
 
   /**
    * Convert a value to JSON.
    */
-  def apply(a: A): Json
+  def apply(a: A): J
 
   /**
    * Create a new [[Encoder]] by applying a function to a value of type `B` before encoding as an
    * `A`.
    */
-  final def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
-    final def apply(a: B): Json = self(f(a))
+  final def contramap[B](f: B => A): Encoder[B, J] = new Encoder[B, J] {
+    final def apply(a: B): TargetJson = self(f(a))
   }
 
   /**
    * Create a new [[Encoder]] by applying a function to the output of this one.
    */
-  final def mapJson(f: Json => Json): Encoder[A] = new Encoder[A] {
+  final def map[K](f: J => K): Encoder[A, K] = new Encoder[A, K] {
     final def apply(a: A): Json = f(self(a))
   }
 }
@@ -116,15 +118,15 @@ object Encoder
    *
    * @group Utilities
    */
-  final def apply[A](implicit instance: Encoder[A]): Encoder[A] = instance
+  final def apply[A, J](implicit instance: Encoder[A, J]): Encoder[A, J] = instance
 
   /**
    * Construct an instance from a function.
    *
    * @group Utilities
    */
-  final def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
-    final def apply(a: A): Json = f(a)
+  final def instance[A, J](f: A => J): Encoder[A, J] = new Encoder[A, J] {
+    final def apply(a: A): J = f(a)
   }
 
   /**
@@ -132,7 +134,7 @@ object Encoder
    *
    * @group Utilities
    */
-  final def encodeFoldable[F[_], A](implicit e: Encoder[A], F: Foldable[F]): AsArray[F[A]] =
+  final def encodeFoldable[F[_], A, J](implicit e: Encoder[A, J], F: Foldable[F]): AsArray[F[A]] =
     new AsArray[F[A]] {
       final def encodeArray(a: F[A]): Vector[Json] =
         F.foldLeft(a, Vector.empty[Json])((list, v) => e(v) +: list).reverse
@@ -141,15 +143,15 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final val encodeJson: Encoder[Json] = new Encoder[Json] {
+  implicit final val encodeJson: Encoder[Json, Json] = new Encoder[Json, Json] {
     final def apply(a: Json): Json = a
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeJsonObject: AsObject[JsonObject[Json]] = new AsObject[JsonObject[Json]] {
-    final def encodeObject(a: JsonObject[Json]): JsonObject[Json] = a
+  implicit final def encodeJsonObject[J]: AsObject[JsonObject[J]] = new AsObject[JsonObject, J] {
+    final def encodeObject(a: JsonObject[J]): JsonObject[J] = a
   }
 
   /**
@@ -169,21 +171,21 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final val encodeUnit: AsObject[Unit] = new AsObject[Unit] {
-    final def encodeObject(a: Unit): JsonObject[Json] = JsonObject.empty
+  implicit final def encodeUnit[J]: AsObject[Unit, J] = new AsObject[Unit, J] {
+    final def encodeObject(a: Unit): JsonObject[J] = JsonObject.empty[J]
   }
 
   /**
    * @group Encoding
    */
-  implicit final val encodeBoolean: Encoder[Boolean] = new Encoder[Boolean] {
-    final def apply(a: Boolean): Json = Json.fromBoolean(a)
+  implicit final def encodeBoolean[J: JsonFactory]: Encoder[Boolean, J] = new Encoder[Boolean, J] {
+    final def apply(a: Boolean): J = JsonFactory[J].fromBoolean(a)
   }
 
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeJavaBoolean: Encoder[java.lang.Boolean] = encodeBoolean.contramap(_.booleanValue())
+  implicit final def encodeJavaBoolean: Encoder[java.lang.Boolean, J] = encodeBoolean.contramap(_.booleanValue())
 
   /**
    * @group Encoding
@@ -264,14 +266,15 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final val encodeLong: Encoder[Long] = new Encoder[Long] {
-    final def apply(a: Long): Json = Json.fromLong(a)
+  implicit final def encodeLong[J: JsonFactory]: Encoder[Long, J] = new Encoder[Long, J] {
+    final def apply(a: Long): J = JsonFactory[J].fromLong(a)
   }
 
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeJavaLong: Encoder[java.lang.Long] = encodeLong.contramap(_.longValue())
+  implicit final def encodeJavaLong[J: JsonFactory]: Encoder[java.lang.Long, J] =
+    encodeLong.contramap(_.longValue())
 
   /**
    * @group Encoding
@@ -301,126 +304,126 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final lazy val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
+  implicit final def encodeUUID[J: JsonFactory]: Encoder[UUID, J] = new Encoder[UUID, J] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
   }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
-    final def apply(a: Option[A]): Json = a match {
+  implicit final def encodeOption[A, J: JsonFactory](implicit e: Encoder[A, J]): Encoder[Option[A], J] = new Encoder[Option[A], J] {
+    final def apply(a: Option[A]): J = a match {
       case Some(v) => e(v)
-      case None    => Json.Null
+      case None    => JsonFactory[J].Null
     }
   }
 
   /**
    * @group Encoding
    */
-  implicit final def encodeSome[A](implicit e: Encoder[A]): Encoder[Some[A]] = e.contramap(_.get)
+  implicit final def encodeSome[A, J](implicit e: Encoder[A, J]): Encoder[Some[A], J] = e.contramap(_.get)
 
   /**
    * @group Encoding
    */
-  implicit final val encodeNone: Encoder[None.type] = new Encoder[None.type] {
-    final def apply(a: None.type): Json = Json.Null
+  implicit final def encodeNone[J: JsonFactory[J]]: Encoder[None.type, J] = new Encoder[None.type, J] {
+    final def apply(a: None.type): J = JsonFactory[J].Null
   }
 
   /**
    * @group Collection
    */
-  implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): AsArray[Seq[A]] =
-    new IterableAsArrayEncoder[A, Seq](encodeA) {
+  implicit final def encodeSeq[A, J](implicit encodeA: Encoder[A, J]): AsArray[Seq[A], J] =
+    new IterableAsArrayEncoder[A, Seq, J](encodeA) {
       final protected def toIterator(a: Seq[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeSet[A](implicit encodeA: Encoder[A]): AsArray[Set[A]] =
-    new IterableAsArrayEncoder[A, Set](encodeA) {
+  implicit final def encodeSet[A, J](implicit encodeA: Encoder[A, J]): AsArray[Set[A], J] =
+    new IterableAsArrayEncoder[A, Set, J](encodeA) {
       final protected def toIterator(a: Set[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeList[A](implicit encodeA: Encoder[A]): AsArray[List[A]] =
-    new IterableAsArrayEncoder[A, List](encodeA) {
+  implicit final def encodeList[A, J](implicit encodeA: Encoder[A, J]): AsArray[List[A], J] =
+    new IterableAsArrayEncoder[A, List, J](encodeA) {
       final protected def toIterator(a: List[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeVector[A](implicit encodeA: Encoder[A]): AsArray[Vector[A]] =
-    new IterableAsArrayEncoder[A, Vector](encodeA) {
+  implicit final def encodeVector[A, J](implicit encodeA: Encoder[A, J]): AsArray[Vector[A], J] =
+    new IterableAsArrayEncoder[A, Vector, J](encodeA) {
       final protected def toIterator(a: Vector[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeChain[A](implicit encodeA: Encoder[A]): AsArray[Chain[A]] =
-    new IterableAsArrayEncoder[A, Chain](encodeA) {
+  implicit final def encodeChain[A, J](implicit encodeA: Encoder[A, J]): AsArray[Chain[A], J] =
+    new IterableAsArrayEncoder[A, Chain, J](encodeA) {
       final protected def toIterator(a: Chain[A]): Iterator[A] = a.iterator
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
-    new AsArray[NonEmptyList[A]] {
-      final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
+  implicit final def encodeNonEmptyList[A, J](implicit encodeA: Encoder[A, J]): AsArray[NonEmptyList[A], J] =
+    new AsArray[NonEmptyList[A], J] {
+      final def encodeArray(a: NonEmptyList[A]): Vector[J] = a.toList.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyVector[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyVector[A]] =
-    new AsArray[NonEmptyVector[A]] {
-      final def encodeArray(a: NonEmptyVector[A]): Vector[Json] = a.toVector.map(encodeA(_))
+  implicit final def encodeNonEmptyVector[A, J](implicit encodeA: Encoder[A, J]): AsArray[NonEmptyVector[A], J] =
+    new AsArray[NonEmptyVector[A], J] {
+      final def encodeArray(a: NonEmptyVector[A]): Vector[J] = a.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptySet[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySet[A]] =
-    new AsArray[NonEmptySet[A]] {
-      final def encodeArray(a: NonEmptySet[A]): Vector[Json] = a.toSortedSet.toVector.map(encodeA(_))
+  implicit final def encodeNonEmptySet[A, J](implicit encodeA: Encoder[A, J]): AsArray[NonEmptySet[A], J] =
+    new AsArray[NonEmptySet[A], J] {
+      final def encodeArray(a: NonEmptySet[A]): Vector[J] = a.toSortedSet.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyMap[K, V](implicit
+  implicit final def encodeNonEmptyMap[K, V, J](implicit
     encodeK: KeyEncoder[K],
-    encodeV: Encoder[V]
+    encodeV: Encoder[V, J]
   ): AsObject[NonEmptyMap[K, V]] =
-    new AsObject[NonEmptyMap[K, V]] {
-      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject[Json] =
+    new AsObject[NonEmptyMap[K, V], J] {
+      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject[J] =
         encodeMap[K, V].encodeObject(a.toSortedMap)
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyChain[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyChain[A]] =
-    new AsArray[NonEmptyChain[A]] {
-      final def encodeArray(a: NonEmptyChain[A]): Vector[Json] = a.toChain.toVector.map(encodeA(_))
+  implicit final def encodeNonEmptyChain[A, J](implicit encodeA: Encoder[A, J]): AsArray[NonEmptyChain[A], J] =
+    new AsArray[NonEmptyChain[A], J] {
+      final def encodeArray(a: NonEmptyChain[A]): Vector[J] = a.toChain.toVector.map(encodeA(_))
     }
 
   /**
    * @group Collection
    */
-  implicit final def encodeOneAnd[A, C[_]](implicit
-    encodeA: Encoder[A],
+  implicit final def encodeOneAnd[A, C[_], J](implicit
+    encodeA: Encoder[A, J],
     ev: C[A] => Iterable[A]
-  ): AsArray[OneAnd[C, A]] = new AsArray[OneAnd[C, A]] {
-    private[this] val encoder: AsArray[Vector[A]] = encodeVector[A]
+  ): AsArray[OneAnd[C, A], J] = new AsArray[OneAnd[C, A], J] {
+    private[this] val encoder: AsArray[Vector[A], J] = encodeVector[A]
 
-    final def encodeArray(a: OneAnd[C, A]): Vector[Json] = encoder.encodeArray(a.head +: ev(a.tail).toVector)
+    final def encodeArray(a: OneAnd[C, A]): Vector[J] = encoder.encodeArray(a.head +: ev(a.tail).toVector)
   }
 
   /**
@@ -428,9 +431,9 @@ object Encoder
    *
    * @group Collection
    */
-  implicit final def encodeMap[K, V](implicit
+  implicit final def encodeMap[K, V, J](implicit
     encodeK: KeyEncoder[K],
-    encodeV: Encoder[V]
+    encodeV: Encoder[V, J]
   ): AsObject[ImmutableMap[K, V]] =
     encodeMapLike[K, V, ImmutableMap](encodeK, encodeV, identity)
 
@@ -439,9 +442,9 @@ object Encoder
    *
    * @group Collection
    */
-  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V], J](implicit
     encodeK: KeyEncoder[K],
-    encodeV: Encoder[V],
+    encodeV: Encoder[V, J],
     ev: M[K, V] => Iterable[(K, V)]
   ): AsObject[M[K, V]] = new IterableAsObjectEncoder[K, V, M](encodeK, encodeV) {
     final protected def toIterator(a: M[K, V]): Iterator[(K, V)] = ev(a).iterator
@@ -451,10 +454,10 @@ object Encoder
    * @group Disjunction
    */
   final def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
-    encodeA: Encoder[A],
-    encodeB: Encoder[B]
-  ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
-    final def encodeObject(a: Either[A, B]): JsonObject[Json] = a match {
+    encodeA: Encoder[A, J],
+    encodeB: Encoder[B, J]
+  ): AsObject[Either[A, B], J] = new AsObject[Either[A, B], J] {
+    final def encodeObject(a: Either[A, B]): JsonObject[J] = a match {
       case Left(a)  => JsonObject.singleton(leftKey, encodeA(a))
       case Right(b) => JsonObject.singleton(rightKey, encodeB(b))
     }
@@ -463,10 +466,10 @@ object Encoder
   /**
    * @group Disjunction
    */
-  final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
-    encodeE: Encoder[E],
-    encodeA: Encoder[A]
-  ): AsObject[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
+  final def encodeValidated[E, A, J](failureKey: String, successKey: String)(implicit
+    encodeE: Encoder[E, J],
+    encodeA: Encoder[A, J]
+  ): AsObject[Validated[E, A], J] = encodeEither[E, A](failureKey, successKey).contramapObject {
     case Validated.Invalid(e) => Left(e)
     case Validated.Valid(a)   => Right(a)
   }
@@ -474,20 +477,20 @@ object Encoder
   /**
    * @group Instances
    */
-  implicit final val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
-    final def contramap[A, B](e: Encoder[A])(f: B => A): Encoder[B] = e.contramap(f)
+  implicit final def encoderContravariant[J]: Contravariant[Encoder[?, J]] = new Contravariant[Encoder[?, J]] {
+    final def contramap[A, B](e: Encoder[A, J])(f: B => A): Encoder[B, J] = e.contramap(f)
   }
 
   /**
    * Note that this implementation assumes that the collection does not contain duplicate keys.
    */
-  private[this] abstract class IterableAsObjectEncoder[K, V, M[_, _]](
+  private[this] abstract class IterableAsObjectEncoder[K, V, M[_, _], J](
     encodeK: KeyEncoder[K],
-    encodeV: Encoder[V]
+    encodeV: Encoder[V, J]
   ) extends AsObject[M[K, V]] {
     protected def toIterator(a: M[K, V]): Iterator[(K, V)]
 
-    final def encodeObject(a: M[K, V]): JsonObject[Json] = {
+    final def encodeObject(a: M[K, V]): JsonObject[J] = {
       val builder = ImmutableMap.newBuilder[String, Json]
       val keysBuilder = Vector.newBuilder[String]
       val iterator = toIterator(a)
@@ -503,193 +506,195 @@ object Encoder
     }
   }
 
-  private[this] abstract class JavaTimeEncoder[A <: TemporalAccessor] extends Encoder[A] {
+  private[this] abstract class JavaTimeEncoder[A <: TemporalAccessor, J: JsonFactory] extends Encoder[A, J] {
     protected[this] def format: DateTimeFormatter
 
-    final def apply(a: A): Json = Json.fromString(format.format(a))
+    final def apply(a: A): J = JsonFactory[J].fromString(format.format(a))
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeDuration: Encoder[Duration] = new Encoder[Duration] {
-    final def apply(a: Duration): Json = Json.fromString(a.toString)
+  implicit final def encodeDuration[J](implicit J: JsonFactory[J]): Encoder[Duration, J] = new Encoder[Duration, J] {
+    final def apply(a: Duration): J = J.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeInstant: Encoder[Instant] = new Encoder[Instant] {
-    final def apply(a: Instant): Json = Json.fromString(a.toString)
+  implicit final def encodeInstant[J: JsonFactory]: Encoder[Instant, J] = new Encoder[Instant, J] {
+    final def apply(a: Instant): J = J.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodePeriod: Encoder[Period] = new Encoder[Period] {
-    final def apply(a: Period): Json = Json.fromString(a.toString)
+  implicit final def encodePeriod[J](implicit J: JsonFactory[J]): Encoder[Period, J] = new Encoder[Period, J] {
+    final def apply(a: Period): J = J.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeZoneId: Encoder[ZoneId] = new Encoder[ZoneId] {
-    final def apply(a: ZoneId): Json = Json.fromString(a.getId)
-  }
+  implicit final def encodeZoneId[J](implicit J: JsonFactory[J]): Encoder[ZoneId, J] =
+    new Encoder[ZoneId, J] {
+      final def apply(a: ZoneId): J = J.fromString(a.getId)
+    }
 
   /**
    * @group Time
    */
-  final def encodeLocalDateWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDate] =
-    new JavaTimeEncoder[LocalDate] {
+  final def encodeLocalDateWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[LocalDate, J] =
+    new JavaTimeEncoder[LocalDate, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeLocalTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalTime] =
-    new JavaTimeEncoder[LocalTime] {
+  final def encodeLocalTimeWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[LocalTime, J] =
+    new JavaTimeEncoder[LocalTime, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeLocalDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
-    new JavaTimeEncoder[LocalDateTime] {
+  final def encodeLocalDateTimeWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[LocalDateTime, J] =
+    new JavaTimeEncoder[LocalDateTime, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeMonthDayWithFormatter(formatter: DateTimeFormatter): Encoder[MonthDay] =
-    new JavaTimeEncoder[MonthDay] {
+  final def encodeMonthDayWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[MonthDay, J] =
+    new JavaTimeEncoder[MonthDay, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeOffsetTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetTime] =
-    new JavaTimeEncoder[OffsetTime] {
+  final def encodeOffsetTimeWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[OffsetTime, J] =
+    new JavaTimeEncoder[OffsetTime, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeOffsetDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[OffsetDateTime] =
-    new JavaTimeEncoder[OffsetDateTime] {
+  final def encodeOffsetDateTimeWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[OffsetDateTime, J] =
+    new JavaTimeEncoder[OffsetDateTime, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeYearWithFormatter(formatter: DateTimeFormatter): Encoder[Year] =
-    new JavaTimeEncoder[Year] {
+  final def encodeYearWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[Year, J] =
+    new JavaTimeEncoder[Year, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeYearMonthWithFormatter(formatter: DateTimeFormatter): Encoder[YearMonth] =
-    new JavaTimeEncoder[YearMonth] {
+  final def encodeYearMonthWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[YearMonth, J] =
+    new JavaTimeEncoder[YearMonth, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeZonedDateTimeWithFormatter(formatter: DateTimeFormatter): Encoder[ZonedDateTime] =
-    new JavaTimeEncoder[ZonedDateTime] {
+  final def encodeZonedDateTimeWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[ZonedDateTime, J] =
+    new JavaTimeEncoder[ZonedDateTime, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  final def encodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Encoder[ZoneOffset] =
-    new JavaTimeEncoder[ZoneOffset] {
+  final def encodeZoneOffsetWithFormatter[J: JsonFactory](formatter: DateTimeFormatter): Encoder[ZoneOffset, J] =
+    new JavaTimeEncoder[ZoneOffset, J] {
       protected[this] final def format: DateTimeFormatter = formatter
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalDate: Encoder[LocalDate] = new Encoder[LocalDate] {
-    final def apply(a: LocalDate): Json = Json.fromString(a.toString)
-  }
+    implicit final def encodeLocalDate[J](implicit J: JsonFactory[J]): Encoder[LocalDate, J] =
+      new Encoder[LocalDate, J] {
+        final def apply(a: LocalDate): J = J.fromString(a.toString)
+      }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalTime: Encoder[LocalTime] =
-    new JavaTimeEncoder[LocalTime] {
+  implicit final def encodeLocalTime[J: JsonFactory]: Encoder[LocalTime, J] =
+    new JavaTimeEncoder[LocalTime, J] {
       protected[this] final def format: DateTimeFormatter = ISO_LOCAL_TIME
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeLocalDateTime: Encoder[LocalDateTime] =
-    new JavaTimeEncoder[LocalDateTime] {
+  implicit final def encodeLocalDateTime[J]: Encoder[LocalDateTime, J] =
+    new JavaTimeEncoder[LocalDateTime, J] {
       protected[this] final def format: DateTimeFormatter = ISO_LOCAL_DATE_TIME
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeMonthDay: Encoder[MonthDay] = new Encoder[MonthDay] {
-    final def apply(a: MonthDay): Json = Json.fromString(a.toString)
+  implicit final def encodeMonthDay[J]: Encoder[MonthDay, J] = new Encoder[MonthDay, J] {
+    final def apply(a: MonthDay): J = J.fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeOffsetTime: Encoder[OffsetTime] =
-    new JavaTimeEncoder[OffsetTime] {
+  implicit final def encodeOffsetTime[J]: Encoder[OffsetTime, J] =
+    new JavaTimeEncoder[OffsetTime, J] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_TIME
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeOffsetDateTime: Encoder[OffsetDateTime] =
-    new JavaTimeEncoder[OffsetDateTime] {
+  implicit final def encodeOffsetDateTime[J]: Encoder[OffsetDateTime, J] =
+    new JavaTimeEncoder[OffsetDateTime, J] {
       protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeYear: Encoder[Year] = new Encoder[Year] {
-    final def apply(a: Year): Json = Json.fromString(a.toString)
+  implicit final def encodeYear[J: JsonFactory]: Encoder[Year, J] = new Encoder[Year, J] {
+    final def apply(a: Year): J = JsonFactory[J].fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
-    final def apply(a: YearMonth): Json = Json.fromString(a.toString)
+  implicit final def encodeYearMonth[J: JsonFactory]: Encoder[YearMonth, J] = new Encoder[YearMonth, J] {
+    final def apply(a: YearMonth): J = JsonFactory[J].fromString(a.toString)
   }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeZonedDateTime: Encoder[ZonedDateTime] =
-    new JavaTimeEncoder[ZonedDateTime] {
+  implicit final def encodeZonedDateTime[J: JsonFactory]: Encoder[ZonedDateTime, J] =
+    new JavaTimeEncoder[ZonedDateTime, J] {
       protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
     }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
-    final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
+  implicit final def encodeZoneOffset[J: JsonFactory]: Encoder[ZoneOffset, J] = new Encoder[ZoneOffset, J] {
+    final def apply(a: ZoneOffset): J = JsonFactory[J].fromString(a.toString)
   }
 
   /**
@@ -698,7 +703,7 @@ object Encoder
    *
    * @author Travis Brown
    */
-  trait AsRoot[A] extends Encoder[A]
+  trait AsRoot[A, J] extends Encoder[A, J]
 
   /**
    * Utilities and instances for [[AsRoot]].
@@ -718,7 +723,7 @@ object Encoder
      *
      * @group Utilities
      */
-    final def apply[A](implicit instance: AsRoot[A]): AsRoot[A] = instance
+    final def apply[A, J](implicit instance: AsRoot[A, J]): AsRoot[A, J] = instance
   }
 
   private[circe] class LowPriorityAsRootEncoders {
@@ -726,7 +731,7 @@ object Encoder
     /**
      * @group Prioritization
      */
-    implicit final def importedAsRootEncoder[A](implicit exported: Exported[AsRoot[A]]): AsRoot[A] =
+    implicit final def importedAsRootEncoder[A, J](implicit exported: Exported[AsRoot[A, J]]): AsRoot[A, J] =
       exported.instance
   }
 
@@ -736,28 +741,28 @@ object Encoder
    *
    * @author Travis Brown
    */
-  trait AsArray[A] extends AsRoot[A] { self =>
-    final def apply(a: A): Json = Json.fromValues(encodeArray(a))
+  trait AsArray[A, J] extends AsRoot[A, J] { self =>
+    final def apply(a: A): J = J.fromValues(encodeArray(a))
 
     /**
      * Convert a value to a JSON array.
      */
-    def encodeArray(a: A): Vector[Json]
+    def encodeArray(a: A): Vector[J]
 
     /**
      * Create a new [[AsArray]] by applying a function to a value of type `B` before encoding as
      * an `A`.
      */
-    final def contramapArray[B](f: B => A): AsArray[B] = new AsArray[B] {
-      final def encodeArray(a: B): Vector[Json] = self.encodeArray(f(a))
+    final def contramapArray[B](f: B => A): AsArray[B, J] = new AsArray[B, J] {
+      final def encodeArray(a: B): Vector[J] = self.encodeArray(f(a))
     }
 
     /**
      * Create a new [[AsArray]] by applying a function to the output of this
      * one.
      */
-    final def mapJsonArray(f: Vector[Json] => Vector[Json]): AsArray[A] = new AsArray[A] {
-      final def encodeArray(a: A): Vector[Json] = f(self.encodeArray(a))
+    final def mapJsonArray[K](f: Vector[J] => Vector[K]): AsArray[A, K] = new AsArray[A, K] {
+      final def encodeArray(a: A): Vector[K] = f(self.encodeArray(a))
     }
   }
 
@@ -782,22 +787,22 @@ object Encoder
      *
      * @group Utilities
      */
-    final def apply[A](implicit instance: AsArray[A]): AsArray[A] = instance
+    final def apply[A, J](implicit instance: AsArray[A, J]): AsArray[A, J] = instance
 
     /**
      * Construct an instance from a function.
      *
      * @group Utilities
      */
-    final def instance[A](f: A => Vector[Json]): AsArray[A] = new AsArray[A] {
-      final def encodeArray(a: A): Vector[Json] = f(a)
+    final def instance[A, J](f: A => Vector[J]): AsArray[A, J] = new AsArray[A, J] {
+      final def encodeArray(a: A): Vector[J] = f(a)
     }
 
     /**
      * @group Instances
      */
-    implicit final val arrayEncoderContravariant: Contravariant[AsArray] = new Contravariant[AsArray] {
-      final def contramap[A, B](e: AsArray[A])(f: B => A): AsArray[B] = e.contramapArray(f)
+    implicit final def arrayEncoderContravariant[J]: Contravariant[AsArray[?, J]] = new Contravariant[AsArray[?, J]] {
+      final def contramap[A, B](e: AsArray[A, J])(f: B => A): AsArray[B, J] = e.contramapArray(f)
     }
   }
 
@@ -806,7 +811,7 @@ object Encoder
     /**
      * @group Prioritization
      */
-    implicit final def importedAsArrayEncoder[A](implicit exported: Exported[AsArray[A]]): AsArray[A] =
+    implicit final def importedAsArrayEncoder[A, J](implicit exported: Exported[AsArray[A]]): AsArray[A] =
       exported.instance
   }
 
@@ -816,29 +821,30 @@ object Encoder
    *
    * @author Travis Brown
    */
-  trait AsObject[A] extends AsRoot[A] { self =>
-    final def apply(a: A): Json = Json.fromJsonObject(encodeObject(a))
+  trait AsObject[A, J] extends AsRoot[A, J] { self =>
+    final def apply(a: A): J = Json.fromJsonObject(encodeObject(a))
 
     /**
-     * Convert a value to a JSON object.
+     * Convert a value to a J object.
      */
-    def encodeObject(a: A): JsonObject[Json]
+    def encodeObject(a: A): JsonObject[J]
 
     /**
      * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
-      final def encodeObject(a: B): JsonObject[Json] = self.encodeObject(f(a))
+      final def encodeObject(a: B): JsonObject[J] = self.encodeObject(f(a))
     }
 
     /**
      * Create a new [[AsObject]] by applying a function to the output of this
      * one.
      */
-    final def mapJsonObject(f: JsonObject[Json] => JsonObject[Json]): AsObject[A] = new AsObject[A] {
-      final def encodeObject(a: A): JsonObject[Json] = f(self.encodeObject(a))
-    }
+    final def mapJsonObject[K](f: JsonObject[J] => JsonObject[K]): AsObject[A, K] =
+      new AsObject[A, K] {
+        final def encodeObject(a: A): JsonObject[J] = f(self.encodeObject(a))
+      }
   }
 
   /**
@@ -862,22 +868,22 @@ object Encoder
      *
      * @group Utilities
      */
-    final def apply[A](implicit instance: AsObject[A]): AsObject[A] = instance
+    final def apply[A, J](implicit instance: AsObject[A, J]): AsObject[A, J] = instance
 
     /**
      * Construct an instance from a function.
      *
      * @group Utilities
      */
-    final def instance[A](f: A => JsonObject[Json]): AsObject[A] = new AsObject[A] {
-      final def encodeObject(a: A): JsonObject[Json] = f(a)
+    final def instance[A, J](f: A => JsonObject[J]): AsObject[A, J] = new AsObject[A, J] {
+      final def encodeObject(a: A): JsonObject[J] = f(a)
     }
 
     /**
      * @group Instances
      */
-    implicit final val objectEncoderContravariant: Contravariant[AsObject] = new Contravariant[AsObject] {
-      final def contramap[A, B](e: AsObject[A])(f: B => A): AsObject[B] = e.contramapObject(f)
+    implicit final def objectEncoderContravariant[J]: Contravariant[AsObject[?, J]] = new Contravariant[AsObject[?, J]] {
+      final def contramap[A, B](e: AsObject[A, J])(f: B => A): AsObject[B, J] = e.contramapObject(f)
     }
   }
 
@@ -886,7 +892,7 @@ object Encoder
     /**
      * @group Prioritization
      */
-    implicit final def importedAsObjectEncoder[A](implicit
+    implicit final def importedAsObjectEncoder[A, J](implicit
       exported: Exported[AsObject[A]]
     ): AsObject[A] = exported.instance
   }
@@ -898,17 +904,18 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
    * @group Collection
    */
   implicit final def encodeIterable[A, C[_]](implicit
-    encodeA: Encoder[A],
+    encodeA: Encoder[A, J],
     ev: C[A] => Iterable[A]
   ): Encoder.AsArray[C[A]] = new IterableAsArrayEncoder[A, C](encodeA) {
     final protected def toIterator(a: C[A]): Iterator[A] = ev(a).iterator
   }
 
-  protected[this] abstract class IterableAsArrayEncoder[A, C[_]](encodeA: Encoder[A]) extends Encoder.AsArray[C[A]] {
+  protected[this] abstract class IterableAsArrayEncoder[A, C[_], J](encodeA: Encoder[A, J])
+      extends Encoder.AsArray[C[A], J] {
     protected def toIterator(a: C[A]): Iterator[A]
 
-    final def encodeArray(a: C[A]): Vector[Json] = {
-      val builder = Vector.newBuilder[Json]
+    final def encodeArray(a: C[A]): Vector[J] = {
+      val builder = Vector.newBuilder[J]
       val iterator = toIterator(a)
 
       while (iterator.hasNext) {
@@ -925,5 +932,5 @@ private[circe] trait LowPriorityEncoders {
   /**
    * @group Prioritization
    */
-  implicit final def importedEncoder[A](implicit exported: Exported[Encoder[A]]): Encoder[A] = exported.instance
+  implicit final def importedEncoder[A, J](implicit exported: Exported[Encoder[A, J]]): Encoder[A, J] = exported.instance
 }

@@ -18,10 +18,10 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
       )
   }
 
-  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](implicit
+  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct, J](implicit
     witK: Witness.Aux[K],
-    encodeV: Encoder[V],
-    encodeR: Encoder[R]
+    encodeV: Encoder[V, J],
+    encodeR: Encoder[R, J]
   ): Encoder[FieldType[K, V] :+: R] = new Encoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {
       case Inl(l) => Json.obj((witK.value.name, encodeV(l)))
@@ -58,7 +58,7 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
     witK: Witness.Aux[K],
     eqW: Eq[W],
     encodeW: KeyEncoder[W],
-    encodeV: Encoder[V],
+    encodeV: Encoder[V, J],
     encodeR: Encoder[R]
   ): Encoder[FieldType[K, V] :+: R] = new Encoder[FieldType[K, V] :+: R] {
     def apply(a: FieldType[K, V] :+: R): Json = a match {

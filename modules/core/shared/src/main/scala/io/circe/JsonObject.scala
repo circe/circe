@@ -34,7 +34,7 @@ sealed abstract class JsonObject[J] extends Serializable {
   private[circe] def applyUnsafe(k: String): J
 
   /**
-   * Return the JSON value associated with the given key.
+   * Return the J value associated with the given key.
    *
    * @group Contents
    */
@@ -69,7 +69,7 @@ sealed abstract class JsonObject[J] extends Serializable {
   final def nonEmpty: Boolean = !isEmpty
 
   /**
-   * Return a Kleisli arrow that gets the JSON value associated with the given field.
+   * Return a Kleisli arrow that gets the J value associated with the given field.
    *
    * @group Contents
    */
@@ -140,7 +140,7 @@ sealed abstract class JsonObject[J] extends Serializable {
   def remove(key: String): JsonObject[J]
 
   /**
-   * Traverse [[Json]] values.
+   * Traverse [[J]] values.
    *
    * @group Modification
    */
@@ -158,7 +158,8 @@ sealed abstract class JsonObject[J] extends Serializable {
    *
    * @group Modification
    */
-  final def filter(pred: ((String, J)) => Boolean): JsonObject[J] = JsonObject.fromIterable(toIterable.filter(pred))
+  final def filter(pred: ((String, J)) => Boolean): JsonObject[J] =
+    JsonObject.fromIterable(toIterable.filter(pred))
 
   /**
    * Filter by keys.
@@ -191,7 +192,7 @@ sealed abstract class JsonObject[J] extends Serializable {
    */
   final override def equals(that: Any): Boolean = that match {
     case that: JsonObject[_] => toMap == that.toMap
-    case _                   => false
+    case _                => false
   }
 
   /**
@@ -213,8 +214,8 @@ object JsonObject {
   /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
-  final def fromFoldable[F[_], J](fields: F[(String, J)])(implicit F: Foldable[F]): JsonObject[J] =
-    F.foldLeft(fields, empty[J]) { case (acc, (key, value)) => acc.add(key, value) }
+  final def fromFoldable[F[_]](fields: F[(String, J)])(implicit F: Foldable[F]): JsonObject[J] =
+    F.foldLeft(fields, empty) { case (acc, (key, value)) => acc.add(key, value) }
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
@@ -237,12 +238,12 @@ object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap[J](map: Map[String, J]): JsonObject[J] = fromMapAndVector(map, map.keys.toVector)
+  final def fromMap(map: Map[String, J]): JsonObject[J] = fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector[J](map: Map[String, J], keys: Vector[String]): JsonObject[J] =
+  private[circe] final def fromMapAndVector(map: Map[String, J], keys: Vector[String]): JsonObject =
     new MapAndVectorJsonObject(map, keys)
 
-  private[circe] final def fromLinkedHashMap[J](map: LinkedHashMap[String, J]): JsonObject[J] =
+  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, J]): JsonObject =
     new LinkedHashMapJsonObject(map)
 
   /**
@@ -253,7 +254,8 @@ object JsonObject {
   /**
    * Construct a [[JsonObject]] with a single field.
    */
-  final def singleton[J](key: String, value: J): JsonObject[J] = new MapAndVectorJsonObject(Map((key, value)), Vector(key))
+  final def singleton[J](key: String, value: J): JsonObject[J] =
+    new MapAndVectorJsonObject(Map((key, value)), Vector(key))
 
   implicit final def showJsonObject[J: Show]: Show[JsonObject[J]] = Show.fromToString
   implicit final def eqJsonObject[J: Eq]: Eq[JsonObject[J]] = Eq.fromUniversalEquals
@@ -343,7 +345,7 @@ object JsonObject {
       folder.writer.append(p.rBraces)
     }
 
-    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject[J] = {
+    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject = {
       val mapBuilder = Map.newBuilder[String, J]
       val keyBuilder = Vector.newBuilder[String]
       mapBuilder.sizeHint(size)
@@ -367,7 +369,7 @@ object JsonObject {
     final def remove(k: String): JsonObject[J] = toMapAndVectorJsonObject.remove(k)
 
     final def traverse[F[_], K](f: J => F[K])(implicit F: Applicative[F]): F[JsonObject[K]] =
-      toMapAndVectorJsonObject.traverse[F, K](f)(F)
+      toMapAndVectorJsonObject.traverse[F](f)(F)
 
     final def mapValues[K](f: J => K): JsonObject[K] = toMapAndVectorJsonObject.mapValues(f)
   }

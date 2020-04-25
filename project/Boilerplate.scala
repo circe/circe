@@ -156,7 +156,7 @@ object Boilerplate {
     def content(tv: TemplateVals): String = {
       import tv._
 
-      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe, J]").mkString(", ")
       val applied = synTypes.zipWithIndex.map {
         case (tpe, n) => s"encode$tpe(a._${n + 1})"
       }.mkString(", ")
@@ -168,9 +168,9 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit final def encodeTuple$arity[${`A..N`}](implicit $instances): Encoder.AsArray[${`(A..N)`}] =
-        -    new Encoder.AsArray[${`(A..N)`}] {
-        -      final def encodeArray(a: ${`(A..N)`}): Vector[Json] = Vector($applied)
+        -  implicit final def encodeTuple$arity[${`A..N`}, J](implicit $instances): Encoder.AsArray[${`(A..N)`}, J] =
+        -    new Encoder.AsArray[${`(A..N)`}, J] {
+        -      final def encodeArray(a: ${`(A..N)`}): Vector[J] = Vector($applied)
         -    }
         |}
       """
@@ -256,7 +256,7 @@ object Boilerplate {
     def content(tv: TemplateVals): String = {
       import tv._
 
-      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe, J]").mkString(", ")
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
       val kvs =
         if (arity == 1) s"(name${synTypes.head}, encode${synTypes.head}(members))"
@@ -274,11 +274,11 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
+        -  final def forProduct$arity[Source, ${`A..N`}, J]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
-        -  ): Encoder.AsObject[Source] =
-        -    new Encoder.AsObject[Source] {
-        -      final def encodeObject(a: Source): JsonObject[Json] = {
+        -  ): Encoder.AsObject[Source, J] =
+        -    new Encoder.AsObject[Source, J] {
+        -      final def encodeObject(a: Source): JsonObject[J] = {
         -        val members = f(a)
         -        JsonObject.fromIterable(Vector($kvs))
         -      }
@@ -297,7 +297,7 @@ object Boilerplate {
       import tv._
 
       val decoderInstances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
-      val encoderInstances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val encoderInstances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe, J]").mkString(", ")
 
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
 
@@ -329,17 +329,17 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
+        -  final def forProduct$arity[A, ${`A..N`}, J]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
         -    $decoderInstances,
         -    $encoderInstances
-        -  ): Codec.AsObject[A] =
-        -    new Codec.AsObject[A] {
+        -  ): Codec.AsObject[A, J] =
+        -    new Codec.AsObject[A, J] {
         -      final def apply(c: HCursor): Decoder.Result[A] = $result
         -
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
         -        $accumulatingResult
         -
-        -      final def encodeObject(a: A): JsonObject[Json] = {
+        -      final def encodeObject(a: A): JsonObject[J] = {
         -        val members = g(a)
         -        JsonObject.fromIterable(Vector($kvs))
         -      }
@@ -382,7 +382,7 @@ object Boilerplate {
         -    private def toTuple(cc: Cc$arity): ($memberTypes) = cc match {
         -      case Cc$arity($memberVariableNames) => ($memberVariableNames)
         -    }
-        -    implicit val encodeCc$arity: Encoder[Cc$arity] =
+        -    implicit val encodeCc$arity: Encoder[Cc$arity, Json] =
         -      Encoder.forProduct$arity($memberNames)(toTuple)
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
