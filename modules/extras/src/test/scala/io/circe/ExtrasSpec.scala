@@ -1,6 +1,5 @@
-package io.circe.extras
+package io.circe
 
-import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
 import org.scalacheck.{ Arbitrary, Gen }
@@ -19,7 +18,7 @@ class ExtrasSpec extends CirceSuite {
         }
 
         val output: Json =
-          Extras.sanitizeKeys(
+          extras.sanitizeKeys(
             input,
             keys,
             _ => ???,
@@ -65,7 +64,7 @@ class ExtrasSpec extends CirceSuite {
       )
 
       val output: Json =
-        Extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
+        extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
 
       expected == output
     }
@@ -120,7 +119,7 @@ class ExtrasSpec extends CirceSuite {
       }
 
       val output: Json =
-        Extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
+        extras.sanitizeKeys(input, Set("hola"), onBoolean, onNull, onString, onNumber)
 
       expected == output
     }
@@ -160,7 +159,7 @@ class ExtrasSpec extends CirceSuite {
       )
 
       val output: Json =
-        Extras.sanitizeKeys(
+        extras.sanitizeKeys(
           input,
           Set("whitelistedObject", "whitelistedArray", "whitelisted"),
           onBoolean,
