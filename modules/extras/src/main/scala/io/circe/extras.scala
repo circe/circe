@@ -1,10 +1,8 @@
-package io.circe.extras
-
-import io.circe.{ Json, JsonNumber, JsonObject }
+package io.circe
 
 import scala.collection.immutable.{ Map, Set }
 
-object Extras {
+package object extras {
 
   /**
    * For a [[Json]], sanitize any [[JsonObject]]'s key's values not in the whitelist.
