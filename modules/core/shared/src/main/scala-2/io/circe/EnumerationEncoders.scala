@@ -9,17 +9,8 @@ private[circe] trait EnumerationEncoders {
    * }}}
    * @group Utilities
    */
-  final def encodeEnumeration[E <: Enumeration](enumeration: E): Encoder[E#Value] = new Encoder[E#Value] {
-    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+  final def encodeEnumeration[E <: Enumeration, J: JsonFactory](enumeration: E): Encoder[E#Value, J] = new Encoder[E#Value, J] {
+    override def apply(e: E#Value): J = Encoder.encodeString.apply(e.toString)
   }
 
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
-   * }}}
-   * @group Utilities
-   */
-  @deprecated("Use encodeEnumeration", "0.12.0")
-  final def enumEncoder[E <: Enumeration](enumeration: E): Encoder[E#Value] = encodeEnumeration[E](enumeration)
 }

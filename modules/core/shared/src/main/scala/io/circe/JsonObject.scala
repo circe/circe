@@ -214,8 +214,8 @@ object JsonObject {
   /**
    * Construct a [[JsonObject]] from a foldable collection of key-value pairs.
    */
-  final def fromFoldable[F[_]](fields: F[(String, J)])(implicit F: Foldable[F]): JsonObject[J] =
-    F.foldLeft(fields, empty) { case (acc, (key, value)) => acc.add(key, value) }
+  final def fromFoldable[F[_], J](fields: F[(String, J)])(implicit F: Foldable[F]): JsonObject[J] =
+    F.foldLeft(fields, empty[J]) { case (acc, (key, value)) => acc.add(key, value) }
 
   /**
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
@@ -238,12 +238,12 @@ object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(map: Map[String, J]): JsonObject[J] = fromMapAndVector(map, map.keys.toVector)
+  final def fromMap[J](map: Map[String, J]): JsonObject[J] = fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(map: Map[String, J], keys: Vector[String]): JsonObject =
+  private[circe] final def fromMapAndVector[J](map: Map[String, J], keys: Vector[String]): JsonObject[J] =
     new MapAndVectorJsonObject(map, keys)
 
-  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, J]): JsonObject =
+  private[circe] final def fromLinkedHashMap[J](map: LinkedHashMap[String, J]): JsonObject[J] =
     new LinkedHashMapJsonObject(map)
 
   /**
@@ -345,7 +345,7 @@ object JsonObject {
       folder.writer.append(p.rBraces)
     }
 
-    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject = {
+    private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject[J] = {
       val mapBuilder = Map.newBuilder[String, J]
       val keyBuilder = Vector.newBuilder[String]
       mapBuilder.sizeHint(size)
@@ -369,7 +369,7 @@ object JsonObject {
     final def remove(k: String): JsonObject[J] = toMapAndVectorJsonObject.remove(k)
 
     final def traverse[F[_], K](f: J => F[K])(implicit F: Applicative[F]): F[JsonObject[K]] =
-      toMapAndVectorJsonObject.traverse[F](f)(F)
+      toMapAndVectorJsonObject.traverse[F, K](f)(F)
 
     final def mapValues[K](f: J => K): JsonObject[K] = toMapAndVectorJsonObject.mapValues(f)
   }

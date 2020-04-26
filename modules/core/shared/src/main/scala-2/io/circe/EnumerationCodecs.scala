@@ -11,13 +11,13 @@ private[circe] trait EnumerationCodecs {
    * }}}
    * @group Utilities
    */
-  final def codecForEnumeration[E <: Enumeration](enumeration: E): Codec[E#Value] = new Codec[E#Value] {
+  final def codecForEnumeration[E <: Enumeration, J: JsonFactory](enumeration: E): Codec[E#Value, J] = new Codec[E#Value, J] {
     final def apply(c: HCursor): Decoder.Result[E#Value] = Decoder.decodeString(c).flatMap { str =>
       Try(enumeration.withName(str)) match {
         case Success(a) => Right(a)
         case Failure(t) => Left(DecodingFailure(t.getMessage, c.history))
       }
     }
-    final def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+    final def apply(e: E#Value): J = Encoder.encodeString.apply(e.toString)
   }
 }

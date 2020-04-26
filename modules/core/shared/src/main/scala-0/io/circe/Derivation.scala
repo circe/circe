@@ -40,7 +40,7 @@ object Derivation {
 }
 
 private[circe] trait EncoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+  inline final def derived[A, J](using inline A: Mirror.Of[A]): Encoder.AsObject[A, J] =
     new DerivedEncoder[A]
         with DerivedInstance[A](
           constValue[A.MirroredLabel],

@@ -37,8 +37,10 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     decodeA: Decoder[A],
     encodeA: Encoder[A, J],
     decodeB: Decoder[B],
-    encodeB: Encoder[B, J]
+    encodeB: Encoder[B, J],
+    J0: JsonFactory[J]
   ): AsObject[Either[A, B], J] = new AsObject[Either[A, B], J] {
+    override protected def J: JsonFactory[J] = J0
     private[this] val decoder: Decoder[Either[A, B]] = Decoder.decodeEither(leftKey, rightKey)
     private[this] val encoder: Encoder.AsObject[Either[A, B], J] = Encoder.encodeEither(leftKey, rightKey)
     final def apply(c: HCursor): Decoder.Result[Either[A, B]] = decoder(c)
@@ -50,7 +52,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     encodeE: Encoder[E, J],
     decodeA: Decoder[A],
     encodeA: Encoder[A, J]
-  ): AsObject[Validated[E, A]] = new AsObject[Validated[E, A], J] {
+  ): AsObject[Validated[E, A], J] = new AsObject[Validated[E, A], J] {
     private[this] val decoder: Decoder[Validated[E, A]] = Decoder.decodeValidated(failureKey, successKey)
     private[this] val encoder: Encoder.AsObject[Validated[E, A], J] = Encoder.encodeValidated(failureKey, successKey)
     final def apply(c: HCursor): Decoder.Result[Validated[E, A]] = decoder(c)
@@ -72,12 +74,12 @@ object Codec extends ProductCodecs with EnumerationCodecs {
   trait AsArray[A, J] extends AsRoot[A, J] with Encoder.AsArray[A, J]
 
   object AsArray {
-    def apply[A, J](implicit instance: AsArray[A]): AsArray[A, J] = instance
+    def apply[A, J](implicit instance: AsArray[A, J]): AsArray[A, J] = instance
 
-    def from[A, J](decodeA: Decoder[A, J], encodeA: Encoder.AsArray[A, J]): AsArray[A, J] =
+    def from[A, J](decodeA: Decoder[A], encodeA: Encoder.AsArray[A, J]): AsArray[A, J] =
       new AsArray[A, J] {
         def apply(c: HCursor): Decoder.Result[A] = decodeA(c)
-        def encodeArray(a: A): Vector[Json] = encodeA.encodeArray(a)
+        def encodeArray(a: A): Vector[J] = encodeA.encodeArray(a)
       }
   }
 
@@ -86,7 +88,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
   object AsObject extends CodecDerivation {
     def apply[A, J](implicit instance: AsObject[A, J]): AsObject[A, J] = instance
 
-    def from[A](decodeA: Decoder[A], encodeA: Encoder.AsObject[A, J]): AsObject[A, J] =
+    def from[A, J](decodeA: Decoder[A], encodeA: Encoder.AsObject[A, J]): AsObject[A, J] =
       new AsObject[A, J] {
         def apply(c: HCursor): Decoder.Result[A] = decodeA(c)
         def encodeObject(a: A): JsonObject[J] = encodeA.encodeObject(a)

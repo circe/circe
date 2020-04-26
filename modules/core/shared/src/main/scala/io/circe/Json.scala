@@ -295,13 +295,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = this
     final def withString(f: String => Json): Json = this
     final def withArray(f: Vector[Json] => Json): Json = this
-    final def withObject(f: JsonObject[J] => Json): Json = this
+    final def withObject(f: JsonObject[Json] => Json): Json = this
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = this
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = this
   }
 
   private[circe] final case class JBoolean(value: Boolean) extends Json {
@@ -326,13 +326,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = this
     final def withString(f: String => Json): Json = this
     final def withArray(f: Vector[Json] => Json): Json = this
-    final def withObject(f: JsonObject[J] => Json): Json = this
+    final def withObject(f: JsonObject[Json] => Json): Json = this
 
     final def mapBoolean(f: Boolean => Boolean): Json = JBoolean(f(value))
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = this
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = this
   }
 
   private[circe] final case class JNumber(value: JsonNumber) extends Json {
@@ -357,13 +357,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = f(value)
     final def withString(f: String => Json): Json = this
     final def withArray(f: Vector[Json] => Json): Json = this
-    final def withObject(f: JsonObject[J] => Json): Json = this
+    final def withObject(f: JsonObject[Json] => Json): Json = this
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = JNumber(f(value))
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = this
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = this
   }
 
   private[circe] final case class JString(value: String) extends Json {
@@ -388,13 +388,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = this
     final def withString(f: String => Json): Json = f(value)
     final def withArray(f: Vector[Json] => Json): Json = this
-    final def withObject(f: JsonObject[J] => Json): Json = this
+    final def withObject(f: JsonObject[Json] => Json): Json = this
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = JString(f(value))
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = this
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = this
   }
 
   private[circe] final case class JArray(value: Vector[Json]) extends Json {
@@ -419,13 +419,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = this
     final def withString(f: String => Json): Json = this
     final def withArray(f: Vector[Json] => Json): Json = f(value)
-    final def withObject(f: JsonObject[J] => Json): Json = this
+    final def withObject(f: JsonObject[Json] => Json): Json = this
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = JArray(f(value))
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = this
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = this
   }
 
   private[circe] final case class JObject(value: JsonObject[Json]) extends Json {
@@ -450,13 +450,13 @@ object Json {
     final def withNumber(f: JsonNumber => Json): Json = this
     final def withString(f: String => Json): Json = this
     final def withArray(f: Vector[Json] => Json): Json = this
-    final def withObject(f: JsonObject[J] => Json): Json = f(value)
+    final def withObject(f: JsonObject[Json] => Json): Json = f(value)
 
     final def mapBoolean(f: Boolean => Boolean): Json = this
     final def mapNumber(f: JsonNumber => JsonNumber): Json = this
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
-    final def mapObject(f: JsonObject[J] => JsonObject[Json]): Json = JObject(f(value))
+    final def mapObject(f: JsonObject[Json] => JsonObject[Json]): Json = JObject(f(value))
   }
 
   final val Null: Json = JNull

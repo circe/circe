@@ -281,6 +281,7 @@ lazy val numbersJS = numbersBase.js
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
     libraryDependencies += ("org.typelevel" %%% "cats-core" % catsVersion).withDottyCompat(scalaVersion.value),
+    addCompilerPlugin("org.typelevel"   % "kind-projector"      % "0.11.0" cross CrossVersion.full),
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =

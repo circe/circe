@@ -40,26 +40,41 @@ trait JsonFactory[J] {
   /**
     * Create a `J` value representing a JSON number from an `Int`.
     */
-  final def fromInt(value: Int): J
+  def fromInt(value: Int): J
 
   /**
     * Create a `J representing a JSON number from a `Long`.
     */
-  final def fromLong(value: Long): J
+  def fromLong(value: Long): J
 
   /**
     * Try to create a `J representing a JSON number from a `Double`.
     *
     * The result is empty if the argument cannot be represented as a JSON number.
     */
-  final def fromDouble(value: Double): Option[J] = if (isReal(value)) Some(JNumber(JsonDouble(value))) else None
+  def fromDouble(value: Double): Option[J]
 
   /**
     * Try to create a `Json` value representing a JSON number from a `Float`.
     *
     * The result is empty if the argument cannot be represented as a JSON number.
     */
-  final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
+  def fromFloat(value: Float): Option[J]
+
+  def fromBigInt(value: BigInt): J
 
 
+  def fromFloatOrNull(value: Float): J
+
+  def fromJsonNumber(value: JsonNumber): J
+
+  def fromDoubleOrNull(value: Double): J
+
+  def fromBigDecimal(value: BigDecimal): J
+
+  def fromJsonObject(value: JsonObject[J]): J
+}
+
+object JsonFactory {
+  def apply[J](implicit ev: JsonFactory[J]): JsonFactory[J] = ev
 }

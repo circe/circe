@@ -168,8 +168,9 @@ object Boilerplate {
         -  /**
         -   * @group Tuple
         -   */
-        -  implicit final def encodeTuple$arity[${`A..N`}, J](implicit $instances): Encoder.AsArray[${`(A..N)`}, J] =
+        -  implicit final def encodeTuple$arity[${`A..N`}, J](implicit $instances, J0: JsonFactory[J]): Encoder.AsArray[${`(A..N)`}, J] =
         -    new Encoder.AsArray[${`(A..N)`}, J] {
+        -      final override protected def J: JsonFactory[J] = J0 
         -      final def encodeArray(a: ${`(A..N)`}): Vector[J] = Vector($applied)
         -    }
         |}
@@ -275,9 +276,11 @@ object Boilerplate {
         -   * @group Product
         -   */
         -  final def forProduct$arity[Source, ${`A..N`}, J]($memberNames)(f: Source => $outputType)(implicit
-        -    $instances
+        -    $instances,
+        -    J0: JsonFactory[J]
         -  ): Encoder.AsObject[Source, J] =
         -    new Encoder.AsObject[Source, J] {
+        -      override implicit val J: JsonFactory[J] = J0
         -      final def encodeObject(a: Source): JsonObject[J] = {
         -        val members = f(a)
         -        JsonObject.fromIterable(Vector($kvs))
@@ -331,9 +334,11 @@ object Boilerplate {
         -   */
         -  final def forProduct$arity[A, ${`A..N`}, J]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
         -    $decoderInstances,
-        -    $encoderInstances
+        -    $encoderInstances,
+        -    J0: JsonFactory[J]
         -  ): Codec.AsObject[A, J] =
         -    new Codec.AsObject[A, J] {
+        -      override protected def J: JsonFactory[J] = J0
         -      final def apply(c: HCursor): Decoder.Result[A] = $result
         -
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
