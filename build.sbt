@@ -208,7 +208,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
 )
 
 lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
-lazy val circeJvmModules = Seq[Project](benchmark, jawn, extras)
+lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
