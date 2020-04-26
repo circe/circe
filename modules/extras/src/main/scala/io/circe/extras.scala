@@ -51,12 +51,12 @@ package object extras {
     onNumber_ : JsonNumber => Json
   ): Json = {
     val sanitizedFolder: Json.Folder[Json] = new Json.Folder[Json] { self: Json.Folder[Json] =>
-      override def onNull: Json                       = onNull_
-      override def onBoolean(value: Boolean): Json    = onBoolean_(value)
-      override def onNumber(value: JsonNumber): Json  = onNumber_(value)
-      override def onString(value: String): Json      = onString_(value)
+      override def onNull: Json = onNull_
+      override def onBoolean(value: Boolean): Json = onBoolean_(value)
+      override def onNumber(value: JsonNumber): Json = onNumber_(value)
+      override def onString(value: String): Json = onString_(value)
       override def onArray(value: Vector[Json]): Json = {
-        val sanitized: Vector[Json]                   =
+        val sanitized: Vector[Json] =
           value.map { j: Json =>
             sanitizeKeys(j, whitelist, onBoolean, onNull, onString, onNumber)
           }
@@ -68,9 +68,7 @@ package object extras {
             // Remember: if the key is whitelisted, then the key's value must be shown as-is
             if (whitelist.contains(key)) {
               val newValue: Json =
-                value
-                  .withArray(onArray)
-                  .withObject(onObject)
+                value.withArray(onArray).withObject(onObject)
               (key, newValue)
             } else { // Otherwise, sanitize the key's value since it's not whitelisted
               val newValue: Json =
