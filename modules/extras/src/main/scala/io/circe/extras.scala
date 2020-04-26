@@ -36,53 +36,54 @@ package object extras {
    *
    * @param json JSON to sanitize
    * @param whitelist Set of JSON Objects' keys whose values can be shown as-is
-   * @param onBoolean Sanitizing function used if the key's value is a [[Boolean]]
-   * @param onNull Sanitizing function used if the key's value is a [[Json.Null]]
-   * @param onString Sanitizing function used if the key's value is a [[String]]
-   * @param onNumber Sanitizing function used if the key's value is a [[JsonNumber]]
+   * @param onBoolean_ Sanitizing function used if the key's value is a [[Boolean]]
+   * @param onNull_ Sanitizing function used if the key's value is a [[Json.Null]]
+   * @param onString_ Sanitizing function used if the key's value is a [[String]]
+   * @param onNumber_ Sanitizing function used if the key's value is a [[JsonNumber]]
    * @return Sanitized JSON
    */
   def sanitizeKeys(
     json: Json,
     whitelist: Set[String],
-    onBoolean: Boolean => Json,
-    onNull: Json,
-    onString: String => Json,
-    onNumber: JsonNumber => Json
-  ): Json =
-    json.withArray { arr: Vector[Json] =>
-      val sanitized: Vector[Json] =
-        arr.map { j: Json =>
-          sanitizeKeys(j, whitelist, onBoolean, onNull, onString, onNumber)
-        }
-      Json.fromValues(sanitized)
-    }.withObject { obj: JsonObject =>
-      val sanitized: Map[String, Json] = obj.toMap.map {
-        case (key, value) =>
-          // Remember: if the key is whitelisted, then the key's value must be shown as-is
-          if (whitelist.contains(key)) {
-            val newValue: Json =
-              value.withArray { _ =>
-                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
-              }.withObject { _ =>
-                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
-              }
-
-            (key, newValue)
-          } else { // Otherwise, sanitize the key's value since it's not whitelisted
-            val newValue: Json =
-              value.withArray { _ =>
-                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
-              }.withObject { _ =>
-                sanitizeKeys(value, whitelist, onBoolean, onNull, onString, onNumber)
-              }.withBoolean(onBoolean).withNull(onNull).withString(onString).withNumber(onNumber)
-
-            (key, newValue)
+    onBoolean_ : Boolean => Json,
+    onNull_ : Json,
+    onString_ : String => Json,
+    onNumber_ : JsonNumber => Json
+  ): Json = {
+    val sanitizedFolder: Json.Folder[Json] = new Json.Folder[Json] { self: Json.Folder[Json] =>
+      override def onNull: Json                       = onNull_
+      override def onBoolean(value: Boolean): Json    = onBoolean_(value)
+      override def onNumber(value: JsonNumber): Json  = onNumber_(value)
+      override def onString(value: String): Json      = onString_(value)
+      override def onArray(value: Vector[Json]): Json = {
+        val sanitized: Vector[Json]                   =
+          value.map { j: Json =>
+            sanitizeKeys(j, whitelist, onBoolean, onNull, onString, onNumber)
           }
+        Json.fromValues(sanitized)
       }
-      Json.fromJsonObject(
-        JsonObject.fromMap(sanitized)
-      )
+      override def onObject(obj: JsonObject): Json = {
+        val sanitized: Map[String, Json] = obj.toMap.map {
+          case (key, value) =>
+            // Remember: if the key is whitelisted, then the key's value must be shown as-is
+            if (whitelist.contains(key)) {
+              val newValue: Json =
+                value
+                  .withArray(onArray)
+                  .withObject(onObject)
+              (key, newValue)
+            } else { // Otherwise, sanitize the key's value since it's not whitelisted
+              val newValue: Json =
+                value.foldWith(self)
+              (key, newValue)
+            }
+        }
+        Json.fromJsonObject(
+          JsonObject.fromMap(sanitized)
+        )
+      }
     }
+    json.foldWith(sanitizedFolder)
+  }
 
 }
