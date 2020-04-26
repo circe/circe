@@ -34,7 +34,7 @@ private[testing] trait ShrinkInstances {
     }
   }
 
-  implicit val shrinkJsonObject: Shrink[JsonObject] =
+  implicit val shrinkJsonObject: Shrink[JsonObject[Json]] =
     Shrink(o => Shrink.shrinkContainer[List, (String, Json)].shrink(o.toList).map(JsonObject.fromIterable))
 
   implicit val shrinkJson: Shrink[Json] = Shrink(

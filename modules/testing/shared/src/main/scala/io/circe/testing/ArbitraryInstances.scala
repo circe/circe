@@ -68,7 +68,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Gen.listOfN(size, genJsonAtDepth(depth + 1)).map(Json.arr)
   }
 
-  private[this] def genJsonObject(depth: Int): Gen[JsonObject] = Gen.choose(0, maxJsonObjectSize).flatMap { size =>
+  private[this] def genJsonObject(depth: Int): Gen[JsonObject[Json]] = Gen.choose(0, maxJsonObjectSize).flatMap { size =>
     val fields = Gen.listOfN(
       size,
       for {
@@ -79,7 +79,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
 
     Gen.oneOf(
       fields.map(JsonObject.fromIterable),
-      fields.map(JsonObject.fromFoldable[List])
+      fields.map(JsonObject.fromFoldable[List, Json])
     )
   }
 
@@ -92,7 +92,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   }
 
   implicit val arbitraryJson: Arbitrary[Json] = Arbitrary(genJsonAtDepth(0))
-  implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genJsonObject(0))
+  implicit val arbitraryJsonObject: Arbitrary[JsonObject[Json]] = Arbitrary(genJsonObject(0))
 
   implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
     Arbitrary.arbitrary[String].map(DecodingFailure(_, Nil))
@@ -115,7 +115,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   )
 
   implicit def arbitraryAsObjectEncoder[A: Cogen]: Arbitrary[Encoder.AsObject[A]] = Arbitrary(
-    Arbitrary.arbitrary[A => JsonObject].map(Encoder.AsObject.instance)
+    Arbitrary.arbitrary[A => JsonObject[Json]].map(Encoder.AsObject.instance)
   )
 
   implicit def arbitraryAsArrayEncoder[A: Cogen]: Arbitrary[Encoder.AsArray[A]] = Arbitrary(

@@ -1,6 +1,6 @@
 package io.circe.generic.encoding
 
-import io.circe.{ Encoder, JsonObject }
+import io.circe.{ Encoder, Json, JsonObject }
 import shapeless.{ LabelledGeneric, Lazy }
 
 abstract class DerivedAsObjectEncoder[A] extends Encoder.AsObject[A]
@@ -10,6 +10,6 @@ object DerivedAsObjectEncoder {
     gen: LabelledGeneric.Aux[A, R],
     encode: Lazy[ReprAsObjectEncoder[R]]
   ): DerivedAsObjectEncoder[A] = new DerivedAsObjectEncoder[A] {
-    final def encodeObject(a: A): JsonObject = encode.value.encodeObject(gen.to(a))
+    final def encodeObject(a: A): JsonObject[Json] = encode.value.encodeObject(gen.to(a))
   }
 }

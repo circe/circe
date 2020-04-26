@@ -148,8 +148,8 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final val encodeJsonObject: AsObject[JsonObject] = new AsObject[JsonObject] {
-    final def encodeObject(a: JsonObject): JsonObject = a
+  implicit final val encodeJsonObject: AsObject[JsonObject[Json]] = new AsObject[JsonObject[Json]] {
+    final def encodeObject(a: JsonObject[Json]): JsonObject[Json] = a
   }
 
   /**
@@ -170,7 +170,7 @@ object Encoder
    * @group Encoding
    */
   implicit final val encodeUnit: AsObject[Unit] = new AsObject[Unit] {
-    final def encodeObject(a: Unit): JsonObject = JsonObject.empty
+    final def encodeObject(a: Unit): JsonObject[Json] = JsonObject.empty
   }
 
   /**
@@ -399,7 +399,7 @@ object Encoder
     encodeV: Encoder[V]
   ): AsObject[NonEmptyMap[K, V]] =
     new AsObject[NonEmptyMap[K, V]] {
-      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject =
+      final def encodeObject(a: NonEmptyMap[K, V]): JsonObject[Json] =
         encodeMap[K, V].encodeObject(a.toSortedMap)
     }
 
@@ -454,7 +454,7 @@ object Encoder
     encodeA: Encoder[A],
     encodeB: Encoder[B]
   ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
-    final def encodeObject(a: Either[A, B]): JsonObject = a match {
+    final def encodeObject(a: Either[A, B]): JsonObject[Json] = a match {
       case Left(a)  => JsonObject.singleton(leftKey, encodeA(a))
       case Right(b) => JsonObject.singleton(rightKey, encodeB(b))
     }
@@ -487,7 +487,7 @@ object Encoder
   ) extends AsObject[M[K, V]] {
     protected def toIterator(a: M[K, V]): Iterator[(K, V)]
 
-    final def encodeObject(a: M[K, V]): JsonObject = {
+    final def encodeObject(a: M[K, V]): JsonObject[Json] = {
       val builder = ImmutableMap.newBuilder[String, Json]
       val keysBuilder = Vector.newBuilder[String]
       val iterator = toIterator(a)
@@ -822,22 +822,22 @@ object Encoder
     /**
      * Convert a value to a JSON object.
      */
-    def encodeObject(a: A): JsonObject
+    def encodeObject(a: A): JsonObject[Json]
 
     /**
      * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
-      final def encodeObject(a: B): JsonObject = self.encodeObject(f(a))
+      final def encodeObject(a: B): JsonObject[Json] = self.encodeObject(f(a))
     }
 
     /**
      * Create a new [[AsObject]] by applying a function to the output of this
      * one.
      */
-    final def mapJsonObject(f: JsonObject => JsonObject): AsObject[A] = new AsObject[A] {
-      final def encodeObject(a: A): JsonObject = f(self.encodeObject(a))
+    final def mapJsonObject(f: JsonObject[Json] => JsonObject[Json]): AsObject[A] = new AsObject[A] {
+      final def encodeObject(a: A): JsonObject[Json] = f(self.encodeObject(a))
     }
   }
 
@@ -869,8 +869,8 @@ object Encoder
      *
      * @group Utilities
      */
-    final def instance[A](f: A => JsonObject): AsObject[A] = new AsObject[A] {
-      final def encodeObject(a: A): JsonObject = f(a)
+    final def instance[A](f: A => JsonObject[Json]): AsObject[A] = new AsObject[A] {
+      final def encodeObject(a: A): JsonObject[Json] = f(a)
     }
 
     /**

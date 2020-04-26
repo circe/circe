@@ -13,7 +13,7 @@ abstract class ReprAsObjectEncoder[A] extends Encoder.AsObject[A]
 
 object ReprAsObjectEncoder {
   implicit val encodeHNil: ReprAsObjectEncoder[HNil] = new ReprAsObjectEncoder[HNil] {
-    def encodeObject(a: HNil): JsonObject = JsonObject.empty
+    def encodeObject(a: HNil): JsonObject[Json] = JsonObject.empty
   }
 
   implicit def encodeHCons[K <: Symbol, H, T <: HList](
@@ -22,13 +22,13 @@ object ReprAsObjectEncoder {
     encodeH: Encoder[H],
     encodeT: ReprAsObjectEncoder[T]
   ): ReprAsObjectEncoder[FieldType[K, H] :: T] = new ReprAsObjectEncoder[FieldType[K, H] :: T] {
-    def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
+    def encodeObject(a: FieldType[K, H] :: T): JsonObject[Json] = a match {
       case h :: t => ((key.value.name, encodeH(h))) +: encodeT.encodeObject(t)
     }
   }
 
   implicit val encodeCNil: ReprAsObjectEncoder[CNil] = new ReprAsObjectEncoder[CNil] {
-    def encodeObject(a: CNil): JsonObject =
+    def encodeObject(a: CNil): JsonObject[Json] =
       sys.error("No JSON representation of CNil (this shouldn't happen)")
   }
 
@@ -40,7 +40,7 @@ object ReprAsObjectEncoder {
   ): ReprAsObjectEncoder[FieldType[K, L] :+: R] = new ReprAsObjectEncoder[FieldType[K, L] :+: R] {
     private[this] lazy val cachedEncodeR: Encoder.AsObject[R] = encodeR
 
-    def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
+    def encodeObject(a: FieldType[K, L] :+: R): JsonObject[Json] = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
       case Inr(r) => cachedEncodeR.encodeObject(r)
     }

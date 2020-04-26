@@ -8,7 +8,7 @@ package object syntax {
     @deprecated("Do not use", "0.12.3")
     def wrappedEncodeable: A = value
     final def asJson(implicit encoder: Encoder[A]): Json = encoder(value)
-    final def asJsonObject(implicit encoder: Encoder.AsObject[A]): JsonObject =
+    final def asJsonObject(implicit encoder: Encoder.AsObject[A]): JsonObject[Json] =
       encoder.encodeObject(value)
   }
   implicit final class KeyOps[K](private val value: K) extends AnyVal {

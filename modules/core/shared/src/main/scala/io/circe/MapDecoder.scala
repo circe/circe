@@ -21,7 +21,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
     case _                 => MapDecoder.failureResult[M[K, V]](c)
   }
 
-  private[this] final def createObjectCursor(c: HCursor, obj: JsonObject, key: String): HCursor =
+  private[this] final def createObjectCursor(c: HCursor, obj: JsonObject[Json], key: String): HCursor =
     new ObjectCursor(obj, key, c, false)(c, CursorOp.DownField(key))
 
   private[this] final def handleResult(key: K, c: HCursor, builder: Builder[(K, V), M[K, V]]): DecodingFailure =
@@ -30,7 +30,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
       case Left(error)  => error
     }
 
-  private[this] final def decodeJsonObject(c: HCursor, obj: JsonObject): Decoder.Result[M[K, V]] = {
+  private[this] final def decodeJsonObject(c: HCursor, obj: JsonObject[Json]): Decoder.Result[M[K, V]] = {
     val it = obj.keys.iterator
     val builder = createBuilder()
     var failed: DecodingFailure = null

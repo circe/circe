@@ -49,7 +49,7 @@ private[circe] trait EncoderDerivation {
       protected[this] lazy val elemEncoders: Array[Encoder[_]] =
         Derivation.summonEncoders[A.MirroredElemTypes]
 
-      final def encodeObject(a: A): JsonObject = inline A match {
+      final def encodeObject(a: A): JsonObject[Json] = inline A match {
         case m: Mirror.ProductOf[A] =>
           JsonObject.fromIterable(encodedIterable(a.asInstanceOf[Product]))
         case m: Mirror.SumOf[A] => encodeWith(m.ordinal(a))(a) match {
@@ -144,7 +144,7 @@ private[circe] trait CodecDerivation {
       protected[this] lazy val elemEncoders: Array[Encoder[_]] =
         Derivation.summonEncoders[A.MirroredElemTypes]
 
-      final def encodeObject(a: A): JsonObject = inline A match {
+      final def encodeObject(a: A): JsonObject[Json] = inline A match {
         case m: Mirror.ProductOf[A] =>
           JsonObject.fromIterable(encodedIterable(a.asInstanceOf[Product]))
         case m: Mirror.SumOf[A] => encodeWith(m.ordinal(a))(a) match {

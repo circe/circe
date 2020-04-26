@@ -580,8 +580,8 @@ object Decoder
   /**
    * @group Decoding
    */
-  implicit final val decodeJsonObject: Decoder[JsonObject] = new Decoder[JsonObject] {
-    final def apply(c: HCursor): Result[JsonObject] = c.value.asObject match {
+  implicit final val decodeJsonObject: Decoder[JsonObject[Json]] = new Decoder[JsonObject[Json]] {
+    final def apply(c: HCursor): Result[JsonObject[Json]] = c.value.asObject match {
       case Some(v) => Right(v)
       case None    => Left(DecodingFailure("JsonObject", c.history))
     }

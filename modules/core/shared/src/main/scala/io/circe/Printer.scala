@@ -367,7 +367,7 @@ object Printer {
       }
     }
 
-    final def onObject(value: JsonObject): Unit = value.appendToFolder(this)
+    final def onObject(value: JsonObject[Json]): Unit = value.appendToFolder(this)
   }
 
   private[circe] final case class Pieces(

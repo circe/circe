@@ -1,6 +1,6 @@
 package io.circe.generic.codec
 
-import io.circe.{ Codec, Decoder, HCursor, JsonObject }
+import io.circe.{ Codec, Decoder, HCursor, Json, JsonObject }
 import shapeless.{ LabelledGeneric, Lazy }
 
 abstract class DerivedAsObjectCodec[A] extends Codec.AsObject[A]
@@ -17,6 +17,6 @@ object DerivedAsObjectCodec {
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       codec.value.decodeAccumulating(c).map(gen.from)
 
-    final def encodeObject(a: A): JsonObject = codec.value.encodeObject(gen.to(a))
+    final def encodeObject(a: A): JsonObject[Json] = codec.value.encodeObject(gen.to(a))
   }
 }

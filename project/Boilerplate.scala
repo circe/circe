@@ -278,7 +278,7 @@ object Boilerplate {
         -    $instances
         -  ): Encoder.AsObject[Source] =
         -    new Encoder.AsObject[Source] {
-        -      final def encodeObject(a: Source): JsonObject = {
+        -      final def encodeObject(a: Source): JsonObject[Json] = {
         -        val members = f(a)
         -        JsonObject.fromIterable(Vector($kvs))
         -      }
@@ -339,7 +339,7 @@ object Boilerplate {
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
         -        $accumulatingResult
         -
-        -      final def encodeObject(a: A): JsonObject = {
+        -      final def encodeObject(a: A): JsonObject[Json] = {
         -        val members = g(a)
         -        JsonObject.fromIterable(Vector($kvs))
         -      }

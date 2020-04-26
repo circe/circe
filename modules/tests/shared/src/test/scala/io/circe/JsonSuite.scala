@@ -12,7 +12,7 @@ class JsonSuite extends CirceSuite with FloatJsonTests {
     val n: JsonNumber => Int = _.toDouble.toInt
     val s: String => Int = _.length
     val a: Vector[Json] => Int = _.size
-    val o: JsonObject => Int = _.keys.size
+    val o: JsonObject[Json] => Int = _.keys.size
 
     val result = json.foldWith(
       new Json.Folder[Int] {

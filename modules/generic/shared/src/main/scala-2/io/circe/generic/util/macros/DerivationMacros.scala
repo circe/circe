@@ -349,7 +349,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
         new $instanceType {
           ..$instanceDefs
 
-          final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject = $instanceImpl
+          final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject[Json] = $instanceImpl
         }: $instanceType
       """
     }
@@ -378,7 +378,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
             ..$encoderInstanceDefs
             ..$decoderInstanceDefs
 
-            final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject =
+            final def $encodeMethodName(...${fullEncodeMethodArgs(R.tpe)}): _root_.io.circe.JsonObject[Json] =
               $encoderInstanceImpl
 
             final def $decodeMethodName(

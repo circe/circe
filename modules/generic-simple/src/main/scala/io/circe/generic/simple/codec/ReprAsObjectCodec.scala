@@ -20,7 +20,7 @@ object ReprAsObjectCodec {
 
   implicit val codecForHNil: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
-    def encodeObject(a: HNil): JsonObject = JsonObject.empty
+    def encodeObject(a: HNil): JsonObject[Json] = JsonObject.empty
   }
 
   implicit def codecForHCons[K <: Symbol, H, T <: HList](
@@ -41,14 +41,14 @@ object ReprAsObjectCodec {
         codecForT.decodeAccumulating(c)
       )
 
-    def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
+    def encodeObject(a: FieldType[K, H] :: T): JsonObject[Json] = a match {
       case h :: t => ((key.value.name, encodeH(h))) +: codecForT.encodeObject(t)
     }
   }
 
   implicit val codecForCNil: ReprAsObjectCodec[CNil] = new ReprAsObjectCodec[CNil] {
     def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("CNil", c.history))
-    def encodeObject(a: CNil): JsonObject =
+    def encodeObject(a: CNil): JsonObject[Json] =
       sys.error("No JSON representation of CNil (this shouldn't happen)")
   }
 
@@ -76,7 +76,7 @@ object ReprAsObjectCodec {
       }
     }
 
-    def encodeObject(a: FieldType[K, L] :+: R): JsonObject = a match {
+    def encodeObject(a: FieldType[K, L] :+: R): JsonObject[Json] = a match {
       case Inl(l) => JsonObject.singleton(key.value.name, encodeL(l))
       case Inr(r) => cachedCodecForR.encodeObject(r)
     }

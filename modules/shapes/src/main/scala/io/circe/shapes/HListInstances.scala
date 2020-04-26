@@ -20,7 +20,7 @@ private[shapes] trait LowPriorityHListInstances {
   }
 
   implicit final val encodeHNil: Encoder.AsObject[HNil] = new Encoder.AsObject[HNil] {
-    def encodeObject(a: HNil): JsonObject = JsonObject.empty
+    def encodeObject(a: HNil): JsonObject[Json] = JsonObject.empty
   }
 
   implicit final def decodeHCons[H, T <: HList](implicit

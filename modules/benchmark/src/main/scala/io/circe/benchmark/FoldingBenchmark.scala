@@ -27,7 +27,7 @@ class FoldingBenchmark extends ExampleData {
       def onNumber(value: JsonNumber): Int = value.toDouble.toInt
       def onString(value: String): Int = value.length
       def onArray(value: Vector[Json]): Int = value.foldLeft(0)(this)
-      def onObject(value: JsonObject): Int = value.values.foldLeft(0)(this)
+      def onObject(value: JsonObject[Json]): Int = value.values.foldLeft(0)(this)
     }
   )
 

@@ -41,7 +41,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     private[this] val decoder: Decoder[Either[A, B]] = Decoder.decodeEither(leftKey, rightKey)
     private[this] val encoder: Encoder.AsObject[Either[A, B]] = Encoder.encodeEither(leftKey, rightKey)
     final def apply(c: HCursor): Decoder.Result[Either[A, B]] = decoder(c)
-    final def encodeObject(a: Either[A, B]): JsonObject = encoder.encodeObject(a)
+    final def encodeObject(a: Either[A, B]): JsonObject[Json] = encoder.encodeObject(a)
   }
 
   final def codecForValidated[E, A](failureKey: String, successKey: String)(implicit
@@ -53,7 +53,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     private[this] val decoder: Decoder[Validated[E, A]] = Decoder.decodeValidated(failureKey, successKey)
     private[this] val encoder: Encoder.AsObject[Validated[E, A]] = Encoder.encodeValidated(failureKey, successKey)
     final def apply(c: HCursor): Decoder.Result[Validated[E, A]] = decoder(c)
-    final def encodeObject(a: Validated[E, A]): JsonObject = encoder.encodeObject(a)
+    final def encodeObject(a: Validated[E, A]): JsonObject[Json] = encoder.encodeObject(a)
   }
 
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
@@ -88,7 +88,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     def from[A](decodeA: Decoder[A], encodeA: Encoder.AsObject[A]): AsObject[A] =
       new AsObject[A] {
         def apply(c: HCursor): Decoder.Result[A] = decodeA(c)
-        def encodeObject(a: A): JsonObject = encodeA.encodeObject(a)
+        def encodeObject(a: A): JsonObject[Json] = encodeA.encodeObject(a)
       }
   }
 }

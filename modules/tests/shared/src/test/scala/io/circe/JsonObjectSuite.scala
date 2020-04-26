@@ -211,7 +211,7 @@ class JsonObjectSuite extends CirceSuite {
   }
 
   "add, +:, and remove" should "be applied correctly" in {
-    forAll { (original: JsonObject, operations: List[Either[String, (String, Json, Boolean)]]) =>
+    forAll { (original: JsonObject[Json], operations: List[Either[String, (String, Json, Boolean)]]) =>
       val result = operations.foldLeft(original) {
         case (acc, Right((key, value, true)))  => acc.add(key, value)
         case (acc, Right((key, value, false))) => (key, value) +: acc

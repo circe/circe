@@ -20,6 +20,6 @@ object DerivedAsObjectCodec {
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       cachedCodecForR.decodeAccumulating(c).map(gen.from)
 
-    final def encodeObject(a: A): JsonObject = cachedCodecForR.encodeObject(gen.to(a))
+    final def encodeObject(a: A): JsonObject[Json] = cachedCodecForR.encodeObject(gen.to(a))
   }
 }
