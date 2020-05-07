@@ -136,11 +136,17 @@ class SemiautoDerivedSuite extends CirceSuite {
   )
   checkAll(
     "Codec[RecursiveWithOptionExample] via Decoder and Codec",
-    CodecTests[RecursiveWithOptionExample](implicitly, RecursiveWithOptionExample.codecForRecursiveWithOptionExample).codec
+    CodecTests[RecursiveWithOptionExample](
+      implicitly,
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample
+    ).codec
   )
   checkAll(
     "Codec[RecursiveWithOptionExample] via Encoder and Codec",
-    CodecTests[RecursiveWithOptionExample](RecursiveWithOptionExample.codecForRecursiveWithOptionExample, implicitly).codec
+    CodecTests[RecursiveWithOptionExample](
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample,
+      implicitly
+    ).codec
   )
 
   "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>

@@ -170,7 +170,7 @@ object BiggerDecimal {
       case other: Zero => !other.isNegativeZero
       case _           => false
     }
-    final override def hashCode: Int = (0.0).hashCode
+    final override def hashCode: Int = 0.0.hashCode
     final override def toString: String = "0"
   }
 
@@ -183,7 +183,7 @@ object BiggerDecimal {
       case other: Zero => other.isNegativeZero
       case _           => false
     }
-    final override def hashCode: Int = (-0.0).hashCode
+    final override def hashCode: Int = -0.0.hashCode
     final override def toString: String = "-0"
   }
 

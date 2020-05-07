@@ -6,8 +6,7 @@ import shapeless.{ LabelledGeneric, Lazy }
 abstract class DerivedAsObjectCodec[A] extends Codec.AsObject[A]
 
 object DerivedAsObjectCodec {
-  implicit def deriveCodec[A, R](
-    implicit
+  implicit def deriveCodec[A, R](implicit
     gen: LabelledGeneric.Aux[A, R],
     codec: Lazy[ReprAsObjectCodec[R]]
   ): DerivedAsObjectCodec[A] = new DerivedAsObjectCodec[A] {

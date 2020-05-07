@@ -7,8 +7,7 @@ import shapeless.{ AdditiveCollection, Nat, Sized }
 import shapeless.ops.nat.ToInt
 
 trait SizedInstances {
-  implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](
-    implicit
+  implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](implicit
     decodeCA: Decoder[C[A]],
     ev: AdditiveCollection[C[A]],
     toInt: ToInt[L]

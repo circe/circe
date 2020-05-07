@@ -32,8 +32,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     override def imap[A, B](fa: Codec[A])(f: A => B)(g: B => A): Codec[B] = Codec.from(fa.map(f), fa.contramap(g))
   }
 
-  final def codecForEither[A, B](leftKey: String, rightKey: String)(
-    implicit
+  final def codecForEither[A, B](leftKey: String, rightKey: String)(implicit
     decodeA: Decoder[A],
     encodeA: Encoder[A],
     decodeB: Decoder[B],
@@ -45,8 +44,7 @@ object Codec extends ProductCodecs with EnumerationCodecs {
     final def encodeObject(a: Either[A, B]): JsonObject = encoder.encodeObject(a)
   }
 
-  final def codecForValidated[E, A](failureKey: String, successKey: String)(
-    implicit
+  final def codecForValidated[E, A](failureKey: String, successKey: String)(implicit
     decodeE: Decoder[E],
     encodeE: Encoder[E],
     decodeA: Decoder[A],
