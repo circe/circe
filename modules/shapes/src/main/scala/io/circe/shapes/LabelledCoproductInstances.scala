@@ -6,8 +6,7 @@ import shapeless.{ :+:, Coproduct, Inl, Inr, Widen, Witness }
 import shapeless.labelled.{ FieldType, field }
 
 trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
-  implicit final def decodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](
-    implicit
+  implicit final def decodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](implicit
     witK: Witness.Aux[K],
     decodeV: Decoder[V],
     decodeR: Decoder[R]
@@ -19,8 +18,7 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
       )
   }
 
-  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](
-    implicit
+  implicit final def encodeSymbolLabelledCCons[K <: Symbol, V, R <: Coproduct](implicit
     witK: Witness.Aux[K],
     encodeV: Encoder[V],
     encodeR: Encoder[R]
@@ -33,8 +31,7 @@ trait LabelledCoproductInstances extends LowPriorityLabelledCoproductInstances {
 }
 
 private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductInstances {
-  implicit final def decodeLabelledCCons[K, W >: K, V, R <: Coproduct](
-    implicit
+  implicit final def decodeLabelledCCons[K, W >: K, V, R <: Coproduct](implicit
     witK: Witness.Aux[K],
     widenK: Widen.Aux[K, W],
     eqW: Eq[W],
@@ -57,8 +54,7 @@ private[shapes] trait LowPriorityLabelledCoproductInstances extends CoproductIns
       )
   }
 
-  implicit final def encodeLabelledCCons[K, W >: K, V, R <: Coproduct](
-    implicit
+  implicit final def encodeLabelledCCons[K, W >: K, V, R <: Coproduct](implicit
     witK: Witness.Aux[K],
     eqW: Eq[W],
     encodeW: KeyEncoder[W],

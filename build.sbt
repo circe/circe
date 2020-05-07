@@ -212,10 +212,10 @@ lazy val circeJvmModules = Seq[Project](benchmark, jawn)
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
-  (circeCrossModules.map(_._1) ++ circeJvmModules)
+  circeCrossModules.map(_._1) ++ circeJvmModules
 
 lazy val jsProjects: Seq[Project] =
-  (circeCrossModules.map(_._2) ++ circeJsModules)
+  circeCrossModules.map(_._2) ++ circeJsModules
 
 lazy val aggregatedProjects: Seq[ProjectReference] = (
   circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++

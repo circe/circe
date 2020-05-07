@@ -394,8 +394,7 @@ object Encoder
   /**
    * @group Collection
    */
-  implicit final def encodeNonEmptyMap[K, V](
-    implicit
+  implicit final def encodeNonEmptyMap[K, V](implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
   ): AsObject[NonEmptyMap[K, V]] =
@@ -415,8 +414,7 @@ object Encoder
   /**
    * @group Collection
    */
-  implicit final def encodeOneAnd[A, C[_]](
-    implicit
+  implicit final def encodeOneAnd[A, C[_]](implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): AsArray[OneAnd[C, A]] = new AsArray[OneAnd[C, A]] {
@@ -430,8 +428,7 @@ object Encoder
    *
    * @group Collection
    */
-  implicit final def encodeMap[K, V](
-    implicit
+  implicit final def encodeMap[K, V](implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V]
   ): AsObject[ImmutableMap[K, V]] =
@@ -442,8 +439,7 @@ object Encoder
    *
    * @group Collection
    */
-  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](
-    implicit
+  implicit final def encodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
     encodeK: KeyEncoder[K],
     encodeV: Encoder[V],
     ev: M[K, V] => Iterable[(K, V)]
@@ -454,8 +450,7 @@ object Encoder
   /**
    * @group Disjunction
    */
-  final def encodeEither[A, B](leftKey: String, rightKey: String)(
-    implicit
+  final def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
     encodeA: Encoder[A],
     encodeB: Encoder[B]
   ): AsObject[Either[A, B]] = new AsObject[Either[A, B]] {
@@ -468,8 +463,7 @@ object Encoder
   /**
    * @group Disjunction
    */
-  final def encodeValidated[E, A](failureKey: String, successKey: String)(
-    implicit
+  final def encodeValidated[E, A](failureKey: String, successKey: String)(implicit
     encodeE: Encoder[E],
     encodeA: Encoder[A]
   ): AsObject[Validated[E, A]] = encodeEither[E, A](failureKey, successKey).contramapObject {
@@ -892,8 +886,7 @@ object Encoder
     /**
      * @group Prioritization
      */
-    implicit final def importedAsObjectEncoder[A](
-      implicit
+    implicit final def importedAsObjectEncoder[A](implicit
       exported: Exported[AsObject[A]]
     ): AsObject[A] = exported.instance
   }
@@ -904,8 +897,7 @@ private[circe] trait MidPriorityEncoders extends LowPriorityEncoders {
   /**
    * @group Collection
    */
-  implicit final def encodeIterable[A, C[_]](
-    implicit
+  implicit final def encodeIterable[A, C[_]](implicit
     encodeA: Encoder[A],
     ev: C[A] => Iterable[A]
   ): Encoder.AsArray[C[A]] = new IterableAsArrayEncoder[A, C](encodeA) {

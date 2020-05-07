@@ -977,8 +977,7 @@ object Decoder
   /**
    * @group Collection
    */
-  implicit final def decodeMap[K, V](
-    implicit
+  implicit final def decodeMap[K, V](implicit
     decodeK: KeyDecoder[K],
     decodeV: Decoder[V]
   ): Decoder[ImmutableMap[K, V]] = new MapDecoder[K, V, ImmutableMap](decodeK, decodeV) {
@@ -1065,8 +1064,7 @@ object Decoder
   /**
    * @group Collection
    */
-  implicit final def decodeNonEmptyMap[K, V](
-    implicit
+  implicit final def decodeNonEmptyMap[K, V](implicit
     decodeK: KeyDecoder[K],
     orderK: Order[K],
     decodeV: Decoder[V]
@@ -1091,8 +1089,7 @@ object Decoder
   /**
    * @group Disjunction
    */
-  final def decodeEither[A, B](leftKey: String, rightKey: String)(
-    implicit
+  final def decodeEither[A, B](leftKey: String, rightKey: String)(implicit
     decodeA: Decoder[A],
     decodeB: Decoder[B]
   ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
@@ -1129,8 +1126,7 @@ object Decoder
   /**
    * @group Disjunction
    */
-  final def decodeValidated[E, A](failureKey: String, successKey: String)(
-    implicit
+  final def decodeValidated[E, A](failureKey: String, successKey: String)(implicit
     decodeE: Decoder[E],
     decodeA: Decoder[A]
   ): Decoder[Validated[E, A]] =

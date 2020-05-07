@@ -46,8 +46,7 @@ trait MissingInstances {
       case (_, _)             => false
     }
 
-  implicit def eqTuple[P: IsTuple, L <: HList](
-    implicit
+  implicit def eqTuple[P: IsTuple, L <: HList](implicit
     gen: Generic.Aux[P, L],
     eqL: Eq[L]
   ): Eq[P] = Eq.by(gen.to)(eqL)
@@ -65,8 +64,7 @@ trait MissingInstances {
   implicit def arbitrarySingletonCoproduct[L](implicit L: Arbitrary[L]): Arbitrary[L :+: CNil] =
     Arbitrary(L.arbitrary.map(Inl(_)))
 
-  implicit def arbitraryCoproduct[L, R <: Coproduct](
-    implicit
+  implicit def arbitraryCoproduct[L, R <: Coproduct](implicit
     L: Arbitrary[L],
     R: Arbitrary[R]
   ): Arbitrary[L :+: R] = Arbitrary(
@@ -85,8 +83,7 @@ trait MissingInstances {
   implicit def eqSized[L <: Nat, C[_], A](implicit CA: Eq[C[A]]): Eq[Sized[C[A], L]] =
     Eq.by[Sized[C[A], L], C[A]](_.unsized)
 
-  implicit def arbitrarySized[L <: Nat, C[_], A](
-    implicit
+  implicit def arbitrarySized[L <: Nat, C[_], A](implicit
     A: Arbitrary[A],
     additive: AdditiveCollection[C[A]],
     buildable: Buildable[A, C[A]],
