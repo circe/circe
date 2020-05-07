@@ -175,7 +175,7 @@ lazy val docSettings = allSettings ++ Seq(
 )
 
 lazy val docs = project
-  .dependsOn(core, parser, shapes)
+  .dependsOn(core, parser, shapes, testing)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
