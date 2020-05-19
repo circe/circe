@@ -106,6 +106,8 @@ The following open source projects are either built on circe or provide circe su
 * [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
 * [Blackdoor JOSE][jose-json-circe]: circe JSON support for blackdoor JOSE and JWT.
 * [borer][borer]: Allows circe encoders/decoders to be reused for CBOR (de)serialization.
+* [circe-debezium][circe-debezium]: Circe codecs for [Debezium][debezium] payload types
+* [circe-geojson][circe-geojson]: Circe support for GeoJSON (RFC 7946)
 * [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
 * [cornichon][cornichon]: A DSL for JSON API testing.
 * [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
@@ -195,10 +197,12 @@ limitations under the License.
 [borer]: https://sirthias.github.io/borer/
 [circe-benchmarks]: https://github.com/circe/circe-benchmarks
 [circe-config]: https://github.com/circe/circe-config
+[circe-debezium]: https://github.com/compstak/circe-debezium
 [circe-derivation]: https://github.com/circe/circe-derivation
 [circe-fs2]: https://github.com/circe/circe-fs2
 [circe-iteratee]: https://github.com/circe/circe-iteratee
 [circe-jackson]: https://github.com/circe/circe-jackson
+[circe-geojson]: https://github.com/compstak/circe-geojson
 [circe-kafka]: https://github.com/NeQuissimus/circe-kafka
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
@@ -208,6 +212,7 @@ limitations under the License.
 [cornichon]: https://github.com/agourlay/cornichon
 [cosmos]: https://github.com/dcos/cosmos
 [dcos]: https://dcos.io/
+[debezium]: https://debezium.io/
 [diffson]: https://github.com/gnieh/diffson
 [elastic4s]: https://github.com/sksamuel/elastic4s
 [elasticsearch]: https://www.elastic.co/
