@@ -589,7 +589,8 @@ lazy val publishSettings = Seq(
         }
       }
     ).transform(node).head
-  }
+  },
+  publishArtifact.in(Compile, packageDoc) := !isDotty.value
 )
 
 lazy val noPublishSettings = Seq(
