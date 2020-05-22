@@ -170,7 +170,7 @@ object Boilerplate {
         -   */
         -  implicit final def encodeTuple$arity[${`A..N`}, J](implicit $instances, J0: JsonFactory[J]): Encoder.AsArray[${`(A..N)`}, J] =
         -    new Encoder.AsArray[${`(A..N)`}, J] {
-        -      final override protected def J: JsonFactory[J] = J0 
+        -      final override protected def J: JsonFactory[J] = J0
         -      final def encodeArray(a: ${`(A..N)`}): Vector[J] = Vector($applied)
         -    }
         |}

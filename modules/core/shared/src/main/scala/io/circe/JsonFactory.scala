@@ -17,8 +17,9 @@ trait JsonFactory[J] {
   /** Create a literal J that corresponds to the Json boolean value 'false'.
     */
   def False: J
-
   
+  /** Creates a literal J that represents a Json string, with the given string.
+    */
   def fromString(str: String): J
 
   /**
@@ -30,7 +31,6 @@ trait JsonFactory[J] {
     * Create a `J` representing a JSON array from a collection of J objects representing Json values.
     */
   def fromValues(values: Iterable[J]): J
-
   
   /**
     * Create a `J` value representing a JSON boolean.
@@ -62,7 +62,6 @@ trait JsonFactory[J] {
   def fromFloat(value: Float): Option[J]
 
   def fromBigInt(value: BigInt): J
-
 
   def fromFloatOrNull(value: Float): J
 

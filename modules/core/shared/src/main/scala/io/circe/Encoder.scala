@@ -37,7 +37,7 @@ import scala.collection.immutable.{ Map => ImmutableMap, Set }
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
  *
- * @tparam A the type of value that we are encoding into a Json-like representation. 
+ * @tparam A the type of value that we are encoding into a Json-like representation.
  * @tparam J The data type in which the Json is represented.
  * @author Travis Brown
  */
@@ -822,7 +822,7 @@ object Encoder
   }
 
   /**
-   * A type class that provides a conversion from a value of type `A` to a
+   * A type class that provides a conversion from a value of type `A` to an instance of the representation type.
    * [[JsonObject]].
    *
    * @author Travis Brown
