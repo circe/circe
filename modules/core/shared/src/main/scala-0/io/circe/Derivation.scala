@@ -40,7 +40,7 @@ object Derivation {
 }
 
 private[circe] trait EncoderDerivation {
-  inline final def derived[A](given inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
     new DerivedEncoder[A]
         with DerivedInstance[A](
           constValue[A.MirroredLabel],
@@ -60,7 +60,7 @@ private[circe] trait EncoderDerivation {
 }
 
 private[circe] trait DecoderDerivation {
-  inline final def derived[A](given inline A: Mirror.Of[A]): Decoder[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
     new DerivedDecoder[A]
         with DerivedInstance[A](
           constValue[A.MirroredLabel],
@@ -131,7 +131,7 @@ private[circe] trait DecoderDerivation {
 }
 
 private[circe] trait CodecDerivation {
-  inline final def derived[A](given inline A: Mirror.Of[A]): Codec.AsObject[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
     new Codec.AsObject[A]
         with DerivedDecoder[A]
         with DerivedEncoder[A]
