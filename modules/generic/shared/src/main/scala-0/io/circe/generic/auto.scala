@@ -12,9 +12,9 @@ import scala.deriving.Mirror
  * trait hierarchies, etc.
  */
 trait AutoDerivation {
-  implicit inline final def deriveDecoder[A](given inline A: Mirror.Of[A]): Exported[Decoder[A]] =
+  implicit inline final def deriveDecoder[A](using inline A: Mirror.Of[A]): Exported[Decoder[A]] =
   	Exported(Decoder.derived[A])
-  implicit inline final def deriveEncoder[A](given inline A: Mirror.Of[A]): Exported[Encoder.AsObject[A]] =
+  implicit inline final def deriveEncoder[A](using inline A: Mirror.Of[A]): Exported[Encoder.AsObject[A]] =
   	Exported(Encoder.AsObject.derived[A])
 }
 
