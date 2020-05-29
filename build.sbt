@@ -525,8 +525,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   )
   .dependsOn(core)
 
-lazy val extras = circeModule("extras", mima = previousCirceVersion)
-  .dependsOn(core, tests % Test)
+lazy val extras = circeModule("extras", mima = previousCirceVersion).dependsOn(core, tests % Test)
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
