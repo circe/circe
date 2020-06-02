@@ -207,12 +207,6 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Build a new instance that fails if the condition does not hold for the
    * input.
-   *
-   * Note that this condition is checked before decoding with the current
-   * decoder, and if it does not hold, decoding does not continue. This means
-   * that if you chain calls to this method, errors will not be accumulated
-   * (instead only the error of the last failing `validate` in the chain will be
-   * returned).
    */
   final def validate(errors: HCursor => List[String]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] =
@@ -220,22 +214,21 @@ trait Decoder[A] extends Serializable { self =>
         Left(DecodingFailure(message, c.history))
       }.getOrElse(self(c))
 
-    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
+    override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = {
+      val underlyingResult = self.decodeAccumulating(c)
       errors(c).map(DecodingFailure(_, c.history)) match {
-        case Nil    => self.decodeAccumulating(c)
-        case h :: t => Validated.invalid(NonEmptyList(h, t))
+        case Nil =>
+          underlyingResult
+        case h :: t =>
+          val errorsNel = NonEmptyList(h, t)
+          Validated.invalid(underlyingResult.fold(errorsNel ::: _, _ => errorsNel))
       }
+    }
   }
 
   /**
    * Build a new instance that fails if the condition does not hold for the
    * input.
-   *
-   * Note that this condition is checked before decoding with the current
-   * decoder, and if it does not hold, decoding does not continue. This means
-   * that if you chain calls to this method, errors will not be accumulated
-   * (instead only the error of the last failing `validate` in the chain will be
-   * returned).
    */
   final def validate(pred: HCursor => Boolean, message: => String): Decoder[A] = validate { c =>
     if (pred(c)) Nil
