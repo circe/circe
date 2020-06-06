@@ -6,7 +6,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 
 class ExtrasSpec extends CirceSuite {
 
-  "sanitizeKeys" should "return input JSON if all of the JSON Object's keys are in the whitelist" in {
+  "sanitizeKeys" should "return input JSON if all of the JSON Object's keys are in the approvedList" in {
     forAll[Set[String], String, Boolean](Gen.listOf(Gen.alphaNumStr).map(_.toSet), Gen.alphaNumStr) {
       (keys: Set[String], str: String) =>
 
@@ -22,7 +22,7 @@ class ExtrasSpec extends CirceSuite {
             input,
             keys,
             _ => ???,
-            Json.fromString(("not used")),
+            Json.fromString("not used"),
             _ => ???,
             _ => ???
           )
@@ -125,7 +125,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "sanitize arrays and objects of whitelisted and non-whitelisted keys' values" in {
+  "sanitizeKeys" should "sanitize arrays and objects of approved and non-approved keys' values" in {
     forAll[Boolean, String, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr
@@ -135,33 +135,33 @@ class ExtrasSpec extends CirceSuite {
       def onString(s: String): Json = Json.fromString(s.reverse)
 
       val inputInnerObj: Json = Json.obj(
-        "whitelisted" := bool,
-        "non-whitelisted" := str
+        "approved" := bool,
+        "non-approved" := str
       )
 
       val input: Json = Json.obj(
-        "whitelistedObject" := inputInnerObj,
-        "nonWhitelistedObject" := inputInnerObj,
-        "whitelistedArray" := Json.arr(inputInnerObj),
-        "nonWhitelistedArray" := Json.arr(inputInnerObj)
+        "approvedObject" := inputInnerObj,
+        "nonapprovedObject" := inputInnerObj,
+        "approvedArray" := Json.arr(inputInnerObj),
+        "nonapprovedArray" := Json.arr(inputInnerObj)
       )
 
       val expectedInnerObj: Json = Json.obj(
-        "whitelisted" := bool,
-        "non-whitelisted" := str.reverse
+        "approved" := bool,
+        "non-approved" := str.reverse
       )
 
       val expected: Json = Json.obj(
-        "whitelistedObject" := expectedInnerObj,
-        "nonWhitelistedObject" := expectedInnerObj,
-        "whitelistedArray" := Json.arr(expectedInnerObj),
-        "nonWhitelistedArray" := Json.arr(expectedInnerObj)
+        "approvedObject" := expectedInnerObj,
+        "nonapprovedObject" := expectedInnerObj,
+        "approvedArray" := Json.arr(expectedInnerObj),
+        "nonapprovedArray" := Json.arr(expectedInnerObj)
       )
 
       val output: Json =
         extras.sanitizeKeys(
           input,
-          Set("whitelistedObject", "whitelistedArray", "whitelisted"),
+          Set("approvedObject", "approvedArray", "approved"),
           onBoolean,
           Json.Null,
           onString,
