@@ -57,6 +57,9 @@ private[circe] trait CollectionDecoders extends LowPriorityCollectionDecoders {
     final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
 
+  /**
+   * @group Collection
+   */
   implicit final def decodeArraySeq[A](implicit decodeA: Decoder[A], classTag: ClassTag[A]): Decoder[ArraySeq[A]] =
     new SeqDecoder[A, ArraySeq](decodeA) {
       final protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.newBuilder[A]
@@ -66,6 +69,9 @@ private[circe] trait CollectionDecoders extends LowPriorityCollectionDecoders {
 
 trait LowPriorityCollectionDecoders {
 
+  /**
+   * @group Collection
+   */
   implicit final def decodeUntaggedArraySeq[A](implicit decodeA: Decoder[A]): Decoder[ArraySeq[A]] =
     new SeqDecoder[A, ArraySeq](decodeA) {
       override protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.untagged.newBuilder
