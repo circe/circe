@@ -1,10 +1,13 @@
 package io.circe
 
 import cats.data.OneAnd
+
+import scala.collection.immutable.ArraySeq
 import scala.collection.{ Factory, Map }
 import scala.collection.mutable.Builder
+import scala.reflect.ClassTag
 
-private[circe] trait CollectionDecoders {
+private[circe] trait CollectionDecoders extends LowPriorityCollectionDecoders {
 
   /**
    * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
@@ -53,4 +56,19 @@ private[circe] trait CollectionDecoders {
     final protected def createBuilder(): Builder[A, C[A]] = factory.newBuilder
     final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
   }
+
+  implicit final def decodeArraySeq[A](implicit decodeA: Decoder[A], classTag: ClassTag[A]): Decoder[ArraySeq[A]] =
+    new SeqDecoder[A, ArraySeq](decodeA) {
+      final protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.newBuilder[A]
+    }
+
+}
+
+trait LowPriorityCollectionDecoders {
+
+  implicit final def decodeUntaggedArraySeq[A](implicit decodeA: Decoder[A]): Decoder[ArraySeq[A]] =
+    new SeqDecoder[A, ArraySeq](decodeA) {
+      override protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.untagged.newBuilder
+    }
+
 }
