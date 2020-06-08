@@ -5,7 +5,7 @@ import scala.collection.immutable.{ Map, Set }
 package object extras {
 
   /**
-   * For a [[Json]], sanitize any [[JsonObject]]'s key's values not in the whitelist.
+   * For a [[Json]], sanitize any [[JsonObject]]'s key's values not in the approvedList.
    *
    * The original author's motivation for this function should explain why someone may want to use it.
    *
@@ -13,7 +13,7 @@ package object extras {
    * a way to log the full HTTP Response's JSON Payload. However, the entire JSON could not be logged since
    * it contained sensitive information. So, that resulted in the author writing a function for
    * sanitizing JSON, i.e. apply a function: [[Json]] => [[Json]] that replaces sensitive keys' values with
-   * dummy values, e.g. "XXXX". A set of keys' values serves as a whitelist.
+   * dummy values, e.g. "XXXX". A set of keys' values serves as an approved list.
    *
    * For example, let's say that an HTTP API responds with the following JSON:
    *
@@ -35,7 +35,7 @@ package object extras {
    * { "x" : true, "y" : 42, "z" : "X" }
    *
    * @param json JSON to sanitize
-   * @param whitelist Set of JSON Objects' keys whose values can be shown as-is
+   * @param approvedList Set of JSON Objects' keys whose values can be shown as-is
    * @param onBoolean_ Sanitizing function used if the key's value is a [[Boolean]]
    * @param onNull_ Sanitizing function used if the key's value is a [[Json.Null]]
    * @param onString_ Sanitizing function used if the key's value is a [[String]]
@@ -44,7 +44,7 @@ package object extras {
    */
   def sanitizeKeys(
     json: Json,
-    whitelist: Set[String],
+    approvedList: Set[String],
     onBoolean_ : Boolean => Json,
     onNull_ : Json,
     onString_ : String => Json,
@@ -58,19 +58,19 @@ package object extras {
       override def onArray(value: Vector[Json]): Json = {
         val sanitized: Vector[Json] =
           value.map { j: Json =>
-            sanitizeKeys(j, whitelist, onBoolean, onNull, onString, onNumber)
+            sanitizeKeys(j, approvedList, onBoolean, onNull, onString, onNumber)
           }
         Json.fromValues(sanitized)
       }
       override def onObject(obj: JsonObject): Json = {
         val sanitized: Map[String, Json] = obj.toMap.map {
           case (key, value) =>
-            // Remember: if the key is whitelisted, then the key's value must be shown as-is
-            if (whitelist.contains(key)) {
+            // Remember: if the key is approved, then the key's value must be shown as-is
+            if (approvedList.contains(key)) {
               val newValue: Json =
                 value.withArray(onArray).withObject(onObject)
               (key, newValue)
-            } else { // Otherwise, sanitize the key's value since it's not whitelisted
+            } else { // Otherwise, sanitize the key's value since it's not approved
               val newValue: Json =
                 value.foldWith(self)
               (key, newValue)
