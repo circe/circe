@@ -67,7 +67,7 @@ private[circe] trait CollectionDecoders extends LowPriorityCollectionDecoders {
 
 }
 
-trait LowPriorityCollectionDecoders {
+private trait LowPriorityCollectionDecoders {
 
   /**
    * @group Collection
