@@ -6,8 +6,9 @@ import cats.laws.discipline.arbitrary._
 import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceSuite
+import org.scalatest.Inside
 
-class AccumulatingDecoderSpec extends CirceSuite {
+class AccumulatingDecoderSpec extends CirceSuite with Inside {
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
   private object BadSample {
@@ -101,6 +102,20 @@ class AccumulatingDecoderSpec extends CirceSuite {
       val errors = Decoder[Sample].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
       assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+    }
+  }
+
+  it should "return expected failures combined with validation errors" in {
+    forAll { (a: Int, b: Boolean, c: Int) =>
+      val cursor = BadSample(a, b, c).asJson.hcursor
+      val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
+      val result = Decoder[Sample].validate(_ => List("problem")).decodeAccumulating(cursor)
+
+      inside(result.fold(_.toList, _ => Nil)) {
+        case validationError :: errors =>
+          assert(validationError === DecodingFailure("problem", List.empty))
+          assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      }
     }
   }
 }
