@@ -1,14 +1,17 @@
 package io.circe.shapes
 
+import cats.kernel.Eq
 import cats.kernel.instances.all._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import shapeless.{ :+:, ::, CNil, HNil, Nat, Sized, Witness }
+import io.circe.syntax._
+import shapeless.{ :+:, ::, CNil, HNil, Nat, Sized, Witness, tag }
 import shapeless.labelled.FieldType
 import shapeless.record.Record
 import shapeless.syntax.singleton._
+import shapeless.tag.@@
 
 class ShapelessSuite extends CirceSuite {
   checkAll("Codec[HNil]", CodecTests[HNil].codec)
@@ -80,5 +83,37 @@ class ShapelessSuite extends CirceSuite {
     val result = sizedDecoder.decodeAccumulating(json"""[ $a, $notIntB, $c, $notIntD ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
+  }
+
+  "Tagged types" should "be decoded and encoded correctly" in {
+    trait MyTag
+
+    val td =
+      tag[MyTag][String]("test") ::
+        tag[MyTag][Double](123.4) ::
+        tag[MyTag][Float](234.5f) ::
+        tag[MyTag][Long](12345L) ::
+        tag[MyTag][Int](4567) ::
+        tag[MyTag][Short](12345.toShort) ::
+        tag[MyTag][Byte](23.toByte) ::
+        tag[MyTag][Boolean](true) ::
+        tag[MyTag][Char]('a') :: HNil
+
+    type TaggedData =
+      (String @@ MyTag) ::
+        (Double @@ MyTag) ::
+        (Float @@ MyTag) ::
+        (Long @@ MyTag) ::
+        (Int @@ MyTag) ::
+        (Short @@ MyTag) ::
+        (Byte @@ MyTag) ::
+        (Boolean @@ MyTag) ::
+        (Char @@ MyTag) :: HNil
+
+    implicit val taggedEq: Eq[TaggedData] = new Eq[TaggedData] {
+      def eqv(x: TaggedData, y: TaggedData): Boolean = x == y
+    }
+
+    assert(td.asJson.as[TaggedData] === Right(td))
   }
 }
