@@ -196,6 +196,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (numbersTesting, numbersTestingJS),
   (numbers, numbersJS),
   (core, coreJS),
+  (extras, extrasJS),
   (generic, genericJS),
   (shapes, shapesJS),
   (literal, literalJS),
@@ -525,7 +526,10 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   )
   .dependsOn(core)
 
-lazy val extras = circeModule("extras", mima = previousCirceVersion).dependsOn(core, tests % Test)
+lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
+
+lazy val extras = extrasBase.jvm
+lazy val extrasJS = extrasBase.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
