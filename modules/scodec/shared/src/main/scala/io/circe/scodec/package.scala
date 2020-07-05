@@ -37,7 +37,6 @@ package object scodec {
    *   "length" : 3
    * }
    *
-   *
    * encodeBitVector(bin"")
    * res: io.circe.Json =
    * {
