@@ -42,6 +42,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Hello Soda](https://hellosoda.com/)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [ImmobilienScout24](https://www.immobilienscout24.de/)
+* [Immozentral](https://www.immozentral.com/)
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
 * [Latitude Financial Services](https://www.latitudefinancial.com.au/)
