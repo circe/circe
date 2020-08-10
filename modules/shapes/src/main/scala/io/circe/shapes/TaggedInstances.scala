@@ -12,7 +12,7 @@ trait TaggedInstances {
       override def apply(c: HCursor): Result[U @@ T] =
         Predef.implicitly[Decoder[U]].apply(c).map(u => tag[T][U](u))
 
-      override def apply(a: U @@ T): Json = a.asInstanceOf[U].asJson
+      override def apply(a: U @@ T): Json = (a: U).asJson
     }
 
   implicit def taggedStringCodec[T](implicit d: Decoder[String], e: Encoder[String]): Codec[String @@ T] =
