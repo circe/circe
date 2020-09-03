@@ -1,6 +1,4 @@
 package io.circe
-
-import cats.instances.all._
 import io.circe.parser.parse
 import io.circe.tests.CirceSuite
 

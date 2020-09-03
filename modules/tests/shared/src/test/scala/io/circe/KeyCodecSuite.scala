@@ -1,8 +1,6 @@
 package io.circe
 
 import java.util.UUID
-
-import cats.instances.all._
 import io.circe.testing.KeyCodecTests
 import io.circe.tests.CirceSuite
 

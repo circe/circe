@@ -14,7 +14,6 @@ import cats.data.{
   ValidatedNel
 }
 import cats.data.Validated.{ Invalid, Valid }
-import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
 import io.circe.`export`.Exported
 import java.io.Serializable

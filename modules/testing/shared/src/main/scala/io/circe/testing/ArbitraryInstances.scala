@@ -1,6 +1,4 @@
 package io.circe.testing
-
-import cats.instances.list._
 import io.circe.{
   Decoder,
   DecodingFailure,

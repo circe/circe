@@ -1,7 +1,6 @@
 package io.circe
 
 import cats.data.Const
-import cats.instances.all._
 import cats.kernel.Eq
 import cats.syntax.eq._
 import io.circe.tests.CirceSuite
