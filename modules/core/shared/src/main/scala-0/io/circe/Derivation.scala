@@ -22,19 +22,19 @@ object Derivation {
   }
 
   inline final def summonLabelsRec[T <: Tuple]: List[String] = inline erasedValue[T] match {
-    case _: Unit => Nil
+    case _: EmptyTuple => Nil
     case _: (t *: ts) => constValue[t].asInstanceOf[String] :: summonLabelsRec[ts]
   }
 
   inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
     inline erasedValue[T] match {
-      case _: Unit => Nil
+      case _: EmptyTuple => Nil
       case _: (t *: ts) => summonDecoder[t] :: summonDecodersRec[ts]
     }
 
   inline final def summonEncodersRec[T <: Tuple]: List[Encoder[_]] =
     inline erasedValue[T] match {
-      case _: Unit => Nil
+      case _: EmptyTuple => Nil
       case _: (t *: ts) => summonEncoder[t] :: summonEncodersRec[ts]
     }
 }
