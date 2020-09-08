@@ -111,12 +111,6 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     )
 }
 
-def addDisciplineScalaTest(testScope: Boolean = true) = libraryDependencies += {
-  val dep =
-    (if (isDotty.value) "dev.travisbrown" else "org.typelevel") %%% "discipline-scalatest" % disciplineScalaTestVersion
-  if (testScope) dep % Test else dep
-}
-
 /**
  * We omit all Scala.js projects from Unidoc generation.
  */
@@ -272,8 +266,11 @@ lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
 
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
-  .settings(addDisciplineScalaTest(true))
-  .settings(scalacOptions in Test += "-language:implicitConversions")
+  .settings(
+    scalacOptions in Test += "-language:implicitConversions",
+    libraryDependencies +=
+      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion % Test
+  )
   .dependsOn(numbersTestingBase % Test)
 
 lazy val numbers = numbersBase.jvm
@@ -449,8 +446,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline-core" % disciplineVersion
-    ).map(_.withDottyCompat(scalaVersion.value)),
-    addDisciplineScalaTest(true)
+    ).map(_.withDottyCompat(scalaVersion.value))
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
@@ -468,7 +464,8 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     },
     scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion
+      "com.chuusai" %%% "shapeless" % shapelessVersion,
+      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion
     ).map(_.withDottyCompat(scalaVersion.value)),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
@@ -494,7 +491,6 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       }
     }
   )
-  .settings(addDisciplineScalaTest(false))
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
   )
@@ -521,8 +517,10 @@ lazy val hygieneJS = hygieneBase.js
 
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
-    addDisciplineScalaTest(true)
+    libraryDependencies ++= Seq(
+      ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
+      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion % Test
+    )
   )
   .dependsOn(core)
 
