@@ -76,6 +76,7 @@ object KeyDecoder {
   implicit val decodeKeyShort: KeyDecoder[Short] = numberInstance(java.lang.Short.parseShort)
   implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(java.lang.Integer.parseInt)
   implicit val decodeKeyLong: KeyDecoder[Long] = numberInstance(java.lang.Long.parseLong)
+  implicit val decodeKeyDouble: KeyDecoder[Double] = numberInstance(java.lang.Double.parseDouble)
 
   implicit val keyDecoderInstances: MonadError[KeyDecoder, Unit] = new MonadError[KeyDecoder, Unit] {
     final def pure[A](a: A): KeyDecoder[A] = new KeyDecoder[A] {

@@ -63,6 +63,10 @@ object KeyEncoder {
     final def apply(key: Long): String = java.lang.Long.toString(key)
   }
 
+  implicit val encodeKeyDouble: KeyEncoder[Double] = new KeyEncoder[Double] {
+    final def apply(key: Double): String = java.lang.Double.toString(key)
+  }
+
   implicit val keyEncoderContravariant: Contravariant[KeyEncoder] = new Contravariant[KeyEncoder] {
     final def contramap[A, B](e: KeyEncoder[A])(f: B => A): KeyEncoder[B] = e.contramap(f)
   }
