@@ -1066,7 +1066,7 @@ object Decoder
       final protected def createBuilder(): Builder[(K, V), SortedMap[K, V]] =
         SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
     }.emap { map =>
-      NonEmptyMap.fromMap(map)(orderK).toRight("[K, V]NonEmptyMap[K, V]")
+      NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
     }
 
   /**
