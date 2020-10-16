@@ -119,6 +119,9 @@ def noDocProjects(sv: String): Seq[ProjectReference] =
     p: ProjectReference
   )
 
+lazy val docsMappingsAPIDir =
+  settingKey[String]("Name of subdirectory in site target directory for api docs")
+
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
   micrositeDescription := "A JSON library for Scala powered by Cats",
@@ -126,7 +129,8 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeHighlightTheme := "atom-one-light",
   micrositeHomepage := "https://circe.github.io/circe/",
   micrositeBaseUrl := "/circe",
-  micrositeDocumentationUrl := "api",
+  micrositeDocumentationUrl := s"${docsMappingsAPIDir.value}/io/circe",
+  micrositeDocumentationLabelDescription := "API Documentation",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
   micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
@@ -145,7 +149,8 @@ lazy val docSettings = allSettings ++ Seq(
       |scalafiddle:
       |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
     """.stripMargin),
-  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), micrositeDocumentationUrl),
+  docsMappingsAPIDir := "api",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docsMappingsAPIDir),
   ghpagesNoJekyll := true,
   scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "-groups",
@@ -155,9 +160,7 @@ lazy val docSettings = allSettings ++ Seq(
     "-doc-source-url",
     scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath",
-    baseDirectory.in(LocalRootProject).value.getAbsolutePath,
-    "-doc-root-content",
-    (resourceDirectory.in(Compile).value / "rootdoc.txt").getAbsolutePath
+    baseDirectory.in(LocalRootProject).value.getAbsolutePath
   ),
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
