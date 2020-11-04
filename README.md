@@ -35,6 +35,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
 * [Elastic](https://www.elastic.co)
+* [Emmy Sharing](https://emmy-sharing.de/en/)
 * [FOLIO](https://folio-sec.com/)
 * [GLNGN Server](https://glngn.com)
 * [Gympass](https://www.gympass.com/)
