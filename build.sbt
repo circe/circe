@@ -31,7 +31,7 @@ val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.2"
 val scalaCheckVersion = "1.14.3"
-val disciplineVersion = "1.1.0"
+val disciplineVersion = "1.1.1"
 val disciplineScalaTestVersion = "2.0.1"
 val scalaJavaTimeVersion = "2.0.0"
 
