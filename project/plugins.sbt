@@ -1,4 +1,4 @@
-addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.4")
+addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.5")
 addSbtPlugin("com.47deg" % "sbt-microsites" % "1.2.1")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
