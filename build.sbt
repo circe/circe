@@ -30,7 +30,7 @@ val refinedVersion = "0.9.17"
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.3"
-val scalaCheckVersion = "1.14.3"
+val scalaCheckVersion = "1.15.1"
 val disciplineVersion = "1.1.2"
 val disciplineScalaTestVersion = "2.0.1"
 val scalaJavaTimeVersion = "2.0.0"
@@ -378,7 +378,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.2.2.0" % Test
+      "org.scalatestplus" %%% "scalacheck-1-15" % "3.2.3.0" % Test
     )
   )
   .jsSettings(
