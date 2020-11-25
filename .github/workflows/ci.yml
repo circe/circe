@@ -1,0 +1,43 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+        - master
+  pull_request:
+    branches:
+        - master
+
+jobs:
+  main:
+    name: scala-simple-matrix
+    strategy:
+      matrix:
+        scala:
+          - 2.12.12
+          - 2.13.3
+    steps:
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.8
+      - name: Cache sbt
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+        - name: Test JVM
+          sbt ++${{ matrix.scala }} numbersJVM/test coreJVM/test genericJVM/test jawn/test testsJVM/test;
+        - name: Validate JS
+          run: |
+            if [ "${GITHUB_HEAD_REF:-$GITHUB_REF}" = "refs/heads/scalajs" ]; then
+              sbt ++${{ matrix.scala }} clean validateJS;
+            else
+              echo "Skipping Scala.js build";
+            fi
