@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches:
+        - master
+  pull_request:
+    branches:
+        - master
+
+jobs:
+  main:
+    name: Build and test
+    strategy:
+      fail-fast: false
+      matrix:
+        scala: [2.12.12, 2.13.3]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.8
+
+      - name: Cache sbt
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+
+      - name: Test JVM
+        run: |
+          sbt ++${{ matrix.scala }} clean coverage validateJVM benchmark/test &&
+          sbt ++${{ matrix.scala }} benchmark/test;
+
+      - name: Setup Python
+        if: matrix.scala == '2.12.12'
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Coverage report
+        if: matrix.scala == '2.12.12'
+        run: |
+          pip install codecov
+          sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+
+      - name: Validate JS
+        run: |
+          if [ "${GITHUB_HEAD_REF:-$GITHUB_REF}" = "refs/heads/scalajs" ]; then
+            sbt ++${{ matrix.scala }} clean validateJS;
+          else
+            echo "Skipping Scala.js build";
+          fi
+  microsite:
+    name: Microsite
+    strategy:
+      matrix:
+        scala: [2.12.12]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.8
+
+      - name: Setup ruby
+        uses: actions/setup-ruby@v1
+
+      - name: Cache sbt
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+
+      - name: Setup Jekyll
+        run: |
+            gem install sass
+            gem install jekyll -v 4.0.0
+
+      - name: Generate microsite
+        run: |
+            sbt ++${{ matrix.scala }} docs/makeMicrosite
