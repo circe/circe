@@ -541,7 +541,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+      "org.scalameta" %% "munit" % munitVersion % Test
     )
   )
   .enablePlugins(JmhPlugin)

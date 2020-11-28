@@ -1,40 +1,41 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonObject }
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
+import cats.syntax.eq._
 
-class JsonObjectBenchmarkSpec extends AnyFlatSpec {
+class JsonObjectBenchmarkSpec extends FunSuite {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark
 
-  "buildWithFromIterable" should "build the correct JsonObject" in {
+  test("buildWithFromIterable should build the correct JsonObject") {
     assert(benchmark.buildWithFromIterable === benchmark.valueFromIterable)
   }
 
-  "buildWithFromFoldable" should "build the correct JsonObject" in {
+  test("buildWithFromFoldable should build the correct JsonObject") {
     assert(benchmark.buildWithFromFoldable === benchmark.valueFromIterable)
   }
 
-  "buildWithAdd" should "build the correct JsonObject" in {
+  test("buildWithAdd should build the correct JsonObject") {
     assert(benchmark.buildWithAdd === benchmark.valueFromIterable)
   }
 
-  "lookupGoodFromIterable" should "return the correct result" in {
+  test("lookupGoodFromIterable should return the correct result") {
     assert(benchmark.lookupGoodFromIterable === Some(Json.fromInt(50)))
   }
 
-  "lookupBadFromIterable" should "return the correct result" in {
+  test("lookupBadFromIterable should return the correct result") {
     assert(benchmark.lookupBadFromIterable === None)
   }
 
-  "lookupGoodFromFoldable" should "return the correct result" in {
+  test("lookupGoodFromFoldable should return the correct result") {
     assert(benchmark.lookupGoodFromFoldable === Some(Json.fromInt(50)))
   }
 
-  "lookupBadFromFoldable" should "return the correct result" in {
+  test("lookupBadFromFoldable should return the correct result") {
     assert(benchmark.lookupBadFromFoldable === None)
   }
 
-  "remove" should "return the correct result" in {
+  test("remove should return the correct result") {
     val expected = benchmark.fields.flatMap {
       case ("0", _)     => None
       case ("50", _)    => None
