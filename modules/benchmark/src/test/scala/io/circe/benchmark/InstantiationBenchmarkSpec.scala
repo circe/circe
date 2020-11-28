@@ -1,34 +1,34 @@
 package io.circe.benchmark
 
 import io.circe.Json
-import org.scalatest.flatspec.AnyFlatSpec
-
-class InstantiationBenchmarkSpec extends AnyFlatSpec {
+import cats.syntax.eq._
+import munit.FunSuite
+class InstantiationBenchmarkSpec extends FunSuite {
   val benchmark: InstantiationBenchmark = new InstantiationBenchmark
 
   import benchmark._
 
-  "decoderFromNew" should "correctly decode" in {
+  test("decoderFromNew should correctly decode") {
+    assert(decoderFromNew == Right("xyz"))
+  }
+
+  test("decoderFromSAM should correctly decode") {
     assert(decoderFromNew === Right("xyz"))
   }
 
-  "decoderFromSAM" should "correctly decode" in {
+  test("decoderFromInstance should correctly decode") {
     assert(decoderFromNew === Right("xyz"))
   }
 
-  "decoderFromInstance" should "correctly decode" in {
-    assert(decoderFromNew === Right("xyz"))
-  }
-
-  "encoderFromNew" should "correctly encode" in {
+  test("encoderFromNew should correctly encode") {
     assert(encoderFromNew === Json.obj("value" -> Json.fromString("abc")))
   }
 
-  "encoderFromSAM" should "correctly encode" in {
+  test("encoderFromSAM should correctly encode") {
     assert(encoderFromSAM === Json.obj("value" -> Json.fromString("abc")))
   }
 
-  "encoderFromInstance" should "correctly encode" in {
+  test("encoderFromInstance should correctly encode") {
     assert(encoderFromInstance === Json.obj("value" -> Json.fromString("abc")))
   }
 }

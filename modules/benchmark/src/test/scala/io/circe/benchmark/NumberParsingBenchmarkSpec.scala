@@ -1,9 +1,10 @@
 package io.circe.benchmark
 
 import io.circe.{ Json, JsonNumber }
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
+import cats.syntax.eq._
 
-class NumberParsingBenchmarkSpec extends AnyFlatSpec {
+class NumberParsingBenchmarkSpec extends FunSuite {
   val benchmark: NumberParsingBenchmark = new NumberParsingBenchmark
 
   val expectedBigDecimal = BigDecimal(benchmark.inputBigDecimal)
@@ -11,85 +12,85 @@ class NumberParsingBenchmarkSpec extends AnyFlatSpec {
   val expectedDouble = benchmark.inputDouble.toDouble
   val expectedLong = benchmark.inputLong.toLong
 
-  "decodeBigDecimal" should "return the correct result" in {
+  test("decodeBigDecimal should return the correct result") {
     assert(benchmark.decodeBigDecimal === Right(expectedBigDecimal))
   }
 
-  "decodeBigInt" should "return the correct result" in {
+  test("decodeBigInt should return the correct result") {
     assert(benchmark.decodeBigInt === Right(expectedBigInt))
   }
 
-  "decodeDouble" should "return the correct result" in {
+  test("decodeDouble should return the correct result") {
     assert(benchmark.decodeDouble === Right(expectedDouble))
   }
 
-  "decodeLong" should "return the correct result" in {
+  test("decodeLong should return the correct result") {
     assert(benchmark.decodeLong === Right(expectedLong))
   }
 
-  "parseBiggerDecimal" should "return the correct result" in {
+  test("parseBiggerDecimal should return the correct result") {
     val expected = Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe(benchmark.inputBiggerDecimal))
 
     assert(benchmark.parseBiggerDecimal === Right(expected))
   }
 
-  "parseBigDecimal" should "return the correct result" in {
+  test("parseBigDecimal should return the correct result") {
     assert(benchmark.parseBigDecimal === Right(Json.fromBigDecimal(expectedBigDecimal)))
   }
 
-  "parseBigInt" should "return the correct result" in {
+  test("parseBigInt should return the correct result") {
     assert(benchmark.parseBigInt === Right(Json.fromBigInt(expectedBigInt)))
   }
 
-  "parseDouble" should "return the correct result" in {
+  test("parseDouble should return the correct result") {
     assert(benchmark.parseDouble === Right(Json.fromDouble(expectedDouble).get))
   }
 
-  "parseLong" should "return the correct result" in {
+  test("parseLong should return the correct result") {
     assert(benchmark.parseLong === Right(Json.fromLong(expectedLong)))
   }
 
-  "decodeManyBigDecimals" should "return the correct result" in {
+  test("decodeManyBigDecimals should return the correct result") {
     assert(benchmark.decodeManyBigDecimals === Right(List.fill(benchmark.count)(expectedBigDecimal)))
   }
 
-  "decodeManyBigInts" should "return the correct result" in {
+  test("decodeManyBigInts should return the correct result") {
     assert(benchmark.decodeManyBigInts === Right(List.fill(benchmark.count)(expectedBigInt)))
   }
 
-  "decodeManyDoubles" should "return the correct result" in {
+  test("decodeManyDoubles should return the correct result") {
     assert(benchmark.decodeManyDoubles === Right(List.fill(benchmark.count)(expectedDouble)))
   }
 
-  "decodeManyLongs" should "return the correct result" in {
+  test("decodeManyLongs should return the correct result") {
     assert(benchmark.decodeManyLongs === Right(List.fill(benchmark.count)(expectedLong)))
   }
 
-  "parseManyBiggerDecimals" should "return the correct result" in {
+  test("parseManyBiggerDecimals should return the correct result") {
     val expected = Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe(benchmark.inputBiggerDecimal))
 
     assert(benchmark.parseManyBiggerDecimals === Right(Json.fromValues(List.fill(benchmark.count)(expected))))
   }
 
-  "parseManyBigDecimals" should "return the correct result" in {
+  test("parseManyBigDecimals should return the correct result") {
     val expected = Json.fromBigDecimal(expectedBigDecimal)
 
     assert(benchmark.parseManyBigDecimals === Right(Json.fromValues(List.fill(benchmark.count)(expected))))
   }
 
-  "parseManyBigInts" should "return the correct result" in {
+  test("parseManyBigInts should return the correct result") {
     val expected = Json.fromBigInt(expectedBigInt)
 
     assert(benchmark.parseManyBigInts === Right(Json.fromValues(List.fill(benchmark.count)(expected))))
   }
 
-  "parseManyDoubles" should "return the correct result" in {
+  test("parseManyDoubles should return the correct result") {
     val expected = Json.fromDouble(expectedDouble).get
 
     assert(benchmark.parseManyDoubles === Right(Json.fromValues(List.fill(benchmark.count)(expected))))
   }
 
-  "parseManyLongs" should "return the correct result" in {
+  test("parseManyLongs should return the correct result") {
     val expected = Json.fromLong(expectedLong)
 
     assert(benchmark.parseManyLongs === Right(Json.fromValues(List.fill(benchmark.count)(expected))))

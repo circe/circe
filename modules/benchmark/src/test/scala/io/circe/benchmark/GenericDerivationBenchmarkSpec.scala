@@ -1,25 +1,26 @@
 package io.circe.benchmark
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
+import cats.syntax.eq._
 
-class GenericDerivationBenchmarkSpec extends AnyFlatSpec {
+class GenericDerivationBenchmarkSpec extends FunSuite {
   val benchmark: GenericDerivationBenchmark = new GenericDerivationBenchmark
 
   import benchmark._
 
-  "The derived codecs" should "correctly decode Foos" in {
+  test("The derived codecs should correctly decode Foos") {
     assert(decodeDerived === Right(exampleFoo))
   }
 
-  it should "correctly encode Foos" in {
+  test("The derived codecs should correctly encode Foos") {
     assert(encodeDerived === exampleFooJson)
   }
 
-  "The non-derived codecs" should "correctly decode Foos" in {
+  test("The non-derived codecs should correctly decode Foos") {
     assert(decodeNonDerived === Right(exampleFoo))
   }
 
-  it should "correctly encode Foos" in {
+  test("the non-derived codecs should correctly encode Foos") {
     assert(encodeNonDerived === exampleFooJson)
   }
 }
