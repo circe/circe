@@ -64,9 +64,6 @@ lazy val baseSettings = Seq(
   scalacOptions in (Test, console) ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
   },
-  scalacOptions in Tut ~= {
-    _.filterNot(Set("-Ywarn-unused-import", "-Yno-predef"))
-  },
   scalacOptions in Test ~= {
     _.filterNot(Set("-Yno-predef"))
   },
