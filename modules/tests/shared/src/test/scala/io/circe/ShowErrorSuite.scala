@@ -51,7 +51,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     assert(DecodingFailure("the message", ops).show === expected)
   }
 
-  test("Show[DecodingFailure] should display field selection") {
+  property("Show[DecodingFailure] should display field selection") {
     Prop.forAll(downFields) { moves =>
       val selection = moves.foldRight("") {
         case (DownField(f), s) => s"$s.$f"
@@ -63,7 +63,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     }
   }
 
-  test("Show[DecodingFailure] should display array indexing") {
+  property("Show[DecodingFailure] should display array indexing") {
     Prop.forAll(arrayMoves) { moves =>
       val ops = moves :+ DownArray
       val index = moves.foldLeft(0) {
