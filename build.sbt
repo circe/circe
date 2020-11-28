@@ -31,8 +31,10 @@ val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.3"
 val scalaCheckVersion = "1.15.1"
+val munitVersion = "0.7.19"
 val disciplineVersion = "1.1.2"
 val disciplineScalaTestVersion = "2.1.0"
+val disciplineMunitVersion = "1.0.3"
 val scalaJavaTimeVersion = "2.0.0"
 
 /**
@@ -75,7 +77,9 @@ lazy val baseSettings = Seq(
   (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
   ivyConfigurations += CompileTime.hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
-  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name))
+  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name)),
+  testFrameworks += new TestFramework("munit.Framework"),
+  scalaJSLinkerConfig in Test ~= (_.withModuleKind(ModuleKind.CommonJSModule))
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
@@ -465,7 +469,8 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion
+      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
+      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ).map(_.withDottyCompat(scalaVersion.value)),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
