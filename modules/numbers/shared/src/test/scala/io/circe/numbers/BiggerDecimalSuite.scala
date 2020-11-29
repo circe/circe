@@ -114,7 +114,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     }
   }
 
-  test("fromBigDecimal should round-trip BigDecimal values") {
+  property("fromBigDecimal should round-trip BigDecimal values") {
     forAll { (value: SBigDecimal) =>
       val result = BiggerDecimal.fromBigDecimal(value.underlying)
       assert(
@@ -181,7 +181,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     }
   }
 
-  test("parseBiggerDecimal should parse any BigDecimal string") {
+  property("parseBiggerDecimal should parse any BigDecimal string") {
     forAll { (value: SBigDecimal) =>
       val d = BiggerDecimal.parseBiggerDecimal(value.toString)
 
