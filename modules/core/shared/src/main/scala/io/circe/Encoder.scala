@@ -176,6 +176,13 @@ object Encoder
   /**
    * @group Encoding
    */
+  implicit final val encodeNothing: AsObject[Nothing] = new AsObject[Nothing] {
+    final def encodeObject(a: Nothing): JsonObject = JsonObject.empty
+  }
+
+  /**
+   * @group Encoding
+   */
   implicit final val encodeBoolean: Encoder[Boolean] = new Encoder[Boolean] {
     final def apply(a: Boolean): Json = Json.fromBoolean(a)
   }
