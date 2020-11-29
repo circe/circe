@@ -273,7 +273,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
     scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies +=
-      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion % Test
+      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
   )
   .dependsOn(numbersTestingBase % Test)
 
