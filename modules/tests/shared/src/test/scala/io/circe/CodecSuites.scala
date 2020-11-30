@@ -1,26 +1,19 @@
 package io.circe
 
-import cats.data.{
-  Chain,
-  NonEmptyChain,
-  NonEmptyList,
-  NonEmptyMap,
-  NonEmptySet,
-  NonEmptyStream,
-  NonEmptyVector,
-  Validated
-}
+import java.util.UUID
+
+import cats.data._
 import cats.instances.all._
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import cats.syntax.contravariant._
-import cats.syntax.invariant._
 import cats.syntax.eq._
+import cats.syntax.invariant._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import io.circe.tests.examples.{ Foo, Wub }
-import java.util.UUID
+import io.circe.tests.examples.{ ADT, Foo, Wub }
 import org.scalacheck.{ Arbitrary, Gen }
+
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
 
@@ -55,8 +48,7 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
 }
 
 class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
-  import java.{ lang => jl }
-  import java.{ math => jm }
+  import java.{ lang => jl, math => jm }
 
   private def JavaCodecTests[ScalaPrimitive, JavaBoxed](
     wrap: ScalaPrimitive => JavaBoxed,
@@ -189,6 +181,11 @@ class EitherCodecSuite extends CirceSuite {
   checkAll("Codec[Either[Int, String]] via Encoder and Codec", CodecTests[Either[Int, String]](codec, encoder).codec)
 }
 
+class NothingCodecSuite extends CirceSuite {
+
+  checkAll("Codec[ADT[String, Int]]", CodecTests[ADT[String, Int]](ADT.decodeADT, ADT.encodeADT).codec)
+
+}
 class ValidatedCodecSuite extends CirceSuite {
   val decoder = Decoder.decodeValidated[Int, String]("E", "A")
   val encoder = Encoder.encodeValidated[Int, String]("E", "A")
