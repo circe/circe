@@ -11,7 +11,7 @@ import cats.syntax.eq._
 import cats.syntax.invariant._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceSuite
-import io.circe.tests.examples.{ ADT, Foo, Wub }
+import io.circe.tests.examples.{ ADT, ADTBar, ADTFoo, Foo, Wub }
 import org.scalacheck.{ Arbitrary, Gen }
 
 import scala.collection.immutable.SortedMap
@@ -183,7 +183,28 @@ class EitherCodecSuite extends CirceSuite {
 
 class NothingCodecSuite extends CirceSuite {
 
-  checkAll("Codec[ADT[String, Int]]", CodecTests[ADT[String, Int]](ADT.decodeADT, ADT.encodeADT).codec)
+  implicit val eqADTFoo: Eq[ADTFoo[String, Int]] = Eq.fromUniversalEquals
+  implicit val arbitraryADTFoo: Arbitrary[ADTFoo[String, Int]] = Arbitrary(
+    for {
+      a <- Arbitrary.arbitrary[String]
+      b <- Arbitrary.arbitrary[Int]
+    } yield ADTFoo(a, b)
+  )
+  implicit val eqADTBar: Eq[ADTBar[Int]] = Eq.fromUniversalEquals
+  implicit val arbitraryADTBar: Arbitrary[ADTBar[Int]] = Arbitrary(
+    for {
+      b <- Arbitrary.arbitrary[Int]
+    } yield ADTBar(b)
+  )
+  implicit val eqADT: Eq[ADT[String, Int]] = Eq.fromUniversalEquals
+
+  implicit val arbitraryADT: Arbitrary[ADT[String, Int]] = Arbitrary(
+    Gen.oneOf(
+      Arbitrary.arbitrary[ADTFoo[String, Int]],
+      Arbitrary.arbitrary[ADTBar[Int]]
+    )
+  )
+  checkAll("Codec[ADT[String, Int]]", CodecTests[ADT[String, Int]].codec)
 
 }
 class ValidatedCodecSuite extends CirceSuite {

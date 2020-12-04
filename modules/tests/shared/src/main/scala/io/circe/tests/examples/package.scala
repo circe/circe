@@ -149,57 +149,37 @@ package examples {
   }
   sealed trait ADT[+A, +B]
 
-  case class ADTFoo(a: String, b: Int) extends ADT[String, Int]
+  case class ADTFoo[+A, +B](a: A, b: B) extends ADT[A, B]
 
-  object ADTFoo {
-    implicit val eqADTFoo: Eq[ADTFoo] = Eq.fromUniversalEquals
-    implicit val arbitraryADTFoo: Arbitrary[ADTFoo] = Arbitrary(
-      for {
-        a <- Arbitrary.arbitrary[String]
-        b <- Arbitrary.arbitrary[Int]
-      } yield ADTFoo(a, b)
-    )
-    val decodeADTFoo: Decoder[ADTFoo] = Decoder.forProduct2("a", "b")(ADTFoo.apply)
-    val encodeADTFoo: Encoder[ADTFoo] = Encoder.forProduct2("a", "b") {
-      case ADTFoo(a, b) => (a, b)
-    }
-  }
-
-  case class ADTBar(b: Int) extends ADT[Nothing, Int]
-
-  object ADTBar {
-    implicit val eqADTBar: Eq[ADTBar] = Eq.fromUniversalEquals
-    implicit val arbitraryADTBar: Arbitrary[ADTBar] = Arbitrary(
-      for {
-        b <- Arbitrary.arbitrary[Int]
-      } yield ADTBar(b)
-    )
-    val decodeADTBar: Decoder[ADTBar] = Decoder.forProduct1("b")(ADTBar.apply)
-    val encodeADTBar: Encoder[ADTBar] = Encoder.forProduct1("b") {
-      case ADTBar(b) => b
-    }
-  }
+  case class ADTBar[+B](b: B) extends ADT[Nothing, B]
 
   object ADT {
-    implicit val eqADT: Eq[ADT[String, Int]] = Eq.fromUniversalEquals
 
-    implicit val arbitraryADT: Arbitrary[ADT[String, Int]] = Arbitrary(
-      Gen.oneOf(
-        Arbitrary.arbitrary[ADTFoo],
-        Arbitrary.arbitrary[ADTBar]
-      )
-    )
-
-    val encodeADT: Encoder[ADT[String, Int]] = Encoder.instance {
-      case foo @ ADTFoo(_, _) => Json.obj("ADTFoo" -> ADTFoo.encodeADTFoo(foo))
-      case bar @ ADTBar(_)    => Json.obj("ADTBar" -> ADTBar.encodeADTBar(bar))
+    implicit def adtEncoder[A: Encoder, B: Encoder]: Encoder[ADT[A, B]] = Encoder.instance {
+      case foo @ ADTFoo(_, _) =>
+        Json.obj(
+          "ADTFoo" -> Json.obj(
+            "a" -> Json.fromString(Option(foo.a.toString).getOrElse("")),
+            "b" -> Json.fromString(Option(foo.b.toString).getOrElse(""))
+          )
+        )
+      case bar @ ADTBar(_) =>
+        Json.obj("ADTBar" -> Json.obj("b" -> Json.fromString(Option(bar.b.toString).getOrElse(""))))
     }
 
-    val decodeADT: Decoder[ADT[String, Int]] = Decoder.instance { c =>
+    implicit def adtDecoder[A: Decoder, B: Decoder]: Decoder[ADT[A, B]] = Decoder.instance { c =>
       c.keys.map(_.toVector) match {
-        case Some(Vector("ADTFoo")) => c.get("ADTFoo")(ADTFoo.decodeADTFoo.widen)
-        case Some(Vector("ADTBar")) => c.get("ADTBar")(ADTBar.decodeADTBar.widen)
-        case _                      => Left(DecodingFailure("ADT", c.history))
+        case Some(Vector("ADTFoo")) =>
+          for {
+            a <- c.downField("ADTFoo").downField("a").as[A]
+            b <- c.downField("ADTFoo").downField("b").as[B]
+          } yield ADTFoo(a, b)
+
+        case Some(Vector("ADTBar")) =>
+          for {
+            b <- c.downField("ADTBar").downField("b").as[B]
+          } yield ADTBar(b)
+        case _ => Left(DecodingFailure("ADT", c.history))
       }
     }
   }
