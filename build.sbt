@@ -524,7 +524,7 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
       ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
-      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion % Test
+      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
   .dependsOn(core)
