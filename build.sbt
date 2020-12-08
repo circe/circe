@@ -378,8 +378,8 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
     libraryDependencies ++= Seq(
       "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
-      "org.scalatestplus" %%% "scalacheck-1-15" % "3.2.3.0" % Test
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
   )
   .jsSettings(
