@@ -1377,6 +1377,20 @@ object Decoder
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.product(fb)
+      override final def ap[A, B](ff: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = ff.product(fa).map {
+        case (f, a) => f(a)
+      }
+      override final def ap2[A, B, Z](ff: Decoder[(A, B) => Z])(fa: Decoder[A], fb: Decoder[B]): Decoder[Z] =
+        ff.product(fa.product(fb)).map {
+          case (f, (a, b)) => f(a, b)
+        }
+      override final def map2[A, B, Z](fa: Decoder[A], fb: Decoder[B])(f: (A, B) => Z): Decoder[Z] =
+        fa.product(fb).map {
+          case (a, b) => f(a, b)
+        }
+      override final def productR[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[B] = fa.product(fb).map(_._2)
+      override final def productL[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[A] = fa.product(fb).map(_._1)
+
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
