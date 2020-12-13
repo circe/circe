@@ -641,4 +641,19 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
       val json = Json.arr(Json.obj("a" -> 1.asJson))
       assert(decoder.decodeJson(json) == Left(DecodingFailure("Some message", List(DownArray))))
   }
+
+  "decodeAccumulating" should "accumulate errors after traversal" in {
+    import cats.syntax.functor._
+    import cats.syntax.traverse._
+
+    val decoder: Decoder[Unit] = List(
+      Decoder[Int].ensure(_ > 0, "pos"),
+      Decoder[Int].ensure(_ % 2 != 0, "odd")
+    ).sequence.void
+
+    val result = decoder.decodeAccumulating(Json.fromInt(-2).hcursor)
+
+    assert(result.isInvalid)
+    assert(result.swap.toOption.map(_.size) === Some(2))
+  }
 }
