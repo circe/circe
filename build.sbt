@@ -423,7 +423,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
   .settings(noPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
+      "org.scalameta" %%% "munit" % munitVersion % Test
     )
   )
   .dependsOn(coreJS)
