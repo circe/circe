@@ -31,7 +31,7 @@ val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.3"
 val scalaCheckVersion = "1.15.1"
-val munitVersion = "0.7.19"
+val munitVersion = "0.7.20"
 val disciplineVersion = "1.1.2"
 val disciplineScalaTestVersion = "2.1.0"
 val disciplineMunitVersion = "1.0.3"
