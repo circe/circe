@@ -51,6 +51,9 @@ jobs:
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+
       - name: Install Jekyll
         run: |
           gem install sass
