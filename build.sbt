@@ -25,8 +25,7 @@ githubWorkflowBuild in ThisBuild := Seq(
       "scalafmtCheckAll",
       "scalafmtSbtCheck",
       "validateJVM",
-      "benchmark/test",
-      "coverageReport"
+      "benchmark/test"
     ),
     id = None,
     name = Some("Test")

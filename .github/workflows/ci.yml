@@ -60,6 +60,6 @@ jobs:
           gem install jekyll -v 4.0.0
 
       - name: Test
-        run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test coverageReport
+        run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test
 
       - uses: codecov/codecov-action@v1
