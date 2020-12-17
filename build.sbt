@@ -24,7 +24,7 @@ githubWorkflowBuild in ThisBuild := Seq(
       "scalastyle",
       "scalafmtCheckAll",
       "scalafmtSbtCheck",
-      "test",
+      "validateJVM",
       "benchmark/test",
       "coverageReport"
     ),
