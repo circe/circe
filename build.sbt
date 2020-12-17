@@ -141,6 +141,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     .jvmSettings(
       mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
     )
+    .jsSettings(coverageEnabled := false)
 }
 
 /**
