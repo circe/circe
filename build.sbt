@@ -34,7 +34,7 @@ val scalaCheckVersion = "1.15.2"
 val munitVersion = "0.7.20"
 val disciplineVersion = "1.1.2"
 val disciplineScalaTestVersion = "2.1.0"
-val disciplineMunitVersion = "1.0.3"
+val disciplineMunitVersion = "1.0.4"
 val scalaJavaTimeVersion = "2.0.0"
 
 /**
