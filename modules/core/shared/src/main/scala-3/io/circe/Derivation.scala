@@ -1,7 +1,7 @@
 package io.circe
 
 import cats.data.{NonEmptyList, Validated}
-import scala.deriving.{ArrayProduct, Mirror}
+import scala.deriving.Mirror
 import scala.collection.mutable.WrappedArray
 import scala.compiletime.{constValue, erasedValue, error, summonFrom}
 
@@ -86,7 +86,7 @@ private[circe] trait DecoderDerivation {
             }
 
             if (failed eq null) {
-              Right(m.fromProduct(new ArrayProduct(res)))
+              Right(m.fromProduct(Tuple.fromArray(res)))
             } else {
               failed.asInstanceOf[Decoder.Result[A]]
             }
@@ -116,7 +116,7 @@ private[circe] trait DecoderDerivation {
 
               val failures = failed.result()
               if (failures.isEmpty) {
-                Validated.valid(m.fromProduct(new ArrayProduct(res)))
+                Validated.valid(m.fromProduct(Tuple.fromArray(res)))
               } else {
                 Validated.invalid(NonEmptyList.fromListUnsafe(failures))
               }
@@ -169,7 +169,7 @@ private[circe] trait CodecDerivation {
             }
 
             if (failed eq null) {
-              Right(m.fromProduct(new ArrayProduct(res)))
+              Right(m.fromProduct(Tuple.fromArray(res)))
             } else {
               failed.asInstanceOf[Decoder.Result[A]]
             }
@@ -199,7 +199,7 @@ private[circe] trait CodecDerivation {
 
               val failures = failed.result()
               if (failures.isEmpty) {
-                Validated.valid(m.fromProduct(new ArrayProduct(res)))
+                Validated.valid(m.fromProduct(Tuple.fromArray(res)))
               } else {
                 Validated.invalid(NonEmptyList.fromListUnsafe(failures))
               }

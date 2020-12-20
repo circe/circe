@@ -6,10 +6,11 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
-crossScalaVersions in ThisBuild := List("2.12.12", "2.13.4")
+crossScalaVersions in ThisBuild := List("3.0.0-M3", "2.12.12", "2.13.4")
 scalaVersion in ThisBuild := crossScalaVersions.value.last
 
 githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
+githubWorkflowScalaVersions in ThisBuild := crossScalaVersions.in(ThisBuild).value.tail
 githubWorkflowPublishTargetBranches in ThisBuild := Nil
 githubWorkflowBuild in ThisBuild := Seq(
   WorkflowStep.Use("actions", "setup-ruby", "v1", name = Some("Set up Ruby")),
@@ -298,7 +299,7 @@ lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previou
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
-  libraryDependencies += ("org.scalacheck" %%% "scalacheck" % scalaCheckVersion).withDottyCompat(scalaVersion.value),
+  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
   coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
 )
 
@@ -318,7 +319,7 @@ lazy val numbersJS = numbersBase.js
 
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += ("org.typelevel" %%% "cats-core" % catsVersion).withDottyCompat(scalaVersion.value),
+    libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
     sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
@@ -326,7 +327,7 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
         case _            => Nil
       }
     }
@@ -347,7 +348,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
         case _            => Nil
       }
     },
@@ -357,7 +358,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
         case _            => Nil
       }
     }
@@ -412,7 +413,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion % Test,
+      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).withDottyCompat(scalaVersion.value),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
@@ -466,7 +467,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += ("org.scodec" %%% "scodec-bits" % "1.1.23").withDottyCompat(scalaVersion.value),
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.23",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -486,7 +487,7 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
       "org.typelevel" %%% "cats-laws" % catsVersion,
       "org.typelevel" %%% "discipline-core" % disciplineVersion
-    ).map(_.withDottyCompat(scalaVersion.value))
+    )
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
@@ -504,10 +505,13 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     },
     scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % shapelessVersion,
-      "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
+      ("com.chuusai" %%% "shapeless" % shapelessVersion).withDottyCompat(scalaVersion.value),
+      ("org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion)
+        .withDottyCompat(scalaVersion.value)
+        .exclude("org.scalacheck", "scalacheck_2.13")
+        .exclude("org.typelevel", "discipline-core_2.13"),
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
-    ).map(_.withDottyCompat(scalaVersion.value)),
+    ),
     sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
     unmanagedResourceDirectories in Compile +=
       file("modules/tests") / "shared" / "src" / "main" / "resources",
@@ -517,7 +521,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
         case _            => Nil
       }
     },
@@ -527,7 +531,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
 
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((0, _)) => extraDirs("-0") ++ extraDirs("-2.13+")
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
         case _            => Nil
       }
     }
@@ -559,7 +563,7 @@ lazy val hygieneJS = hygieneBase.js
 lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .settings(
     libraryDependencies ++= Seq(
-      ("org.typelevel" %% "jawn-parser" % jawnVersion).withDottyCompat(scalaVersion.value),
+      "org.typelevel" %% "jawn-parser" % jawnVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
