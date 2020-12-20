@@ -952,6 +952,22 @@ object Decoder
     }
   }
 
+  implicit final def decodeOptionOption[A](implicit d: Decoder[A]): Decoder[Option[Option[A]]] =
+    new Decoder[Option[Option[A]]] {
+      private val message = "Option[Option[_]] has no default Decoder. Please write a custom Decoder."
+
+      final def apply(c: HCursor): Result[Option[Option[A]]] = tryDecode(c)
+
+      final override def tryDecode(c: ACursor): Decoder.Result[Option[Option[A]]] =
+        Left(DecodingFailure(message, c.history))
+
+      final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[Option[A]]] =
+        tryDecodeAccumulating(c)
+
+      final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[Option[Option[A]]] =
+        Validated.invalidNel(DecodingFailure(message, c.history))
+    }
+
   /**
    * @group Decoding
    */

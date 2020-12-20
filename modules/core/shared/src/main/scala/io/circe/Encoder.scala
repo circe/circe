@@ -316,6 +316,15 @@ object Encoder
   }
 
   /**
+   * `Option[Option[_]]` has no default Encoder. Please write a custom Encoder.
+   *
+   * This implicit collides with implicit [[encodeOption]] for types of the form `Option[Option[A]]`, and therefore
+   * causes a compiler error for such types.
+   */
+  implicit final def encodeOptionOption[A](implicit e: Encoder[A]): Encoder[Option[Option[A]]] =
+    (a: Option[Option[A]]) => Json.Null
+
+  /**
    * @group Encoding
    */
   implicit final def encodeSome[A](implicit e: Encoder[A]): Encoder[Some[A]] = e.contramap(_.get)

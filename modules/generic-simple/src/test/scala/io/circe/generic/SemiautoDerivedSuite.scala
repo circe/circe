@@ -198,6 +198,24 @@ class SemiautoDerivedSuite extends CirceSuite {
     }
   }
 
+  "Decoder[Option[Option[A]]" should "not be automatically derived" in {
+    assertDoesNotCompile {
+      """
+        case class Bat(field: Option[Option[String]])
+        val decoder: Decoder[Bat] = deriveDecoder
+      """
+    }
+  }
+
+  "Encoder[Option[Option[A]]" should "not be automatically derived" in {
+    assertDoesNotCompile {
+      """
+        case class Bat(field: Option[Option[String]])
+        val encoder: Encoder[Bat] = deriveEncoder
+      """
+    }
+  }
+
   "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
     val json = Encoder[List[Int]].apply(is)
 
