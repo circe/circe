@@ -30,6 +30,11 @@ githubWorkflowBuild in ThisBuild := Seq(
     id = None,
     name = Some("Test")
   ),
+  WorkflowStep.Sbt(
+    List("coverageReport"),
+    id = None,
+    name = Some("Coverage")
+  ),
   WorkflowStep.Use(
     "codecov",
     "codecov-action",
