@@ -570,10 +570,10 @@ class DecoderSuite extends CirceSuite with LargeNumberDecoderTests with TableDri
 
   "a stateful Decoder with requireEmpty and an optional value" should
     "succeed when there are no leftover fields and an optional field is missing" in {
-    val json = Json.obj("b" -> "2".asJson)
+      val json = Json.obj("b" -> "2".asJson)
 
-    assert(statefulOpt.decodeJson(json) === Right("2"))
-  }
+      assert(statefulOpt.decodeJson(json) === Right("2"))
+    }
 
   it should "succeed when there are no leftover fields and an optional field is present" in {
     val json = Json.obj("a" -> "1".asJson, "b" -> "2".asJson)
