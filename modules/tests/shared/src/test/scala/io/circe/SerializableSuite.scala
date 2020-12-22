@@ -2,15 +2,20 @@ package io.circe
 
 import cats.laws.discipline.SerializableTests
 import cats.kernel.laws.SerializableLaws
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
+import org.scalacheck.Prop
 
-class SerializableSuite extends CirceSuite {
-  "Json" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(j); ()
+class SerializableSuite extends CirceMunitSuite {
+  property("Json should be serializable") {
+    Prop.forAll { (j: Json) =>
+      SerializableLaws.serializable(j); ()
+    }
   }
 
-  "HCursor" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(j.hcursor); ()
+  property("HCursor should be serializable") {
+    Prop.forAll { (j: Json) =>
+      SerializableLaws.serializable(j.hcursor); ()
+    }
   }
 
   checkAll("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))

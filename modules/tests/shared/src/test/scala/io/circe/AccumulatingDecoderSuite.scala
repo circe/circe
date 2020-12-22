@@ -5,10 +5,10 @@ import cats.instances.all._
 import cats.laws.discipline.arbitrary._
 import cats.syntax.eq._
 import io.circe.syntax._
-import io.circe.tests.CirceSuite
-import org.scalatest.Inside
+import io.circe.tests.CirceMunitSuite
+import org.scalacheck.Prop.forAll
 
-class AccumulatingDecoderSpec extends CirceSuite with Inside {
+class AccumulatingDecoderSpec extends CirceMunitSuite {
   private case class BadSample(a: Int, b: Boolean, c: Int)
 
   private object BadSample {
@@ -27,7 +27,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  "decodeAccumulating" should "return as many errors as invalid elements in a list" in {
+  property("return as many errors as invalid elements in a list") {
     forAll { (xs: List[Either[Int, String]]) =>
       val json = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson
       val decoded = Decoder[List[String]].decodeAccumulating(json.hcursor)
@@ -37,7 +37,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a list" in {
+  property("return expected failures in a list") {
     forAll { (xs: List[Either[Int, String]]) =>
       val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
       val invalidElems = xs.collect { case Left(e) => Some(e.asJson) }
@@ -47,7 +47,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a map" in {
+  property("return expected failures in a map") {
     forAll { (xs: Map[String, Either[Int, String]]) =>
       val cursor = xs.map { case (k, v) => (k, v.fold(Json.fromInt, Json.fromString)) }.asJson.hcursor
       val invalidElems = xs.values.collect { case Left(e) => e.asJson }.toSet
@@ -57,7 +57,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a set" in {
+  property("return expected failures in a set") {
     forAll { (xs: Set[Either[Int, String]]) =>
       val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
       val invalidElems = xs.collect { case Left(e) => Some(e.asJson): Option[Json] }
@@ -67,7 +67,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a non-empty list" in {
+  property("return expected failures in a non-empty list") {
     forAll { (xs: NonEmptyList[Either[Int, String]]) =>
       val cursor = xs.map(_.fold(Json.fromInt, Json.fromString)).asJson.hcursor
       val invalidElems = xs.toList.collect { case Left(e) => Some(e.asJson) }
@@ -77,7 +77,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a tuple" in {
+  property("return expected failures in a tuple") {
     forAll { (xs: (Either[Int, String], Either[Int, String], Either[Int, String])) =>
       val cursor = (
         xs._1.fold(Json.fromInt, Json.fromString),
@@ -95,7 +95,7 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures in a case class" in {
+  property("return expected failures in a case class") {
     forAll { (a: Int, b: Boolean, c: Int) =>
       val cursor = BadSample(a, b, c).asJson.hcursor
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
@@ -105,16 +105,17 @@ class AccumulatingDecoderSpec extends CirceSuite with Inside {
     }
   }
 
-  it should "return expected failures combined with validation errors" in {
+  property("return expected failures combined with validation errors") {
     forAll { (a: Int, b: Boolean, c: Int) =>
       val cursor = BadSample(a, b, c).asJson.hcursor
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
       val result = Decoder[Sample].validate(_ => List("problem")).decodeAccumulating(cursor)
 
-      inside(result.fold(_.toList, _ => Nil)) {
+      result.fold(_.toList, _ => Nil) match {
         case validationError :: errors =>
           assert(validationError === DecodingFailure("problem", List.empty))
           assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+        case _ => ()
       }
     }
   }

@@ -17,10 +17,11 @@ import cats.syntax.contravariant._
 import cats.syntax.invariant._
 import cats.syntax.eq._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.{ Foo, Wub }
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Prop.forAll
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
 
@@ -42,7 +43,7 @@ trait SpecialEqForFloatAndDouble {
     (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
 }
-class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
+class AnyValCodecSuite extends CirceMunitSuite with SpecialEqForFloatAndDouble {
   checkAll("Codec[Unit]", CodecTests[Unit].codec)
   checkAll("Codec[Boolean]", CodecTests[Boolean].codec)
   checkAll("Codec[Char]", CodecTests[Char].codec)
@@ -54,7 +55,7 @@ class AnyValCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkAll("Codec[Long]", CodecTests[Long].codec)
 }
 
-class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
+class JavaBoxedCodecSuite extends CirceMunitSuite with SpecialEqForFloatAndDouble {
   import java.{ lang => jl }
   import java.{ math => jm }
 
@@ -83,7 +84,7 @@ class JavaBoxedCodecSuite extends CirceSuite with SpecialEqForFloatAndDouble {
   checkAll("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
+class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
@@ -109,22 +110,27 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   checkAll("Codec[Set[Int]]", CodecTests[Set[Int]].codec)
   checkAll("Codec[Array[String]]", CodecTests[Array[String]].codec)
 
-  "A tuple encoder" should "return a JSON array" in forAll { (t: (Int, String, Char)) =>
+  property("A tuple encoder should return a JSON array")(tupleEncoderProp)
+  private lazy val tupleEncoderProp = forAll { (t: (Int, String, Char)) =>
     val json = Encoder[(Int, String, Char)].apply(t)
     val target = Json.arr(Json.fromInt(t._1), Json.fromString(t._2), Encoder[Char].apply(t._3))
 
     assert(json === target && json.as[(Int, String, Char)] === Right(t))
   }
 
-  "A tuple decoder" should "fail if not given enough elements" in forAll { (i: Int, s: String) =>
-    assert(Json.arr(Json.fromInt(i), Json.fromString(s)).as[(Int, String, Double)].isLeft)
+  property("A tuple decoder should fail if not given enough elements") {
+    forAll { (i: Int, s: String) =>
+      assert(Json.arr(Json.fromInt(i), Json.fromString(s)).as[(Int, String, Double)].isLeft)
+    }
   }
 
-  it should "fail if given too many elements" in forAll { (i: Int, s: String, d: Double) =>
-    assert(Json.arr(Json.fromInt(i), Json.fromString(s), Json.fromDoubleOrNull(d)).as[(Int, String)].isLeft)
+  property("A tuple decoder should fail if given too many elements") {
+    forAll { (i: Int, s: String, d: Double) =>
+      assert(Json.arr(Json.fromInt(i), Json.fromString(s), Json.fromDoubleOrNull(d)).as[(Int, String)].isLeft)
+    }
   }
 
-  "A list decoder" should "not stack overflow with a large number of elements" in {
+  test("A list decoder should not stack overflow with a large number of elements") {
     val size = 10000
     val jsonArr = Json.arr(Seq.fill(size)(Json.fromInt(1)): _*)
 
@@ -136,7 +142,7 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
     assert(list.forall(_ == 1))
   }
 
-  it should "stop after first failure" in {
+  test("A list decoder should stop after first failure") {
     object Bomb {
       implicit val decodeBomb: Decoder[Bomb] = Decoder[Int].map {
         case 0 => throw new Exception("You shouldn't have tried to decode this")
@@ -153,7 +159,7 @@ class StdLibCodecSuite extends CirceSuite with ArrayFactoryInstance {
   }
 }
 
-class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
+class CatsCodecSuite extends CirceMunitSuite with StreamFactoryInstance {
   checkAll("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
@@ -163,14 +169,14 @@ class CatsCodecSuite extends CirceSuite with StreamFactoryInstance {
   checkAll("Codec[NonEmptyChain[Int]]", CodecTests[NonEmptyChain[Int]].codec)
 }
 
-class CirceCodecSuite extends CirceSuite {
+class CirceCodecSuite extends CirceMunitSuite {
   checkAll("Codec[Json]", CodecTests[Json].codec)
   checkAll("Codec[JsonObject]", CodecTests[JsonObject].codec)
   checkAll("Codec[JsonNumber]", CodecTests[JsonNumber].codec)
   checkAll("Codec[Foo]", CodecTests[Foo](Foo.decodeFoo, Foo.encodeFoo).codec)
 }
 
-class InvariantCodecSuite extends CirceSuite {
+class InvariantCodecSuite extends CirceMunitSuite {
   val wubCodec = Codec.from(Decoder[Long], Encoder[Long]).imap(Wub(_))(_.x)
   val wubCodecE = Codec.from(Decoder[Long], Encoder[Long]).iemap(l => Right(Wub(l)))(_.x)
 
@@ -178,7 +184,7 @@ class InvariantCodecSuite extends CirceSuite {
   checkAll("Codec[Wub] via iemap", CodecTests[Wub](wubCodecE, wubCodecE).codec)
 }
 
-class EitherCodecSuite extends CirceSuite {
+class EitherCodecSuite extends CirceMunitSuite {
   val decoder = Decoder.decodeEither[Int, String]("L", "R")
   val encoder = Encoder.encodeEither[Int, String]("L", "R")
   val codec = Codec.codecForEither[Int, String]("L", "R")
@@ -189,7 +195,7 @@ class EitherCodecSuite extends CirceSuite {
   checkAll("Codec[Either[Int, String]] via Encoder and Codec", CodecTests[Either[Int, String]](codec, encoder).codec)
 }
 
-class ValidatedCodecSuite extends CirceSuite {
+class ValidatedCodecSuite extends CirceMunitSuite {
   val decoder = Decoder.decodeValidated[Int, String]("E", "A")
   val encoder = Encoder.encodeValidated[Int, String]("E", "A")
   val codec = Codec.codecForValidated[Int, String]("E", "A")
@@ -206,14 +212,14 @@ class ValidatedCodecSuite extends CirceSuite {
   )
 }
 
-class DisjunctionCodecSuite extends CirceSuite {
+class DisjunctionCodecSuite extends CirceMunitSuite {
   import disjunctionCodecs._
 
   checkAll("Codec[Either[Int, String]]", CodecTests[Either[Int, String]].codec)
   checkAll("Codec[Validated[String, Int]]", CodecTests[Validated[String, Int]].codec)
 }
 
-class DecodingFailureSuite extends CirceSuite {
+class DecodingFailureSuite extends CirceMunitSuite {
   val n = Json.fromInt(10)
   val b = Json.True
   val s = Json.fromString("foo")
@@ -226,23 +232,23 @@ class DecodingFailureSuite extends CirceSuite {
   val ld = Decoder[List[String]]
   val od = Decoder[Map[String, Int]]
 
-  "A JSON number" should "not be decoded as a non-numeric type" in {
+  test("A JSON number should not be decoded as a non-numeric type") {
     assert(List(bd, sd, ld, od).forall(d => d.decodeJson(n).isLeft))
   }
 
-  "A JSON boolean" should "not be decoded as a non-boolean type" in {
+  test("A JSON boolean should not be decoded as a non-boolean type") {
     assert(List(nd, sd, ld, od).forall(d => d.decodeJson(b).isLeft))
   }
 
-  "A JSON string" should "not be decoded as a non-string type" in {
+  test("A JSON string should not be decoded as a non-string type") {
     assert(List(nd, bd, ld, od).forall(d => d.decodeJson(s).isLeft))
   }
 
-  "A JSON array" should "not be decoded as an inappropriate type" in {
+  test("A JSON array should not be decoded as an inappropriate type") {
     assert(List(nd, bd, sd, od).forall(d => d.decodeJson(l).isLeft))
   }
 
-  "A JSON object" should "not be decoded as an inappropriate type" in {
+  test("A JSON object should anot be decoded as an inappropriate type") {
     assert(List(nd, bd, sd, ld).forall(d => d.decodeJson(o).isLeft))
   }
 }
