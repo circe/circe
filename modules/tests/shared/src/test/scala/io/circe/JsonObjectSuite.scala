@@ -4,13 +4,11 @@ import cats.data.Const
 import cats.instances.all._
 import cats.kernel.Eq
 import cats.syntax.eq._
-import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import io.circe.tests.CirceSuite
 import org.scalatest.exceptions.TestFailedException
 
-class JsonObjectSuite extends CirceMunitSuite {
-
-  property("JsonObject.fromIterable should drop all but the last instance when fields have the same key") {
+class JsonObjectSuite extends CirceSuite {
+  "JsonObject.fromIterable" should "drop all but the last instance when fields have the same key" in {
     forAll { (key: String, values: List[Json]) =>
       val result = JsonObject.fromIterable(values.map(key -> _))
       val expected = if (values.isEmpty) JsonObject.empty else JsonObject.singleton(key, values.last)
@@ -19,15 +17,14 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  test("JsonObject.fromIterable should maintain the first position when keys are duplicated") {
+  it should "maintain the first position when keys are duplicated" in {
     val fields = List("a" -> Json.fromInt(0), "b" -> Json.fromInt(1), "c" -> Json.fromInt(2), "b" -> Json.fromInt(3))
     val expected = JsonObject("a" -> Json.fromInt(0), "b" -> Json.fromInt(3), "c" -> Json.fromInt(2))
 
     assert(JsonObject.fromIterable(fields) === expected)
   }
 
-  property("JsonObject.fromFoldable should match JsonObject.fromIterable")(fromFoldableProp)
-  private lazy val fromFoldableProp = forAll { (fields: List[(String, Json)]) =>
+  "JsonObject.fromFoldable" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
 
@@ -35,7 +32,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result1 === result2)
   }
 
-  property("JsonObject.fromFoldable should drop all but the last instance when fields have the same key") {
+  it should "drop all but the last instance when fields have the same key" in {
     forAll { (key: String, values: List[Json]) =>
       val result = JsonObject.fromFoldable(values.map(key -> _))
       val expected = if (values.isEmpty) JsonObject.empty else JsonObject.singleton(key, values.last)
@@ -44,21 +41,18 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  test("JsonObject.fromFoldable should maintain the first position when keys are duplicated") {
+  it should "maintain the first position when keys are duplicated" in {
     val fields = List("a" -> Json.fromInt(0), "b" -> Json.fromInt(1), "c" -> Json.fromInt(2), "b" -> Json.fromInt(3))
     val expected = JsonObject("a" -> Json.fromInt(0), "b" -> Json.fromInt(3), "c" -> Json.fromInt(2))
 
     assert(JsonObject.fromFoldable(fields) === expected)
   }
 
-  property("JsonObject.apply should match JsonObject.fromIterable") {
-    forAll { (fields: List[(String, Json)]) =>
-      assert(JsonObject(fields: _*) === JsonObject.fromIterable(fields))
-    }
+  "JsonObject.apply" should "match JsonObject.fromIterable" in { (fields: List[(String, Json)]) =>
+    assert(JsonObject(fields: _*) === JsonObject.fromIterable(fields))
   }
 
-  property("apply should find fields if they exist")(applyProp)
-  private lazy val applyProp = forAll { (fields: List[(String, Json)], key: String) =>
+  "apply" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).map(_._2)
@@ -67,8 +61,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2(key) === expected)
   }
 
-  property("contains should find fields if they exist")(containsProp)
-  private lazy val containsProp = forAll { (fields: List[(String, Json)], key: String) =>
+  "contains" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).nonEmpty
@@ -77,8 +70,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.contains(key) === expected)
   }
 
-  property("size should return the expected result")(sizeProp)
-  private lazy val sizeProp = forAll { (fields: List[(String, Json)]) =>
+  "size" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.toMap.size
@@ -87,8 +79,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.size === expected)
   }
 
-  property("isEmpty should return the expected result")(isEmptyProp)
-  private lazy val isEmptyProp = forAll { (fields: List[(String, Json)]) =>
+  "isEmpty" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.isEmpty
@@ -97,8 +88,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.isEmpty === expected)
   }
 
-  property("nonEmpty should return the expected result")(nonEmptyProp)
-  private lazy val nonEmptyProp = forAll { (fields: List[(String, Json)]) =>
+  "nonEmpty" should "return the expected result" in { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.nonEmpty
@@ -107,8 +97,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.nonEmpty === expected)
   }
 
-  property("kleisli should find fields if they exist")(kleisliProp)
-  lazy val kleisliProp = forAll { (fields: List[(String, Json)], key: String) =>
+  "kleisli" should "find fields if they exist" in { (fields: List[(String, Json)], key: String) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.find(_._1 == key).map(_._2)
@@ -117,8 +106,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.kleisli(key) === expected)
   }
 
-  property("keys should return all keys")(keysProp)
-  private lazy val keysProp = forAll { (fields: List[(String, Json)]) =>
+  "keys" should "return all keys" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = fields.map(_._1).distinct
@@ -127,8 +115,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.keys.toList === expected)
   }
 
-  property("values should return all values")(ValuesExhaustiveProp)
-  lazy val ValuesExhaustiveProp = forAll { (fields: List[(String, Json)]) =>
+  "values" should "return all values" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected: List[Json] = fields
@@ -148,8 +135,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.values.toList === expected)
   }
 
-  property("toMap should round-trip through JsonObject.fromMap")(toMapProp)
-  private lazy val toMapProp = forAll { (fields: List[(String, Json)]) =>
+  "toMap" should "round-trip through JsonObject.fromMap" in forAll { (fields: List[(String, Json)]) =>
     val result1 = JsonObject.fromIterable(fields)
     val result2 = JsonObject.fromFoldable(fields)
     val expected = result1
@@ -158,8 +144,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(JsonObject.fromMap(result2.toMap) === expected)
   }
 
-  property("toIterable should return all fields")(toIterableExhaustiveProp)
-  lazy val toIterableExhaustiveProp = forAll { (values: List[Json]) =>
+  "toIterable" should "return all fields" in forAll { (values: List[Json]) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }.reverse
@@ -171,8 +156,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.toIterable.toList === fields)
   }
 
-  property("toList should return all fields")(toListExhaustiveProp)
-  lazy val toListExhaustiveProp = forAll { (values: List[Json]) =>
+  "toList" should "return all fields" in forAll { (values: List[Json]) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }.reverse
@@ -184,8 +168,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.toList === fields)
   }
 
-  property("toVector should return all fields")(toVectorProp)
-  private lazy val toVectorProp = forAll { (values: Vector[Json]) =>
+  "toVector" should "return all fields" in forAll { (values: Vector[Json]) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }.reverse
@@ -197,7 +180,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2.toVector === fields)
   }
 
-  property("add should replace existing fields with the same key") {
+  "add" should "replace existing fields with the same key" in {
     forAll { (head: Json, tail: List[Json], replacement: Json) =>
       val fields = (head :: tail).zipWithIndex.map {
         case (value, i) => i.toString -> value
@@ -212,7 +195,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("add should replace existing fields with the same key in the correct position") {
+  it should "replace existing fields with the same key in the correct position" in {
     forAll { (head: Json, tail: List[Json], replacement: Json) =>
       val fields = (head :: tail).zipWithIndex.map {
         case (value, i) => i.toString -> value
@@ -227,7 +210,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("add, +:, and remove should be applied correctly") {
+  "add, +:, and remove" should "be applied correctly" in {
     forAll { (original: JsonObject, operations: List[Either[String, (String, Json, Boolean)]]) =>
       val result = operations.foldLeft(original) {
         case (acc, Right((key, value, true)))  => acc.add(key, value)
@@ -259,7 +242,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("+: should replace existing fields with the same key") {
+  "+:" should "replace existing fields with the same key" in {
     forAll { (head: Json, tail: List[Json], replacement: Json) =>
       val fields = (head :: tail).zipWithIndex.map {
         case (value, i) => i.toString -> value
@@ -274,7 +257,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("+: should replace existing fields with the same key in the correct position") {
+  it should "replace existing fields with the same key in the correct position" in {
     forAll { (head: Json, tail: List[Json], replacement: Json) =>
       val fields = (head :: tail).zipWithIndex.map {
         case (value, i) => i.toString -> value
@@ -289,8 +272,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("mapValues should transform the JSON object appropriately")(mapValuesTransformProp)
-  lazy val mapValuesTransformProp = forAll { (values: List[Json], replacement: Json) =>
+  "mapValues" should "transform the JSON object appropriately" in forAll { (values: List[Json], replacement: Json) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }
@@ -303,8 +285,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2 === expected)
   }
 
-  property("traverse should transform the JSON object appropriately")(traverseTransformProp)
-  lazy val traverseTransformProp = forAll { (values: List[Json]) =>
+  "traverse" should "transform the JSON object appropriately" in forAll { (values: List[Json]) =>
     val fields = values.zipWithIndex.map {
       case (value, i) => i.toString -> value
     }
@@ -317,25 +298,21 @@ class JsonObjectSuite extends CirceMunitSuite {
     assert(result2 === Some(expected))
   }
 
-  property("traverse should return values in order")(traverseProp)
-  private lazy val traverseProp = forAll { (value: JsonObject) =>
+  it should "return values in order" in forAll { (value: JsonObject) =>
     val result = value.traverse[({ type L[x] = Const[List[Json], x] })#L](a => Const(List(a))).getConst
 
     assert(result === value.values.toList)
   }
 
-  property("filter should be consistent with Map#filter")(filterProp)
-  private lazy val filterProp = forAll { (value: JsonObject, pred: ((String, Json)) => Boolean) =>
+  "filter" should "be consistent with Map#filter" in forAll { (value: JsonObject, pred: ((String, Json)) => Boolean) =>
     assert(value.filter(pred).toMap === value.toMap.filter(pred))
   }
 
-  property("filterKeys should be consistent with Map#filterKeys") {
-    forAll { (value: JsonObject, pred: String => Boolean) =>
-      assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred).toMap)
-    }
+  "filterKeys" should "be consistent with Map#filterKeys" in forAll { (value: JsonObject, pred: String => Boolean) =>
+    assert(value.filterKeys(pred).toMap === value.toMap.filterKeys(pred).toMap)
   }
 
-  property("Eq[JsonObject] should be consistent with comparing fields") {
+  "Eq[JsonObject]" should "be consistent with comparing fields" in {
     forAll { (fields1: List[(String, Json)], fields2: List[(String, Json)]) =>
       val result = Eq[JsonObject].eqv(JsonObject.fromIterable(fields1), JsonObject.fromIterable(fields2))
       val expected = fields1 == fields2
@@ -344,8 +321,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("deepMerge should merge correctly")(deepMergeCorrecProp)
-  lazy val deepMergeCorrecProp = forAll { (left: JsonObject, right: JsonObject) =>
+  "deepMerge" should "merge correctly" in forAll { (left: JsonObject, right: JsonObject) =>
     val merged = left.deepMerge(right)
 
     assert(merged.keys.toSet === (left.keys.toSet ++ right.keys.toSet))
@@ -360,8 +336,7 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("deepMerge should preserve argument order")(deepMergePreserveArgOrderProp)
-  lazy val deepMergePreserveArgOrderProp = forAll { (js: List[Json]) =>
+  it should "preserve argument order" in forAll { (js: List[Json]) =>
     val fields = js.zipWithIndex.map {
       case (j, i) => i.toString -> j
     }
