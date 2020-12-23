@@ -3,8 +3,8 @@ package io.circe.tests
 import cats.instances.AllInstances
 import cats.kernel.Eq
 import cats.syntax.functor._
-import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import io.circe.testing.ArbitraryInstances
+import io.circe.{ Decoder, DecodingFailure, Encoder, Json }
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object examples extends AllInstances with ArbitraryInstances with MissingInstances {
@@ -147,4 +147,41 @@ package examples {
       }
     }
   }
+  sealed trait ADT[+A, +B]
+
+  case class ADTFoo[+A, +B](a: A, b: B) extends ADT[A, B]
+
+  case class ADTBar[+B](b: B) extends ADT[Nothing, B]
+
+  object ADT {
+
+    implicit def adtEncoder[A: Encoder, B: Encoder]: Encoder[ADT[A, B]] = Encoder.instance {
+      case foo @ ADTFoo(_, _) =>
+        Json.obj(
+          "ADTFoo" -> Json.obj(
+            "a" -> Json.fromString(Option(foo.a.toString).getOrElse("")),
+            "b" -> Json.fromString(Option(foo.b.toString).getOrElse(""))
+          )
+        )
+      case bar @ ADTBar(_) =>
+        Json.obj("ADTBar" -> Json.obj("b" -> Json.fromString(Option(bar.b.toString).getOrElse(""))))
+    }
+
+    implicit def adtDecoder[A: Decoder, B: Decoder]: Decoder[ADT[A, B]] = Decoder.instance { c =>
+      c.keys.map(_.toVector) match {
+        case Some(Vector("ADTFoo")) =>
+          for {
+            a <- c.downField("ADTFoo").downField("a").as[A]
+            b <- c.downField("ADTFoo").downField("b").as[B]
+          } yield ADTFoo(a, b)
+
+        case Some(Vector("ADTBar")) =>
+          for {
+            b <- c.downField("ADTBar").downField("b").as[B]
+          } yield ADTBar(b)
+        case _ => Left(DecodingFailure("ADT", c.history))
+      }
+    }
+  }
+
 }

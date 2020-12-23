@@ -615,6 +615,13 @@ object Decoder
   /**
    * @group Decoding
    */
+  implicit final val decodeNothing: Decoder[Nothing] = new Decoder[Nothing] {
+    final def apply(c: HCursor): Result[Nothing] = Left(DecodingFailure("Nothing", c.history))
+  }
+
+  /**
+   * @group Decoding
+   */
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
     final def apply(c: HCursor): Result[Boolean] = c.value match {
       case Json.JBoolean(b) => Right(b)
