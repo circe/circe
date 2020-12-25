@@ -28,6 +28,12 @@ trait Codec[A] extends Decoder[A] with Encoder[A] {
 object Codec extends ProductCodecs with EnumerationCodecs {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
+  /**
+   * Summons a `Codec` where a `Decoder` and an `Encoder` are in implicit scope.
+   */
+  def instance[A](implicit decoder: Decoder[A], encoder: Encoder[A]): Codec[A] =
+    Codec.from(decoder, encoder)
+
   implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {
     override def imap[A, B](fa: Codec[A])(f: A => B)(g: B => A): Codec[B] = Codec.from(fa.map(f), fa.contramap(g))
   }
