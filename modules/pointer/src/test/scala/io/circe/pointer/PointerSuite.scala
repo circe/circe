@@ -47,6 +47,10 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(p9(example.hcursor).focus, Some(Json.fromInt(6)))
     assertEquals(p10(example.hcursor).focus, Some(Json.fromInt(7)))
     assertEquals(p11(example.hcursor).focus, Some(Json.fromInt(8)))
+
+    List(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11).foreach { p =>
+      assert(p.toSubtype.isRight)
+    }
   }
 
   test("The relative pointer examples from the Relative JSON Pointers memo should evaluate correctly") {
@@ -92,6 +96,10 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(r2.evaluate(original), Right(Pointer.Relative.Result.Json(Json.fromBoolean(true))))
     assertEquals(r3.evaluate(original), Right(Pointer.Relative.Result.Index(1)))
     assertEquals(r4.evaluate(original), Right(Pointer.Relative.Result.Key("foo")))
+
+    List(p0, p1, p2, p3, p4, r0, r1, r2, r3, r4).foreach { p =>
+      assert(p.toSubtype.isLeft)
+    }
   }
 
   test("Tokens with leading zeros should work as object keys") {
@@ -162,10 +170,68 @@ class PointerSuite extends DisciplineSuite {
     val Right(example) = parser.parse("""{"foo": [1, 2, 3], "bar": null, "baz": false}""")
     val Right(p0) = Pointer.parse("/foo/3")
     val Right(p1) = Pointer.parse("/qux/3")
-    val Right(p2) = Pointer.parse("/foo/bar")
+    val Right(p2) = Pointer.parse("/foo/bar/baz")
 
     assertEquals(p0.get(example), Left(PointerFailure(List(CursorOp.DownN(3), CursorOp.DownField("foo")))))
     assertEquals(p1.get(example), Left(PointerFailure(List(CursorOp.DownField("qux")))))
     assertEquals(p2.get(example), Left(PointerFailure(List(CursorOp.DownField("bar"), CursorOp.DownField("foo")))))
+  }
+
+  test("tokens should return tokens") {
+    val Right(p) = Pointer.parse("/foo//bar/~0~1/qux/1/-/baz/")
+    val Right(a) = p.toSubtype
+
+    assertEquals(a.tokens, Vector("foo", "", "bar", "~/", "qux", "1", "-", "baz", ""))
+  }
+
+  test("distance should return distance") {
+    val Right(p1) = Pointer.parse("123#")
+    val Right(p2) = Pointer.parse("0/foo")
+    val Left(r1) = p1.toSubtype
+    val Left(r2) = p2.toSubtype
+
+    assertEquals(r1.distance, 123)
+    assertEquals(r2.distance, 0)
+  }
+
+  test("remainder should return the absolute part of a relative pointer") {
+    val Right(p1) = Pointer.parse("123#")
+    val Right(p2) = Pointer.parse("0/foo")
+    val Left(r1) = p1.toSubtype
+    val Left(r2) = p2.toSubtype
+
+    val Right(remainder) = Pointer.Absolute.parse("/foo")
+
+    assertEquals(r1.remainder, None)
+    assertEquals(r2.remainder, Some(remainder))
+  }
+
+  test("toString should return the original input") {
+    val examples = Vector(
+      "/foo//bar/~0~1/qux/1/-/baz/",
+      "",
+      "/foo",
+      "/foo/0",
+      "/",
+      "/a~1b",
+      "/c%d",
+      "/e^f",
+      "/g|h",
+      "/i\\j",
+      "/k\"l",
+      "/ ",
+      "/m~0n",
+      "0",
+      "1/0",
+      "2/highly/nested/objects",
+      "0#",
+      "1#"
+    )
+
+    examples.foreach { input =>
+      val Right(p) = Pointer.parse(input)
+
+      assertEquals(p.toString, input)
+    }
   }
 }
