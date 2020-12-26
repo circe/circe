@@ -260,4 +260,36 @@ class ACursorSuite extends CirceMunitSuite {
     } yield b.getOrElse[List[Int]]("d")(Nil)
     assert(result.fold(false)(_.isLeft))
   }
+
+  test("key should return the key if the cursor is in an object") {
+    assertEquals(cursor.downField("b").downField("d").key, Some("d"))
+  }
+
+  test("key should return None if the cursor is not in an object") {
+    assertEquals(cursor.downField("a").downN(1).key, None)
+  }
+
+  test("key should return None if the cursor has failed") {
+    assertEquals(cursor.downField("a").downField("XYZ").key, None)
+  }
+
+  test("key should return None if the cursor has at the root") {
+    assertEquals(cursor.key, None)
+  }
+
+  test("index should return the index if the cursor is in an array") {
+    assertEquals(cursor.downField("a").downN(1).index, Some(1))
+  }
+
+  test("index should return None if the cursor is not in an array") {
+    assertEquals(cursor.downField("b").downField("d").index, None)
+  }
+
+  test("index should return None if the cursor has failed") {
+    assertEquals(cursor.downField("a").downN(10).index, None)
+  }
+
+  test("index should return None if the cursor has at the root") {
+    assertEquals(cursor.index, None)
+  }
 }
