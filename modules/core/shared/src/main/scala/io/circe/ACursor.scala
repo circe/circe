@@ -115,9 +115,16 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   /**
    * If the focus is a JSON array, return its elements.
    *
-   * @group ObjectAccess
+   * @group ArrayAccess
    */
   def values: Option[Iterable[Json]]
+
+  /**
+   * If the focus is a value in a JSON object, return the key.
+   *
+   * @group ArrayAccess
+   */
+  def index: Option[Int] = None
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
@@ -125,6 +132,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group ObjectAccess
    */
   def keys: Option[Iterable[String]]
+
+  /**
+   * If the focus is a value in a JSON object, return the key.
+   *
+   * @group ObjectAccess
+   */
+  def key: Option[String] = None
 
   /**
    * Delete the focus and move to its parent.
