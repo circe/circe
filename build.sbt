@@ -231,6 +231,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (numbersTesting, numbersTestingJS),
   (numbers, numbersJS),
   (core, coreJS),
+  (pointer, pointerJS),
   (extras, extrasJS),
   (generic, genericJS),
   (shapes, shapesJS),
@@ -568,6 +569,12 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
     )
   )
   .dependsOn(core)
+
+lazy val pointerBase =
+  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure).dependsOn(coreBase, testsBase % Test)
+
+lazy val pointer = pointerBase.jvm
+lazy val pointerJS = pointerBase.js
 
 lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
 
