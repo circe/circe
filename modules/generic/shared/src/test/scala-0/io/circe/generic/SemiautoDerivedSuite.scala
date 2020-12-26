@@ -5,9 +5,9 @@ import cats.syntax.eq._
 import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.generic.semiauto._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{ Arbitrary, Gen , Prop}
 
 object SemiautoDerivedSuite {
   implicit def decodeBox[A: Decoder]: Decoder[Box[A]] = deriveDecoder
@@ -79,7 +79,7 @@ object SemiautoDerivedSuite {
   case class OvergenerationExampleOuter1(oi: Option[OvergenerationExampleInner])
 }
 
-class SemiautoDerivedSuite extends CirceSuite {
+class SemiautoDerivedSuite extends CirceMunitSuite {
   import SemiautoDerivedSuite._
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
@@ -131,13 +131,15 @@ class SemiautoDerivedSuite extends CirceSuite {
     CodecTests[RecursiveWithOptionExample](RecursiveWithOptionExample.codecForRecursiveWithOptionExample, implicitly).codec
   )
 
-  "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
-    val json = Encoder[List[Int]].apply(is)
+  property("A generically derived codec should not interfere with base instances"){
+    Prop.forAll { (is: List[Int]) =>
+      val json = Encoder[List[Int]].apply(is)
 
-    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+      assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+    }
   }
 
-  it should "not come from nowhere" in {
+  test("A generically derived codec should not come from nowhere") {
     assertTypeError("Decoder[OvergenerationExampleInner]")
 
     assertTypeError("Encoder.AsObject[OvergenerationExampleInner]")
@@ -148,17 +150,19 @@ class SemiautoDerivedSuite extends CirceSuite {
     assertTypeError("Encoder.AsObject[OvergenerationExampleOuter1]")
   }
 
-  it should "require instances for all parts" in {
+  test("A generically derived codec should require instances for all parts"){
     assertTypeError("deriveDecoder[OvergenerationExampleInner0]")
     assertTypeError("deriveDecoder[OvergenerationExampleInner1]")
     assertTypeError("deriveEncoder[OvergenerationExampleInner0]")
     assertTypeError("deriveEncoder[OvergenerationExampleInner1]")
   }
 
-  "A generically derived codec for an empty case class" should "not accept non-objects" in forAll { (j: Json) =>
-    case class EmptyCc()
+  property("A generically derived codec for an empty case class should not accept non-objects"){
+    Prop.forAll { (j: Json) =>
+      case class EmptyCc()
 
-    assert(deriveDecoder[EmptyCc].decodeJson(j).isRight == j.isObject)
-    assert(deriveCodec[EmptyCc].decodeJson(j).isRight == j.isObject)
+      assert(deriveDecoder[EmptyCc].decodeJson(j).isRight == j.isObject)
+      assert(deriveCodec[EmptyCc].decodeJson(j).isRight == j.isObject)
+    }
   }
 }

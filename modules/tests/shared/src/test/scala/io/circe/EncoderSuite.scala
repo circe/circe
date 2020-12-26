@@ -11,16 +11,18 @@ import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.ContravariantTests
 import cats.syntax.eq._
 import io.circe.syntax._
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Arbitrary
+import org.scalacheck.Prop.forAll
 import scala.collection.SortedMap
 
-class EncoderSuite extends CirceSuite {
+class EncoderSuite extends CirceMunitSuite {
   checkAll("Encoder[Int]", ContravariantTests[Encoder].contravariant[Int, Int, Int])
   checkAll("Encoder.AsArray[Int]", ContravariantTests[Encoder.AsArray].contravariant[Int, Int, Int])
   checkAll("Encoder.AsObject[Int]", ContravariantTests[Encoder.AsObject].contravariant[Int, Int, Int])
 
-  "mapJson" should "transform encoded output" in forAll { (m: Map[String, Int], k: String, v: Int) =>
+  property("mapJson should transform encoded output")(mapJsonTransformProp)
+  private lazy val mapJsonTransformProp = forAll { (m: Map[String, Int], k: String, v: Int) =>
     val newEncoder = Encoder[Map[String, Int]].mapJson(
       _.withObject(obj => Json.fromJsonObject(obj.add(k, v.asJson)))
     )
@@ -28,19 +30,24 @@ class EncoderSuite extends CirceSuite {
     assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
   }
 
-  "Encoder.AsObject#mapJsonObject" should "transform encoded output" in forAll {
-    (m: Map[String, Int], k: String, v: Int) =>
+  property("Encoder.AsObject#mapJsonObject should transform encoded output") {
+    forAll { (m: Map[String, Int], k: String, v: Int) =>
       val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))
 
       assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
+    }
   }
 
-  "encodeSet" should "match sequence encoders" in forAll { (xs: Set[Int]) =>
-    assert(Encoder.encodeSet[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toSeq))
+  property("encodeSet should match sequence encoders") {
+    forAll { (xs: Set[Int]) =>
+      assert(Encoder.encodeSet[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toSeq))
+    }
   }
 
-  "encodeList" should "match sequence encoders" in forAll { (xs: List[Int]) =>
-    assert(Encoder.encodeList[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+  property("encodeList should match sequence encoders") {
+    forAll { (xs: List[Int]) =>
+      assert(Encoder.encodeList[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+    }
   }
 
   case class MyString(value: String)
@@ -53,7 +60,8 @@ class EncoderSuite extends CirceSuite {
     )
   }
 
-  "encodeMap" should "preserve insertion order" in forAll { (m: SortedMap[MyString, String]) =>
+  property("encodeMap should preserve insertion order")(encodeMapProp)
+  private lazy val encodeMapProp = forAll { (m: SortedMap[MyString, String]) =>
     val Some(asJsonObject) = m.asJson.asObject
     val expected = m.toList.map {
       case (k, v) => MyString.myStringKeyEncoder(k) -> Json.fromString(v)
@@ -62,15 +70,20 @@ class EncoderSuite extends CirceSuite {
     assert(asJsonObject.toList === expected)
   }
 
-  "encodeVector" should "match sequence encoders" in forAll { (xs: Vector[Int]) =>
-    assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+  property("encodeVector should match sequence encoders") {
+    forAll { (xs: Vector[Int]) =>
+      assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+    }
   }
 
-  "encodeChain" should "match sequence encoders" in forAll { (xs: Chain[Int]) =>
-    assert(Encoder.encodeChain[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toList))
+  property("encodeChain should match sequence encoders") {
+    forAll { (xs: Chain[Int]) =>
+      assert(Encoder.encodeChain[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toList))
+    }
   }
 
-  "encodeFloat" should "match string representation" in forAll { (x: Float) =>
+  property("encodeFloat should match string representation")(encodeFloatPreserveStringProp)
+  lazy val encodeFloatPreserveStringProp = forAll { (x: Float) =>
     // All Float values should be encoded in a way that match the original value.
     assert(Encoder[Float].apply(x).toString.toFloat === x)
 

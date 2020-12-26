@@ -1,12 +1,12 @@
 package io.circe
 
 import io.circe.syntax._
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
-class ExtrasSpec extends CirceSuite {
+class ExtrasSpec extends CirceMunitSuite {
 
-  "sanitizeKeys" should "return input JSON if all of the JSON Object's keys are in the approvedList" in {
+  property("sanitizeKeys should return input JSON if all of the JSON Object's keys are in the approvedList") {
     forAll[Set[String], String, Boolean](Gen.listOf(Gen.alphaNumStr).map(_.toSet), Gen.alphaNumStr) {
       (keys: Set[String], str: String) =>
 
@@ -31,7 +31,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "return sanitized values for keys' values of a JSON Object" in {
+  property("sanitizeKeys should return sanitized values for keys' values of a JSON Object") {
     forAll[Boolean, String, JsonNumber, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr,
@@ -70,7 +70,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "sanitize each value within an array" in {
+  property("sanitizeKeys should sanitize each value within an array") {
     forAll[Boolean, String, JsonNumber, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr,
@@ -125,7 +125,7 @@ class ExtrasSpec extends CirceSuite {
     }
   }
 
-  "sanitizeKeys" should "sanitize arrays and objects of approved and non-approved keys' values" in {
+  property("sanitizeKeys should sanitize arrays and objects of approved and non-approved keys' values") {
     forAll[Boolean, String, Boolean](
       Arbitrary.arbBool.arbitrary,
       Gen.alphaNumStr

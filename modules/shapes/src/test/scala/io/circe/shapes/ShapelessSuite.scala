@@ -2,18 +2,20 @@ package io.circe.shapes
 
 import cats.kernel.Eq
 import cats.kernel.instances.all._
+import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.literal._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import io.circe.syntax._
+import org.scalacheck.Prop.forAll
 import shapeless.{ :+:, ::, CNil, HNil, Nat, Sized, Witness, tag }
 import shapeless.labelled.FieldType
 import shapeless.record.Record
 import shapeless.syntax.singleton._
 import shapeless.tag.@@
 
-class ShapelessSuite extends CirceSuite {
+class ShapelessSuite extends CirceMunitSuite {
   checkAll("Codec[HNil]", CodecTests[HNil].codec)
   checkAll("Codec[Int :: HNil]", CodecTests[Int :: HNil].codec)
   checkAll("Codec[String :: Int :: HNil]", CodecTests[String :: Int :: HNil].codec)
@@ -36,48 +38,61 @@ class ShapelessSuite extends CirceSuite {
 
   val hlistDecoder = Decoder[String :: Int :: List[Char] :: HNil]
 
-  "An hlist decoder" should "decode an array as an hlist" in forAll { (foo: String, bar: Int, baz: List[Char]) =>
+  property("An hlist decoder should decode an array as an hlist")(hlistDecodeArrayProp)
+  lazy val hlistDecodeArrayProp = forAll { (foo: String, bar: Int, baz: List[Char]) =>
     val expected = foo :: bar :: baz :: HNil
     val result = hlistDecoder.decodeJson(json"""[ $foo, $bar, $baz ]""")
 
     assert(result === Right(expected))
   }
 
-  it should "accumulate errors" in forAll { (foo: String, bar: Int, baz: List[Char]) =>
+  property("An hlist decoder should accumulate errors")(hlistDecoderAccumulateProp)
+
+  lazy val hlistDecoderAccumulateProp = forAll { (foo: String, bar: Int, baz: List[Char]) =>
     val result = hlistDecoder.decodeAccumulating(json"""[ $foo, $baz, $bar ]""".hcursor)
 
     assert(result.swap.exists(_.size == 2))
   }
 
-  "The hnil decoder" should "not accept non-objects" in forAll { (j: Json) =>
-    assert(Decoder[HNil].decodeJson(j).isRight == j.isObject)
+  property("The hnil decoder should not accept non-objects") {
+    forAll { (j: Json) =>
+      assert(Decoder[HNil].decodeJson(j).isRight == j.isObject)
+    }
   }
 
   val recordDecoder = Decoder[Record.`'foo -> String, 'bar -> Int`.T]
 
-  "A record decoder" should "decode an object as a record" in forAll { (foo: String, bar: Int) =>
+  property("A record decoder should decode an object as a record")(recordDecoderProp)
+
+  lazy val recordDecoderProp = forAll { (foo: String, bar: Int) =>
     val expected = Symbol("foo") ->> foo :: Symbol("bar") ->> bar :: HNil
     val result = recordDecoder.decodeJson(json"""{ "foo": $foo, "bar": $bar }""")
 
     assert(result === Right(expected))
   }
 
-  it should "accumulate errors" in forAll { (foo: String, bar: Int) =>
-    val result = recordDecoder.decodeAccumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
+  property("A record decoder should accumulate errors") {
+    forAll { (foo: String, bar: Int) =>
+      val result = recordDecoder.decodeAccumulating(json"""{ "foo": $bar, "bar": $foo }""".hcursor)
 
-    assert(result.swap.exists(_.size == 2))
+      assert(result.swap.exists(_.size == 2))
+    }
   }
 
   val sizedDecoder = Decoder[Sized[List[Int], Nat._4]]
 
-  "A Sized decoder" should "fail if given an incorrect number of elements" in forAll { (xs: List[Int]) =>
+  property("A Sized decoder should fail if given an incorrect number of elements")(sizedDecoderFailProp)
+
+  lazy val sizedDecoderFailProp = forAll { (xs: List[Int]) =>
     val values = if (xs.size == 4) xs ++ xs else xs
     val result = sizedDecoder.decodeJson(Encoder[List[Int]].apply(values))
 
     assert(result.isLeft)
   }
 
-  it should "accumulate errors" in forAll { (a: Int, b: String, c: Int, d: String) =>
+  property("A Sized decoded should accumulate errors")(sizedDecoderAccumProp)
+
+  lazy val sizedDecoderAccumProp = forAll { (a: Int, b: String, c: Int, d: String) =>
     val notIntB = b + "z"
     val notIntD = "a" + d
     val result = sizedDecoder.decodeAccumulating(json"""[ $a, $notIntB, $c, $notIntD ]""".hcursor)
@@ -85,7 +100,7 @@ class ShapelessSuite extends CirceSuite {
     assert(result.swap.exists(_.size == 2))
   }
 
-  "Tagged types" should "be decoded and encoded correctly" in {
+  test("Tagged types should be decoded and encoded correctly") {
     trait MyTag
 
     val td =

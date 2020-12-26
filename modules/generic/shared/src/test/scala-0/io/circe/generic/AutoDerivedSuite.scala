@@ -6,9 +6,9 @@ import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{ Arbitrary, Gen, Prop }
 
 object AutoDerivedSuite {
   case class InnerCaseClassExample(a: String, b: String, c: String, d: String)
@@ -39,7 +39,7 @@ object AutoDerivedSuite {
   }
 }
 
-class AutoDerivedSuite extends CirceSuite {
+class AutoDerivedSuite extends CirceMunitSuite {
   import AutoDerivedSuite._
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
@@ -50,31 +50,37 @@ class AutoDerivedSuite extends CirceSuite {
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
 
-  "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
-    val json = Encoder[List[Int]].apply(is)
+  property("A generically derived codec should not interfere with base instances"){
+    Prop.forAll { (is: List[Int]) =>
+      val json = Encoder[List[Int]].apply(is)
 
-    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+      assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+    }
   }
 
-  it should "not be derived for Object" in {
+  test("A generically derived codec should not be derived for Object") {
     assertTypeError("Decoder[Object]")
     assertTypeError("Encoder[Object]")
   }
 
-  it should "not be derived for AnyRef" in {
+  test("A generically derived codec should not be derived for AnyRef"){
     assertTypeError("Decoder[AnyRef]")
     assertTypeError("Encoder[AnyRef]")
   }
 
-  "Generic decoders" should "not interfere with defined decoders" in forAll { (xs: List[String]) =>
-    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+  property("Generic decoders should not interfere with defined decoders"){
+    Prop.forAll { (xs: List[String]) =>
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-    assert(Decoder[Foo].apply(json.hcursor) === Right(Baz(xs): Foo))
+      assert(Decoder[Foo].apply(json.hcursor) === Right(Baz(xs): Foo))
+    }
   }
 
-  "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>
-    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+  property("Generic encoders should not interfere with defined encoders"){
+    Prop.forAll { (xs: List[String]) =>
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-    assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
+      assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
+    }
   }
 }

@@ -4,7 +4,6 @@ import cats.kernel.instances.string._
 import cats.syntax.eq._
 import cats.syntax.show._
 import io.circe.CursorOp._
-import io.circe.tests.CirceSuite
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
 
