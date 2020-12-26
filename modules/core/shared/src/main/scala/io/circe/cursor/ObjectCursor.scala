@@ -7,8 +7,8 @@ private[circe] final class ObjectCursor(obj: JsonObject, keyValue: String, paren
   lastOp: CursorOp
 ) extends HCursor(lastCursor, lastOp) {
   def value: Json = obj.applyUnsafe(keyValue)
-  def index: Option[Int] = None
-  def key: Option[String] = Some(keyValue)
+  override def index: Option[Int] = None
+  override def key: Option[String] = Some(keyValue)
 
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor =
     new ObjectCursor(obj.add(keyValue, newValue), keyValue, parent, true)(cursor, op)

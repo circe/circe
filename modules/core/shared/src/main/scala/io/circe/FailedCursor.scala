@@ -21,9 +21,9 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
 
   def values: Option[Iterable[Json]] = None
-  def index: Option[Int] = None
+  override def index: Option[Int] = None
   def keys: Option[Iterable[String]] = None
-  def key: Option[String] = None
+  override def key: Option[String] = None
 
   def downArray: ACursor = this
   def downField(k: String): ACursor = this

@@ -6,8 +6,8 @@ private[circe] final class TopCursor(val value: Json)(
   lastCursor: HCursor,
   lastOp: CursorOp
 ) extends HCursor(lastCursor, lastOp) {
-  def index: Option[Int] = None
-  def key: Option[String] = None
+  override def index: Option[Int] = None
+  override def key: Option[String] = None
 
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor = new TopCursor(newValue)(cursor, op)
   def addOp(cursor: HCursor, op: CursorOp): HCursor = new TopCursor(value)(cursor, op)

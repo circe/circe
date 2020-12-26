@@ -124,7 +124,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayAccess
    */
-  def index: Option[Int]
+  def index: Option[Int] = None
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
@@ -138,7 +138,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ObjectAccess
    */
-  def key: Option[String]
+  def key: Option[String] = None
 
   /**
    * Delete the focus and move to its parent.

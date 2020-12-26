@@ -7,8 +7,8 @@ private[circe] final class ArrayCursor(values: Vector[Json], indexValue: Int, pa
   lastOp: CursorOp
 ) extends HCursor(lastCursor, lastOp) {
   def value: Json = values(indexValue)
-  def index: Option[Int] = Some(indexValue)
-  def key: Option[String] = None
+  override def index: Option[Int] = Some(indexValue)
+  override def key: Option[String] = None
 
   private[this] def valuesExcept: Vector[Json] = values.take(indexValue) ++ values.drop(indexValue + 1)
 
