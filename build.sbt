@@ -588,11 +588,12 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
+      "io.circe" %% "circe-optics" % "0.13.0",
       "org.scalameta" %% "munit" % munitVersion % Test
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(core, generic, jawn, pointer)
 
 lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
   .settings(noPublishSettings)
