@@ -8,7 +8,7 @@ import io.circe.{ ACursor, Json }
 sealed abstract class Pointer extends (ACursor => ACursor) {
 
   /**
-   * Attempt to get the value at the location pointed to.
+   * Attempt to get the value at the location pointed to, returning the history if it doesn't exist.
    */
   final def get(input: Json): Either[PointerFailure, Json] = {
     val navigated = apply(input.hcursor)
@@ -18,6 +18,11 @@ sealed abstract class Pointer extends (ACursor => ACursor) {
       case None        => Left(PointerFailure(navigated.history))
     }
   }
+
+  /**
+   * Attempt to get the value at the location pointed to.
+   */
+  final def getOption(input: Json): Option[Json] = apply(input.hcursor).focus
 
   /**
    * Safely downcast this value.
