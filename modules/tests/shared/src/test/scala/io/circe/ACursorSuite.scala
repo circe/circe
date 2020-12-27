@@ -57,6 +57,25 @@ class ACursorSuite extends CirceMunitSuite {
     }
   }
 
+  property("root should return from navigation into an object")(rootProp)
+  private lazy val rootProp = forAll { (j: Json) =>
+    val c = HCursor.fromJson(j)
+
+    val intoObject = for {
+      keys <- c.keys
+      first <- keys.headOption
+      atFirst <- c.downField(first).success
+    } yield atFirst
+
+    assert(intoObject.forall(atFirst => atFirst.root.focus === Some(j)))
+  }
+
+  property("root should return from navigation into an array") {
+    forAll { (j: Json) =>
+      assert(HCursor.fromJson(j).downArray.root.focus === Some(j))
+    }
+  }
+
   property("up should undo navigation into an object")(upUndoObjectProp)
   lazy val upUndoObjectProp = forAll { (j: Json) =>
     val c = HCursor.fromJson(j)

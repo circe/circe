@@ -16,6 +16,7 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
 
   def focus: Option[Json] = None
   def top: Option[Json] = None
+  def root: HCursor = lastCursor.root
 
   def withFocus(f: Json => Json): ACursor = this
   def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] = F.pure(this)
