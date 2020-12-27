@@ -78,7 +78,7 @@ object Pointer {
       leadingZeroError
     } else if (digits == 0) {
       notDigitError
-    } else if (digits > 9) {
+    } else if (digits > maxIntegerDigits) {
       tooManyDigitsError
     } else {
       val distance = Integer.parseInt(input.substring(0, digits))
@@ -290,6 +290,8 @@ object Pointer {
       }
   }
 
+  private[this] val maxIntegerDigits: Int = 9
+
   private[this] val notRootError: Either[PointerSyntaxError, Absolute] =
     Left(PointerSyntaxError(0, "/"))
   private[this] val notDigitError: Either[PointerSyntaxError, Relative] =
@@ -299,7 +301,7 @@ object Pointer {
   private[this] val leadingZeroError: Either[PointerSyntaxError, Relative] =
     Left(PointerSyntaxError(1, "JSON Pointer or #"))
   private[this] val tooManyDigitsError: Either[PointerSyntaxError, Relative] =
-    Left(PointerSyntaxError(9, "JSON Pointer or #"))
+    Left(PointerSyntaxError(maxIntegerDigits, "JSON Pointer or #"))
 
   private[this] def isAsciiDigit(c: Char): Boolean = c >= '0' && c <= '9'
 
@@ -342,7 +344,7 @@ object Pointer {
       val part = parts(i)
       val digits = digitPrefixLength(parts(i))
 
-      if (digits == part.length && !part.isEmpty) {
+      if (digits == part.length && digits <= maxIntegerDigits && !part.isEmpty) {
         tokenArray(i - 1) = part
         asIndexArray(i - 1) = Integer.parseInt(part)
       } else {
