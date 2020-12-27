@@ -121,6 +121,14 @@ class PointerSuite extends DisciplineSuite {
     }
   }
 
+  test("Absolute pointers should work from the root regardless of cursor location") {
+    val Right(p) = Pointer.parse("/foo/01/bar")
+    val Right(doc) = parser.parse("""{"foo": {"01": {"bar": true}}}""")
+
+    assertEquals(p(doc.hcursor.downField("foo")).focus, Some(Json.fromBoolean(true)))
+    assertEquals(p(doc.hcursor.downField("bar")).focus, Some(Json.fromBoolean(true)))
+  }
+
   test("Tokens with leading zeros should work as object keys") {
     val Right(p) = Pointer.parse("/foo/01/bar")
     val Right(doc) = parser.parse("""{"foo": {"01": {"bar": true}}}""")
