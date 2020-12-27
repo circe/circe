@@ -96,7 +96,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Access
    */
-  def root: HCursor
+  def root: HCursor = null
 
   /**
    * Modify the focus using the given function.

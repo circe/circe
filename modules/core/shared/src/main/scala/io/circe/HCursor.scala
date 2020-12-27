@@ -39,7 +39,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     Some(current.asInstanceOf[TopCursor].value)
   }
 
-  final def root: HCursor = {
+  override final def root: HCursor = {
     var current: HCursor = this
 
     while (!current.isInstanceOf[TopCursor]) {
