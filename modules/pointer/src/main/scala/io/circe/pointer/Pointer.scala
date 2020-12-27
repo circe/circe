@@ -216,7 +216,7 @@ object Pointer {
       if (current.ne(null)) Some(current) else None
     }
 
-    def tokens: Vector[String] = new scala.collection.mutable.ArraySeq.ofRef(tokenArray).toVector
+    def tokens: Vector[String] = new scala.collection.mutable.WrappedArray.ofRef(tokenArray).toVector
 
     override def toString(): String = if (tokenArray.length == 0) {
       ""
