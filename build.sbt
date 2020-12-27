@@ -231,6 +231,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (numbersTesting, numbersTestingJS),
   (numbers, numbersJS),
   (core, coreJS),
+  (pointer, pointerJS),
+  (pointerLiteral, pointerLiteralJS),
   (extras, extrasJS),
   (generic, genericJS),
   (shapes, shapesJS),
@@ -569,6 +571,25 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   )
   .dependsOn(core)
 
+lazy val pointerBase =
+  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure).dependsOn(coreBase, testsBase % Test)
+
+lazy val pointer = pointerBase.jvm
+lazy val pointerJS = pointerBase.js
+
+lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
+  .settings(macroSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+    )
+  )
+  .dependsOn(coreBase, pointerBase)
+
+lazy val pointerLiteral = pointerLiteralBase.jvm
+lazy val pointerLiteralJS = pointerLiteralBase.js
+
 lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
 
 lazy val extras = extrasBase.jvm
@@ -581,11 +602,12 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
+      "io.circe" %% "circe-optics" % "0.13.0",
       "org.scalameta" %% "munit" % munitVersion % Test
     )
   )
   .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn)
+  .dependsOn(core, generic, jawn, pointer)
 
 lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
   .settings(noPublishSettings)
