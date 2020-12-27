@@ -22,8 +22,11 @@ sealed abstract class Pointer extends (ACursor => ACursor) {
 
   /**
    * Attempt to get the value at the location pointed to.
+   *
+   * @note For absolute pointers this method may be faster than [[get]] or [[apply]], since it does not have to track
+   * error locations.
    */
-  final def getOption(input: Json): Option[Json] = apply(input.hcursor).focus
+  def getOption(input: Json): Option[Json]
 
   /**
    * Return this pointer as a [[Pointer.Absolute]] if possible.
@@ -134,6 +137,22 @@ object Pointer {
     }
   }
 
+  object Relative {
+
+    /**
+     * Represents the result of evaluating a relative JSON Pointer, which may be either a value or a location.
+     */
+    sealed abstract class Result
+
+    object Result {
+      case class Json(value: io.circe.Json) extends Result
+      case class Key(value: String) extends Result
+      case class Index(value: Int) extends Result
+
+      implicit val hashResult: Hash[Result] = Hash.fromUniversalHashCode
+    }
+  }
+
   implicit val hashPointer: Hash[Pointer] = Hash.fromUniversalHashCode
 
   private[this] val Empty = new TokenArrayPointer(Array.empty, Array.empty)
@@ -169,6 +188,34 @@ object Pointer {
       current
     }
 
+    def getOption(input: Json): Option[Json] = {
+      var current: Json = input
+      var i = 0
+
+      while (i < tokenArray.length && current.ne(null)) {
+        val key = tokenArray(i)
+        val asIndex = asIndexArray(i)
+
+        current = if (asIndex > -1) {
+          current.asArray match {
+            case Some(values) =>
+              if (key == "-" || values.size <= asIndex) {
+                null
+              } else {
+                values(asIndex)
+              }
+            case None => current.asObject.flatMap(_(key)).orNull
+          }
+        } else {
+          current.asObject.flatMap(_(key)).orNull
+        }
+
+        i += 1
+      }
+
+      if (current.ne(null)) Some(current) else None
+    }
+
     def tokens: Vector[String] = new scala.collection.mutable.ArraySeq.ofRef(tokenArray).toVector
 
     override def toString(): String = if (tokenArray.length == 0) {
@@ -202,6 +249,12 @@ object Pointer {
       }
     }
 
+    def getOption(input: Json): Option[Json] = if (distance == 0) {
+      Some(input)
+    } else {
+      apply(input.hcursor).focus
+    }
+
     override def toString(): String = s"$distance#"
     override def hashCode(): Int = distance
     override def equals(that: Any): Boolean =
@@ -209,10 +262,10 @@ object Pointer {
   }
 
   private[this] final class RelativePointer(val distance: Int, protected val pointer: Absolute) extends Relative {
-    final def apply(c: ACursor): ACursor = pointer(navigateUp(c, distance))
-    final def remainder: Option[Absolute] = Some(pointer)
+    def apply(c: ACursor): ACursor = pointer(navigateUp(c, distance))
+    def remainder: Option[Absolute] = Some(pointer)
 
-    final def evaluate(c: ACursor): Either[PointerFailure, Relative.Result] = {
+    def evaluate(c: ACursor): Either[PointerFailure, Relative.Result] = {
       val navigated = apply(c)
 
       navigated.focus match {
@@ -220,7 +273,14 @@ object Pointer {
         case None        => Left(PointerFailure(navigated.history))
       }
     }
-    final override def toString(): String = s"$distance$pointer"
+
+    def getOption(input: Json): Option[Json] = if (distance == 0) {
+      pointer.getOption(input)
+    } else {
+      apply(input.hcursor).focus
+    }
+
+    override def toString(): String = s"$distance$pointer"
     override def hashCode(): Int = distance + pointer.hashCode
     override def equals(that: Any): Boolean =
       that.isInstanceOf[RelativePointer] && {
@@ -228,22 +288,6 @@ object Pointer {
 
         other.distance == distance && other.pointer == pointer
       }
-  }
-
-  object Relative {
-
-    /**
-     * Represents the result of evaluating a relative JSON Pointer, which may be either a value or a location.
-     */
-    sealed abstract class Result
-
-    object Result {
-      case class Json(value: io.circe.Json) extends Result
-      case class Key(value: String) extends Result
-      case class Index(value: Int) extends Result
-
-      implicit val hashResult: Hash[Result] = Hash.fromUniversalHashCode
-    }
   }
 
   private[this] val notRootError: Either[PointerSyntaxError, Absolute] =

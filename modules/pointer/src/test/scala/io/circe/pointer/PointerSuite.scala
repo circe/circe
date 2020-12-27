@@ -48,6 +48,19 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(p10(example.hcursor).focus, Some(Json.fromInt(7)))
     assertEquals(p11(example.hcursor).focus, Some(Json.fromInt(8)))
 
+    assertEquals(p0.getOption(example), Some(example))
+    assertEquals(p1.getOption(example), Some(Json.arr(Json.fromString("bar"), Json.fromString("baz"))))
+    assertEquals(p2.getOption(example), Some(Json.fromString("bar")))
+    assertEquals(p3.getOption(example), Some(Json.fromInt(0)))
+    assertEquals(p4.getOption(example), Some(Json.fromInt(1)))
+    assertEquals(p5.getOption(example), Some(Json.fromInt(2)))
+    assertEquals(p6.getOption(example), Some(Json.fromInt(3)))
+    assertEquals(p7.getOption(example), Some(Json.fromInt(4)))
+    assertEquals(p8.getOption(example), Some(Json.fromInt(5)))
+    assertEquals(p9.getOption(example), Some(Json.fromInt(6)))
+    assertEquals(p10.getOption(example), Some(Json.fromInt(7)))
+    assertEquals(p11.getOption(example), Some(Json.fromInt(8)))
+
     List(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11).foreach { p =>
       assertEquals(Option(p), p.asAbsolute)
     }
@@ -78,6 +91,12 @@ class PointerSuite extends DisciplineSuite {
     val Right(r2) = Pointer.parseRelative("2/highly/nested/objects")
     val Right(r3) = Pointer.parseRelative("0#")
     val Right(r4) = Pointer.parseRelative("1#")
+
+    assertEquals(p0(original).focus, Some(Json.fromString("baz")))
+    assertEquals(p1(original).focus, Some(Json.fromString("bar")))
+    assertEquals(p2(original).focus, Some(Json.fromBoolean(true)))
+    assertEquals(p3(original).focus, Some(Json.fromString("baz")))
+    assertEquals(p4(original).focus, Some(Json.arr(Json.fromString("bar"), Json.fromString("baz"))))
 
     assertEquals(p0(original).focus, Some(Json.fromString("baz")))
     assertEquals(p1(original).focus, Some(Json.fromString("bar")))
