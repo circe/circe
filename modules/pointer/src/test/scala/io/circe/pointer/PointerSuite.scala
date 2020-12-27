@@ -49,7 +49,7 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(p11(example.hcursor).focus, Some(Json.fromInt(8)))
 
     List(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11).foreach { p =>
-      assert(p.toSubtype.isRight)
+      assertEquals(Option(p), p.asAbsolute)
     }
   }
 
@@ -73,11 +73,11 @@ class PointerSuite extends DisciplineSuite {
     val Right(p3) = Pointer.parse("0#")
     val Right(p4) = Pointer.parse("1#")
 
-    val Right(r0) = Pointer.Relative.parse("0")
-    val Right(r1) = Pointer.Relative.parse("1/0")
-    val Right(r2) = Pointer.Relative.parse("2/highly/nested/objects")
-    val Right(r3) = Pointer.Relative.parse("0#")
-    val Right(r4) = Pointer.Relative.parse("1#")
+    val Right(r0) = Pointer.parseRelative("0")
+    val Right(r1) = Pointer.parseRelative("1/0")
+    val Right(r2) = Pointer.parseRelative("2/highly/nested/objects")
+    val Right(r3) = Pointer.parseRelative("0#")
+    val Right(r4) = Pointer.parseRelative("1#")
 
     assertEquals(p0(original).focus, Some(Json.fromString("baz")))
     assertEquals(p1(original).focus, Some(Json.fromString("bar")))
@@ -98,7 +98,7 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(r4.evaluate(original), Right(Pointer.Relative.Result.Key("foo")))
 
     List(p0, p1, p2, p3, p4, r0, r1, r2, r3, r4).foreach { p =>
-      assert(p.toSubtype.isLeft)
+      assertEquals(Option(p), p.asRelative)
     }
   }
 
@@ -121,7 +121,8 @@ class PointerSuite extends DisciplineSuite {
   property("Pointer.parse should never throw exceptions") {
     Prop.forAll { (input: String) =>
       Pointer.parse(input)
-      Pointer.parse(input, supportRelative = false)
+      Pointer.parseAbsolute(input)
+      Pointer.parseRelative(input)
       true
     }
   }
@@ -139,11 +140,11 @@ class PointerSuite extends DisciplineSuite {
   }
 
   test("Pointer parsing should fail on missing root if relative pointers aren't supported") {
-    assertEquals(Pointer.parse("foo/~0/bar", supportRelative = false), Left(PointerSyntaxError(0, "/")))
+    assertEquals(Pointer.parseAbsolute("foo/~0/bar"), Left(PointerSyntaxError(0, "/")))
   }
 
   test("Pointer parsing should fail on relative pointer if relative pointers aren't supported") {
-    assertEquals(Pointer.parse("0", supportRelative = false), Left(PointerSyntaxError(0, "/")))
+    assertEquals(Pointer.parseAbsolute("0"), Left(PointerSyntaxError(0, "/")))
   }
 
   test("Relative pointer parsing should fail on leading zeros") {
@@ -163,7 +164,7 @@ class PointerSuite extends DisciplineSuite {
   }
 
   test("Relative pointer parsing should fail without a leading number") {
-    assertEquals(Pointer.Relative.parse("/foo"), Left(PointerSyntaxError(0, "digit")))
+    assertEquals(Pointer.parseRelative("/foo"), Left(PointerSyntaxError(0, "digit")))
   }
 
   test("Pointer navigation should fail as expected") {
@@ -179,7 +180,7 @@ class PointerSuite extends DisciplineSuite {
 
   test("tokens should return tokens") {
     val Right(p) = Pointer.parse("/foo//bar/~0~1/qux/1/-/baz/")
-    val Right(a) = p.toSubtype
+    val Some(a) = p.asAbsolute
 
     assertEquals(a.tokens, Vector("foo", "", "bar", "~/", "qux", "1", "-", "baz", ""))
   }
@@ -187,8 +188,8 @@ class PointerSuite extends DisciplineSuite {
   test("distance should return distance") {
     val Right(p1) = Pointer.parse("123#")
     val Right(p2) = Pointer.parse("0/foo")
-    val Left(r1) = p1.toSubtype
-    val Left(r2) = p2.toSubtype
+    val Some(r1) = p1.asRelative
+    val Some(r2) = p2.asRelative
 
     assertEquals(r1.distance, 123)
     assertEquals(r2.distance, 0)
@@ -197,10 +198,10 @@ class PointerSuite extends DisciplineSuite {
   test("remainder should return the absolute part of a relative pointer") {
     val Right(p1) = Pointer.parse("123#")
     val Right(p2) = Pointer.parse("0/foo")
-    val Left(r1) = p1.toSubtype
-    val Left(r2) = p2.toSubtype
+    val Some(r1) = p1.asRelative
+    val Some(r2) = p2.asRelative
 
-    val Right(remainder) = Pointer.Absolute.parse("/foo")
+    val Right(remainder) = Pointer.parseAbsolute("/foo")
 
     assertEquals(r1.remainder, None)
     assertEquals(r2.remainder, Some(remainder))

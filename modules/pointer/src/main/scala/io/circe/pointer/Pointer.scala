@@ -1,5 +1,6 @@
 package io.circe.pointer
 
+import cats.kernel.Hash
 import io.circe.{ ACursor, Json }
 
 /**
@@ -25,93 +26,100 @@ sealed abstract class Pointer extends (ACursor => ACursor) {
   final def getOption(input: Json): Option[Json] = apply(input.hcursor).focus
 
   /**
-   * Safely downcast this value.
+   * Return this pointer as a [[Pointer.Absolute]] if possible.
    */
-  def toSubtype: Either[Pointer.Relative, Pointer.Absolute]
+  def asAbsolute: Option[Pointer.Absolute]
+
+  /**
+   * Return this pointer as a [[Pointer.Relative]] if possible.
+   */
+  def asRelative: Option[Pointer.Relative]
 }
 
 object Pointer {
-  def parse(input: String, supportRelative: Boolean = true): Either[PointerSyntaxError, Pointer] = {
+
+  /**
+   * Parse a string representing a JSON Pointer that may be either absolute or relative.
+   */
+  def parse(input: String): Either[PointerSyntaxError, Pointer] =
     if (input.isEmpty) {
       Right(Empty)
+    } else if (isAsciiDigit(input.charAt(0))) {
+      parseRelative(input)
+    } else if (input.charAt(0) == '/') {
+      parseAbsoluteUnsafe(input)
     } else {
-      if (supportRelative && isAsciiDigit(input.charAt(0))) {
-        Relative.parse(input)
-      } else if (input.charAt(0) == '/') {
-        parseAbsoluteUnsafe(input)
-      } else {
-        val message = if (supportRelative) "/ or digit" else "/"
-
-        Left(PointerSyntaxError(0, message))
-      }
+      notDigitOrRootError
     }
-  }
 
-  val empty: Absolute = Empty
+  /**
+   * Parse a string representing an absolute JSON Pointer.
+   */
+  def parseAbsolute(input: String): Either[PointerSyntaxError, Absolute] =
+    if (input.isEmpty) {
+      Right(Empty)
+    } else if (input.charAt(0) == '/') {
+      parseAbsoluteUnsafe(input)
+    } else {
+      notRootError
+    }
 
-  sealed abstract class Absolute extends Pointer {
-    def tokens: Vector[String]
+  /**
+   * Parse a string representing a relative JSON Pointer.
+   */
+  def parseRelative(input: String): Either[PointerSyntaxError, Relative] = {
+    val digits = digitPrefixLength(input)
 
-    final def toSubtype: Either[Relative, Absolute] = Right(this)
-  }
+    if (digits == -1) {
+      // There was a leading zero.
+      leadingZeroError
+    } else if (digits == 0) {
+      notDigitError
+    } else if (digits > 9) {
+      tooManyDigitsError
+    } else {
+      val distance = Integer.parseInt(input.substring(0, digits))
 
-  object Absolute {
-    def parse(input: String): Either[PointerSyntaxError, Absolute] = {
-      if (input.isEmpty) {
-        Right(Empty)
+      if (input.length == digits) {
+        Right(new RelativePointer(distance, Empty))
       } else {
-        if (input.charAt(0) == '/') {
-          parseAbsoluteUnsafe(input)
+        val c = input.charAt(digits)
+
+        if (c == '/') {
+          parseAbsoluteUnsafe(input.substring(digits)).map(new RelativePointer(distance, _))
+        } else if (c == '#') {
+          if (input.length == digits + 1) {
+            Right(new LocationLookupPointer(distance))
+          } else {
+            Left(PointerSyntaxError(digits + 1, "end of input"))
+          }
         } else {
-          Left(PointerSyntaxError(0, "/"))
+          Left(PointerSyntaxError(digits, "JSON Pointer or #"))
         }
       }
     }
   }
 
-  private[this] case object Empty extends Absolute {
-    def apply(c: ACursor): ACursor = c
-    def tokens: Vector[String] = Vector.empty
-    override def toString(): String = ""
+  /**
+   * Represents an absolute JSON Pointer.
+   */
+  sealed abstract class Absolute extends Pointer {
+    def tokens: Vector[String]
+
+    final def asAbsolute: Option[Pointer.Absolute] = Some(this)
+    final def asRelative: Option[Pointer.Relative] = None
   }
 
-  private[this] case class TokensPointer(pairs: Vector[(String, Int)]) extends Absolute {
-    def apply(c: ACursor): ACursor = {
-      var current = c
-
-      pairs.foreach {
-        case (key, asIndex) =>
-          if (asIndex != -1) {
-            current.values match {
-              case Some(values) =>
-                if (key == "-") {
-                  current = current.downN(values.size)
-                } else {
-                  current = current.downN(asIndex)
-                }
-              case None =>
-                current = current.downField(key)
-            }
-          } else {
-            current = current.downField(key)
-          }
-      }
-
-      current
-    }
-
-    def tokens: Vector[String] = pairs.map(_._1)
-
-    override def toString(): String =
-      pairs.map(_._1.replaceAll("~", "~0").replaceAll("/", "~1")).mkString("/", "/", "")
-  }
-
+  /**
+   * Represents a relative JSON Pointer.
+   */
   sealed abstract class Relative extends Pointer {
     def evaluate(c: ACursor): Either[PointerFailure, Relative.Result]
     def distance: Int
     def remainder: Option[Absolute]
 
-    final def toSubtype: Either[Relative, Absolute] = Left(this)
+    final def asAbsolute: Option[Pointer.Absolute] = None
+    final def asRelative: Option[Pointer.Relative] = Some(this)
 
     protected[this] def navigateUp(c: ACursor, distance: Int): ACursor = {
       var current: ACursor = c
@@ -126,97 +134,135 @@ object Pointer {
     }
   }
 
+  implicit val hashPointer: Hash[Pointer] = Hash.fromUniversalHashCode
+
+  private[this] val Empty = new TokenArrayPointer(Array.empty, Array.empty)
+
+  private[this] final class TokenArrayPointer(protected val tokenArray: Array[String], asIndexArray: Array[Int])
+      extends Absolute {
+    def apply(c: ACursor): ACursor = {
+      var current = c
+      var i = 0
+
+      while (i < tokenArray.length) {
+        val key = tokenArray(i)
+        val asIndex = asIndexArray(i)
+
+        if (asIndex != -1) {
+          current.values match {
+            case Some(values) =>
+              if (key == "-") {
+                current = current.downN(values.size)
+              } else {
+                current = current.downN(asIndex)
+              }
+            case None =>
+              current = current.downField(key)
+          }
+        } else {
+          current = current.downField(key)
+        }
+
+        i += 1
+      }
+
+      current
+    }
+
+    def tokens: Vector[String] = new scala.collection.mutable.ArraySeq.ofRef(tokenArray).toVector
+
+    override def toString(): String = if (tokenArray.length == 0) {
+      ""
+    } else {
+      tokens.map(_.replaceAll("~", "~0").replaceAll("/", "~1")).mkString("/", "/", "")
+    }
+    override def hashCode(): Int = java.util.Arrays.hashCode(tokenArray.asInstanceOf[Array[Object]])
+    override def equals(that: Any): Boolean = that.isInstanceOf[TokenArrayPointer] && {
+      java.util.Arrays.equals(
+        tokenArray.asInstanceOf[Array[Object]],
+        that.asInstanceOf[TokenArrayPointer].tokenArray.asInstanceOf[Array[Object]]
+      )
+    }
+  }
+
+  private[this] final class LocationLookupPointer(val distance: Int) extends Relative {
+    def apply(c: ACursor): ACursor = navigateUp(c, distance)
+    def remainder: Option[Absolute] = None
+
+    def evaluate(c: ACursor): Either[PointerFailure, Relative.Result] = {
+      val navigated = apply(c)
+
+      navigated.index match {
+        case Some(index) => Right(Relative.Result.Index(index))
+        case None =>
+          navigated.key match {
+            case Some(key) => Right(Relative.Result.Key(key))
+            case None      => Left(PointerFailure(navigated.history))
+          }
+      }
+    }
+
+    override def toString(): String = s"$distance#"
+    override def hashCode(): Int = distance
+    override def equals(that: Any): Boolean =
+      that.isInstanceOf[LocationLookupPointer] && that.asInstanceOf[LocationLookupPointer].distance == distance
+  }
+
+  private[this] final class RelativePointer(val distance: Int, protected val pointer: Absolute) extends Relative {
+    final def apply(c: ACursor): ACursor = pointer(navigateUp(c, distance))
+    final def remainder: Option[Absolute] = Some(pointer)
+
+    final def evaluate(c: ACursor): Either[PointerFailure, Relative.Result] = {
+      val navigated = apply(c)
+
+      navigated.focus match {
+        case Some(value) => Right(Relative.Result.Json(value))
+        case None        => Left(PointerFailure(navigated.history))
+      }
+    }
+    final override def toString(): String = s"$distance$pointer"
+    override def hashCode(): Int = distance + pointer.hashCode
+    override def equals(that: Any): Boolean =
+      that.isInstanceOf[RelativePointer] && {
+        val other = that.asInstanceOf[RelativePointer]
+
+        other.distance == distance && other.pointer == pointer
+      }
+  }
+
   object Relative {
+
+    /**
+     * Represents the result of evaluating a relative JSON Pointer, which may be either a value or a location.
+     */
     sealed abstract class Result
 
     object Result {
       case class Json(value: io.circe.Json) extends Result
       case class Key(value: String) extends Result
       case class Index(value: Int) extends Result
-    }
 
-    def parse(input: String): Either[PointerSyntaxError, Relative] = {
-      val digits = digitPrefixLength(input)
-
-      if (digits == -1) {
-        // There was a leading zero.
-        leadingZeroError
-      } else if (digits == 0) {
-        notDigitError
-      } else if (digits > 9) {
-        tooManyDigitsError
-      } else {
-        val distance = Integer.parseInt(input.substring(0, digits))
-
-        if (input.length == digits) {
-          Right(PointerRelative(distance, Pointer.empty))
-        } else {
-          val c = input.charAt(digits)
-
-          if (c == '/') {
-            parseAbsoluteUnsafe(input.substring(digits)).map(PointerRelative(distance, _))
-          } else if (c == '#') {
-            if (input.length == digits + 1) {
-              Right(LocationLookupRelative(distance))
-            } else {
-              Left(PointerSyntaxError(digits + 1, "end of input"))
-            }
-          } else {
-            Left(PointerSyntaxError(digits, "JSON Pointer or #"))
-          }
-        }
-      }
-    }
-
-    private[this] val leadingZeroError: Either[PointerSyntaxError, Relative] = Left(
-      PointerSyntaxError(1, "JSON Pointer or #")
-    )
-    private[this] val notDigitError: Either[PointerSyntaxError, Relative] = Left(PointerSyntaxError(0, "digit"))
-    private[this] val tooManyDigitsError: Either[PointerSyntaxError, Relative] = Left(
-      PointerSyntaxError(9, "JSON Pointer or #")
-    )
-
-    private[this] case class LocationLookupRelative(distance: Int) extends Relative {
-      final def apply(c: ACursor): ACursor = navigateUp(c, distance)
-      final def remainder: Option[Absolute] = None
-
-      final def evaluate(c: ACursor): Either[PointerFailure, Result] = {
-        val navigated = apply(c)
-
-        navigated.index match {
-          case Some(index) => Right(Result.Index(index))
-          case None =>
-            navigated.key match {
-              case Some(key) => Right(Result.Key(key))
-              case None      => Left(PointerFailure(navigated.history))
-            }
-        }
-      }
-      final override def toString(): String = s"$distance#"
-    }
-
-    private[this] case class PointerRelative(distance: Int, pointer: Absolute) extends Relative {
-      final def apply(c: ACursor): ACursor = pointer(navigateUp(c, distance))
-      final def remainder: Option[Absolute] = Some(pointer)
-
-      final def evaluate(c: ACursor): Either[PointerFailure, Result] = {
-        val navigated = apply(c)
-
-        navigated.focus match {
-          case Some(value) => Right(Result.Json(value))
-          case None        => Left(PointerFailure(navigated.history))
-        }
-      }
-      final override def toString(): String = s"$distance$pointer"
+      implicit val hashResult: Hash[Result] = Hash.fromUniversalHashCode
     }
   }
+
+  private[this] val notRootError: Either[PointerSyntaxError, Absolute] =
+    Left(PointerSyntaxError(0, "/"))
+  private[this] val notDigitError: Either[PointerSyntaxError, Relative] =
+    Left(PointerSyntaxError(0, "digit"))
+  private[this] val notDigitOrRootError: Either[PointerSyntaxError, Pointer] =
+    Left(PointerSyntaxError(0, "/ or digit"))
+  private[this] val leadingZeroError: Either[PointerSyntaxError, Relative] =
+    Left(PointerSyntaxError(1, "JSON Pointer or #"))
+  private[this] val tooManyDigitsError: Either[PointerSyntaxError, Relative] =
+    Left(PointerSyntaxError(9, "JSON Pointer or #"))
 
   private[this] def isAsciiDigit(c: Char): Boolean = c >= '0' && c <= '9'
 
   // Returns -1 to indicate a leading zero.
   private[this] def digitPrefixLength(input: String): Int = {
-    var i = 0
     val length = input.length
+    var i = 0
 
     if (length > 0) {
       if (input.charAt(i) == '0') {
@@ -226,7 +272,7 @@ object Pointer {
           -1
         }
       } else {
-        while ((i < input.length) && isAsciiDigit(input.charAt(i))) {
+        while ((i < length) && isAsciiDigit(input.charAt(i))) {
           i += 1
         }
 
@@ -245,50 +291,50 @@ object Pointer {
     }
     var pos = 1
     var i = 1
-    val tokens = Vector.newBuilder[(String, Int)]
+    val tokenArray = new Array[String](parts.length - 1)
+    val asIndexArray = new Array[Int](parts.length - 1)
 
     while (i < parts.length) {
       val part = parts(i)
-      if (part == "-") {
-        tokens += hyphenToken
+      val digits = digitPrefixLength(parts(i))
+
+      if (digits == part.length && !part.isEmpty) {
+        tokenArray(i - 1) = part
+        asIndexArray(i - 1) = Integer.parseInt(part)
       } else {
-        val digits = digitPrefixLength(parts(i))
+        var previousEscapeEnd = 0
+        var currentTildeIndex = part.indexOf('~')
 
-        if (digits == part.length && !part.isEmpty) {
-          tokens += ((part, Integer.parseInt(part)))
+        if (currentTildeIndex == -1) {
+          tokenArray(i - 1) = part
+          asIndexArray(i - 1) = -1
         } else {
-          var previousEscapeEnd = 0
-          var currentTildeIndex = part.indexOf('~')
+          val builder = new StringBuilder()
 
-          if (currentTildeIndex == -1) {
-            tokens += ((part, -1))
-          } else {
-            val builder = new StringBuilder()
+          while (currentTildeIndex != -1) {
+            if (part.length > currentTildeIndex + 1) {
+              builder.append(part.substring(previousEscapeEnd, currentTildeIndex))
+              val next = part.charAt(currentTildeIndex + 1)
 
-            while (currentTildeIndex != -1) {
-              if (part.length > currentTildeIndex + 1) {
-                builder.append(part.substring(previousEscapeEnd, currentTildeIndex))
-                val next = part.charAt(currentTildeIndex + 1)
-
-                if (next == '0') {
-                  builder.append('~')
-                } else if (next == '1') {
-                  builder.append('/')
-                } else {
-                  return Left(PointerSyntaxError(pos + currentTildeIndex + 1, "0 or 1"))
-                }
+              if (next == '0') {
+                builder.append('~')
+              } else if (next == '1') {
+                builder.append('/')
               } else {
-                return Left(PointerSyntaxError(pos + currentTildeIndex, "token character"))
+                return Left(PointerSyntaxError(pos + currentTildeIndex + 1, "0 or 1"))
               }
-
-              previousEscapeEnd = currentTildeIndex + 2
-              currentTildeIndex = part.indexOf('~', previousEscapeEnd)
+            } else {
+              return Left(PointerSyntaxError(pos + currentTildeIndex, "token character"))
             }
 
-            builder.append(part.substring(previousEscapeEnd))
-
-            tokens += ((builder.toString, -1))
+            previousEscapeEnd = currentTildeIndex + 2
+            currentTildeIndex = part.indexOf('~', previousEscapeEnd)
           }
+
+          builder.append(part.substring(previousEscapeEnd))
+
+          tokenArray(i - 1) = builder.toString
+          asIndexArray(i - 1) = -1
         }
       }
 
@@ -296,8 +342,6 @@ object Pointer {
       i += 1
     }
 
-    Right(TokensPointer(tokens.result()))
+    Right(new TokenArrayPointer(tokenArray, asIndexArray))
   }
-
-  private[this] val hyphenToken: (String, Int) = ("-", Int.MaxValue)
 }
