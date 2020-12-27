@@ -232,6 +232,7 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (numbers, numbersJS),
   (core, coreJS),
   (pointer, pointerJS),
+  (pointerLiteral, pointerLiteralJS),
   (extras, extrasJS),
   (generic, genericJS),
   (shapes, shapesJS),
@@ -575,6 +576,19 @@ lazy val pointerBase =
 
 lazy val pointer = pointerBase.jvm
 lazy val pointerJS = pointerBase.js
+
+lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
+  .settings(macroSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+    )
+  )
+  .dependsOn(coreBase, pointerBase)
+
+lazy val pointerLiteral = pointerLiteralBase.jvm
+lazy val pointerLiteralJS = pointerLiteralBase.js
 
 lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
 
