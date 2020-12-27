@@ -140,11 +140,11 @@ object Pointer {
 
       if (digits == -1) {
         // There was a leading zero.
-        Left(PointerSyntaxError(1, "JSON Pointer or #"))
+        leadingZeroError
       } else if (digits == 0) {
-        Left(PointerSyntaxError(0, "digit"))
+        notDigitError
       } else if (digits > 9) {
-        Left(PointerSyntaxError(9, "JSON Pointer or #"))
+        tooManyDigitsError
       } else {
         val distance = Integer.parseInt(input.substring(0, digits))
 
@@ -167,6 +167,14 @@ object Pointer {
         }
       }
     }
+
+    private[this] val leadingZeroError: Either[PointerSyntaxError, Relative] = Left(
+      PointerSyntaxError(1, "JSON Pointer or #")
+    )
+    private[this] val notDigitError: Either[PointerSyntaxError, Relative] = Left(PointerSyntaxError(0, "digit"))
+    private[this] val tooManyDigitsError: Either[PointerSyntaxError, Relative] = Left(
+      PointerSyntaxError(9, "JSON Pointer or #")
+    )
 
     private[this] case class LocationLookupRelative(distance: Int) extends Relative {
       final def apply(c: ACursor): ACursor = navigateUp(c, distance)
