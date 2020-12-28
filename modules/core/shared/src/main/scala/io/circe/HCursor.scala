@@ -39,6 +39,16 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     Some(current.asInstanceOf[TopCursor].value)
   }
 
+  override final def root: HCursor = {
+    var current: HCursor = this
+
+    while (!current.isInstanceOf[TopCursor]) {
+      current = current.up.asInstanceOf[HCursor]
+    }
+
+    current
+  }
+
   final def downArray: ACursor = value match {
     case Json.JArray(values) if !values.isEmpty =>
       new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)

@@ -111,6 +111,10 @@ object Pointer {
 
     final def asAbsolute: Option[Pointer.Absolute] = Some(this)
     final def asRelative: Option[Pointer.Relative] = None
+
+    final def apply(c: ACursor): ACursor = navigate(c, true)
+
+    private[Pointer] def navigate(c: ACursor, resetToRoot: Boolean): ACursor
   }
 
   /**
@@ -159,8 +163,8 @@ object Pointer {
 
   private[this] final class TokenArrayPointer(protected val tokenArray: Array[String], asIndexArray: Array[Int])
       extends Absolute {
-    def apply(c: ACursor): ACursor = {
-      var current = c
+    private[Pointer] def navigate(c: ACursor, resetToRoot: Boolean): ACursor = {
+      var current: ACursor = if (resetToRoot) c.root else c
       var i = 0
 
       while (i < tokenArray.length) {
@@ -262,7 +266,7 @@ object Pointer {
   }
 
   private[this] final class RelativePointer(val distance: Int, protected val pointer: Absolute) extends Relative {
-    def apply(c: ACursor): ACursor = pointer(navigateUp(c, distance))
+    def apply(c: ACursor): ACursor = pointer.navigate(navigateUp(c, distance), false)
     def remainder: Option[Absolute] = Some(pointer)
 
     def evaluate(c: ACursor): Either[PointerFailure, Relative.Result] = {

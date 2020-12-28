@@ -92,6 +92,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def top: Option[Json]
 
   /**
+   * Return the cursor to the root of the document.
+   *
+   * @group Access
+   */
+  def root: HCursor = null
+
+  /**
    * Modify the focus using the given function.
    *
    * @group Modification
