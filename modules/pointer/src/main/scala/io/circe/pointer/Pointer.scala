@@ -1,7 +1,7 @@
 package io.circe.pointer
 
 import cats.kernel.Hash
-import io.circe.{ ACursor, Json }
+import io.circe.{ ACursor, Encoder, Json }
 
 /**
  * Represents a JSON Pointer that may be either absolute or relative.
@@ -154,6 +154,13 @@ object Pointer {
       case class Index(value: Int) extends Result
 
       implicit val hashResult: Hash[Result] = Hash.fromUniversalHashCode
+      implicit val encodeResult: Encoder[Result] = new Encoder[Result] {
+        def apply(result: Result): io.circe.Json = result match {
+          case Json(value) => value
+          case Key(value) => io.circe.Json.fromString(value)
+          case Index(value) => io.circe.Json.fromInt(value)
+        }
+      }
     }
   }
 
