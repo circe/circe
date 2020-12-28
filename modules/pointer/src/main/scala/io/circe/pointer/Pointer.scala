@@ -104,20 +104,6 @@ object Pointer {
   }
 
   /**
-   * Represents an absolute JSON Pointer.
-   */
-  sealed abstract class Absolute extends Pointer {
-    def tokens: Vector[String]
-
-    final def asAbsolute: Option[Pointer.Absolute] = Some(this)
-    final def asRelative: Option[Pointer.Relative] = None
-
-    final def apply(c: ACursor): ACursor = navigate(c, true)
-
-    private[Pointer] def navigate(c: ACursor, resetToRoot: Boolean): ACursor
-  }
-
-  /**
    * Represents a relative JSON Pointer.
    */
   sealed abstract class Relative extends Pointer {
@@ -156,8 +142,8 @@ object Pointer {
       implicit val hashResult: Hash[Result] = Hash.fromUniversalHashCode
       implicit val encodeResult: Encoder[Result] = new Encoder[Result] {
         def apply(result: Result): io.circe.Json = result match {
-          case Json(value) => value
-          case Key(value) => io.circe.Json.fromString(value)
+          case Json(value)  => value
+          case Key(value)   => io.circe.Json.fromString(value)
           case Index(value) => io.circe.Json.fromInt(value)
         }
       }
@@ -166,10 +152,18 @@ object Pointer {
 
   implicit val hashPointer: Hash[Pointer] = Hash.fromUniversalHashCode
 
-  private[this] val Empty = new TokenArrayPointer(Array.empty, Array.empty)
+  private[this] val Empty = new Absolute(Array.empty, Array.empty)
 
-  private[this] final class TokenArrayPointer(protected val tokenArray: Array[String], asIndexArray: Array[Int])
-      extends Absolute {
+  /**
+   * Represents an absolute JSON Pointer.
+   */
+  final class Absolute private[Pointer] (private val tokenArray: Array[String], asIndexArray: Array[Int])
+      extends Pointer {
+    def asAbsolute: Option[Pointer.Absolute] = Some(this)
+    def asRelative: Option[Pointer.Relative] = None
+
+    def apply(c: ACursor): ACursor = navigate(c, true)
+
     private[Pointer] def navigate(c: ACursor, resetToRoot: Boolean): ACursor = {
       var current: ACursor = if (resetToRoot) c.root else c
       var i = 0
@@ -235,10 +229,10 @@ object Pointer {
       tokens.map(_.replaceAll("~", "~0").replaceAll("/", "~1")).mkString("/", "/", "")
     }
     override def hashCode(): Int = java.util.Arrays.hashCode(tokenArray.asInstanceOf[Array[Object]])
-    override def equals(that: Any): Boolean = that.isInstanceOf[TokenArrayPointer] && {
+    override def equals(that: Any): Boolean = that.isInstanceOf[Absolute] && {
       java.util.Arrays.equals(
         tokenArray.asInstanceOf[Array[Object]],
-        that.asInstanceOf[TokenArrayPointer].tokenArray.asInstanceOf[Array[Object]]
+        that.asInstanceOf[Absolute].tokenArray.asInstanceOf[Array[Object]]
       )
     }
   }
@@ -399,6 +393,6 @@ object Pointer {
       i += 1
     }
 
-    Right(new TokenArrayPointer(tokenArray, asIndexArray))
+    Right(new Absolute(tokenArray, asIndexArray))
   }
 }
