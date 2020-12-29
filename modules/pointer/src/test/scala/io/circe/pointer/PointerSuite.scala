@@ -2,6 +2,7 @@ package io.circe.pointer
 
 import io.circe.{ CursorOp, Json }
 import io.circe.parser
+import io.circe.syntax._
 import munit.DisciplineSuite
 import org.scalacheck.Prop
 
@@ -115,6 +116,12 @@ class PointerSuite extends DisciplineSuite {
     assertEquals(r2.evaluate(original), Right(Pointer.Relative.Result.Json(Json.fromBoolean(true))))
     assertEquals(r3.evaluate(original), Right(Pointer.Relative.Result.Index(1)))
     assertEquals(r4.evaluate(original), Right(Pointer.Relative.Result.Key("foo")))
+
+    assertEquals(r0.evaluate(original).map(_.asJson), Right(Json.fromString("baz")))
+    assertEquals(r1.evaluate(original).map(_.asJson), Right(Json.fromString("bar")))
+    assertEquals(r2.evaluate(original).map(_.asJson), Right(Json.fromBoolean(true)))
+    assertEquals(r3.evaluate(original).map(_.asJson), Right(Json.fromInt(1)))
+    assertEquals(r4.evaluate(original).map(_.asJson), Right(Json.fromString("foo")))
 
     List(p0, p1, p2, p3, p4, r0, r1, r2, r3, r4).foreach { p =>
       assertEquals(Option(p), p.asRelative)
