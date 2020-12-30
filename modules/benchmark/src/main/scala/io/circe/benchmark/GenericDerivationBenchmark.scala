@@ -48,16 +48,18 @@ class GenericDerivationBenchmark {
   )
 
   val exampleFooJson = Encoder[Foo].apply(exampleFoo)
+  val exampleFooString: String = exampleFooJson.spaces2
 
-  @Benchmark
+  //@Benchmark
   def decodeDerived: Decoder.Result[Foo] = derivedDecoder.decodeJson(exampleFooJson)
 
-  @Benchmark
+  //@Benchmark
   def decodeNonDerived: Decoder.Result[Foo] = nonDerivedDecoder.decodeJson(exampleFooJson)
 
-  @Benchmark
+  //@Benchmark
   def encodeDerived: Json = derivedEncoder(exampleFoo)
 
-  @Benchmark
+  //@Benchmark
   def encodeNonDerived: Json = nonDerivedEncoder(exampleFoo)
+
 }

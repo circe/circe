@@ -10,6 +10,11 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor
   def addOp(cursor: HCursor, op: CursorOp): HCursor
 
+  def asNumberString: String = null
+  def isTrue: Boolean = value.eq(Json.True)
+  def isFalse: Boolean = value.eq(Json.False)
+  def asBoolean: java.lang.Boolean = null
+
   final def withFocus(f: Json => Json): ACursor = replace(f(value), this, null)
   final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
     F.map(f(value))(replace(_, this, null))
@@ -49,7 +54,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     current
   }
 
-  final def downArray: ACursor = value match {
+  def downArray: ACursor = value match {
     case Json.JArray(values) if !values.isEmpty =>
       new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
     case _ => fail(CursorOp.DownArray)
@@ -65,7 +70,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     go(this)
   }
 
-  final def downField(k: String): ACursor = value match {
+  def downField(k: String): ACursor = value match {
     case Json.JObject(o) =>
       if (!o.contains(k)) fail(CursorOp.DownField(k))
       else {

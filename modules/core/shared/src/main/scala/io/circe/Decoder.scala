@@ -616,9 +616,18 @@ object Decoder
    * @group Decoding
    */
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
-    final def apply(c: HCursor): Result[Boolean] = c.value match {
-      case Json.JBoolean(b) => Right(b)
-      case _                => Left(DecodingFailure("Boolean", c.history))
+    final def apply(c: HCursor): Result[Boolean] = {
+      //  if (c.isTrue) Right(true) else if (c.isFalse) Right(false) else Left(DecodingFailure("Boolean", c.history))
+      /*val asBoolean = c.asBoolean
+
+      if (asBoolean.ne(null)) {
+        Right(Boolean.unbox(asBoolean))
+      } else {*/
+      c.value match {
+        case Json.JBoolean(b) => Right(b)
+        case _                => Left(DecodingFailure("Boolean", c.history))
+      }
+      //}
     }
   }
 
@@ -684,15 +693,23 @@ object Decoder
    * @group Decoding
    */
   implicit final val decodeDouble: Decoder[Double] = new DecoderWithFailure[Double]("Double") {
-    final def apply(c: HCursor): Result[Double] = c.value match {
-      case Json.JNumber(number) => Right(number.toDouble)
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).map(_.toDouble) match {
-          case Some(v) => Right(v)
-          case None    => fail(c)
+    final def apply(c: HCursor): Result[Double] = {
+      val asS = c.asNumberString
+
+      if (asS.ne(null)) {
+        Right(java.lang.Double.parseDouble(asS))
+      } else {
+        c.value match {
+          case Json.JNumber(number) => Right(number.toDouble)
+          case Json.JString(string) =>
+            JsonNumber.fromString(string).map(_.toDouble) match {
+              case Some(v) => Right(v)
+              case None    => fail(c)
+            }
+          case other if other.isNull => Right(Double.NaN)
+          case _                     => fail(c)
         }
-      case other if other.isNull => Right(Double.NaN)
-      case _                     => fail(c)
+      }
     }
   }
 
@@ -771,18 +788,26 @@ object Decoder
    * @group Decoding
    */
   implicit final val decodeInt: Decoder[Int] = new DecoderWithFailure[Int]("Int") {
-    final def apply(c: HCursor): Result[Int] = c.value match {
-      case Json.JNumber(number) =>
-        number.toInt match {
-          case Some(v) => Right(v)
-          case None    => fail(c)
+    final def apply(c: HCursor): Result[Int] = {
+      val asS = c.asNumberString
+
+      if (asS.ne(null)) {
+        Right(Integer.parseInt(asS))
+      } else {
+        c.value match {
+          case Json.JNumber(number) =>
+            number.toInt match {
+              case Some(v) => Right(v)
+              case None    => fail(c)
+            }
+          case Json.JString(string) =>
+            JsonNumber.fromString(string).flatMap(_.toInt) match {
+              case Some(value) => Right(value)
+              case None        => fail(c)
+            }
+          case _ => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toInt) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
-      case _ => fail(c)
+      }
     }
   }
 
@@ -804,18 +829,26 @@ object Decoder
    * @group Decoding
    */
   implicit final val decodeLong: Decoder[Long] = new DecoderWithFailure[Long]("Long") {
-    final def apply(c: HCursor): Result[Long] = c.value match {
-      case Json.JNumber(number) =>
-        number.toLong match {
-          case Some(v) => Right(v)
-          case None    => fail(c)
+    final def apply(c: HCursor): Result[Long] = {
+      val asS = c.asNumberString
+
+      if (asS.ne(null)) {
+        Right(java.lang.Long.parseLong(asS))
+      } else {
+        c.value match {
+          case Json.JNumber(number) =>
+            number.toLong match {
+              case Some(v) => Right(v)
+              case None    => fail(c)
+            }
+          case Json.JString(string) =>
+            JsonNumber.fromString(string).flatMap(_.toLong) match {
+              case Some(value) => Right(value)
+              case None        => fail(c)
+            }
+          case _ => fail(c)
         }
-      case Json.JString(string) =>
-        JsonNumber.fromString(string).flatMap(_.toLong) match {
-          case Some(value) => Right(value)
-          case None        => fail(c)
-        }
-      case _ => fail(c)
+      }
     }
   }
 
