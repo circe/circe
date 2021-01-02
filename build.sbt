@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
-crossScalaVersions in ThisBuild := List("2.12.12", "2.13.4")
+crossScalaVersions in ThisBuild := List("3.0.0-M3", "2.12.12", "2.13.4")
 scalaVersion in ThisBuild := crossScalaVersions.value.last
 
 githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
@@ -573,12 +573,12 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
 
 lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.typelevel" %%% "discipline-munit" % "1.0.4" % Test
+    .settings(
+      libraryDependencies ++= Seq(
+        "org.typelevel" %%% "discipline-munit" % "1.0.4" % Test
+      )
     )
-  )
-  .dependsOn(coreBase, parserBase % Test)
+    .dependsOn(coreBase, parserBase % Test)
 
 lazy val pointer = pointerBase.jvm
 lazy val pointerJS = pointerBase.js
