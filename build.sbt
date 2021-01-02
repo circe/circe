@@ -572,7 +572,13 @@ lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
   .dependsOn(core)
 
 lazy val pointerBase =
-  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure).dependsOn(coreBase, testsBase % Test)
+  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "discipline-munit" % "1.0.4" % Test
+    )
+  )
+  .dependsOn(coreBase, parserBase % Test)
 
 lazy val pointer = pointerBase.jvm
 lazy val pointerJS = pointerBase.js
