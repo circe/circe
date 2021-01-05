@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 import java.time.temporal.TemporalAccessor
+import java.util.Currency
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
@@ -691,6 +692,9 @@ object Encoder
   implicit final lazy val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
     final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
+
+  implicit final lazy val currencyEncoder: Encoder[Currency] =
+    Encoder[String].contramap(_.getCurrencyCode())
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

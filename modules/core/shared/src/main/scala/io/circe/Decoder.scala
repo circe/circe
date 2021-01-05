@@ -13,6 +13,7 @@ import cats.data.{
   Validated,
   ValidatedNel
 }
+import cats.syntax.either._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
@@ -36,6 +37,7 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
+import java.util.Currency
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
@@ -1407,6 +1409,19 @@ object Decoder
         final def apply(c: HCursor): Result[B] = step(c, a)
       }
     }
+
+  implicit final lazy val currencyDecoder: Decoder[Currency] =
+    Decoder[String].emap(value =>
+      catsStdInstancesForEither[Throwable]
+        .catchNonFatal(
+          Currency.getInstance(value)
+        )
+        .leftMap((t: Throwable) =>
+          // As of JRE 15 `.getMessage` and `.getLocalizedMessage` return
+          // `null`, but that doesn't mean they always will.
+          Option(t.getLocalizedMessage()).getOrElse(s"Unknown or unimplemented currency value: $value")
+        )
+    )
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
