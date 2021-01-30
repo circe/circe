@@ -575,7 +575,7 @@ lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %%% "discipline-munit" % "1.0.4" % Test
+        "org.typelevel" %%% "discipline-munit" % "1.0.5" % Test
       )
     )
     .dependsOn(coreBase, parserBase % Test)
