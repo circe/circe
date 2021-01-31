@@ -1,8 +1,9 @@
 package io.circe
 
-import cats.{ Eq, Show }
+import cats.{ Applicative, Eq, Show }
 import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
+
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -87,6 +88,12 @@ sealed abstract class Json extends Product with Serializable {
   def mapString(f: String => String): Json
   def mapArray(f: Vector[Json] => Vector[Json]): Json
   def mapObject(f: JsonObject => JsonObject): Json
+
+  def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json]
+  def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json]
+  def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json]
+  def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json]
+  def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json]
 
   /**
    * The name of the type of the JSON value.
@@ -302,6 +309,13 @@ object Json {
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.pure(this)
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] = F.pure(this)
   }
 
   private[circe] final case class JBoolean(value: Boolean) extends Json {
@@ -333,6 +347,14 @@ object Json {
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] =
+      F.map(f(value))(v => JBoolean(v))
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.pure(this)
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] = F.pure(this)
   }
 
   private[circe] final case class JNumber(value: JsonNumber) extends Json {
@@ -364,6 +386,14 @@ object Json {
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] =
+      F.map(f(value))(v => JNumber(v))
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.pure(this)
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] = F.pure(this)
   }
 
   private[circe] final case class JString(value: String) extends Json {
@@ -395,6 +425,14 @@ object Json {
     final def mapString(f: String => String): Json = JString(f(value))
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = this
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] =
+      F.map(f(value))(v => JString(v))
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.pure(this)
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] = F.pure(this)
   }
 
   private[circe] final case class JArray(value: Vector[Json]) extends Json {
@@ -426,6 +464,13 @@ object Json {
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = JArray(f(value))
     final def mapObject(f: JsonObject => JsonObject): Json = this
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.map(f(value))(v => JArray(v))
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] = F.pure(this)
   }
 
   private[circe] final case class JObject(value: JsonObject) extends Json {
@@ -457,6 +502,14 @@ object Json {
     final def mapString(f: String => String): Json = this
     final def mapArray(f: Vector[Json] => Vector[Json]): Json = this
     final def mapObject(f: JsonObject => JsonObject): Json = JObject(f(value))
+
+    final def traverseBoolean[F[_]](f: Boolean => F[Boolean])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseNumber[F[_]](f: JsonNumber => F[JsonNumber])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseString[F[_]](f: String => F[String])(implicit F: Applicative[F]): F[Json] = F.pure(this)
+    final def traverseArray[F[_]](f: Vector[Json] => F[Vector[Json]])(implicit F: Applicative[F]): F[Json] =
+      F.pure(this)
+    final def traverseObject[F[_]](f: JsonObject => F[JsonObject])(implicit F: Applicative[F]): F[Json] =
+      F.map(f(value))(v => JObject(v))
   }
 
   final val Null: Json = JNull
