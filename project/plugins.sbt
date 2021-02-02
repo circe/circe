@@ -1,5 +1,5 @@
 addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.2")
-addSbtPlugin("com.47deg" % "sbt-microsites" % "1.3.0")
+addSbtPlugin("com.47deg" % "sbt-microsites" % "1.3.2")
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.9.5")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
