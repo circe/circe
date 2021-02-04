@@ -13,7 +13,7 @@ githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
 githubWorkflowScalaVersions in ThisBuild := crossScalaVersions.in(ThisBuild).value.tail
 githubWorkflowPublishTargetBranches in ThisBuild := Nil
 githubWorkflowBuild in ThisBuild := Seq(
-  WorkflowStep.Use("actions", "setup-ruby", "v1", name = Some("Set up Ruby")),
+  WorkflowStep.Use("ruby", "setup-ruby", "v1", params = Map("ruby-version" -> "2.7"), name = Some("Set up Ruby")),
   WorkflowStep.Run(
     List("gem install sass", "gem install jekyll -v 4.0.0"),
     name = Some("Install Jekyll")
