@@ -74,6 +74,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Stripe](https://stripe.com)
 * [Stylight](https://stylight.de)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
+* [Tinkoff](https://tinkoff.ru/)
 * [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
 * [Tranzzo](https://tranzzo.com/)
