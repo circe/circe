@@ -73,7 +73,7 @@ val scalaCheckVersion = "1.15.3"
 val munitVersion = "0.7.22"
 val disciplineVersion = "1.1.4"
 val disciplineScalaTestVersion = "2.1.2"
-val disciplineMunitVersion = "1.0.4"
+val disciplineMunitVersion = "1.0.6"
 val scalaJavaTimeVersion = "2.1.0"
 
 /**
@@ -578,7 +578,7 @@ lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %%% "discipline-munit" % "1.0.6" % Test
+        "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
       )
     )
     .dependsOn(coreBase, parserBase % Test)
