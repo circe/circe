@@ -5,11 +5,7 @@ title:  "Warnings and known issues"
 
 ### Warnings and known issues
 
-1. Please note that generic derivation will not work on Scala 2.10 unless you've added the [Macro
-   Paradise](http://docs.scala-lang.org/overviews/macros/paradise.html) plugin to your build. See the [quick start section on the home page](https://circe.github.io/circe/index.html#quick-start)
-   for details.
-
-2. Generic derivation may not work as expected when the type definitions that you're trying to
+1. Generic derivation may not work as expected when the type definitions that you're trying to
    derive instances for are at the same level as the attempted derivation. For example:
 
    ```
@@ -32,14 +28,14 @@ title:  "Warnings and known issues"
    the sealed trait definition so that it is not in the same immediate scope as the attempted
    derivation (which is typically what you want, anyway).
 
-3. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
+2. For large or deeply-nested case classes and sealed trait hierarchies, the generic derivation
    provided by the `generic` subproject may stack overflow during compilation, which will result in
    the derived encoders or decoders simply not being found. Increasing the stack size available to
    the compiler (e.g. with `sbt -J-Xss64m` if you're using SBT) will help in many cases, but we have
    at least [one report](http://stackoverflow.com/questions/33318802/scala-parse-json-of-more-than-22-elements-into-case-class/33319168?noredirect=1#comment55069438_33319168) of a case where it doesn't.
    It might be simpler and safer to add `.sbtopts` file with SBT parameters (`-J-Xss64m`) in root of project.
 
-4. More generally, the generic derivation provided by the `generic` subproject works for a wide
+3. More generally, the generic derivation provided by the `generic` subproject works for a wide
    range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by
    Shapeless) that rely on compiler functionality that is not always perfectly robust
    ("[SI-7046](https://issues.scala-lang.org/browse/SI-7046) is like [playing roulette](https://twitter.com/li_haoyi/status/637281580847878145)"), and if you're running into
@@ -47,7 +43,7 @@ title:  "Warnings and known issues"
    the [Gitter channel](https://gitter.im/circe/circe), and we'll do our best to figure out whether the problem is
    something we can fix.
 
-5. When using the `io.circe.generic.JsonCodec` annotation, the following will not compile:
+4. When using the `io.circe.generic.JsonCodec` annotation, the following will not compile:
 
    ```scala
    import io.circe.generic.JsonCodec
@@ -73,7 +69,7 @@ title:  "Warnings and known issues"
    See [this issue](https://github.com/circe/circe/issues/251) for additional discussion (this workaround may not be necessary in
    future versions).
 
-6. circe's representation of numbers is designed not to lose precision during decoding into integral
+5. circe's representation of numbers is designed not to lose precision during decoding into integral
    or arbitrary-precision types, but precision may still be lost during parsing. This shouldn't
    happen when using Jawn for parsing, but `scalajs.js.JSON` parses JSON numbers into a floating
    point representation that may lose precision (even when decoding into a type like `BigDecimal`;
