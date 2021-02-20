@@ -13,7 +13,7 @@ githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
 githubWorkflowScalaVersions in ThisBuild := crossScalaVersions.in(ThisBuild).value.tail
 githubWorkflowPublishTargetBranches in ThisBuild := Nil
 githubWorkflowBuild in ThisBuild := Seq(
-  WorkflowStep.Use("actions", "setup-ruby", "v1", name = Some("Set up Ruby")),
+  WorkflowStep.Use("ruby", "setup-ruby", "v1", params = Map("ruby-version" -> "2.7"), name = Some("Set up Ruby")),
   WorkflowStep.Run(
     List("gem install sass", "gem install jekyll -v 4.0.0"),
     name = Some("Install Jekyll")
@@ -58,18 +58,18 @@ val compilerOptions = Seq(
   "-Ywarn-unused-import"
 )
 
-val catsVersion = "2.3.1"
-val jawnVersion = "1.0.3"
+val catsVersion = "2.4.2"
+val jawnVersion = "1.1.0"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.20"
+val refinedVersion = "0.9.21"
 
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.3"
-val scalaCheckVersion = "1.15.2"
-val munitVersion = "0.7.20"
-val disciplineVersion = "1.1.3"
-val disciplineScalaTestVersion = "2.1.1"
+val scalaCheckVersion = "1.15.3"
+val munitVersion = "0.7.22"
+val disciplineVersion = "1.1.4"
+val disciplineScalaTestVersion = "2.1.2"
 val disciplineMunitVersion = "1.0.4"
 val scalaJavaTimeVersion = "2.1.0"
 
@@ -469,7 +469,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.23",
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.24",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -575,7 +575,7 @@ lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %%% "discipline-munit" % "1.0.4" % Test
+        "org.typelevel" %%% "discipline-munit" % "1.0.6" % Test
       )
     )
     .dependsOn(coreBase, parserBase % Test)
