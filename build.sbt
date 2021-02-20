@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
-crossScalaVersions in ThisBuild := List("3.0.0-M3", "2.12.12", "2.13.4")
+crossScalaVersions in ThisBuild := List("3.0.0-RC1", "2.12.12", "2.13.4")
 scalaVersion in ThisBuild := crossScalaVersions.value.last
 
 githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
