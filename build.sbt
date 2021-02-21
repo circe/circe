@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 organization in ThisBuild := "io.circe"
-crossScalaVersions in ThisBuild := List("3.0.0-M3", "2.12.12", "2.13.4")
+crossScalaVersions in ThisBuild := List("3.0.0-RC1", "2.12.12", "2.13.4")
 scalaVersion in ThisBuild := crossScalaVersions.value.last
 
 githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
@@ -73,7 +73,7 @@ val scalaCheckVersion = "1.15.3"
 val munitVersion = "0.7.22"
 val disciplineVersion = "1.1.4"
 val disciplineScalaTestVersion = "2.1.2"
-val disciplineMunitVersion = "1.0.4"
+val disciplineMunitVersion = "1.0.6"
 val scalaJavaTimeVersion = "2.1.0"
 
 /**
@@ -578,7 +578,7 @@ lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %%% "discipline-munit" % "1.0.6" % Test
+        "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
       )
     )
     .dependsOn(coreBase, parserBase % Test)
