@@ -74,7 +74,7 @@ val munitVersion = "0.7.22"
 val disciplineVersion = "1.1.4"
 val disciplineScalaTestVersion = "2.1.2"
 val disciplineMunitVersion = "1.0.6"
-val scalaJavaTimeVersion = "2.1.0"
+val scalaJavaTimeVersion = "2.2.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -86,7 +86,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.12.3")
+val previousCirceVersion = Some("0.14.0-M3")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
