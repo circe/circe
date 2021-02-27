@@ -84,8 +84,8 @@ object DecodingFailure {
       DecodingFailure(sw.toString, ops)
   }
 
-  implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
-    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
+  implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance { (a, b) =>
+    a.message == b.message && CursorOp.eqCursorOpList.eqv(a.history, b.history)
   }
 
   /**
