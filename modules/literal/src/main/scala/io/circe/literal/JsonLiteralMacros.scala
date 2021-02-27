@@ -29,7 +29,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
        * Generate a unique string that doesn't appear in the JSON literal.
        */
       val placeholder =
-        Stream.continually(generatePlaceholder()).distinct.dropWhile(s => stringParts.exists(_.contains(s))).head
+        LazyList.continually(generatePlaceholder()).distinct.dropWhile(s => stringParts.exists(_.contains(s))).head
 
       new Replacement(placeholder, argument)
     }
