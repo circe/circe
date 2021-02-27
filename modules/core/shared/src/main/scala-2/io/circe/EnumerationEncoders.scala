@@ -13,13 +13,4 @@ private[circe] trait EnumerationEncoders {
     override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
   }
 
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayEncoder = Encoder.enumEncoder(WeekDay)
-   * }}}
-   * @group Utilities
-   */
-  @deprecated("Use encodeEnumeration", "0.12.0")
-  final def enumEncoder[E <: Enumeration](enumeration: E): Encoder[E#Value] = encodeEnumeration[E](enumeration)
 }

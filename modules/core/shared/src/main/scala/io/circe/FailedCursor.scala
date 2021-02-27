@@ -29,13 +29,10 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def downArray: ACursor = this
   def downField(k: String): ACursor = this
   def downN(n: Int): ACursor = this
-  def leftN(n: Int): ACursor = this
-  def rightN(n: Int): ACursor = this
   def up: ACursor = this
 
   def left: ACursor = this
   def right: ACursor = this
-  def first: ACursor = this
   def last: ACursor = this
 
   def delete: ACursor = this
