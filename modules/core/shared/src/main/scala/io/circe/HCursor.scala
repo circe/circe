@@ -80,22 +80,6 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => fail(CursorOp.DownN(n))
   }
 
-  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
-
-    go(n, this)
-  }
-
-  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.right)
-
-    go(n, this)
-  }
-
   /**
    * Create a new cursor that has failed on the given operation.
    *
