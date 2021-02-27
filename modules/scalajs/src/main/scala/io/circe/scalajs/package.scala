@@ -18,7 +18,7 @@ package object scalajs {
     case a: js.Array[_] => Json.fromValues(a.map(convertAnyToJsonUnsafe(_: Any)))
     case o: js.Object =>
       Json.fromFields(
-        o.asInstanceOf[js.Dictionary[_]].mapValues(convertAnyToJsonUnsafe).toSeq
+        o.asInstanceOf[js.Dictionary[_]].view.mapValues(convertAnyToJsonUnsafe).toSeq
       )
     case other if js.isUndefined(other) => Json.Null
   }
@@ -49,7 +49,7 @@ package object scalajs {
     def onNumber(value: JsonNumber): js.Any = value.toDouble
     def onString(value: String): js.Any = value
     def onArray(value: Vector[Json]): js.Any = value.map(this).toJSArray
-    def onObject(value: JsonObject): js.Any = value.toMap.mapValues(this).toMap.toJSDictionary
+    def onObject(value: JsonObject): js.Any = value.toMap.view.mapValues(this).toMap.toJSDictionary
   }
 
   /**
