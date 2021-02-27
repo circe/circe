@@ -66,7 +66,7 @@ trait Decoder[A] extends Serializable { self =>
    * sure to override `tryDecodeAccumulating` in order for fail-fast and
    * accumulating decoding to be consistent.
    */
-  def tryDecode(c: ACursor): Decoder.Result[A] = c match {
+  def tryDecode(c: ReadCursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
       Left(
@@ -74,7 +74,7 @@ trait Decoder[A] extends Serializable { self =>
       )
   }
 
-  def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
+  def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
@@ -92,14 +92,14 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def map[B](f: A => B): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] = tryDecode(c)
-    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+    override def tryDecode(c: ReadCursor): Decoder.Result[B] = self.tryDecode(c) match {
       case Right(a)    => Right(f(a))
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
+    override final def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c).map(f)
   }
 
@@ -112,7 +112,7 @@ trait Decoder[A] extends Serializable { self =>
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
 
-    override def tryDecode(c: ACursor): Decoder.Result[B] = self.tryDecode(c) match {
+    override def tryDecode(c: ReadCursor): Decoder.Result[B] = self.tryDecode(c) match {
       case Right(a)    => f(a).tryDecode(c)
       case l @ Left(_) => l.asInstanceOf[Decoder.Result[B]]
     }
@@ -120,7 +120,7 @@ trait Decoder[A] extends Serializable { self =>
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       self.decodeAccumulating(c).andThen(result => f(result).decodeAccumulating(c))
 
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
+    override final def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c).andThen(result => f(result).tryDecodeAccumulating(c))
   }
 
@@ -133,12 +133,12 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def handleErrorWith(f: DecodingFailure => Decoder[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
-    override final def tryDecode(c: ACursor): Decoder.Result[A] =
+    override final def tryDecode(c: ReadCursor): Decoder.Result[A] =
       Decoder.resultInstance.handleErrorWith(self.tryDecode(c))(failure => f(failure).tryDecode(c))
 
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       tryDecodeAccumulating(c)
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
+    override final def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[A] =
       Decoder.accumulatingResultInstance.handleErrorWith(self.tryDecodeAccumulating(c))(failures =>
         f(failures.head).tryDecodeAccumulating(c)
       )
@@ -254,13 +254,13 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def or[AA >: A](d: => Decoder[AA]): Decoder[AA] = new Decoder[AA] {
     final def apply(c: HCursor): Decoder.Result[AA] = tryDecode(c)
-    override def tryDecode(c: ACursor): Decoder.Result[AA] = self.tryDecode(c) match {
+    override def tryDecode(c: ReadCursor): Decoder.Result[AA] = self.tryDecode(c) match {
       case r @ Right(_) => r
       case Left(_)      => d.tryDecode(c)
     }
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[AA] =
       tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[AA] =
+    override def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[AA] =
       self.tryDecodeAccumulating(c) match {
         case r @ Valid(_) => r
         case Invalid(_)   => d.tryDecodeAccumulating(c)
@@ -272,7 +272,7 @@ trait Decoder[A] extends Serializable { self =>
    */
   final def either[B](decodeB: Decoder[B]): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
     final def apply(c: HCursor): Decoder.Result[Either[A, B]] = tryDecode(c)
-    override def tryDecode(c: ACursor): Decoder.Result[Either[A, B]] = self.tryDecode(c) match {
+    override def tryDecode(c: ReadCursor): Decoder.Result[Either[A, B]] = self.tryDecode(c) match {
       case Right(v) => Right(Left(v))
       case Left(_) =>
         decodeB.tryDecode(c) match {
@@ -281,7 +281,7 @@ trait Decoder[A] extends Serializable { self =>
         }
     }
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Either[A, B]] = tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[Either[A, B]] =
+    override def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[Either[A, B]] =
       self.tryDecodeAccumulating(c) match {
         case Valid(v) => Valid(Left(v))
         case Invalid(_) =>
@@ -295,12 +295,12 @@ trait Decoder[A] extends Serializable { self =>
   /**
    * Create a new decoder that performs some operation on the incoming JSON before decoding.
    */
-  final def prepare(f: ACursor => ACursor): Decoder[A] = new Decoder[A] {
+  final def prepare(f: ReadCursor => ReadCursor): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
-    override def tryDecode(c: ACursor): Decoder.Result[A] = self.tryDecode(f(c))
+    override def tryDecode(c: ReadCursor): Decoder.Result[A] = self.tryDecode(f(c))
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
+    override def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[A] =
       self.tryDecodeAccumulating(f(c))
   }
 
@@ -311,10 +311,10 @@ trait Decoder[A] extends Serializable { self =>
   final def at(field: String): Decoder[A] = new Decoder[A] {
     private[this] val f: String = field
     final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
-    override def tryDecode(c: ACursor): Decoder.Result[A] = self.tryDecode(c.downField(f))
+    override def tryDecode(c: ReadCursor): Decoder.Result[A] = self.tryDecode(c.downField(f))
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
       tryDecodeAccumulating(c)
-    override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] =
+    override def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[A] =
       self.tryDecodeAccumulating(c.downField(f))
   }
 
@@ -326,7 +326,7 @@ trait Decoder[A] extends Serializable { self =>
   final def emap[B](f: A => Either[String, B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] = tryDecode(c)
 
-    override def tryDecode(c: ACursor): Decoder.Result[B] =
+    override def tryDecode(c: ReadCursor): Decoder.Result[B] =
       self.tryDecode(c) match {
         case Right(a) =>
           f(a) match {
@@ -339,7 +339,7 @@ trait Decoder[A] extends Serializable { self =>
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
+    override final def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c) match {
         case Valid(a) =>
           f(a) match {
@@ -358,7 +358,7 @@ trait Decoder[A] extends Serializable { self =>
   final def emapTry[B](f: A => Try[B]): Decoder[B] = new Decoder[B] {
     final def apply(c: HCursor): Decoder.Result[B] = tryDecode(c)
 
-    override def tryDecode(c: ACursor): Decoder.Result[B] =
+    override def tryDecode(c: ReadCursor): Decoder.Result[B] =
       self.tryDecode(c) match {
         case Right(a) =>
           f(a) match {
@@ -371,7 +371,7 @@ trait Decoder[A] extends Serializable { self =>
     override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[B] =
       tryDecodeAccumulating(c)
 
-    override final def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[B] =
+    override final def tryDecodeAccumulating(c: ReadCursor): Decoder.AccumulatingResult[B] =
       self.tryDecodeAccumulating(c) match {
         case Valid(a) =>
           f(a) match {
@@ -498,7 +498,7 @@ object Decoder
    *
    * @group Utilities
    */
-  def fromState[A](s: StateT[Result, ACursor, A]): Decoder[A] = new Decoder[A] {
+  def fromState[A](s: StateT[Result, ReadCursor, A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = s.runA(c)
   }
 
@@ -520,14 +520,14 @@ object Decoder
    *
    * @group Utilities
    */
-  final def withReattempt[A](f: ACursor => Result[A]): Decoder[A] = new Decoder[A] {
+  final def withReattempt[A](f: ReadCursor => Result[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = tryDecode(c)
 
-    override def tryDecode(c: ACursor): Decoder.Result[A] = f(c)
+    override def tryDecode(c: ReadCursor): Decoder.Result[A] = f(c)
 
     override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = tryDecodeAccumulating(c)
 
-    override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[A] = f(c) match {
+    override def tryDecodeAccumulating(c: ReadCursor): AccumulatingResult[A] = f(c) match {
       case Right(v) => Validated.valid(v)
       case Left(e)  => Validated.invalidNel(e)
     }
@@ -923,7 +923,7 @@ object Decoder
   implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
     final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 
-    final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
+    final override def tryDecode(c: ReadCursor): Decoder.Result[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) rightNone
         else
@@ -937,7 +937,7 @@ object Decoder
 
     final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[A]] = tryDecodeAccumulating(c)
 
-    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[Option[A]] = c match {
+    final override def tryDecodeAccumulating(c: ReadCursor): AccumulatingResult[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
@@ -1422,14 +1422,14 @@ object Decoder
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
-   * the [[ACursor]].
+   * the [[ReadCursor]].
    *
    * @group Utilities
    */
   object state {
 
     /**
-     * Attempt to decode a value at key `k` and remove it from the [[ACursor]].
+     * Attempt to decode a value at key `k` and remove it from the [[ReadCursor]].
      */
     def decodeField[A: Decoder](k: String): StateT[Result, ACursor, A] = StateT[Result, ACursor, A] { c =>
       val field = c.downField(k)
@@ -1442,20 +1442,20 @@ object Decoder
     }
 
     /**
-     * Require the [[ACursor]] to be empty, using the provided function to
+     * Require the [[ReadCursor]] to be empty, using the provided function to
      * create the failure error message if it's not.
      */
-    def requireEmptyWithMessage(createMessage: List[String] => String): StateT[Result, ACursor, Unit] =
-      StateT[Result, ACursor, Unit] { c =>
+    def requireEmptyWithMessage(createMessage: List[String] => String): StateT[Result, ReadCursor, Unit] =
+      StateT[Result, ReadCursor, Unit] { c =>
         val keys = c.focus.flatMap(_.asObject).toList.flatMap(_.keys)
 
         if (keys.isEmpty) Right((c, ())) else Left(DecodingFailure(createMessage(keys), c.history))
       }
 
     /**
-     * Require the [[ACursor]] to be empty, with a default message.
+     * Require the [[ReadCursor]] to be empty, with a default message.
      */
-    val requireEmpty: StateT[Result, ACursor, Unit] = requireEmptyWithMessage { keys =>
+    val requireEmpty: StateT[Result, ReadCursor, Unit] = requireEmptyWithMessage { keys =>
       s"Leftover keys: ${keys.mkString(", ")}"
     }
   }

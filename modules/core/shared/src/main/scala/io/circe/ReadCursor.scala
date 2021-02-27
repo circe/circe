@@ -5,17 +5,15 @@ import cats.kernel.Eq
 import java.io.Serializable
 
 /**
- * A zipper that represents a position in a JSON document and supports navigation and modification.
+ * A zipper that represents a position in a JSON document and supports navigation and access, but not modification.
  *
- * The `focus` represents the current position of the cursor; it may be updated with `withFocus` or
+ * The `focus` represents the current position of the cursor; it can be
  * changed using navigation methods like `left` and `right`.
  *
  * @groupname Utilities Miscellaneous utilities
  * @groupprio Utilities 0
  * @groupname Access Access and navigation
  * @groupprio Access 1
- * @groupname Modification Modification
- * @groupprio Modification 2
  * @groupname ArrayAccess Array access
  * @groupprio ArrayAccess 3
  * @groupname ObjectAccess Object access
@@ -24,18 +22,13 @@ import java.io.Serializable
  * @groupprio ArrayNavigation 5
  * @groupname ObjectNavigation Object navigation
  * @groupprio ObjectNavigation 6
- * @groupname ArrayModification Array modification
- * @groupprio ArrayModification 7
- * @groupname ObjectModification Object modification
- * @groupprio ObjectModification 8
  * @groupname Decoding Decoding
  * @groupprio Decoding 9
  *
  * @author Travis Brown
  */
-abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp)
-    extends ReadCursor(lastCursor, lastOp)
-    with Serializable {
+
+abstract class ReadCursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
 
   /**
    * The current location in the document.
@@ -45,12 +38,39 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def focus: Option[Json]
 
   /**
+   * The operations that have been performed so far.
+   *
+   * @group Decoding
+   */
+  final def history: List[CursorOp] = {
+    var next = this
+    val builder = List.newBuilder[CursorOp]
+
+    while (next.ne(null)) {
+      if (next.lastOp.ne(null)) {
+        builder += next.lastOp
+      }
+      next = next.lastCursor
+    }
+
+    builder.result()
+  }
+
+  /**
    * Indicate whether this cursor represents the result of a successful
    * operation.
    *
    * @group Decoding
    */
   def succeeded: Boolean
+
+  /**
+   * Indicate whether this cursor represents the result of an unsuccessful
+   * operation.
+   *
+   * @group Decoding
+   */
+  final def failed: Boolean = !succeeded
 
   /**
    * Return the cursor as an [[HCursor]] if it was successful.
@@ -71,28 +91,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Access
    */
-  override def root: HCursor = null
-
-  /**
-   * Modify the focus using the given function.
-   *
-   * @group Modification
-   */
-  def withFocus(f: Json => Json): ACursor
-
-  /**
-   * Modify the focus in a context using the given function.
-   *
-   * @group Modification
-   */
-  def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor]
-
-  /**
-   * Replace the focus.
-   *
-   * @group Modification
-   */
-  final def set(j: Json): ACursor = withFocus(_ => j)
+  def root: HCursor = null
 
   /**
    * If the focus is a JSON array, return its elements.
@@ -106,84 +105,104 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayAccess
    */
-  override def index: Option[Int] = None
+  def index: Option[Int] = None
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
    *
    * @group ObjectAccess
    */
-  override def keys: Option[Iterable[String]]
+  def keys: Option[Iterable[String]]
 
   /**
    * If the focus is a value in a JSON object, return the key.
    *
    * @group ObjectAccess
    */
-  override def key: Option[String] = None
-
-  /**
-   * Delete the focus and move to its parent.
-   *
-   * @group Modification
-   */
-  def delete: ACursor
+  def key: Option[String] = None
 
   /**
    * Move the focus to the parent.
    *
    * @group Access
    */
-  def up: ACursor
+  def up: ReadCursor
 
   /**
    * If the focus is an element in a JSON array, move to the left.
    *
    * @group ArrayNavigation
    */
-  def left: ACursor
+  def left: ReadCursor
 
   /**
    * If the focus is an element in a JSON array, move to the right.
    *
    * @group ArrayNavigation
    */
-  def right: ACursor
+  def right: ReadCursor
 
   /**
    * If the focus is a JSON array, move to its first element.
    *
    * @group ArrayNavigation
    */
-  def downArray: ACursor
+  def downArray: ReadCursor
 
   /**
    * If the focus is a JSON array, move to the element at the given index.
    *
    * @group ArrayNavigation
    */
-  def downN(n: Int): ACursor
+  def downN(n: Int): ReadCursor
 
   /**
    * If the focus is a value in a JSON object, move to a sibling with the given key.
    *
    * @group ObjectNavigation
    */
-  def field(k: String): ACursor
+  def field(k: String): ReadCursor
 
   /**
    * If the focus is a JSON object, move to the value of the given key.
    *
    * @group ObjectNavigation
    */
-  def downField(k: String): ACursor
+  def downField(k: String): ReadCursor
+
+  /**
+   * Attempt to decode the focus as an `A`.
+   *
+   * @group Decoding
+   */
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   *
+   * @group Decoding
+   */
+  final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   * If the field `k` is missing, then use the `fallback` instead.
+   *
+   * @group Decoding
+   */
+  final def getOrElse[A](k: String)(fallback: => A)(implicit d: Decoder[A]): Decoder.Result[A] =
+    get[Option[A]](k) match {
+      case Right(Some(a)) => Right(a)
+      case Right(None)    => Right(fallback)
+      case l @ Left(_)    => l.asInstanceOf[Decoder.Result[A]]
+    }
 
   /**
    * Replay an operation against this cursor.
    *
    * @group Utilities
    */
-  override final def replayOne(op: CursorOp): ACursor = op match {
+  def replayOne(op: CursorOp): ReadCursor = op match {
     case CursorOp.MoveLeft       => left
     case CursorOp.MoveRight      => right
     case CursorOp.MoveUp         => up
@@ -191,7 +210,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
     case CursorOp.DownField(k)   => downField(k)
     case CursorOp.DownArray      => downArray
     case CursorOp.DownN(n)       => downN(n)
-    case CursorOp.DeleteGoParent => delete
+    case CursorOp.DeleteGoParent => this
   }
 
   /**
@@ -199,12 +218,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Utilities
    */
-  final override def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
-}
+  def replay(history: List[CursorOp]): ReadCursor = history.foldRight(this)((op, c) => c.replayOne(op))
 
-object ACursor {
-  private[this] val jsonOptionEq: Eq[Option[Json]] = cats.kernel.instances.option.catsKernelStdEqForOption(Json.eqJson)
-
-  implicit val eqACursor: Eq[ACursor] =
-    Eq.instance((a, b) => jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history))
 }
