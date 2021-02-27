@@ -589,7 +589,7 @@ object Json {
     val it0 = x.iterator
     val it1 = y.iterator
     while (it0.hasNext && it1.hasNext) {
-      if (Json.eqJson.neqv(it0.next, it1.next)) return false
+      if (Json.eqJson.neqv(it0.next(), it1.next())) return false
     }
     it0.hasNext == it1.hasNext
   }

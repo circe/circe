@@ -1,6 +1,5 @@
 package io.circe.tests
 
-import cats.instances._
 import cats.syntax._
 import io.circe.testing.{ ArbitraryInstances, EqInstances }
 import org.scalatest.flatspec.AnyFlatSpec
