@@ -230,7 +230,7 @@ object JsonObject {
     val iterator = fields.iterator
 
     while (iterator.hasNext) {
-      val (key, value) = iterator.next
+      val (key, value) = iterator.next()
 
       map.put(key, value)
     }

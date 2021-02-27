@@ -36,7 +36,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
     var failed: DecodingFailure = null
 
     while (failed.eq(null) && it.hasNext) {
-      val key = it.next
+      val key = it.next()
       val atH = createObjectCursor(c, obj, key)
 
       failed = if (alwaysDecodeK.ne(null)) {
@@ -49,7 +49,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
       }
     }
 
-    if (failed.eq(null)) Right(builder.result) else Left(failed)
+    if (failed.eq(null)) Right(builder.result()) else Left(failed)
   }
 
   final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[M[K, V]] = c.value match {
@@ -60,7 +60,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
       val failures = List.newBuilder[DecodingFailure]
 
       while (it.hasNext) {
-        val key = it.next
+        val key = it.next()
         val atH = createObjectCursor(c, obj, key)
 
         if (alwaysDecodeK.ne(null)) {
@@ -88,11 +88,11 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         }
       }
 
-      if (!failed) Validated.valid(builder.result)
+      if (!failed) Validated.valid(builder.result())
       else {
-        failures.result match {
+        failures.result() match {
           case h :: t => Validated.invalid(NonEmptyList(h, t))
-          case Nil    => Validated.valid(builder.result)
+          case Nil    => Validated.valid(builder.result())
         }
       }
     case _ => MapDecoder.failureAccumulatingResult[M[K, V]](c)
