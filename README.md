@@ -47,6 +47,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Immozentral](https://www.immozentral.com/)
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
+* [Kinoplan](https://kinoplan.ru/)
 * [Latitude Financial Services](https://www.latitudefinancial.com.au/)
 * [MatchesFashion](https://www.matchesfashion.com)
 * [Merit](https://merits.com)
