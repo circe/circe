@@ -149,7 +149,18 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     .jvmSettings(
       mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
     )
-    .jsSettings(coverageEnabled := false)
+    .jsSettings(
+      coverageEnabled := false,
+      scalacOptions += {
+        val tagOrHash =
+          if (!isSnapshot.value) s"v${version.value}"
+          else git.gitHeadCommit.value.getOrElse("master")
+        val local = (baseDirectory in LocalRootProject).value.toURI.toString
+        val remote = s"https://raw.githubusercontent.com/circe/circe/$tagOrHash/"
+        val opt = if (isDotty.value) "-scalajs-mapSourceURI" else "-P:scalajs:mapSourceURI"
+        s"$opt:$local->$remote"
+      }
+    )
 }
 
 /**
