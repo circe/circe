@@ -62,17 +62,17 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.4.2"
-val jawnVersion = "1.1.0"
+val jawnVersion = "1.1.1"
 val shapelessVersion = "2.3.3"
-val refinedVersion = "0.9.21"
+val refinedVersion = "0.9.22"
 
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.3"
 val scalaCheckVersion = "1.15.3"
-val munitVersion = "0.7.22"
+val munitVersion = "0.7.23"
 val disciplineVersion = "1.1.4"
-val disciplineScalaTestVersion = "2.1.2"
+val disciplineScalaTestVersion = "2.1.3"
 val disciplineMunitVersion = "1.0.6"
 val scalaJavaTimeVersion = "2.2.0"
 
@@ -483,7 +483,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.24",
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.25",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
