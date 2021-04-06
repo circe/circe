@@ -21,14 +21,4 @@ private[circe] trait EnumerationDecoders {
     }
   }
 
-  /**
-   * {{{
-   *   object WeekDay extends Enumeration { ... }
-   *   implicit val weekDayDecoder = Decoder.enumDecoder(WeekDay)
-   * }}}
-   *
-   * @group Utilities
-   */
-  @deprecated("Use decodeEnumeration", "0.12.0")
-  final def enumDecoder[E <: Enumeration](enumeration: E): Decoder[E#Value] = decodeEnumeration[E](enumeration)
 }

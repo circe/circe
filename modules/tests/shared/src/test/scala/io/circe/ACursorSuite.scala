@@ -216,30 +216,23 @@ class ACursorSuite extends CirceMunitSuite {
     }
   }
 
-  test("first should successfully select an existing value") {
+  test("downArray should successfully select an existing value") {
     val result = for {
       c <- cursor.downField("a").success
       a <- c.downN(3).success
-      f <- a.first.success
+      f <- a.up.downArray.success
     } yield f
 
     assert(result.flatMap(_.focus) === Some(1.asJson))
   }
 
-  test("first should fail to select a value that doesn't exist") {
+  test("downArray should fail to select a value that doesn't exist") {
     val result = for {
       c <- cursor.downField("b").success
-      f <- c.first.success
+      f <- c.up.downArray.success
     } yield f
 
     assert(result.flatMap(_.focus) === None)
-  }
-
-  property("first should fail at the top") {
-    forAll { (j: Json) =>
-      val result = HCursor.fromJson(j).first
-      assert(result.failed && result.history === List(CursorOp.MoveFirst))
-    }
   }
 
   test("field should successfully select an existing value") {
