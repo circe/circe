@@ -117,11 +117,14 @@ lazy val baseSettings = Seq(
   ivyConfigurations += CompileTime.hide,
   unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
   unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name)),
-  testFrameworks += new TestFramework("munit.Framework"),
-  scalaJSLinkerConfig in Test ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  testFrameworks += new TestFramework("munit.Framework")
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
+
+lazy val jsProjectSettings = Seq(
+  scalaJSLinkerConfig in Test ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+)
 
 def circeProject(path: String)(project: Project) = {
   val docName = path.split("-").mkString(" ")
@@ -151,6 +154,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     )
     .jsSettings(
       coverageEnabled := false,
+      jsProjectSettings,
       scalacOptions += {
         val tagOrHash =
           if (!isSnapshot.value) s"v${version.value}"
@@ -470,14 +474,16 @@ lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).dependsOn(coreJS)
+lazy val scalajs =
+  circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).settings(jsProjectSettings).dependsOn(coreJS)
 lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
   .enablePlugins(ScalaJSPlugin)
   .settings(noPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test
-    )
+    ),
+    jsProjectSettings
   )
   .dependsOn(coreJS)
 
