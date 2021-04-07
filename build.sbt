@@ -5,14 +5,14 @@ import sbtcrossproject.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
-organization in ThisBuild := "io.circe"
-crossScalaVersions in ThisBuild := List("3.0.0-RC2", "2.12.13", "2.13.5")
-scalaVersion in ThisBuild := crossScalaVersions.value.last
+ThisBuild / organization := "io.circe"
+ThisBuild / crossScalaVersions := List("3.0.0-RC2", "2.12.12", "2.13.5")
+ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-githubWorkflowJavaVersions in ThisBuild := Seq("adopt@1.8")
-githubWorkflowScalaVersions in ThisBuild := crossScalaVersions.in(ThisBuild).value.tail
-githubWorkflowPublishTargetBranches in ThisBuild := Nil
-githubWorkflowBuild in ThisBuild := Seq(
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
+ThisBuild / githubWorkflowScalaVersions := (ThisBuild / crossScalaVersions).value.tail
+ThisBuild / githubWorkflowPublishTargetBranches := Nil
+ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep
     .Use(UseRef.Public("ruby", "setup-ruby", "v1"), params = Map("ruby-version" -> "2.7"), name = Some("Set up Ruby")),
   WorkflowStep.Run(
@@ -99,13 +99,13 @@ lazy val baseSettings = Seq(
         case other                  => Seq(other)
       }
   },
-  scalacOptions in (Compile, console) ~= {
+  Compile / console / scalacOptions ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
   },
-  scalacOptions in (Test, console) ~= {
+  Test / console / scalacOptions ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
   },
-  scalacOptions in Test ~= {
+  Test / scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
   resolvers ++= Seq(
@@ -113,15 +113,18 @@ lazy val baseSettings = Seq(
     Resolver.sonatypeRepo("snapshots")
   ),
   coverageHighlighting := true,
-  (scalastyleSources in Compile) ++= (unmanagedSourceDirectories in Compile).value,
+  Compile / scalastyleSources ++= (Compile / unmanagedSourceDirectories).value,
   ivyConfigurations += CompileTime.hide,
-  unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name)),
-  unmanagedClasspath in Test ++= update.value.select(configurationFilter(CompileTime.name)),
-  testFrameworks += new TestFramework("munit.Framework"),
-  scalaJSLinkerConfig in Test ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  Compile / unmanagedClasspath ++= update.value.select(configurationFilter(CompileTime.name)),
+  Test / unmanagedClasspath ++= update.value.select(configurationFilter(CompileTime.name)),
+  testFrameworks += new TestFramework("munit.Framework")
 )
 
 lazy val allSettings = baseSettings ++ publishSettings
+
+lazy val jsProjectSettings = Seq(
+  Test / scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+)
 
 def circeProject(path: String)(project: Project) = {
   val docName = path.split("-").mkString(" ")
@@ -151,11 +154,12 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     )
     .jsSettings(
       coverageEnabled := false,
+      jsProjectSettings,
       scalacOptions += {
         val tagOrHash =
           if (!isSnapshot.value) s"v${version.value}"
           else git.gitHeadCommit.value.getOrElse("master")
-        val local = (baseDirectory in LocalRootProject).value.toURI.toString
+        val local = (LocalRootProject / baseDirectory).value.toURI.toString
         val remote = s"https://raw.githubusercontent.com/circe/circe/$tagOrHash/"
         val opt = if (isDotty.value) "-scalajs-mapSourceURI" else "-P:scalajs:mapSourceURI"
         s"$opt:$local->$remote"
@@ -202,9 +206,9 @@ lazy val docSettings = allSettings ++ Seq(
       |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
     """.stripMargin),
   docsMappingsAPIDir := "api",
-  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docsMappingsAPIDir),
+  addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, docsMappingsAPIDir),
   ghpagesNoJekyll := true,
-  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+  ScalaUnidoc / unidoc / scalacOptions ++= Seq(
     "-groups",
     "-implicits",
     "-skip-packages",
@@ -212,15 +216,15 @@ lazy val docSettings = allSettings ++ Seq(
     "-doc-source-url",
     scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath",
-    baseDirectory.in(LocalRootProject).value.getAbsolutePath
+    (LocalRootProject / baseDirectory).value.getAbsolutePath
   ),
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
   git.remoteRepo := "git@github.com:circe/circe.git",
-  unidocProjectFilter in (ScalaUnidoc, unidoc) :=
+  ScalaUnidoc / unidoc / unidocProjectFilter :=
     inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
-  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
+  makeSite / includeFilter := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
 lazy val docs = project
@@ -299,7 +303,7 @@ lazy val circe = project
   .settings(allSettings)
   .settings(noPublishSettings)
   .settings(
-    initialCommands in console :=
+    console / initialCommands :=
       """
         |import io.circe._
         |import io.circe.generic.auto._
@@ -324,7 +328,7 @@ lazy val numbersTestingJS = numbersTestingBase.js
 
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
   .settings(
-    scalacOptions in Test += "-language:implicitConversions",
+    Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies +=
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
   )
@@ -336,7 +340,7 @@ lazy val numbersJS = numbersBase.js
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    sourceGenerators in Compile += (sourceManaged in Compile).map(Boilerplate.gen).taskValue,
+    Compile / sourceGenerators += (Compile / sourceManaged).map(Boilerplate.gen).taskValue,
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
         CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
@@ -470,14 +474,16 @@ lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
-lazy val scalajs = circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).dependsOn(coreJS)
+lazy val scalajs =
+  circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).settings(jsProjectSettings).dependsOn(coreJS)
 lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
   .enablePlugins(ScalaJSPlugin)
   .settings(noPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test
-    )
+    ),
+    jsProjectSettings
   )
   .dependsOn(coreJS)
 
@@ -519,7 +525,7 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
-    scalacOptions in Test += "-language:implicitConversions",
+    Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       ("com.chuusai" %%% "shapeless" % shapelessVersion).withDottyCompat(scalaVersion.value),
       ("org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion)
@@ -528,8 +534,8 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
         .exclude("org.typelevel", "discipline-core_2.13"),
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
-    sourceGenerators in Test += (sourceManaged in Test).map(Boilerplate.genTests).taskValue,
-    unmanagedResourceDirectories in Compile +=
+    Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue,
+    Compile / unmanagedResourceDirectories +=
       file("modules/tests") / "shared" / "src" / "main" / "resources",
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
@@ -646,7 +652,7 @@ lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/circe/circe")),
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomIncludeRepository := { _ =>
     false
   },
@@ -681,8 +687,8 @@ lazy val publishSettings = Seq(
       }
     ).transform(node).head
   },
-  sources.in(Compile, doc) := {
-    val src = sources.in(Compile, doc).value
+  Compile / doc / sources := {
+    val src = (Compile / doc / sources).value
 
     if (isDotty.value) Nil else src
   }
