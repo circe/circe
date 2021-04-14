@@ -126,6 +126,10 @@ lazy val jsProjectSettings = Seq(
   Test / scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
 )
 
+val isScala3 = Def.setting {
+  CrossVersion.partialVersion(scalaVersion.value).exists(_._1 != 2)
+}
+
 def circeProject(path: String)(project: Project) = {
   val docName = path.split("-").mkString(" ")
   project.settings(
@@ -161,7 +165,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
           else git.gitHeadCommit.value.getOrElse("master")
         val local = (LocalRootProject / baseDirectory).value.toURI.toString
         val remote = s"https://raw.githubusercontent.com/circe/circe/$tagOrHash/"
-        val opt = if (isDotty.value) "-scalajs-mapSourceURI" else "-P:scalajs:mapSourceURI"
+        val opt = if (isScala3.value) "-scalajs-mapSourceURI" else "-P:scalajs:mapSourceURI"
         s"$opt:$local->$remote"
       }
     )
@@ -279,7 +283,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = (
 ).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
-  libraryDependencies ++= (if (isDotty.value) Nil
+  libraryDependencies ++= (if (isScala3.value) Nil
                            else
                              (Seq(
                                scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
@@ -294,7 +298,7 @@ lazy val macroSettings: Seq[Setting[_]] = Seq(
                                } else Nil
                              ))),
   scalacOptions ++= (
-    if (priorTo2_13(scalaVersion.value) || isDotty.value) Nil else Seq("-Ymacro-annotations")
+    if (priorTo2_13(scalaVersion.value) || isScala3.value) Nil else Seq("-Ymacro-annotations")
   )
 )
 
@@ -360,7 +364,7 @@ lazy val coreJS = coreBase.js
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
   .settings(macroSettings)
   .settings(
-    libraryDependencies ++= (if (isDotty.value) Nil else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
+    libraryDependencies ++= (if (isScala3.value) Nil else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars,
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
@@ -433,7 +437,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).withDottyCompat(scalaVersion.value),
+      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
@@ -527,9 +531,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
     },
     Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion).withDottyCompat(scalaVersion.value),
+      ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
       ("org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion)
-        .withDottyCompat(scalaVersion.value)
+        .cross(CrossVersion.for3Use2_13)
         .exclude("org.scalacheck", "scalacheck_2.13")
         .exclude("org.typelevel", "discipline-core_2.13"),
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
@@ -690,7 +694,7 @@ lazy val publishSettings = Seq(
   Compile / doc / sources := {
     val src = (Compile / doc / sources).value
 
-    if (isDotty.value) Nil else src
+    if (isScala3.value) Nil else src
   }
 )
 
