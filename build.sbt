@@ -74,7 +74,7 @@ val munitVersion = "0.7.25"
 val disciplineVersion = "1.1.4"
 val disciplineScalaTestVersion = "2.1.3"
 val disciplineMunitVersion = "1.0.8"
-val scalaJavaTimeVersion = "2.2.1"
+val scalaJavaTimeVersion = "2.2.2"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
