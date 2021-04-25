@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.0.0-RC2", "2.12.12", "2.13.5")
+ThisBuild / crossScalaVersions := List("3.0.0-RC3", "2.12.12", "2.13.5")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
@@ -62,7 +62,7 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.6.0"
-val jawnVersion = "1.1.1"
+val jawnVersion = "1.1.2"
 val shapelessVersion = "2.3.3"
 val refinedVersion = "0.9.24"
 
@@ -72,7 +72,7 @@ val scalaTestVersion = "3.2.3"
 val scalaCheckVersion = "1.15.3"
 val munitVersion = "0.7.25"
 val disciplineVersion = "1.1.4"
-val disciplineScalaTestVersion = "2.1.3"
+val disciplineScalaTestVersion = "2.1.4"
 val disciplineMunitVersion = "1.0.8"
 val scalaJavaTimeVersion = "2.2.2"
 
