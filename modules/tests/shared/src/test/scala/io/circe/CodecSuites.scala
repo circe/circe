@@ -157,6 +157,16 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
 
     assert(result.isLeft)
   }
+
+  test("None.type decoder should succeed for missing fields") {
+    val n = Json.obj()
+    val decoder = Decoder[None.type].at("foo")
+
+    val result1 = decoder.decodeJson(n)
+    assert(result1.isRight)
+    val result2 = decoder.decodeAccumulating(HCursor.fromJson(n))
+    assert(result2.isValid)
+  }
 }
 
 class CatsCodecSuite extends CirceMunitSuite with StreamFactoryInstance {
