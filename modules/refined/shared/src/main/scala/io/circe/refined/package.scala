@@ -19,7 +19,7 @@ import eu.timepit.refined.api.{ RefType, Validate }
  *
  * @author Alexandre Archambault
  */
-package object refined {
+trait CirceCodecRefined {
   implicit final def refinedDecoder[T, P, F[_, _]](implicit
     underlying: Decoder[T],
     validate: Validate[T, P],
@@ -62,3 +62,6 @@ package object refined {
   ): KeyEncoder[F[T, P]] =
     underlying.contramap(refType.unwrap)
 }
+
+
+package object refined extends CirceCodecRefined
