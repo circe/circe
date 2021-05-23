@@ -28,7 +28,9 @@ class EnumerationSuite extends CirceMunitSuite {
     val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Friday\"")
 
-    assert(decoder.apply(friday.hcursor).isLeft)
+    val result = decoder.apply(friday.hcursor)
+    assert(result.isLeft)
+    assert(result.swap.exists(_.message.contains("Couldn't decode value 'Friday'. Allowed values:")))
   }
 
   test("Encoder[Enumeration] should write Scala Enumerations") {
