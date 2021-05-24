@@ -9,9 +9,9 @@ name: Continuous Integration
 
 on:
   pull_request:
-    branches: ['*']
+    branches: ['**']
   push:
-    branches: ['*']
+    branches: ['**']
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +49,7 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
       - name: Check that workflows are up to date
-        run: sbt ++${{ matrix.scala }} githubWorkflowCheck
+        run: sbt --client '++${{ matrix.scala }}; githubWorkflowCheck'
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -62,9 +62,9 @@ jobs:
           gem install jekyll -v 4.0.0
 
       - name: Test
-        run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test
+        run: sbt --client '++${{ matrix.scala }}; clean; coverage; scalastyle; scalafmtCheckAll; scalafmtSbtCheck; validateJVM; benchmark/test'
 
       - name: Coverage
-        run: sbt ++${{ matrix.scala }} coverageReport
+        run: sbt --client '++${{ matrix.scala }}; coverageReport'
 
       - uses: codecov/codecov-action@v1
