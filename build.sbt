@@ -419,7 +419,7 @@ lazy val genericSimpleJS = genericSimpleBase.js
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
+    libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
