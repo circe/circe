@@ -53,7 +53,7 @@ will allow you to create a <code class="language-plaintext highlighter-rouge">Co
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.testing.CodecTests</span>
 
 <span class="k">val</span> <span class="nv">personCodecTests</span> <span class="k">=</span> <span class="nc">CodecTests</span><span class="o">[</span><span class="kt">Person</span><span class="o">]</span>
-<span class="c1">// personCodecTests: CodecTests[Person] = io.circe.testing.CodecTests$$anon$2@678b1c6d</span>
+<span class="c1">// personCodecTests: CodecTests[Person] = io.circe.testing.CodecTests$$anon$2@7b4afa43</span>
 </code></pre></div></div>
 
 <p><code class="language-plaintext highlighter-rouge">CodecTests[T]</code> expose two <a href="https://typelevel.org/blog/2013/11/17/discipline.html#interface">“rule sets”</a>
@@ -62,7 +62,7 @@ is <code class="language-plaintext highlighter-rouge">unserializableCodec</code>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">Implicits._</span>
 <span class="nv">personCodecTests</span><span class="o">.</span><span class="py">unserializableCodec</span>
-<span class="c1">// res1: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@5c77fbd0</span>
+<span class="c1">// res1: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@5fbe47a0</span>
 </code></pre></div></div>
 
 <p>It checks whether the <code class="language-plaintext highlighter-rouge">Codec</code> for your type successfully round trips through json serialization and
@@ -71,7 +71,7 @@ deserialization and whether your decoder satisfies consistent error accumulation
 <p>The more restrictive set is <code class="language-plaintext highlighter-rouge">codec</code>:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">personCodecTests</span><span class="o">.</span><span class="py">codec</span>
-<span class="c1">// res2: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@380e5378</span>
+<span class="c1">// res2: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@355fd1f3</span>
 </code></pre></div></div>
 
 <p>It checks the laws from <code class="language-plaintext highlighter-rouge">unserializableCodec</code> and ensures that your encoder and decoder can be serialized
