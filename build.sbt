@@ -63,7 +63,7 @@ val compilerOptions = Seq(
 
 val catsVersion = "2.6.1"
 val jawnVersion = "1.1.2"
-val shapelessVersion = "2.3.6"
+val shapelessVersion = "2.3.7"
 val refinedVersion = "0.9.25"
 
 val paradiseVersion = "2.1.1"
