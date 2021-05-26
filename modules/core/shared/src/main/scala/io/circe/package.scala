@@ -4,7 +4,7 @@ package io
 /**
  * ==Overview==
  *
- *  This is the API documentation for [[http://circe.io circe]], a JSON library for
+ *  This is the API documentation for [[http://circe.io Circe]], a JSON library for
  *  Scala and Scala.js.
  *
  *  The library is divided into a number of modules that either provide core
@@ -26,12 +26,14 @@ package io
  *     classes and sealed trait hierarchies.
  *   - [[io.circe.generic.extras generic-extras]]: additional experimental generic
  *     derivation functionality (including some configurability).
+ *   - [[io.circe.pointer pointer]]: A JSON Pointer implementation
+ *   - [[io.circe.pointer.literal pointer-literal]]: JSON Pointer string interpolation
  *   - [[io.circe.shapes shapes]]: encoders and decoders for
  *     [[https://github.com/milessabin/shapeless Shapeless]] hlists, coproducts, records, and sized collections.
  *   - [[https://github.com/circe/circe/blob/master/modules/scodec/shared/src/main/scala/io/circe/scodec/package.scala scodec]]: encoders and decoders for
  *     [[https://github.com/scodec/scodec-bits Scodec]]'s `BitVector` and `ByteVector`.
  *   - [[https://github.com/circe/circe/blob/master/modules/refined/shared/src/main/scala/io/circe/refined/package.scala refined]]: encoders and decoders for [[https://github.com/fthomas/refined refined]] types.
- *   - [[https://github.com/circe/circe-spray/blob/master/core/src/main/scala/io/circe/spray/JsonSupport.scala]]: Spray marshaller conversions for circe's type classes.
+ *   - [[https://github.com/circe/circe-spray/blob/master/core/src/main/scala/io/circe/spray/JsonSupport.scala spray]]: Spray marshaller conversions for Circe's type classes.
  *
  *  Please refer to the [[https://circe.github.io/circe/ documentation]] for a more
  *  detailed introduction to the library.
