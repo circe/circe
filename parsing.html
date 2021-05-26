@@ -1,94 +1,114 @@
-<html><head><title>circe: Parsing JSON</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Travis Brown" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="image" property="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe: Parsing JSON" /><meta name="title" property="og:title" content="circe: Parsing JSON" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><meta name="twitter:title" content="circe: Parsing JSON" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/pattern-style.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class=" active ">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class="">Encoding and decoding</a> <ul class="sub-section"> <li><a href="/circe/codecs/semiauto-derivation.html" class="">Semi-automatic derivation</a></li> <li><a href="/circe/codecs/auto-derivation.html" class="">Automatic derivation</a></li> <li><a href="/circe/codecs/custom-codecs.html" class="">Custom codecs</a></li> <li><a href="/circe/codecs/adt.html" class="">ADT (Algebraic Data Types)</a></li> <li><a href="/circe/codecs/known-issues.html" class="">Warnings and known issues</a></li></ul></li> <li><a href="/circe/optics.html" class="">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h1 id="parsing-json">Parsing JSON</h1>
+<!DOCTYPE html><html><head><title>circe: Parsing JSON</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Travis Brown" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="image" property="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe: Parsing JSON" /><meta name="title" property="og:title" content="circe: Parsing JSON" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><meta name="twitter:title" content="circe: Parsing JSON" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/pattern-style.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class=" active ">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class="">Encoding and decoding</a> <ul class="sub-section"> <li><a href="/circe/codecs/semiauto-derivation.html" class="">Semi-automatic derivation</a></li> <li><a href="/circe/codecs/auto-derivation.html" class="">Automatic derivation</a></li> <li><a href="/circe/codecs/custom-codecs.html" class="">Custom codecs</a></li> <li><a href="/circe/codecs/adt.html" class="">ADT (Algebraic Data Types)</a></li> <li><a href="/circe/codecs/testing.html" class="">Codec testing</a></li> <li><a href="/circe/codecs/known-issues.html" class="">Warnings and known issues</a></li></ul></li> <li><a href="/circe/optics.html" class="">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="search-nav hidden-xs hidden-sm"><div id="search-dropdown"><label><i class="fa fa-search"></i>Search</label><input id="search-bar" type="text" placeholder="Enter keywords here..." onclick="displayToggleSearch(event)" /><ul id="search-dropdown-content" class="dropdown dropdown-content"></ul></div></li><li id="gh-eyes-item" class="hidden-xs to-uppercase"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs to-uppercase"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h1 id="parsing-json">Parsing JSON</h1>
 
-<p>Circe includes a parsing module, which on the JVM is a wrapper around the <a href="https://github.com/non/jawn">Jawn</a> JSON parser and for JavaScript uses the built-in <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code class="highlighter-rouge">JSON.parse</code></a>.</p>
+<p>Circe includes a parsing module, which on the JVM is a wrapper around the <a href="https://github.com/non/jawn">Jawn</a> JSON parser and for JavaScript uses the built-in <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code class="language-plaintext highlighter-rouge">JSON.parse</code></a>.</p>
 
-<p>Parsing is not part of the <code class="highlighter-rouge">circe-core</code> module, so you will need to include a dependency on the <code class="highlighter-rouge">circe-parser</code> module in your build:</p>
+<p>Parsing is not part of the <code class="language-plaintext highlighter-rouge">circe-core</code> module, so you will need to include a dependency on the <code class="language-plaintext highlighter-rouge">circe-parser</code> module in your build:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.circe"</span> <span class="o">%%</span> <span class="s">"circe-parser"</span> <span class="o">%</span> <span class="n">circeVersion</span>
 </code></pre></div></div>
 
 <p>Parsing is done as follows.</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="n">io</span><span class="o">.</span><span class="n">circe</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="k">_</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="nv">io</span><span class="o">.</span><span class="py">circe</span><span class="o">.</span><span class="py">parser</span><span class="o">.</span><span class="py">_</span>
 
-<span class="k">val</span> <span class="n">rawJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"""
+<span class="k">val</span> <span class="nv">rawJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"""
 {
   "foo": "bar",
   "baz": 123,
   "list of stuff": [ 4, 5, 6 ]
 }
 """</span>
-<span class="c1">// rawJson: String = """
-// {
-//   "foo": "bar",
-//   "baz": 123,
-//   "list of stuff": [ 4, 5, 6 ]
-// }
-// """
-</span>
-<span class="k">val</span> <span class="n">parseResult</span> <span class="k">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">)</span>
-<span class="c1">// parseResult: Either[ParsingFailure, Json] = Right(
-//   JObject(
-//     object[foo -&gt; "bar",baz -&gt; 123,list of stuff -&gt; [
-//   4,
-//   5,
-//   6
-// ]]
-//   )
-// )
-</span></code></pre></div></div>
+<span class="c1">// rawJson: String = """</span>
+<span class="c1">// {</span>
+<span class="c1">//   "foo": "bar",</span>
+<span class="c1">//   "baz": 123,</span>
+<span class="c1">//   "list of stuff": [ 4, 5, 6 ]</span>
+<span class="c1">// }</span>
+<span class="c1">// """</span>
 
-<p>Because parsing might fail, the result is an <code class="highlighter-rouge">Either</code> with an <code class="highlighter-rouge">io.circe.Error</code> on the left side.
-In the example above, the input was valid JSON, so the result was a <code class="highlighter-rouge">Right</code> containing the
+<span class="k">val</span> <span class="nv">parseResult</span> <span class="k">=</span> <span class="nf">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">)</span>
+<span class="c1">// parseResult: Either[ParsingFailure, Json] = Right(</span>
+<span class="c1">//   value = JObject(</span>
+<span class="c1">//     value = object[foo -&gt; "bar",baz -&gt; 123,list of stuff -&gt; [</span>
+<span class="c1">//   4,</span>
+<span class="c1">//   5,</span>
+<span class="c1">//   6</span>
+<span class="c1">// ]]</span>
+<span class="c1">//   )</span>
+<span class="c1">// )</span>
+</code></pre></div></div>
+
+<p>Because parsing might fail, the result is an <code class="language-plaintext highlighter-rouge">Either</code> with an <code class="language-plaintext highlighter-rouge">io.circe.Error</code> on the left side.
+In the example above, the input was valid JSON, so the result was a <code class="language-plaintext highlighter-rouge">Right</code> containing the
 corresponding JSON representation.</p>
 
 <p>Let’s see what happens when you try to parse invalid JSON:</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">badJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"yolo"</span>
-<span class="c1">// badJson: String = "yolo"
-</span>
-<span class="n">parse</span><span class="o">(</span><span class="n">badJson</span><span class="o">)</span>
-<span class="c1">// res0: Either[ParsingFailure, Json] = Left(
-//   ParsingFailure(
-//     "expected json value got 'yolo' (line 1, column 1)",
-//     ParseException("expected json value got 'yolo' (line 1, column 1)", 0, 1, 1)
-//   )
-// )
-</span></code></pre></div></div>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">badJson</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"yolo"</span>
+<span class="c1">// badJson: String = "yolo"</span>
 
-<p>There are a number of ways to extract the parse result from the <code class="highlighter-rouge">Either</code>. For example you could pattern
+<span class="nf">parse</span><span class="o">(</span><span class="n">badJson</span><span class="o">)</span>
+<span class="c1">// res0: Either[ParsingFailure, Json] = Left(</span>
+<span class="c1">//   value = ParsingFailure(</span>
+<span class="c1">//     message = "expected json value got 'yolo' (line 1, column 1)",</span>
+<span class="c1">//     underlying = ParseException(</span>
+<span class="c1">//       msg = "expected json value got 'yolo' (line 1, column 1)",</span>
+<span class="c1">//       index = 0,</span>
+<span class="c1">//       line = 1,</span>
+<span class="c1">//       col = 1</span>
+<span class="c1">//     )</span>
+<span class="c1">//   )</span>
+<span class="c1">// )</span>
+</code></pre></div></div>
+
+<p>There are a number of ways to extract the parse result from the <code class="language-plaintext highlighter-rouge">Either</code>. For example you could pattern
 match on it:</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
-  <span class="k">case</span> <span class="nc">Left</span><span class="o">(</span><span class="n">failure</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">"Invalid JSON :("</span><span class="o">)</span>
-  <span class="k">case</span> <span class="nc">Right</span><span class="o">(</span><span class="n">json</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">"Yay, got some JSON!"</span><span class="o">)</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="nc">Left</span><span class="o">(</span><span class="n">failure</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="s">"Invalid JSON :("</span><span class="o">)</span>
+  <span class="k">case</span> <span class="nc">Right</span><span class="o">(</span><span class="n">json</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="s">"Yay, got some JSON!"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// Yay, got some JSON!
-</span></code></pre></div></div>
+<span class="c1">// Yay, got some JSON!</span>
+</code></pre></div></div>
 
-<p>Or use <code class="highlighter-rouge">getOrElse</code> (an extension method provided by Cats):</p>
+<p>Or use <code class="language-plaintext highlighter-rouge">getOrElse</code> (an extension method provided by Cats):</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">json</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="n">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="nc">Null</span><span class="o">)</span>
-<span class="c1">// json: Json = JObject(
-//   object[foo -&gt; "bar",baz -&gt; 123,list of stuff -&gt; [
-//   4,
-//   5,
-//   6
-// ]]
-// )
-</span></code></pre></div></div>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">json</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=</span> <span class="nf">parse</span><span class="o">(</span><span class="n">rawJson</span><span class="o">).</span><span class="py">getOrElse</span><span class="o">(</span><span class="nv">Json</span><span class="o">.</span><span class="py">Null</span><span class="o">)</span>
+<span class="c1">// json: Json = JObject(</span>
+<span class="c1">//   value = object[foo -&gt; "bar",baz -&gt; 123,list of stuff -&gt; [</span>
+<span class="c1">//   4,</span>
+<span class="c1">//   5,</span>
+<span class="c1">//   6</span>
+<span class="c1">// ]]</span>
+<span class="c1">// )</span>
+</code></pre></div></div>
 
 <h2 id="warnings-and-known-issues">Warnings and known issues</h2>
 
-<p>When using the Scala.js version of circe, numerical values like <code class="highlighter-rouge">Long</code> may <a href="https://github.com/circe/circe/issues/393">lose
-precision</a> when decoded. For example <code class="highlighter-rouge">decode[Long]("767946224062369796")</code>
-will return <code class="highlighter-rouge">Right(767946224062369792L)</code>. This is not a limitation of how
-Scala.js represents <code class="highlighter-rouge">scala.Long</code>s nor circe’s decoders for numerical values but
-due to <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code class="highlighter-rouge">JSON.parse</code></a> converting numerical values to JavaScript
+<p>When using the Scala.js version of circe, numerical values like <code class="language-plaintext highlighter-rouge">Long</code> may <a href="https://github.com/circe/circe/issues/393">lose
+precision</a> when decoded. For example <code class="language-plaintext highlighter-rouge">decode[Long]("767946224062369796")</code>
+will return <code class="language-plaintext highlighter-rouge">Right(767946224062369792L)</code>. This is not a limitation of how
+Scala.js represents <code class="language-plaintext highlighter-rouge">scala.Long</code>s nor circe’s decoders for numerical values but
+due to <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code class="language-plaintext highlighter-rouge">JSON.parse</code></a> converting numerical values to JavaScript
 numbers. If precision is required consider representing numerical values as
 strings and convert them to their final value via the JSON AST.</p>
 
-</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script src="/circe/lunr/lunr.js"></script><script>
+// For all code blocks, copy the language from the containing div
+// to the inner code tag (where hljs expects it to be)
+const langPrefix = 'language-';
+document.querySelectorAll(`div[class^='${langPrefix}']`).forEach(function(div) {
+  div.classList.forEach(function(cssClass) {
+    if (cssClass.startsWith(langPrefix)) {
+      const lang = cssClass.substring(langPrefix.length);
+      div.querySelectorAll('pre code').forEach(function(code) {
+        code.classList.add(lang);
+      });
+    }
+  });
+});
+
+hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlightingOnLoad();
-              </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script>((window.gitter = {}).chat = {}).options = {
-room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/main.js"></script></body></html>
+      </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script>((window.gitter = {}).chat = {}).options = {
+room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/search.js"></script><script src="/circe/js/main.js"></script></body></html>
