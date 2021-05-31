@@ -58,7 +58,7 @@ dependency on <code class="language-plaintext highlighter-rouge">circe-optics</c
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.optics.JsonPath._</span>
 
 <span class="k">val</span> <span class="nv">_phoneNum</span> <span class="k">=</span> <span class="nv">root</span><span class="o">.</span><span class="py">order</span><span class="o">.</span><span class="py">customer</span><span class="o">.</span><span class="py">contactDetails</span><span class="o">.</span><span class="py">phone</span><span class="o">.</span><span class="py">string</span>
-<span class="c1">// _phoneNum: monocle.package.Optional[Json, String] = monocle.POptional$$anon$1@4d56ebc7</span>
+<span class="c1">// _phoneNum: monocle.package.Optional[Json, String] = monocle.POptional$$anon$1@2873fbf0</span>
 
 <span class="k">val</span> <span class="nv">phoneNum</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nv">_phoneNum</span><span class="o">.</span><span class="py">getOption</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// phoneNum: Option[String] = Some(value = "0123-456-789")</span>
@@ -107,7 +107,7 @@ can be achieved with a small change to the code we wrote for traversal:</p>
 
 <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">doubleQuantities</span><span class="k">:</span> <span class="kt">Json</span> <span class="o">=&gt;</span> <span class="nc">Json</span> <span class="k">=</span>
   <span class="nv">root</span><span class="o">.</span><span class="py">order</span><span class="o">.</span><span class="py">items</span><span class="o">.</span><span class="py">each</span><span class="o">.</span><span class="py">quantity</span><span class="o">.</span><span class="py">int</span><span class="o">.</span><span class="py">modify</span><span class="o">(</span><span class="k">_</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)</span>
-<span class="c1">// doubleQuantities: Json =&gt; Json = monocle.PTraversal$$Lambda$8171/1319281741@5f848df4</span>
+<span class="c1">// doubleQuantities: Json =&gt; Json = monocle.PTraversal$$Lambda$9588/569975245@3c2db42d</span>
 
 <span class="k">val</span> <span class="nv">modifiedJson</span> <span class="k">=</span> <span class="nf">doubleQuantities</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
 <span class="c1">// modifiedJson: Json = JObject(</span>
