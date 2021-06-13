@@ -238,8 +238,8 @@ lazy val docs = project
     name := "Circe docs",
     mdocIn := file("docs/src/main/tut"),
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-generic-extras" % "0.14.0",
-      "io.circe" %% "circe-optics" % "0.13.0"
+      "io.circe" %% "circe-generic-extras" % "0.14.1",
+      "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
   .settings(docSettings)
