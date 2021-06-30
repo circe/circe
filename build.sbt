@@ -535,6 +535,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
+    libraryDependencies ++= {
+      if (isScala3.value) Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value) else Nil
+    },
     Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue,
     Compile / unmanagedResourceDirectories +=
       file("modules/tests") / "shared" / "src" / "main" / "resources",
