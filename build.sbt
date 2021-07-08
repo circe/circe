@@ -62,7 +62,7 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.6.1"
-val jawnVersion = "1.1.2"
+val jawnVersion = "1.2.0"
 val shapelessVersion = "2.3.7"
 val refinedVersion = "0.9.26"
 
@@ -264,7 +264,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (scodec, scodecJS),
   (testing, testingJS),
   (tests, testsJS),
-  (hygiene, hygieneJS)
+  (hygiene, hygieneJS),
+  (jawn, jawnJS)
 )
 
 lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
@@ -583,14 +584,17 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js
 
-lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
+lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossType.Full)
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
-  .dependsOn(core)
+  .dependsOn(coreBase)
+
+lazy val jawn = jawnBase.jvm
+lazy val jawnJS = jawnBase.js
 
 lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
