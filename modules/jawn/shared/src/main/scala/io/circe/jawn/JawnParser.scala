@@ -2,10 +2,7 @@ package io.circe.jawn
 
 import cats.data.ValidatedNel
 import io.circe.{ Decoder, Error, Json, Parser, ParsingFailure }
-import java.io.File
 import java.nio.ByteBuffer
-import java.nio.channels.ReadableByteChannel
-import java.nio.file.{ Files, Path }
 import scala.util.{ Failure, Success, Try }
 
 object JawnParser {
@@ -53,16 +50,16 @@ object JawnParser {
   def apply(allowDuplicateKeys: Boolean): JawnParser = new JawnParser(None, allowDuplicateKeys)
 }
 
-class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends Parser {
+class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends Parser with JawnParserPlatform {
   def this() = this(None, true)
 
-  private[this] final val supportParser: CirceSupportParser =
+  private[jawn] final val supportParser: CirceSupportParser =
     maxValueSize match {
       case Some(_) => new CirceSupportParser(maxValueSize, allowDuplicateKeys)
       case None    => new CirceSupportParser(None, allowDuplicateKeys)
     }
 
-  private[this] final def fromTry(t: Try[Json]): Either[ParsingFailure, Json] = t match {
+  private[jawn] final def fromTry(t: Try[Json]): Either[ParsingFailure, Json] = t match {
     case Success(json)  => Right(json)
     case Failure(error) => Left(ParsingFailure(error.getMessage, error))
   }
@@ -73,15 +70,6 @@ class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends
   final def parseCharSequence(cs: CharSequence): Either[ParsingFailure, Json] =
     fromTry(supportParser.parseFromCharSequence(cs))
 
-  final def parsePath(path: Path): Either[ParsingFailure, Json] =
-    parseChannel(Files.newByteChannel(path))
-
-  final def parseFile(file: File): Either[ParsingFailure, Json] =
-    fromTry(supportParser.parseFromFile(file))
-
-  final def parseChannel(ch: ReadableByteChannel): Either[ParsingFailure, Json] =
-    fromTry(supportParser.parseFromChannel(ch))
-
   final def parseByteBuffer(buffer: ByteBuffer): Either[ParsingFailure, Json] =
     fromTry(supportParser.parseFromByteBuffer(buffer))
 
@@ -90,24 +78,6 @@ class JawnParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean) extends
 
   final def decodeCharSequenceAccumulating[A: Decoder](cs: CharSequence): ValidatedNel[Error, A] =
     finishDecodeAccumulating[A](parseCharSequence(cs))
-
-  final def decodePath[A: Decoder](path: Path): Either[Error, A] =
-    finishDecode[A](parsePath(path))
-
-  final def decodePathAccumulating[A: Decoder](path: Path): ValidatedNel[Error, A] =
-    finishDecodeAccumulating[A](parsePath(path))
-
-  final def decodeFile[A: Decoder](file: File): Either[Error, A] =
-    finishDecode[A](parseFile(file))
-
-  final def decodeFileAccumulating[A: Decoder](file: File): ValidatedNel[Error, A] =
-    finishDecodeAccumulating[A](parseFile(file))
-
-  final def decodeChannel[A: Decoder](ch: ReadableByteChannel): Either[Error, A] =
-    finishDecode[A](parseChannel(ch))
-
-  final def decodeChannelAccumulating[A: Decoder](ch: ReadableByteChannel): ValidatedNel[Error, A] =
-    finishDecodeAccumulating[A](parseChannel(ch))
 
   final def parseByteArray(bytes: Array[Byte]): Either[ParsingFailure, Json] =
     fromTry(supportParser.parseFromByteArray(bytes))
