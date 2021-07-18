@@ -2,6 +2,7 @@ package io.circe.shapes
 
 import cats.data.Validated
 import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor }
+
 import scala.collection.GenTraversable
 import shapeless.{ AdditiveCollection, Nat, Sized }
 import shapeless.ops.nat.ToInt
@@ -15,7 +16,8 @@ trait SizedInstances {
     private[this] def checkSize(coll: C[A]): Option[Sized[C[A], L]] =
       if (coll.size == toInt()) Some(Sized.wrap[C[A], L](coll)) else None
 
-    private[this] def failure(c: HCursor): DecodingFailure = DecodingFailure(s"Sized[C[A], _${toInt()}]", c.history)
+    private[this] def failure(c: HCursor): DecodingFailure =
+      DecodingFailure("Couldn't decode sized collection", c.history)
 
     def apply(c: HCursor): Decoder.Result[Sized[C[A], L]] =
       decodeCA(c) match {

@@ -6,12 +6,14 @@ import cats.implicits._
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
 import io.circe.CursorOp.{ DownArray, DownN }
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.WrappedOptionalField
 import org.scalacheck.Prop.forAll
+
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
@@ -240,7 +242,10 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
     val result = Decoder[Option[(String, String)]].decodeAccumulating(pair.hcursor)
     val expected = Validated.invalid(
-      NonEmptyList.of(DecodingFailure("String", List(DownN(0))), DecodingFailure("String", List(DownN(1))))
+      NonEmptyList.of(
+        DecodingFailure(WrongTypeExpectation("string", Json.fromInt(1)), List(DownN(0))),
+        DecodingFailure(WrongTypeExpectation("string", Json.fromInt(2)), List(DownN(1)))
+      )
     )
     assertEquals(result, expected)
   }
@@ -620,7 +625,26 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     test("fail normally when a field is missing") {
       val json = Json.obj("a" -> "1".asJson)
 
-      assert(stateful.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+      assert(stateful.decodeJson(json).swap.exists(_.message === "Missing required field"))
+    }
+
+    test("fail when a nested field is missing") {
+      case class Foo(x: Int, bar: Bar)
+      case class Bar(nested: String)
+      val decoder: Decoder[Foo] = new Decoder[Foo] {
+        override def apply(c: HCursor): Decoder.Result[Foo] =
+          for {
+            x <- c.downField("x").as[Int]
+            a <- c.downField("bar").downField("nested").as[String]
+          } yield Foo(x, Bar(a))
+      }
+      val Right(fooJson) = parse("""{"x":42, "bar": {}}""")
+      assert(decoder.decodeJson(fooJson).swap.exists(_.message === "Missing required field"))
+    }
+
+    test("fail when getting a wrong json type") {
+      val json = Json.obj("a" -> 1.asJson)
+      assert(stateful.decodeJson(json).swap.exists(_.message === "Got value '1' with wrong type, expecting string"))
     }
   }
 
@@ -661,13 +685,13 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     test("fail normally when a field is missing and an optional field is present") {
       val json = Json.obj("a" -> "1".asJson)
 
-      assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+      assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Missing required field"))
     }
 
     test("fail normally when a field is missing and an optional field is missing") {
       val json = Json.obj()
 
-      assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Attempt to decode value on failed cursor"))
+      assert(statefulOpt.decodeJson(json).swap.exists(_.message === "Missing required field"))
     }
   }
 

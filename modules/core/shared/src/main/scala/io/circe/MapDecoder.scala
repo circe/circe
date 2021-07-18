@@ -1,7 +1,9 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.cursor.ObjectCursor
+
 import scala.collection.Map
 import scala.collection.mutable.Builder
 
@@ -18,7 +20,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
 
   final def apply(c: HCursor): Decoder.Result[M[K, V]] = c.value match {
     case Json.JObject(obj) => decodeJsonObject(c, obj)
-    case _                 => MapDecoder.failureResult[M[K, V]](c)
+    case json              => MapDecoder.notJsObjectFailureResult[M[K, V]](c, json)
   }
 
   private[this] final def createObjectCursor(c: HCursor, obj: JsonObject, key: String): HCursor =
@@ -43,7 +45,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         handleResult(alwaysDecodeK.decodeSafe(key), atH, builder)
       } else {
         decodeK(key) match {
-          case None    => MapDecoder.failure(atH)
+          case None    => MapDecoder.invalidKeyfailure(atH)
           case Some(k) => handleResult(k, atH, builder)
         }
       }
@@ -83,7 +85,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
               }
             case None =>
               failed = true
-              failures += MapDecoder.failure(atH)
+              failures += MapDecoder.invalidKeyfailure(atH)
           }
         }
       }
@@ -95,13 +97,17 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
           case Nil    => Validated.valid(builder.result())
         }
       }
-    case _ => MapDecoder.failureAccumulatingResult[M[K, V]](c)
+    case json => MapDecoder.notJsObjectfailureAccumulatingResult[M[K, V]](c, json)
   }
 }
 
 private[circe] object MapDecoder {
-  final def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
-  final def failureResult[A](c: HCursor): Decoder.Result[A] = Left[DecodingFailure, A](failure(c))
-  final def failureAccumulatingResult[A](c: HCursor): Decoder.AccumulatingResult[A] =
-    Validated.invalidNel[DecodingFailure, A](failure(c))
+  final def invalidKeyfailure(c: HCursor): DecodingFailure =
+    DecodingFailure("Couldn't decode key.", c.history)
+  final def notJsObjectFailure(c: HCursor, value: Json): DecodingFailure =
+    DecodingFailure(WrongTypeExpectation("object", value), c.history)
+  final def notJsObjectFailureResult[A](c: HCursor, value: Json): Decoder.Result[A] =
+    Left[DecodingFailure, A](notJsObjectFailure(c, value))
+  final def notJsObjectfailureAccumulatingResult[A](c: HCursor, value: Json): Decoder.AccumulatingResult[A] =
+    Validated.invalidNel[DecodingFailure, A](notJsObjectFailure(c, value))
 }

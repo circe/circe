@@ -1,7 +1,9 @@
 package io.circe.generic.codec
 
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Codec, Decoder, DecodingFailure, HCursor, JsonObject }
 import io.circe.generic.Deriver
+
 import scala.language.experimental.macros
 import shapeless.HNil
 
@@ -17,7 +19,8 @@ object ReprAsObjectCodec {
 
   val hnilReprCodec: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] =
-      if (c.value.isObject) Right(HNil) else Left(DecodingFailure("HNil", c.history))
+      if (c.value.isObject) Right(HNil)
+      else Left(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
 }

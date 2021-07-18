@@ -13,8 +13,8 @@ import shapeless.labelled.{ FieldType, field }
 abstract class ReprAsObjectCodec[A] extends Codec.AsObject[A]
 
 object ReprAsObjectCodec {
-  private[this] def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
-    implicit F: Apply[F]
+  private[this] def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(implicit
+    F: Apply[F]
   ): F[FieldType[K, V] :: T] =
     F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
 
@@ -23,8 +23,7 @@ object ReprAsObjectCodec {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
 
-  implicit def codecForHCons[K <: Symbol, H, T <: HList](
-    implicit
+  implicit def codecForHCons[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     decodeH: Decoder[H],
     encodeH: Encoder[H],
@@ -47,13 +46,14 @@ object ReprAsObjectCodec {
   }
 
   implicit val codecForCNil: ReprAsObjectCodec[CNil] = new ReprAsObjectCodec[CNil] {
-    def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("CNil", c.history))
+    def apply(c: HCursor): Decoder.Result[CNil] = Left(
+      DecodingFailure("JSON decoding to CNil should never happen", c.history)
+    )
     def encodeObject(a: CNil): JsonObject =
       sys.error("No JSON representation of CNil (this shouldn't happen)")
   }
 
-  implicit def codecForCoproduct[K <: Symbol, L, R <: Coproduct](
-    implicit
+  implicit def codecForCoproduct[K <: Symbol, L, R <: Coproduct](implicit
     key: Witness.Aux[K],
     decodeL: Decoder[L],
     encodeL: Encoder[L],

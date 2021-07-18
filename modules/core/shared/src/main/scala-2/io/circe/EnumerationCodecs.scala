@@ -15,7 +15,14 @@ private[circe] trait EnumerationCodecs {
     final def apply(c: HCursor): Decoder.Result[E#Value] = Decoder.decodeString(c).flatMap { str =>
       Try(enumeration.withName(str)) match {
         case Success(a) => Right(a)
-        case Failure(t) => Left(DecodingFailure(t.getMessage, c.history))
+        case Failure(t) =>
+          Left(
+            DecodingFailure(
+              s"Couldn't decode value '$str'. " +
+                s"Allowed values: '${enumeration.values.mkString(",")}'",
+              c.history
+            )
+          )
       }
     }
     final def apply(e: E#Value): Json = Encoder.encodeString(e.toString)

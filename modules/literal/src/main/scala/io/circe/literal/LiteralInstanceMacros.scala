@@ -16,7 +16,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' string literal", c.history)
               )
             }
           }
@@ -34,7 +35,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' double literal", c.history)
               )
             }
           }
@@ -52,7 +54,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' float literal", c.history)
               )
             }
           }
@@ -70,7 +73,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' long literal", c.history)
               )
             }
           }
@@ -88,7 +92,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' int literal", c.history)
               )
             }
           }
@@ -106,7 +111,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' char literal", c.history)
               )
             }
           }
@@ -124,7 +130,8 @@ class LiteralInstanceMacros(val c: whitebox.Context) {
               _root_.scala.util.Right[_root_.io.circe.DecodingFailure, $sType]($lit: $sType)
             } else {
               _root_.scala.util.Left(
-                _root_.io.circe.DecodingFailure($name, c.history)
+                _root_.io.circe.DecodingFailure(
+                  "Couldn't decode '" + $lit + "' boolean literal", c.history)
               )
             }
           }
