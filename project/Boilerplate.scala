@@ -194,9 +194,9 @@ object Boilerplate {
         |import cats.kernel.instances.int._
         |import cats.kernel.instances.tuple._
         |import io.circe.testing.CodecTests
-        |import io.circe.tests.CirceSuite
+        |import io.circe.tests.CirceMunitSuite
         |
-        |class TupleCodecSuite extends CirceSuite {
+        |class TupleCodecSuite extends CirceMunitSuite {
         |  checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
         -  checkAll("Codec[$tupleType]", CodecTests[$tupleType].codec)
         |}
@@ -369,10 +369,10 @@ object Boilerplate {
         |
         |import cats.kernel.Eq
         |import io.circe.testing.CodecTests
-        |import io.circe.tests.CirceSuite
+        |import io.circe.tests.CirceMunitSuite
         |import org.scalacheck.Arbitrary
         |
-        |class ProductCodecSuite extends CirceSuite {
+        |class ProductCodecSuite extends CirceMunitSuite {
         -  case class Cc$arity($members)
         -  object Cc$arity {
         -    implicit val eqCc$arity: Eq[Cc$arity] = Eq.fromUniversalEquals

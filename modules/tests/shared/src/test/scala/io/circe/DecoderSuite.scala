@@ -15,7 +15,7 @@ import org.scalacheck.Prop.forAll
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
-class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
+class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTests {
   checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
   checkAll("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
 

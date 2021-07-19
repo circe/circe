@@ -5,7 +5,7 @@ import cats.instances.AllInstances
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.simple.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
-import io.circe.tests.{ CirceSuite, MissingInstances }
+import io.circe.tests.{ CirceMunitSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object jsoncodecmacrossuiteaux extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
@@ -83,11 +83,7 @@ package jsoncodecmacrossuiteaux {
     implicit def eqAccessModifier: Eq[AccessModifier] = Eq.fromUniversalEquals
 
     implicit def arbitraryAccessModifier: Arbitrary[AccessModifier] =
-      Arbitrary(
-        for {
-          a <- Arbitrary.arbitrary[Int]
-        } yield AccessModifier(a)
-      )
+      Arbitrary(Arbitrary.arbitrary[Int].map(a => AccessModifier(a)))
   }
 
   // Hierarchy
@@ -154,7 +150,7 @@ package jsoncodecmacrossuiteaux {
   }
 }
 
-class JsonCodecMacrosSuite extends CirceSuite {
+class JsonCodecMacrosSuite extends CirceMunitSuite {
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
   checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
@@ -164,7 +160,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 
-  "@JsonCodec" should "provide Encoder.AsObject instances" in {
+  test("@JsonCodec should provide Encoder.AsObject instances") {
     Encoder.AsObject[Simple]
     Encoder.AsObject[Single]
     Encoder.AsObject[Typed1[Int]]
@@ -175,25 +171,25 @@ class JsonCodecMacrosSuite extends CirceSuite {
     Encoder.AsObject[SelfRecursiveWithOption]
   }
 
-  it should "allow only one, named argument set to true" in {
+  test("@JsonCodec should allow only one, named argument set to true") {
     // Can't supply both
-    assertDoesNotCompile("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)")
+    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)"), "")
     // Must specify the argument name
-    assertDoesNotCompile("@JsonCodec(true) case class X(a: Int)")
+    assertNoDiff(compileErrors("@JsonCodec(true) case class X(a: Int)"), "")
     // Can't specify false
-    assertDoesNotCompile("@JsonCodec(encodeOnly = false) case class X(a: Int)")
+    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"),"")
   }
 
-  "@JsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
+  test("@JsonCodec(encodeOnly = true) should only provide Encoder instances") {
     @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
     Encoder.AsObject[CaseClassEncodeOnly]
-    assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
+    assertNoDiff(compileErrors("Decoder[CaseClassEncodeOnly]"), "")
   }
 
-  "@JsonCodec(decodeOnly = true)" should "provide Decoder instances" in {
+  test("@JsonCodec(decodeOnly = true) should provide Decoder instances") {
     @JsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
     Decoder[CaseClassDecodeOnly]
-    assertDoesNotCompile("Encoder[CaseClassDecodeOnly]")
+    assertNoDiff(compileErrors("Encoder[CaseClassDecodeOnly]"), "")
   }
 }

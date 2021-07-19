@@ -2,12 +2,12 @@ package io.circe
 
 import cats._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import java.util.Currency
 import org.scalacheck._
 import scala.collection.JavaConverters._
 
-final class JavaCurrencySuite extends CirceSuite {
+final class JavaCurrencySuite extends CirceMunitSuite {
   import JavaCurrencySuite._
 
   checkAll("Codec[Currency]", CodecTests[Currency].codec)
