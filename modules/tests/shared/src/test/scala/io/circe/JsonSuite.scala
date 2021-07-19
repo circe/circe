@@ -116,6 +116,21 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
 
     assert(merged.asObject.map(_.toList) === Some(fields.reverse))
   }
+  "canonicallyEqual" should "not consider null values" in {
+    val expected = true
+    val thisJson = Json.fromJsonObject(JsonObject.empty)
+    val thatJson = Json.obj(("foo", Json.Null))
+    val actual = thisJson.canonicallyEqual(thatJson)
+    assert(actual == expected)
+  }
+
+  it should "not consider field ordering" in {
+    val expected = true
+    val thisJson = Json.obj("a" -> Json.fromInt(1), "b" -> Json.fromInt(2))
+    val thatJson = Json.obj("b" -> Json.fromInt(2), "a" -> Json.fromInt(1))
+    val actual = thisJson.canonicallyEqual(thatJson)
+    assert(actual == expected)
+  }
 
   test("dropEmptyValues should remove empty values for JsonObject") {
     val actual = Json
