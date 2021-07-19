@@ -61,6 +61,12 @@ trait Encoder[A] extends Serializable { self =>
   final def mapJson(f: Json => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(self(a))
   }
+  
+  /**
+   * Create a new [[Encoder]] by creating a JsonObject with a single `field` with the output of this one.
+   */
+  final def at(field: String): Encoder.AsObject[A] =
+    Encoder.AsObject.instance(a => JsonObject.singleton(field, apply(a)))
 }
 
 /**
