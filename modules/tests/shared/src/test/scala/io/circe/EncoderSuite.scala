@@ -30,6 +30,17 @@ class EncoderSuite extends CirceMunitSuite {
     assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
   }
 
+  property("encodeLong should transform Long into String if Long is out of range") {
+    val maxSafeInteger: Long = 9007199254740991L
+    forAll { (a: Long) =>
+      if (-maxSafeInteger <= a && a <= maxSafeInteger) {
+        assert(Encoder.encodeLong.apply(a) === Json.fromLong(a))
+      } else if (a < -maxSafeInteger) {
+        assert(Encoder.encodeLong.apply(a) === Json.fromString(a.toString))
+      }
+    }
+  }
+
   property("Encoder.AsObject#mapJsonObject should transform encoded output") {
     forAll { (m: Map[String, Int], k: String, v: Int) =>
       val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))

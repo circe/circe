@@ -266,7 +266,16 @@ object Encoder
    * @group Encoding
    */
   implicit final val encodeLong: Encoder[Long] = new Encoder[Long] {
-    final def apply(a: Long): Json = Json.fromLong(a)
+    // 2^53 - 1
+    private final val MAX_SAFE_INTEGER: Long = 45035996273704950L
+
+    final def apply(a: Long): Json = {
+      if (-MAX_SAFE_INTEGER <= a && a <= MAX_SAFE_INTEGER) {
+        Json.fromLong(a)
+      } else {
+        Json.fromString(java.lang.Long.toString(a))
+      }
+    }
   }
 
   /**
