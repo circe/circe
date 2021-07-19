@@ -2,11 +2,10 @@ package io.circe
 
 import cats.kernel.Eq
 import cats.kernel.instances.all._
-import cats.syntax.eq._
-import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
+import scala.quoted.staging
 
 object DerivesSuite {
   case class Box[A](a: A) derives Decoder, Encoder.AsObject
@@ -137,4 +136,16 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+
+  property("Derives under explicit-nulls") {
+    val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
+    val explicitNullsCompiler = staging.Compiler.make(getClass.getClassLoader)(settings)
+    staging.run(
+      '{
+        val encoder = Encoder.AsObject.derived[Box[Wub]];
+        val decoder = Decoder.derived[Box[Wub]];
+        val codec = Codec.AsObject.derived[Box[Wub]];
+      }
+    )(using explicitNullsCompiler)
+  }
 }
