@@ -222,6 +222,11 @@ lazy val docSettings = allSettings ++ Seq(
     "-sourcepath",
     (LocalRootProject / baseDirectory).value.getAbsolutePath
   ),
+  /* Publish GitHub Pages { */
+  gitHubPagesOrgName := "circe",
+  gitHubPagesRepoName := "circe",
+  gitHubPagesSiteDir := baseDirectory.value / "target" / "site",
+  /* } Publish GitHub Pages */
   scalacOptions ~= {
     _.filterNot(Set("-Yno-predef"))
   },
@@ -248,6 +253,7 @@ lazy val docs = project
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
+  .enablePlugins(GitHubPagesPlugin)
 
 lazy val circeCrossModules = Seq[(Project, Project)](
   (numbersTesting, numbersTestingJS),
