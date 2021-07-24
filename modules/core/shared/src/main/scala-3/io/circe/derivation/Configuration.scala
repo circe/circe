@@ -14,4 +14,5 @@ case class Configuration(
   def withDefaults: Configuration = this.copy(useDefaults = true)
   def withoutDefaults: Configuration = this.copy(useDefaults = false)
   def withDiscriminator(discriminator: String): Configuration = this.copy(discriminator = Some(discriminator))
+  def withoutDiscriminator: Configuration = this.copy(discriminator = None)
 }
