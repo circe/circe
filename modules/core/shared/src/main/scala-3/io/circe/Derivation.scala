@@ -38,10 +38,10 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
   protected[this] def elemDefaults: Default[A]
 
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
-    def fromName(sumTypeName: String): R =
+    def fromName(sumTypeName: String, cursor: ACursor): R =
       elemLabels.indexOf(sumTypeName) match {
-        case -1 => fail(DecodingFailure(s"type $name hasn't a class/object/case named '$sumTypeName'.", c.history))
-        case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(c)
+        case -1 => fail(DecodingFailure(s"type $name hasn't a class/object/case named '$sumTypeName'.", cursor.history))
+        case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
       }
     
     conf.discriminator match {
@@ -50,13 +50,13 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
         cursor.as[Option[String]] match {
           case Left(failure) => fail(failure)
           case Right(None) => fail(DecodingFailure(s"$name: could not find discriminator field '$discriminator' or its null.", cursor.history))
-          case Right(Some(sumTypeName)) => fromName(sumTypeName)
+          case Right(Some(sumTypeName)) => fromName(sumTypeName, c)
         }
       case _ =>
         // Should we fail if cursor.keys contains more than one key?
         c.keys.flatMap(_.headOption) match {
           case None => fail(DecodingFailure(name, c.history))
-          case Some(sumTypeName) => fromName(sumTypeName)
+          case Some(sumTypeName) => fromName(sumTypeName, c.downField(sumTypeName))
         }
     }
   final def decodeSum(c: HCursor): Decoder.Result[A] =
@@ -126,7 +126,7 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
 }
 
 private[circe] trait EncoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration()): Encoder.AsObject[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration.default): Encoder.AsObject[A] =
     new DerivedEncoder[A] with DerivedInstance[A](
       constValue[A.MirroredLabel],
       summonLabels[A.MirroredElemLabels].map(conf.transformNames).toArray
@@ -141,7 +141,7 @@ private[circe] trait EncoderDerivation {
 }
 
 private[circe] trait DecoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration()): Decoder[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration.default): Decoder[A] =
     new DerivedDecoder[A] with DerivedInstance[A](
       constValue[A.MirroredLabel],
       summonLabels[A.MirroredElemLabels].map(conf.transformNames).toArray,
@@ -162,7 +162,7 @@ private[circe] trait DecoderDerivation {
 }
 
 private[circe] trait CodecDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration()): Codec.AsObject[A] =
+  inline final def derived[A](using inline A: Mirror.Of[A], conf: Configuration = Configuration.default): Codec.AsObject[A] =
     new Codec.AsObject[A]
         with DerivedDecoder[A]
         with DerivedEncoder[A]
