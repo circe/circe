@@ -37,33 +37,7 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
   protected[this] def elemDecoders: Array[Decoder[_]]
   protected[this] def elemDefaults: Default[A]
 
-  private def decodeGeneric[R](c: HCursor, index: Int, decode: Decoder[AnyRef] => ACursor => R)
-    (withDefault: (R, AnyRef) => R): R =
-    val decoder = elemDecoders(index).asInstanceOf[Decoder[AnyRef]]
-    val field = c.downField(elemLabels(index))
-    val baseDecodeResult = decode(decoder)(field)
-    
-    if conf.useDefaults then
-      elemDefaults.defaults match {
-        case _: EmptyTuple => baseDecodeResult
-        case defaults: NonEmptyTuple =>
-          defaults(index).asInstanceOf[Option[Any]] match {
-            case None => baseDecodeResult
-      baseDecodeResult
-  
-  final def decodeWith(index: Int)(c: HCursor): Decoder.Result[AnyRef] =
-    decodeGeneric(c, index, _.tryDecode)(_ orElse Right(_))
-  
-  final def decodeAccumulatingWith(index: Int)(c: HCursor): Decoder.AccumulatingResult[AnyRef] =
-    decodeGeneric(c, index, _.tryDecodeAccumulating)(_ orElse Validated.Valid(_))
-  
-  final def resultIterator(c: HCursor): Iterator[Decoder.Result[AnyRef]] =
-    elemLabels.iterator.zipWithIndex.map((_, index) => decodeWith(index)(c))
-  
-  final def resultAccumulatingIterator(c: HCursor): Iterator[Decoder.AccumulatingResult[AnyRef]] =
-    elemLabels.iterator.zipWithIndex.map((_, index) => decodeAccumulatingWith(index)(c))
-  
-  private def decodeSumGeneric[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
+  private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
     def fromName(sumTypeName: String): R =
       elemLabels.indexOf(sumTypeName) match {
         case -1 => fail(DecodingFailure(s"type $name hasn't a class/object/case named '$sumTypeName'.", c.history))
@@ -86,22 +60,42 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
         }
     }
   final def decodeSum(c: HCursor): Decoder.Result[A] =
-    decodeSumGeneric(c)(Left.apply, _.tryDecode)
+    decodeSumElement(c)(Left.apply, _.tryDecode)
   final def decodeSumAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-    decodeSumGeneric(c)(Validated.invalidNel, _.tryDecodeAccumulating)
+    decodeSumElement(c)(Validated.invalidNel, _.tryDecodeAccumulating)
   
+  private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[AnyRef] => ACursor => R)
+    (withDefault: (R, AnyRef) => R): R =
+    val decoder = elemDecoders(index).asInstanceOf[Decoder[AnyRef]]
+    val field = c.downField(elemLabels(index))
+    val baseDecodeResult = decode(decoder)(field)
+    
+    if (conf.useDefaults) {
+      elemDefaults.defaults match {
+        case _: EmptyTuple => baseDecodeResult
+        case defaults: NonEmptyTuple =>
+          defaults(index).asInstanceOf[Option[Any]] match {
+            case None => baseDecodeResult
+            case Some(default) =>
+              // If the field does not exist or is invalid we return the default value.
+              withDefault(baseDecodeResult, default.asInstanceOf[AnyRef])
+          }
+      }
+    } else {
+      baseDecodeResult
+    }
+
   final def decodeProduct(c: HCursor, fromProduct: Product => A): Decoder.Result[A] =
     if (c.value.isObject) {
-      val iter = resultIterator(c)
       val res = new Array[AnyRef](elemLabels.length)
       var failed: Left[DecodingFailure, _] = null
       
-      var i: Int = 0
-      while (iter.hasNext && (failed eq null)) {
-        iter.next match
-          case Right(value) => res(i) = value
+      var index: Int = 0
+      while (index < elemLabels.length && (failed eq null)) {
+        decodeProductElement(c, index, _.tryDecode)(withDefault = _ orElse Right(_)) match
+          case Right(value) => res(index) = value
           case l @ Left(_) => failed = l
-        i += 1
+        index += 1
       }
       
       if (failed eq null) {
@@ -114,17 +108,16 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
     }
   final def decodeProductAccumulating(c: HCursor, fromProduct: Product => A): Decoder.AccumulatingResult[A] =
     if (c.value.isObject) {
-      val iter = resultAccumulatingIterator(c)
       val res = new Array[AnyRef](elemLabels.length)
       val failed = List.newBuilder[DecodingFailure]
       
-      var i: Int = 0
-      while (iter.hasNext) {
-        iter.next match {
-          case Validated.Valid(value) => res(i) = value
+      var index: Int = 0
+      while (index < elemLabels.length) {
+        decodeProductElement(c, index, _.tryDecodeAccumulating)(withDefault = _ orElse Validated.Valid(_)) match {
+          case Validated.Valid(value) => res(index) = value
           case Validated.Invalid(failures) => failed ++= failures.toList
         }
-        i += 1
+        index += 1
       }
       
       val failures = failed.result()
