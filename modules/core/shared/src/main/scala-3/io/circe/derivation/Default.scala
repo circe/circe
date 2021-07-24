@@ -7,6 +7,11 @@ import scala.compiletime.constValue
 trait Default[T] {
   type Out <: Tuple
   def defaults: Out
+  
+  def defaultAt(index: Int): Option[Any] = defaults match {
+    case _: EmptyTuple => None
+    case defaults: NonEmptyTuple => defaults(index).asInstanceOf[Option[Any]]
+  }
 }
 object Default {
   transparent inline given mkDefault[T](using m: Mirror.Of[T]): Default[T] =

@@ -64,22 +64,16 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
   final def decodeSumAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
     decodeSumElement(c)(Validated.invalidNel, _.tryDecodeAccumulating)
   
-  private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[AnyRef] => ACursor => R)
-    (withDefault: (R, AnyRef) => R): R =
-    val decoder = elemDecoders(index).asInstanceOf[Decoder[AnyRef]]
+  private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[Any] => ACursor => R)
+    (withDefault: (R, Any) => R): R =
+    val decoder = elemDecoders(index).asInstanceOf[Decoder[Any]]
     val field = c.downField(elemLabels(index))
     val baseDecodeResult = decode(decoder)(field)
     
     if (conf.useDefaults) {
-      elemDefaults.defaults match {
-        case _: EmptyTuple => baseDecodeResult
-        case defaults: NonEmptyTuple =>
-          defaults(index).asInstanceOf[Option[Any]] match {
-            case None => baseDecodeResult
-            case Some(default) =>
-              // If the field does not exist or is invalid we return the default value.
-              withDefault(baseDecodeResult, default.asInstanceOf[AnyRef])
-          }
+      elemDefaults.defaultAt(index) match {
+        case None => baseDecodeResult
+        case Some(default) => withDefault(baseDecodeResult, default)
       }
     } else {
       baseDecodeResult
@@ -87,7 +81,7 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
 
   final def decodeProduct(c: HCursor, fromProduct: Product => A): Decoder.Result[A] =
     if (c.value.isObject) {
-      val res = new Array[AnyRef](elemLabels.length)
+      val res = new Array[Any](elemLabels.length)
       var failed: Left[DecodingFailure, _] = null
       
       var index: Int = 0
@@ -108,7 +102,7 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
     }
   final def decodeProductAccumulating(c: HCursor, fromProduct: Product => A): Decoder.AccumulatingResult[A] =
     if (c.value.isObject) {
-      val res = new Array[AnyRef](elemLabels.length)
+      val res = new Array[Any](elemLabels.length)
       val failed = List.newBuilder[DecodingFailure]
       
       var index: Int = 0
