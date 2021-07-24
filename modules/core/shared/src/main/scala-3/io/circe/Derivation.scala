@@ -1,6 +1,5 @@
 package io.circe
 
-import scala.collection.mutable.WrappedArray
 import scala.compiletime.constValue
 import scala.deriving.Mirror
 import Predef.genericArrayOps
