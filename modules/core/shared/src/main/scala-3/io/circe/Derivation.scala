@@ -68,15 +68,15 @@ private[circe] trait DerivedDecoder[A](using conf: Configuration) extends Derive
     (withDefault: (R, Any) => R): R =
     val decoder = elemDecoders(index).asInstanceOf[Decoder[Any]]
     val field = c.downField(elemLabels(index))
-    val baseDecodeResult = decode(decoder)(field)
+    val result = decode(decoder)(field)
     
     if (conf.useDefaults) {
       elemDefaults.defaultAt(index) match {
-        case None => baseDecodeResult
-        case Some(default) => withDefault(baseDecodeResult, default)
+        case None => result
+        case Some(default) => withDefault(result, default)
       }
     } else {
-      baseDecodeResult
+      result
     }
 
   final def decodeProduct(c: HCursor, fromProduct: Product => A): Decoder.Result[A] =
