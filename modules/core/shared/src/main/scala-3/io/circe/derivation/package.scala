@@ -2,7 +2,7 @@ package io.circe.derivation
 
 import scala.compiletime.{constValue, erasedValue, summonFrom}
 import scala.deriving.Mirror
-import io.circe.{Encoder, Decoder}
+import io.circe.{Decoder, Encoder, Codec}
 
 inline final def summonLabels[T <: Tuple]: List[String] =
   inline erasedValue[T] match {
@@ -34,20 +34,25 @@ inline final def summonDecoder[A]: Decoder[A] =
     case _: Mirror.Of[A] => Decoder.derived[A]
   }
 
-object renaming {
-  /** Snake case mapping */
-  final val snakeCase: String => String = _.replaceAll(
-    "([A-Z]+)([A-Z][a-z])",
-    "$1_$2"
-  ).replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase
+inline final def deriveDecoder[A](
+  transformNames: String => String = Predef.identity,
+  useDefaults: Boolean = true,
+  discriminator: Option[String] = None
+)(using inline A: Mirror.Of[A]): Decoder[A] =
+  given Configuration = Configuration(transformNames, useDefaults, discriminator)
+  Decoder.derived[A]
 
-  /** Kebab case mapping */
-  val kebabCase: String => String =
-    _.replaceAll(
-      "([A-Z]+)([A-Z][a-z])",
-      "$1-$2"
-    ).replaceAll("([a-z\\d])([A-Z])", "$1-$2").toLowerCase
+inline final def deriveEncoder[A](
+  transformNames: String => String = Predef.identity,
+  discriminator: Option[String] = None
+)(using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+  given Configuration = Configuration(transformNames, useDefaults = true, discriminator)
+  Encoder.AsObject.derived[A]
 
-  final def replaceWith(pairs: (String, String)*): String => String =
-    original => pairs.toMap.getOrElse(original, original)
-}
+inline final def deriveCodec[A](
+  transformNames: String => String = Predef.identity,
+  useDefaults: Boolean = true,
+  discriminator: Option[String] = None
+)(using inline A: Mirror.Of[A]): Codec.AsObject[A] =
+  given Configuration = Configuration(transformNames, useDefaults, discriminator)
+  Codec.AsObject.derived[A]
