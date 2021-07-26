@@ -138,6 +138,13 @@ private[circe] trait EncoderDerivation {
         case m: Mirror.SumOf[A] => encodeSum(m.ordinal(a), a)
       }
     }
+  
+  inline final def derive[A: Mirror.Of](
+    transformNames: String => String = Configuration.default.transformNames,
+    discriminator: Option[String] = Configuration.default.discriminator,
+  ): Encoder.AsObject[A] =
+    given Configuration = Configuration(transformNames, useDefaults = false, discriminator)
+    derived[A]
 }
 
 private[circe] trait DecoderDerivation {
@@ -159,6 +166,14 @@ private[circe] trait DecoderDerivation {
           case m: Mirror.ProductOf[A] => decodeProductAccumulating(c, m.fromProduct)
           case m: Mirror.SumOf[A] => decodeSumAccumulating(c)
         }
+  
+  inline final def derive[A: Mirror.Of](
+    transformNames: String => String = Configuration.default.transformNames,
+    useDefaults: Boolean = Configuration.default.useDefaults,
+    discriminator: Option[String] = Configuration.default.discriminator,
+  ): Decoder[A] =
+    given Configuration = Configuration(transformNames, useDefaults, discriminator)
+    derived[A]
 }
 
 private[circe] trait CodecDerivation {
@@ -190,5 +205,13 @@ private[circe] trait CodecDerivation {
           case m: Mirror.ProductOf[A] => decodeProductAccumulating(c, m.fromProduct)
           case m: Mirror.SumOf[A] => decodeSumAccumulating(c)
         }
-    }
+  }
+
+  inline final def derive[A: Mirror.Of](
+    transformNames: String => String = Configuration.default.transformNames,
+    useDefaults: Boolean = Configuration.default.useDefaults,
+    discriminator: Option[String] = Configuration.default.discriminator,
+  ): Codec.AsObject[A] =
+    given Configuration = Configuration(transformNames, useDefaults, discriminator)
+    derived[A]
 }

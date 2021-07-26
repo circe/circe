@@ -33,26 +33,3 @@ inline final def summonDecoder[A]: Decoder[A] =
     case decodeA: Decoder[A] => decodeA
     case _: Mirror.Of[A] => Decoder.derived[A]
   }
-
-inline final def deriveDecoder[A](
-  transformNames: String => String = Predef.identity,
-  useDefaults: Boolean = true,
-  discriminator: Option[String] = None
-)(using inline A: Mirror.Of[A]): Decoder[A] =
-  given Configuration = Configuration(transformNames, useDefaults, discriminator)
-  Decoder.derived[A]
-
-inline final def deriveEncoder[A](
-  transformNames: String => String = Predef.identity,
-  discriminator: Option[String] = None
-)(using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
-  given Configuration = Configuration(transformNames, useDefaults = true, discriminator)
-  Encoder.AsObject.derived[A]
-
-inline final def deriveCodec[A](
-  transformNames: String => String = Predef.identity,
-  useDefaults: Boolean = true,
-  discriminator: Option[String] = None
-)(using inline A: Mirror.Of[A]): Codec.AsObject[A] =
-  given Configuration = Configuration(transformNames, useDefaults, discriminator)
-  Codec.AsObject.derived[A]
