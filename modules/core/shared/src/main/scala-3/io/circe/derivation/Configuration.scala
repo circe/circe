@@ -16,3 +16,15 @@ case class Configuration(
   def withDiscriminator(discriminator: String): Configuration = this.copy(discriminator = Some(discriminator))
   def withoutDiscriminator: Configuration = this.copy(discriminator = None)
 }
+
+object EnumConfiguration {
+  val default: EnumConfiguration = EnumConfiguration()
+}
+
+final case class EnumConfiguration(
+  decodeTransformNames: String => String = Predef.identity,
+  encodeTransformNames: String => String = Predef.identity,
+) {
+  def withDecodeTransformNames(f: String => String): EnumConfiguration = this.copy(decodeTransformNames = f)
+  def withEncodeTransformNames(f: String => String): EnumConfiguration = this.copy(encodeTransformNames = f)
+}
