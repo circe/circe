@@ -6,16 +6,13 @@ import Predef.genericArrayOps
 import io.circe.{Decoder, Encoder, JsonObject, Codec, HCursor}
 import io.circe.syntax._
 
-trait ConfiguredCodec[A] extends Codec.AsObject[A]
+trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec {
   inline final def derived[A](using conf: Configuration = Configuration.default)(using inline A: Mirror.Of[A]): ConfiguredCodec[A] =
-    new ConfiguredCodec[A]
-        with ConfiguredDecoder[A]
-        with ConfiguredEncoder[A]
-        with DerivedInstance[A](
-          constValue[A.MirroredLabel],
-          summonLabels[A.MirroredElemLabels].map(conf.transformNames).toArray,
-        ) {
+    new ConfiguredCodec[A] with DerivedInstance[A](
+      constValue[A.MirroredLabel],
+      summonLabels[A.MirroredElemLabels].map(conf.transformNames).toArray,
+    ) {
       lazy val elemEncoders: Array[Encoder[_]] = summonEncoders[A.MirroredElemTypes].toArray
       lazy val elemDecoders: Array[Decoder[_]] = summonDecoders[A.MirroredElemTypes].toArray
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
