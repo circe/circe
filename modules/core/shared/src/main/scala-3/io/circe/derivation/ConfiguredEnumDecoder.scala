@@ -20,6 +20,6 @@ object ConfiguredEnumDecoder:
             case index => Right(cases(index))
         }
 
-  inline def derive[R: Mirror.SumOf](decodeTransformNames: String => String = EnumConfiguration.default.decodeTransformNames): Decoder[R] =
+  inline final def derive[R: Mirror.SumOf](decodeTransformNames: String => String = EnumConfiguration.default.decodeTransformNames): Decoder[R] =
     given EnumConfiguration = EnumConfiguration.default.withDecodeTransformNames(decodeTransformNames)
     derived[R]
