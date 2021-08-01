@@ -6,7 +6,7 @@ import Predef.genericArrayOps
 import cats.data.{NonEmptyList, Validated}
 import io.circe.{Decoder, DecodingFailure, ACursor, HCursor}
 
-trait ConfiguredDecoder[A](using conf: Configuration) extends DerivedInstance[A] with Decoder[A] {
+trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance[A] {
   def elemDecoders: Array[Decoder[_]]
   def elemDefaults: Default[A]
 

@@ -6,7 +6,7 @@ import Predef.genericArrayOps
 import io.circe.{Encoder, Json, JsonObject}
 import io.circe.syntax._
 
-trait ConfiguredEncoder[A](using conf: Configuration) extends DerivedInstance[A] with Encoder.AsObject[A] {
+trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A], DerivedInstance[A] {
   def elemEncoders: Array[Encoder[_]]
 
   final def encodeWith(index: Int)(value: Any): (String, Json) =
