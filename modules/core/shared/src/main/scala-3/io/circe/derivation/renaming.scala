@@ -1,6 +1,6 @@
 package io.circe.derivation
 
-object renaming {
+object renaming:
   /** Snake case mapping */
   final val snakeCase: String => String = _.replaceAll(
     "([A-Z]+)([A-Z][a-z])",
@@ -16,4 +16,3 @@ object renaming {
 
   final def replaceWith(pairs: (String, String)*): String => String =
     original => pairs.toMap.getOrElse(original, original)
-}
