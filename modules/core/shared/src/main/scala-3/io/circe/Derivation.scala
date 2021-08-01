@@ -6,17 +6,14 @@ import Predef.genericArrayOps
 import cats.data.{NonEmptyList, Validated}
 import io.circe.derivation._
 
-private[circe] trait EncoderDerivation {
+private[circe] trait EncoderDerivation:
   inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
     ConfiguredEncoder.derived[A](using Configuration.empty)
-}
 
-private[circe] trait DecoderDerivation {
+private[circe] trait DecoderDerivation:
   inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
     ConfiguredDecoder.derived[A](using Configuration.empty)
-}
 
-private[circe] trait CodecDerivation {
+private[circe] trait CodecDerivation:
   inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
     ConfiguredCodec.derived[A](using Configuration.empty)
-}
