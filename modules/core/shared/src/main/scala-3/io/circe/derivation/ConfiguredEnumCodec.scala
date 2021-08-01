@@ -6,7 +6,7 @@ import io.circe.syntax._
 
 trait ConfiguredEnumCodec[A] extends Codec[A]
 object ConfiguredEnumCodec:
-  inline final def derived[A: Mirror.SumOf](using conf: EnumConfiguration = EnumConfiguration.default): ConfiguredEnumCodec[A] =
+  inline final def derived[A](using conf: EnumConfiguration = EnumConfiguration.default)(using Mirror.SumOf[A]): ConfiguredEnumCodec[A] =
     val decoder = ConfiguredEnumDecoder.derived[A]
     val encoder = ConfiguredEnumEncoder.derived[A]
     new ConfiguredEnumCodec[A]:
