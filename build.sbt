@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.0.0", "2.12.13", "2.13.6")
+ThisBuild / crossScalaVersions := List("3.0.1", "2.12.14", "2.13.6")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
@@ -62,15 +62,15 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.6.1"
-val jawnVersion = "1.1.2"
+val jawnVersion = "1.2.0"
 val shapelessVersion = "2.3.7"
-val refinedVersion = "0.9.26"
+val refinedVersion = "0.9.27"
 
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.9"
 val scalaCheckVersion = "1.15.4"
-val munitVersion = "0.7.26"
+val munitVersion = "0.7.27"
 val disciplineVersion = "1.1.5"
 val disciplineScalaTestVersion = "2.1.5"
 val disciplineMunitVersion = "1.0.9"
@@ -243,8 +243,8 @@ lazy val docs = project
     name := "Circe docs",
     mdocIn := file("docs/src/main/tut"),
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-generic-extras" % "0.14.0",
-      "io.circe" %% "circe-optics" % "0.13.0"
+      "io.circe" %% "circe-generic-extras" % "0.14.1",
+      "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
   .settings(docSettings)
@@ -270,7 +270,8 @@ lazy val circeCrossModules = Seq[(Project, Project)](
   (scodec, scodecJS),
   (testing, testingJS),
   (tests, testsJS),
-  (hygiene, hygieneJS)
+  (hygiene, hygieneJS),
+  (jawn, jawnJS)
 )
 
 lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
@@ -589,14 +590,17 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js
 
-lazy val jawn = circeModule("jawn", mima = previousCirceVersion)
+lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossType.Full)
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
-  .dependsOn(core)
+  .dependsOn(coreBase)
+
+lazy val jawn = jawnBase.jvm
+lazy val jawnJS = jawnBase.js
 
 lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
