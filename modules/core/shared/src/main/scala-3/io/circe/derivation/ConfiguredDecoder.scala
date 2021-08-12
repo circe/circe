@@ -34,16 +34,15 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
   final def decodeSumAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
     decodeSumElement(c)(Validated.invalidNel, _.tryDecodeAccumulating)
   
-  private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[Any] => ACursor => R)
-    (withDefault: (R, Any) => R): R =
+  private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[Any] => ACursor => R, withDefault: (R, ACursor, Any) => R): R =
     val decoder = elemDecoders(index).asInstanceOf[Decoder[Any]]
-    val field = c.downField(elemLabels(index))
-    val result = decode(decoder)(field)
+    val cursor = c.downField(elemLabels(index))
+    val result = decode(decoder)(cursor)
     
     if conf.useDefaults then
       elemDefaults.defaultAt(index) match
         case None => result
-        case Some(default) => withDefault(result, default)
+        case Some(default) => withDefault(result, cursor, default)
     else
       result
   
@@ -52,9 +51,14 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
       val res = new Array[Any](elemLabels.length)
       var failed: Left[DecodingFailure, _] = null
       
+      def withDefault(result: Decoder.Result[Any], cursor: ACursor, default: Any): Decoder.Result[Any] = result match
+        case r @ Right(_) if r.ne(Decoder.keyMissingNone) => r
+        case l @ Left(_) if cursor.succeeded && !cursor.focus.exists(_.isNull) => l
+        case _ => Right(default)
+
       var index: Int = 0
       while index < elemLabels.length && (failed eq null) do
-        decodeProductElement(c, index, _.tryDecode)(withDefault = _ orElse Right(_)) match
+        decodeProductElement(c, index, _.tryDecode, withDefault) match
           case Right(value) => res(index) = value
           case l @ Left(_) => failed = l
         index += 1
@@ -71,9 +75,14 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
       val res = new Array[Any](elemLabels.length)
       val failed = List.newBuilder[DecodingFailure]
       
+      def withDefault(result: Decoder.AccumulatingResult[Any], cursor: ACursor, default: Any): Decoder.AccumulatingResult[Any] = result match
+        case v @ Validated.Valid(_) if v.ne(Decoder.keyMissingNoneAccumulating) => v
+        case i @ Validated.Invalid(_) if cursor.succeeded && !cursor.focus.exists(_.isNull) => i
+        case _ => Validated.Valid(default)
+      
       var index: Int = 0
       while index < elemLabels.length do
-        decodeProductElement(c, index, _.tryDecodeAccumulating)(withDefault = _ orElse Validated.Valid(_)) match
+        decodeProductElement(c, index, _.tryDecodeAccumulating, withDefault) match
           case Validated.Valid(value) => res(index) = value
           case Validated.Invalid(failures) => failed ++= failures.toList
         index += 1
@@ -110,5 +119,4 @@ object ConfiguredDecoder:
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
   ): ConfiguredDecoder[A] =
-    given Configuration = Configuration(transformNames, useDefaults, discriminator)
-    derived[A]
+    derived[A](using Configuration(transformNames, useDefaults, discriminator))

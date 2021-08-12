@@ -4,7 +4,6 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
 import io.circe.{Decoder, Encoder, JsonObject, Codec, HCursor}
-import io.circe.syntax._
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
@@ -37,5 +36,4 @@ object ConfiguredCodec:
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
   ): ConfiguredCodec[A] =
-    given Configuration = Configuration(transformNames, useDefaults, discriminator)
-    derived[A]
+    derived[A](using Configuration(transformNames, useDefaults, discriminator))

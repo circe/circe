@@ -4,7 +4,6 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
 import io.circe.{Encoder, Json, JsonObject}
-import io.circe.syntax._
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A], DerivedInstance[A]:
   def elemEncoders: Array[Encoder[_]]
@@ -42,5 +41,4 @@ object ConfiguredEncoder:
     transformNames: String => String = Configuration.default.transformNames,
     discriminator: Option[String] = Configuration.default.discriminator,
   ): ConfiguredEncoder[A] =
-    given Configuration = Configuration(transformNames, useDefaults = false, discriminator)
-    derived[A]
+    derived[A](using Configuration(transformNames, useDefaults = false, discriminator))
