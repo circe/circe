@@ -4,7 +4,7 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
 import io.circe.{Encoder, Json}
-import io.circe.syntax._
+import io.circe.syntax.*
 
 trait ConfiguredEnumEncoder[A] extends Encoder[A]
 object ConfiguredEnumEncoder:
@@ -16,5 +16,4 @@ object ConfiguredEnumEncoder:
       def apply(a: A): Json = labels(mirror.ordinal(a)).asJson
   
   inline final def derive[A: Mirror.SumOf](encodeTransformNames: String => String = EnumConfiguration.default.encodeTransformNames): Encoder[A] =
-    given EnumConfiguration = EnumConfiguration.default.withDecodeTransformNames(encodeTransformNames)
-    derived[A]
+    derived[A](using EnumConfiguration(Predef.identity, encodeTransformNames))

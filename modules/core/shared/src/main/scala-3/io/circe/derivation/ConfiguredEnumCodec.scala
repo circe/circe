@@ -2,7 +2,6 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import io.circe.{Decoder, Codec, HCursor, Json}
-import io.circe.syntax._
 
 trait ConfiguredEnumCodec[A] extends Codec[A]
 object ConfiguredEnumCodec:

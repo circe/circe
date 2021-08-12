@@ -4,7 +4,6 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
 import io.circe.{Decoder, DecodingFailure, HCursor}
-import io.circe.syntax._
 
 trait ConfiguredEnumDecoder[A] extends Decoder[A]
 object ConfiguredEnumDecoder:
@@ -22,5 +21,4 @@ object ConfiguredEnumDecoder:
         }
 
   inline final def derive[R: Mirror.SumOf](decodeTransformNames: String => String = EnumConfiguration.default.decodeTransformNames): Decoder[R] =
-    given EnumConfiguration = EnumConfiguration.default.withDecodeTransformNames(decodeTransformNames)
-    derived[R]
+    derived[R](using EnumConfiguration(decodeTransformNames, Predef.identity))
