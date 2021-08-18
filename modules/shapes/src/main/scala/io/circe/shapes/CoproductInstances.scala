@@ -5,7 +5,8 @@ import shapeless.{ :+:, CNil, Coproduct, Inl, Inr }
 
 trait CoproductInstances {
   implicit final val decodeCNil: Decoder[CNil] = new Decoder[CNil] {
-    def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("CNil", c.history))
+    def apply(c: HCursor): Decoder.Result[CNil] =
+      Left(DecodingFailure("JSON decoding to CNil should never happen", c.history))
   }
 
   implicit final val encodeCNil: Encoder[CNil] = new Encoder[CNil] {

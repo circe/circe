@@ -214,13 +214,13 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
 
   private[this] val cnilResult: Tree = q"""
     _root_.scala.util.Left[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
-      _root_.io.circe.DecodingFailure("CNil", c.history)
+      _root_.io.circe.DecodingFailure("JSON decoding to CNil should never happen", c.history)
     ): _root_.scala.util.Either[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil]
   """
 
   private[this] val cnilResultAccumulating: Tree = q"""
     _root_.cats.data.Validated.invalidNel[_root_.io.circe.DecodingFailure, _root_.shapeless.CNil](
-      _root_.io.circe.DecodingFailure("CNil", c.history)
+      _root_.io.circe.DecodingFailure("JSON decoding to CNil should never happen", c.history)
     )
   """
 

@@ -1,6 +1,8 @@
 package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+
 import scala.collection.mutable.Builder
 
 private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends Decoder[C[A]] {
@@ -26,7 +28,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
     } else {
       if (c.value.isArray) Right(createBuilder().result())
       else {
-        Left(DecodingFailure("C[A]", c.history))
+        Left(DecodingFailure(WrongTypeExpectation("array", c.value), c.history))
       }
     }
   }
@@ -61,7 +63,7 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
     } else {
       if (c.value.isArray) Validated.valid(createBuilder().result())
       else {
-        Validated.invalidNel(DecodingFailure("C[A]", c.history))
+        Validated.invalidNel(DecodingFailure(WrongTypeExpectation("array", c.value), c.history))
       }
     }
   }

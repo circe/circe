@@ -138,9 +138,11 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
         val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
 
         assert(decodingResult.isLeft)
-        // The middle part of the message depends on the type of zone.
-        assert(decodingResult.swap.exists(_.message.contains("ZoneId (Invalid")))
-        assert(decodingResult.swap.exists(_.message.contains(s", invalid format: $s)")))
+        assert(decodingResult.swap.right.get.reason match {
+          case DecodingFailure.Reason.CustomReason(_) => true
+          case _                                      => false
+        })
+        assert(decodingResult.swap.exists(_.message.contains("invalid format")))
       }
     )
   }
@@ -323,6 +325,10 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
     val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.swap.exists(_.message.contains("ZoneOffset (Invalid ID for ZoneOffset, ")))
+    assert(decodingResult.swap.right.get.reason match {
+      case DecodingFailure.Reason.CustomReason(_) => true
+      case _                                      => false
+    })
+    assert(decodingResult.swap.exists(_.message.contains(invalidText)))
   }
 }

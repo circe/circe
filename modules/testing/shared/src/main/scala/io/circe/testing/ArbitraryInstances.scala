@@ -1,19 +1,11 @@
 package io.circe.testing
 
 import cats.instances.list._
-import io.circe.{
-  Decoder,
-  DecodingFailure,
-  Encoder,
-  Json,
-  JsonBiggerDecimal,
-  JsonNumber,
-  JsonObject,
-  KeyDecoder,
-  KeyEncoder
-}
+import io.circe.DecodingFailure.Reason
+import io.circe.DecodingFailure.Reason.{ CustomReason, MissingField, WrongTypeExpectation }
 import io.circe.numbers.BiggerDecimal
 import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
+import io.circe._
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
@@ -94,8 +86,22 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   implicit val arbitraryJson: Arbitrary[Json] = Arbitrary(genJsonAtDepth(0))
   implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genJsonObject(0))
 
+  private[this] val arbitraryMissingField: Gen[MissingField.type] =
+    Gen.const(MissingField)
+  private[this] val arbitraryWrongTypeExpectation: Gen[WrongTypeExpectation] =
+    Arbitrary.arbitrary[(String, Json)].map(x => WrongTypeExpectation(x._1, x._2))
+  private[this] val arbitraryCustomReason: Gen[CustomReason] =
+    Arbitrary.arbitrary[String].map(CustomReason)
+  implicit val arbitraryReason: Arbitrary[Reason] = Arbitrary(
+    Gen.oneOf(
+      arbitraryMissingField,
+      arbitraryWrongTypeExpectation,
+      arbitraryCustomReason
+    )
+  )
+
   implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
-    Arbitrary.arbitrary[String].map(DecodingFailure(_, Nil))
+    Arbitrary.arbitrary[Reason].map(DecodingFailure(_, Nil))
   )
 
   implicit def arbitraryKeyEncoder[A: Cogen]: Arbitrary[KeyEncoder[A]] = Arbitrary(
