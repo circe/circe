@@ -15,5 +15,5 @@ object ConfiguredEnumEncoder:
     new ConfiguredEnumEncoder[A]:
       def apply(a: A): Json = labels(mirror.ordinal(a)).asJson
   
-  inline final def derive[A: Mirror.SumOf](encodeTransformNames: String => String = EnumConfiguration.default.encodeTransformNames): Encoder[A] =
-    derived[A](using EnumConfiguration(Predef.identity, encodeTransformNames))
+  inline final def derive[A: Mirror.SumOf](transformNames: String => String = EnumConfiguration.default.encodeTransformNames): Encoder[A] =
+    derived[A](using EnumConfiguration(Predef.identity, transformNames))
