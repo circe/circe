@@ -11,7 +11,7 @@ object ConfiguredEnumCodec:
     new ConfiguredEnumCodec[A]:
       override def apply(c: HCursor): Decoder.Result[A] = decoder(c)
       override def apply(a: A): Json = encoder(a)
-
+  
   inline final def derive[R: Mirror.SumOf](
     decoderTransform: String => String = EnumConfiguration.default.decodeTransformNames,
     encoderTransform: String => String = EnumConfiguration.default.encodeTransformNames,

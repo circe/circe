@@ -1,18 +1,25 @@
 package io.circe.derivation
 
-object renaming:
-  /** Snake case mapping */
-  final val snakeCase: String => String = _.replaceAll(
-    "([A-Z]+)([A-Z][a-z])",
-    "$1_$2"
-  ).replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase
+import java.util.regex.Pattern
 
-  /** Kebab case mapping */
-  val kebabCase: String => String =
-    _.replaceAll(
-      "([A-Z]+)([A-Z][a-z])",
-      "$1-$2"
-    ).replaceAll("([a-z\\d])([A-Z])", "$1-$2").toLowerCase
+object renaming:
+  private val basePattern: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  private val swapPattern: Pattern = Pattern.compile("([a-z\\d])([A-Z])")
+
+  val snakeCase: String => String = { s =>
+    val partial = basePattern.matcher(s).replaceAll("$1_$2")
+    swapPattern.matcher(partial).replaceAll("$1_$2").toLowerCase
+  }
+  
+  val screamingSnakeCase: String => String = { s =>
+    val partial = basePattern.matcher(s).replaceAll("$1_$2")
+    swapPattern.matcher(partial).replaceAll("$1_$2").toUpperCase
+  }
+  
+  val kebabCase: String => String = { s =>
+    val partial = basePattern.matcher(s).replaceAll("$1-$2")
+    swapPattern.matcher(partial).replaceAll("$1-$2").toLowerCase
+  }
 
   final def replaceWith(pairs: (String, String)*): String => String =
     original => pairs.toMap.getOrElse(original, original)

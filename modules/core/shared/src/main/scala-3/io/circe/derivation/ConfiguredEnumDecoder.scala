@@ -13,12 +13,12 @@ object ConfiguredEnumDecoder:
     val labels = summonLabels[mirror.MirroredElemLabels].toArray
     new ConfiguredEnumDecoder[A]:
       def apply(c: HCursor): Decoder.Result[A] =
-        c.as[String].flatMap { s =>
-          val transformedString = conf.decodeTransformNames(s)
-          labels.indexOf(transformedString) match
-            case -1 => Left(DecodingFailure(s"enum $name does not contain case: $transformedString", c.history))
+        c.as[String].flatMap { caseName =>
+          val transformedName = conf.decodeTransformNames(caseName)
+          labels.indexOf(transformedName) match
+            case -1 => Left(DecodingFailure(s"enum $name does not contain case: $transformedName", c.history))
             case index => Right(cases(index))
         }
-
-  inline final def derive[R: Mirror.SumOf](decodeTransformNames: String => String = EnumConfiguration.default.decodeTransformNames): Decoder[R] =
-    derived[R](using EnumConfiguration(decodeTransformNames, Predef.identity))
+  
+  inline final def derive[R: Mirror.SumOf](transformNames: String => String = EnumConfiguration.default.decodeTransformNames): Decoder[R] =
+    derived[R](using EnumConfiguration(transformNames, Predef.identity))

@@ -4,6 +4,11 @@ import scala.quoted.*
 import scala.deriving.*
 import scala.compiletime.constValue
 
+/**
+  * Original code by Dmytro Mitin, with slight modifications by Simão Martins.
+  * See: https://stackoverflow.com/questions/68421043/type-class-derivation-accessing-default-values
+  */
+
 trait Default[T]:
   type Out <: Tuple
   def defaults: Out
