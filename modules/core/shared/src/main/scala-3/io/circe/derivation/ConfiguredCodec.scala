@@ -2,20 +2,20 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import scala.compiletime.constValue
-import Predef.genericArrayOps
 import io.circe.{Decoder, Encoder, JsonObject, Codec, HCursor}
+import io.circe.syntax._
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
   inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
-      summonLabels[mirror.MirroredElemLabels].map(conf.transformNames).toArray,
+      summonLabels[mirror.MirroredElemLabels].toArray,
     ):
       lazy val elemEncoders: Array[Encoder[_]] = summonEncoders[mirror.MirroredElemTypes].toArray
       lazy val elemDecoders: Array[Decoder[_]] = summonDecoders[mirror.MirroredElemTypes].toArray
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
-
+      
       final def encodeObject(a: A): JsonObject =
         inline mirror match
           case _: Mirror.ProductOf[A] => encodeProduct(a)
@@ -32,8 +32,10 @@ object ConfiguredCodec:
           case _: Mirror.SumOf[A] => decodeSumAccumulating(c)
   
   inline final def derive[A: Mirror.Of](
-    transformNames: String => String = Configuration.default.transformNames,
+    transformMemberNames: String => String = Configuration.default.transformMemberNames,
+    transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
   ): ConfiguredCodec[A] =
-    derived[A](using Configuration(transformNames, useDefaults, discriminator))
+    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding))

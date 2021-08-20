@@ -15,8 +15,10 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
   
   /** Decodes a class/object/case of a Sum type handling discriminator and strict decoding. */
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
+    val constructorNames = elemLabels.map(conf.transformConstructorNames)
+    
     def fromName(sumTypeName: String, cursor: ACursor): R =
-      elemLabels.indexOf(sumTypeName) match
+      constructorNames.indexOf(sumTypeName) match
         case -1 => fail(DecodingFailure(s"type $name hasn't a class/object/case named '$sumTypeName'.", cursor.history))
         case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
     
@@ -37,7 +39,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
             else
               val sumTypeName = iter.next
               if iter.hasNext && conf.strictDecoding then
-                fail(strictDecodingFailure(c, s"expected a single key json object with one of: ${elemLabels.iterator.mkString(", ")}."))
+                fail(strictDecodingFailure(c, s"expected a single key json object with one of: ${constructorNames.iterator.mkString(", ")}."))
               else
                 fromName(sumTypeName, c.downField(sumTypeName))
   
@@ -49,7 +51,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
   /** Decodes a single element of a product, handling its default value (if it exists). */
   private def decodeProductElement[R](c: HCursor, index: Int, decode: Decoder[Any] => ACursor => R, withDefault: (R, ACursor, Any) => R): R =
     val decoder = elemDecoders(index).asInstanceOf[Decoder[Any]]
-    val cursor = c.downField(elemLabels(index))
+    val cursor = c.downField(conf.transformMemberNames(elemLabels(index)))
     val result = decode(decoder)(cursor)
     
     if conf.useDefaults then
@@ -66,7 +68,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
       case false => fail(DecodingFailure(s"$name: expected a json object.", c.history))
       case true if !conf.strictDecoding => decodeProduct
       case true =>
-        val expectedFields = elemLabels.toIndexedSeq ++ conf.discriminator
+        val expectedFields = elemLabels.toIndexedSeq.map(conf.transformMemberNames) ++ conf.discriminator
         val expectedFieldsSet = expectedFields.toSet
         val unexpectedFields = c.keys.map(_.toList.filterNot(expectedFieldsSet)).getOrElse(Nil)
         if unexpectedFields.nonEmpty then
@@ -135,7 +137,7 @@ object ConfiguredDecoder:
   inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
-      summonLabels[mirror.MirroredElemLabels].map(conf.transformNames).toArray,
+      summonLabels[mirror.MirroredElemLabels].toArray,
     ):
       lazy val elemDecoders: Array[Decoder[_]] = summonDecoders[mirror.MirroredElemTypes].toArray
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
@@ -150,8 +152,10 @@ object ConfiguredDecoder:
           case _: Mirror.SumOf[A] => decodeSumAccumulating(c)
   
   inline final def derive[A: Mirror.Of](
-    transformNames: String => String = Configuration.default.transformNames,
+    transformMemberNames: String => String = Configuration.default.transformMemberNames,
+    transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
   ): ConfiguredDecoder[A] =
-    derived[A](using Configuration(transformNames, useDefaults, discriminator))
+    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding))

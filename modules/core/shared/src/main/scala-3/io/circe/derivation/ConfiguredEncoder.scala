@@ -2,33 +2,35 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import scala.compiletime.constValue
-import Predef.genericArrayOps
 import io.circe.{Encoder, Json, JsonObject}
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A], DerivedInstance[A]:
   def elemEncoders: Array[Encoder[_]]
 
-  final def encodeWith(index: Int)(value: Any): (String, Json) =
-    (elemLabels(index), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(value))
-  
-  final def encodedIterable(value: Product): Iterable[(String, Json)] =
-    new Iterable[(String, Json)]:
-      def iterator: Iterator[(String, Json)] =
-        value.productIterator.zipWithIndex.map((value, index) => encodeWith(index)(value))
+  final def encodeElemAt(index: Int, elem: Any): Json =
+    elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)
   
   final def encodeProduct(a: A): JsonObject =
-    JsonObject.fromIterable(encodedIterable(a.asInstanceOf[Product]))
+    val product = a.asInstanceOf[Product]
+    val iterable = Iterable.tabulate(product.productArity) { index =>
+      val memberName = conf.transformMemberNames(elemLabels(index))
+      val json = encodeElemAt(index, product.productElement(index))
+      (memberName, json)
+    }
+    JsonObject.fromIterable(iterable)
   
-  final def encodeSum(index: Int, a: A): JsonObject = encodeWith(index)(a) match
-    case (k, v) => conf.discriminator match
-      case None => JsonObject.singleton(k, v)
-      case Some(discriminator) => v.asObject.getOrElse(JsonObject.empty).add(discriminator, Json.fromString(k))
+  final def encodeSum(index: Int, a: A): JsonObject =
+    val constructorName = conf.transformConstructorNames(elemLabels(index))
+    val json = encodeElemAt(index, a)
+    conf.discriminator match
+      case None => JsonObject.singleton(constructorName, json)
+      case Some(discriminator) => json.asObject.getOrElse(JsonObject.empty).add(discriminator, Json.fromString(constructorName))
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
-      summonLabels[mirror.MirroredElemLabels].map(conf.transformNames).toArray,
+      summonLabels[mirror.MirroredElemLabels].toArray,
     ):
       lazy val elemEncoders: Array[Encoder[_]] = summonEncoders[mirror.MirroredElemTypes].toArray
       
@@ -38,7 +40,8 @@ object ConfiguredEncoder:
           case sum: Mirror.SumOf[A] => encodeSum(sum.ordinal(a), a)
   
   inline final def derive[A: Mirror.Of](
-    transformNames: String => String = Configuration.default.transformNames,
+    transformMemberNames: String => String = Configuration.default.transformMemberNames,
+    transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     discriminator: Option[String] = Configuration.default.discriminator,
   ): ConfiguredEncoder[A] =
-    derived[A](using Configuration(transformNames, useDefaults = false, discriminator))
+    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator))
