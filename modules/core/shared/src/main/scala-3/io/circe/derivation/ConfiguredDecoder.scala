@@ -7,7 +7,7 @@ import cats.data.{NonEmptyList, Validated}
 import io.circe.{Decoder, DecodingFailure, ACursor, HCursor}
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance[A]:
-  def elemDecoders: Array[Decoder[_]]
+  def elemDecoders: Array[Decoder[?]]
   def elemDefaults: Default[A]
   
   private def strictDecodingFailure(c: HCursor, message: String): DecodingFailure =
@@ -139,7 +139,7 @@ object ConfiguredDecoder:
       constValue[mirror.MirroredLabel],
       summonLabels[mirror.MirroredElemLabels].toArray,
     ):
-      lazy val elemDecoders: Array[Decoder[_]] = summonDecoders[mirror.MirroredElemTypes].toArray
+      lazy val elemDecoders: Array[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes].toArray
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
       
       final def apply(c: HCursor): Decoder.Result[A] =
