@@ -3,7 +3,6 @@ package io.circe.derivation
 import scala.deriving.Mirror
 import scala.compiletime.constValue
 import io.circe.{Decoder, Encoder, JsonObject, Codec, HCursor}
-import io.circe.syntax._
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
@@ -12,8 +11,8 @@ object ConfiguredCodec:
       constValue[mirror.MirroredLabel],
       summonLabels[mirror.MirroredElemLabels].toArray,
     ):
-      lazy val elemEncoders: Array[Encoder[_]] = summonEncoders[mirror.MirroredElemTypes].toArray
-      lazy val elemDecoders: Array[Decoder[_]] = summonDecoders[mirror.MirroredElemTypes].toArray
+      lazy val elemEncoders: Array[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes].toArray
+      lazy val elemDecoders: Array[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes].toArray
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
       
       final def encodeObject(a: A): JsonObject =
