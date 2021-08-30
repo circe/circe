@@ -7,7 +7,7 @@ import io.circe.generic.semiauto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
-import org.scalacheck.{ Arbitrary, Gen , Prop}
+import org.scalacheck.{ Arbitrary, Gen, Prop }
 
 object SemiautoDerivedSuite {
   implicit def decodeBox[A: Decoder]: Decoder[Box[A]] = deriveDecoder
@@ -124,14 +124,20 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
   )
   checkAll(
     "Codec[RecursiveWithOptionExample] via Decoder and Codec",
-    CodecTests[RecursiveWithOptionExample](implicitly, RecursiveWithOptionExample.codecForRecursiveWithOptionExample).codec
+    CodecTests[RecursiveWithOptionExample](
+      implicitly,
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample
+    ).codec
   )
   checkAll(
     "Codec[RecursiveWithOptionExample] via Encoder and Codec",
-    CodecTests[RecursiveWithOptionExample](RecursiveWithOptionExample.codecForRecursiveWithOptionExample, implicitly).codec
+    CodecTests[RecursiveWithOptionExample](
+      RecursiveWithOptionExample.codecForRecursiveWithOptionExample,
+      implicitly
+    ).codec
   )
 
-  property("A generically derived codec should not interfere with base instances"){
+  property("A generically derived codec should not interfere with base instances") {
     Prop.forAll { (is: List[Int]) =>
       val json = Encoder[List[Int]].apply(is)
 
@@ -150,14 +156,14 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
     assertTypeError("Encoder.AsObject[OvergenerationExampleOuter1]")
   }
 
-  test("A generically derived codec should require instances for all parts"){
+  test("A generically derived codec should require instances for all parts") {
     assertTypeError("deriveDecoder[OvergenerationExampleInner0]")
     assertTypeError("deriveDecoder[OvergenerationExampleInner1]")
     assertTypeError("deriveEncoder[OvergenerationExampleInner0]")
     assertTypeError("deriveEncoder[OvergenerationExampleInner1]")
   }
 
-  property("A generically derived codec for an empty case class should not accept non-objects"){
+  property("A generically derived codec for an empty case class should not accept non-objects") {
     Prop.forAll { (j: Json) =>
       case class EmptyCc()
 
