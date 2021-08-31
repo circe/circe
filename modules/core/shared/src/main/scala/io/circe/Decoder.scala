@@ -9,14 +9,16 @@ import cats.data.{
   NonEmptyMap,
   NonEmptySet,
   NonEmptyVector,
+  OneAnd,
   StateT,
   Validated,
   ValidatedNel
 }
-import cats.syntax.either._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
+import cats.syntax.either._
+import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
 import io.circe.`export`.Exported
 import java.io.Serializable
 import java.time.{
@@ -40,11 +42,11 @@ import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
 
-import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
-
 import scala.annotation.tailrec
-import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
+import scala.collection.{ Factory, Map }
+import scala.collection.immutable.{ ArraySeq, Map => ImmutableMap, Set, SortedMap, SortedSet }
 import scala.collection.mutable.Builder
+import scala.reflect.ClassTag
 import scala.util.{ Failure, Success, Try }
 
 /**
@@ -445,10 +447,9 @@ trait Decoder[A] extends Serializable { self =>
  */
 object Decoder
     extends DecoderDerivation
-    with CollectionDecoders
+    with LowPriorityCollectionDecoders
     with TupleDecoders
     with ProductDecoders
-    with LiteralDecoders
     with EnumerationDecoders
     with LowPriorityDecoders {
 
@@ -1041,7 +1042,63 @@ object Decoder
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
     }
 
-  private[this] class ChainBuilder[A] extends CompatBuilder[A, Chain[A]] {
+  /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.Factory]] is serializable.
+   * @group Collection
+   */
+  implicit final def decodeMapLike[K, V, M[K, V] <: Map[K, V]](implicit
+    decodeK: KeyDecoder[K],
+    decodeV: Decoder[V],
+    factory: Factory[(K, V), M[K, V]]
+  ): Decoder[M[K, V]] = new MapDecoder[K, V, M](decodeK, decodeV) {
+    final protected def createBuilder(): Builder[(K, V), M[K, V]] = factory.newBuilder
+  }
+
+  /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.Factory]] is serializable.
+   * @group Collection
+   */
+  implicit final def decodeIterable[A, C[A] <: Iterable[A]](implicit
+    decodeA: Decoder[A],
+    factory: Factory[A, C[A]]
+  ): Decoder[C[A]] = new SeqDecoder[A, C](decodeA) {
+    final protected def createBuilder(): Builder[A, C[A]] = factory.newBuilder
+  }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeArray[A](implicit
+    decodeA: Decoder[A],
+    factory: Factory[A, Array[A]]
+  ): Decoder[Array[A]] = new SeqDecoder[A, Array](decodeA) {
+    final protected def createBuilder(): Builder[A, Array[A]] = factory.newBuilder
+  }
+
+  /**
+   * @note The resulting instance will not be serializable (in the `java.io.Serializable` sense)
+   *       unless the provided [[scala.collection.Factory]] is serializable.
+   * @group Collection
+   */
+  implicit final def decodeOneAnd[A, C[_]](implicit
+    decodeA: Decoder[A],
+    factory: Factory[A, C[A]]
+  ): Decoder[OneAnd[C, A]] = new NonEmptySeqDecoder[A, C, OneAnd[C, A]](decodeA) {
+    final protected def createBuilder(): Builder[A, C[A]] = factory.newBuilder
+    final protected val create: (A, C[A]) => OneAnd[C, A] = (h, t) => OneAnd(h, t)
+  }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeArraySeq[A](implicit decodeA: Decoder[A], classTag: ClassTag[A]): Decoder[ArraySeq[A]] =
+    new SeqDecoder[A, ArraySeq](decodeA) {
+      final protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.newBuilder[A]
+    }
+
+  private[this] class ChainBuilder[A] extends Builder[A, Chain[A]] {
     private[this] var xs: Chain[A] = Chain.nil
     final def clear(): Unit = xs = Chain.nil
     final def result(): Chain[A] = xs
@@ -1456,6 +1513,93 @@ object Decoder
         )
     )
 
+  private[this] abstract class LiteralDecoder[A, L <: A](decodeA: Decoder[A], L: ValueOf[L]) extends Decoder[L] {
+    protected[this] def check(a: A): Boolean
+    protected[this] def message: String
+
+    final def apply(c: HCursor): Decoder.Result[L] = decodeA(c) match {
+      case r @ Right(value) if check(value) => r.asInstanceOf[Decoder.Result[L]]
+      case _                                => Left(DecodingFailure(message, c.history))
+    }
+  }
+
+  /**
+   * Decode a `String` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralString[L <: String](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[String, L](Decoder.decodeString, L) {
+      protected[this] final def check(a: String): Boolean = a == L.value
+      protected[this] final def message: String = s"""String("${L.value}")"""
+    }
+
+  /**
+   * Decode a `Double` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralDouble[L <: Double](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Double, L](Decoder.decodeDouble, L) {
+      protected[this] final def check(a: Double): Boolean = java.lang.Double.compare(a, L.value) == 0
+      protected[this] final def message: String = s"""Double(${L.value})"""
+    }
+
+  /**
+   * Decode a `Float` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralFloat[L <: Float](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Float, L](Decoder.decodeFloat, L) {
+      protected[this] final def check(a: Float): Boolean = java.lang.Float.compare(a, L.value) == 0
+      protected[this] final def message: String = s"""Float(${L.value})"""
+    }
+
+  /**
+   * Decode a `Long` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralLong[L <: Long](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Long, L](Decoder.decodeLong, L) {
+      protected[this] final def check(a: Long): Boolean = a == L.value
+      protected[this] final def message: String = s"""Long(${L.value})"""
+    }
+
+  /**
+   * Decode a `Int` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralInt[L <: Int](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Int, L](Decoder.decodeInt, L) {
+      protected[this] final def check(a: Int): Boolean = a == L.value
+      protected[this] final def message: String = s"""Int(${L.value})"""
+    }
+
+  /**
+   * Decode a `Char` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralChar[L <: Char](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Char, L](Decoder.decodeChar, L) {
+      protected[this] final def check(a: Char): Boolean = a == L.value
+      protected[this] final def message: String = s"""Char(${L.value})"""
+    }
+
+  /**
+   * Decode a `Boolean` whose value is known at compile time.
+   *
+   * @group Literal
+   */
+  implicit final def decodeLiteralBoolean[L <: Boolean](implicit L: ValueOf[L]): Decoder[L] =
+    new LiteralDecoder[Boolean, L](Decoder.decodeBoolean, L) {
+      protected[this] final def check(a: Boolean): Boolean = a == L.value
+      protected[this] final def message: String = s"""Boolean(${L.value})"""
+    }
+
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
    * the [[ACursor]].
@@ -1495,6 +1639,18 @@ object Decoder
       s"Leftover keys: ${keys.mkString(", ")}"
     }
   }
+}
+
+private[circe] trait LowPriorityCollectionDecoders {
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeUntaggedArraySeq[A](implicit decodeA: Decoder[A]): Decoder[ArraySeq[A]] =
+    new SeqDecoder[A, ArraySeq](decodeA) {
+      override protected def createBuilder(): Builder[A, ArraySeq[A]] = ArraySeq.untagged.newBuilder
+    }
+
 }
 
 private[circe] trait LowPriorityDecoders {

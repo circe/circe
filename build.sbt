@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.0.1", "2.12.14", "2.13.6")
+ThisBuild / crossScalaVersions := List("3.0.1", "2.13.6")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
@@ -76,28 +76,14 @@ val disciplineScalaTestVersion = "2.1.5"
 val disciplineMunitVersion = "1.0.9"
 val scalaJavaTimeVersion = "2.3.0"
 
-/**
- * Some terrible hacks to work around Cats's decision to have builds for
- * different Scala versions depend on different versions of Discipline, etc.
- */
-def priorTo2_13(scalaVersion: String): Boolean =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, minor)) if minor < 13 => true
-    case _                              => false
-  }
-
 val previousCirceVersion = Some("0.14.0-M3")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val baseSettings = Seq(
-  scalacOptions ++= {
-    if (priorTo2_13(scalaVersion.value)) compilerOptions
-    else
-      compilerOptions.flatMap {
-        case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
-        case "-Xfuture"             => Nil
-        case other                  => Seq(other)
-      }
+  scalacOptions ++= compilerOptions.flatMap {
+    case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
+    case "-Xfuture"             => Nil
+    case other                  => Seq(other)
   },
   Compile / console / scalacOptions ~= {
     _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
@@ -292,20 +278,12 @@ lazy val aggregatedProjects: Seq[ProjectReference] = (
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= (if (isScala3.value) Nil
                            else
-                             (Seq(
+                             Seq(
                                scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
                                scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
-                             ) ++ (
-                               if (priorTo2_13(scalaVersion.value)) {
-                                 Seq(
-                                   compilerPlugin(
-                                     ("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch)
-                                   )
-                                 )
-                               } else Nil
-                             ))),
+                             )),
   scalacOptions ++= (
-    if (priorTo2_13(scalaVersion.value) || isScala3.value) Nil else Seq("-Ymacro-annotations")
+    if (isScala3.value) Nil else Seq("-Ymacro-annotations")
   )
 )
 

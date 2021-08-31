@@ -22,8 +22,10 @@ import io.circe.tests.examples.{ Foo, Wub }
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
+import scala.collection.{ Factory, IterableOnce }
 import scala.collection.immutable.SortedMap
-import scala.collection.mutable.HashMap
+import scala.collection.mutable.{ ArrayBuffer, ArrayBuilder, Builder, HashMap }
+import scala.reflect.ClassTag
 
 trait SpecialEqForFloatAndDouble {
 
@@ -84,10 +86,19 @@ class JavaBoxedCodecSuite extends CirceMunitSuite with SpecialEqForFloatAndDoubl
   checkAll("Codec[java.math.BigInteger]", JavaCodecTests[BigInt, jm.BigInteger](_.bigInteger, BigInt.apply))
 }
 
-class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
+class StdLibCodecSuite extends CirceMunitSuite {
   implicit def eqHashMap[Long, Int]: Eq[HashMap[Long, Int]] = Eq.fromUniversalEquals
 
   implicit val arbitraryUUID: Arbitrary[UUID] = Arbitrary(Gen.uuid)
+
+  /**
+   * We need serializable `Factory` instances for arrays for our `Array` codec tests.
+   */
+  implicit def factoryRefArraySerializable[A <: AnyRef: ClassTag]: Factory[A, Array[A]] =
+    new Factory[A, Array[A]] with Serializable {
+      def fromSpecific(it: IterableOnce[A]): Array[A] = ArrayBuffer.from(it).toArray
+      def newBuilder: Builder[A, Array[A]] = new ArrayBuilder.ofRef[A]
+    }
 
   checkAll("Codec[String]", CodecTests[String].codec)
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
@@ -169,7 +180,17 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   }
 }
 
-class CatsCodecSuite extends CirceMunitSuite with StreamFactoryInstance {
+class CatsCodecSuite extends CirceMunitSuite {
+
+  /**
+   * We need serializable `Factory` instances for streams for our `NonEmptyStream` codec tests.
+   */
+  implicit def factoryStreamSerializable[A]: Factory[A, Stream[A]] =
+    new Factory[A, Stream[A]] with Serializable {
+      def fromSpecific(it: IterableOnce[A]): Stream[A] = Stream.from(it)
+      def newBuilder: Builder[A, Stream[A]] = Stream.newBuilder[A]
+    }
+
   checkAll("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
   checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)

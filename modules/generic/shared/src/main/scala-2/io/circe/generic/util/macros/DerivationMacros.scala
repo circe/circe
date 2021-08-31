@@ -118,22 +118,8 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
 
     object Entry {
       def unapply(tpe: Type): Option[(String, Type, Type)] = tpe.dealias match {
-
         /**
-         * Before Scala 2.12 the `RefinedType` extractor returns the field type
-         * (including any refinements) as the first result in the list.
-         */
-        case RefinedType(List(fieldType, TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType))), _)
-            if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
-          tagType.dealias match {
-            case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
-                if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
-              Some((fieldKey, tagType, fieldType))
-            case _ => None
-          }
-
-        /**
-         * In Scala 2.12 the `RefinedType` extractor returns a refined type with
+         * In Scala 2.12+ the `RefinedType` extractor returns a refined type with
          * each individual refinement as a separate element in the list.
          */
         case RefinedType(parents, scope) =>
