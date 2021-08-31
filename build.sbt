@@ -500,7 +500,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.27",
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.28",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
