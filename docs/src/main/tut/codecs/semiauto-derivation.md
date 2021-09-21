@@ -27,6 +27,23 @@ implicit val fooDecoder: Decoder[Foo] = deriveDecoder
 implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 ```
 
+#### Specific case for Value Class
+
+Most of the time, when using Value Class, we expect only the inner value in the serialized format.
+
+It can be achieved using `circe-generic-extras`:
+
+```scala mdoc:silent
+import io.circe._, import io.circe.generic.extras.semiauto._
+
+case class Foo(a: Int)
+
+implicit val fooDecoder: Decoder[Foo] = deriveUnwrappedDecoder[Foo]
+implicit val fooEncoder: Encoder[Foo] = deriveUnwrappedEncoder[Foo]
+```
+
+The expected serialization for `Foo(123)` is simply `123`
+
 ### @JsonCodec
 
 The circe-generic project includes a `@JsonCodec` annotation that simplifies the
