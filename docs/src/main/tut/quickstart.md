@@ -18,7 +18,7 @@ please refer to [known-issues](codecs/known-issues.html) for workaround.
 
 If you're using the `@JsonCodec` macro annotations in circe's `generic-extras` module,
 you'll need to add `-Ymacro-annotations` to your compiler options on Scala 2.13,
-or to include the [Macro Paradise][paradise] compiler plugin in your build on
+or include the [Macro Paradise][paradise] compiler plugin in your build on
 earlier Scala versions:
 
 ```scala
