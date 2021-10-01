@@ -119,7 +119,7 @@ The result is a copy of the original JSON with only the `quantity` fields update
 
 ## Recursively modifying JSON
 
-Sometimes you may need to recursively modify JSON. Let assume you need to transform all numbers into
+Sometimes you may need to recursively modify JSON. Let's assume you need to transform all numbers into
 strings in the example JSON:
 
 ```scala mdoc
