@@ -29,7 +29,7 @@ implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 
 ### @JsonCodec
 
-The circe-generic project includes a `@JsonCodec` annotation that simplifies the
+The `circe-generic` project includes a `@JsonCodec` annotation that simplifies the
 use of semi-automatic generic derivation:
 
 ```scala mdoc
@@ -63,4 +63,4 @@ implicit val encodeUser: Encoder[User] =
   )
 ```
 
-It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing but `circe-core`, and if you need a custom name mapping it's currently the best solution (although `0.6.0` introduces experimental configurable generic derivation in the `circe-generic-extras` module).
+It's not as clean or as maintainable as generic derivation, but it's less magical, it requires nothing but `circe-core`, and if you need a custom name mapping it's currently the best solution (although `0.6.0` introduces experimental configurable generic derivation in the `generic-extras` module).

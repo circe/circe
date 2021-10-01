@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
 In case of large or deep-nested case classes, there is a chance to get stack overflow during compilation,
 please refer to [known-issues](codecs/known-issues.html) for workaround.
 
-If you're using circe-generic-extra's `@JsonCodec` macro annotations,
+If you're using the `@JsonCodec` macro annotations in circe's `generic-extras` module,
 you'll need to add `-Ymacro-annotations` to your compiler options on Scala 2.13,
 or to include the [Macro Paradise][paradise] compiler plugin in your build on
 earlier Scala versions:
@@ -48,7 +48,7 @@ println(decodedFoo)
 ```
 {% endscalafiddle %}
 
-Alternatively you can experiment with Circe directly in your browser by clicking the `Run` button in the code block and
+Alternatively you can experiment with circe directly in your browser by clicking the `Run` button in the code block and
 making modifications in the code.
 
 No boilerplate, no runtime reflection.
