@@ -2,6 +2,7 @@ package io.circe
 
 import cats.MonadError
 import java.io.Serializable
+import java.net.URI
 import java.util.UUID
 import scala.annotation.tailrec
 
@@ -70,6 +71,14 @@ object KeyDecoder {
         case _: IllegalArgumentException => None
       }
     } else None
+  }
+
+  implicit val decodeKeyURI: KeyDecoder[URI] = new KeyDecoder[URI] {
+    final def apply(key: String): Option[URI] =
+      try Some(URI.create(key))
+      catch {
+        case _: IllegalArgumentException => None
+      }
   }
 
   implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(java.lang.Byte.parseByte)
