@@ -2,6 +2,7 @@ package io.circe
 
 import java.net.URI
 import java.util.UUID
+
 import cats.instances.all._
 import io.circe.testing.KeyCodecTests
 import io.circe.tests.CirceMunitSuite
