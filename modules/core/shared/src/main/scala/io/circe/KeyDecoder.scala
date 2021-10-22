@@ -5,6 +5,7 @@ import java.io.Serializable
 import java.net.URI
 import java.util.UUID
 import scala.annotation.tailrec
+import scala.util.control.NonFatal
 
 /**
  * A type class that provides a conversion from a string used as a JSON key to a
@@ -75,9 +76,9 @@ object KeyDecoder {
 
   implicit val decodeKeyURI: KeyDecoder[URI] = new KeyDecoder[URI] {
     final def apply(key: String): Option[URI] =
-      try Some(URI.create(key))
+      try Some(new URI(key))
       catch {
-        case _: IllegalArgumentException => None
+        case NonFatal(_) => None
       }
   }
 
