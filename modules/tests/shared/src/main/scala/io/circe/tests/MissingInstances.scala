@@ -1,6 +1,7 @@
 package io.circe.tests
 
 import cats.kernel.Eq
+import java.net.URI
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable
@@ -12,6 +13,7 @@ trait MissingInstances {
   implicit lazy val eqThrowable: Eq[Throwable] = Eq.fromUniversalEquals
   implicit lazy val eqBigDecimal: Eq[BigDecimal] = Eq.fromUniversalEquals
   implicit lazy val eqUUID: Eq[UUID] = Eq.fromUniversalEquals
+  implicit lazy val eqURI: Eq[URI] = Eq.fromUniversalEquals
   implicit def eqRefArray[A <: AnyRef: Eq]: Eq[Array[A]] =
     Eq.by((value: Array[A]) => Predef.wrapRefArray(value).toVector)(
       cats.kernel.instances.vector.catsKernelStdEqForVector[A]
@@ -93,4 +95,12 @@ trait MissingInstances {
     Arbitrary(
       Gen.containerOfN[C, A](toInt(), A.arbitrary).filter(ca => ev(ca).size == toInt()).map(Sized.wrap[C[A], L])
     )
+
+  implicit final lazy val arbitraryURI: Arbitrary[URI] = Arbitrary {
+    for {
+      url <- Gen.oneOf(List("gov.taipei", "searchmgr.com", "699pic.com", "kinogo.movie", "connexus.com"))
+      protocol <- Gen.oneOf(List("http://", "https://", "ftp://", "file://"))
+      www <- Gen.oneOf("www.", "")
+    } yield URI.create(s"$protocol$www$url")
+  }
 }
