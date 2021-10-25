@@ -4,6 +4,7 @@ import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.`export`.Exported
 import java.io.Serializable
+import java.net.URI
 import java.time.{
   Duration,
   Instant,
@@ -304,6 +305,13 @@ object Encoder
    */
   implicit final lazy val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Encoding
+   */
+  implicit final lazy val encodeURI: Encoder[URI] = new Encoder[URI] {
+    final def apply(a: URI): Json = Json.fromString(a.toString)
   }
 
   /**

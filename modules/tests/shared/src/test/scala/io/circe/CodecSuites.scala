@@ -19,6 +19,7 @@ import cats.syntax.eq._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.{ Foo, Wub }
+import java.net.URI
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
@@ -93,6 +94,7 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
   checkAll("Codec[UUID]", CodecTests[UUID].codec)
+  checkAll("Codec[URI]", CodecTests[URI].codec)
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkAll("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
   checkAll("Codec[None.type]", CodecTests[None.type].codec)
@@ -101,6 +103,7 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkAll("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
   checkAll("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
+  checkAll("Codec[Map[URI, Int]]", CodecTests[Map[URI, Int]].codec)
   checkAll("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
   checkAll("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
   checkAll("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
