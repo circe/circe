@@ -9,26 +9,26 @@ inline final def summonLabels[T <: Tuple]: List[String] =
     case _: EmptyTuple => Nil
     case _: (t *: ts) => constValue[t].asInstanceOf[String] :: summonLabels[ts]
 
-inline final def summonEncoders[T <: Tuple]: List[Encoder[_]] =
+inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts) => summonEncoder[t] :: summonEncoders[ts]
 
-inline final def summonEncoder[A]: Encoder[A] =
+inline final def summonEncoder[A](using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
-    case _: Mirror.Of[A] => Encoder.AsObject.derived[A]
+    case _: Mirror.Of[A] => ConfiguredEncoder.derived[A]
   }
 
-inline final def summonDecoders[T <: Tuple]: List[Decoder[_]] =
+inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts) => summonDecoder[t] :: summonDecoders[ts]
 
-inline final def summonDecoder[A]: Decoder[A] =
+inline final def summonDecoder[A](using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
-    case _: Mirror.Of[A] => Decoder.derived[A]
+    case _: Mirror.Of[A] => ConfiguredDecoder.derived[A]
   }
 
 inline def summonSingletonCases[T <: Tuple, A](typeName: String): List[A] =

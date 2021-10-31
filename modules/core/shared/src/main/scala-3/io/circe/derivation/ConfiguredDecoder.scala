@@ -19,7 +19,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
     
     def fromName(sumTypeName: String, cursor: ACursor): R =
       constructorNames.indexOf(sumTypeName) match
-        case -1 => fail(DecodingFailure(s"type $name hasn't a class/object/case named '$sumTypeName'.", cursor.history))
+        case -1 => fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
         case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
     
     conf.discriminator match
