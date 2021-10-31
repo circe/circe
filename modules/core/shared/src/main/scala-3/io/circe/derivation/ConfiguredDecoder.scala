@@ -134,7 +134,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
+  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
       summonLabels[mirror.MirroredElemLabels].toArray,
