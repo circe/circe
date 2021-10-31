@@ -152,3 +152,78 @@ Bar(13, "Qux").asJson
 ```
 
 While this version does involve a bit of boilerplate, it only requires circe-core, and may have slightly better runtime performance in some cases.
+
+### More configuration arguments
+
+Above we've seen how you can use `transformMemberNames` if the name of case class member names are different from the JSON keys.
+
+Here's how you can use `transformConstructorNames` when encoding/decoding ADTs:
+
+```scala mdoc:reset
+import io.circe.generic.extras._
+import io.circe.generic.extras.auto._
+import io.circe.parser._
+
+implicit val config: Configuration = Configuration.default.copy(
+  transformConstructorNames = _.toLowerCase
+)
+
+sealed trait Animal
+case class Dog(age: Int) extends Animal
+case class Cat(color: String) extends Animal
+
+decode[Animal]("""{"dog": {"age": 2}}""")
+decode[Animal]("""{"cat": {"color": "brown"}}""")
+```
+
+If you want to allow default values when a field is missing from the JSON, you can use `useDefaults`:
+
+```scala mdoc:reset
+import io.circe.generic.extras._
+import io.circe.generic.extras.auto._
+import io.circe.parser._
+
+implicit val config: Configuration = Configuration.default.copy(
+  useDefaults = true
+)
+
+case class User(firstName: String, lastName: String = "Doe")
+
+decode[User]("""{"firstName": "Foo"}""")
+```
+
+If `useDefaults = false`, the decoding would fail.
+
+See [here](https://circe.github.io/circe/codecs/adt.html#the-future) for a use of `discriminator`.
+
+And finally, we have `strictDecoding`.
+
+By default, if a JSON has extra fields, we decode it without errors:
+
+```scala mdoc:reset
+import io.circe.generic.extras._
+import io.circe.generic.extras.auto._
+import io.circe.parser._
+
+implicit val config: Configuration = Configuration.default
+
+case class User(firstName: String, lastName: String)
+
+decode[User]("""{"firstName": "Foo", "lastName": "Bar", "likesCats": true}""")
+```
+
+But we can be more strict, if we want to:
+
+```scala mdoc:reset
+import io.circe.generic.extras._
+import io.circe.generic.extras.auto._
+import io.circe.parser._
+
+implicit val config: Configuration = Configuration.default.copy(
+  strictDecoding = true
+)
+
+case class User(firstName: String, lastName: String)
+
+decode[User]("""{"firstName": "Foo", "lastName": "Bar", "likesCats": true}""")
+```
