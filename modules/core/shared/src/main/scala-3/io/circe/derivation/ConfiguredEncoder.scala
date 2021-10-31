@@ -24,7 +24,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
       case Some(discriminator) => json.asObject.getOrElse(JsonObject.empty).add(discriminator, Json.fromString(constructorName))
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
       summonLabels[mirror.MirroredElemLabels].toArray,

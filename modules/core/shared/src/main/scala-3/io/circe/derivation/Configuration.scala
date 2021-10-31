@@ -2,8 +2,6 @@ package io.circe.derivation
 
 object Configuration:
   val default: Configuration = Configuration()
-  val empty: Configuration = Configuration(useDefaults = false)
-
 /**
  * Configuration allowing customisation of the JSON produced when encoding, or expected when decoding.
  *

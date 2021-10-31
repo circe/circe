@@ -6,7 +6,7 @@ import io.circe.{Decoder, Encoder, JsonObject, Codec, HCursor}
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
-  inline final def derived[A](using conf: Configuration = Configuration.default)(using mirror: Mirror.Of[A]): ConfiguredCodec[A] =
+  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with DerivedInstance[A](
       constValue[mirror.MirroredLabel],
       summonLabels[mirror.MirroredElemLabels].toArray,
