@@ -9,7 +9,7 @@ import scala.compiletime.constValue
   * See: https://stackoverflow.com/questions/68421043/type-class-derivation-accessing-default-values
   */
 
-trait Default[T]:
+trait Default[T] extends Serializable:
   type Out <: Tuple
   def defaults: Out
   
