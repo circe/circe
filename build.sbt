@@ -506,6 +506,17 @@ lazy val testing = circeCrossModule("testing")
 lazy val tests = circeCrossModule("tests")
   .enablePlugins(NoPublishPlugin)
   .settings(
+    disableScala3,
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) => Seq("-Yretain-trees") // Needed for useDefaults=true when deriving Encoders.
+        case _            => Nil
+      }
+    },
+    Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
       "org.scalameta" %%% "munit" % munitVersion,
