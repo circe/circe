@@ -5,7 +5,7 @@ import io.circe.{Decoder, Codec, HCursor, Json}
 
 trait ConfiguredEnumCodec[A] extends Codec[A]
 object ConfiguredEnumCodec:
-  inline final def derived[A](using conf: EnumConfiguration)(using Mirror.SumOf[A]): ConfiguredEnumCodec[A] =
+  inline final def derived[A](using conf: Configuration)(using Mirror.SumOf[A]): ConfiguredEnumCodec[A] =
     val decoder = ConfiguredEnumDecoder.derived[A]
     val encoder = ConfiguredEnumEncoder.derived[A]
     new ConfiguredEnumCodec[A]:
@@ -13,9 +13,8 @@ object ConfiguredEnumCodec:
       override def apply(a: A): Json = encoder(a)
   
   inline final def derive[R: Mirror.SumOf](
-    decoderTransform: String => String = EnumConfiguration.default.decodeTransformNames,
-    encoderTransform: String => String = EnumConfiguration.default.encodeTransformNames,
+    transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
   ): Codec[R] = Codec.from(
-    ConfiguredEnumDecoder.derive(decoderTransform),
-    ConfiguredEnumEncoder.derive(encoderTransform),
+    ConfiguredEnumDecoder.derive(transformConstructorNames),
+    ConfiguredEnumEncoder.derive(transformConstructorNames),
   )

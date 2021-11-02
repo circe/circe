@@ -78,7 +78,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
   
   final def decodeProduct(c: HCursor, fromProduct: Product => A): Decoder.Result[A] =
     def strictFail(unexpectedFields: List[String], expectedFields: IndexedSeq[String]): Decoder.Result[A] =
-      Left(strictDecodingFailure(c, s"unexpected fields: ${unexpectedFields.mkString(", ")}; valid fields: ${expectedFields.mkString(", ")}"))
+      Left(strictDecodingFailure(c, s"unexpected fields: ${unexpectedFields.mkString(", ")}; valid fields: ${expectedFields.mkString(", ")}."))
     
     decodeProductBase(c, Left.apply, strictFail) {
       val res = new Array[Any](elemLabels.length)
@@ -105,7 +105,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
   final def decodeProductAccumulating(c: HCursor, fromProduct: Product => A): Decoder.AccumulatingResult[A] =
     def strictFail(unexpectedFields: List[String], expectedFields: IndexedSeq[String]): Decoder.AccumulatingResult[A] =
       val failures = unexpectedFields.map { field =>
-        strictDecodingFailure(c, s"unexpected field: [$field]; valid fields: ${expectedFields.mkString(", ")}")
+        strictDecodingFailure(c, s"unexpected field: $field; valid fields: ${expectedFields.mkString(", ")}.")
       }
       Validated.invalid(NonEmptyList.fromListUnsafe(failures))
     
