@@ -112,12 +112,6 @@ sealed abstract class Json extends Product with Serializable {
   final def printWith(p: Printer): String = p.print(this)
 
   /**
-   * Pretty-print this JSON value to a string using the given pretty-printer.
-   */
-  @deprecated("Use printWith", "0.12.0")
-  final def pretty(p: Printer): String = printWith(p)
-
-  /**
    * Pretty-print this JSON value to a string with no spaces.
    */
   final def noSpaces: String = Printer.noSpaces.print(this)
@@ -589,7 +583,7 @@ object Json {
     val it0 = x.iterator
     val it1 = y.iterator
     while (it0.hasNext && it1.hasNext) {
-      if (Json.eqJson.neqv(it0.next, it1.next)) return false
+      if (Json.eqJson.neqv(it0.next(), it1.next())) return false
     }
     it0.hasNext == it1.hasNext
   }

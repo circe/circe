@@ -39,6 +39,16 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     Some(current.asInstanceOf[TopCursor].value)
   }
 
+  override final def root: HCursor = {
+    var current: HCursor = this
+
+    while (!current.isInstanceOf[TopCursor]) {
+      current = current.up.asInstanceOf[HCursor]
+    }
+
+    current
+  }
+
   final def downArray: ACursor = value match {
     case Json.JArray(values) if !values.isEmpty =>
       new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
@@ -68,22 +78,6 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case Json.JArray(values) if n >= 0 && values.size > n =>
       new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
     case _ => fail(CursorOp.DownN(n))
-  }
-
-  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
-
-    go(n, this)
-  }
-
-  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.right)
-
-    go(n, this)
   }
 
   /**

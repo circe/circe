@@ -1,7 +1,9 @@
 package io.circe
 
-import cats.{ Eq, Show }
 import cats.data.NonEmptyList
+import cats.{ Eq, Show }
+import io.circe.DecodingFailure.Reason
+import io.circe.DecodingFailure.Reason.{ CustomReason, MissingField, WrongTypeExpectation }
 
 /**
  * The base exception type for both decoding and parsing errors.
@@ -42,20 +44,33 @@ object ParsingFailure {
  * An exception representing a decoding failure and (lazily) capturing the
  * decoding history resulting in the failure.
  */
-sealed abstract class DecodingFailure(val message: String) extends Error {
+sealed abstract class DecodingFailure(val reason: Reason) extends Error {
   def history: List[CursorOp]
+
+  val message: String = reason match {
+    case WrongTypeExpectation(expJsType, v) => s"Got value '${v.noSpaces}' with wrong type, expecting $expJsType"
+    case MissingField                       => "Missing required field"
+    case CustomReason(message)              => message
+  }
 
   final override def getMessage: String =
     if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
 
   final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure = {
     def newHistory = history
-    new DecodingFailure(message) {
+    new DecodingFailure(CustomReason(message)) {
       final lazy val history: List[CursorOp] = newHistory
     }
   }
 
   final def withMessage(message: String): DecodingFailure = copy(message = message)
+
+  final def withReason(reason: Reason): DecodingFailure = {
+    def newHistory: List[CursorOp] = history
+    new DecodingFailure(reason) {
+      override def history: List[CursorOp] = newHistory
+    }
+  }
 
   override final def toString: String = s"DecodingFailure($message, $history)"
   override final def equals(that: Any): Boolean = that match {
@@ -66,7 +81,11 @@ sealed abstract class DecodingFailure(val message: String) extends Error {
 }
 
 object DecodingFailure {
-  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(message) {
+  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(CustomReason(message)) {
+    final lazy val history: List[CursorOp] = ops
+  }
+
+  def apply(reason: Reason, ops: => List[CursorOp]): DecodingFailure = new DecodingFailure(reason) {
     final lazy val history: List[CursorOp] = ops
   }
 
@@ -84,8 +103,8 @@ object DecodingFailure {
       DecodingFailure(sw.toString, ops)
   }
 
-  implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance {
-    case (DecodingFailure(m1, h1), DecodingFailure(m2, h2)) => m1 == m2 && CursorOp.eqCursorOpList.eqv(h1, h2)
+  implicit final val eqDecodingFailure: Eq[DecodingFailure] = Eq.instance { (a, b) =>
+    a.reason == b.reason && CursorOp.eqCursorOpList.eqv(a.history, b.history)
   }
 
   /**
@@ -95,6 +114,13 @@ object DecodingFailure {
   implicit final val showDecodingFailure: Show[DecodingFailure] = Show.show { failure =>
     val path = CursorOp.opsToPath(failure.history)
     s"DecodingFailure at ${path}: ${failure.message}"
+  }
+
+  sealed abstract class Reason
+  object Reason {
+    case object MissingField extends Reason
+    case class WrongTypeExpectation(expectedJsonFieldType: String, jsonValue: Json) extends Reason
+    case class CustomReason(message: String) extends Reason
   }
 }
 

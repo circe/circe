@@ -16,8 +16,7 @@ object ReprAsObjectEncoder {
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
 
-  implicit def encodeHCons[K <: Symbol, H, T <: HList](
-    implicit
+  implicit def encodeHCons[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     encodeH: Encoder[H],
     encodeT: ReprAsObjectEncoder[T]
@@ -32,8 +31,7 @@ object ReprAsObjectEncoder {
       sys.error("No JSON representation of CNil (this shouldn't happen)")
   }
 
-  implicit def encodeCoproduct[K <: Symbol, L, R <: Coproduct](
-    implicit
+  implicit def encodeCoproduct[K <: Symbol, L, R <: Coproduct](implicit
     key: Witness.Aux[K],
     encodeL: Encoder[L],
     encodeR: => ReprAsObjectEncoder[R]

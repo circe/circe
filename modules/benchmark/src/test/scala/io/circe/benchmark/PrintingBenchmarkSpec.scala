@@ -3,9 +3,10 @@ package io.circe.benchmark
 import io.circe.jawn.decode
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
+import cats.syntax.eq._
 
-class PrintingBenchmarkSpec extends AnyFlatSpec {
+class PrintingBenchmarkSpec extends FunSuite {
   val benchmark: PrintingBenchmark = new PrintingBenchmark
 
   import benchmark._
@@ -17,27 +18,27 @@ class PrintingBenchmarkSpec extends AnyFlatSpec {
     new String(bytes, UTF_8)
   }
 
-  "The string printer" should "correctly decode Foos" in {
+  test("The string printer should correctly decode Foos") {
     assert(decode[Map[String, Foo]](printFoosToString) === Right(foos))
   }
 
-  it should "correctly encode Ints" in {
+  test("The string printer should correctly encode Ints") {
     assert(decode[List[Int]](printIntsToString) === Right(ints))
   }
 
-  it should "correctly encode Booleans" in {
+  test("The string printer should correctly encode Booleans") {
     assert(decode[List[Boolean]](printBooleansToString) === Right(booleans))
   }
 
-  "The byte buffer printer" should "correctly decode Foos" in {
+  test("The byte buffer printer should correctly decode Foos") {
     assert(decode[Map[String, Foo]](byteBufferToString(printFoosToByteBuffer)) === Right(foos))
   }
 
-  it should "correctly encode Ints" in {
+  test("The byte buffer printer should correctly encode Ints") {
     assert(decode[List[Int]](byteBufferToString(printIntsToByteBuffer)) === Right(ints))
   }
 
-  it should "correctly encode Booleans" in {
+  test("The byte buffer printer should correctly encode Booleans") {
     assert(decode[List[Boolean]](byteBufferToString(printBooleansToByteBuffer)) === Right(booleans))
   }
 }

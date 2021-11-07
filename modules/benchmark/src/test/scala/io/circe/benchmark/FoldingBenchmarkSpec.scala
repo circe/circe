@@ -1,19 +1,20 @@
 package io.circe.benchmark
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
+import cats.syntax.eq._
 
-class FoldingBenchmarkSpec extends AnyFlatSpec {
+class FoldingBenchmarkSpec extends FunSuite {
   val benchmark: FoldingBenchmark = new FoldingBenchmark
 
-  "withFoldWith" should "give the correct result" in {
+  test("withFoldWith should give the correct result") {
     assert(benchmark.withFoldWith === 5463565)
   }
 
-  "withFold" should "give the correct result" in {
+  test("withFold should give the correct result") {
     assert(benchmark.withFold === 5463565)
   }
 
-  "withPatternMatch" should "give the correct result" in {
+  test("withPatternMatch should give the correct result") {
     assert(benchmark.withPatternMatch === 5463565)
   }
 }

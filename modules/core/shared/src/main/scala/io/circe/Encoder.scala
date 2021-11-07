@@ -4,6 +4,7 @@ import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.`export`.Exported
 import java.io.Serializable
+import java.net.URI
 import java.time.{
   Duration,
   Instant,
@@ -29,6 +30,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 import java.time.temporal.TemporalAccessor
+import java.util.Currency
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
@@ -303,6 +305,13 @@ object Encoder
    */
   implicit final lazy val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Encoding
+   */
+  implicit final lazy val encodeURI: Encoder[URI] = new Encoder[URI] {
+    final def apply(a: URI): Json = Json.fromString(a.toString)
   }
 
   /**
@@ -691,6 +700,9 @@ object Encoder
   implicit final lazy val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
     final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
+
+  implicit final lazy val currencyEncoder: Encoder[Currency] =
+    Encoder[String].contramap(_.getCurrencyCode())
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

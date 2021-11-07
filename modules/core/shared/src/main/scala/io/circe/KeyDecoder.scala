@@ -2,8 +2,10 @@ package io.circe
 
 import cats.MonadError
 import java.io.Serializable
+import java.net.URI
 import java.util.UUID
 import scala.annotation.tailrec
+import scala.util.control.NonFatal
 
 /**
  * A type class that provides a conversion from a string used as a JSON key to a
@@ -70,6 +72,14 @@ object KeyDecoder {
         case _: IllegalArgumentException => None
       }
     } else None
+  }
+
+  implicit val decodeKeyURI: KeyDecoder[URI] = new KeyDecoder[URI] {
+    final def apply(key: String): Option[URI] =
+      try Some(new URI(key))
+      catch {
+        case NonFatal(_) => None
+      }
   }
 
   implicit val decodeKeyByte: KeyDecoder[Byte] = numberInstance(java.lang.Byte.parseByte)

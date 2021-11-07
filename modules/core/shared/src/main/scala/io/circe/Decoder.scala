@@ -13,11 +13,13 @@ import cats.data.{
   Validated,
   ValidatedNel
 }
+import cats.syntax.either._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
 import io.circe.`export`.Exported
 import java.io.Serializable
+import java.net.{ URI, URISyntaxException }
 import java.time.{
   DateTimeException,
   Duration,
@@ -36,7 +38,11 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
+import java.util.Currency
 import java.util.UUID
+
+import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
+
 import scala.annotation.tailrec
 import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
 import scala.collection.mutable.Builder
@@ -68,7 +74,7 @@ trait Decoder[A] extends Serializable { self =>
     case hc: HCursor => apply(hc)
     case _ =>
       Left(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
+        cursorToDecodingFailure(c)
       )
   }
 
@@ -76,17 +82,26 @@ trait Decoder[A] extends Serializable { self =>
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
+        cursorToDecodingFailure(c)
       )
+  }
+
+  private[this] def cursorToDecodingFailure(cursor: ACursor) = {
+    val history = cursor.history
+    val historyToFailedCursor = history.takeWhile(_ != CursorOp.DeleteGoParent)
+    val field = CursorOp.opsToPath(historyToFailedCursor).replaceFirst("^\\.", "")
+    val down = cursor.downField(field)
+    if (down.succeeded) {
+      DecodingFailure(s"Couldn't decode $field", history)
+    } else {
+      DecodingFailure(MissingField, history)
+    }
   }
 
   /**
    * Decode the given [[Json]] value.
    */
   final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
-
-  @deprecated("Use decodeAccumulating", "0.12.0")
-  final def accumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
 
   /**
    * Map a function over this [[Decoder]].
@@ -576,7 +591,7 @@ object Decoder
   implicit final val decodeJsonObject: Decoder[JsonObject] = new Decoder[JsonObject] {
     final def apply(c: HCursor): Result[JsonObject] = c.value.asObject match {
       case Some(v) => Right(v)
-      case None    => Left(DecodingFailure("JsonObject", c.history))
+      case None    => Left(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
     }
   }
 
@@ -586,7 +601,7 @@ object Decoder
   implicit final val decodeJsonNumber: Decoder[JsonNumber] = new Decoder[JsonNumber] {
     final def apply(c: HCursor): Result[JsonNumber] = c.value.asNumber match {
       case Some(v) => Right(v)
-      case None    => Left(DecodingFailure("JsonNumber", c.history))
+      case None    => Left(DecodingFailure(WrongTypeExpectation("number", c.value), c.history))
     }
   }
 
@@ -596,7 +611,7 @@ object Decoder
   implicit final val decodeString: Decoder[String] = new Decoder[String] {
     final def apply(c: HCursor): Result[String] = c.value match {
       case Json.JString(string) => Right(string)
-      case _                    => Left(DecodingFailure("String", c.history))
+      case json                 => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
 
@@ -608,7 +623,8 @@ object Decoder
       case Json.JObject(obj) if obj.isEmpty => Right(())
       case Json.JArray(arr) if arr.isEmpty  => Right(())
       case other if other.isNull            => Right(())
-      case _                                => Left(DecodingFailure("Unit", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("'null' or '[]' or '{}'", json), c.history))
     }
   }
 
@@ -618,7 +634,8 @@ object Decoder
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
     final def apply(c: HCursor): Result[Boolean] = c.value match {
       case Json.JBoolean(b) => Right(b)
-      case _                => Left(DecodingFailure("Boolean", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("'true' or 'false'", json), c.history))
     }
   }
 
@@ -635,7 +652,8 @@ object Decoder
   implicit final val decodeChar: Decoder[Char] = new Decoder[Char] {
     final def apply(c: HCursor): Result[Char] = c.value match {
       case Json.JString(string) if string.length == 1 => Right(string.charAt(0))
-      case _                                          => Left(DecodingFailure("Char", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("character", json), c.history))
     }
   }
 
@@ -899,23 +917,41 @@ object Decoder
    * @group Decoding
    */
   implicit final lazy val decodeUUID: Decoder[UUID] = new Decoder[UUID] {
-    private[this] def fail(c: HCursor): Result[UUID] = Left(DecodingFailure("UUID", c.history))
 
     final def apply(c: HCursor): Result[UUID] = c.value match {
       case Json.JString(string) if string.length == 36 =>
         try Right(UUID.fromString(string))
         catch {
-          case _: IllegalArgumentException => fail(c)
+          case _: IllegalArgumentException =>
+            Left(DecodingFailure("Couldn't decode a valid UUID", c.history))
         }
-      case _ => fail(c)
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
 
-  private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
-  private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
+  /**
+   * @group Decoding
+   */
+  implicit final lazy val decodeURI: Decoder[URI] = new Decoder[URI] {
 
-  private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
-  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[Option[Nothing]] =
+    final def apply(c: HCursor): Result[URI] = c.value match {
+      case Json.JString(string) =>
+        try Right(new URI(string))
+        catch {
+          case _: URISyntaxException =>
+            Left(DecodingFailure("String could not be parsed as a URI reference, it violates RFC 2396.", c.history))
+          case _: NullPointerException =>
+            Left(DecodingFailure("String is null.", c.history))
+        }
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
+    }
+  }
+
+  private[this] final val rightNone: Either[DecodingFailure, None.type] = Right(None)
+  private[this] final val validNone: ValidatedNel[DecodingFailure, None.type] = Validated.valid(None)
+
+  private[circe] final val keyMissingNone: Decoder.Result[None.type] = Right(None)
+  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
     Validated.valid(None)
 
   /**
@@ -933,7 +969,8 @@ object Decoder
             case Left(df) => Left(df)
           }
       case c: FailedCursor =>
-        if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
+        if (!c.incorrectFocus) keyMissingNone
+        else Left(DecodingFailure(MissingField, c.history))
     }
 
     final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[A]] = tryDecodeAccumulating(c)
@@ -948,7 +985,7 @@ object Decoder
           }
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNoneAccumulating
-        else Validated.invalidNel(DecodingFailure("[A]Option[A]", c.history))
+        else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
 
@@ -963,7 +1000,24 @@ object Decoder
   implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None)
     else {
-      Left(DecodingFailure("None", c.history))
+      Left(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+    }
+    final override def tryDecode(c: ACursor): Decoder.Result[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) rightNone
+        else Left(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNone
+        else Left(DecodingFailure(MissingField, c.history))
+    }
+
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) validNone
+        else Validated.invalidNel(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNoneAccumulating
+        else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
 
@@ -1066,7 +1120,7 @@ object Decoder
       final protected def createBuilder(): Builder[(K, V), SortedMap[K, V]] =
         SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
     }.emap { map =>
-      NonEmptyMap.fromMap(map)(orderK).toRight("[K, V]NonEmptyMap[K, V]")
+      NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
     }
 
   /**
@@ -1087,7 +1141,7 @@ object Decoder
     decodeB: Decoder[B]
   ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
     private[this] def failure(c: HCursor): Decoder.Result[Either[A, B]] =
-      Left(DecodingFailure("[A, B]Either[A, B]", c.history))
+      Left(DecodingFailure(MissingField, c.history))
 
     final def apply(c: HCursor): Result[Either[A, B]] = {
       val lf = c.downField(leftKey)
@@ -1143,13 +1197,13 @@ object Decoder
           case e: DateTimeException =>
             val message = e.getMessage
 
-            if (message.eq(null)) Left(DecodingFailure(name, c.history))
+            if (message.eq(null)) Left(DecodingFailure("Couldn't decode time", c.history))
             else {
               val newMessage = formatMessage(string, message)
-              Left(DecodingFailure(s"$name ($newMessage)", c.history))
+              Left(DecodingFailure(message = newMessage, ops = c.history))
             }
         }
-      case _ => Left(DecodingFailure(name, c.history))
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
 
@@ -1377,6 +1431,20 @@ object Decoder
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
       override final def product[A, B](fa: Decoder[A], fb: Decoder[B]): Decoder[(A, B)] = fa.product(fb)
+      override final def ap[A, B](ff: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = ff.product(fa).map {
+        case (f, a) => f(a)
+      }
+      override final def ap2[A, B, Z](ff: Decoder[(A, B) => Z])(fa: Decoder[A], fb: Decoder[B]): Decoder[Z] =
+        ff.product(fa.product(fb)).map {
+          case (f, (a, b)) => f(a, b)
+        }
+      override final def map2[A, B, Z](fa: Decoder[A], fb: Decoder[B])(f: (A, B) => Z): Decoder[Z] =
+        fa.product(fb).map {
+          case (a, b) => f(a, b)
+        }
+      override final def productR[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[B] = fa.product(fb).map(_._2)
+      override final def productL[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[A] = fa.product(fb).map(_._1)
+
       final def flatMap[A, B](fa: Decoder[A])(f: A => Decoder[B]): Decoder[B] = fa.flatMap(f)
 
       final def raiseError[A](e: DecodingFailure): Decoder[A] = Decoder.failed(e)
@@ -1393,6 +1461,19 @@ object Decoder
         final def apply(c: HCursor): Result[B] = step(c, a)
       }
     }
+
+  implicit final lazy val currencyDecoder: Decoder[Currency] =
+    Decoder[String].emap(value =>
+      catsStdInstancesForEither[Throwable]
+        .catchNonFatal(
+          Currency.getInstance(value)
+        )
+        .leftMap((t: Throwable) =>
+          // As of JRE 15 `.getMessage` and `.getLocalizedMessage` return
+          // `null`, but that doesn't mean they always will.
+          Option(t.getLocalizedMessage()).getOrElse(s"Unknown or unimplemented currency value: $value")
+        )
+    )
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform

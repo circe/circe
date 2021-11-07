@@ -126,6 +126,7 @@ object Boilerplate {
         |package io.circe
         |
         |import cats.data.Validated
+        |import io.circe.DecodingFailure.Reason.WrongTypeExpectation
         |
         |private[circe] trait TupleDecoders {
         -  /**
@@ -135,13 +136,15 @@ object Boilerplate {
         -    new Decoder[${`(A..N)`}] {
         -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.value match {
         -        case Json.JArray(values) if values.size == $arity => $result
-        -        case _ => Left(DecodingFailure("${`(A..N)`}", c.history))
+        -        case json => Left(DecodingFailure(WrongTypeExpectation("array", json), c.history))
         -      }
         -
-        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[${`(A..N)`}] = c.value match {
-        -        case Json.JArray(values) if values.size == $arity => $accumulatingResult
-        -        case _ => Validated.invalidNel(DecodingFailure("${`(A..N)`}", c.history))
-        -      }
+        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[${`(A..N)`}] =
+        -        c.value match {
+        -          case Json.JArray(values) if values.size == $arity => $accumulatingResult
+        -          case json => Validated.invalidNel(
+        -            DecodingFailure(WrongTypeExpectation("array", json), c.history))
+        -        }
         -    }
         |}
       """

@@ -2,6 +2,7 @@ package io.circe
 
 import cats.Contravariant
 import java.io.Serializable
+import java.net.URI
 import java.util.UUID
 
 /**
@@ -45,6 +46,10 @@ object KeyEncoder {
 
   implicit val encodeKeyUUID: KeyEncoder[UUID] = new KeyEncoder[UUID] {
     final def apply(key: UUID): String = key.toString
+  }
+
+  implicit val encodeKeyURI: KeyEncoder[URI] = new KeyEncoder[URI] {
+    final def apply(key: URI): String = key.toString
   }
 
   implicit val encodeKeyByte: KeyEncoder[Byte] = new KeyEncoder[Byte] {

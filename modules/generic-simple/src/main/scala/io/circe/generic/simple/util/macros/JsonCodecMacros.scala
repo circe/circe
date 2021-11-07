@@ -22,8 +22,8 @@ abstract class JsonCodecMacros {
        }
        """
     case List(
-        clsDef: ClassDef,
-        q"..$mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
+          clsDef: ClassDef,
+          q"..$mods object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
         ) if isCaseClassOrSealed(clsDef) =>
       q"""
        $clsDef
@@ -49,9 +49,9 @@ abstract class JsonCodecMacros {
 
   private[this] val codecType: JsonCodecType = {
     c.prefix.tree match {
-      case q"new ${`macroName` }()"                  => JsonCodecType.Both
-      case q"new ${`macroName` }(encodeOnly = true)" => JsonCodecType.EncodeOnly
-      case q"new ${`macroName` }(decodeOnly = true)" => JsonCodecType.DecodeOnly
+      case q"new ${`macroName`}()"                  => JsonCodecType.Both
+      case q"new ${`macroName`}(encodeOnly = true)" => JsonCodecType.EncodeOnly
+      case q"new ${`macroName`}(decodeOnly = true)" => JsonCodecType.DecodeOnly
       // format: off
       case _ => c.abort(c.enclosingPosition, s"Unsupported arguments supplied to @$macroName")
       // format: on

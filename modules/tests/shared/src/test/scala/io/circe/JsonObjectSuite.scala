@@ -331,7 +331,7 @@ class JsonObjectSuite extends CirceSuite {
           case (Some(leftVal), Some(rightVal)) => assert(value === leftVal.deepMerge(rightVal))
           case (Some(leftVal), None)           => assert(value === leftVal)
           case (None, Some(rightVal))          => assert(value === rightVal)
-          case _                               => throw new TestFailedException("Impossible state reached in deepMerge test", 0)
+          case _ => throw new TestFailedException("Impossible state reached in deepMerge test", 0)
         }
     }
   }

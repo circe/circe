@@ -21,8 +21,7 @@ object Lazy {
 class ExportMacros(val c: blackbox.Context) {
   import c.universe._
 
-  final def exportDecoder[D[x] <: DerivedDecoder[x], A](
-    implicit
+  final def exportDecoder[D[x] <: DerivedDecoder[x], A](implicit
     D: c.WeakTypeTag[D[_]],
     A: c.WeakTypeTag[A]
   ): c.Expr[Exported[Decoder[A]]] = {
@@ -37,8 +36,7 @@ class ExportMacros(val c: blackbox.Context) {
     }
   }
 
-  final def exportEncoder[E[x] <: DerivedAsObjectEncoder[x], A](
-    implicit
+  final def exportEncoder[E[x] <: DerivedAsObjectEncoder[x], A](implicit
     E: c.WeakTypeTag[E[_]],
     A: c.WeakTypeTag[A]
   ): c.Expr[Exported[Encoder.AsObject[A]]] = {

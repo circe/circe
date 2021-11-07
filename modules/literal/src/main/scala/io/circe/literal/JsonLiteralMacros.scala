@@ -71,6 +71,9 @@ class JsonLiteralMacros(val c: blackbox.Context) {
       case ("add", Array(cls, _), Array(arg: CharSequence, _)) if cls == classOf[CharSequence] =>
         value = toJsonString(arg.toString)
         null
+      case ("add", Array(cls, _, _), Array(arg: CharSequence, _, _)) if cls == classOf[CharSequence] =>
+        value = toJsonString(arg.toString)
+        null
       case ("add", Array(_), Array(arg: Tree)) =>
         value = arg
         null
@@ -95,6 +98,9 @@ class JsonLiteralMacros(val c: blackbox.Context) {
         values = values :+ toJsonString(arg.toString)
         null
       case ("add", Array(cls, _), Array(arg: CharSequence, _)) if cls == classOf[CharSequence] =>
+        values = values :+ toJsonString(arg.toString)
+        null
+      case ("add", Array(cls, _, _), Array(arg: CharSequence, _, _)) if cls == classOf[CharSequence] =>
         values = values :+ toJsonString(arg.toString)
         null
       case ("add", Array(_), Array(arg: Tree)) =>
@@ -127,6 +133,14 @@ class JsonLiteralMacros(val c: blackbox.Context) {
         }
         null
       case ("add", Array(cls, _), Array(arg: CharSequence, _)) if cls == classOf[CharSequence] =>
+        if (key.eq(null)) {
+          key = arg.toString
+        } else {
+          fields = fields :+ q"(${toJsonKey(key)}, ${toJsonString(arg)})"
+          key = null
+        }
+        null
+      case ("add", Array(cls, _, _), Array(arg: CharSequence, _, _)) if cls == classOf[CharSequence] =>
         if (key.eq(null)) {
           key = arg.toString
         } else {
