@@ -38,7 +38,6 @@ sealed abstract class BiggerDecimal extends Serializable {
 
   /**
    * Convert to a `java.math.BigInteger` if this is a sufficiently small whole number.
-   *
    */
   def toBigIntegerWithMaxDigits(maxDigits: BigInteger): Option[BigInteger]
 
