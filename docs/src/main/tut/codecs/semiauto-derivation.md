@@ -33,8 +33,8 @@ Most of the time, when using Value Class, we expect only the inner value in the 
 
 It can be achieved using `circe-generic-extras`:
 
-```scala mdoc:silent
-import io.circe._, import io.circe.generic.extras.semiauto._
+```scala mdoc:silent:reset
+import io.circe._, io.circe.generic.extras.semiauto._
 
 case class Foo(a: Int)
 

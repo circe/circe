@@ -193,7 +193,14 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeDocumentationLabelDescription := "API Documentation",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositeExtraMdFiles := Map(
+    file("CONTRIBUTING.md") -> ExtraMdFileConfig(
+      "contributing.md",
+      "docs",
+      Map("title" -> "Contributing", "position" -> "6")
+    )
+  ),
+  micrositeExtraMdFilesOutput := resourceManaged.value / "main" / "jekyll",
   micrositeTheme := "pattern",
   micrositePalette := Map(
     "brand-primary" -> "#5B5988",

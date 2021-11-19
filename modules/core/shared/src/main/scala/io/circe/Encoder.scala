@@ -837,7 +837,7 @@ object Encoder
     def encodeObject(a: A): JsonObject
 
     /**
-     * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
+     * Create a new [[Encoder.AsObject]] by applying a function to a value of type `B` before encoding as an
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
@@ -845,7 +845,7 @@ object Encoder
     }
 
     /**
-     * Create a new [[AsObject]] by applying a function to the output of this
+     * Create a new [[Encoder.AsObject]] by applying a function to the output of this
      * one.
      */
     final def mapJsonObject(f: JsonObject => JsonObject): AsObject[A] = new AsObject[A] {

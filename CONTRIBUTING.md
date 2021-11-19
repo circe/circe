@@ -1,18 +1,13 @@
----
-layout: docs
-title:  "Contributing"
-position: 6
----
-
 # Guide for contributors
 
 This project follows a standard [fork and pull][fork-and-pull] model for accepting contributions via
 GitHub pull requests:
 
-0. [Pick (or report) an issue](#pick-or-report-an-issue)
-1. [Write code](#write-code)
-2. [Write tests](#write-tests)
-3. [Submit a pull request](#submit-a-pull-request)
+1. [Pick or report an issue](#pick-or-report-an-issue)
+2. [Write code](#write-code)
+3. [Write tests](#write-tests)
+4. [Update the documentation](#update-the-documentation)
+5. [Submit a pull request](#submit-a-pull-request)
 
 ## Pick or report an issue
 
