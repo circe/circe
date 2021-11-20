@@ -87,7 +87,7 @@ json.as[Map[Foo, Int]]
 
 It's often necessary to work with keys in your JSON objects that aren't idiomatic case class member
 names in Scala. While the standard generic derivation doesn't support this use case, the
-`generic-extras` module does provide two ways to transform your case class member
+experimental `generic-extras` module does provide two ways to transform your case class member
 names during encoding and decoding.
 
 In many cases the transformation is as simple as going from camel case to snake case, in which case
