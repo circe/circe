@@ -4,6 +4,7 @@ import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.`export`.Exported
 import java.io.Serializable
+import java.net.URI
 import java.time.{
   Duration,
   Instant,
@@ -304,6 +305,13 @@ object Encoder
    */
   implicit final lazy val encodeUUID: Encoder[UUID] = new Encoder[UUID] {
     final def apply(a: UUID): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Encoding
+   */
+  implicit final lazy val encodeURI: Encoder[URI] = new Encoder[URI] {
+    final def apply(a: URI): Json = Json.fromString(a.toString)
   }
 
   /**
@@ -829,7 +837,7 @@ object Encoder
     def encodeObject(a: A): JsonObject
 
     /**
-     * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
+     * Create a new [[Encoder.AsObject]] by applying a function to a value of type `B` before encoding as an
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
@@ -837,7 +845,7 @@ object Encoder
     }
 
     /**
-     * Create a new [[AsObject]] by applying a function to the output of this
+     * Create a new [[Encoder.AsObject]] by applying a function to the output of this
      * one.
      */
     final def mapJsonObject(f: JsonObject => JsonObject): AsObject[A] = new AsObject[A] {

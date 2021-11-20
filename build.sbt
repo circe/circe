@@ -6,7 +6,7 @@ import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.0.2", "2.12.14", "2.13.6")
+ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.6")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
@@ -62,7 +62,7 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.6.1"
-val jawnVersion = "1.2.0"
+val jawnVersion = "1.3.0"
 val shapelessVersion = "2.3.7"
 val refinedVersion = "0.9.27"
 
@@ -71,7 +71,7 @@ val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.2.9"
 val scalaCheckVersion = "1.15.4"
 val munitVersion = "0.7.29"
-val disciplineVersion = "1.1.5"
+val disciplineVersion = "1.3.0"
 val disciplineScalaTestVersion = "2.1.5"
 val disciplineMunitVersion = "1.0.9"
 val scalaJavaTimeVersion = "2.3.0"
@@ -193,7 +193,14 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeDocumentationLabelDescription := "API Documentation",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositeExtraMdFiles := Map(
+    file("CONTRIBUTING.md") -> ExtraMdFileConfig(
+      "contributing.md",
+      "docs",
+      Map("title" -> "Contributing", "position" -> "6")
+    )
+  ),
+  micrositeExtraMdFilesOutput := resourceManaged.value / "main" / "jekyll",
   micrositeTheme := "pattern",
   micrositePalette := Map(
     "brand-primary" -> "#5B5988",
@@ -500,7 +507,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.28",
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.29",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(

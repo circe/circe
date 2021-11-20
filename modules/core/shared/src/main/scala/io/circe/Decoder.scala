@@ -19,6 +19,7 @@ import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEi
 import cats.kernel.Order
 import io.circe.`export`.Exported
 import java.io.Serializable
+import java.net.{ URI, URISyntaxException }
 import java.time.{
   DateTimeException,
   Duration,
@@ -923,6 +924,24 @@ object Decoder
         catch {
           case _: IllegalArgumentException =>
             Left(DecodingFailure("Couldn't decode a valid UUID", c.history))
+        }
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
+    }
+  }
+
+  /**
+   * @group Decoding
+   */
+  implicit final lazy val decodeURI: Decoder[URI] = new Decoder[URI] {
+
+    final def apply(c: HCursor): Result[URI] = c.value match {
+      case Json.JString(string) =>
+        try Right(new URI(string))
+        catch {
+          case _: URISyntaxException =>
+            Left(DecodingFailure("String could not be parsed as a URI reference, it violates RFC 2396.", c.history))
+          case _: NullPointerException =>
+            Left(DecodingFailure("String is null.", c.history))
         }
       case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
