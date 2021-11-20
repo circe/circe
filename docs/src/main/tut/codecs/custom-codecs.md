@@ -132,7 +132,7 @@ implicit val config: Configuration = Configuration.default
 Bar(13, "Qux").asJson
 ```
 
-It's worth noting that if you don't want to use the `generic-extras` module, the
+It's worth noting that if you don't want to use the experimental `generic-extras` module, the
 completely unmagical `forProductN` version isn't really that much of a burden:
 
 ```scala mdoc:reset
