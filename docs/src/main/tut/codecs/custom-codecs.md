@@ -87,7 +87,7 @@ json.as[Map[Foo, Int]]
 
 It's often necessary to work with keys in your JSON objects that aren't idiomatic case class member
 names in Scala. While the standard generic derivation doesn't support this use case, the
-experimental circe-generic-extras module does provide two ways to transform your case class member
+experimental `generic-extras` module does provide two ways to transform your case class member
 names during encoding and decoding.
 
 In many cases the transformation is as simple as going from camel case to snake case, in which case
@@ -132,7 +132,7 @@ implicit val config: Configuration = Configuration.default
 Bar(13, "Qux").asJson
 ```
 
-It's worth noting that if you don't want to use the experimental generic-extras module, the
+It's worth noting that if you don't want to use the experimental `generic-extras` module, the
 completely unmagical `forProductN` version isn't really that much of a burden:
 
 ```scala mdoc:reset
@@ -151,7 +151,8 @@ User("Foo", "McBar").asJson
 Bar(13, "Qux").asJson
 ```
 
-While this version does involve a bit of boilerplate, it only requires circe-core, and may have slightly better runtime performance in some cases.
+
+While this version does involve a bit of boilerplate, it only requires `circe-core`, and may have slightly better runtime performance in some cases.
 
 ### More configuration arguments
 
