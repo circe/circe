@@ -189,7 +189,7 @@ final case class Printer(
       w
     } else new StringBuilder()
 
-    printToAppendable(json, writer)
+    unsafePrintToAppendable(json, writer)
 
     writer.toString
   }
@@ -207,7 +207,7 @@ final case class Printer(
       else Printer.NoSizePredictor
 
     val writer = new Printer.AppendableByteBuffer(cs, predictor)
-    printToAppendable(json, writer)
+    unsafePrintToAppendable(json, writer)
 
     writer.toByteBuffer
   }
@@ -215,7 +215,11 @@ final case class Printer(
   final def printToByteBuffer(json: Json): ByteBuffer =
     printToByteBuffer(json, StandardCharsets.UTF_8)
 
-  final def printToAppendable(json: Json, out: Appendable): Unit = {
+  /**
+   * Prints the JSON value by appending directly to the provided `Appendable`.
+   * This method is UNSAFE and SIDE-EFFECTING!
+   */
+  final def unsafePrintToAppendable(json: Json, out: Appendable): Unit = {
     val folder = new AppendableFolder(out)
     json.foldWith(folder)
   }
