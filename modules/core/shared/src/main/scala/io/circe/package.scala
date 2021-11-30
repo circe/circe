@@ -24,7 +24,7 @@ package io
  *   - [[io.circe.generic generic]]: Shapeless-powered
  *     [[https://circe.github.io/circe/codec.html generic derivation]] for case
  *     classes and sealed trait hierarchies.
- *   - [[io.circe.generic.extras generic-extras]]: additional experimental generic
+ *   - [[https://github.com/circe/circe-generic-extras generic-extras]]: additional experimental generic
  *     derivation functionality (including some configurability).
  *   - [[io.circe.pointer pointer]]: A JSON Pointer implementation
  *   - [[io.circe.pointer.literal pointer-literal]]: JSON Pointer string interpolation
