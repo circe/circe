@@ -73,7 +73,7 @@ class JsonObjectSuite extends CirceMunitSuite {
       case (fields, key) =>
         val result1 = JsonObject.fromIterable(fields)
         val result2 = JsonObject.fromFoldable(fields)
-        val expected = fields.findLast(_._1 == key).map(_._2)
+        val expected = fields.reverse.find(_._1 == key).map(_._2)
 
         assertEquals(result1(key), expected)
         assertEquals(result2(key), expected)
