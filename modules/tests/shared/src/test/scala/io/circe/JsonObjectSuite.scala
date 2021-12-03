@@ -2,9 +2,12 @@ package io.circe
 
 import cats.data.Const
 import cats.instances.all._
+import cats.syntax.functor._
 import cats.kernel.Eq
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop.forAll
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
 class JsonObjectSuite extends CirceMunitSuite {
   property("JsonObject.fromIterable should drop all but the last instance when fields have the same key") {
@@ -59,13 +62,21 @@ class JsonObjectSuite extends CirceMunitSuite {
   }
 
   property("apply should find fields if they exist") {
-    forAll { (fields: List[(String, Json)], key: String) =>
-      val result1 = JsonObject.fromIterable(fields)
-      val result2 = JsonObject.fromFoldable(fields)
-      val expected = fields.find(_._1 == key).map(_._2)
+    val gen: Gen[(List[(String, Json)], String)] = for {
+      rawFields <- Arbitrary.arbitrary[List[(String, Json)]]
+      key <- Gen.alphaStr
+      value <- Arbitrary.arbitrary[Option[Json]]
+      fields = scala.util.Random.shuffle(rawFields ++ value.tupleLeft(key))
+    } yield (fields, key)
 
-      assertEquals(result1(key), expected)
-      assertEquals(result2(key), expected)
+    forAll(gen) {
+      case (fields, key) =>
+        val result1 = JsonObject.fromIterable(fields)
+        val result2 = JsonObject.fromFoldable(fields)
+        val expected = fields.findLast(_._1 == key).map(_._2)
+
+        assertEquals(result1(key), expected)
+        assertEquals(result2(key), expected)
     }
   }
 
