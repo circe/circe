@@ -451,11 +451,30 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    )  ++ (if (isScala3.value) Seq("org.typelevel" %% "jawn-parser" % jawnVersion) else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
+    Compile / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        CrossType.Pure.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    },
+    Test / unmanagedSourceDirectories ++= {
+      def extraDirs(suffix: String) =
+        CrossType.Pure.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + suffix))
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _            => Nil
+      }
+    }
   )
   .jsSettings(
     libraryDependencies ++= Seq(

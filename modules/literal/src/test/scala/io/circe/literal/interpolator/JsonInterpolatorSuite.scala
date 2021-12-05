@@ -1,7 +1,7 @@
 package io.circe.literal.interpolator
 
 import io.circe.{ Encoder, Json }
-import io.circe.literal.JsonStringContext
+import io.circe.literal._
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
 import munit.ScalaCheckSuite
@@ -122,7 +122,6 @@ class JsonInterpolatorSuite extends ScalaCheckSuite {
       assertEquals(parsed, Right(interpolated))
     }
   }
-
   test("The json string interpolater with interpolation in JSON key positions should work with interpolated literals") {
     val interpolated = json"""{ ${1}: "v" }"""
     val parsed = parse(s"""{ "1": "v" }""")
