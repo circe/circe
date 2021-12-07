@@ -122,6 +122,7 @@ class JsonInterpolatorSuite extends ScalaCheckSuite {
       assertEquals(parsed, Right(interpolated))
     }
   }
+
   test("The json string interpolater with interpolation in JSON key positions should work with interpolated literals") {
     val interpolated = json"""{ ${1}: "v" }"""
     val parsed = parse(s"""{ "1": "v" }""")

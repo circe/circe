@@ -2,7 +2,6 @@ package io.circe.literal
 
 import io.circe.{ Decoder, Encoder }
 import munit.FunSuite
-
 import shapeless.Witness
 
 class LiteralInstancesSuite extends FunSuite {
@@ -48,4 +47,3 @@ class LiteralInstancesSuite extends FunSuite {
     assertEquals(Decoder[w.T].apply(Encoder[w.T].apply(w.value).hcursor), Right(w.value))
   }
 }
-
