@@ -33,14 +33,14 @@ object CursorOp {
     final def requiresArray: Boolean = false
   }
 
-  final case object MoveLeft extends UnconstrainedOp
-  final case object MoveRight extends UnconstrainedOp
-  final case object MoveUp extends UnconstrainedOp
+  case object MoveLeft extends UnconstrainedOp
+  case object MoveRight extends UnconstrainedOp
+  case object MoveUp extends UnconstrainedOp
   final case class Field(k: String) extends UnconstrainedOp
   final case class DownField(k: String) extends ObjectOp
-  final case object DownArray extends ArrayOp
+  case object DownArray extends ArrayOp
   final case class DownN(n: Int) extends ArrayOp
-  final case object DeleteGoParent extends UnconstrainedOp
+  case object DeleteGoParent extends UnconstrainedOp
 
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft       => "<-"
