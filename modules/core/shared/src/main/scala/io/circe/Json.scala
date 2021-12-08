@@ -267,7 +267,7 @@ object Json {
     def onObject(value: JsonObject): X
   }
 
-  private[circe] final case object JNull extends Json {
+  private[circe] case object JNull extends Json {
     final def foldWith[X](folder: Folder[X]): X = folder.onNull
 
     final def isNull: Boolean = true

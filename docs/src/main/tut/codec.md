@@ -27,7 +27,7 @@ Use the `.as` syntax for decoding data from `Json`:
 intsJson.as[List[Int]]
 ```
 
-The `decode` function from the included [parser] module can be used to directly decode
+The `decode` function from the included `parser` module can be used to directly decode
 a JSON `String`:
 
 ```scala mdoc

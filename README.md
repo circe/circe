@@ -173,8 +173,8 @@ circe is a fork of [Argonaut][argonaut], and if you find it at all useful, you s
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archambault][archambault],
-and [Vladimir Kostyukov][vkostyukov]. After the 1.0 release, all pull requests will require two
+circe is currently maintained by [Darren Gibson][zarthross] and [Zach McCoy][zmccoy]. 
+After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
 The circe project supports the [Scala code of conduct][code-of-conduct] and wants
@@ -285,3 +285,5 @@ limitations under the License.
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
 [zenith]: https://github.com/sungiant/zenith
+[zarthross]: https://github.com/zarthross/
+[zmccoy]: https://github.com/zmccoy/

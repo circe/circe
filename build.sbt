@@ -9,7 +9,7 @@ ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.7")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
+ThisBuild / githubWorkflowJavaVersions := Seq("8").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowScalaVersions := (ThisBuild / crossScalaVersions).value.tail
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
 ThisBuild / githubWorkflowBuild := Seq(
@@ -62,9 +62,9 @@ val compilerOptions = Seq(
 )
 
 val catsVersion = "2.6.1"
-val jawnVersion = "1.2.0"
+val jawnVersion = "1.3.0"
 val shapelessVersion = "2.3.7"
-val refinedVersion = "0.9.27"
+val refinedVersion = "0.9.28"
 
 val paradiseVersion = "2.1.1"
 
@@ -193,7 +193,14 @@ lazy val docSettings = allSettings ++ Seq(
   micrositeDocumentationLabelDescription := "API Documentation",
   micrositeGithubOwner := "circe",
   micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
+  micrositeExtraMdFiles := Map(
+    file("CONTRIBUTING.md") -> ExtraMdFileConfig(
+      "contributing.md",
+      "docs",
+      Map("title" -> "Contributing", "position" -> "6")
+    )
+  ),
+  micrositeExtraMdFilesOutput := resourceManaged.value / "main" / "jekyll",
   micrositeTheme := "pattern",
   micrositePalette := Map(
     "brand-primary" -> "#5B5988",
@@ -444,11 +451,11 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ) ++ (if (isScala3.value) Seq("org.typelevel" %% "jawn-parser" % jawnVersion)
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
   .jsSettings(
     libraryDependencies ++= Seq(

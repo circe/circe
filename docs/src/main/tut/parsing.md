@@ -6,7 +6,7 @@ position: 1
 
 # Parsing JSON
 
-Circe includes a parsing module, which on the JVM is a wrapper around the [Jawn][jawn] JSON parser and for JavaScript uses the built-in [`JSON.parse`][json.parse].
+circe includes a parsing module, which on the JVM is a wrapper around the [Jawn][jawn] JSON parser and for JavaScript uses the built-in [`JSON.parse`][json.parse].
 
 Parsing is not part of the `circe-core` module, so you will need to include a dependency on the `circe-parser` module in your build:
 
