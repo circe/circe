@@ -12,7 +12,7 @@ trait Spaces2PrinterExample { this: Spaces2PrinterSuite =>
     case (acc, i) if i % 3 == 0 =>
       val count = rand.nextInt(10)
       val strings = List.fill(count)(Json.fromString(rand.nextString(count)))
-      val doubles = List.fill(count)(Json.fromDouble(rand.nextDouble)).flatten
+      val doubles = List.fill(count)(Json.fromDouble(rand.nextDouble())).flatten
 
       Json.obj(i.toString -> acc, "data" -> Json.fromValues(strings ++ doubles))
     case (acc, i) if i % 3 == 1 => Json.obj(i.toString -> acc, "data" -> Json.True)
