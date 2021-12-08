@@ -451,11 +451,11 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ) ++ (if (isScala3.value) Seq("org.typelevel" %% "jawn-parser" % jawnVersion)
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
   .jsSettings(
     libraryDependencies ++= Seq(
