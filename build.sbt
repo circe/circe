@@ -454,12 +454,11 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    ) ++ (if (isScala3.value) Seq("org.typelevel" %% "jawn-parser" % jawnVersion)
+    ) ++ (if (isScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
