@@ -700,7 +700,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-optics" % "0.13.0",
+      "io.circe" %% "circe-optics" % "0.14.1",
       "org.scalameta" %% "munit" % munitVersion % Test
     ),
     disableScala3
