@@ -38,7 +38,7 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
     }
   }
 
-  property("The pointer string interpolater should work with interpolated values that need escaping") {
+  test("The pointer string interpolater should work with interpolated values that need escaping") {
     val s = "foo~bar/baz/~"
     val Right(expected) = Pointer.parse("/base/foo~0bar~1baz~1~0/leaf")
     assertEquals(pointer"/base/$s/leaf", expected)
@@ -63,30 +63,30 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
   test("The pointer string interpolater should fail to compile on invalid literals") {
     assertNoDiff(
       compileErrors("pointer\"foo\""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |pointer"foo"
-         |^
-         |""".stripMargin
+      s"""|error: Invalid JSON Pointer in interpolated string
+          |      compileErrors("pointer\\"foo\\""),
+          |                  ^
+          |""".stripMargin
     )
   }
 
   test("The pointer string interpolater should fail with an interpolated relative distance") {
     assertNoDiff(
       compileErrors("""{val x = 1; pointer"$x/"}"""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |{val x = 1; pointer"$x/"}
-         |            ^
-         |""".stripMargin
+      s"""|error: Invalid JSON Pointer in interpolated string
+          |      compileErrors(""\"{val x = 1; pointer"$$x/"}""\"),
+          |                  ^
+          |""".stripMargin
     )
   }
 
   test("The pointer string interpolater should fail with an empty interpolated relative distance") {
     assertNoDiff(
       compileErrors("""{val x = ""; pointer"$x/"}"""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |{val x = ""; pointer"$x/"}
-         |             ^
-         |""".stripMargin
+      s"""|error: Invalid JSON Pointer in interpolated string
+          |      compileErrors(""\"{val x = ""; pointer"$$x/"}""\"),
+          |                  ^
+          |""".stripMargin
     )
   }
 }
