@@ -5,12 +5,13 @@ import sbtcrossproject.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
+def Scala3 = "3.1.0"
+
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.6")
+ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.7")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
-ThisBuild / githubWorkflowScalaVersions := (ThisBuild / crossScalaVersions).value.tail
+ThisBuild / githubWorkflowJavaVersions := Seq("8").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep
@@ -18,6 +19,17 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Run(
     List("gem install sass", "gem install jekyll -v 4.0.0"),
     name = Some("Install Jekyll")
+  ),
+  WorkflowStep.Sbt(
+    List(
+      "clean",
+      "scalafmtCheckAll",
+      "scalafmtSbtCheck",
+      "validateJVM"
+    ),
+    id = None,
+    name = Some("Test"),
+    cond = Some("${{ matrix.scala == '" + Scala3 + "' }}")
   ),
   WorkflowStep.Sbt(
     List(
@@ -30,19 +42,22 @@ ThisBuild / githubWorkflowBuild := Seq(
       "benchmark/test"
     ),
     id = None,
-    name = Some("Test")
+    name = Some("Test"),
+    cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
   ),
   WorkflowStep.Sbt(
     List("coverageReport"),
     id = None,
-    name = Some("Coverage")
+    name = Some("Coverage"),
+    cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
   ),
   WorkflowStep.Use(
     UseRef.Public(
       "codecov",
       "codecov-action",
       "v1"
-    )
+    ),
+    cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
   )
 )
 
@@ -71,7 +86,7 @@ val paradiseVersion = "2.1.1"
 val scalaTestVersion = "3.2.9"
 val scalaCheckVersion = "1.15.4"
 val munitVersion = "0.7.29"
-val disciplineVersion = "1.3.0"
+val disciplineVersion = "1.4.0"
 val disciplineScalaTestVersion = "2.1.5"
 val disciplineMunitVersion = "1.0.9"
 val scalaJavaTimeVersion = "2.3.0"
@@ -88,6 +103,40 @@ def priorTo2_13(scalaVersion: String): Boolean =
 
 val previousCirceVersion = Some("0.14.0-M3")
 val scalaFiddleCirceVersion = "0.9.1"
+
+lazy val disableScala3 = Def.settings(
+  mimaPreviousArtifacts := {
+    if (scalaBinaryVersion.value == "3") {
+      Set.empty
+    } else {
+      mimaPreviousArtifacts.value
+    }
+  },
+  libraryDependencies := {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      libraryDependencies.value
+    }
+  },
+  Seq(Compile, Test).map { x =>
+    (x / sources) := {
+      if (scalaBinaryVersion.value == "3") {
+        Nil
+      } else {
+        (x / sources).value
+      }
+    }
+  },
+  Test / test := {
+    if (scalaBinaryVersion.value == "3") {
+      ()
+    } else {
+      (Test / test).value
+    }
+  },
+  publish / skip := (scalaBinaryVersion.value == "3")
+)
 
 lazy val baseSettings = Seq(
   scalacOptions ++= {
@@ -415,7 +464,7 @@ lazy val genericJS = genericBase.js
 lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := Seq("2.13.6"),
+    crossScalaVersions := Seq("2.13.7"),
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
@@ -433,6 +482,7 @@ lazy val genericSimpleJS = genericSimpleBase.js
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    disableScala3,
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
@@ -451,15 +501,14 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ) ++ (if (isScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
@@ -470,6 +519,7 @@ lazy val literalJS = literalBase.js
 
 lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
   .settings(
+    disableScala3,
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
@@ -507,7 +557,8 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.30",
+    disableScala3,
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.29",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -540,6 +591,7 @@ lazy val testingJS = testingBase.js
 lazy val testsBase = circeCrossModule("tests", mima = None)
   .settings(noPublishSettings: _*)
   .settings(
+    disableScala3,
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
@@ -590,6 +642,7 @@ lazy val testsJS = testsBase.js
 lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
   .settings(
+    disableScala3,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(coreBase, genericBase, literalBase)
@@ -624,6 +677,7 @@ lazy val pointerJS = pointerBase.js
 lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    disableScala3,
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
@@ -648,7 +702,8 @@ lazy val benchmark = circeModule("benchmark", mima = None)
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-optics" % "0.13.0",
       "org.scalameta" %% "munit" % munitVersion % Test
-    )
+    ),
+    disableScala3
   )
   .enablePlugins(JmhPlugin)
   .dependsOn(core, generic, jawn, pointer)
@@ -732,7 +787,7 @@ credentials ++= (
 
 lazy val CompileTime = config("compile-time")
 
-val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalastyle"
+val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(

@@ -22,8 +22,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.15, 2.13.6]
-        java: [adopt@1.8]
+        scala: [3.1.0, 2.12.15, 2.13.7]
+        java: [temurin@8]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -31,10 +31,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v13
+      - name: Setup Java (temurin@8)
+        if: matrix.java == 'temurin@8'
+        uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
+          distribution: temurin
+          java-version: 8
 
       - name: Cache sbt
         uses: actions/cache@v2
@@ -62,9 +64,16 @@ jobs:
           gem install jekyll -v 4.0.0
 
       - name: Test
+        if: ${{ matrix.scala == '3.1.0' }}
+        run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJVM
+
+      - name: Test
+        if: ${{ matrix.scala != '3.1.0' }}
         run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test
 
       - name: Coverage
+        if: ${{ matrix.scala != '3.1.0' }}
         run: sbt ++${{ matrix.scala }} coverageReport
 
-      - uses: codecov/codecov-action@v1
+      - if: ${{ matrix.scala != '3.1.0' }}
+        uses: codecov/codecov-action@v1

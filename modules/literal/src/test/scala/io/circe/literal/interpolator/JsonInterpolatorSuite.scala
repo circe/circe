@@ -1,7 +1,7 @@
 package io.circe.literal.interpolator
 
 import io.circe.{ Encoder, Json }
-import io.circe.literal.JsonStringContext
+import io.circe.literal._
 import io.circe.parser.parse
 import io.circe.testing.instances.arbitraryJson
 import munit.ScalaCheckSuite
