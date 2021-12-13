@@ -23,14 +23,12 @@ private object PointerLiteralMacros {
           '{ $acc + $a.toString.replaceAll("~", "~0").replaceAll("/", "~1") + $pExpr }
       }
 
-      val t = '{
+      '{
         _root_.io.circe.pointer.Pointer
           .parse($input)
           .asInstanceOf[_root_.scala.Right[_root_.scala.Nothing, _root_.io.circe.pointer.Pointer]]
           .value
       }
-
-      t
     } else {
       q.reflect.report.error(s"Invalid JSON Pointer in interpolated string")
       '{ null }
