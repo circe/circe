@@ -126,7 +126,7 @@ class JsonObjectSuite extends CirceMunitSuite {
 
   property("kleisli should find fields if they exist") {
     forAll { (fields: List[(String, Json)], key: String) =>
-      val expected = fields.find(_._1 == key).map(_._2)
+      val expected = fields.reverse.find(_._1 == key).map(_._2)
 
       assertEquals(JsonObject.fromIterable(fields).kleisli(key), expected)
       assertEquals(JsonObject.fromFoldable(fields).kleisli(key), expected)
