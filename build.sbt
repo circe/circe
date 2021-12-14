@@ -677,7 +677,6 @@ lazy val pointerJS = pointerBase.js
 lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    disableScala3,
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
