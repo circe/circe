@@ -61,19 +61,27 @@ ThisBuild / githubWorkflowBuild := Seq(
   )
 )
 
-val compilerOptions = Seq(
-  "-deprecation",
-  "-encoding",
-  "UTF-8",
-  "-feature",
-  "-language:existentials",
-  "-language:higherKinds",
-  "-unchecked",
-  "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Xfuture",
-  "-Yno-predef",
-  "-Ywarn-unused-import"
+val compilerOptions = Def.setting(
+  Seq(
+    "-deprecation",
+    "-encoding",
+    "UTF-8",
+    "-feature",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-unchecked",
+    "-Xfuture",
+    "-Yno-predef"
+  ) ++ {
+    if (scalaBinaryVersion.value == "3")
+      Nil
+    else
+      Seq(
+        "-Ywarn-numeric-widen",
+        "-Ywarn-dead-code",
+        "-Ywarn-unused-import"
+      )
+  }
 )
 
 val catsVersion = "2.6.1"
@@ -140,9 +148,9 @@ lazy val disableScala3 = Def.settings(
 
 lazy val baseSettings = Seq(
   scalacOptions ++= {
-    if (priorTo2_13(scalaVersion.value)) compilerOptions
+    if (priorTo2_13(scalaVersion.value)) compilerOptions.value
     else
-      compilerOptions.flatMap {
+      compilerOptions.value.flatMap {
         case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
         case "-Xfuture"             => Nil
         case other                  => Seq(other)
@@ -602,8 +610,6 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
     Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue,
-    Compile / unmanagedResourceDirectories +=
-      file("modules/tests") / "shared" / "src" / "main" / "resources",
     Compile / unmanagedSourceDirectories ++= {
       def extraDirs(suffix: String) =
         List("main").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
@@ -786,7 +792,7 @@ credentials ++= (
 
 lazy val CompileTime = config("compile-time")
 
-val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
+val formatCommands = ";scalafmtCheckAll;scalafmtSbtCheck"
 
 addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
 addCommandAlias(
