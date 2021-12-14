@@ -11,7 +11,7 @@ ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.7")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-ThisBuild / githubWorkflowJavaVersions := Seq("8").map(JavaSpec.temurin)
+ThisBuild / githubWorkflowJavaVersions := Seq("8", "17").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep
