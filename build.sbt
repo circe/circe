@@ -14,12 +14,6 @@ ThisBuild / scalaVersion := crossScalaVersions.value.last
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "17").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
 ThisBuild / githubWorkflowBuild := Seq(
-  WorkflowStep
-    .Use(UseRef.Public("ruby", "setup-ruby", "v1"), params = Map("ruby-version" -> "2.7"), name = Some("Set up Ruby")),
-  WorkflowStep.Run(
-    List("gem install sass", "gem install jekyll -v 4.0.0"),
-    name = Some("Install Jekyll")
-  ),
   WorkflowStep.Sbt(
     List(
       "clean",

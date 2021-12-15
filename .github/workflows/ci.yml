@@ -60,16 +60,6 @@ jobs:
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-
-      - name: Install Jekyll
-        run: |
-          gem install sass
-          gem install jekyll -v 4.0.0
-
       - name: Test
         if: ${{ matrix.scala == '3.1.0' }}
         run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJVM
