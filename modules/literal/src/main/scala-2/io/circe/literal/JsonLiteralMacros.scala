@@ -204,15 +204,16 @@ class JsonLiteralMacros(val c: blackbox.Context) {
   }
 
   private[this] final def parse(jsonString: String, replacements: Seq[Replacement]): Either[Throwable, Tree] =
-    try Right(
-      parseMethod
-        .invoke(
-          jawnParser,
-          jsonString,
-          new TreeFacadeHandler(replacements).asProxy(jawnFacadeClass)
-        )
-        .asInstanceOf[Tree]
-    )
+    try
+      Right(
+        parseMethod
+          .invoke(
+            jawnParser,
+            jsonString,
+            new TreeFacadeHandler(replacements).asProxy(jawnFacadeClass)
+          )
+          .asInstanceOf[Tree]
+      )
     catch {
       case NonFatal(e) => Left(e)
     }
