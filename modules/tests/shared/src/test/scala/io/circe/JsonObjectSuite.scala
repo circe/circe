@@ -61,15 +61,21 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
-  property("apply should find fields if they exist") {
-    val gen: Gen[(List[(String, Json)], String)] = for {
+  val fieldsAndKeysIncluded: Gen[(List[(String, Json)], String)] = for {
       rawFields <- Arbitrary.arbitrary[List[(String, Json)]]
       key <- Gen.alphaStr
       value <- Arbitrary.arbitrary[Option[Json]]
       fields = scala.util.Random.shuffle(rawFields ++ value.tupleLeft(key))
-    } yield (fields, key)
+  } yield (fields, key)
 
-    forAll(gen) {
+  val fieldsWhereKeyNotIncluded: Gen[(List[(String, Json)], String)] = for {
+      rawFields <- Arbitrary.arbitrary[List[(String, Json)]]
+      key <- Gen.alphaStr
+      if(!rawFields.map(_._1).contains(key))
+  } yield (rawFields, key)
+
+  property("apply should find fields when they exist") {
+    forAll(fieldsAndKeysIncluded) {
       case (fields, key) =>
         val result1 = JsonObject.fromIterable(fields)
         val result2 = JsonObject.fromFoldable(fields)
@@ -80,8 +86,21 @@ class JsonObjectSuite extends CirceMunitSuite {
     }
   }
 
+  property("apply should find None when a key doesn't exist") {
+    forAll(fieldsWhereKeyNotIncluded) {
+      case (fields, key) =>
+        val result1 = JsonObject.fromIterable(fields)
+        val result2 = JsonObject.fromFoldable(fields)
+        val expected = None
+
+        assertEquals(result1(key), expected)
+        assertEquals(result2(key), expected)
+    }
+  }
+
   property("contains should find fields if they exist") {
-    forAll { (fields: List[(String, Json)], key: String) =>
+    forAll(fieldsAndKeysIncluded) { 
+      case (fields, key) =>
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.find(_._1 == key).nonEmpty
@@ -125,9 +144,19 @@ class JsonObjectSuite extends CirceMunitSuite {
   }
 
   property("kleisli should find fields if they exist") {
-    forAll { (fields: List[(String, Json)], key: String) =>
+    forAll(fieldsAndKeysIncluded) { 
+      case (fields, key) =>
       val expected = fields.reverse.find(_._1 == key).map(_._2)
 
+      assertEquals(JsonObject.fromIterable(fields).kleisli(key), expected)
+      assertEquals(JsonObject.fromFoldable(fields).kleisli(key), expected)
+    }
+  }
+
+  property("kleisli should return None if the key doesn't exist") { 
+    forAll(fieldsWhereKeyNotIncluded) { 
+      case (fields, key) => 
+      val expected = None
       assertEquals(JsonObject.fromIterable(fields).kleisli(key), expected)
       assertEquals(JsonObject.fromFoldable(fields).kleisli(key), expected)
     }
