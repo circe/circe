@@ -8,7 +8,7 @@ import scala.xml.transform.{ RewriteRule, RuleTransformer }
 def Scala3 = "3.1.0"
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.7")
+ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.8")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "17").map(JavaSpec.temurin)
@@ -466,7 +466,7 @@ lazy val genericJS = genericBase.js
 lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := Seq("2.13.7"),
+    crossScalaVersions := Seq("2.13.8"),
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
