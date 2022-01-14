@@ -4,9 +4,9 @@ import java.util.UUID
 
 import cats.instances.all._
 import io.circe.testing.KeyCodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 
-class KeyCodecSuite extends CirceSuite {
+class KeyCodecSuite extends CirceMunitSuite {
 
   checkAll("KeyCodec[String]", KeyCodecTests[String].keyCodec)
   checkAll("KeyCodec[Symbol]", KeyCodecTests[Symbol].keyCodec)

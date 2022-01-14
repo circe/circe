@@ -4,19 +4,18 @@ import cats.kernel.instances.string._
 import cats.syntax.eq._
 import cats.syntax.show._
 import io.circe.CursorOp._
-import io.circe.tests.CirceSuite
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
 
 trait GenCursorOps {
-  val arrayMoves: Gen[List[CursorOp]] = Gen.listOf(
-    Gen.oneOf(
-      Gen.const(MoveLeft),
-      Gen.const(MoveRight),
-      Gen.choose(1, 10000).map(LeftN),
-      Gen.choose(1, 10000).map(RightN)
+  val arrayMoves: Gen[List[CursorOp]] = Gen
+    .listOf(
+      Gen.oneOf(
+        Gen.choose(1, 10000).map(n => Range(1, n).toList.map(_ => MoveLeft)),
+        Gen.choose(1, 10000).map(n => Range(1, n).toList.map(_ => MoveRight))
+      )
     )
-  )
+    .map(_.flatten)
 
   val downFields: Gen[List[CursorOp]] = Gen.listOf(Gen.identifier.map(DownField))
 }
@@ -35,8 +34,13 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   test("Show[DecodingFailure] should produce the expected output on a larger example") {
     val ops = List(
       MoveLeft,
-      LeftN(2),
-      RightN(5),
+      MoveLeft,
+      MoveLeft,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
       DownArray,
       DownArray,
       DownField("bar"),
@@ -69,8 +73,6 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       val index = moves.foldLeft(0) {
         case (i, MoveLeft)  => i - 1
         case (i, MoveRight) => i + 1
-        case (i, LeftN(n))  => i - n
-        case (i, RightN(n)) => i + n
         case (i, _)         => i
       }
 

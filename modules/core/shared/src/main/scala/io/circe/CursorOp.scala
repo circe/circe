@@ -35,13 +35,7 @@ object CursorOp {
 
   final case object MoveLeft extends UnconstrainedOp
   final case object MoveRight extends UnconstrainedOp
-  @deprecated("Use Up and DownArray", "0.12.0")
-  final case object MoveFirst extends UnconstrainedOp
   final case object MoveUp extends UnconstrainedOp
-  @deprecated("Use MoveLeft", "0.12.0")
-  final case class LeftN(n: Int) extends UnconstrainedOp
-  @deprecated("Use MoveRight", "0.12.0")
-  final case class RightN(n: Int) extends UnconstrainedOp
   final case class Field(k: String) extends UnconstrainedOp
   final case class DownField(k: String) extends ObjectOp
   final case object DownArray extends ArrayOp
@@ -51,10 +45,7 @@ object CursorOp {
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft       => "<-"
     case MoveRight      => "->"
-    case MoveFirst      => "|<-"
     case MoveUp         => "_/"
-    case LeftN(n)       => "-<-:(" + n + ")"
-    case RightN(n)      => ":->-(" + n + ")"
     case Field(f)       => "--(" + f + ")"
     case DownField(f)   => "--\\(" + f + ")"
     case DownArray      => "\\\\"
@@ -83,8 +74,6 @@ object CursorOp {
       case (MoveUp, _ :: tail)                 => tail
       case (MoveRight, SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
       case (MoveLeft, SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
-      case (RightN(n), SelectIndex(i) :: tail) => SelectIndex(i + n) :: tail
-      case (LeftN(n), SelectIndex(i) :: tail)  => SelectIndex(i - n) :: tail
       case (op, acc)                           => Op(op) :: acc
     }
 

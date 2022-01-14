@@ -5,7 +5,7 @@ import cats.kernel.instances.all._
 import io.circe.{ Decoder, Encoder }
 import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
-import io.circe.tests.{ CirceSuite, MissingInstances }
+import io.circe.tests.{ CirceMunitSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
 package object jsoncodecmacrossuiteaux extends AnyRef with ArbitraryInstances with MissingInstances
@@ -153,7 +153,7 @@ package jsoncodecmacrossuiteaux {
   }
 }
 
-class JsonCodecMacrosSuite extends CirceSuite {
+class JsonCodecMacrosSuite extends CirceMunitSuite {
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
   checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
@@ -163,7 +163,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
   checkAll("Codec[RecursiveHierarchy]", CodecTests[RecursiveHierarchy].codec)
   checkAll("Codec[SelfRecursiveWithOption]", CodecTests[SelfRecursiveWithOption].codec)
 
-  "@JsonCodec" should "provide Encoder.AsObject instances" in {
+  test("@JsonCodec should provide Encoder.AsObject instances") {
     Encoder.AsObject[Simple]
     Encoder.AsObject[Single]
     Encoder.AsObject[Typed1[Int]]
@@ -174,7 +174,7 @@ class JsonCodecMacrosSuite extends CirceSuite {
     Encoder.AsObject[SelfRecursiveWithOption]
   }
 
-  it should "only require necessary element instances for generic case classes" in {
+  test("@JsonCodec should only require necessary element instances for generic case classes") {
     @JsonCodec case class GenericCaseClass[A](a: A)
     trait OnlyEncoder
     trait OnlyDecoder
@@ -184,25 +184,53 @@ class JsonCodecMacrosSuite extends CirceSuite {
     Decoder[GenericCaseClass[OnlyDecoder]]
   }
 
-  it should "allow only one, named argument set to true" in {
+  test("@JsonCodec should allow only one, named argument set to true") {
     // Can't supply both
-    assertDoesNotCompile("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)")
+    assertNoDiff(
+      compileErrors("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)"),
+      """|error: Unsupported arguments supplied to @JsonCodec
+         |@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)
+         | ^
+         |""".stripMargin
+    )
     // Must specify the argument name
-    assertDoesNotCompile("@JsonCodec(true) case class X(a: Int)")
+    assertNoDiff(
+      compileErrors("@JsonCodec(true) case class X(a: Int)"),
+      """|error: Unsupported arguments supplied to @JsonCodec
+         |@JsonCodec(true) case class X(a: Int)
+         | ^
+         |""".stripMargin
+    )
     // Can't specify false
-    assertDoesNotCompile("@JsonCodec(encodeOnly = false) case class X(a: Int)")
+    assertNoDiff(
+      compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"),
+      """|error: Unsupported arguments supplied to @JsonCodec
+         |@JsonCodec(encodeOnly = false) case class X(a: Int)
+         | ^
+         |""".stripMargin
+    )
   }
 
-  "@JsonCodec(encodeOnly = true)" should "only provide Encoder instances" in {
+  test("@JsonCodec(encodeOnly = true) should only provide Encoder instances") {
     @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
     Encoder.AsObject[CaseClassEncodeOnly]
-    assertDoesNotCompile("Decoder[CaseClassEncodeOnly]")
+    val expectedError =
+      """|error: could not find implicit value for parameter instance: io.circe.Decoder[CaseClassEncodeOnly]
+         |Decoder[CaseClassEncodeOnly]
+         |       ^
+         |""".stripMargin
+    assertNoDiff(compileErrors("Decoder[CaseClassEncodeOnly]"), expectedError)
   }
 
-  "@JsonCodec(decodeOnly = true)" should "provide Decoder instances" in {
+  test("@JsonCodec(decodeOnly = true) should provide Decoder instances") {
     @JsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
     Decoder[CaseClassDecodeOnly]
-    assertDoesNotCompile("Encoder[CaseClassDecodeOnly]")
+    val expectedError =
+      """|error: could not find implicit value for parameter instance: io.circe.Encoder[CaseClassDecodeOnly]
+         |Encoder[CaseClassDecodeOnly]
+         |       ^
+         |""".stripMargin
+    assertNoDiff(compileErrors("Encoder[CaseClassDecodeOnly]"), expectedError)
   }
 }

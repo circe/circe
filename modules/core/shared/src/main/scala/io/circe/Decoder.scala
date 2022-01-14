@@ -13,6 +13,7 @@ import cats.data.{
   Validated,
   ValidatedNel
 }
+import cats.syntax.either._
 import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
@@ -36,6 +37,7 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
+import java.util.Currency
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
@@ -84,9 +86,6 @@ trait Decoder[A] extends Serializable { self =>
    * Decode the given [[Json]] value.
    */
   final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
-
-  @deprecated("Use decodeAccumulating", "0.12.0")
-  final def accumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
 
   /**
    * Map a function over this [[Decoder]].
@@ -911,11 +910,11 @@ object Decoder
     }
   }
 
-  private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
-  private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
+  private[this] final val rightNone: Either[DecodingFailure, None.type] = Right(None)
+  private[this] final val validNone: ValidatedNel[DecodingFailure, None.type] = Validated.valid(None)
 
-  private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
-  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[Option[Nothing]] =
+  private[circe] final val keyMissingNone: Decoder.Result[None.type] = Right(None)
+  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
     Validated.valid(None)
 
   /**
@@ -964,6 +963,22 @@ object Decoder
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None)
     else {
       Left(DecodingFailure("None", c.history))
+    }
+    final override def tryDecode(c: ACursor): Decoder.Result[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) rightNone
+        else Left(DecodingFailure("None", c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("None", c.history))
+    }
+
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) validNone
+        else Validated.invalidNel(DecodingFailure("None", c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNoneAccumulating
+        else Validated.invalidNel(DecodingFailure("None", c.history))
     }
   }
 
@@ -1407,6 +1422,19 @@ object Decoder
         final def apply(c: HCursor): Result[B] = step(c, a)
       }
     }
+
+  implicit final lazy val currencyDecoder: Decoder[Currency] =
+    Decoder[String].emap(value =>
+      catsStdInstancesForEither[Throwable]
+        .catchNonFatal(
+          Currency.getInstance(value)
+        )
+        .leftMap((t: Throwable) =>
+          // As of JRE 15 `.getMessage` and `.getLocalizedMessage` return
+          // `null`, but that doesn't mean they always will.
+          Option(t.getLocalizedMessage()).getOrElse(s"Unknown or unimplemented currency value: $value")
+        )
+    )
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform

@@ -3,10 +3,10 @@ package io.circe
 import cats.kernel.Eq
 import cats.kernel.instances.all._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
-class LiteralCodecSuite extends CirceSuite {
+class LiteralCodecSuite extends CirceMunitSuite {
   implicit def arbitraryLiteral[L](implicit L: ValueOf[L]): Arbitrary[L] = Arbitrary(Gen.const(L.value))
   implicit def eqLiteral[A, L <: A](implicit A: Eq[A], L: ValueOf[L]): Eq[L] = Eq.by[L, A](identity)
 

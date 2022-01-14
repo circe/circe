@@ -5,7 +5,7 @@ import cats.kernel.instances.all._
 import cats.syntax.eq._
 import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
 object DerivesSuite {
@@ -128,7 +128,7 @@ object DerivesSuite {
   }
 }
 
-class DerivesSuite extends CirceSuite {
+class DerivesSuite extends CirceMunitSuite {
   import DerivesSuite._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)

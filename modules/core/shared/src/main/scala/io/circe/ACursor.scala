@@ -92,6 +92,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def top: Option[Json]
 
   /**
+   * Return the cursor to the root of the document.
+   *
+   * @group Access
+   */
+  def root: HCursor = null
+
+  /**
    * Modify the focus using the given function.
    *
    * @group Modification
@@ -115,9 +122,16 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   /**
    * If the focus is a JSON array, return its elements.
    *
-   * @group ObjectAccess
+   * @group ArrayAccess
    */
   def values: Option[Iterable[Json]]
+
+  /**
+   * If the focus is a value in a JSON object, return the key.
+   *
+   * @group ArrayAccess
+   */
+  def index: Option[Int] = None
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
@@ -125,6 +139,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group ObjectAccess
    */
   def keys: Option[Iterable[String]]
+
+  /**
+   * If the focus is a value in a JSON object, return the key.
+   *
+   * @group ObjectAccess
+   */
+  def key: Option[String] = None
 
   /**
    * Delete the focus and move to its parent.
@@ -153,34 +174,6 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group ArrayNavigation
    */
   def right: ACursor
-
-  /**
-   * If the focus is an element in a JSON array, move to the first element.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use up and downArray", "0.12.0")
-  def first: ACursor
-
-  /**
-   * If the focus is an element in JSON array, move to the left the given number of times.
-   *
-   * A negative value will move the cursor right.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use left", "0.12.0")
-  def leftN(n: Int): ACursor
-
-  /**
-   * If the focus is an element in JSON array, move to the right the given number of times.
-   *
-   * A negative value will move the cursor left.
-   *
-   * @group ArrayNavigation
-   */
-  @deprecated("Use right", "0.12.0")
-  def rightN(n: Int): ACursor
 
   /**
    * If the focus is a JSON array, move to its first element.
@@ -245,10 +238,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def replayOne(op: CursorOp): ACursor = op match {
     case CursorOp.MoveLeft       => left
     case CursorOp.MoveRight      => right
-    case CursorOp.MoveFirst      => first
     case CursorOp.MoveUp         => up
-    case CursorOp.LeftN(n)       => leftN(n)
-    case CursorOp.RightN(n)      => rightN(n)
     case CursorOp.Field(k)       => field(k)
     case CursorOp.DownField(k)   => downField(k)
     case CursorOp.DownArray      => downArray
