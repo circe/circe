@@ -113,7 +113,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.14.0-M3")
+val previousCirceVersion = Some("0.14.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val disableScala3 = Def.settings(
