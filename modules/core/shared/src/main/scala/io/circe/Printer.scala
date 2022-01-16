@@ -74,8 +74,8 @@ final case class Printer(
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
-  private[this] final class AppendableByteBufferFolder(
-    writer: Printer.AppendableByteBuffer
+  private[this] final class AppendableFolder(
+    writer: Appendable
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
@@ -189,9 +189,7 @@ final case class Printer(
       w
     } else new StringBuilder()
 
-    val folder = new StringBuilderFolder(writer)
-
-    json.foldWith(folder)
+    unsafePrintToAppendable(json, writer)
 
     writer.toString
   }
@@ -209,15 +207,22 @@ final case class Printer(
       else Printer.NoSizePredictor
 
     val writer = new Printer.AppendableByteBuffer(cs, predictor)
-    val folder = new AppendableByteBufferFolder(writer)
-
-    json.foldWith(folder)
+    unsafePrintToAppendable(json, writer)
 
     writer.toByteBuffer
   }
 
   final def printToByteBuffer(json: Json): ByteBuffer =
     printToByteBuffer(json, StandardCharsets.UTF_8)
+
+  /**
+   * Prints the JSON value by appending directly to the provided `Appendable`.
+   * This method is UNSAFE and SIDE-EFFECTING!
+   */
+  final def unsafePrintToAppendable(json: Json, out: Appendable): Unit = {
+    val folder = new AppendableFolder(out)
+    json.foldWith(folder)
+  }
 
   /**
    * The same pretty-printer configuration that outputs fields in sorted order.
