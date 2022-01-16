@@ -493,7 +493,6 @@ lazy val testing = circeCrossModule("testing")
 lazy val tests = circeCrossModule("tests")
   .enablePlugins(NoPublishPlugin)
   .settings(
-    disableScala3,
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
