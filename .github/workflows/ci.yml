@@ -60,11 +60,14 @@ jobs:
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
-      - name: Test
+      - name: Test JVM
         if: ${{ matrix.scala == '3.1.0' }}
         run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJVM
 
-      - name: Test
+      - name: Test JS
+        run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJS
+
+      - name: Test JVM
         if: ${{ matrix.scala != '3.1.0' }}
         run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test
 

@@ -22,8 +22,18 @@ ThisBuild / githubWorkflowBuild := Seq(
       "validateJVM"
     ),
     id = None,
-    name = Some("Test"),
+    name = Some("Test JVM"),
     cond = Some("${{ matrix.scala == '" + Scala3 + "' }}")
+  ),
+  WorkflowStep.Sbt(
+    List(
+      "clean",
+      "scalafmtCheckAll",
+      "scalafmtSbtCheck",
+      "validateJS"
+    ),
+    id = None,
+    name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
     List(
@@ -36,7 +46,7 @@ ThisBuild / githubWorkflowBuild := Seq(
       "benchmark/test"
     ),
     id = None,
-    name = Some("Test"),
+    name = Some("Test JVM"),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
   ),
   WorkflowStep.Sbt(
@@ -511,7 +521,8 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
   )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
     )
   )
   .dependsOn(coreBase, parserBase % Test, testingBase % Test)
