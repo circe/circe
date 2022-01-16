@@ -197,7 +197,28 @@ def circeProject(path: String)(project: Project) = {
     description := s"circe $docName",
     moduleName := s"circe-$path",
     name := s"Circe $docName",
-    allSettings
+    allSettings,
+    mimaBinaryIssueFilters ++= {
+      import com.typesafe.tools.mima.core._
+      Seq( // Methods were added... this is fine.
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryMissingField_=",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryWrongTypeExpectation_=",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryCustomReason_=",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$arbitraryReason_=",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryMissingField",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryWrongTypeExpectation",
+        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryCustomReason",
+        "io.circe.testing.ArbitraryInstances.arbitraryReason"
+      ).map(ProblemFilters.exclude[ReversedMissingMethodProblem](_)) ++ Seq(
+        // Pointer literals were refactored, but in a binary compatable way. These warnings are just because private stuff changed in ways that
+        // That would not be bin-compat if used from java... but this is Macro Code so it should be fine.
+        ProblemFilters.exclude[FinalClassProblem]("io.circe.pointer.literal.PointerLiteralMacros"),
+        ProblemFilters.exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.c"),
+        ProblemFilters
+          .exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.pointerStringContext"),
+        ProblemFilters.exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.this")
+      )
+    }
   )
 }
 

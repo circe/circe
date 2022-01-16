@@ -45,6 +45,11 @@ object ParsingFailure {
  * decoding history resulting in the failure.
  */
 sealed abstract class DecodingFailure(val reason: Reason) extends Error {
+  // Added to satisfy MiMA
+  def this(message: String) = {
+    this(CustomReason(message))
+  }
+
   def history: List[CursorOp]
 
   val message: String = reason match {
