@@ -197,28 +197,7 @@ def circeProject(path: String)(project: Project) = {
     description := s"circe $docName",
     moduleName := s"circe-$path",
     name := s"Circe $docName",
-    allSettings,
-    mimaBinaryIssueFilters ++= {
-      import com.typesafe.tools.mima.core._
-      Seq( // Methods were added... this is fine.
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryMissingField_=",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryWrongTypeExpectation_=",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$io$circe$testing$ArbitraryInstances$$arbitraryCustomReason_=",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$_setter_$arbitraryReason_=",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryMissingField",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryWrongTypeExpectation",
-        "io.circe.testing.ArbitraryInstances.io$circe$testing$ArbitraryInstances$$arbitraryCustomReason",
-        "io.circe.testing.ArbitraryInstances.arbitraryReason"
-      ).map(ProblemFilters.exclude[ReversedMissingMethodProblem](_)) ++ Seq(
-        // Pointer literals were refactored, but in a binary compatable way. These warnings are just because private stuff changed in ways that
-        // That would not be bin-compat if used from java... but this is Macro Code so it should be fine.
-        ProblemFilters.exclude[FinalClassProblem]("io.circe.pointer.literal.PointerLiteralMacros"),
-        ProblemFilters.exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.c"),
-        ProblemFilters
-          .exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.pointerStringContext"),
-        ProblemFilters.exclude[DirectMissingMethodProblem]("io.circe.pointer.literal.PointerLiteralMacros.this")
-      )
-    }
+    allSettings
   )
 }
 
@@ -226,7 +205,7 @@ def circeModule(path: String, mima: Option[String]): Project = {
   val id = path.split("-").reduce(_ + _.capitalize)
   Project(id, file(s"modules/$path"))
     .configure(circeProject(path))
-    .settings(mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet)
+    .settings(mimaPreviousArtifacts := mima.map("io.circe" %%% moduleName.value % _).toSet)
 }
 
 def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
@@ -235,8 +214,8 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
-    .jvmSettings(
-      mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
+    .settings(
+      mimaPreviousArtifacts := mima.map("io.circe" %%% moduleName.value % _).toSet
     )
     .jsSettings(
       coverageEnabled := false,
@@ -338,6 +317,7 @@ lazy val docs = project
   )
   .settings(docSettings)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(macroSettings)
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
@@ -402,6 +382,7 @@ lazy val circe = project
   .in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     console / initialCommands :=
       """
@@ -577,10 +558,14 @@ lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
 lazy val scalajs =
-  circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).settings(jsProjectSettings).dependsOn(coreJS)
+  circeModule("scalajs", mima = previousCirceVersion)
+    .enablePlugins(ScalaJSPlugin)
+    .settings(jsProjectSettings)
+    .dependsOn(coreJS)
 lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
   .enablePlugins(ScalaJSPlugin)
-  .settings(noPublishSettings: _*)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test
@@ -623,7 +608,8 @@ lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js
 
 lazy val testsBase = circeCrossModule("tests", mima = None)
-  .settings(noPublishSettings: _*)
+  .disablePlugins(MimaPlugin)
+  .settings(noPublishSettings)
   .settings(
     disableScala3,
     scalacOptions ~= {
@@ -673,6 +659,7 @@ lazy val testsJS = testsBase.js
 
 lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     disableScala3,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
@@ -692,7 +679,10 @@ lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossT
   .dependsOn(coreBase)
 
 lazy val jawn = jawnBase.jvm
-lazy val jawnJS = jawnBase.js
+lazy val jawnJS = jawnBase.js.settings(
+  mimaPreviousArtifacts := Set.empty, // Unsupported until 0.15.0-M1
+  mimaFailOnNoPrevious := false
+)
 
 lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
@@ -726,6 +716,7 @@ lazy val extrasJS = extrasBase.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
@@ -741,6 +732,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
 
 lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
