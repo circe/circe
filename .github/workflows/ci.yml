@@ -93,15 +93,6 @@ jobs:
         with:
           flags: ${{matrix.scala}},${{matrix.java}}
 
-      - name: Compress target directories
-        run: tar cf targets.tar modules/shapes/.js/target modules/numbers-testing/.jvm/target modules/testing/jvm/target modules/extras/js/target circeJVM/target modules/generic/jvm/target modules/generic-simple/.jvm/target modules/literal/.jvm/target modules/parser/jvm/target modules/literal/.js/target modules/parser/js/target modules/scalajs/target docs/target modules/shapes/.jvm/target modules/jawn/jvm/target modules/core/js/target modules/hygiene/jvm/target modules/testing/js/target circeJS/target modules/generic/js/target modules/jawn/js/target modules/hygiene/js/target modules/core/jvm/target modules/pointer-literal/.js/target modules/tests/js/target modules/numbers-testing/.js/target modules/pointer/.js/target modules/refined/js/target modules/pointer/.jvm/target modules/pointer-literal/.jvm/target target modules/scodec/jvm/target modules/scodec/js/target modules/refined/jvm/target modules/benchmark-dotty/target modules/scalajs-java-time-test/target modules/numbers/js/target modules/tests/jvm/target modules/extras/jvm/target modules/generic-simple/.js/target modules/numbers/jvm/target modules/benchmark/target project/target
-
-      - name: Upload target directories
-        uses: actions/upload-artifact@v2
-        with:
-          name: target-${{ matrix.os }}-${{ matrix.scala }}-${{ matrix.java }}
-          path: targets.tar
-
   scalafmt:
     name: Scalafmt
     strategy:
