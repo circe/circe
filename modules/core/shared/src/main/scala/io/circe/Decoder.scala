@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ ApplicativeError, MonadError, SemigroupK }
+import cats.{ ApplicativeError, Eval, MonadError, SemigroupK }
 import cats.data.{
   Chain,
   Kleisli,
@@ -1442,6 +1442,8 @@ object Decoder
         fa.product(fb).map {
           case (a, b) => f(a, b)
         }
+      override final def map2Eval[A, B, Z](fa: Decoder[A], fb: Eval[Decoder[B]])(f: (A, B) => Z): Eval[Decoder[Z]] =
+        fb.map(fb => map2(fa, fb)(f))
       override final def productR[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[B] = fa.product(fb).map(_._2)
       override final def productL[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[A] = fa.product(fb).map(_._1)
 

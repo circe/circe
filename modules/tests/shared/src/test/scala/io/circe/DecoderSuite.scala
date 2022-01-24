@@ -384,6 +384,9 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     }
 
     test(" should match the rounding of Float.parseFloat for known problematic inputs (#1063)") {
+      assume(
+        !scala.sys.props.get("java.vm.name").contains("Scala.js")
+      ) // Disabling on JS because it behaves very differently from JVM
       val bad1 = "1.199999988079071"
       val bad2 = "7.038531E-26"
 
