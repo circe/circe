@@ -7,3 +7,4 @@ import io.circe.tests.CirceMunitSuite
  * limitations) on Scala.js.
  */
 trait LargeNumberDecoderTests { this: CirceMunitSuite => }
+trait LargeNumberDecoderTestsMunit { this: CirceMunitSuite => }
