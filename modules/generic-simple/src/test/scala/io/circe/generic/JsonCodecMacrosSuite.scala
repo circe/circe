@@ -177,7 +177,7 @@ class JsonCodecMacrosSuite extends CirceMunitSuite {
     // Must specify the argument name
     assertNoDiff(compileErrors("@JsonCodec(true) case class X(a: Int)"), "")
     // Can't specify false
-    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"),"")
+    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"), "")
   }
 
   test("@JsonCodec(encodeOnly = true) should only provide Encoder instances") {

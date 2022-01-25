@@ -91,13 +91,15 @@ class AutoDerivedSuite extends CirceMunitSuite {
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
 
-  property("Decoder[Int => Qux[String]] should decode partial JSON representations"){ forAll { (i: Int, s: String, j: Int) =>
-    val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
-    val result = json.as[Int => Qux[String]].map(_(i))
-    assertEquals(result, Right(Qux(i, s, j)))
-  }}
+  property("Decoder[Int => Qux[String]] should decode partial JSON representations") {
+    forAll { (i: Int, s: String, j: Int) =>
+      val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
+      val result = json.as[Int => Qux[String]].map(_(i))
+      assertEquals(result, Right(Qux(i, s, j)))
+    }
+  }
 
-  property("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] should decode partial JSON representations"){
+  property("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] should decode partial JSON representations") {
     forAll { (i: Int, s: String, j: Int) =>
       val json = Json.obj("i" -> Json.fromInt(i), "a" -> Json.fromString(s))
       val result = json.as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(_(field(j)))
@@ -119,9 +121,9 @@ class AutoDerivedSuite extends CirceMunitSuite {
     }
   }
 
-  group("A generically derived codec should "){
+  group("A generically derived codec should ") {
 
-    property("not interfere with base instances"){
+    property("not interfere with base instances") {
       forAll { (is: List[Int]) =>
         val json = Encoder[List[Int]].apply(is)
         assertEquals(json, Json.fromValues(is.map(Json.fromInt)))
@@ -134,13 +136,13 @@ class AutoDerivedSuite extends CirceMunitSuite {
       illTyped("Encoder[Object]")
     }
 
-    test("A generically derived codec should not interfere with base instances should not be derived for AnyRef")  {
+    test("A generically derived codec should not interfere with base instances should not be derived for AnyRef") {
       illTyped("Decoder[AnyRef]")
       illTyped("Encoder[AnyRef]")
     }
   }
 
-  property("Generic decoders should not interfere with defined decoders"){
+  property("Generic decoders should not interfere with defined decoders") {
     forAll { (xs: List[String]) =>
       val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
@@ -148,11 +150,13 @@ class AutoDerivedSuite extends CirceMunitSuite {
     }
   }
 
-  property("Generic encoders should not interfere with defined encoders"){ forAll { (xs: List[String]) =>
-    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+  property("Generic encoders should not interfere with defined encoders") {
+    forAll { (xs: List[String]) =>
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-    assertEquals(Encoder[Foo].apply(Baz(xs): Foo), json)
-  }}
+      assertEquals(Encoder[Foo].apply(Baz(xs): Foo), json)
+    }
+  }
 
   checkAll("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
   checkAll("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)

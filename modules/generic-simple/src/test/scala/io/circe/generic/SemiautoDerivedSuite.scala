@@ -156,11 +156,13 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
     ).codec
   )
 
-  property("Decoder[Int => Qux[String]] should decode partial JSON representations"){ forAll { (i: Int, s: String, j: Int) =>
-    val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
-    val result = json.as[Int => Qux[String]].map(_(i))
-    assertEquals(result, Right(Qux(i, s, j)))
-  }}
+  property("Decoder[Int => Qux[String]] should decode partial JSON representations") {
+    forAll { (i: Int, s: String, j: Int) =>
+      val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
+      val result = json.as[Int => Qux[String]].map(_(i))
+      assertEquals(result, Right(Qux(i, s, j)))
+    }
+  }
 
   test("Decoder[Int => Qux[String]] should return as many errors as invalid elements in a partial case class") {
     val decoded = deriveFor[Int => Qux[String]].incomplete.decodeAccumulating(Json.obj().hcursor)
@@ -191,13 +193,15 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
     }
   }
 
-  group("A generically derived codec should"){
-    property("not interfere with base instances"){ forAll { (is: List[Int]) =>
-      val json = Encoder[List[Int]].apply(is)
+  group("A generically derived codec should") {
+    property("not interfere with base instances") {
+      forAll { (is: List[Int]) =>
+        val json = Encoder[List[Int]].apply(is)
 
-      assertEquals(json, Json.fromValues(is.map(Json.fromInt)))
-      assertEquals(json.as[List[Int]], Right(is))
-    }}
+        assertEquals(json, Json.fromValues(is.map(Json.fromInt)))
+        assertEquals(json.as[List[Int]], Right(is))
+      }
+    }
 
     test("not come from nowhere") {
       implicitly[DerivedDecoder[OvergenerationExampleInner]]
