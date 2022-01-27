@@ -3,7 +3,7 @@ package io.circe.derivation
 import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
-import io.circe.{Encoder, Json}
+import io.circe.{ Encoder, Json }
 
 trait ConfiguredEnumEncoder[A] extends Encoder[A]
 object ConfiguredEnumEncoder:
@@ -13,6 +13,8 @@ object ConfiguredEnumEncoder:
     val labels = summonLabels[mirror.MirroredElemLabels].toArray.map(conf.transformConstructorNames)
     new ConfiguredEnumEncoder[A]:
       def apply(a: A): Json = Json.fromString(labels(mirror.ordinal(a)))
-  
-  inline final def derive[A: Mirror.SumOf](transformConstructorNames: String => String = Configuration.default.transformConstructorNames): Encoder[A] =
+
+  inline final def derive[A: Mirror.SumOf](
+    transformConstructorNames: String => String = Configuration.default.transformConstructorNames
+  ): Encoder[A] =
     derived[A](using Configuration.default.withTransformConstructorNames(transformConstructorNames))
