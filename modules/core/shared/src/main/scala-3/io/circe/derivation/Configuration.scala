@@ -2,6 +2,7 @@ package io.circe.derivation
 
 object Configuration:
   val default: Configuration = Configuration()
+
 /**
  * Configuration allowing customisation of the JSON produced when encoding, or expected when decoding.
  *
@@ -20,23 +21,23 @@ case class Configuration(
   transformConstructorNames: String => String = Predef.identity,
   useDefaults: Boolean = true,
   discriminator: Option[String] = None,
-  strictDecoding: Boolean = false,
+  strictDecoding: Boolean = false
 ):
   def withTransformMemberNames(f: String => String): Configuration = copy(transformMemberNames = f)
   def withSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.snakeCase)
   def withScreamingSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.screamingSnakeCase)
   def withKebabCaseMemberNames: Configuration = withTransformMemberNames(renaming.kebabCase)
-  
+
   def withTransformConstructorNames(f: String => String): Configuration = copy(transformConstructorNames = f)
   def withSnakeCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.snakeCase)
   def withScreamingSnakeCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.screamingSnakeCase)
   def withKebabCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.kebabCase)
-  
+
   def withDefaults: Configuration = copy(useDefaults = true)
   def withoutDefaults: Configuration = copy(useDefaults = false)
-  
+
   def withDiscriminator(discriminator: String): Configuration = copy(discriminator = Some(discriminator))
   def withoutDiscriminator: Configuration = copy(discriminator = None)
-  
+
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
   def withoutStrictDecoding: Configuration = copy(strictDecoding = false)

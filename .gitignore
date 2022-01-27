@@ -9,3 +9,8 @@ target/
 .classpath
 .bsp/
 tmp/
+
+.bloop/
+.metals/
+.vscode/
+.directory
