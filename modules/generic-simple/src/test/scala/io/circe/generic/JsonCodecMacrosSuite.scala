@@ -199,13 +199,23 @@ class JsonCodecMacrosSuite extends CirceMunitSuite {
     @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
     Encoder.AsObject[CaseClassEncodeOnly]
-    compileErrors("Decoder[CaseClassEncodeOnly]")
+    assertNoDiff(compileErrors("Decoder[CaseClassEncodeOnly]"), 
+    """|error: could not find implicit value for parameter instance: io.circe.Decoder[CaseClassEncodeOnly]
+       |Decoder[CaseClassEncodeOnly]
+       |       ^
+       |""".stripMargin
+    )
   }
 
   test("@JsonCodec(decodeOnly = true) should provide Decoder instances") {
     @JsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
     Decoder[CaseClassDecodeOnly]
-    compileErrors("Encoder[CaseClassDecodeOnly]")
+    assertNoDiff(compileErrors("Encoder[CaseClassDecodeOnly]"), 
+    """|error: could not find implicit value for parameter instance: io.circe.Encoder[CaseClassDecodeOnly]
+       |Encoder[CaseClassDecodeOnly]
+       |       ^
+       |""".stripMargin
+    )
   }
   
 }
