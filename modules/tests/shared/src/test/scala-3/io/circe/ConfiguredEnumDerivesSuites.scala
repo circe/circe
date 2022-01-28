@@ -4,13 +4,13 @@ import cats.kernel.Eq
 import cats.kernel.instances.all.*
 import cats.syntax.eq.*
 import cats.data.Validated
-import io.circe.{Codec, Decoder, DecodingFailure, Encoder, Json}
+import io.circe.{ Codec, Decoder, DecodingFailure, Encoder, Json }
 import io.circe.CursorOp.DownField
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.derivation.*
 import io.circe.syntax.*
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 
 object ConfiguredEnumDerivesSuites:
@@ -24,7 +24,7 @@ object ConfiguredEnumDerivesSuites:
         Gen.const(IntercardinalDirections.NorthEast),
         Gen.const(IntercardinalDirections.SouthEast),
         Gen.const(IntercardinalDirections.SouthWest),
-        Gen.const(IntercardinalDirections.NorthWest),
+        Gen.const(IntercardinalDirections.NorthWest)
       )
     )
 class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
@@ -62,16 +62,18 @@ class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
   test("Configuration#transformConstructorNames should support constructor name transformation with snake_case") {
     given Configuration = Configuration.default.withSnakeCaseConstructorNames
     given Codec[IntercardinalDirections] = ConfiguredEnumCodec.derived
-    
+
     val direction = IntercardinalDirections.NorthEast
     val json = Json.fromString("north_east")
     assert(summon[Encoder[IntercardinalDirections]].apply(direction) === json)
     assert(summon[Decoder[IntercardinalDirections]].decodeJson(json) === Right(direction))
   }
-  test("Configuration#transformConstructorNames should support constructor name transformation with SCREAMING_SNAKE_CASE") {
+  test(
+    "Configuration#transformConstructorNames should support constructor name transformation with SCREAMING_SNAKE_CASE"
+  ) {
     given Configuration = Configuration.default.withScreamingSnakeCaseConstructorNames
     given Codec[IntercardinalDirections] = ConfiguredEnumCodec.derived
-    
+
     val direction = IntercardinalDirections.SouthEast
     val json = Json.fromString("SOUTH_EAST")
     assert(summon[Encoder[IntercardinalDirections]].apply(direction) === json)
@@ -80,7 +82,7 @@ class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
   test("Configuration#transformConstructorNames should support constructor name transformation with kebab-case") {
     given Configuration = Configuration.default.withKebabCaseConstructorNames
     given Codec[IntercardinalDirections] = ConfiguredEnumCodec.derived
-    
+
     val direction = IntercardinalDirections.SouthWest
     val json = Json.fromString("south-west")
     assert(summon[Encoder[IntercardinalDirections]].apply(direction) === json)

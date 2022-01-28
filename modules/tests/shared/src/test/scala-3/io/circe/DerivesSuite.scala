@@ -149,7 +149,7 @@ object DerivesSuite {
         Arbitrary.arbitrary[Vegetable.Potato],
         Arbitrary.arbitrary[Vegetable.Carrot],
         Arbitrary.arbitrary[Vegetable.Onion],
-        Arbitrary.arbitrary[Vegetable.Turnip.type],
+        Arbitrary.arbitrary[Vegetable.Turnip.type]
       )
     )
 
