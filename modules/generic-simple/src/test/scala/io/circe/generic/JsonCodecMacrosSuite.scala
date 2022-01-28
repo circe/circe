@@ -150,7 +150,7 @@ package jsoncodecmacrossuiteaux {
   }
 }
 
-class JsonCodecMacrosSuite extends CirceMunitSuite {
+class JsonCodecMacrosSuite extends CirceMunitSuite { 
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
   checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)
@@ -173,23 +173,49 @@ class JsonCodecMacrosSuite extends CirceMunitSuite {
 
   test("@JsonCodec should allow only one, named argument set to true") {
     // Can't supply both
-    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)"), "")
+    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)"), 
+    """|error: Unsupported arguments supplied to @JsonCodec
+       |@JsonCodec(encodeOnly = true, decodeOnly = true) case class X(a: Int)
+       | ^
+       |""".stripMargin
+    )
     // Must specify the argument name
-    assertNoDiff(compileErrors("@JsonCodec(true) case class X(a: Int)"), "")
+    assertNoDiff(compileErrors("@JsonCodec(true) case class X(a: Int)"),
+    """|error: Unsupported arguments supplied to @JsonCodec
+       |@JsonCodec(true) case class X(a: Int)
+       | ^
+       |""".stripMargin
+    )
     // Can't specify false
-    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"), "")
+    assertNoDiff(compileErrors("@JsonCodec(encodeOnly = false) case class X(a: Int)"), 
+    """|error: Unsupported arguments supplied to @JsonCodec
+       |@JsonCodec(encodeOnly = false) case class X(a: Int)
+       | ^
+       |""".stripMargin
+    )
   }
 
   test("@JsonCodec(encodeOnly = true) should only provide Encoder instances") {
     @JsonCodec(encodeOnly = true) case class CaseClassEncodeOnly(foo: String, bar: Int)
     Encoder[CaseClassEncodeOnly]
     Encoder.AsObject[CaseClassEncodeOnly]
-    assertNoDiff(compileErrors("Decoder[CaseClassEncodeOnly]"), "")
+    assertNoDiff(compileErrors("Decoder[CaseClassEncodeOnly]"), 
+    """|error: could not find implicit value for parameter instance: io.circe.Decoder[CaseClassEncodeOnly]
+       |Decoder[CaseClassEncodeOnly]
+       |       ^
+       |""".stripMargin
+    )
   }
 
   test("@JsonCodec(decodeOnly = true) should provide Decoder instances") {
     @JsonCodec(decodeOnly = true) case class CaseClassDecodeOnly(foo: String, bar: Int)
     Decoder[CaseClassDecodeOnly]
-    assertNoDiff(compileErrors("Encoder[CaseClassDecodeOnly]"), "")
+    assertNoDiff(compileErrors("Encoder[CaseClassDecodeOnly]"), 
+    """|error: could not find implicit value for parameter instance: io.circe.Encoder[CaseClassDecodeOnly]
+       |Encoder[CaseClassDecodeOnly]
+       |       ^
+       |""".stripMargin
+    )
   }
+  
 }
