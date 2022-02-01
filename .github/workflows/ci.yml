@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.1.0, 2.12.15, 2.13.8]
+        scala: [3.1.1, 2.12.15, 2.13.8]
         java: [temurin@8, temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
@@ -61,19 +61,19 @@ jobs:
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
       - name: Test JVM
-        if: ${{ matrix.scala == '3.1.0' }}
+        if: ${{ matrix.scala == '3.1.1' }}
         run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJVM
 
       - name: Test JS
         run: sbt ++${{ matrix.scala }} clean scalafmtCheckAll scalafmtSbtCheck validateJS
 
       - name: Test JVM
-        if: ${{ matrix.scala != '3.1.0' }}
+        if: ${{ matrix.scala != '3.1.1' }}
         run: sbt ++${{ matrix.scala }} clean coverage scalastyle scalafmtCheckAll scalafmtSbtCheck validateJVM benchmark/test
 
       - name: Coverage
-        if: ${{ matrix.scala != '3.1.0' }}
+        if: ${{ matrix.scala != '3.1.1' }}
         run: sbt ++${{ matrix.scala }} coverageReport
 
-      - if: ${{ matrix.scala != '3.1.0' }}
+      - if: ${{ matrix.scala != '3.1.1' }}
         uses: codecov/codecov-action@v1
