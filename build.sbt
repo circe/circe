@@ -11,43 +11,44 @@ ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.8")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-ThisBuild / githubWorkflowJavaVersions := Seq("8", "17").map(JavaSpec.temurin)
+ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
+ThisBuild / githubWorkflowBuildPreamble +=
+  WorkflowStep.Use(
+    UseRef.Public("actions", "setup-node", "v2.4.0"),
+    name = Some("Setup NodeJS v16"),
+    params = Map("node-version" -> "16"),
+    cond = Some("matrix.ci == 'ciNodeJS'")
+  )
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List(
       "clean",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
       "validateJVM"
     ),
     id = None,
-    name = Some("Test JVM"),
+    name = Some("Test JVM (without coverage)"),
     cond = Some("${{ matrix.scala == '" + Scala3 + "' }}")
-  ),
-  WorkflowStep.Sbt(
-    List(
-      "clean",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
-      "validateJS"
-    ),
-    id = None,
-    name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
     List(
       "clean",
       "coverage",
       "scalastyle",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
       "validateJVM",
       "benchmark/test"
     ),
     id = None,
     name = Some("Test JVM"),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
+  ),
+  WorkflowStep.Sbt(
+    List(
+      "clean",
+      "validateJS"
+    ),
+    id = None,
+    name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
     List("coverageReport"),
@@ -59,9 +60,44 @@ ThisBuild / githubWorkflowBuild := Seq(
     UseRef.Public(
       "codecov",
       "codecov-action",
-      "v1"
+      "v2"
+    ),
+    params = Map(
+      "flags" -> List("${{matrix.scala}}", "${{matrix.java}}").mkString(",")
     ),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
+  )
+)
+
+ThisBuild / githubWorkflowAddedJobs ++= Seq(
+  WorkflowJob(
+    "scalafmt",
+    "Scalafmt",
+    githubWorkflowJobSetup.value.toList ::: List(
+      WorkflowStep.Sbt(
+        List("scalafmtCheckAll", "scalafmtSbtCheck"),
+        name = Some("Scalafmt tests")
+      )
+    ),
+    scalas = crossScalaVersions.value.toList,
+    javas = List(JavaSpec.temurin("8"))
+  ),
+  WorkflowJob(
+    "mima",
+    "Mima",
+    githubWorkflowJobSetup.value.toList :::
+      List(
+        WorkflowStep.Sbt(
+          List("mimaReportBinaryIssuesJVM"),
+          name = Some("Mima Check Java")
+        ),
+        WorkflowStep.Sbt(
+          List("mimaReportBinaryIssuesJS"),
+          name = Some("Mima Check NodeJS")
+        )
+      ),
+    scalas = crossScalaVersions.value.toList,
+    javas = List(JavaSpec.temurin("8"))
   )
 )
 
@@ -113,17 +149,10 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.14.0-M3")
+val previousCirceVersion = Some("0.14.0")
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val disableScala3 = Def.settings(
-  mimaPreviousArtifacts := {
-    if (scalaBinaryVersion.value == "3") {
-      Set.empty
-    } else {
-      mimaPreviousArtifacts.value
-    }
-  },
   libraryDependencies := {
     if (scalaBinaryVersion.value == "3") {
       Nil
@@ -205,7 +234,9 @@ def circeModule(path: String, mima: Option[String]): Project = {
   val id = path.split("-").reduce(_ + _.capitalize)
   Project(id, file(s"modules/$path"))
     .configure(circeProject(path))
-    .settings(mimaPreviousArtifacts := mima.map("io.circe" %%% moduleName.value % _).toSet)
+    .settings(
+      mima.map(version => mimaPreviousArtifacts := Set("io.circe" %%% moduleName.value % version)).toSeq
+    )
 }
 
 def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
@@ -215,7 +246,7 @@ def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = 
     .settings(allSettings)
     .configure(circeProject(path))
     .settings(
-      mimaPreviousArtifacts := mima.map("io.circe" %%% moduleName.value % _).toSet
+      mima.map(version => mimaPreviousArtifacts := Set("io.circe" %%% moduleName.value % version)).toSeq
     )
     .jsSettings(
       coverageEnabled := false,
@@ -394,7 +425,22 @@ lazy val circe = project
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, generic, literal, parser)
+
+lazy val circeJS = project
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
+  .aggregate(
+    jsProjects.map(p => p: ProjectReference): _*
+  )
+
+lazy val circeJVM = project
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
+  .aggregate(
+    jvmProjects.map(p => p: ProjectReference): _*
+  )
 
 lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
   scalacOptions ~= {
@@ -812,14 +858,16 @@ lazy val CompileTime = config("compile-time")
 
 val formatCommands = ";scalafmtCheckAll;scalafmtSbtCheck"
 
-addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
+addCommandAlias("buildJVM", "circeJVM/compile")
+addCommandAlias("mimaReportBinaryIssuesJVM", "circeJVM/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJVM",
-  ";buildJVM" + jvmProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJVM;circeJVM/test" + formatCommands
 )
-addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
+addCommandAlias("buildJS", "circeJS/compile")
+addCommandAlias("mimaReportBinaryIssuesJS", "circeJVM/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJS",
-  ";buildJS" + jsProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJS;circeJS/test" + formatCommands
 )
 addCommandAlias("validate", ";validateJVM;validateJS")
