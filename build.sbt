@@ -90,7 +90,7 @@ val compilerOptions = Def.setting(
 
 val catsVersion = "2.7.0"
 val jawnVersion = "1.3.2"
-val shapelessVersion = "2.3.7"
+val shapelessVersion = "2.3.8"
 val refinedVersion = "0.9.28"
 
 val paradiseVersion = "2.1.1"
