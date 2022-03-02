@@ -13,7 +13,7 @@ case class Replacement(val placeholder: String, argument: Expr[Any]) {
           case '[t] =>
             Expr.summon[Encoder[t]] match {
               case Some(encoder) => '{ $encoder.apply($arg.asInstanceOf[t]) }
-              case None          => report.error(s"could not find implicit Encoder for ${Type.show[t]}", arg); '{ null }
+              case None          => report.errorAndAbort(s"could not find implicit Encoder for ${Type.show[t]}", arg)
             }
         }
       }
@@ -28,7 +28,7 @@ case class Replacement(val placeholder: String, argument: Expr[Any]) {
           case '[t] =>
             Expr.summon[KeyEncoder[t]] match {
               case Some(encoder) => '{ $encoder.apply($arg.asInstanceOf[t]) }
-              case None => report.error(s"could not find implicit for ${Type.show[KeyEncoder[t]]}", arg); '{ null }
+              case None => report.errorAndAbort(s"could not find implicit for ${Type.show[KeyEncoder[t]]}", arg)
             }
         }
     }
