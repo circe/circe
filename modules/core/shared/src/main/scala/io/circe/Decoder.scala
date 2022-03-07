@@ -18,6 +18,7 @@ import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
 import io.circe.`export`.Exported
+
 import java.io.Serializable
 import java.net.{ URI, URISyntaxException }
 import java.time.{
@@ -38,9 +39,7 @@ import java.time.{
   ZonedDateTime
 }
 import java.time.format.DateTimeFormatter
-import java.util.Currency
-import java.util.UUID
-
+import java.util.{ Currency, Locale, UUID }
 import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
 
 import scala.annotation.tailrec
@@ -1476,6 +1475,22 @@ object Decoder
           Option(t.getLocalizedMessage()).getOrElse(s"Unknown or unimplemented currency value: $value")
         )
     )
+
+  implicit final lazy val localeDecoder: Decoder[Locale] =
+    new Decoder[Locale] {
+      private[this] def fail(c: HCursor): Result[Locale] = Left(DecodingFailure("Locale", c.history))
+
+      final def apply(c: HCursor): Result[Locale] = c.value match {
+        case Json.JString(value) =>
+          value.split("[_-]") match {
+            case Array(language)                   => Right(new Locale(language))
+            case Array(language, country)          => Right(new Locale(language, country))
+            case Array(language, country, variant) => Right(new Locale(language, country, variant))
+            case _                                 => fail(c)
+          }
+        case _ => fail(c)
+      }
+    }
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform

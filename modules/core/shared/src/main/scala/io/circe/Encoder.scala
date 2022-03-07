@@ -3,6 +3,7 @@ package io.circe
 import cats.{ Contravariant, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.`export`.Exported
+
 import java.io.Serializable
 import java.net.URI
 import java.time.{
@@ -30,8 +31,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_ZONED_DATE_TIME
 }
 import java.time.temporal.TemporalAccessor
-import java.util.Currency
-import java.util.UUID
+import java.util.{ Currency, Locale, UUID }
 import scala.Predef._
 import scala.collection.Map
 import scala.collection.immutable.{ Map => ImmutableMap, Set }
@@ -703,6 +703,9 @@ object Encoder
 
   implicit final lazy val currencyEncoder: Encoder[Currency] =
     Encoder[String].contramap(_.getCurrencyCode())
+
+  implicit final lazy val localeEncoder: Encoder[Locale] =
+    Encoder[String].contramap(_.toString())
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes
