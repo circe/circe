@@ -704,6 +704,7 @@ object Encoder
   implicit final lazy val currencyEncoder: Encoder[Currency] =
     Encoder[String].contramap(_.getCurrencyCode())
 
+  /** Serializing `java.util.Locale` using a IETF BCP 47 string representation */
   implicit final lazy val localeEncoder: Encoder[Locale] =
     Encoder[String].contramap(_.toLanguageTag)
 
