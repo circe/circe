@@ -705,7 +705,7 @@ object Encoder
     Encoder[String].contramap(_.getCurrencyCode())
 
   implicit final lazy val localeEncoder: Encoder[Locale] =
-    Encoder[String].contramap(_.toString())
+    Encoder[String].contramap(_.toLanguageTag)
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

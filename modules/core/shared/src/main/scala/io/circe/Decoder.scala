@@ -1479,18 +1479,24 @@ object Decoder
   implicit final lazy val localeDecoder: Decoder[Locale] =
     new Decoder[Locale] {
       private[this] def fail(c: HCursor): Result[Locale] = Left(DecodingFailure("Locale", c.history))
-
       final def apply(c: HCursor): Result[Locale] = c.value match {
         case Json.JString(value) =>
-          value.split("[_-]") match {
-            case Array(language)                   => Right(new Locale(language))
-            case Array(language, country)          => Right(new Locale(language, country))
-            case Array(language, country, variant) => Right(new Locale(language, country, variant))
-            case _                                 => fail(c)
+          value match {
+            case LocaleTagConverter(locale) => Right(locale)
+            case _                          => fail(c)
           }
         case _ => fail(c)
       }
     }
+
+  object LocaleTagConverter {
+    final val undetermined: String = "und"
+    class LocaleOpt(val locale: Locale) extends AnyVal {
+      def isEmpty: Boolean = undetermined == locale.toLanguageTag
+      def get: Locale = locale
+    }
+    def unapply(s: String): LocaleOpt = new LocaleOpt(Locale.forLanguageTag(s))
+  }
 
   /**
    * Helper methods for working with [[cats.data.StateT]] values that transform
