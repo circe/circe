@@ -1477,26 +1477,26 @@ object Decoder
     )
 
   /** Deserializing `java.util.Locale` using a IETF BCP 47 string representation. */
-  implicit final lazy val localeDecoder: Decoder[Locale] =
-    new Decoder[Locale] {
-      private[this] def fail(c: HCursor): Result[Locale] = Left(DecodingFailure("java.util.Locale", c.history))
-      final def apply(c: HCursor): Result[Locale] = c.value match {
-        case Json.JString(value) =>
-          value match {
-            case LocaleTagConverter(locale) => Right(locale)
-            case _                          => fail(c)
-          }
-        case _ => fail(c)
-      }
-    }
-
-  object LocaleTagConverter {
+  object locale {
     final val undetermined: String = "und"
     class LocaleOpt(val locale: Locale) extends AnyVal {
       def isEmpty: Boolean = undetermined == locale.toLanguageTag
       def get: Locale = locale
     }
     def unapply(s: String): LocaleOpt = new LocaleOpt(Locale.forLanguageTag(s))
+
+    implicit final lazy val decoder: Decoder[Locale] =
+      new Decoder[Locale] {
+        private[this] def fail(c: HCursor): Result[Locale] = Left(DecodingFailure("java.util.Locale", c.history))
+        final def apply(c: HCursor): Result[Locale] = c.value match {
+          case Json.JString(value) =>
+            value match {
+              case locale(value) => Right(value)
+              case _             => fail(c)
+            }
+          case _ => fail(c)
+        }
+      }
   }
 
   /**

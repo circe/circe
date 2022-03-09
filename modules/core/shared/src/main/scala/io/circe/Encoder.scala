@@ -705,8 +705,10 @@ object Encoder
     Encoder[String].contramap(_.getCurrencyCode())
 
   /** Serializing `java.util.Locale` using a IETF BCP 47 string representation */
-  implicit final lazy val localeEncoder: Encoder[Locale] =
-    Encoder[String].contramap(_.toLanguageTag)
+  object locale {
+    implicit final lazy val encoder: Encoder[Locale] =
+      Encoder[String].contramap(_.toLanguageTag)
+  }
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes
