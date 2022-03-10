@@ -165,7 +165,7 @@ object ConfiguredDecoder:
       final def apply(c: HCursor): Decoder.Result[A] =
         inline mirror match
           case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
-          case _: Mirror.SumOf[A]       => decodeSum(c)
+          case _: Mirror.SumOf[A]           => decodeSum(c)
       final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
         inline mirror match
           case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
