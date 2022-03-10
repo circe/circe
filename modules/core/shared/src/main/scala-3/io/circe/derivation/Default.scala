@@ -32,13 +32,14 @@ object Default:
 
     val n = s.asTerm.underlying.asInstanceOf[Literal].constant.value.asInstanceOf[Int]
 
-    val companion = TypeRepr.of[T].typeSymbol.companionClass
+    val companion = TypeRepr.of[T].typeSymbol.companionModule
 
     val expressions: List[Expr[Option[Any]]] = List.tabulate(n) { i =>
       val termOpt = companion
         .declaredMethod(s"$$lessinit$$greater$$default$$${i + 1}")
         .headOption
-        .flatMap(_.tree.asInstanceOf[DefDef].rhs)
+        .map(Select(Ref(companion), _))
+
       termOpt match
         case None     => Expr(None)
         case Some(et) => '{ Some(${ et.asExpr }) }
