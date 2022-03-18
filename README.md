@@ -28,6 +28,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
 * [ClearScore](https://www.clearscore.com)
 * [Codacy](https://www.codacy.com)
+* [Colisweb](https://www.colisweb.com)
 * [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
 * [Coya](https://www.coya.com/)
 * [Criteo](https://www.criteo.com/) ([collecting 200.000 events per second from our banners](https://medium.com/criteo-labs/migrate-a-service-getting-200kqps-from-jackson-to-circe-a475b2718206))
