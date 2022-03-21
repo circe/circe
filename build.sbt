@@ -229,7 +229,7 @@ lazy val jsProjectSettings = Seq(
   Test / scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
 )
 
-lazy val nativeProjectSettings = Seq()
+lazy val nativeProjectSettings = Seq(Test / nativeConfig ~= { _.withEmbedResources(true) })
 
 val isScala3 = Def.setting {
   CrossVersion.partialVersion(scalaVersion.value).exists(_._1 != 2)
@@ -380,16 +380,18 @@ lazy val circeCrossModules = Seq[(Project, Project, Project)](
   (generic, genericJS, genericNative),
   (shapes, shapesJS, shapesNative),
   (literal, literalJS, literalNative),
+  // (refined, refinedJS, refinedNative),
   (parser, parserJS, parserNative),
+  // (scodec, scodecJS, scodecNative),
   (testing, testingJS, testingNative),
   (tests, testsJS, testsNative),
   (hygiene, hygieneJS, hygieneNative),
   (jawn, jawnJS, jawnNative)
 )
 
-lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest, refined, scodec)
-lazy val circeNativeModules = Seq[Project]()
-lazy val circeJvmModules = Seq[Project](benchmark, jawn, refinedJS, scodecJS)
+lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest, refined, scodec) // TODO remove scodec
+lazy val circeNativeModules = Seq[Project](jawn)
+lazy val circeJvmModules = Seq[Project](benchmark, jawn, refinedJS, scodecJS) // TODE remove scodecJS
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
