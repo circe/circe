@@ -694,6 +694,9 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersions)
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.31",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
+  .nativeSettings(
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+  )
   .jsSettings(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
