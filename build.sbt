@@ -25,7 +25,8 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List(
       "clean",
-      "validateJVM"
+      "circeJVM/compile",
+      "circeJVM/test"
     ),
     id = None,
     name = Some("Test JVM (without coverage)"),
@@ -36,17 +37,18 @@ ThisBuild / githubWorkflowBuild := Seq(
       "clean",
       "coverage",
       "scalastyle",
-      "validateJVM",
+      "circeJVM/compile",
+      "circeJVM/test",
       "benchmark/test"
     ),
     id = None,
-    name = Some("Test JVM"),
+    name = Some("Test JVM (with coverage)"),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
   ),
   WorkflowStep.Sbt(
     List(
-      "clean",
-      "validateJS"
+      "circeJS/compile",
+      "circeJS/test"
     ),
     id = None,
     name = Some("Test JS")

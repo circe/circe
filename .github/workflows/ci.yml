@@ -75,14 +75,14 @@ jobs:
 
       - name: Test JVM (without coverage)
         if: ${{ matrix.scala == '3.1.0' }}
-        run: sbt ++${{ matrix.scala }} clean validateJVM
+        run: sbt ++${{ matrix.scala }} clean circeJVM/compile circeJVM/test
 
-      - name: Test JVM
+      - name: Test JVM (with coverage)
         if: ${{ matrix.scala != '3.1.0' }}
-        run: sbt ++${{ matrix.scala }} clean coverage scalastyle validateJVM benchmark/test
+        run: sbt ++${{ matrix.scala }} clean coverage scalastyle circeJVM/compile circeJVM/test benchmark/test
 
       - name: Test JS
-        run: sbt ++${{ matrix.scala }} clean validateJS
+        run: sbt ++${{ matrix.scala }} circeJS/compile circeJS/test
 
       - name: Coverage
         if: ${{ matrix.scala != '3.1.0' }}
