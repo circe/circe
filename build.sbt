@@ -90,7 +90,7 @@ val compilerOptions = Def.setting(
 
 val catsVersion = "2.7.0"
 val jawnVersion = "1.3.2"
-val shapelessVersion = "2.3.8"
+val shapelessVersion = "2.3.9"
 val refinedVersion = "0.9.28"
 
 val paradiseVersion = "2.1.1"
@@ -710,7 +710,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
       _.filterNot(Set("-Yno-predef"))
     },
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-optics" % "0.13.0",
+      "io.circe" %% "circe-optics" % "0.14.1",
       "org.scalameta" %% "munit" % munitVersion % Test
     ),
     disableScala3
