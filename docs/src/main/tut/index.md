@@ -35,7 +35,7 @@ implementations that use other libraries.
 
 circe doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
 and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
-facade. Jawn is fast and offers asynchronous parsing. The [circe-jackson][circe-jackson] project supports using
+facade. Jawn is fast, cross-platform, and offers asynchronous parsing. The [circe-jackson][circe-jackson] project supports using
 [Jackson][jackson] for both parsing and printing.
 
 circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
