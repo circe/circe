@@ -3,6 +3,7 @@ package io.circe
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Prop.forAll
 
 class ExtrasSpec extends CirceMunitSuite {
 
@@ -111,10 +112,10 @@ class ExtrasSpec extends CirceMunitSuite {
               "hi" := Json.Null
             )
           ),
-          Json.fromBoolean(bool),
-          Json.Null,
-          Json.fromString(str),
-          Json.fromJsonNumber(number)
+          Json.fromBoolean(!bool),
+          Json.fromDoubleOrNull(42),
+          Json.fromString(str.reverse),
+          Json.Null
         )
       }
 
