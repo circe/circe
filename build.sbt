@@ -759,7 +759,10 @@ lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previou
 lazy val pointerLiteral = pointerLiteralBase.jvm
 lazy val pointerLiteralJS = pointerLiteralBase.js
 
-lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions).dependsOn(coreBase, testsBase % Test)
+lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions)
+  .settings(disableScala3)
+  .settings(noPublishSettings)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val extras = extrasBase.jvm
 lazy val extrasJS = extrasBase.js

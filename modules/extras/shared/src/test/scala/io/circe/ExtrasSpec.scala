@@ -12,7 +12,7 @@ class ExtrasSpec extends CirceMunitSuite {
       (keys: Set[String], str: String) =>
 
         val withValues: Set[(String, Json)] =
-          keys.map { s: String => (s, Json.JString(str)) }
+          keys.map { (s: String) => (s, Json.JString(str)) }
 
         val input: Json = Json.fromJsonObject {
           JsonObject.fromMap(withValues.toMap)
