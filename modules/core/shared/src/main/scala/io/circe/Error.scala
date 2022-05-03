@@ -45,7 +45,7 @@ object ParsingFailure {
  * decoding history resulting in the failure.
  */
 sealed abstract class DecodingFailure(val reason: Reason) extends Error {
-  // Added to satisfy MiMA
+  @deprecated("use a DecodingFailure.Reason", since="0.14.2")
   def this(message: String) = {
     this(CustomReason(message))
   }
