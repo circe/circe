@@ -33,7 +33,7 @@ trait SpecialEqForFloatAndDouble {
    * `NaN` from itself.
    */
   val eqFloat: Eq[Float] = Eq.instance[Float] { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
+    a.isNaN && b.isNaN || cats.instances.float.catsKernelStdOrderForFloat.eqv(a, b)
   }
 
   /**
@@ -41,7 +41,7 @@ trait SpecialEqForFloatAndDouble {
    * `NaN` from itself.
    */
   val eqDouble: Eq[Double] = Eq.instance[Double] { (a, b) =>
-    (a.isNaN && b.isNaN) || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
+    a.isNaN && b.isNaN || cats.instances.double.catsKernelStdOrderForDouble.eqv(a, b)
   }
 }
 class AnyValCodecSuite extends CirceMunitSuite with SpecialEqForFloatAndDouble {

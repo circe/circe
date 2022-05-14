@@ -198,8 +198,8 @@ class JsonNumberSuite extends CirceMunitSuite {
     val n1 = f1(v1)
     val n2 = f2(v2)
     val expected = v1 == v2
-    assert((n1 === n2) === expected)
-    assert((n2 === n1) === expected)
+    assert(n1 === n2 === expected)
+    assert(n2 === n1 === expected)
   }
 
   test("fromDouble should fail on Double.NaN") {

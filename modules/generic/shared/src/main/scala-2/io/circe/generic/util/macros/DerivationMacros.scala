@@ -166,7 +166,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
 
   @tailrec
   private[this] def resolveInstance(tcs: List[(Type, Boolean)])(tpe: Type): Tree = tcs match {
-    case (tc, lazily) :: rest =>
+    case tc, lazily :: rest =>
       val applied = c.universe.appliedType(tc.typeConstructor, List(tpe))
       val target = if (lazily) c.universe.appliedType(typeOf[Lazy[_]].typeConstructor, List(applied)) else applied
       val inferred = c.inferImplicitValue(target, silent = true)

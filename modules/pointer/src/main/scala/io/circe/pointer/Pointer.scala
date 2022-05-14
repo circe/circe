@@ -6,7 +6,7 @@ import io.circe.{ ACursor, Encoder, Json }
 /**
  * Represents a JSON Pointer that may be either absolute or relative.
  */
-sealed abstract class Pointer extends (ACursor => ACursor) {
+sealed abstract class Pointer extends ACursor => ACursor {
 
   /**
    * Attempt to get the value at the location pointed to, returning the history if it doesn't exist.
@@ -323,7 +323,7 @@ object Pointer {
           -1
         }
       } else {
-        while ((i < length) && isAsciiDigit(input.charAt(i))) {
+        while (i < length && isAsciiDigit(input.charAt(i))) {
           i += 1
         }
 
@@ -360,7 +360,7 @@ object Pointer {
           tokenArray(i - 1) = part
           asIndexArray(i - 1) = -1
         } else {
-          val builder = new StringBuilder()
+          val builder = new StringBuilder
 
           while (currentTildeIndex != -1) {
             if (part.length > currentTildeIndex + 1) {

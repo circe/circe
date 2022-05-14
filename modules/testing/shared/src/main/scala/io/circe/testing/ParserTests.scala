@@ -12,19 +12,19 @@ import org.typelevel.discipline.Laws
 case class ParserLaws[P <: Parser](parser: P) {
   def parsingRoundTrip[A](json: Json)(
     encode: Json => A,
-    decode: P => (A => Either[ParsingFailure, Json])
+    decode: P => A => Either[ParsingFailure, Json]
   ): IsEq[Either[ParsingFailure, Json]] =
     decode(parser)(encode(json)) <-> Right(json)
 
   def decodingRoundTrip[A](json: Json)(
     encode: Json => A,
-    decode: P => (A => Either[Error, Json])
+    decode: P => A => Either[Error, Json]
   ): IsEq[Either[Error, Json]] =
     decode(parser)(encode(json)) <-> Right(json)
 
   def decodingAccumulatingRoundTrip[A](json: Json)(
     encode: Json => A,
-    decode: P => (A => ValidatedNel[Error, Json])
+    decode: P => A => ValidatedNel[Error, Json]
   ): IsEq[ValidatedNel[Error, Json]] =
     decode(parser)(encode(json)) <-> Validated.valid(json)
 }

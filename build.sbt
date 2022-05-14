@@ -149,8 +149,8 @@ val scalaJavaTimeVersion = "2.3.0"
  */
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, minor)) if minor < 13 => true
-    case _                              => false
+    case Some(2, minor) if minor < 13 => true
+    case _                            => false
   }
 
 val previousCirceVersions = List("0.14.0", "0.14.1").some
@@ -165,7 +165,7 @@ lazy val disableScala3 = Def.settings(
     }
   },
   Seq(Compile, Test).map { x =>
-    (x / sources) := {
+    x / sources := {
       if (scalaBinaryVersion.value == "3") {
         Nil
       } else {
@@ -181,7 +181,7 @@ lazy val disableScala3 = Def.settings(
     }
   },
   mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value },
-  publish / skip := (scalaBinaryVersion.value == "3")
+  publish / skip := scalaBinaryVersion.value == "3"
 )
 
 lazy val baseSettings = Seq(
@@ -479,9 +479,9 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersions)
         CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
+        case Some(2, y) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some(3, _) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _          => Nil
       }
     }
   )
@@ -500,9 +500,9 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
         CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
+        case Some(2, y) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some(3, _) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _          => Nil
       }
     },
     Test / unmanagedSourceDirectories ++= {
@@ -510,9 +510,9 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
         CrossType.Full.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
+        case Some(2, y) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some(3, _) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _          => Nil
       }
     }
   )
@@ -680,9 +680,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
         List("main").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
+        case Some(2, y) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some(3, _) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _          => Nil
       }
     },
     Test / unmanagedSourceDirectories ++= {
@@ -690,9 +690,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
         List("test").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
+        case Some(2, y) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+        case Some(3, _) => extraDirs("-3") ++ extraDirs("-2.13+")
+        case _          => Nil
       }
     }
   )

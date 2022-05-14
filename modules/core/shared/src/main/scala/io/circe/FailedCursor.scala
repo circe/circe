@@ -9,7 +9,7 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
    * was wrong.
    */
   def incorrectFocus: Boolean =
-    (lastOp.requiresObject && !lastCursor.value.isObject) || (lastOp.requiresArray && !lastCursor.value.isArray)
+    lastOp.requiresObject && !lastCursor.value.isObject || lastOp.requiresArray && !lastCursor.value.isArray
 
   def succeeded: Boolean = false
   def success: Option[HCursor] = None

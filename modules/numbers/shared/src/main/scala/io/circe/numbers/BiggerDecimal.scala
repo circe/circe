@@ -233,7 +233,7 @@ object BiggerDecimal {
   def integralIsValidLong(s: String): Boolean = {
     val bound = if (s.charAt(0) == '-') MinLongString else MaxLongString
 
-    s.length < bound.length || (s.length == bound.length && s.compareTo(bound) <= 0)
+    s.length < bound.length || s.length == bound.length && s.compareTo(bound) <= 0
   }
 
   private[this] final val FAILED = 0

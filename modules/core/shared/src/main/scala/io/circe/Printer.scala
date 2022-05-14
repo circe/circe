@@ -87,7 +87,7 @@ final case class Printer(
   }
 
   private[this] final def concat(left: String, text: String, right: String): String = {
-    val builder = new StringBuilder()
+    val builder = new StringBuilder
     builder.append(left)
     builder.append(text)
     builder.append(right)
@@ -111,7 +111,7 @@ final case class Printer(
     else
       new Printer.MemoizedPieces(indent) {
         final def compute(i: Int): Printer.Pieces = {
-          val builder = new StringBuilder()
+          val builder = new StringBuilder
 
           addIndentation(builder, lbraceLeft, i)
           builder.append(openBraceText)
@@ -181,7 +181,7 @@ final case class Printer(
 
   @transient
   private[this] final val stringWriter: ThreadLocal[StringBuilder] = new ThreadLocal[StringBuilder] {
-    override final def initialValue: StringBuilder = new StringBuilder()
+    override final def initialValue: StringBuilder = new StringBuilder
   }
 
   /**
@@ -192,7 +192,7 @@ final case class Printer(
       val w = stringWriter.get()
       w.setLength(0)
       w
-    } else new StringBuilder()
+    } else new StringBuilder
 
     unsafePrintToAppendable(json, writer)
 
@@ -203,7 +203,7 @@ final case class Printer(
   private[this] final val sizePredictor: ThreadLocal[Printer.SizePredictor] =
     new ThreadLocal[Printer.SizePredictor] {
       override final def initialValue: Printer.SizePredictor =
-        new Printer.AdaptiveSizePredictor()
+        new Printer.AdaptiveSizePredictor
     }
 
   final def printToByteBuffer(json: Json, cs: Charset): ByteBuffer = {
@@ -292,9 +292,9 @@ object Printer {
   private[this] final def writeEscapedChar(writer: Appendable, c: Char): Unit =
     writer
       .append('u')
-      .append(toHex((c >> 12) & 15))
-      .append(toHex((c >> 8) & 15))
-      .append(toHex((c >> 4) & 15))
+      .append(toHex(c >> 12 & 15))
+      .append(toHex(c >> 8 & 15))
+      .append(toHex(c >> 4 & 15))
       .append(toHex(c & 15))
 
   private[this] final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
@@ -327,7 +327,7 @@ object Printer {
           case '\n' => 'n'
           case '\r' => 'r'
           case '\t' => 't'
-          case _    => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
+          case _    => (if (escapeNonAscii && c.toInt > 127 || Character.isISOControl(c)) 1 else 0).toChar
         }
         if (esc != 0) {
           writer.append(value, offset, i).append('\\')

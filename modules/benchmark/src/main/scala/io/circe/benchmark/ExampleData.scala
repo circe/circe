@@ -9,7 +9,7 @@ class ExampleData {
 
   val foos: Map[String, Foo] = List
     .tabulate(100) { i =>
-      ("b" * i) -> Foo("a" * i, (i + 2.0) / (i + 1.0), i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
+      "b" * i -> Foo("a" * i, (i + 2.0) / (i + 1.0), i, i * 1000L, (0 to i).map(_ % 2 == 0).toList)
     }
     .toMap
 

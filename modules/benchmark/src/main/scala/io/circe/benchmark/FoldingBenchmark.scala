@@ -19,7 +19,7 @@ class FoldingBenchmark extends ExampleData {
 
   @Benchmark
   def withFoldWith: Int = doc.foldWith(
-    new Json.Folder[Int] with ((Int, Json) => Int) {
+    new Json.Folder[Int] with (Int, Json) => Int {
       def apply(i: Int, j: Json): Int = i + j.foldWith(this)
 
       def onNull: Int = 0

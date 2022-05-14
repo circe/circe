@@ -22,7 +22,7 @@ trait GenCursorOps {
 
 class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   test("Show[ParsingFailure] should produce the expected output") {
-    assert(ParsingFailure("the message", new Exception()).show === "ParsingFailure: the message")
+    assert(ParsingFailure("the message", new Exception).show === "ParsingFailure: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a small example") {

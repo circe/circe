@@ -183,7 +183,7 @@ class JsonObjectSuite extends CirceMunitSuite {
             val index = acc.indexWhere(_._1 == key)
 
             if (index < 0) {
-              acc :+ (key -> value)
+              acc :+ key -> value
             } else {
               acc.updated(index, (key, value))
             }
@@ -269,7 +269,7 @@ class JsonObjectSuite extends CirceMunitSuite {
 
       val result1 = JsonObject.fromIterable(fields).add("0", replacement)
       val result2 = JsonObject.fromFoldable(fields).add("0", replacement)
-      val expected = JsonObject.fromFoldable(fields.init :+ ("0" -> replacement))
+      val expected = JsonObject.fromFoldable(fields.init :+ "0" -> replacement)
 
       assertEquals(result1, expected)
       assertEquals(result2, expected)
@@ -279,21 +279,21 @@ class JsonObjectSuite extends CirceMunitSuite {
   property("add, +:, and remove should be applied correctly") {
     forAll { (original: JsonObject, operations: List[Either[String, (String, Json, Boolean)]]) =>
       val result = operations.foldLeft(original) {
-        case (acc, Right((key, value, true)))  => acc.add(key, value)
-        case (acc, Right((key, value, false))) => (key, value) +: acc
-        case (acc, Left(key))                  => acc.remove(key)
+        case (acc, Right(key, value, true))  => acc.add(key, value)
+        case (acc, Right(key, value, false)) => (key, value) +: acc
+        case (acc, Left(key))                => acc.remove(key)
       }
 
       val expected = operations.foldLeft(original.toList) {
-        case (acc, Right((key, value, true))) =>
+        case (acc, Right(key, value, true)) =>
           val index = acc.indexWhere(_._1 == key)
 
           if (index < 0) {
-            acc :+ (key -> value)
+            acc :+ key -> value
           } else {
             acc.updated(index, (key, value))
           }
-        case (acc, Right((key, value, false))) =>
+        case (acc, Right(key, value, false)) =>
           val index = acc.indexWhere(_._1 == key)
 
           if (index < 0) {
