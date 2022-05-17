@@ -825,7 +825,8 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
+    Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy"))
   ),
   pomPostProcess := { (node: XmlNode) =>
     new RuleTransformer(
