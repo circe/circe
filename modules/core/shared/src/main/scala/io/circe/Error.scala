@@ -58,8 +58,7 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
     case CustomReason(message)              => message
   }
 
-  final override def getMessage: String =
-    if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
+  final override def getMessage: String = DecodingFailure.showDecodingFailure.show(this)
 
   final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure = {
     def newHistory = history
