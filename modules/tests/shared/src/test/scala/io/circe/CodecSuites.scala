@@ -25,6 +25,7 @@ import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop.forAll
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
+import scala.util.Success
 
 trait SpecialEqForFloatAndDouble {
 
@@ -192,9 +193,11 @@ class CirceCodecSuite extends CirceMunitSuite {
 class InvariantCodecSuite extends CirceMunitSuite {
   val wubCodec = Codec.from(Decoder[Long], Encoder[Long]).imap(Wub(_))(_.x)
   val wubCodecE = Codec.from(Decoder[Long], Encoder[Long]).iemap(l => Right(Wub(l)))(_.x)
+  val wubCodecT = Codec.from(Decoder[Long], Encoder[Long]).iemapTry(l => Success(Wub(l)))(_.x)
 
   checkAll("Codec[Wub] via imap", CodecTests[Wub](wubCodec, wubCodec).codec)
   checkAll("Codec[Wub] via iemap", CodecTests[Wub](wubCodecE, wubCodecE).codec)
+  checkAll("Codec[Wub] via iemapTry", CodecTests[Wub](wubCodecT, wubCodecT).codec)
 }
 
 class EitherCodecSuite extends CirceMunitSuite {
