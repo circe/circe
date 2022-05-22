@@ -382,16 +382,16 @@ lazy val circeCrossModules = Seq[(Project, Project, Project)](
   (literal, literalJS, literalNative),
   // (refined, refinedJS, refinedNative),
   (parser, parserJS, parserNative),
-  // (scodec, scodecJS, scodecNative),
+  (scodec, scodecJS, scodecNative),
   (testing, testingJS, testingNative),
   (tests, testsJS, testsNative),
   (hygiene, hygieneJS, hygieneNative),
   (jawn, jawnJS, jawnNative)
 )
 
-lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest, refined, scodec) // TODO remove scodec
+lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest, refined) // TODO remove refined
 lazy val circeNativeModules = Seq[Project](jawn)
-lazy val circeJvmModules = Seq[Project](benchmark, jawn, refinedJS, scodecJS) // TODE remove scodecJS
+lazy val circeJvmModules = Seq[Project](benchmark, jawn, refinedJS) // TODE remove refinedJS
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
@@ -454,12 +454,12 @@ lazy val circeJS = project
   )
 
 lazy val circeNative = project
-    .settings(allSettings)
-    .settings(noPublishSettings)
-    .disablePlugins(MimaPlugin)
-    .aggregate(
-      nativeProjects.map(p => p: ProjectReference): _*
-    )
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
+  .aggregate(
+    nativeProjects.map(p => p: ProjectReference): _*
+  )
 
 lazy val circeJVM = project
   .settings(allSettings)
