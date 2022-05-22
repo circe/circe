@@ -54,6 +54,14 @@ ThisBuild / githubWorkflowBuild := Seq(
     name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
+    List(
+      "circeNative/compile",
+      "circeNative/test"
+    ),
+    id = None,
+    name = Some("Test Native")
+  ),
+  WorkflowStep.Sbt(
     List("coverageReport"),
     id = None,
     name = Some("Coverage"),
@@ -141,7 +149,7 @@ val munitVersion = "0.7.29"
 val disciplineVersion = "1.4.0"
 val disciplineScalaTestVersion = "2.1.5"
 val disciplineMunitVersion = "1.0.9"
-val scalaJavaTimeVersion = "2.3.0"
+val scalaJavaTimeVersion = "2.4.0-M2"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -221,6 +229,8 @@ lazy val jsProjectSettings = Seq(
   Test / scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
 )
 
+lazy val nativeProjectSettings = Seq()
+
 val isScala3 = Def.setting {
   CrossVersion.partialVersion(scalaVersion.value).exists(_._1 != 2)
 }
@@ -246,13 +256,14 @@ def circeModule(path: String, mima: Option[List[String]]): Project = {
 
 def circeCrossModule(path: String, mima: Option[List[String]], crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
-  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
+  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
     .settings(
       mima.map(versions => mimaPreviousArtifacts := versions.map("io.circe" %%% moduleName.value % _).toSet).toSeq
     )
+    .nativeSettings(nativeProjectSettings)
     .jsSettings(
       coverageEnabled := false,
       jsProjectSettings,
@@ -272,9 +283,8 @@ def circeCrossModule(path: String, mima: Option[List[String]], crossType: CrossT
  * We omit all Scala.js projects from Unidoc generation.
  */
 def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS :+ benchmarkDotty).map(p =>
-    p: ProjectReference
-  )
+  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS :+ genericSimpleNative :+ benchmarkDotty)
+    .map(p => p: ProjectReference)
 
 lazy val docsMappingsAPIDir =
   settingKey[String]("Name of subdirectory in site target directory for api docs")
@@ -360,27 +370,26 @@ lazy val docs = project
   .enablePlugins(ScalaUnidocPlugin)
   .enablePlugins(GitHubPagesPlugin)
 
-lazy val circeCrossModules = Seq[(Project, Project)](
-  (numbersTesting, numbersTestingJS),
-  (numbers, numbersJS),
-  (core, coreJS),
-  (pointer, pointerJS),
-  (pointerLiteral, pointerLiteralJS),
-  (extras, extrasJS),
-  (generic, genericJS),
-  (shapes, shapesJS),
-  (literal, literalJS),
-  (refined, refinedJS),
-  (parser, parserJS),
-  (scodec, scodecJS),
-  (testing, testingJS),
-  (tests, testsJS),
-  (hygiene, hygieneJS),
-  (jawn, jawnJS)
+lazy val circeCrossModules = Seq[(Project, Project, Project)](
+  (numbersTesting, numbersTestingJS, numbersTestingNative),
+  (numbers, numbersJS, numbersNative),
+  (core, coreJS, coreNative),
+  (pointer, pointerJS, pointerNative),
+  (pointerLiteral, pointerLiteralJS, pointerLiteralNative),
+  (extras, extrasJS, extrasNative),
+  (generic, genericJS, genericNative),
+  (shapes, shapesJS, shapesNative),
+  (literal, literalJS, literalNative),
+  (parser, parserJS, parserNative),
+  (testing, testingJS, testingNative),
+  (tests, testsJS, testsNative),
+  (hygiene, hygieneJS, hygieneNative),
+  (jawn, jawnJS, jawnNative)
 )
 
-lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
-lazy val circeJvmModules = Seq[Project](benchmark, jawn)
+lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest, refined, scodec)
+lazy val circeNativeModules = Seq[Project]()
+lazy val circeJvmModules = Seq[Project](benchmark, jawn, refinedJS, scodecJS)
 lazy val circeDocsModules = Seq[Project](docs)
 
 lazy val jvmProjects: Seq[Project] =
@@ -389,9 +398,12 @@ lazy val jvmProjects: Seq[Project] =
 lazy val jsProjects: Seq[Project] =
   circeCrossModules.map(_._2) ++ circeJsModules
 
+lazy val nativeProjects: Seq[Project] =
+  circeCrossModules.map(_._3) ++ circeNativeModules
+
 lazy val aggregatedProjects: Seq[ProjectReference] = (
-  circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-    circeJsModules ++ circeJvmModules
+  circeCrossModules.flatMap(cp => Seq(cp._1, cp._2, cp._3)) ++
+    circeJsModules ++ circeJvmModules ++ circeNativeModules
 ).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
@@ -439,6 +451,14 @@ lazy val circeJS = project
     jsProjects.map(p => p: ProjectReference): _*
   )
 
+lazy val circeNative = project
+    .settings(allSettings)
+    .settings(noPublishSettings)
+    .disablePlugins(MimaPlugin)
+    .aggregate(
+      nativeProjects.map(p => p: ProjectReference): _*
+    )
+
 lazy val circeJVM = project
   .settings(allSettings)
   .settings(noPublishSettings)
@@ -458,6 +478,7 @@ lazy val numbersTestingBase =
 
 lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
+lazy val numbersTestingNative = numbersTestingBase.native
 
 lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersions)
   .settings(
@@ -469,6 +490,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersions)
 
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
+lazy val numbersNative = numbersBase.native
 
 lazy val coreBase = circeCrossModule("core", mima = previousCirceVersions)
   .settings(
@@ -489,6 +511,8 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersions)
 
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
+
+lazy val coreNative = coreBase.native
 
 lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
   .settings(macroSettings)
@@ -516,9 +540,15 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
       }
     }
   )
+  .nativeSettings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
@@ -527,6 +557,8 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
+lazy val genericNative = genericBase.native
+
 lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
@@ -534,9 +566,15 @@ lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousC
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
+  .nativeSettings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
@@ -545,6 +583,8 @@ lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousC
 lazy val genericSimple = genericSimpleBase.jvm
 lazy val genericSimpleJS = genericSimpleBase.js
 
+lazy val genericSimpleNative = genericSimpleBase.native
+
 lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
@@ -552,9 +592,15 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersions, C
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
+  .nativeSettings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
@@ -562,6 +608,8 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersions, C
 
 lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
+
+lazy val shapesNative = shapesBase.native
 
 lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
@@ -574,6 +622,12 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersions,
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
     mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
+  .nativeSettings(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Test,
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test,
@@ -584,6 +638,8 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersions,
 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
+
+lazy val literalNative = literalBase.native
 
 lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersions)
   .settings(
@@ -602,13 +658,18 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersions)
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
 
+lazy val refinedNative = refinedBase.native
+
 lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersions)
   .jvmConfigure(_.dependsOn(jawn))
+  .nativeConfigure(_.dependsOn(jawnNative))
   .jsConfigure(_.dependsOn(scalajs))
   .dependsOn(coreBase)
 
 lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
+
+lazy val parserNative = parserBase.native
 
 lazy val scalajs =
   circeModule("scalajs", mima = previousCirceVersions)
@@ -630,7 +691,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersions)
   .settings(
     disableScala3,
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.30",
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.31",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .jsSettings(
@@ -640,6 +701,8 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersions)
 
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
+
+lazy val scodecNative = scodecBase.native
 
 lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersions)
   .settings(
@@ -659,6 +722,8 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersions)
 
 lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js
+
+lazy val testingNative = testingBase.native
 
 lazy val testsBase = circeCrossModule("tests", mima = None)
   .disablePlugins(MimaPlugin)
@@ -702,6 +767,9 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
   .jvmSettings(
     fork := true
   )
+  .nativeSettings(
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+  )
   .jsSettings(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
@@ -709,6 +777,8 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
 
 lazy val tests = testsBase.jvm
 lazy val testsJS = testsBase.js
+
+lazy val testsNative = testsBase.native
 
 lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
@@ -721,6 +791,8 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
 
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js
+
+lazy val hygieneNative = hygieneBase.native
 
 lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersions, CrossType.Full)
   .settings(
@@ -737,6 +809,8 @@ lazy val jawnJS = jawnBase.js.settings(
   mimaFailOnNoPrevious := false
 )
 
+lazy val jawnNative = jawnBase.native
+
 lazy val pointerBase =
   circeCrossModule("pointer", mima = previousCirceVersions, CrossType.Pure)
     .settings(
@@ -748,6 +822,8 @@ lazy val pointerBase =
 
 lazy val pointer = pointerBase.jvm
 lazy val pointerJS = pointerBase.js
+
+lazy val pointerNative = pointerBase.native
 
 lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
@@ -763,6 +839,8 @@ lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previou
 lazy val pointerLiteral = pointerLiteralBase.jvm
 lazy val pointerLiteralJS = pointerLiteralBase.js
 
+lazy val pointerLiteralNative = pointerLiteralBase.native
+
 lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions)
   .settings(disableScala3)
   .settings(noPublishSettings)
@@ -770,6 +848,8 @@ lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions)
 
 lazy val extras = extrasBase.jvm
 lazy val extrasJS = extrasBase.js
+
+lazy val extrasNative = extrasBase.native
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
@@ -883,4 +963,9 @@ addCommandAlias(
   "validateJS",
   ";buildJS;circeJS/test" + formatCommands
 )
-addCommandAlias("validate", ";validateJVM;validateJS")
+addCommandAlias("buildNative", "circeNative/compile")
+addCommandAlias(
+  "validateNative",
+  ";buildNative;circeNative/test" + formatCommands
+)
+addCommandAlias("validate", ";validateJVM;validateJS;validateNative")
