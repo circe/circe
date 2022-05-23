@@ -13,6 +13,7 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.WrappedOptionalField
 import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
 
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
@@ -20,6 +21,8 @@ import scala.util.control.NoStackTrace
 class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
   checkAll("Decoder[Int]", SemigroupKTests[Decoder].semigroupK[Int])
+
+  private def all(props: List[Prop]): Prop = Prop.all(props: _*)
 
   private[this] def transformations[T]: List[Decoder[T] => Decoder[T]] = List(
     _.prepare(identity),
@@ -36,27 +39,27 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   )
 
   property("transformations should do nothing when used with identity") {
-    transformations[Int].foreach { transformation =>
+    all(transformations[Int].map { transformation =>
       val decoder = transformation(Decoder[Int])
       forAll { (i: Int) =>
         assertEquals(decoder.decodeJson(i.asJson), Right(i))
         assertEquals(decoder.decodeAccumulating(i.asJson.hcursor), Validated.valid(i))
       }
-    }
+    })
   }
 
   property("transformations should fail when called on failed decoder") {
-    transformations[Int].foreach { transformation =>
+    all(transformations[Int].map { transformation =>
       val decoder = transformation(Decoder.failedWithMessage("Some message"))
       val failure = DecodingFailure("Some message", Nil)
       forAll { (i: Int) =>
         assertEquals(decoder.decodeJson(i.asJson), Left(failure))
         assertEquals(decoder.decodeAccumulating(i.asJson.hcursor), Validated.invalidNel(failure))
       }
-    }
+    })
   }
 
-  property("transformations should not break derived decoders when called on Decoder[Option[T]]") {
+  test("transformations should not break derived decoders when called on Decoder[Option[T]]") {
     transformations[Option[String]].foreach { transformation =>
       implicit val decodeOptionString: Decoder[Option[String]] =
         transformation(Decoder.decodeOption(Decoder.decodeString))
@@ -740,7 +743,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   case class NotDecodable(a: Int)
   implicit val decodeNotDecodable: Decoder[NotDecodable] = Decoder.failedWithMessage("Some message")
 
-  property("container decoder should pass through error message from item") {
+  test("container decoder should pass through error message from item") {
     containerDecoders[NotDecodable].foreach { decoder =>
       val json = Json.arr(Json.obj("a" -> 1.asJson))
       val failure = DecodingFailure("Some message", List(DownArray))

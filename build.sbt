@@ -587,7 +587,6 @@ lazy val literalJS = literalBase.js
 
 lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersions)
   .settings(
-    disableScala3,
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
@@ -629,7 +628,6 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
 
 lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersions)
   .settings(
-    disableScala3,
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.30",
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
@@ -664,7 +662,6 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
   .disablePlugins(MimaPlugin)
   .settings(noPublishSettings)
   .settings(
-    disableScala3,
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
     },
