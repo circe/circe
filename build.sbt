@@ -454,19 +454,3 @@ ThisBuild / developers := List(
   Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
   Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
 )
-
-val formatCommands = ";+scalafmtCheckAll;scalafmtSbtCheck"
-
-addCommandAlias("buildJVM", "root/compile")
-addCommandAlias("mimaReportBinaryIssuesJVM", "rootJVM/mimaReportBinaryIssues")
-addCommandAlias(
-  "validateJVM",
-  ";buildJVM;circeJVM/test" + formatCommands
-)
-addCommandAlias("rootJS", "rootJS/compile")
-addCommandAlias("mimaReportBinaryIssuesJS", "rootJS/mimaReportBinaryIssues")
-addCommandAlias(
-  "validateJS",
-  ";buildJS;rootJS/test" + formatCommands
-)
-addCommandAlias("validate", ";validateJVM;validateJS")
