@@ -878,7 +878,7 @@ addCommandAlias(
   ";buildJVM;circeJVM/test" + formatCommands
 )
 addCommandAlias("buildJS", "circeJS/compile")
-addCommandAlias("mimaReportBinaryIssuesJS", "circeJVM/mimaReportBinaryIssues")
+addCommandAlias("mimaReportBinaryIssuesJS", "circeJS/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJS",
   ";buildJS;circeJS/test" + formatCommands
