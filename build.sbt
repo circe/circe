@@ -825,7 +825,9 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
+    Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
+    Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
   ),
   pomPostProcess := { (node: XmlNode) =>
     new RuleTransformer(
@@ -876,7 +878,7 @@ addCommandAlias(
   ";buildJVM;circeJVM/test" + formatCommands
 )
 addCommandAlias("buildJS", "circeJS/compile")
-addCommandAlias("mimaReportBinaryIssuesJS", "circeJVM/mimaReportBinaryIssues")
+addCommandAlias("mimaReportBinaryIssuesJS", "circeJS/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJS",
   ";buildJS;circeJS/test" + formatCommands
