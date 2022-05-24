@@ -102,6 +102,14 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
 }
 
 private[circe] object MapDecoder {
+  @deprecated("use invalidKeyFailure", since = "0.14.2")
+  final def failure(c: HCursor): DecodingFailure = DecodingFailure("[K, V]Map[K, V]", c.history)
+  @deprecated("use invalidKeyFailure", since = "0.14.2")
+  final def failureResult[A](c: HCursor): Decoder.Result[A] = Left[DecodingFailure, A](failure(c))
+  @deprecated("use invalidKeyFailure", since = "0.14.2")
+  final def failureAccumulatingResult[A](c: HCursor): Decoder.AccumulatingResult[A] =
+    Validated.invalidNel[DecodingFailure, A](failure(c))
+
   final def invalidKeyfailure(c: HCursor): DecodingFailure =
     DecodingFailure("Couldn't decode key.", c.history)
   final def notJsObjectFailure(c: HCursor, value: Json): DecodingFailure =

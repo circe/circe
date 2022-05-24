@@ -86,13 +86,13 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
   implicit val arbitraryJson: Arbitrary[Json] = Arbitrary(genJsonAtDepth(0))
   implicit val arbitraryJsonObject: Arbitrary[JsonObject] = Arbitrary(genJsonObject(0))
 
-  private[this] val arbitraryMissingField: Gen[MissingField.type] =
+  private[this] def arbitraryMissingField: Gen[MissingField.type] =
     Gen.const(MissingField)
-  private[this] val arbitraryWrongTypeExpectation: Gen[WrongTypeExpectation] =
+  private[this] def arbitraryWrongTypeExpectation: Gen[WrongTypeExpectation] =
     Arbitrary.arbitrary[(String, Json)].map(x => WrongTypeExpectation(x._1, x._2))
-  private[this] val arbitraryCustomReason: Gen[CustomReason] =
+  private[this] def arbitraryCustomReason: Gen[CustomReason] =
     Arbitrary.arbitrary[String].map(CustomReason)
-  implicit val arbitraryReason: Arbitrary[Reason] = Arbitrary(
+  implicit def arbitraryReason: Arbitrary[Reason] = Arbitrary(
     Gen.oneOf(
       arbitraryMissingField,
       arbitraryWrongTypeExpectation,
@@ -100,7 +100,7 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     )
   )
 
-  implicit val arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
+  implicit def arbitraryDecodingFailure: Arbitrary[DecodingFailure] = Arbitrary(
     Arbitrary.arbitrary[Reason].map(DecodingFailure(_, Nil))
   )
 
@@ -128,3 +128,5 @@ trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstan
     Arbitrary.arbitrary[A => Vector[Json]].map(Encoder.AsArray.instance)
   )
 }
+
+object ArbitraryInstances {}

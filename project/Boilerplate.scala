@@ -135,13 +135,13 @@ object Boilerplate {
         -  implicit final def decodeTuple$arity[${`A..N`}](implicit $instances): Decoder[${`(A..N)`}] =
         -    new Decoder[${`(A..N)`}] {
         -      final def apply(c: HCursor): Decoder.Result[${`(A..N)`}] = c.value match {
-        -        case Json.JArray(values) if values.size == $arity => $result
+        -        case Json.JArray(values) if values.lengthCompare($arity) == 0 => $result
         -        case json => Left(DecodingFailure(WrongTypeExpectation("array", json), c.history))
         -      }
         -
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[${`(A..N)`}] =
         -        c.value match {
-        -          case Json.JArray(values) if values.size == $arity => $accumulatingResult
+        -          case Json.JArray(values) if values.lengthCompare($arity) == 0 => $accumulatingResult
         -          case json => Validated.invalidNel(
         -            DecodingFailure(WrongTypeExpectation("array", json), c.history))
         -        }
