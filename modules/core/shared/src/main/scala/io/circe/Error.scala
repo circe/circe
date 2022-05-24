@@ -45,6 +45,11 @@ object ParsingFailure {
  * decoding history resulting in the failure.
  */
 sealed abstract class DecodingFailure(val reason: Reason) extends Error {
+  @deprecated("use a DecodingFailure.Reason", since = "0.14.2")
+  def this(message: String) = {
+    this(CustomReason(message))
+  }
+
   def history: List[CursorOp]
 
   val message: String = reason match {

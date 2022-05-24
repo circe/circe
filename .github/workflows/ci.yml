@@ -146,6 +146,7 @@ jobs:
   mima:
     name: Mima
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         scala: [3.1.0, 2.12.15, 2.13.8]

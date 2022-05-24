@@ -100,7 +100,8 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
         )
       ),
     scalas = crossScalaVersions.value.toList,
-    javas = List(JavaSpec.temurin("8"))
+    javas = List(JavaSpec.temurin("8")),
+    matrixFailFast = Option(false)
   )
 )
 
@@ -179,6 +180,7 @@ lazy val disableScala3 = Def.settings(
       (Test / test).value
     }
   },
+  mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value },
   publish / skip := (scalaBinaryVersion.value == "3")
 )
 
@@ -569,7 +571,8 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersions,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     ) ++ (if (isScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
-          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
+    mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -752,14 +755,18 @@ lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previou
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ),
+    mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
   .dependsOn(coreBase, pointerBase)
 
 lazy val pointerLiteral = pointerLiteralBase.jvm
 lazy val pointerLiteralJS = pointerLiteralBase.js
 
-lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions).dependsOn(coreBase, testsBase % Test)
+lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions)
+  .settings(disableScala3)
+  .settings(noPublishSettings)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val extras = extrasBase.jvm
 lazy val extrasJS = extrasBase.js
@@ -818,7 +825,9 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
+    Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
+    Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
   ),
   pomPostProcess := { (node: XmlNode) =>
     new RuleTransformer(
@@ -869,7 +878,7 @@ addCommandAlias(
   ";buildJVM;circeJVM/test" + formatCommands
 )
 addCommandAlias("buildJS", "circeJS/compile")
-addCommandAlias("mimaReportBinaryIssuesJS", "circeJVM/mimaReportBinaryIssues")
+addCommandAlias("mimaReportBinaryIssuesJS", "circeJS/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJS",
   ";buildJS;circeJS/test" + formatCommands
