@@ -5,7 +5,7 @@ import sbtcrossproject.{ CrossProject, CrossType }
 import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
 import scala.xml.transform.{ RewriteRule, RuleTransformer }
 
-def Scala3 = "3.1.2"
+def Scala3 = "3.1.0"
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.8")
