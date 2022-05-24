@@ -74,7 +74,12 @@ final case class Printer(
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
-  private[this] final class AppendableFolder(
+  @deprecated("Use AppendableFolder", since = "0.14.2")
+  private[this] final class AppendableByteBufferFolder(
+    writer: Printer.AppendableByteBuffer
+  ) extends AppendableFolder(writer)
+
+  private[this] sealed class AppendableFolder(
     writer: Appendable
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))

@@ -21,11 +21,6 @@ circe's working title was jfc, which stood for "JSON for [cats][cats]". The name
 
 ## Why?
 
-[Argonaut][argonaut] is a great library. It's by far the best JSON library for Scala, and the best
-JSON library on the JVM. If you're doing anything with JSON in Scala, you should be using Argonaut.
-
-circe is a fork of Argonaut with a few important differences.
-
 ### Dependencies and modularity
 
 circe depends on [cats][cats] instead of [Scalaz][scalaz], and the `core` project has only one
@@ -40,8 +35,7 @@ implementations that use other libraries.
 
 circe doesn't include a JSON parser in the `core` project, which is focused on the JSON AST, zippers,
 and codecs. The [`jawn`][circe-jawn] subproject provides support for parsing JSON via a [Jawn][jawn]
-facade. Jawn is fast, it offers asynchronous parsing, and best of all it lets us drop a lot of the
-fussiest code in Argonaut. The [circe-jackson][circe-jackson] project supports using
+facade. Jawn is fast, cross-platform, and offers asynchronous parsing. The [circe-jackson][circe-jackson] project supports using
 [Jackson][jackson] for both parsing and printing.
 
 circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
@@ -59,13 +53,11 @@ See the [Optics page](optics.html) for more details.
 
 ### Codec derivation
 
-circe does not use macros or provide any kind of automatic derivation in the `core` project. Instead
-of Argonaut's limited macro-based derivation (which does not support sealed trait hierarchies, for
-example), circe includes a subproject (`generic`) that provides generic codec derivation using
+circe does not use macros or provide any kind of automatic derivation in the `core` project. Instead 
+circe includes a subproject (`generic`) that provides generic codec derivation using
 [Shapeless][shapeless].
 
-[This subproject][circe-generic] is currently a simplified port of
-[argonaut-shapeless][argonaut-shapeless] that provides fully automatic derivation of instances for
+[This subproject][circe-generic] provides fully automatic derivation of instances for
 case classes and sealed trait hierarchies. It also includes derivation of "incomplete" case class
 instances (see my recent [blog post][incompletes] for details). Note that if you use
 `-Ypartial-unification` and `auto`, incomplete decoders will not work (see
@@ -75,7 +67,7 @@ See the [Encoding and Decoding page](codec.html) for more details.
 
 ### Aliases
 
-circe aims to simplify Argonaut's API by removing all operator aliases. This is largely a matter of
+circe aims to simplify its API by using no operator aliases. This is largely a matter of
 personal taste, and may change in the future.
 
 ### Testing

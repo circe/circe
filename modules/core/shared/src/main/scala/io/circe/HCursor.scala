@@ -75,7 +75,7 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   }
 
   final def downN(n: Int): ACursor = value match {
-    case Json.JArray(values) if n >= 0 && values.size > n =>
+    case Json.JArray(values) if n >= 0 && values.lengthCompare(n) > 0 =>
       new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
     case _ => fail(CursorOp.DownN(n))
   }

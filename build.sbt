@@ -11,43 +11,47 @@ ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.8")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-ThisBuild / githubWorkflowJavaVersions := Seq("8", "17").map(JavaSpec.temurin)
+ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
+ThisBuild / githubWorkflowArtifactUpload := false // TODO: Maybe enable this later for efficiency.
+ThisBuild / githubWorkflowBuildPreamble +=
+  WorkflowStep.Use(
+    UseRef.Public("actions", "setup-node", "v2.4.0"),
+    name = Some("Setup NodeJS v16"),
+    params = Map("node-version" -> "16"),
+    cond = Some("matrix.ci == 'ciNodeJS'")
+  )
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List(
       "clean",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
-      "validateJVM"
+      "circeJVM/compile",
+      "circeJVM/test"
     ),
     id = None,
-    name = Some("Test JVM"),
+    name = Some("Test JVM (without coverage)"),
     cond = Some("${{ matrix.scala == '" + Scala3 + "' }}")
-  ),
-  WorkflowStep.Sbt(
-    List(
-      "clean",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
-      "validateJS"
-    ),
-    id = None,
-    name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
     List(
       "clean",
       "coverage",
       "scalastyle",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
-      "validateJVM",
+      "circeJVM/compile",
+      "circeJVM/test",
       "benchmark/test"
     ),
     id = None,
-    name = Some("Test JVM"),
+    name = Some("Test JVM (with coverage)"),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
+  ),
+  WorkflowStep.Sbt(
+    List(
+      "circeJS/compile",
+      "circeJS/test"
+    ),
+    id = None,
+    name = Some("Test JS")
   ),
   WorkflowStep.Sbt(
     List("coverageReport"),
@@ -59,9 +63,45 @@ ThisBuild / githubWorkflowBuild := Seq(
     UseRef.Public(
       "codecov",
       "codecov-action",
-      "v1"
+      "v2"
+    ),
+    params = Map(
+      "flags" -> List("${{matrix.scala}}", "${{matrix.java}}").mkString(",")
     ),
     cond = Some("${{ matrix.scala != '" + Scala3 + "' }}")
+  )
+)
+
+ThisBuild / githubWorkflowAddedJobs ++= Seq(
+  WorkflowJob(
+    "scalafmt",
+    "Scalafmt",
+    githubWorkflowJobSetup.value.toList ::: List(
+      WorkflowStep.Sbt(
+        List("scalafmtCheckAll", "scalafmtSbtCheck"),
+        name = Some("Scalafmt tests")
+      )
+    ),
+    scalas = crossScalaVersions.value.toList,
+    javas = List(JavaSpec.temurin("8"))
+  ),
+  WorkflowJob(
+    "mima",
+    "Mima",
+    githubWorkflowJobSetup.value.toList :::
+      List(
+        WorkflowStep.Sbt(
+          List("mimaReportBinaryIssuesJVM"),
+          name = Some("Mima Check Java")
+        ),
+        WorkflowStep.Sbt(
+          List("mimaReportBinaryIssuesJS"),
+          name = Some("Mima Check NodeJS")
+        )
+      ),
+    scalas = crossScalaVersions.value.toList,
+    javas = List(JavaSpec.temurin("8")),
+    matrixFailFast = Option(false)
   )
 )
 
@@ -113,17 +153,10 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.14.0-M3")
+val previousCirceVersions = List("0.14.0", "0.14.1").some
 val scalaFiddleCirceVersion = "0.9.1"
 
 lazy val disableScala3 = Def.settings(
-  mimaPreviousArtifacts := {
-    if (scalaBinaryVersion.value == "3") {
-      Set.empty
-    } else {
-      mimaPreviousArtifacts.value
-    }
-  },
   libraryDependencies := {
     if (scalaBinaryVersion.value == "3") {
       Nil
@@ -147,6 +180,7 @@ lazy val disableScala3 = Def.settings(
       (Test / test).value
     }
   },
+  mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value },
   publish / skip := (scalaBinaryVersion.value == "3")
 )
 
@@ -201,21 +235,23 @@ def circeProject(path: String)(project: Project) = {
   )
 }
 
-def circeModule(path: String, mima: Option[String]): Project = {
+def circeModule(path: String, mima: Option[List[String]]): Project = {
   val id = path.split("-").reduce(_ + _.capitalize)
   Project(id, file(s"modules/$path"))
     .configure(circeProject(path))
-    .settings(mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet)
+    .settings(
+      mima.map(versions => mimaPreviousArtifacts := versions.map("io.circe" %%% moduleName.value % _).toSet).toSeq
+    )
 }
 
-def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
+def circeCrossModule(path: String, mima: Option[List[String]], crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
   CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
-    .jvmSettings(
-      mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
+    .settings(
+      mima.map(versions => mimaPreviousArtifacts := versions.map("io.circe" %%% moduleName.value % _).toSet).toSeq
     )
     .jsSettings(
       coverageEnabled := false,
@@ -317,6 +353,7 @@ lazy val docs = project
   )
   .settings(docSettings)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(macroSettings)
   .enablePlugins(GhpagesPlugin)
   .enablePlugins(MicrositesPlugin)
@@ -381,6 +418,7 @@ lazy val circe = project
   .in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     console / initialCommands :=
       """
@@ -392,20 +430,36 @@ lazy val circe = project
       """.stripMargin
   )
   .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, generic, literal, parser)
 
-lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
-  scalacOptions ~= {
-    _.filterNot(Set("-Yno-predef"))
-  },
-  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
-  coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
-)
+lazy val circeJS = project
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
+  .aggregate(
+    jsProjects.map(p => p: ProjectReference): _*
+  )
+
+lazy val circeJVM = project
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
+  .aggregate(
+    jvmProjects.map(p => p: ProjectReference): _*
+  )
+
+lazy val numbersTestingBase =
+  circeCrossModule("numbers-testing", mima = previousCirceVersions, CrossType.Pure).settings(
+    scalacOptions ~= {
+      _.filterNot(Set("-Yno-predef"))
+    },
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+    coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
+  )
 
 lazy val numbersTesting = numbersTestingBase.jvm
 lazy val numbersTestingJS = numbersTestingBase.js
 
-lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
+lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersions)
   .settings(
     Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies +=
@@ -416,7 +470,7 @@ lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
 lazy val numbers = numbersBase.jvm
 lazy val numbersJS = numbersBase.js
 
-lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
+lazy val coreBase = circeCrossModule("core", mima = previousCirceVersions)
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
     Compile / sourceGenerators += (Compile / sourceManaged).map(Boilerplate.gen).taskValue,
@@ -436,7 +490,7 @@ lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
 lazy val core = coreBase.jvm
 lazy val coreJS = coreBase.js
 
-lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
+lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersions)
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= (if (isScala3.value) Nil else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
@@ -473,7 +527,7 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
 lazy val generic = genericBase.jvm
 lazy val genericJS = genericBase.js
 
-lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
+lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
     crossScalaVersions := Seq("2.13.8"),
@@ -491,7 +545,7 @@ lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousC
 lazy val genericSimple = genericSimpleBase.jvm
 lazy val genericSimpleJS = genericSimpleBase.js
 
-lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
+lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
     disableScala3,
@@ -509,7 +563,7 @@ lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, Cr
 lazy val shapes = shapesBase.jvm
 lazy val shapesJS = shapesBase.js
 
-lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
+lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
@@ -517,7 +571,8 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     ) ++ (if (isScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
-          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
+    mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -530,7 +585,7 @@ lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, 
 lazy val literal = literalBase.jvm
 lazy val literalJS = literalBase.js
 
-lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
+lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersions)
   .settings(
     disableScala3,
     libraryDependencies ++= Seq(
@@ -547,7 +602,7 @@ lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
 lazy val refined = refinedBase.jvm
 lazy val refinedJS = refinedBase.js
 
-lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
+lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersions)
   .jvmConfigure(_.dependsOn(jawn))
   .jsConfigure(_.dependsOn(scalajs))
   .dependsOn(coreBase)
@@ -556,10 +611,14 @@ lazy val parser = parserBase.jvm
 lazy val parserJS = parserBase.js
 
 lazy val scalajs =
-  circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).settings(jsProjectSettings).dependsOn(coreJS)
+  circeModule("scalajs", mima = previousCirceVersions)
+    .enablePlugins(ScalaJSPlugin)
+    .settings(jsProjectSettings)
+    .dependsOn(coreJS)
 lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
   .enablePlugins(ScalaJSPlugin)
-  .settings(noPublishSettings: _*)
+  .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test
@@ -568,7 +627,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None
   )
   .dependsOn(coreJS)
 
-lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
+lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersions)
   .settings(
     disableScala3,
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.30",
@@ -582,7 +641,7 @@ lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
 lazy val scodec = scodecBase.jvm
 lazy val scodecJS = scodecBase.js
 
-lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
+lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersions)
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
@@ -602,7 +661,8 @@ lazy val testing = testingBase.jvm
 lazy val testingJS = testingBase.js
 
 lazy val testsBase = circeCrossModule("tests", mima = None)
-  .settings(noPublishSettings: _*)
+  .disablePlugins(MimaPlugin)
+  .settings(noPublishSettings)
   .settings(
     disableScala3,
     scalacOptions ~= {
@@ -652,6 +712,7 @@ lazy val testsJS = testsBase.js
 
 lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     disableScala3,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
@@ -661,7 +722,7 @@ lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
 lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
 lazy val hygieneJS = hygieneBase.js
 
-lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossType.Full)
+lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersions, CrossType.Full)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "jawn-parser" % jawnVersion,
@@ -671,10 +732,13 @@ lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossT
   .dependsOn(coreBase)
 
 lazy val jawn = jawnBase.jvm
-lazy val jawnJS = jawnBase.js
+lazy val jawnJS = jawnBase.js.settings(
+  mimaPreviousArtifacts := Set.empty, // Unsupported until 0.15.0-M1
+  mimaFailOnNoPrevious := false
+)
 
 lazy val pointerBase =
-  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
+  circeCrossModule("pointer", mima = previousCirceVersions, CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
         "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
@@ -685,26 +749,31 @@ lazy val pointerBase =
 lazy val pointer = pointerBase.jvm
 lazy val pointerJS = pointerBase.js
 
-lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
+lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersions, CrossType.Pure)
   .settings(macroSettings)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ),
+    mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
   .dependsOn(coreBase, pointerBase)
 
 lazy val pointerLiteral = pointerLiteralBase.jvm
 lazy val pointerLiteralJS = pointerLiteralBase.js
 
-lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
+lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersions)
+  .settings(disableScala3)
+  .settings(noPublishSettings)
+  .dependsOn(coreBase, testsBase % Test)
 
 lazy val extras = extrasBase.jvm
 lazy val extrasJS = extrasBase.js
 
 lazy val benchmark = circeModule("benchmark", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
@@ -720,6 +789,7 @@ lazy val benchmark = circeModule("benchmark", mima = None)
 
 lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
   .settings(noPublishSettings)
+  .disablePlugins(MimaPlugin)
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
@@ -755,7 +825,9 @@ lazy val publishSettings = Seq(
     )
   ),
   developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
+    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
+    Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
+    Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
   ),
   pomPostProcess := { (node: XmlNode) =>
     new RuleTransformer(
@@ -799,14 +871,16 @@ lazy val CompileTime = config("compile-time")
 
 val formatCommands = ";scalafmtCheckAll;scalafmtSbtCheck"
 
-addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
+addCommandAlias("buildJVM", "circeJVM/compile")
+addCommandAlias("mimaReportBinaryIssuesJVM", "circeJVM/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJVM",
-  ";buildJVM" + jvmProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJVM;circeJVM/test" + formatCommands
 )
-addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
+addCommandAlias("buildJS", "circeJS/compile")
+addCommandAlias("mimaReportBinaryIssuesJS", "circeJS/mimaReportBinaryIssues")
 addCommandAlias(
   "validateJS",
-  ";buildJS" + jsProjects.map(";" + _.id + "/test").mkString + formatCommands
+  ";buildJS;circeJS/test" + formatCommands
 )
 addCommandAlias("validate", ";validateJVM;validateJS")

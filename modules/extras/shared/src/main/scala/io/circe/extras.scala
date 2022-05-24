@@ -57,7 +57,7 @@ package object extras {
       override def onString(value: String): Json = onString_(value)
       override def onArray(value: Vector[Json]): Json = {
         val sanitized: Vector[Json] =
-          value.map { j: Json =>
+          value.map { (j: Json) =>
             sanitizeKeys(j, approvedList, onBoolean, onNull, onString, onNumber)
           }
         Json.fromValues(sanitized)

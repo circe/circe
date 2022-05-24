@@ -3,9 +3,8 @@ package io.circe.pointer.literal
 import io.circe.pointer.Pointer
 import scala.reflect.macros.blackbox
 
-private object PointerLiteralMacros {
-
-  final def pointerStringContext(c: blackbox.Context)(args: c.Expr[Any]*): c.universe.Tree = {
+private class PointerLiteralMacros(val c: blackbox.Context) {
+  final def pointerStringContext(args: c.Expr[Any]*): c.universe.Tree = {
     import c.universe._
 
     c.prefix.tree match {

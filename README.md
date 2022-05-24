@@ -58,9 +58,10 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Mobile GmbH](https://www.mobile.de)
 * [New Work](https://www.new-work.se/en/)
 * [Ocado Technology](https://ocadotechnology.com)
-* [OVO Energy](https://www.ovoenergy.com)
+* [On Air Entertainment](https://onairentertainment.com/)
 * [Onfocus](https://onfocus.io)
 * [Opt Technologies](https://opt-technologies.jp/)
+* [OVO Energy](https://www.ovoenergy.com)
 * [Panaseer](https://panaseer.com)
 * [Permutive](http://permutive.com)
 * [Prezi](https://prezi.com)
@@ -134,6 +135,7 @@ The following open source projects are either built on circe or provide circe su
 * [IdeaLingua][izumi-r2]: Staged Interface Definition and Data Modeling Language & RPC system currently targeting Scala, Go, C# and TypeScript. Scala codegen generates models and JSON codecs using circe.
 * [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
 * [jsactor][jsactor]: An actor library for Scala.js with circe support.
+* [jsoniter-scala-circe][jsoniter-scala-circe]: A booster for faster parsing/printing to/from circe AST and decoding/encoding of `java.time._` and `BigInt` types.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
@@ -246,6 +248,7 @@ limitations under the License.
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [json-rpc]: http://www.jsonrpc.org
+[jsoniter-scala-circe]: https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-circe
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
 [kadai-log]: https://bitbucket.org/atlassian/kadai-log
