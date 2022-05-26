@@ -3,7 +3,7 @@ import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
 ThisBuild / tlBaseVersion := "0.14"
-ThisBuild / ciReleaseTags := false
+ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.8")
@@ -96,6 +96,9 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
     )
 }
 
+lazy val docsMappingsAPIDir =
+  settingKey[String]("Name of subdirectory in site target directory for api docs")
+
 lazy val docSettings = allSettings ++ Seq(
   micrositeName := "circe",
   micrositeDescription := "A JSON library for Scala powered by Cats",
@@ -152,13 +155,25 @@ lazy val docSettings = allSettings ++ Seq(
     _.filterNot(Set("-Yno-predef"))
   },
   git.remoteRepo := "git@github.com:circe/circe.git",
-  ScalaUnidoc / unidoc / unidocProjectFilter :=
-    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(
+    numbers.jvm,
+    core.jvm,
+    pointer.jvm,
+    pointerLiteral.jvm,
+    generic.jvm,
+    shapes.jvm,
+    literal.jvm,
+    refined.jvm,
+    parser.jvm,
+    scodec.jvm,
+    jawn.jvm,
+    scalajs
+  ),
   makeSite / includeFilter := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
 )
 
 lazy val docs = project
-  .dependsOn(core, parser, shapes, testing)
+  .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
@@ -267,7 +282,7 @@ lazy val generic = circeCrossModule("generic")
 lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).filter(_.startsWith("2.13")),
+    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filter(_.startsWith("2.13")),
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
@@ -282,7 +297,7 @@ lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
 lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).filterNot(_.startsWith("3.")),
+    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13)
   )
   .jsSettings(
@@ -313,7 +328,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
 
 lazy val refined = circeCrossModule("refined")
   .settings(
-    disableScala3,
+    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
@@ -326,11 +341,11 @@ lazy val refined = circeCrossModule("refined")
   .dependsOn(core, tests % Test)
 
 lazy val parser =
-  circeCrossModule("parser").jvmConfigure(_.dependsOn(jawn)).jsConfigure(_.dependsOn(scalajs)).dependsOn(core)
+  circeCrossModule("parser").jvmConfigure(_.dependsOn(jawn.jvm)).jsConfigure(_.dependsOn(scalajs)).dependsOn(core)
 
 lazy val scalajs =
   circeModule("scalajs").enablePlugins(ScalaJSPlugin).dependsOn(core.js)
-lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
+lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(NoPublishPlugin)
   .settings(
@@ -390,10 +405,10 @@ lazy val tests = circeCrossModule("tests")
   )
   .dependsOn(core, parser, testing)
 
-lazy val hygiene = circeCrossModule("hygiene", mima = None)
+lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).filterNot(_.startsWith("3.")),
+    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(core, generic, literal)
@@ -427,25 +442,19 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .dependsOn(core, pointer)
 
 lazy val extras = circeCrossModule("extras")
-  .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).filterNot(_.startsWith("3.")))
+  .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")))
   .enablePlugins(NoPublishPlugin)
   .dependsOn(core, tests % Test)
 
 lazy val benchmark = circeModule("benchmark")
-  .enablePlugins(NoPublishPlugin)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).filterNot(_.startsWith("3.")),
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-optics" % "0.14.1",
       "org.scalameta" %% "munit" % munitVersion % Test
-    ),
+    )
   )
-  .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn, pointer)
-
-lazy val benchmarkDotty = circeModule("benchmark-dotty")
-  .enablePlugins(NoPublishPlugin, JmhPlugin)
-  .dependsOn(core, jawn)
+  .enablePlugins(JmhPlugin, NoPublishPlugin)
+  .dependsOn(core.jvm, generic.jvm, jawn.jvm, pointer.jvm)
 
 ThisBuild / homepage := Some(url("https://github.com/circe/circe"))
 ThisBuild / licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
