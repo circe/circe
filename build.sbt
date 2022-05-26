@@ -254,8 +254,10 @@ lazy val numbersTesting =
 
 lazy val numbers = circeCrossModule("numbers")
   .settings(
-    libraryDependencies +=
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
+    )
   )
   .dependsOn(numbersTesting % Test)
 
@@ -385,12 +387,9 @@ lazy val testing = circeCrossModule("testing")
 lazy val tests = circeCrossModule("tests")
   .enablePlugins(NoPublishPlugin)
   .settings(
-    scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
-    },
-    Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
+      "org.scalameta" %%% "munit" % munitVersion,
       "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
@@ -419,6 +418,7 @@ lazy val jawn = circeCrossModule("jawn", CrossType.Full)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "jawn-parser" % jawnVersion,
+      "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
@@ -431,6 +431,7 @@ lazy val pointer =
   circeCrossModule("pointer", CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
+        "org.scalameta" %%% "munit" % munitVersion % Test,
         "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
       )
     )
