@@ -26,7 +26,13 @@ trait Codec[A] extends Decoder[A] with Encoder[A] {
 }
 
 object Codec extends ProductCodecs with EnumerationCodecs {
-  def apply[A](implicit instance: Codec[A]): Codec[A] = instance
+  def apply[A](implicit decoder: Decoder[A], encoder: Encoder[A]): Codec[A] =
+    decoder match {
+      case codec: Codec[_] if codec eq encoder =>
+        // if codec: Decoder[A] with Decoder[B], A and B must be identical
+        codec.asInstanceOf[Codec[A]]
+      case _ => from(decoder, encoder)
+    }
 
   implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {
     override def imap[A, B](fa: Codec[A])(f: A => B)(g: B => A): Codec[B] = Codec.from(fa.map(f), fa.contramap(g))
