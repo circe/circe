@@ -7,6 +7,7 @@ ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.8")
+ThisBuild / tlSkipIrrelevantScalas := true
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
@@ -208,7 +209,8 @@ lazy val macroSettings: Seq[Setting[_]] = Seq(
                              ))),
   scalacOptions ++= (
     if (Set("2.12", "3").contains(scalaBinaryVersion.value)) Nil else Seq("-Ymacro-annotations")
-  )
+  ),
+  scalacOptions -= "-source:3.0-migration"
 )
 
 lazy val root = tlCrossRootProject
@@ -241,8 +243,7 @@ lazy val root = tlCrossRootProject
     jawn,
     scalajs,
     scalajsJavaTimeTest,
-    benchmark,
-    docs
+    benchmark
   )
 
 lazy val numbersTesting =
@@ -311,6 +312,7 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
 lazy val literal = circeCrossModule("literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
@@ -328,7 +330,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
 
 lazy val refined = circeCrossModule("refined")
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
+    tlVersionIntroduced += "3" -> "0.14.3",
     libraryDependencies ++= Seq(
       "eu.timepit" %%% "refined" % refinedVersion,
       "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
@@ -420,6 +422,9 @@ lazy val jawn = circeCrossModule("jawn", CrossType.Full)
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
+  .jsSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.2").toMap
+  )
   .dependsOn(core)
 
 lazy val pointer =
@@ -434,6 +439,7 @@ lazy val pointer =
 lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
@@ -449,9 +455,8 @@ lazy val extras = circeCrossModule("extras")
 lazy val benchmark = circeModule("benchmark")
   .settings(
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-optics" % "0.14.1",
       "org.scalameta" %% "munit" % munitVersion % Test
-    )
+    ) ++ { if (tlIsScala3.value) Nil else List("io.circe" %% "circe-optics" % "0.14.1") }
   )
   .enablePlugins(JmhPlugin, NoPublishPlugin)
   .dependsOn(core.jvm, generic.jvm, jawn.jvm, pointer.jvm)
