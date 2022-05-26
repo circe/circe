@@ -411,7 +411,7 @@ lazy val hygiene = circeCrossModule("hygiene")
     crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(core, generic, literal)
+  .dependsOn(core, generic, literal, jawn)
 
 lazy val jawn = circeCrossModule("jawn", CrossType.Full)
   .settings(
