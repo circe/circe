@@ -29,12 +29,21 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
   WorkflowJob(
     id = "coverage",
     name = "Generate coverage report",
-    scalas = List(crossScalaVersions.value.last),
+    scalas = crossScalaVersions.value.filterNot(_.startsWith("3.")).toList,
     steps = List(WorkflowStep.Checkout) ++ WorkflowStep.SetupJava(
       List(githubWorkflowJavaVersions.value.last)
     ) ++ githubWorkflowGeneratedCacheSteps.value ++ List(
       WorkflowStep.Sbt(List("coverage", "rootJVM/test", "coverageAggregate")),
-      WorkflowStep.Run(List("bash <(curl -s https://codecov.io/bash)"))
+      WorkflowStep.Use(
+        UseRef.Public(
+          "codecov",
+          "codecov-action",
+          "v2"
+        ),
+        params = Map(
+          "flags" -> List("${{matrix.scala}}", "${{matrix.java}}").mkString(",")
+        )
+      )
     )
   )
 )

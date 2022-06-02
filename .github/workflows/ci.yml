@@ -169,7 +169,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.13.8]
+        scala: [2.12.15, 2.13.8]
         java: [temurin@11]
     runs-on: ${{ matrix.os }}
     steps:
@@ -206,4 +206,6 @@ jobs:
 
       - run: sbt '++${{ matrix.scala }}' coverage rootJVM/test coverageAggregate
 
-      - run: 'bash <(curl -s https://codecov.io/bash)'
+      - uses: codecov/codecov-action@v2
+        with:
+          flags: ${{matrix.scala}},${{matrix.java}}
