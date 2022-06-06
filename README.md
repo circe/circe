@@ -86,6 +86,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
 * [VEACT](https://veact.net/)
 * [WeWork](https://www.wework.com)
+* [Wide Angle Analytics](https://wideangle.co)
 * [Whisk](https://whisk.com)
 * [Zalando](https://zalando.de)
 * [Zendesk](https://zendesk.com)
