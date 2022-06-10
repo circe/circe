@@ -77,7 +77,7 @@ object Boilerplate {
    * - The contents of the `header` val is output first
    * - Then the first block of lines beginning with '|'
    * - Then the block of lines beginning with '-' is replicated once for each arity,
-   *   with the `templateVals` already pre-populated with relevant relevant vals for that arity
+   *   with the `templateVals` already pre-populated with relevant vals for that arity
    * - Then the last block of lines prefixed with '|'
    *
    * The block otherwise behaves as a standard interpolated string with regards to variable
