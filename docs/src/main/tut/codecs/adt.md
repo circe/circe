@@ -65,7 +65,7 @@ This works, and if you need to be able to specify the order that the ADT constru
 As discussed [on Gitter](https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a), we can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
 
 ```scala mdoc:silent
-// To suppress previously imported inplicit codecs.
+// To suppress previously imported implicit codecs.
 import GenericDerivation.{ decodeEvent => _, encodeEvent => _ }
 
 object ShapesDerivation {
