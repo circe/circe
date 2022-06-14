@@ -2,7 +2,9 @@ package io.circe
 
 import cats.Applicative
 import cats.kernel.Eq
+import io.circe.cursor._
 import java.io.Serializable
+import scala.annotation.tailrec
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.
@@ -127,7 +129,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def values: Option[Iterable[Json]]
 
   /**
-   * If the focus is a value in a JSON object, return the key.
+   * If the focus is a value in a JSON array, return the key.
    *
    * @group ArrayAccess
    */
@@ -202,6 +204,40 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group ObjectNavigation
    */
   def downField(k: String): ACursor
+
+  private[circe] final def pathToRoot: PathToRoot = {
+    import PathToRoot._
+
+    @tailrec
+    def loop(cursor: ACursor, acc: List[PathElem]): PathToRoot =
+      if (cursor eq null) {
+        PathToRoot(acc)
+      } else {
+        if (cursor.failed) {
+          loop(cursor.lastCursor, acc)
+        } else {
+          cursor match {
+            case cursor: ArrayCursor =>
+              loop(cursor.parent, PathElem.ArrayIndex(cursor.indexValue) +: acc)
+            case cursor: ObjectCursor =>
+              loop(cursor.parent, PathElem.ObjectKey(cursor.keyValue) +: acc)
+            case cursor: TopCursor =>
+              PathToRoot(acc)
+            case _ =>
+              // Skip unknown cursor type. Maybe we should seal this?
+              loop(cursor.lastCursor, acc)
+          }
+        }
+      }
+
+    loop(this, List.empty[PathToRoot.PathElem])
+  }
+
+  /**
+   * Creates a JavaScript-style path string, e.g. ".foo.bar[3]".
+   */
+  final def pathString: String =
+    PathToRoot.toPathString(pathToRoot)
 
   /**
    * Attempt to decode the focus as an `A`.

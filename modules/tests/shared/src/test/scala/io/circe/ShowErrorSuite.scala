@@ -6,6 +6,7 @@ import cats.syntax.show._
 import io.circe.CursorOp._
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
+import org.scalacheck.Prop._
 
 trait GenCursorOps {
   val arrayMoves: Gen[List[CursorOp]] = Gen
@@ -22,7 +23,7 @@ trait GenCursorOps {
 
 class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   test("Show[ParsingFailure] should produce the expected output") {
-    assert(ParsingFailure("the message", new Exception()).show === "ParsingFailure: the message")
+    assertEquals(ParsingFailure("the message", new RuntimeException()).show, "ParsingFailure: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a small example") {
@@ -77,7 +78,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       }
 
       val expected = s"DecodingFailure at [$index]: the message"
-      DecodingFailure("the message", ops).show === expected
+      DecodingFailure("the message", ops).show ?= expected
     }
   }
 }

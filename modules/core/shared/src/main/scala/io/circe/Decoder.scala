@@ -87,15 +87,17 @@ trait Decoder[A] extends Serializable { self =>
   }
 
   private[this] def cursorToDecodingFailure(cursor: ACursor) = {
-    val history = cursor.history
-    val historyToFailedCursor = history.takeWhile(_ != CursorOp.DeleteGoParent)
-    val field = CursorOp.opsToPath(historyToFailedCursor).replaceFirst("^\\.", "")
-    val down = cursor.downField(field)
-    if (down.succeeded) {
-      DecodingFailure(s"Couldn't decode $field", history)
-    } else {
-      DecodingFailure(MissingField, history)
-    }
+    val reason: DecodingFailure.Reason =
+      cursor match {
+        case cursor: FailedCursor =>
+          if (cursor.missingField) {
+            DecodingFailure.Reason.MissingField
+          } else {
+            DecodingFailure.Reason.CustomReason("Unable to decode JSON")
+          }
+      }
+
+    DecodingFailure(reason, cursor)
   }
 
   /**
@@ -954,17 +956,21 @@ object Decoder
   private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
     Validated.valid(None)
 
-  /**
-   * @group Decoding
-   */
-  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
-    final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
+  /** A decoder for `Option[A]`.
+    *
+    * This is modeled as a separate, named, subtype because Option decoders
+    * often have special semantics around the handling of `JNull`. By having
+    * this as a named subtype, we premit certain optimizations that would
+    * otherwise not be possible. See `circe-generic-extras` for some examples.
+    */
+  final class OptionDecoder[A](implicit A: Decoder[A]) extends Decoder[Option[A]] {
+    final override def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 
     final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) rightNone
         else
-          d(c) match {
+          A(c) match {
             case Right(a) => Right(Some(a))
             case Left(df) => Left(df)
           }
@@ -979,7 +985,7 @@ object Decoder
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
-          d.decodeAccumulating(c) match {
+          A.decodeAccumulating(c) match {
             case Valid(a)       => Valid(Some(a))
             case i @ Invalid(_) => i
           }
@@ -988,6 +994,11 @@ object Decoder
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new OptionDecoder[A]
 
   /**
    * @group Decoding

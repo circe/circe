@@ -304,4 +304,38 @@ class ACursorSuite extends CirceMunitSuite {
   test("index should return None if the cursor has at the root") {
     assertEquals(cursor.index, None)
   }
+
+  test("pathString should return the correct paths") {
+    val json: Json =
+      Json.obj(
+        "a" -> Json.arr(Json.fromString("string"), Json.obj("b" -> Json.fromInt(1))),
+        "c" -> Json.fromBoolean(true)
+      )
+    val c: ACursor = HCursor.fromJson(json)
+
+    assertEquals(
+      c.pathString,
+      ""
+    )
+
+    assertEquals(
+      c.downField("a").pathString,
+      "a"
+    )
+
+    assertEquals(
+      c.downField("a").downArray.pathString,
+      "a[0]"
+    )
+
+    assertEquals(
+      c.downField("a").downN(1).downField("b").pathString,
+      "a[1].b"
+    )
+
+    assertEquals(
+      c.downField("a").downN(1).downField("b").up.left.right.left.pathString,
+      "a[0]"
+    )
+  }
 }
