@@ -54,7 +54,6 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [MatchesFashion](https://www.matchesfashion.com)
 * [Merit](https://merits.com)
 * [Metacommerce](https://www.metacommerce.ru)
-* [Miras Technologies](http://miras-tech.com/)
 * [Mobile GmbH](https://www.mobile.de)
 * [New Work](https://www.new-work.se/en/)
 * [Ocado Technology](https://ocadotechnology.com)
