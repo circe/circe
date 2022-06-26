@@ -75,10 +75,10 @@ private[circe] trait DecoderDerivation {
           if (c.value.isObject) {
             val iter = resultIterator(c)
             val res = new Array[AnyRef](elemCount)
-            var failed: Left[DecodingFailure, _] = null
+            var failed: Left[DecodingFailure, _] | Null = null
             var i: Int = 0
 
-            while (iter.hasNext && (failed eq null)) {
+            while (iter.hasNext && (failed == null)) {
               iter.next match {
                 case Right(value) => res(i) = value
                 case l @ Left(_)  => failed = l
@@ -86,7 +86,7 @@ private[circe] trait DecoderDerivation {
               i += 1
             }
 
-            if (failed eq null) {
+            if (failed == null) {
               Right(m.fromProduct(Tuple.fromArray(res)))
             } else {
               failed.asInstanceOf[Decoder.Result[A]]
@@ -159,10 +159,10 @@ private[circe] trait CodecDerivation {
           if (c.value.isObject) {
             val iter = resultIterator(c)
             val res = new Array[AnyRef](elemCount)
-            var failed: Left[DecodingFailure, _] = null
+            var failed: Left[DecodingFailure, _] | Null = null
             var i: Int = 0
 
-            while (iter.hasNext && (failed eq null)) {
+            while (iter.hasNext && (failed == null)) {
               iter.next match {
                 case Right(value) => res(i) = value
                 case l @ Left(_)  => failed = l
@@ -170,7 +170,7 @@ private[circe] trait CodecDerivation {
               i += 1
             }
 
-            if (failed eq null) {
+            if (failed == null) {
               Right(m.fromProduct(Tuple.fromArray(res)))
             } else {
               failed.asInstanceOf[Decoder.Result[A]]
