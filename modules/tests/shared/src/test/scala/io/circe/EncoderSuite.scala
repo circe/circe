@@ -88,7 +88,7 @@ class EncoderSuite extends CirceMunitSuite {
     assert(Encoder[Float].apply(x).toString.toFloat === x)
 
     // For floats which are NOT represented with scientific notation,
-    // the JSON representaton should match Float.toString
+    // the JSON representation should match Float.toString
     // This should catch cases where 1.2f would previously be encoded
     // as 1.2000000476837158 due to the use of .toDouble
     if (!x.toString.toLowerCase.contains('e')) {
