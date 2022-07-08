@@ -20,21 +20,21 @@ trait GenCursorOps {
           loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
         } else {
           // Can move either direction
-          Gen.oneOf(
-            MoveLeft,
-            MoveRight
-          ).flatMap{
-            case MoveLeft =>
-              loop(movesRemaining - 1, leftMoves + 1, rightMoves, acc.map(value => MoveLeft :: value))
-            case MoveRight =>
-              loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
-          }
+          Gen
+            .oneOf(
+              MoveLeft,
+              MoveRight
+            )
+            .flatMap {
+              case MoveLeft =>
+                loop(movesRemaining - 1, leftMoves + 1, rightMoves, acc.map(value => MoveLeft :: value))
+              case MoveRight =>
+                loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
+            }
         }
       }
 
-    Gen.choose(1, 100).flatMap(moves =>
-      loop(moves, 0, 0, Gen.const(List.empty))
-    )
+    Gen.choose(1, 100).flatMap(moves => loop(moves, 0, 0, Gen.const(List.empty)))
   }
 
   val downFields: Gen[List[CursorOp]] = Gen.listOf(Gen.identifier.map(DownField))

@@ -956,13 +956,14 @@ object Decoder
   private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
     Validated.valid(None)
 
-  /** A decoder for `Option[A]`.
-    *
-    * This is modeled as a separate, named, subtype because Option decoders
-    * often have special semantics around the handling of `JNull`. By having
-    * this as a named subtype, we premit certain optimizations that would
-    * otherwise not be possible. See `circe-generic-extras` for some examples.
-    */
+  /**
+   * A decoder for `Option[A]`.
+   *
+   * This is modeled as a separate, named, subtype because Option decoders
+   * often have special semantics around the handling of `JNull`. By having
+   * this as a named subtype, we premit certain optimizations that would
+   * otherwise not be possible. See `circe-generic-extras` for some examples.
+   */
   final class OptionDecoder[A](implicit A: Decoder[A]) extends Decoder[Option[A]] {
     final override def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 

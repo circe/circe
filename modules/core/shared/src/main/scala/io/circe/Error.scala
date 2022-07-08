@@ -52,9 +52,10 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
 
   def history: List[CursorOp]
 
-  /** The location in the JSON where the decoding failure occurred. For various
-    * reasons, in 0.14.x this may not always be present.
-    */
+  /**
+   * The location in the JSON where the decoding failure occurred. For various
+   * reasons, in 0.14.x this may not always be present.
+   */
   def pathToRootString: Option[String] = None
 
   final def message: String =
@@ -79,9 +80,7 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
   override final def toString: String =
     pathToRootString.fold(
       s"DecodingFailure($message, $history)"
-    )(pathToRootString =>
-      s"DecodingFailure at ${pathToRootString}: ${message}"
-    )
+    )(pathToRootString => s"DecodingFailure at ${pathToRootString}: ${message}")
 
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
@@ -91,7 +90,11 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
 }
 
 object DecodingFailure {
-  private[this] final class DecodingFailureImpl(override val reason: Reason, pathToRoot: Option[PathToRoot], ops: Eval[List[CursorOp]]) extends DecodingFailure(reason) {
+  private[this] final class DecodingFailureImpl(
+    override val reason: Reason,
+    pathToRoot: Option[PathToRoot],
+    ops: Eval[List[CursorOp]]
+  ) extends DecodingFailure(reason) {
     override final def pathToRootString: Option[String] =
       if (pathToRoot == Some(PathToRoot.empty)) {
         // For backwards compatibility. We'll make this more consistent in 0.15.x
@@ -114,9 +117,11 @@ object DecodingFailure {
       new DecodingFailureImpl(reason, pathToRoot, ops)
   }
 
-  def apply(message: String, ops: => List[CursorOp]): DecodingFailure = DecodingFailureImpl(CustomReason(message), None, Eval.later(ops))
+  def apply(message: String, ops: => List[CursorOp]): DecodingFailure =
+    DecodingFailureImpl(CustomReason(message), None, Eval.later(ops))
 
-  def apply(reason: Reason, ops: => List[CursorOp]): DecodingFailure = DecodingFailureImpl(reason, None, Eval.later(ops))
+  def apply(reason: Reason, ops: => List[CursorOp]): DecodingFailure =
+    DecodingFailureImpl(reason, None, Eval.later(ops))
 
   def apply(reason: Reason, cursor: ACursor): DecodingFailure =
     DecodingFailureImpl(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))

@@ -12,12 +12,12 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
     (lastOp.requiresObject && !lastCursor.value.isObject) || (lastOp.requiresArray && !lastCursor.value.isArray)
 
   /**
-    * Indicates whether the last operation failed because of a missing field.
-    */
+   * Indicates whether the last operation failed because of a missing field.
+   */
   def missingField: Boolean =
     lastOp match {
       case _: CursorOp.Field | _: CursorOp.DownField => true
-      case _ => false
+      case _                                         => false
     }
 
   def succeeded: Boolean = false
