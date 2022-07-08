@@ -209,9 +209,9 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
     import PathToRoot._
 
     @tailrec
-    def loop(cursor: ACursor, acc: List[PathElem]): PathToRoot =
+    def loop(cursor: ACursor, acc: PathToRoot): PathToRoot =
       if (cursor eq null) {
-        PathToRoot(acc)
+        acc
       } else {
         if (cursor.failed) {
           loop(cursor.lastCursor, acc)
@@ -222,7 +222,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
             case cursor: ObjectCursor =>
               loop(cursor.parent, PathElem.ObjectKey(cursor.keyValue) +: acc)
             case cursor: TopCursor =>
-              PathToRoot(acc)
+              acc
             case _ =>
               // Skip unknown cursor type. Maybe we should seal this?
               loop(cursor.lastCursor, acc)
@@ -230,7 +230,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
         }
       }
 
-    loop(this, List.empty[PathToRoot.PathElem])
+    loop(this, PathToRoot.empty)
   }
 
   /**

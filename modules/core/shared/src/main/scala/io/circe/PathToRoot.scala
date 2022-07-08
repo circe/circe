@@ -1,10 +1,10 @@
 package io.circe
 
-/** A newtype over a list which describes a path in a JSON object from some
+/** A newtype over a vector which describes a path in a JSON object from some
   * point to the root of the JSON object.
   *
-  * The ''first'' element in the list is the root of the object (if present),
-  * and the ''last'' element in the list is the starting location.
+  * The ''first'' element in the vector is the root of the object (if present),
+  * and the ''last'' element in the vector is the starting location.
   *
   * This datatype exists so that we can store the minimal amount of
   * information required to give a nice description of some event related to
@@ -17,7 +17,7 @@ package io.circe
   *       dramatic change which will involve deprecations is planned for
   *       0.15.x.
   */
-private[circe] final case class PathToRoot private (value: List[PathToRoot.PathElem]) extends AnyVal {
+private[circe] final case class PathToRoot private (value: Vector[PathToRoot.PathElem]) extends AnyVal {
 
   /** A `String` representation of the path into a JSON object. For example, for
     * the JSON `{"a": [1,2]}`, a cursor pointing at `2` would yield a
@@ -25,10 +25,22 @@ private[circe] final case class PathToRoot private (value: List[PathToRoot.PathE
     */
   def asPathString: String =
     PathToRoot.toPathString(this)
+
+  def prependElem(elem: PathToRoot.PathElem): PathToRoot =
+    PathToRoot(elem +: value)
+
+  def appendElem(elem: PathToRoot.PathElem): PathToRoot =
+    PathToRoot(value :+ elem)
+
+  def +:(elem: PathToRoot.PathElem): PathToRoot =
+    prependElem(elem)
+
+  def :+(elem: PathToRoot.PathElem): PathToRoot =
+    appendElem(elem)
 }
 
 private[circe] object PathToRoot {
-  val empty: PathToRoot = PathToRoot(List.empty)
+  val empty: PathToRoot = PathToRoot(Vector.empty)
 
   /** Used to describe the breadcrumbs back to the root of the JSON.
     */
