@@ -79,9 +79,11 @@ private[circe] object PathToRoot {
     }
   }
 
-  def fromHistory(ops: List[CursorOp]): Either[String, PathToRoot] =
+  def fromHistory(ops: List[CursorOp]): Either[String, PathToRoot] = {
+    type F[A] = Either[String, A] // Kind Projector?
+
     ops.reverse
-      .foldM(Vector.empty[PathElem]) {
+      .foldM[F, Vector[PathElem]](Vector.empty[PathElem]) {
         case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n > 0 =>
           Right(acc :+ PathElem.ArrayIndex(n - 1))
         case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) =>
@@ -111,5 +113,6 @@ private[circe] object PathToRoot {
         case (acc, invalid) =>
           Left(s"Invalid cursor history state: ${invalid}")
       }
-      .map(PathToRoot.apply)
+      .map(PathToRoot.apply _)
+  }
 }
