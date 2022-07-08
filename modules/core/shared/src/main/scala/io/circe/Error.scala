@@ -61,8 +61,7 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
     reason match {
       case WrongTypeExpectation(expJsType, v) => s"Got value '${v.noSpaces}' with wrong type, expecting $expJsType"
       case MissingField                       => "Missing required field"
-      case CustomReason(message)              =>
-        pathToRootString.fold(message)(path => s"Decoding failure at ${path}: ${message}")
+      case CustomReason(message)              => message
     }
 
   final override def getMessage: String =
@@ -77,7 +76,13 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
   def withReason(reason: Reason): DecodingFailure =
     DecodingFailure(reason, history)
 
-  override final def toString: String = s"DecodingFailure($message, $history)"
+  override final def toString: String =
+    pathToRootString.fold(
+      s"DecodingFailure($message, $history)"
+    )(pathToRootString =>
+      s"DecodingFailure at ${pathToRootString}: ${message}"
+    )
+
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
     case _                      => false
@@ -88,7 +93,12 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
 object DecodingFailure {
   private[this] final class DecodingFailureImpl(override val reason: Reason, pathToRoot: Option[PathToRoot], ops: Eval[List[CursorOp]]) extends DecodingFailure(reason) {
     override final def pathToRootString: Option[String] =
-      pathToRoot.map(_.asPathString)
+      if (pathToRoot == Some(PathToRoot.empty)) {
+        // For backwards compatibility. We'll make this more consistent in 0.15.x
+        Some("")
+      } else {
+        pathToRoot.orElse(PathToRoot.fromHistory(ops.value).toOption).map(_.asPathString)
+      }
 
     override final def history: List[CursorOp] = ops.value
 

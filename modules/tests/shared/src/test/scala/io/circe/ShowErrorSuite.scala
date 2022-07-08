@@ -9,14 +9,33 @@ import org.scalacheck.{ Gen, Prop }
 import org.scalacheck.Prop._
 
 trait GenCursorOps {
-  val arrayMoves: Gen[List[CursorOp]] = Gen
-    .listOf(
-      Gen.oneOf(
-        Gen.choose(1, 10000).map(n => Range(1, n).toList.map(_ => MoveLeft)),
-        Gen.choose(1, 10000).map(n => Range(1, n).toList.map(_ => MoveRight))
-      )
+  val arrayMoves: Gen[List[CursorOp]] = {
+
+    def loop(movesRemaining: Int, leftMoves: Int, rightMoves: Int, acc: Gen[List[CursorOp]]): Gen[List[CursorOp]] =
+      if (movesRemaining <= 0) {
+        acc
+      } else {
+        if (leftMoves >= rightMoves) {
+          // Can't move left again, otherwise we'll go < the 0 index.
+          loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
+        } else {
+          // Can move either direction
+          Gen.oneOf(
+            MoveLeft,
+            MoveRight
+          ).flatMap{
+            case MoveLeft =>
+              loop(movesRemaining - 1, leftMoves + 1, rightMoves, acc.map(value => MoveLeft :: value))
+            case MoveRight =>
+              loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
+          }
+        }
+      }
+
+    Gen.choose(1, 100).flatMap(moves =>
+      loop(moves, 0, 0, Gen.const(List.empty))
     )
-    .map(_.flatten)
+  }
 
   val downFields: Gen[List[CursorOp]] = Gen.listOf(Gen.identifier.map(DownField))
 }
@@ -29,7 +48,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   test("Show[DecodingFailure] should produce the expected output on a small example") {
     val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
 
-    assert(DecodingFailure("the message", ops).show === "DecodingFailure at .foo.bar[2]: the message")
+    assertEquals(DecodingFailure("the message", ops).show, "DecodingFailure at .foo.bar[2]: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a larger example") {
@@ -53,18 +72,18 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     )
 
     val expected = "DecodingFailure at .foo.bar[0][2]: the message"
-    assert(DecodingFailure("the message", ops).show === expected)
+    assertEquals(DecodingFailure("the message", ops).show, expected)
   }
 
   property("Show[DecodingFailure] should display field selection") {
     Prop.forAll(downFields) { moves =>
       val selection = moves.foldRight("") {
         case (DownField(f), s) => s"$s.$f"
-        case (_, s)            => s
+        case (_, s)            => throw new AssertionError("Impossible case")
       }
 
       val expected = s"DecodingFailure at $selection: the message"
-      DecodingFailure("the message", moves).show === expected
+      DecodingFailure("the message", moves).show ?= expected
     }
   }
 

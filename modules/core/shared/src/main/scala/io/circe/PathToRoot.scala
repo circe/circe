@@ -1,5 +1,7 @@
 package io.circe
 
+import cats.syntax.all._
+
 /** A newtype over a vector which describes a path in a JSON object from some
   * point to the root of the JSON object.
   *
@@ -62,8 +64,6 @@ private[circe] object PathToRoot {
       ""
     } else {
       path.value.foldLeft((new StringBuilder(path.value.size * 5), true )){
-        case ((sb, isFirst), ObjectKey(keyName)) if isFirst =>
-          (sb.append(keyName), false)
         case ((sb, _), ObjectKey(keyName)) =>
           (sb.append(".").append(keyName), false)
         case ((sb, _), ArrayIndex(index)) =>
@@ -71,4 +71,36 @@ private[circe] object PathToRoot {
       }._1.toString
     }
   }
+
+  def fromHistory(ops: List[CursorOp]): Either[String, PathToRoot] =
+    ops.reverse.foldM(Vector.empty[PathElem]){
+      case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n > 0 =>
+        Right(acc :+ PathElem.ArrayIndex(n - 1))
+      case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) =>
+        Left("Attempt to move beyond beginning of array in cursor history.")
+      case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) if n < Int.MaxValue =>
+        Right(acc :+ PathElem.ArrayIndex(n + 1))
+      case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) =>
+        Left("Attempt to move to index > Int.MaxValue in array in cursor history.")
+      case (acc :+ _, CursorOp.MoveUp) =>
+        Right(acc)
+      case (acc, CursorOp.MoveUp) =>
+        Left("Attempt to move up, but never descended in cursor history.")
+      case (acc :+ PathElem.ObjectKey(_), CursorOp.Field(name)) =>
+        Right(acc :+ PathElem.ObjectKey(name))
+      case (_, CursorOp.Field(name)) =>
+        Left("Attempt to move to sibling field, but cursor history didn't indicate we were in an object.")
+      case (acc, CursorOp.DownField(name)) =>
+        Right(acc :+ PathElem.ObjectKey(name))
+      case (acc, CursorOp.DownArray) =>
+        Right(acc :+ PathElem.ArrayIndex(0))
+      case (acc, CursorOp.DownN(n)) =>
+        Right(acc :+ PathElem.ArrayIndex(n))
+      case (acc :+ _, CursorOp.DeleteGoParent) =>
+        Right(acc)
+      case (acc :+ _, CursorOp.DeleteGoParent) =>
+        Left("Attempt to move up, but never descended in cursor history.")
+      case (acc, invalid) =>
+        Left(s"Invalid cursor history state: ${invalid}")
+    }.map(PathToRoot.apply)
 }
