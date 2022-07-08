@@ -78,9 +78,9 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
     DecodingFailure(reason, history)
 
   override final def toString: String =
-    pathToRootString.fold(
-      s"DecodingFailure($message, $history)"
-    )(pathToRootString => s"DecodingFailure at ${pathToRootString}: ${message}")
+    // This should be the same as the Show instance, but we shouldn't change
+    // that until at least 0.15.x.
+    s"DecodingFailure($message, $history)"
 
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
@@ -149,7 +149,11 @@ object DecodingFailure {
    * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
    */
   implicit final val showDecodingFailure: Show[DecodingFailure] =
-    Show.fromToString
+    Show.show(value =>
+      value.pathToRootString.fold(
+        s"DecodingFailure(${value.message}, ${value.history})"
+      )(pathToRootString => s"DecodingFailure at ${pathToRootString}: ${value.message}")
+    )
 
   sealed abstract class Reason
   object Reason {
