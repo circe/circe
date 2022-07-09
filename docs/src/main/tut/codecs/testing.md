@@ -19,7 +19,7 @@ object Person {
 }
 ```
 
-If you try to encode then decode a `Person`, you won't be succecssful:
+If you try to encode then decode a `Person`, you won't be successful:
 
 ```scala mdoc
 Person("James").asJson.as[Person]
