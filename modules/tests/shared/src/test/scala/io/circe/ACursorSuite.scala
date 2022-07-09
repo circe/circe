@@ -320,22 +320,22 @@ class ACursorSuite extends CirceMunitSuite {
 
     assertEquals(
       c.downField("a").pathString,
-      "a"
+      ".a"
     )
 
     assertEquals(
       c.downField("a").downArray.pathString,
-      "a[0]"
+      ".a[0]"
     )
 
     assertEquals(
       c.downField("a").downN(1).downField("b").pathString,
-      "a[1].b"
+      ".a[1].b"
     )
 
     assertEquals(
       c.downField("a").downN(1).downField("b").up.left.right.left.pathString,
-      "a[0]"
+      ".a[0]"
     )
   }
 }
