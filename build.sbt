@@ -455,7 +455,7 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
   )
-  .dependsOn(core, pointer)
+  .dependsOn(core, pointer % "compile;test->test")
 
 lazy val extras = circeCrossModule("extras")
   .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")))

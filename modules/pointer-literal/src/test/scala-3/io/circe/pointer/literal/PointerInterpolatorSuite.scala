@@ -1,10 +1,11 @@
 package io.circe.pointer.literal
 
-import io.circe.pointer.Pointer
+import io.circe.pointer._
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop
 
 class PointerInterpolatorSuite extends ScalaCheckSuite {
+
   test("The pointer string interpolater should parse valid absolute JSON pointers") {
     val inputs = List("", "/foo", "/foo/0", "/", "/a~1b", "/c%d", "/e^f", "/g|h", "/i\\j", "/k\"l", "/ ", "/m~0n")
     val values = List(
@@ -45,10 +46,10 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
-    Prop.forAll { (v: String) =>
-      val Right(expected) = Pointer.parse(s"/foo/$v/bar")
+    Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
+      val actual: Either[PointerSyntaxError, Pointer] = Right(pointer"/foo/$v/bar")
 
-      pointer"/foo/$v/bar" == expected
+      assertEquals(actual, Pointer.parse(s"/foo/$v/bar"))
     }
   }
 
