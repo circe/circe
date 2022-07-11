@@ -8,21 +8,19 @@ title:  "Semi-automatic derivation"
 Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic derivation can help. You'd write:
 
 ```scala mdoc:silent
-import io.circe._, io.circe.generic.semiauto._
+import io.circe._, io.circe.generic.semiauto._, io.circe.syntax._
 
 case class Foo(a: Int, b: String, c: Boolean)
 
 implicit val fooDecoder: Decoder[Foo] = deriveDecoder[Foo]
 implicit val fooEncoder: Encoder[Foo] = deriveEncoder[Foo]
+
+Foo(13, "Qux", false).asJson
 ```
 
-Or simply:
+You can also simplify to just write the last two lines as:
 
 ```scala mdoc:silent:reset
-import io.circe._, io.circe.generic.semiauto._
-
-case class Foo(a: Int, b: String, c: Boolean)
-
 implicit val fooDecoder: Decoder[Foo] = deriveDecoder
 implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 ```
