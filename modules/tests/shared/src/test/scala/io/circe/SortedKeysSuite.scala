@@ -30,7 +30,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
     }
   }
 
-  test("Sorting keys should be handle \"\" consistently") {
+  test("Sorting keys should handle \"\" consistently") {
     // From https://github.com/circe/circe/issues/1911
     val testMap: Map[String, List[Int]] = Map("4" -> Nil, "" -> Nil)
 
