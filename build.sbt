@@ -56,7 +56,7 @@ val refinedVersion = "0.9.28"
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.9"
-val scalaCheckVersion = "1.15.4"
+val scalaCheckVersion = "1.16.0"
 val munitVersion = "0.7.29"
 val disciplineVersion = "1.4.0"
 val disciplineScalaTestVersion = "2.1.5"
