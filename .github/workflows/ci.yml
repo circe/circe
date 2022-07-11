@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.1.0, 2.12.15, 2.13.8]
+        scala: [3.1.3, 2.12.15, 2.13.8]
         java: [temurin@8, temurin@11, temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
@@ -74,21 +74,21 @@ jobs:
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
       - name: Test JVM (without coverage)
-        if: ${{ matrix.scala == '3.1.0' }}
+        if: ${{ matrix.scala == '3.1.3' }}
         run: sbt ++${{ matrix.scala }} clean circeJVM/compile circeJVM/test
 
       - name: Test JVM (with coverage)
-        if: ${{ matrix.scala != '3.1.0' }}
+        if: ${{ matrix.scala != '3.1.3' }}
         run: sbt ++${{ matrix.scala }} clean coverage scalastyle circeJVM/compile circeJVM/test benchmark/test
 
       - name: Test JS
         run: sbt ++${{ matrix.scala }} circeJS/compile circeJS/test
 
       - name: Coverage
-        if: ${{ matrix.scala != '3.1.0' }}
+        if: ${{ matrix.scala != '3.1.3' }}
         run: sbt ++${{ matrix.scala }} coverageReport
 
-      - if: ${{ matrix.scala != '3.1.0' }}
+      - if: ${{ matrix.scala != '3.1.3' }}
         uses: codecov/codecov-action@v2
         with:
           flags: ${{matrix.scala}},${{matrix.java}}
@@ -98,7 +98,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.1.0, 2.12.15, 2.13.8]
+        scala: [3.1.3, 2.12.15, 2.13.8]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
     steps:
@@ -149,7 +149,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        scala: [3.1.0, 2.12.15, 2.13.8]
+        scala: [3.1.3, 2.12.15, 2.13.8]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
     steps:
