@@ -49,7 +49,7 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
 )
 
 val catsVersion = "2.8.0"
-val jawnVersion = "1.3.2"
+val jawnVersion = "1.4.0"
 val shapelessVersion = "2.3.9"
 val refinedVersion = "0.9.28"
 
