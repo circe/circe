@@ -758,7 +758,7 @@ lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previou
     ),
     mimaPreviousArtifacts := { if (scalaVersion.value.startsWith("3")) Set.empty else mimaPreviousArtifacts.value }
   )
-  .dependsOn(coreBase, pointerBase)
+  .dependsOn(coreBase, pointerBase, pointerBase % "test->test")
 
 lazy val pointerLiteral = pointerLiteralBase.jvm
 lazy val pointerLiteralJS = pointerLiteralBase.js
