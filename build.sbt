@@ -8,7 +8,7 @@ import scala.xml.transform.{ RewriteRule, RuleTransformer }
 def Scala3 = "3.1.0"
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List(Scala3, "2.12.15", "2.13.8")
+ThisBuild / crossScalaVersions := List(Scala3, "2.12.16", "2.13.8")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
