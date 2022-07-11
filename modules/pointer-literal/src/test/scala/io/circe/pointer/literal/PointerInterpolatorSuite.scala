@@ -1,10 +1,10 @@
 package io.circe.pointer.literal
 
-import io.circe.pointer.Pointer
+import io.circe.pointer._
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop
+import org.scalacheck._
 
-class PointerInterpolatorSuite extends ScalaCheckSuite {
+final class PointerInterpolatorSuite extends ScalaCheckSuite {
   test("The pointer string interpolater should parse valid absolute JSON pointers") {
     val inputs = List("", "/foo", "/foo/0", "/", "/a~1b", "/c%d", "/e^f", "/g|h", "/i\\j", "/k\"l", "/ ", "/m~0n")
     val values = List(
@@ -45,7 +45,7 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
-    Prop.forAll { (v: String) =>
+    Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
       val Right(expected) = Pointer.parse(s"/foo/$v/bar")
 
       pointer"/foo/$v/bar" == expected
@@ -58,35 +58,5 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
 
       pointer"/foo/$v/bar" == expected
     }
-  }
-
-  test("The pointer string interpolater should fail to compile on invalid literals") {
-    assertNoDiff(
-      compileErrors("pointer\"foo\""),
-      s"""|error: Invalid JSON Pointer in interpolated string
-          |      compileErrors("pointer\\"foo\\""),
-          |                  ^
-          |""".stripMargin
-    )
-  }
-
-  test("The pointer string interpolater should fail with an interpolated relative distance") {
-    assertNoDiff(
-      compileErrors("""{val x = 1; pointer"$x/"}"""),
-      s"""|error: Invalid JSON Pointer in interpolated string
-          |      compileErrors(""\"{val x = 1; pointer"$$x/"}""\"),
-          |                  ^
-          |""".stripMargin
-    )
-  }
-
-  test("The pointer string interpolater should fail with an empty interpolated relative distance") {
-    assertNoDiff(
-      compileErrors("""{val x = ""; pointer"$x/"}"""),
-      s"""|error: Invalid JSON Pointer in interpolated string
-          |      compileErrors(""\"{val x = ""; pointer"$$x/"}""\"),
-          |                  ^
-          |""".stripMargin
-    )
   }
 }
