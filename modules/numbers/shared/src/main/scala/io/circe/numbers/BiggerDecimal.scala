@@ -4,7 +4,6 @@ import java.io.Serializable
 import java.lang.StringBuilder
 import java.math.{ BigDecimal, BigInteger }
 import scala.annotation.switch
-import scala.annotation.tailrec
 
 /**
  * Represents a large decimal number.
@@ -265,7 +264,7 @@ object BiggerDecimal {
       var parsedNonLeadingDigit: Boolean = false
 
       if (i >= len) {
-        null
+        null // state = FAILED
       } else {
         var state = INTEGRAL
 
