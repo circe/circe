@@ -397,7 +397,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = (
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= (if (isScala3.value) Nil
                            else
-                             Seq(
+                             (Seq(
                                scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
                                scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
                              ) ++ (
@@ -408,7 +408,7 @@ lazy val macroSettings: Seq[Setting[_]] = Seq(
                                    )
                                  )
                                } else Nil
-                             )),
+                             ))),
   scalacOptions ++= (
     if (priorTo2_13(scalaVersion.value) || isScala3.value) Nil else Seq("-Ymacro-annotations")
   )
