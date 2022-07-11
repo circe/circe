@@ -46,13 +46,10 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
-    Prop.forAll { (v: String) =>
-      val escaped: String =
-        v.replaceAll("~", "~0").replaceAll("/", "~1")
-      val expected = Pointer.parse(s"/foo/$escaped/bar")
+    Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
       val actual: Either[PointerSyntaxError, Pointer] = Right(pointer"/foo/$v/bar")
 
-      assertEquals(actual, expected)
+      assertEquals(actual, Pointer.parse(s"/foo/$v/bar"))
     }
   }
 
