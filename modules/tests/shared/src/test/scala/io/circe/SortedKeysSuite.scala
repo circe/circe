@@ -30,7 +30,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
     }
   }
 
-  test("Sorting keys should be handle newlines consistently") {
+  test("Sorting keys should be handle \"\" consistently") {
     // From https://github.com/circe/circe/issues/1911
     val testMap: Map[String, List[Int]] = Map("4" -> Nil, "" -> Nil)
 
