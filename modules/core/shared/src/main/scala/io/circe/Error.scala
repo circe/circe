@@ -58,7 +58,7 @@ sealed abstract class DecodingFailure(val reason: Reason) extends Error {
    */
   def pathToRootString: Option[String] = None
 
-  final def message: String =
+  def message: String =
     reason match {
       case WrongTypeExpectation(expJsType, v) => s"Got value '${v.noSpaces}' with wrong type, expecting $expJsType"
       case MissingField                       => "Missing required field"
