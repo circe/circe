@@ -400,7 +400,7 @@ lazy val tests = circeCrossModule("tests")
       ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
       "org.scalameta" %%% "munit" % munitVersion,
       "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
-      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion,
+      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
     Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue
   )
