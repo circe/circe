@@ -2,6 +2,7 @@ package io.circe.pointer.literal
 
 import io.circe.pointer._
 import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
 import org.scalacheck._
 
 final class PointerInterpolatorSuite extends ScalaCheckSuite {
