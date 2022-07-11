@@ -45,13 +45,13 @@ final class PointerInterpolatorSuite extends ScalaCheckSuite {
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
     Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
-      Right(pointer"/foo/$v/bar") ?= Pointer.parse(s"/foo/$v/bar")
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated integers") {
     Prop.forAll { (v: Long) =>
-      Right(pointer"/foo/$v/bar") ?= Pointer.parse(s"/foo/$v/bar")
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
   }
 }
