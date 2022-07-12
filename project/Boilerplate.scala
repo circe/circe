@@ -268,7 +268,7 @@ object Boilerplate {
             case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
           }.mkString(", ")
         }
-      val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
+      val outputType = if (arity != 1) s"(${`A..N`})" else `A..N`
 
       block"""
         |package io.circe
@@ -323,7 +323,7 @@ object Boilerplate {
             case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
           }.mkString(", ")
         }
-      val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
+      val outputType = if (arity != 1) s"(${`A..N`})" else `A..N`
 
       block"""
         |package io.circe
