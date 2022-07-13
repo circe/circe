@@ -67,48 +67,65 @@ private[circe] object PathToRoot {
       ""
     } else {
       path.value
-        .foldLeft((new StringBuilder(path.value.size * 5), true)) {
-          case ((sb, _), ObjectKey(keyName)) =>
-            (sb.append(".").append(keyName), false)
-          case ((sb, _), ArrayIndex(index)) =>
-            (sb.append("[").append(index.toString).append("]"), false)
+        .foldLeft((new StringBuilder(path.value.size * 5))) {
+          case (sb, ObjectKey(keyName)) =>
+            sb.append(".").append(keyName)
+          case (sb, ArrayIndex(index)) =>
+            sb.append("[").append(index.toString).append("]")
         }
-        ._1
         .toString
     }
   }
 
   def fromHistory(ops: List[CursorOp]): Either[String, PathToRoot] = {
     type F[A] = Either[String, A] // Kind Projector?
+    val moveUpErrorString: String = "Attempt to move up above the root of the JSON."
 
     ops.reverse
       .foldM[F, Vector[PathElem]](Vector.empty[PathElem]) {
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n > 0 =>
-          Right(acc :+ PathElem.ArrayIndex(n - 1))
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) =>
+        // MoveLeft
+        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n <= 0 =>
           Left("Attempt to move beyond beginning of array in cursor history.")
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) if n < Int.MaxValue =>
-          Right(acc :+ PathElem.ArrayIndex(n + 1))
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) =>
+        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) =>
+          Right(acc :+ PathElem.ArrayIndex(n - 1))
+
+        // MoveRight
+        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) if n === Int.MaxValue =>
           Left("Attempt to move to index > Int.MaxValue in array in cursor history.")
+        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) =>
+          Right(acc :+ PathElem.ArrayIndex(n + 1))
+
+        // MoveUp
         case (acc :+ _, CursorOp.MoveUp) =>
           Right(acc)
         case (acc, CursorOp.MoveUp) =>
-          Left("Attempt to move up, but never descended in cursor history.")
+          Left(moveUpErrorString)
+
+        // Field
         case (acc :+ PathElem.ObjectKey(_), CursorOp.Field(name)) =>
           Right(acc :+ PathElem.ObjectKey(name))
         case (_, CursorOp.Field(name)) =>
           Left("Attempt to move to sibling field, but cursor history didn't indicate we were in an object.")
+
+        // DownField
         case (acc, CursorOp.DownField(name)) =>
           Right(acc :+ PathElem.ObjectKey(name))
+
+        // DownArray
         case (acc, CursorOp.DownArray) =>
           Right(acc :+ PathElem.ArrayIndex(0))
+
+        // DownN
         case (acc, CursorOp.DownN(n)) =>
           Right(acc :+ PathElem.ArrayIndex(n))
+
+        // DeleteGoParent
         case (acc :+ _, CursorOp.DeleteGoParent) =>
           Right(acc)
-        case (acc :+ _, CursorOp.DeleteGoParent) =>
-          Left("Attempt to move up, but never descended in cursor history.")
+        case (acc, CursorOp.DeleteGoParent) =>
+          Left(moveUpErrorString)
+
+        // Otherwise
         case (acc, invalid) =>
           Left(s"Invalid cursor history state: ${invalid}")
       }

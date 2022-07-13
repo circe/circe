@@ -73,31 +73,15 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
-      Left(
-        cursorToDecodingFailure(c)
-      )
+      Left(DecodingFailure(DecodingFailure.Reason.CustomReason("Unable to decode JSON."), c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
-        cursorToDecodingFailure(c)
+        DecodingFailure(DecodingFailure.Reason.CustomReason("Unable to decode JSON."), c)
       )
-  }
-
-  private[this] def cursorToDecodingFailure(cursor: ACursor) = {
-    val reason: DecodingFailure.Reason =
-      cursor match {
-        case cursor: FailedCursor =>
-          if (cursor.missingField) {
-            DecodingFailure.Reason.MissingField
-          } else {
-            DecodingFailure.Reason.CustomReason("Unable to decode JSON")
-          }
-      }
-
-    DecodingFailure(reason, cursor)
   }
 
   /**
