@@ -1,8 +1,7 @@
 package io.circe
 
 import cats.kernel.instances.string._
-import cats.syntax.eq._
-import cats.syntax.show._
+import cats.syntax.all._
 import io.circe.CursorOp._
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
@@ -41,6 +40,8 @@ trait GenCursorOps {
 }
 
 class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
+  import ShowErrorSuite._
+
   test("Show[ParsingFailure] should produce the expected output") {
     assertEquals(ParsingFailure("the message", new RuntimeException()).show, "ParsingFailure: the message")
   }
@@ -99,5 +100,28 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       val expected = s"DecodingFailure at [$index]: the message"
       DecodingFailure("the message", ops).show ?= expected
     }
+  }
+
+  test("Failing error messages on decoders should be of the typical format.") {
+    val json: Json =
+      Json.fromJsonObject(
+        JsonObject(
+          "derp" -> Json.fromInt(1)
+        )
+      )
+
+    assertEquals(
+      Decoder[TestData].decodeJson(json).leftMap(_.show),
+      Left("DecodingFailure at .foo: Missing required field")
+    )
+  }
+}
+
+object ShowErrorSuite {
+  final case class TestData(foo: String, bar: Int)
+
+  object TestData {
+    implicit val decoder: Decoder[TestData] =
+      Decoder.forProduct2("foo", "bar")(TestData.apply _)
   }
 }

@@ -63,6 +63,21 @@ trait Decoder[A] extends Serializable { self =>
     case Left(e)  => Validated.invalidNel(e)
   }
 
+  private[this] def cursorToDecodingFailure(cursor: ACursor): DecodingFailure = {
+    val reason: Eval[DecodingFailure.Reason] =
+      Eval.later(
+        cursor match {
+          case cursor: FailedCursor if cursor.missingField =>
+            DecodingFailure.Reason.MissingField
+          case _ =>
+            val field: String = cursor.pathString.replaceFirst("^\\.", "")
+            DecodingFailure.Reason.CustomReason(s"Couldn't decode $field")
+        }
+      )
+
+    DecodingFailure(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
+  }
+
   /**
    * Decode the given [[ACursor]].
    *
@@ -73,14 +88,14 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
-      Left(DecodingFailure(DecodingFailure.Reason.CustomReason("Unable to decode JSON."), c))
+      Left(cursorToDecodingFailure(c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
-        DecodingFailure(DecodingFailure.Reason.CustomReason("Unable to decode JSON."), c)
+        cursorToDecodingFailure(c)
       )
   }
 
