@@ -413,7 +413,7 @@ lazy val tests = circeCrossModule("tests")
   .jsSettings(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
-  .dependsOn(core, parser, testing)
+  .dependsOn(core, parser, testing, jawn)
 
 lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
