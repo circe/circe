@@ -49,19 +49,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Decoding
    */
-  final def history: List[CursorOp] = {
-    var next = this
-    val builder = List.newBuilder[CursorOp]
-
-    while (next.ne(null)) {
-      if (next.lastOp.ne(null)) {
-        builder += next.lastOp
-      }
-      next = next.lastCursor
-    }
-
-    builder.result()
-  }
+  def history: List[CursorOp]
 
   /**
    * Indicate whether this cursor represents the result of a successful
@@ -98,7 +86,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Access
    */
-  def root: HCursor = null
+  def root: HCursor
 
   /**
    * Modify the focus using the given function.
@@ -133,7 +121,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayAccess
    */
-  def index: Option[Int] = None
+  def index: Option[Int]
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
@@ -147,7 +135,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ObjectAccess
    */
-  def key: Option[String] = None
+  def key: Option[String]
 
   /**
    * Delete the focus and move to its parent.
@@ -328,23 +316,14 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Utilities
    */
-  final def replayOne(op: CursorOp): ACursor = op match {
-    case CursorOp.MoveLeft       => left
-    case CursorOp.MoveRight      => right
-    case CursorOp.MoveUp         => up
-    case CursorOp.Field(k)       => field(k)
-    case CursorOp.DownField(k)   => downField(k)
-    case CursorOp.DownArray      => downArray
-    case CursorOp.DownN(n)       => downN(n)
-    case CursorOp.DeleteGoParent => delete
-  }
+  def replayOne(op: CursorOp): ACursor
 
   /**
    * Replay history (a list of operations in reverse "chronological" order) against this cursor.
    *
    * @group Utilities
    */
-  final def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
+  def replay(history: List[CursorOp]): ACursor
 }
 
 object ACursor {
@@ -352,4 +331,12 @@ object ACursor {
 
   implicit val eqACursor: Eq[ACursor] =
     Eq.instance((a, b) => jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history))
+
+  def fromCursor(cursor: Cursor): ACursor =
+    cursor match {
+      case cursor: Cursor.SuccessCursor =>
+        HCursor.fromCursor(cursor)
+      case cursor =>
+        new FailedCursor(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor), cursor.lastOp.getOrElse(null))
+    }
 }

@@ -1,47 +1,49 @@
 package io.circe
 
 import cats.{ Eq, Show }
+import cats.syntax.all._
 import java.io.Serializable
 
 sealed abstract class CursorOp extends Product with Serializable {
+  import CursorOp._
 
   /**
    * Does this operation require the current focus (not context) to be an
    * object?
    */
-  def requiresObject: Boolean
+  final def requiresObject: Boolean =
+    this match {
+      case _: DownField =>
+        true
+      case _ =>
+        false
+    }
 
   /**
    * Does this operation require the current focus (not context) to be an array?
    */
-  def requiresArray: Boolean
+  final def requiresArray: Boolean =
+    this match {
+      case _: DownArray.type | _: DownN => true
+      case _                            => false
+    }
+
+  override final def toString: String =
+    this.show
 }
 
 object CursorOp {
-  abstract sealed class ObjectOp extends CursorOp {
-    final def requiresObject: Boolean = true
-    final def requiresArray: Boolean = false
-  }
+  case object MoveLeft extends CursorOp
+  case object MoveRight extends CursorOp
+  case object MoveUp extends CursorOp
+  final case class Field(k: String) extends CursorOp
+  final case class DownField(k: String) extends CursorOp
+  case object DownArray extends CursorOp
+  final case class DownN(n: Int) extends CursorOp
+  case object DeleteGoParent extends CursorOp
+  final case class Replace(value: Json) extends CursorOp
 
-  abstract sealed class ArrayOp extends CursorOp {
-    final def requiresObject: Boolean = false
-    final def requiresArray: Boolean = true
-  }
-
-  abstract sealed class UnconstrainedOp extends CursorOp {
-    final def requiresObject: Boolean = false
-    final def requiresArray: Boolean = false
-  }
-
-  case object MoveLeft extends UnconstrainedOp
-  case object MoveRight extends UnconstrainedOp
-  case object MoveUp extends UnconstrainedOp
-  final case class Field(k: String) extends UnconstrainedOp
-  final case class DownField(k: String) extends ObjectOp
-  case object DownArray extends ArrayOp
-  final case class DownN(n: Int) extends ArrayOp
-  case object DeleteGoParent extends UnconstrainedOp
-
+  // TODO: Should we keep this? I'm not sure it is useful.
   implicit final val showCursorOp: Show[CursorOp] = Show.show {
     case MoveLeft       => "<-"
     case MoveRight      => "->"
@@ -51,6 +53,7 @@ object CursorOp {
     case DownArray      => "\\\\"
     case DownN(n)       => "=\\(" + n + ")"
     case DeleteGoParent => "!_/"
+    case Replace(_)     => "~"
   }
 
   implicit final val eqCursorOp: Eq[CursorOp] = Eq.fromUniversalEquals
