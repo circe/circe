@@ -9,7 +9,7 @@ jobs:
   github-pages:
     strategy:
       matrix:
-        scala: [ "2.12.13" ]
+        scala: [ "2.13.8" ]
         java: [ "adopt@1.8" ]
         ruby: [ "2.6.3" ]
 
@@ -46,4 +46,4 @@ jobs:
 
       - name: Build doc site
         run: |
-          sbt --client ++${{ matrix.scala }}! "docs/makeMicrosite"
+          sbt --client ++${{ matrix.scala }} "docs/makeMicrosite"

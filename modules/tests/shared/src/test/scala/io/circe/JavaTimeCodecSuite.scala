@@ -4,7 +4,8 @@ import cats.kernel.Eq
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import java.time._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck._
+import org.scalacheck.Gen.Choose
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Prop.forAll
 import scala.collection.JavaConverters._
@@ -25,6 +26,28 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
 
+  // Backported from ScalaCheck
+  // https://github.com/typelevel/scalacheck/blob/v1.16.0/core/shared/src/main/scala/org/scalacheck/time/JavaTimeChoose.scala#L225
+  private[this] implicit final lazy val chooseZoneOffset: Choose[ZoneOffset] =
+    new Choose[ZoneOffset] {
+      override def choose(min: ZoneOffset, max: ZoneOffset): Gen[ZoneOffset] =
+        min.compareTo(max) match {
+          case 0                    => Gen.const(min)
+          case result if result > 0 => Gen.fail
+          case _                    =>
+            // Looks flipped, but it is not.
+            Gen.choose(max.getTotalSeconds, min.getTotalSeconds).map(value => ZoneOffset.ofTotalSeconds(value))
+        }
+    }
+
+  implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
+    Arbitrary(
+      Gen.oneOf(
+        Gen.oneOf(ZoneOffset.MAX, ZoneOffset.MIN, ZoneOffset.UTC),
+        Gen.choose(ZoneOffset.MAX, ZoneOffset.MIN) // These look flipped, but they are not.
+      )
+    )
+
   implicit val arbitraryZoneId: Arbitrary[ZoneId] = Arbitrary(
     Gen.oneOf(ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of).toSeq)
   )
@@ -44,22 +67,22 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
   implicit val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId]
-    } yield LocalDateTime.ofInstant(instant, zoneId)
+      offset <- arbitrary[ZoneOffset]
+    } yield LocalDateTime.ofInstant(instant, offset)
   )
 
   implicit val arbitraryZonedDateTime: Arbitrary[ZonedDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId].suchThat(_ != ZoneId.of("GMT0")) // #280 - avoid JDK-8138664
-    } yield ZonedDateTime.ofInstant(instant, zoneId)
+      offset <- arbitrary[ZoneOffset]
+    } yield ZonedDateTime.ofInstant(instant, offset)
   )
 
   implicit val arbitraryOffsetDateTime: Arbitrary[OffsetDateTime] = Arbitrary(
     for {
       instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId]
-    } yield OffsetDateTime.ofInstant(instant, zoneId)
+      offset <- arbitrary[ZoneOffset]
+    } yield OffsetDateTime.ofInstant(instant, offset)
   )
 
   implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalDate))
@@ -77,9 +100,6 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
   implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(
     arbitrary[LocalDateTime].map(ldt => YearMonth.of(ldt.getYear, ldt.getMonth))
   )
-
-  implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
-    Arbitrary(Gen.choose(-18 * 60 * 60, 18 * 60 * 60).map(ZoneOffset.ofTotalSeconds))
 
   implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
     for {
