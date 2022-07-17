@@ -261,7 +261,7 @@ object BiggerDecimal {
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
-      var parsedNonLeadingDigit: Boolean = false
+      var parsedNonZeroIntegralDigit: Boolean = false
 
       if (i >= len) {
         null // state = FAILED
@@ -273,11 +273,11 @@ object BiggerDecimal {
           (state: @switch) match {
             case INTEGRAL =>
               if (c == '0') {
-                if (parsedNonLeadingDigit) {
+                if (parsedNonZeroIntegralDigit) {
                   zeros = zeros + 1
                 }
               } else if (c >= '1' && c <= '9') {
-                parsedNonLeadingDigit = true
+                parsedNonZeroIntegralDigit = true
                 zeros = 0
               } else if (c == '.') {
                 state = AFTER_DOT
