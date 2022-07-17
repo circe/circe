@@ -117,7 +117,7 @@ class ACursorSuite extends CirceMunitSuite {
         _.withFocus(j => j.asArray.fold(j)(a => Json.fromValues(0.asJson +: a)))
       )
 
-    assert(result.flatMap(_.top) === Some(j2))
+    assertEquals(result.flatMap(_.top), Some(j2))
   }
 
   property("withFocusM should lift a value into a List") {
@@ -153,7 +153,7 @@ class ACursorSuite extends CirceMunitSuite {
   test("set should replace an element") {
     val result = cursor.downField("b").success.map(_.set(10.asJson))
 
-    assert(result.flatMap(_.top) === Some(j3))
+    assertEquals(result.flatMap(_.top), Some(j3))
   }
 
   test("values should return the expected values") {

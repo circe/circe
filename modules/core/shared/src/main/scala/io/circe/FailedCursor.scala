@@ -38,4 +38,10 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def delete: ACursor = this
 
   def field(k: String): ACursor = this
+
+  def history: List[CursorOp] =
+    lastOp +: lastCursor.history
+
+  override def replay(history: List[CursorOp]): ACursor = this
+  override def replayOne(cursorOp: CursorOp): ACursor = this
 }
