@@ -2,7 +2,7 @@ import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
-ThisBuild / tlBaseVersion := "0.14"
+ThisBuild / tlBaseVersion := "0.15"
 ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
