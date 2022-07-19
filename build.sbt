@@ -188,6 +188,7 @@ lazy val docs = project
     moduleName := "circe-docs",
     name := "Circe docs",
     mdocIn := file("docs/src/main/tut"),
+    evictionErrorLevel := Level.Warn,
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-generic-extras" % "0.14.1",
       "io.circe" %% "circe-optics" % "0.14.1"
@@ -464,6 +465,7 @@ lazy val extras = circeCrossModule("extras")
 
 lazy val benchmark = circeModule("benchmark")
   .settings(
+    evictionErrorLevel := Level.Warn,
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % munitVersion % Test
     ) ++ { if (tlIsScala3.value) Nil else List("io.circe" %% "circe-optics" % "0.14.1") }
