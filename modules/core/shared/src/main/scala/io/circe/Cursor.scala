@@ -832,8 +832,10 @@ object Cursor {
     }
 
     private[Cursor] final case class DownArrayOutOfBounds(n: Int, actualSize: Int) extends CursorFailureReason {
+      // scalastyle:off
       override def getMessage: String =
         s"Attempted to enter into JSON array at index ${n}, but that is out of bounds for the array of size ${actualSize}."
+      // scalastyle:on
     }
 
     private[Cursor] final case class NoSiblingWithMatchingKeyName(targetFocusKey: String) extends CursorFailureReason {
@@ -842,13 +844,17 @@ object Cursor {
     }
 
     private[Cursor] final case class NoSiblingsInTopContext(targetFocusKey: String) extends CursorFailureReason {
+      // scalastyle:off
       override def getMessage: String =
         s"""Attempted to navigate to sibling in JSON object with key name "${targetFocusKey}", but focus was the Root of the JSON structure, not an object member."""
+      // scalastyle:on
     }
 
     private[Cursor] final case class NoSiblingsInArrayContext(targetFocusKey: String) extends CursorFailureReason {
+      // scalastyle:off
       override def getMessage: String =
         s"""Attempted to navigate to sibling in JSON object with key name "${targetFocusKey}", but focus was a member of a JSON array, not an object."""
+      // scalastyle:on
     }
 
     private[Cursor] final case class MissingKeyInObject(targetFocusKey: String) extends CursorFailureReason {
