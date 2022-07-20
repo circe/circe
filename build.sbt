@@ -370,7 +370,8 @@ lazy val numbers = circeCrossModule("numbers")
 lazy val core = circeCrossModule("core")
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    Compile / sourceGenerators += (Compile / sourceManaged).map(Boilerplate.gen).taskValue
+    Compile / sourceGenerators += (Compile / sourceManaged).map(Boilerplate.gen).taskValue,
+    scalacOptions ~= (_.filterNot(Set("-source:3.0-migration")))
   )
   .dependsOn(numbers)
 
@@ -507,7 +508,7 @@ lazy val tests = circeCrossModule("tests")
   .enablePlugins(NoPublishPlugin)
   .settings(
     scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
+      _.filterNot(Set("-Yno-predef", "-source:3.0-migration"))
     },
     Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
