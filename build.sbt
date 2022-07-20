@@ -422,6 +422,9 @@ lazy val tests = circeCrossModule("tests")
   .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
+  .nativeSettings(
+    nativeConfig ~= { _.withEmbedResources(true) }
+  )
   .dependsOn(core, parser, testing)
 
 lazy val hygiene = circeCrossModule("hygiene")
