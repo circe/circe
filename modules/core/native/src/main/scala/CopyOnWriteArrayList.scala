@@ -4,14 +4,14 @@
 package java.util.concurrent
 
 import java.lang.Cloneable
-import java.lang.{reflect => jlr}
+import java.lang.{ reflect => jlr }
 import java.util._
-import java.util.function.{Predicate, UnaryOperator}
+import java.util.function.{ Predicate, UnaryOperator }
 
 import scala.annotation.tailrec
 
 class CopyOnWriteArrayList[E <: AnyRef] private (
-    private var inner: ArrayList[E]
+  private var inner: ArrayList[E]
 ) extends List[E]
     with RandomAccess
     with Cloneable
@@ -289,8 +289,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (
   }
 
   private class CopyOnWriteArrayListView(
-      fromIndex: Int,
-      private var toIndex: Int
+    fromIndex: Int,
+    private var toIndex: Int
   ) extends CopyOnWriteArrayList[E](null: ArrayList[E]) {
     viewSelf =>
 
@@ -352,8 +352,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (
     }
 
     override protected def innerInsertMany(
-        index: Int,
-        items: Collection[_ <: E]
+      index: Int,
+      items: Collection[_ <: E]
     ): Unit = {
       changeSize(items.size())
       self.innerInsertMany(fromIndex + index, items)
