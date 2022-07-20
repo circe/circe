@@ -6,7 +6,7 @@ import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 
-trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance[A]:
+trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance:
   def elemDecoders: Array[Decoder[?]]
   def elemDefaults: Default[A]
 
@@ -155,7 +155,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
 object ConfiguredDecoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A]
-      with DerivedInstance[A](
+      with DerivedInstance(
         constValue[mirror.MirroredLabel],
         summonLabels[mirror.MirroredElemLabels].toArray
       ):

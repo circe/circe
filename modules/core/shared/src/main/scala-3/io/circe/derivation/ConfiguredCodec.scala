@@ -8,7 +8,7 @@ trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], Config
 object ConfiguredCodec:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredCodec[A] =
     new ConfiguredCodec[A]
-      with DerivedInstance[A](
+      with DerivedInstance(
         constValue[mirror.MirroredLabel],
         summonLabels[mirror.MirroredElemLabels].toArray
       ):

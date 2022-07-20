@@ -4,7 +4,7 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import io.circe.{ Encoder, Json, JsonObject }
 
-trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A], DerivedInstance[A]:
+trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A], DerivedInstance:
   def elemEncoders: Array[Encoder[?]]
 
   final def encodeElemAt(index: Int, elem: Any, transformName: String => String): (String, Json) =
@@ -27,7 +27,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A]
-      with DerivedInstance[A](
+      with DerivedInstance(
         constValue[mirror.MirroredLabel],
         summonLabels[mirror.MirroredElemLabels].toArray
       ):
