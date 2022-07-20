@@ -298,7 +298,7 @@ lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
@@ -312,7 +312,7 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
     crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13)
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
@@ -331,7 +331,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
     ) ++ (if (tlIsScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test,
       "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
@@ -381,7 +381,7 @@ lazy val scodec = circeCrossModule("scodec")
   .settings(
     libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.34"
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
   .dependsOn(core, tests % Test)
@@ -419,7 +419,7 @@ lazy val tests = circeCrossModule("tests")
   .jvmSettings(
     fork := true
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
   .dependsOn(core, parser, testing)
