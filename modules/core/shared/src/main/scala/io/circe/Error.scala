@@ -46,7 +46,6 @@ object ParsingFailure {
  */
 sealed abstract class DecodingFailure(private val lazyReason: Eval[Reason]) extends Error {
 
-  @deprecated("use a DecodingFailure.Reason", since = "0.14.3")
   def this(reason: Reason) = {
     this(Eval.now(reason))
   }
