@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.Applicative
+import cats._
 import cats.kernel.Eq
 import io.circe.cursor._
 import java.io.Serializable
@@ -35,7 +35,7 @@ import scala.annotation.tailrec
  *
  * @author Travis Brown
  */
-abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
+abstract class ACursor(private val evalLastCursor: Eval[HCursor], private val lastOp: CursorOp) extends Serializable {
 
   /**
    * The current location in the document.
@@ -324,6 +324,9 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @group Utilities
    */
   def replay(history: List[CursorOp]): ACursor
+
+  protected final def lastCursor: HCursor =
+    evalLastCursor.value
 }
 
 object ACursor {
@@ -337,6 +340,6 @@ object ACursor {
       case cursor: Cursor.SuccessCursor =>
         HCursor.fromCursor(cursor)
       case cursor =>
-        new FailedCursor(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor), cursor.lastOp.getOrElse(null))
+        new FailedCursor(Eval.later(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor)), cursor.lastOp.getOrElse(null))
     }
 }

@@ -1,10 +1,10 @@
 package io.circe
 
 import cats.syntax.all._
-import cats.Applicative
+import cats._
 import scala.annotation.tailrec
 
-abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
+abstract class HCursor(evalLastCursor: Eval[HCursor], lastOp: CursorOp) extends ACursor(evalLastCursor, lastOp) {
   def value: Json
 
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): ACursor
@@ -27,7 +27,7 @@ object HCursor {
     fromCursor(Cursor.fromJson(value))
 
   def fromCursor(cursor: Cursor.SuccessCursor): HCursor =
-    new HCursor(cursor.lastCursor.fold(null: HCursor)(fromCursor), cursor.lastOp.getOrElse(null)) {
+    new HCursor(Eval.later(cursor.lastCursor.fold(null: HCursor)(fromCursor)), cursor.lastOp.getOrElse(null)) {
       override def delete: ACursor =
         ACursor.fromCursor(cursor.delete)
 
