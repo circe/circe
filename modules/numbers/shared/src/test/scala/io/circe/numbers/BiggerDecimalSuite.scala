@@ -5,7 +5,8 @@ import java.math.{ BigDecimal, BigInteger }
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck._
+import org.scalacheck.Prop._
 
 class BiggerDecimalSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters =
@@ -14,6 +15,15 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   private[this] def doubleEqv(x: Double, y: Double): Boolean = java.lang.Double.compare(x, y) == 0
   private[this] def trailingZeros(i: BigInt): Int = i.toString.reverse.takeWhile(_ == '0').size
   private[this] def significantDigits(i: BigInt): Int = i.toString.size - trailingZeros(i)
+
+  private[this] val ZERO: SBigDecimal = SBigDecimal(0)
+
+  private[this] def toStringWithLeadingZeros(leadingZeros: Int, value: SBigDecimal): String =
+    if (value < ZERO) {
+      s"-${List.fill(leadingZeros)('0').mkString}${value.abs}"
+    } else {
+      s"${List.fill(leadingZeros)('0').mkString}${value}"
+    }
 
   test("fromDoubleUnsafe(0) should equal fromBigDecimal(ZERO) (#348)") {
     assertEquals(BiggerDecimal.fromDoubleUnsafe(0), BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
@@ -231,10 +241,18 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   }
 
   test("it should fail on bad input") {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
+    val badNumbers = List("", "x", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input).isEmpty)
+    }
+  }
+
+  property("leading zeros should be parseable") {
+    forAll(Gen.choose(1, 100), Arbitrary.arbitrary[SBigDecimal]) { (leadingZeros: Int, bd: SBigDecimal) =>
+      BiggerDecimal.parseBiggerDecimal(toStringWithLeadingZeros(leadingZeros, bd)) ?= Some(
+        BiggerDecimal.fromBigDecimal(bd.bigDecimal)
+      )
     }
   }
 }
