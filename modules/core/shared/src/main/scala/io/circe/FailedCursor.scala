@@ -1,8 +1,8 @@
 package io.circe
 
-import cats.Applicative
+import cats._
 
-final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
+final class FailedCursor(evalLastCursor: Eval[HCursor], lastOp: CursorOp) extends ACursor(evalLastCursor, lastOp) {
 
   /**
    * Indicates whether the last operation failed because the type of the focus
