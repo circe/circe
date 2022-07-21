@@ -44,6 +44,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Gutefrage](https://www.gutefrage.net)
 * [Hello Soda](https://hellosoda.com/)
 * [HERE Technologies](https://www.here.com/)
+* [Hireproof](https://hireproof.io/)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Immozentral](https://www.immozentral.com/)
