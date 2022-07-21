@@ -340,6 +340,9 @@ object ACursor {
       case cursor: Cursor.SuccessCursor =>
         HCursor.fromCursor(cursor)
       case cursor =>
-        new FailedCursor(Eval.later(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor)), cursor.lastOp.getOrElse(null))
+        new FailedCursor(
+          Eval.later(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor)),
+          cursor.lastOp.getOrElse(null)
+        )
     }
 }
