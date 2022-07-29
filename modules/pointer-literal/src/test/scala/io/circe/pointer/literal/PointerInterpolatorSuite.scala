@@ -2,6 +2,7 @@ package io.circe.pointer.literal
 
 import io.circe.pointer._
 import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
 import org.scalacheck._
 
 final class PointerInterpolatorSuite extends ScalaCheckSuite {
@@ -39,24 +40,19 @@ final class PointerInterpolatorSuite extends ScalaCheckSuite {
   }
 
   test("The pointer string interpolater should work with interpolated values that need escaping") {
-    val s = "foo~bar/baz/~"
-    val Right(expected) = Pointer.parse("/base/foo~0bar~1baz~1~0/leaf")
-    assertEquals(pointer"/base/$s/leaf", expected)
+    val s: String = "foo~bar/baz/~"
+    assertEquals(Pointer.parse("/base/foo~0bar~1baz~1~0/leaf"), Right(pointer"/base/$s/leaf"))
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
     Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
-      val Right(expected) = Pointer.parse(s"/foo/$v/bar")
-
-      pointer"/foo/$v/bar" == expected
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated integers") {
     Prop.forAll { (v: Long) =>
-      val Right(expected) = Pointer.parse(s"/foo/$v/bar")
-
-      pointer"/foo/$v/bar" == expected
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
   }
 }

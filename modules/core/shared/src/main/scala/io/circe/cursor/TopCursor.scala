@@ -1,6 +1,6 @@
 package io.circe.cursor
 
-import io.circe.{ ACursor, CursorOp, HCursor, Json }
+import io.circe._
 
 private[circe] final class TopCursor(val value: Json)(
   lastCursor: HCursor,
