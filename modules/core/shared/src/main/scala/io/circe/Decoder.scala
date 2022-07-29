@@ -63,6 +63,21 @@ trait Decoder[A] extends Serializable { self =>
     case Left(e)  => Validated.invalidNel(e)
   }
 
+  private[this] def cursorToDecodingFailure(cursor: ACursor): DecodingFailure = {
+    val reason: Eval[DecodingFailure.Reason] =
+      Eval.later(
+        cursor match {
+          case cursor: FailedCursor if cursor.missingField =>
+            DecodingFailure.Reason.MissingField
+          case _ =>
+            val field: String = cursor.pathString.replaceFirst("^\\.", "")
+            DecodingFailure.Reason.CustomReason(s"Couldn't decode $field")
+        }
+      )
+
+    DecodingFailure(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
+  }
+
   /**
    * Decode the given [[ACursor]].
    *
@@ -73,9 +88,7 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
-      Left(
-        cursorToDecodingFailure(c)
-      )
+      Left(cursorToDecodingFailure(c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
@@ -84,18 +97,6 @@ trait Decoder[A] extends Serializable { self =>
       Validated.invalidNel(
         cursorToDecodingFailure(c)
       )
-  }
-
-  private[this] def cursorToDecodingFailure(cursor: ACursor) = {
-    val history = cursor.history
-    val historyToFailedCursor = history.takeWhile(_ != CursorOp.DeleteGoParent)
-    val field = CursorOp.opsToPath(historyToFailedCursor).replaceFirst("^\\.", "")
-    val down = cursor.downField(field)
-    if (down.succeeded) {
-      DecodingFailure(s"Couldn't decode $field", history)
-    } else {
-      DecodingFailure(MissingField, history)
-    }
   }
 
   /**
@@ -955,16 +956,21 @@ object Decoder
     Validated.valid(None)
 
   /**
-   * @group Decoding
+   * A decoder for `Option[A]`.
+   *
+   * This is modeled as a separate, named, subtype because Option decoders
+   * often have special semantics around the handling of `JNull`. By having
+   * this as a named subtype, we premit certain optimizations that would
+   * otherwise not be possible. See `circe-generic-extras` for some examples.
    */
-  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
-    final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
+  final class OptionDecoder[A](implicit A: Decoder[A]) extends Decoder[Option[A]] {
+    final override def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 
     final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) rightNone
         else
-          d(c) match {
+          A(c) match {
             case Right(a) => Right(Some(a))
             case Left(df) => Left(df)
           }
@@ -979,7 +985,7 @@ object Decoder
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
-          d.decodeAccumulating(c) match {
+          A.decodeAccumulating(c) match {
             case Valid(a)       => Valid(Some(a))
             case i @ Invalid(_) => i
           }
@@ -988,6 +994,11 @@ object Decoder
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new OptionDecoder[A]
 
   /**
    * @group Decoding
