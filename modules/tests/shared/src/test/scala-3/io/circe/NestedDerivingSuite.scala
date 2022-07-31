@@ -3,7 +3,7 @@ package io.circe
 import io.circe.tests.CirceMunitSuite
 import cats.Functor
 import cats.implicits.*
-import cats.data.{ Chain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector }
 import cats.kernel.Order
 import io.circe.syntax.*
 import org.scalacheck.Prop.forAll
@@ -279,6 +279,36 @@ class NestedDerivingSuite extends CirceMunitSuite {
       assert(derivedDecoder(json.hcursor) == nonDerivedDecoder(json.hcursor))
     }
   }
+  /*
+  // NonEmptyList
+  case class OuterNonEmptyChain(inner: NonEmptyChain[Inner])
+  implicit val genOuterNonEmptyChain: Gen[OuterNonEmptyChain] =
+    for {
+      head <- genInner
+      tail <- Gen.listOf(genInner)
+    } yield OuterNonEmptyChain(NonEmptyChain.of(head, tail*))
+  property("NonEmptyChain[A] Encoder derivation should not depend on not whether A is derived or not") {
+    val derivedEncoder: Encoder[OuterNonEmptyChain] = {
+      implicit val enc: Encoder[Inner] = Encoder.AsObject.derived
+      Encoder.AsObject.derived
+    }
+    val nonDerivedEncoder: Encoder[OuterNonEmptyChain] = Encoder.AsObject.derived
+
+    forAll(genOuterNonEmptyChain) { outer => assert(derivedEncoder(outer) == nonDerivedEncoder(outer)) }
+  }
+  property("NonEmptyChain[A] Decoder derivation should not depend on not whether A is derived or not") {
+    val derivedDecoder: Decoder[OuterNonEmptyChain] = {
+      implicit val enc: Decoder[Inner] = Decoder.derived
+      Decoder.derived
+    }
+    val nonDerivedDecoder: Decoder[OuterNonEmptyChain] = Decoder.derived
+
+    forAll(genOuterNonEmptyChain) { outer =>
+      val json = Json.obj("inner" -> outer.inner.map(i => Json.obj("a" -> i.a.asJson)).asJson)
+      assert(derivedDecoder(json.hcursor) == nonDerivedDecoder(json.hcursor))
+    }
+  }
+   */
   // Map
   case class OuterMap(inner: Map[Long, Inner])
   implicit val genOuterMap: Gen[OuterMap] =
@@ -306,7 +336,7 @@ class NestedDerivingSuite extends CirceMunitSuite {
       assert(derivedDecoder(json.hcursor) == nonDerivedDecoder(json.hcursor))
     }
   }
-/*
+  /*
   // NonEmptyMap
   case class OuterNonEmptyMap(inner: NonEmptyMap[Long, Inner])
   implicit val genOuterNonEmptyMap: Gen[OuterNonEmptyMap] =
@@ -339,5 +369,5 @@ class NestedDerivingSuite extends CirceMunitSuite {
       assert(derivedDecoder(json.hcursor) == nonDerivedDecoder(json.hcursor))
     }
   }
-*/
+   */
 }

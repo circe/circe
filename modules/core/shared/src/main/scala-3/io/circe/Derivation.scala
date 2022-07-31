@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.data.{ Chain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, Validated }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, Validated }
 import cats.kernel.Order
 
 import scala.collection.immutable.SortedSet
@@ -52,6 +52,8 @@ object Derivation {
       case _: (Map[k, t] *: ts) => Decoder.decodeMap(summonKeyDecoder[k], summonDecoder[t]) :: summonDecodersRec[ts]
       case _: (NonEmptyMap[k, t] *: ts) => // NonEmptyMap is a NewType, matching does not seem to work
         Decoder.decodeNonEmptyMap(summonKeyDecoder[k], summonOrder[k], summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (NonEmptyChain[t] *: ts) => // NonEmptyChain is a NewType, matching does not seem to work
+        Decoder.decodeNonEmptyChain(summonDecoder[t]) :: summonDecodersRec[ts]
       case _: (t *: ts) => summonDecoder[t] :: summonDecodersRec[ts]
     }
 
@@ -73,6 +75,8 @@ object Derivation {
       case _: (Map[k, t] *: ts) => Encoder.encodeMap(summonKeyEncoder[k], summonEncoder[t]) :: summonEncodersRec[ts]
       case _: (NonEmptyMap[k, t] *: ts) => // NonEmptyMap is a NewType, matching does not seem to work
         Encoder.encodeNonEmptyMap(summonKeyEncoder[k], summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (NonEmptyChain[t] *: ts) => // NonEmptyChain is a NewType, matching does not seem to work
+        Encoder.encodeNonEmptyChain(summonEncoder[t]) :: summonEncodersRec[ts]
       case _: (t *: ts) => summonEncoder[t] :: summonEncodersRec[ts]
     }
 }
