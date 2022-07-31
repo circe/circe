@@ -1,6 +1,9 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated }
+import cats.data.{ Chain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, Validated }
+import cats.kernel.Order
+
+import scala.collection.immutable.SortedSet
 import scala.deriving.Mirror
 import scala.collection.mutable.WrappedArray
 import scala.compiletime.{ constValue, erasedValue, error, summonFrom }
@@ -20,22 +23,57 @@ object Derivation {
     case decodeA: Decoder[A] => decodeA
     case _: Mirror.Of[A]     => Decoder.derived[A]
   }
+  inline final def summonKeyDecoder[A]: KeyDecoder[A] = summonFrom { case decodeK: KeyDecoder[A] => decodeK }
+  inline final def summonKeyEncoder[A]: KeyEncoder[A] = summonFrom { case encodeK: KeyEncoder[A] => encodeK }
 
   inline final def summonLabelsRec[T <: Tuple]: List[String] = inline erasedValue[T] match {
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabelsRec[ts]
   }
 
+  inline final def summonOrder[A]: Order[A] = summonFrom { case orderA: Order[A] => orderA }
+  inline final def summonOrdering[A]: Ordering[A] = summonFrom { case orderA: Ordering[A] => orderA }
+
   inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
     inline erasedValue[T] match {
-      case _: EmptyTuple => Nil
-      case _: (t *: ts)  => summonDecoder[t] :: summonDecodersRec[ts]
+      case _: EmptyTuple        => Nil
+      case _: (Option[t] *: ts) => Decoder.decodeOption(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (List[t] *: ts)   => Decoder.decodeList(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (Vector[t] *: ts) => Decoder.decodeVector(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (Seq[t] *: ts)    => Decoder.decodeSeq(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (SortedSet[t] *: ts) =>
+        Decoder.decodeSet(summonDecoder[t]).map(SortedSet.from(_)(summonOrdering[t])) :: summonDecodersRec[ts]
+      case _: (Set[t] *: ts)          => Decoder.decodeSet(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (Chain[t] *: ts)        => Decoder.decodeChain(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (NonEmptyList[t] *: ts) => Decoder.decodeNonEmptyList(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (NonEmptySet[t] *: ts) => // NonEmptySet is a NewType, matching does not seem to work
+        Decoder.decodeNonEmptySet(summonDecoder[t], summonOrder[t]) :: summonDecodersRec[ts]
+      case _: (NonEmptyVector[t] *: ts) => Decoder.decodeNonEmptyVector(summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (Map[k, t] *: ts) => Decoder.decodeMap(summonKeyDecoder[k], summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (NonEmptyMap[k, t] *: ts) => // NonEmptyMap is a NewType, matching does not seem to work
+        Decoder.decodeNonEmptyMap(summonKeyDecoder[k], summonOrder[k], summonDecoder[t]) :: summonDecodersRec[ts]
+      case _: (t *: ts) => summonDecoder[t] :: summonDecodersRec[ts]
     }
 
   inline final def summonEncodersRec[T <: Tuple]: List[Encoder[_]] =
     inline erasedValue[T] match {
-      case _: EmptyTuple => Nil
-      case _: (t *: ts)  => summonEncoder[t] :: summonEncodersRec[ts]
+      case _: EmptyTuple        => Nil
+      case _: (Option[t] *: ts) => Encoder.encodeOption(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (List[t] *: ts)   => Encoder.encodeList(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (Vector[t] *: ts) => Encoder.encodeVector(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (Seq[t] *: ts)    => Encoder.encodeSeq(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (Set[t] *: ts)    => Encoder.encodeSet(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (SortedSet[t] *: ts) =>
+        Encoder.encodeSet(summonEncoder[t]).contramap[SortedSet[t]](_.unsorted) :: summonEncodersRec[ts]
+      case _: (Chain[t] *: ts)        => Encoder.encodeChain(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (NonEmptyList[t] *: ts) => Encoder.encodeNonEmptyList(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (NonEmptySet[t] *: ts) => // NonEmptySet is a NewType, matching does not seem to work
+        Encoder.encodeNonEmptySet(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (NonEmptyVector[t] *: ts) => Encoder.encodeNonEmptyVector(summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (Map[k, t] *: ts) => Encoder.encodeMap(summonKeyEncoder[k], summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (NonEmptyMap[k, t] *: ts) => // NonEmptyMap is a NewType, matching does not seem to work
+        Encoder.encodeNonEmptyMap(summonKeyEncoder[k], summonEncoder[t]) :: summonEncodersRec[ts]
+      case _: (t *: ts) => summonEncoder[t] :: summonEncodersRec[ts]
     }
 }
 
