@@ -43,10 +43,10 @@ class SyntaxSuite extends CirceMunitSuite {
       ) =>
         val key = CustomKey("keyComponentOne", 2)
         val keyStringRepresentation = "keyComponentOne_2"
-        ((key := m) === (keyStringRepresentation -> m.asJson)) &&
-        ((key := aNumber) === (keyStringRepresentation -> aNumber.asJson)) &&
-        ((key := aString) === (keyStringRepresentation -> aString.asJson)) &&
-        ((key := aBoolean) === (keyStringRepresentation -> aBoolean.asJson))
+        ((key := m) ?= (keyStringRepresentation -> m.asJson)) &&
+        ((key := aNumber) ?= (keyStringRepresentation -> aNumber.asJson)) &&
+        ((key := aString) ?= (keyStringRepresentation -> aString.asJson)) &&
+        ((key := aBoolean) ?= (keyStringRepresentation -> aBoolean.asJson))
     }
   }
 }
