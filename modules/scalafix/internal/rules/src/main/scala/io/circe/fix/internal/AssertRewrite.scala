@@ -5,53 +5,59 @@ import scala.meta._
 import scala.annotation.tailrec
 import scalafix.lint.LintSeverity
 
-/** A Scalafix rule which rewrites MUnit tests or ScalaCheck property tests to
-  * use assertions/properties which have a notion of actual vs. expected
-  * result, e.g. `assertEquals` or `?=`. Using these rather than
-  * `assert(actual == expected)` gives much better failure messages.
-  *
-  * This is a simple syntactic rule and it is not intended to be used outside
-  * of Circe. It doesn't handle everything, and will likely require a very
-  * small amount of manual fixing after run, e.g. adding a missing import or
-  * adding `&&` between new properties.
-  *
-  * @note This can not be a singleton object, because of how Scalafix uses JVM
-  *       service discovery.
-  */
+/**
+ * A Scalafix rule which rewrites MUnit tests or ScalaCheck property tests to
+ * use assertions/properties which have a notion of actual vs. expected
+ * result, e.g. `assertEquals` or `?=`. Using these rather than
+ * `assert(actual == expected)` gives much better failure messages.
+ *
+ * This is a simple syntactic rule and it is not intended to be used outside
+ * of Circe. It doesn't handle everything, and will likely require a very
+ * small amount of manual fixing after run, e.g. adding a missing import or
+ * adding `&&` between new properties.
+ *
+ * @note This can not be a singleton object, because of how Scalafix uses JVM
+ *       service discovery.
+ */
 final class AssertRewrite extends SyntacticRule("AssertRewrite") {
   import AssertRewrite._
 
-  /** Check if a tree is an application of a symbol named "forAll" to some
-    * arguments.
-    */
+  /**
+   * Check if a tree is an application of a symbol named "forAll" to some
+   * arguments.
+   */
   private def isForAll(tree: Tree): Boolean =
     isApplyWithName(tree, "forAll")
 
-  /** Check if a tree is an application of a symbol named "test" to some
-    * arguments.
-    */
+  /**
+   * Check if a tree is an application of a symbol named "test" to some
+   * arguments.
+   */
   private def isTest(tree: Tree): Boolean =
     isApplyWithName(tree, "test")
 
-  /** Check if a tree is an application of a symbol by a given name to
-    * arguments.
-    */
+  /**
+   * Check if a tree is an application of a symbol by a given name to
+   * arguments.
+   */
   private def isApplyWithName(tree: Tree, name: String): Boolean =
     applyWithName[Boolean](tree, name, _ => true, false)
 
-  /** If a symbol with a given name is applied to some arguments, then run `f`
-    * on that tree, otherwise yield `default`.
-    */
+  /**
+   * If a symbol with a given name is applied to some arguments, then run `f`
+   * on that tree, otherwise yield `default`.
+   */
   private def applyWithName[A](tree: Tree, name: String, f: Tree => A, default: A): A =
     tree match {
-      case t @ Term.Apply(Term.Apply(Term.Name(n), _), _) if n == name => f(t)
-      case t @ Term.Block(Term.Apply(Term.Name(n), _) :: _) if n == name => f(t)
+      case t @ Term.Apply(Term.Apply(Term.Name(n), _), _) if n == name     => f(t)
+      case t @ Term.Block(Term.Apply(Term.Name(n), _) :: _) if n == name   => f(t)
       case t @ Defn.Val(_, _, _, Term.Apply(Term.Name(n), _)) if n == name => f(t)
-      case _                                            => default
+      case _                                                               => default
     }
 
-  /** Convert an `assert` expression to an `assertEquals` expression.
-    */
+  /**
+   * Convert an `assert` expression to an `assertEquals` expression.
+   */
   private def assertToAssertEquals(tree: Tree): Patch =
     tree match {
       case t @ Term.Apply(
@@ -63,8 +69,9 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
         Patch.empty
     }
 
-  /** Convert an `assert` expression to an `actual ?= expected` expression.
-    */
+  /**
+   * Convert an `assert` expression to an `actual ?= expected` expression.
+   */
   private def assertToPropEquals(tree: Tree): Patch =
     tree match {
       case t @ Term.Apply(
@@ -72,14 +79,13 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
             List(Term.ApplyInfix(actual, Term.Name(op), List(), List(expected)))
           ) if op == "==" || op == "===" =>
         Patch.replaceTree(t, s"$actual ?= $expected")
-      case t @ Term.Apply(
-            Term.Name("assertEquals"),
-            List(actual, expected)) =>
+      case t @ Term.Apply(Term.Name("assertEquals"), List(actual, expected)) =>
         Patch.replaceTree(t, s"$actual ?= $expected")
       case _ =>
         Patch.empty
     }
 
+  /** Convert a test to a property check, if that test is using forAll. */
   private def testToProperty(tree: Tree): Patch =
     tree match {
       case Term.Apply(Term.Apply(t @ Term.Name("test"), _), Term.Block(Term.Apply(Term.Name("forAll"), _) :: _) :: _) =>

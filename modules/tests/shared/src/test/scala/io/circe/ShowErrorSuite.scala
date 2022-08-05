@@ -22,13 +22,13 @@ trait GenCursorOps {
 
 class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   test("Show[ParsingFailure] should produce the expected output") {
-    assert(ParsingFailure("the message", new Exception()).show === "ParsingFailure: the message")
+    assertEquals(ParsingFailure("the message", new Exception()).show, "ParsingFailure: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a small example") {
     val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
 
-    assert(DecodingFailure("the message", ops).show === "DecodingFailure at .foo.bar[2]: the message")
+    assertEquals(DecodingFailure("the message", ops).show, "DecodingFailure at .foo.bar[2]: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a larger example") {
@@ -52,7 +52,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     )
 
     val expected = "DecodingFailure at .foo.bar[0][2]: the message"
-    assert(DecodingFailure("the message", ops).show === expected)
+    assertEquals(DecodingFailure("the message", ops).show, expected)
   }
 
   property("Show[DecodingFailure] should display field selection") {

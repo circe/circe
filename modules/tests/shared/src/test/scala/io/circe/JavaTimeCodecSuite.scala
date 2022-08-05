@@ -7,7 +7,7 @@ import java.time._
 import org.scalacheck._
 import org.scalacheck.Gen.Choose
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.collection.JavaConverters._
 
 case class JavaTimeCaseClass(foo: Duration, bar: Option[LocalTime], baz: List[ZoneId])
@@ -176,7 +176,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[Instant] should serialize 00 seconds and drop zeroes in nanos to millis or micros") {
     def check(s: String): Unit =
-      assert(Encoder[Instant].apply(Instant.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[Instant].apply(Instant.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z")
     check("2018-07-10T00:00:00.100Z")
@@ -198,7 +198,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[LocalDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[LocalDateTime].apply(LocalDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[LocalDateTime].apply(LocalDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00")
     check("2018-07-10T00:00:00.1")
@@ -220,7 +220,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[ZonedDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z[UTC]")
     check("2018-07-10T00:00:00.1Z[UTC]")
@@ -242,7 +242,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[OffsetDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[OffsetDateTime].apply(OffsetDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[OffsetDateTime].apply(OffsetDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z")
     check("2018-07-10T00:00:00.1Z")
@@ -271,7 +271,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[LocalTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[LocalTime].apply(LocalTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[LocalTime].apply(LocalTime.parse(s)), Json.fromString(s))
 
     check("00:00:00")
     check("00:00:00.1")
@@ -300,7 +300,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
 
   test("Encoder[OffsetTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[OffsetTime].apply(OffsetTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[OffsetTime].apply(OffsetTime.parse(s)), Json.fromString(s))
 
     check("00:00:00Z")
     check("00:00:00.1Z")

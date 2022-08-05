@@ -35,7 +35,7 @@ final class AssertRewriteSuite extends AbstractSyntacticRuleSuite with FunSuiteL
     """object Tests {
       |test("test") {
       |  assertEquals(actual, expected)
-      |}}""".stripMargin,
+      |}}""".stripMargin
   )
 
   val original2: String =
@@ -53,7 +53,7 @@ final class AssertRewriteSuite extends AbstractSyntacticRuleSuite with FunSuiteL
       |property("test") { forAll(a =>
       |  actual ?= expected
       |)
-      |}}""".stripMargin,
+      |}}""".stripMargin
   )
 
   val original3: String =
