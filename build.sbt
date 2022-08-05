@@ -49,6 +49,8 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
 )
 
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
+ThisBuild / scalafixAll / skip := tlIsScala3.value
+ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 
 val catsVersion = "2.7.0"
 val jawnVersion = "1.3.2"
