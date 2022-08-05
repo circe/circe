@@ -48,6 +48,8 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
   )
 )
 
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
+
 val catsVersion = "2.7.0"
 val jawnVersion = "1.3.2"
 val shapelessVersion = "2.3.9"
@@ -81,7 +83,7 @@ lazy val allSettings = Seq(
 )
 
 def circeProject(path: String)(project: Project) = {
-  val docName = path.split("-").mkString(" ")
+  val docName = path.split("[-/]").mkString(" ")
   project.settings(
     description := s"circe $docName",
     moduleName := s"circe-$path",
@@ -90,20 +92,26 @@ def circeProject(path: String)(project: Project) = {
   )
 }
 
-def circeModule(path: String): Project = {
-  val id = path.split("-").reduce(_ + _.capitalize)
-  Project(id, file(s"modules/$path")).configure(circeProject(path))
+/** This is here so we can use this with our internal Scalafix rules, without
+  * creating a cyclic dependency. So the scalafix modules will use this and
+  * the other modules will use either `circeModule` or `circeCrossModule`.
+  */
+def baseModule(path: String, additionalDeps: List[ClasspathDep[ProjectReference]] = Nil): Project = {
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
+  Project(id, file(s"modules/$path")).configure(circeProject(path)).configure(_.dependsOn(additionalDeps: _*))
 }
 
+def circeModule(path: String): Project = baseModule(path, List(scalafixInternalRules % ScalafixConfig))
+
 def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
-  val id = path.split("-").reduce(_ + _.capitalize)
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
   CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
     .jsSettings(
       coverageEnabled := false
-    )
+    ).configure(_.dependsOn(scalafixInternalRules % ScalafixConfig))
 }
 
 lazy val docsMappingsAPIDir =
@@ -234,26 +242,57 @@ lazy val root = tlCrossRootProject
       """.stripMargin
   )
   .aggregate(
-    numbersTesting,
-    numbers,
+    benchmark,
     core,
-    pointer,
-    pointerLiteral,
     extras,
     generic,
-    shapes,
-    literal,
-    refined,
-    parser,
-    scodec,
-    testing,
-    tests,
     hygiene,
     jawn,
+    literal,
+    numbers,
+    numbersTesting,
+    parser,
+    pointer,
+    pointerLiteral,
+    refined,
+    scalafixInternalInput,
+    scalafixInternalOutput,
+    scalafixInternalRules,
+    scalafixInternalTests,
     scalajs,
     scalajsJavaTimeTest,
-    benchmark
-  )
+    scodec,
+    shapes,
+    testing,
+    tests
+  ).disablePlugins(ScalafixPlugin)
+
+lazy val scalafixInternalRules =
+  baseModule("scalafix/internal/rules").settings(
+    libraryDependencies ++= List(
+      "ch.epfl.scala" %% "scalafix-core" % _root_.scalafix.sbt.BuildInfo.scalafixVersion
+    )
+  ).enablePlugins(NoPublishPlugin).disablePlugins(ScalafixPlugin)
+
+lazy val scalafixInternalInput =
+  baseModule("scalafix/internal/input").disablePlugins(ScalafixPlugin).enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalOutput =
+  baseModule("scalafix/internal/output").disablePlugins(ScalafixPlugin).enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalTests =
+  baseModule("scalafix/internal/tests").enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin).settings(
+    scalafixTestkitOutputSourceDirectories :=
+      (scalafixInternalOutput / Compile / sourceDirectories).value,
+    scalafixTestkitInputSourceDirectories :=
+      (scalafixInternalInput / Compile / sourceDirectories).value,
+    scalafixTestkitInputClasspath :=
+      (scalafixInternalInput / Compile / fullClasspath).value,
+    scalafixTestkitInputScalacOptions :=
+      (scalafixInternalInput / Compile / scalacOptions).value,
+    scalafixTestkitInputScalaVersion :=
+      (scalafixInternalInput / Compile / scalaVersion).value
+  ).disablePlugins(ScalafixPlugin).dependsOn(scalafixInternalInput, scalafixInternalRules)
 
 lazy val numbersTesting =
   circeCrossModule("numbers-testing", CrossType.Pure).settings(
