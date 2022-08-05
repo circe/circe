@@ -22,10 +22,10 @@ class SyntaxSuite extends CirceMunitSuite {
 
   property(":= should be available and work with String keys") {
     forAll { (key: String, m: Map[String, Int], aNumber: Int, aString: String, aBoolean: Boolean) =>
-      (key := m) ?= key -> m.asJson
-      (key := aNumber) ?= key -> aNumber.asJson
-      (key := aString) ?= key -> aString.asJson
-      (key := aBoolean) ?= key -> aBoolean.asJson
+      ((key := m) ?= key -> m.asJson) &&
+      ((key := aNumber) ?= key -> aNumber.asJson) &&
+      ((key := aString) ?= key -> aString.asJson) &&
+      ((key := aBoolean) ?= key -> aBoolean.asJson)
     }
   }
 
@@ -43,10 +43,10 @@ class SyntaxSuite extends CirceMunitSuite {
       ) =>
         val key = CustomKey("keyComponentOne", 2)
         val keyStringRepresentation = "keyComponentOne_2"
-        assert((key := m) === (keyStringRepresentation -> m.asJson))
-        assert((key := aNumber) === (keyStringRepresentation -> aNumber.asJson))
-        assert((key := aString) === (keyStringRepresentation -> aString.asJson))
-        assert((key := aBoolean) === (keyStringRepresentation -> aBoolean.asJson))
+        ((key := m) === (keyStringRepresentation -> m.asJson)) &&
+        ((key := aNumber) === (keyStringRepresentation -> aNumber.asJson)) &&
+        ((key := aString) === (keyStringRepresentation -> aString.asJson)) &&
+        ((key := aBoolean) === (keyStringRepresentation -> aBoolean.asJson))
     }
   }
 }

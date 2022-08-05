@@ -164,8 +164,8 @@ class AutoDerivedSuite extends CirceMunitSuite {
     property(" not interfere with base instances") {
       forAll { (is: List[Int]) =>
         val json = Encoder[List[Int]].apply(is)
-        json ?= Json.fromValues(is.map(Json.fromInt))
-        json.as[List[Int]] ?= Right(is)
+        (json ?= Json.fromValues(is.map(Json.fromInt))) &&
+        (json.as[List[Int]] ?= Right(is))
       }
     }
 

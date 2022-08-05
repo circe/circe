@@ -33,8 +33,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result1 = JsonObject.fromIterable(fields)
         val result2 = JsonObject.fromFoldable(fields)
 
-        result1.hashCode ?= result2.hashCode
-        result1 ?= result2
+        (result1.hashCode ?= result2.hashCode) &&
+        (result1 ?= result2)
       }
     }
 
@@ -82,8 +82,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = fields.reverse.find(_._1 == key).map(_._2)
 
-        result1(key) ?= expected
-        result2(key) ?= expected
+        (result1(key) ?= expected) &&
+        (result2(key) ?= expected)
     }
   }
 
@@ -94,8 +94,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = None
 
-        result1(key) ?= expected
-        result2(key) ?= expected
+        (result1(key) ?= expected) &&
+        (result2(key) ?= expected)
     }
   }
 
@@ -106,8 +106,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = fields.find(_._1 == key).nonEmpty
 
-        result1.contains(key) ?= expected
-        result2.contains(key) ?= expected
+        (result1.contains(key) ?= expected) &&
+        (result2.contains(key) ?= expected)
     }
   }
 
@@ -117,8 +117,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.toMap.size
 
-      result1.size ?= expected
-      result2.size ?= expected
+      (result1.size ?= expected) &&
+      (result2.size ?= expected)
     }
   }
 
@@ -128,8 +128,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.isEmpty
 
-      result1.isEmpty ?= expected
-      result2.isEmpty ?= expected
+      (result1.isEmpty ?= expected) &&
+      (result2.isEmpty ?= expected)
     }
   }
 
@@ -139,8 +139,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.nonEmpty
 
-      result1.nonEmpty ?= expected
-      result2.nonEmpty ?= expected
+      (result1.nonEmpty ?= expected) &&
+      (result2.nonEmpty ?= expected)
     }
   }
 
@@ -149,8 +149,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       case (fields, key) =>
         val expected = fields.reverse.find(_._1 == key).map(_._2)
 
-        JsonObject.fromIterable(fields).kleisli(key) ?= expected
-        JsonObject.fromFoldable(fields).kleisli(key) ?= expected
+        (JsonObject.fromIterable(fields).kleisli(key) ?= expected) &&
+        (JsonObject.fromFoldable(fields).kleisli(key) ?= expected)
     }
   }
 
@@ -158,8 +158,8 @@ class JsonObjectSuite extends CirceMunitSuite {
     forAll(fieldsWhereKeyNotIncluded) {
       case (fields, key) =>
         val expected = None
-        JsonObject.fromIterable(fields).kleisli(key) ?= expected
-        JsonObject.fromFoldable(fields).kleisli(key) ?= expected
+        (JsonObject.fromIterable(fields).kleisli(key) ?= expected) &&
+        (JsonObject.fromFoldable(fields).kleisli(key) ?= expected)
     }
   }
 
@@ -169,8 +169,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.map(_._1).distinct
 
-      result1.keys.toList ?= expected
-      result2.keys.toList ?= expected
+      (result1.keys.toList ?= expected) &&
+      (result2.keys.toList ?= expected)
     }
   }
 
@@ -191,8 +191,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         }
         .map(_._2)
 
-      result1.values.toList ?= expected
-      result2.values.toList ?= expected
+      (result1.values.toList ?= expected) &&
+      (result2.values.toList ?= expected)
     }
   }
 
@@ -202,8 +202,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = result1
 
-      JsonObject.fromMap(result1.toMap) ?= expected
-      JsonObject.fromMap(result2.toMap) ?= expected
+      (JsonObject.fromMap(result1.toMap) ?= expected) &&
+      (JsonObject.fromMap(result2.toMap) ?= expected)
     }
   }
 
@@ -216,8 +216,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      result1.toIterable.toList ?= fields
-      result2.toIterable.toList ?= fields
+      (result1.toIterable.toList ?= fields) &&
+      (result2.toIterable.toList ?= fields)
     }
   }
 
@@ -230,8 +230,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      result1.toList ?= fields
-      result2.toList ?= fields
+      (result1.toList ?= fields) &&
+      (result2.toList ?= fields)
     }
   }
 
@@ -244,8 +244,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      result1.toVector ?= fields
-      result2.toVector ?= fields
+      (result1.toVector ?= fields) &&
+      (result2.toVector ?= fields)
     }
   }
 
@@ -257,8 +257,8 @@ class JsonObjectSuite extends CirceMunitSuite {
 
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
-      JsonObject.fromIterable(fields).add("0", replacement) ?= expected
-      JsonObject.fromFoldable(fields).add("0", replacement) ?= expected
+      (JsonObject.fromIterable(fields).add("0", replacement) ?= expected) &&
+      (JsonObject.fromFoldable(fields).add("0", replacement) ?= expected)
     }
   }
 
@@ -272,8 +272,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields).add("0", replacement)
       val expected = JsonObject.fromFoldable(fields.init :+ ("0" -> replacement))
 
-      result1 ?= expected
-      result2 ?= expected
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -319,8 +319,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.init)
 
-      result1 ?= expected
-      result2 ?= expected
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -334,8 +334,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
-      result1 ?= expected
-      result2 ?= expected
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -346,8 +346,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       }
 
       val expected = JsonObject.fromFoldable(fields.map(field => field._1 -> replacement))
-      JsonObject.fromIterable(fields).mapValues(_ => replacement) ?= expected
-      JsonObject.fromFoldable(fields).mapValues(_ => replacement) ?= expected
+      (JsonObject.fromIterable(fields).mapValues(_ => replacement) ?= expected) &&
+      (JsonObject.fromFoldable(fields).mapValues(_ => replacement) ?= expected)
     }
   }
 
@@ -361,8 +361,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2: Option[JsonObject] = JsonObject.fromFoldable(fields).traverse[Option](Some(_))
       val expected = JsonObject.fromFoldable(fields)
 
-      result1 ?= Some(expected)
-      result2 ?= Some(expected)
+      (result1 ?= Some(expected)) &&
+      (result2 ?= Some(expected))
     }
   }
 

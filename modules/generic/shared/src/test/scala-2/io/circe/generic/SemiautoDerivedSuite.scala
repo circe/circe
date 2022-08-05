@@ -231,8 +231,8 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
     forAll { (j: Json) =>
       case class EmptyCc()
 
-      deriveDecoder[EmptyCc].decodeJson(j).isRight ?= j.isObject
-      deriveCodec[EmptyCc].decodeJson(j).isRight ?= j.isObject
+      (deriveDecoder[EmptyCc].decodeJson(j).isRight ?= j.isObject) &&
+      (deriveCodec[EmptyCc].decodeJson(j).isRight ?= j.isObject)
     }
   }
 }
