@@ -2,11 +2,15 @@ import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
+val Scala212V: String = "2.12.15"
+val Scala213V: String = "2.13.8"
+val Scala3V: String = "3.1.0"
+
 ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.8")
+ThisBuild / crossScalaVersions := List(Scala3V, Scala213V, Scala212V)
 ThisBuild / tlSkipIrrelevantScalas := true
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
@@ -273,7 +277,7 @@ lazy val scalafixInternalRules =
   baseModule("scalafix/internal/rules").settings(
     libraryDependencies ++= List(
       "ch.epfl.scala" %% "scalafix-core" % _root_.scalafix.sbt.BuildInfo.scalafixVersion
-    )
+    ).filterNot(_ => tlIsScala3.value)
   ).enablePlugins(NoPublishPlugin).disablePlugins(ScalafixPlugin)
 
 lazy val scalafixInternalInput =
@@ -293,8 +297,14 @@ lazy val scalafixInternalTests =
     scalafixTestkitInputScalacOptions :=
       (scalafixInternalInput / Compile / scalacOptions).value,
     scalafixTestkitInputScalaVersion :=
-      (scalafixInternalInput / Compile / scalaVersion).value
-  ).disablePlugins(ScalafixPlugin).dependsOn(scalafixInternalInput, scalafixInternalRules)
+      (scalafixInternalInput / Compile / scalaVersion).value,
+    libraryDependencies ++= Seq(
+      ("ch.epfl.scala" %% "scalafix-testkit" % _root_.scalafix.sbt.BuildInfo.scalafixVersion % Test)
+        .cross(CrossVersion.full)
+    ).filter(_ => !tlIsScala3.value),
+    Compile / compile :=
+      (Compile / compile).dependsOn(scalafixInternalInput / Compile / compile).value
+  ).disablePlugins(ScalafixPlugin).dependsOn(scalafixInternalInput, scalafixInternalOutput, scalafixInternalRules)
 
 lazy val numbersTesting =
   circeCrossModule("numbers-testing", CrossType.Pure).settings(
