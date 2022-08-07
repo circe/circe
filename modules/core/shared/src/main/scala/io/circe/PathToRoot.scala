@@ -136,4 +136,14 @@ private[circe] object PathToRoot {
       }
       .map(PathToRoot.apply _)
   }
+
+  def fromCursorPath(value: Cursor.CursorPath): PathToRoot =
+    PathToRoot(
+      value.asList.map {
+        case elem: Cursor.CursorPath.PathElem.JsonObjectKey =>
+          PathElem.ObjectKey(elem.value)
+        case elem: Cursor.CursorPath.PathElem.JsonArrayIndex =>
+          PathElem.ArrayIndex(elem.value)
+      }.toVector
+    )
 }

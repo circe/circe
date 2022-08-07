@@ -294,14 +294,95 @@ sealed abstract class Cursor extends Serializable {
    * @group Utilities
    */
   final def replay(history: History): Cursor =
+    replayCursorOps(history.asList)
+
+  /**
+   * Replay history against the cursor for any `Foldable` of [[CursorOp]].
+   *
+   * @note In general, you should prefer [[#replay]]. [[#replay]] uses
+   *       [[Cursor#History]] which can not have an invalid construction,
+   *       e.g. nonsensical cursor ops. [[Cursor#History]] values can only be
+   *       constructed from a [[Cursor]] instance, thus this method is
+   *       provided when you need to manually construct history.
+   */
+  final def replayCursorOps[F[_]: Foldable](history: F[CursorOp]): Cursor =
     if (failed) {
       // No need to waste anyone's time.
       this
     } else {
-      history.asList.reverse.foldLeft(this) {
+      // Reverse, for all foldables
+      val asReversedList: List[CursorOp] =
+        history.foldLeft(List.empty[CursorOp]) {
+          case value =>
+            value.foldLeft(List.empty[CursorOp]) {
+              case (acc, value) =>
+                value +: acc
+            }
+        }
+      asReversedList.foldLeft(this) {
         case (acc, value) =>
           acc.replayOne(value)
       }
+    }
+
+  /**
+   * Get the [[CursorPath]] for the current focus of the [[Cursor]]. This is a
+   * representation from the root of the JSON to the current focus value.
+   */
+  final def cursorPath: CursorPath = {
+    import Cursor._
+    import CursorPath._
+
+    @tailrec
+    def loop(acc: List[PathElem], cursor: Cursor): List[PathElem] =
+      cursor match {
+        case _: TopCursor =>
+          acc
+        case cursor: ObjectCursor =>
+          loop(PathElem.JsonObjectKey(cursor.keyValue) :: acc, cursor.parent)
+        case cursor: ArrayCursor =>
+          loop(PathElem.JsonArrayIndex(cursor.indexValue.toLong) :: acc, cursor.parent)
+        case cursor: FailedCursor =>
+          loop(acc, cursor.unsafeLastCursor)
+      }
+
+    CursorPath.fromList(loop(Nil, this))
+  }
+
+  /**
+   * As [[#cursorPath]], but represented as a `String`.
+   */
+  final def cursorPathString: String =
+    cursorPath.pathString
+
+  /**
+   * Attempt to decode the focus as an `A`.
+   *
+   * @group Decoding
+   */
+  final def as[A](implicit d: Decoder[A]): Decoder.Result[A] =
+    // Temporary definition until Decoder and DecodingFailure are refactored
+    d.tryDecode(ACursor.fromCursor(this))
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   *
+   * @group Decoding
+   */
+  final def get[A: Decoder](k: String): Decoder.Result[A] =
+    downField(k).as[A]
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A`.
+   * If the field `k` is missing, then use the `fallback` instead.
+   *
+   * @group Decoding
+   */
+  final def getOrElse[A: Decoder](k: String)(fallback: => A): Decoder.Result[A] =
+    get[Option[A]](k) match {
+      case Right(Some(a)) => Right(a)
+      case Right(_)       => Right(fallback)
+      case l @ Left(_)    => l.asInstanceOf[Decoder.Result[A]]
     }
 }
 
@@ -495,7 +576,9 @@ object Cursor {
         case _ =>
           fail(
             CursorOp.MoveLeft,
-            CursorFailureReason.ExpectedFocusToBeMemberOfJsonArray
+            CursorFailureReason.ExpectedFocusToBeMemberOfJsonArray(
+              CursorFailureReason.FailureTarget.MoveLeftInNonArray.value
+            )
           )
       }
 
@@ -520,7 +603,9 @@ object Cursor {
         case _ =>
           fail(
             CursorOp.MoveRight,
-            CursorFailureReason.ExpectedFocusToBeMemberOfJsonArray
+            CursorFailureReason.ExpectedFocusToBeMemberOfJsonArray(
+              CursorFailureReason.FailureTarget.MoveRightInNonArray.value
+            )
           )
       }
 
@@ -560,7 +645,8 @@ object Cursor {
             op,
             CursorFailureReason.IncorrectFocusTypeForNavigationOperation(
               expected = JsonTypeDescription.JsonArray,
-              actual = JsonTypeDescription.fromJson(otherwise)
+              actual = JsonTypeDescription.fromJson(otherwise),
+              failureTarget = CursorFailureReason.FailureTarget.JsonArrayIndexTarget(0L)
             )
           )
       }
@@ -587,7 +673,8 @@ object Cursor {
             op,
             CursorFailureReason.IncorrectFocusTypeForNavigationOperation(
               expected = JsonTypeDescription.JsonArray,
-              actual = JsonTypeDescription.fromJson(otherwise)
+              actual = JsonTypeDescription.fromJson(otherwise),
+              failureTarget = CursorFailureReason.FailureTarget.JsonArrayIndexTarget(n.toLong)
             )
           )
       }
@@ -625,7 +712,8 @@ object Cursor {
             op,
             CursorFailureReason.IncorrectFocusTypeForNavigationOperation(
               expected = JsonTypeDescription.JsonObject,
-              actual = JsonTypeDescription.fromJson(otherwise)
+              actual = JsonTypeDescription.fromJson(otherwise),
+              failureTarget = CursorFailureReason.FailureTarget.JsonObjectKeyTarget(k)
             )
           )
       }
@@ -638,14 +726,14 @@ object Cursor {
   }
 
   /** A cursor pointing to the top, i.e. root, of a JSON structure. */
-  private[this] sealed abstract class TopCursor extends SuccessCursor {
+  private sealed abstract class TopCursor extends SuccessCursor {
     override final def isRoot: Boolean = true
 
     override final def toString: String =
       s"TopCursor(value = $value)"
   }
 
-  private[this] object TopCursor {
+  private object TopCursor {
     private[this] final case class TopCursorImpl(
       override val value: Json,
       override protected val unsafeLastCursor: Cursor.SuccessCursor,
@@ -664,7 +752,7 @@ object Cursor {
    * and not a failure state. This is useful because "normal" cursors have
    * some common properties which it is occassionaly nice to match on.
    */
-  private[this] sealed abstract class NormalCursor extends SuccessCursor {
+  private sealed abstract class NormalCursor extends SuccessCursor {
     def parent: SuccessCursor
     def changed: Boolean
 
@@ -672,7 +760,7 @@ object Cursor {
   }
 
   /** A cursor which is pointing at an element of a JSON array. */
-  private[this] sealed abstract class ArrayCursor extends NormalCursor {
+  private sealed abstract class ArrayCursor extends NormalCursor {
     def arrayValues: Vector[Json]
     def indexValue: Int
 
@@ -683,7 +771,7 @@ object Cursor {
       s"ArrayCursor(value = $value, indexValue = $indexValue, arrayValues = $arrayValues)"
   }
 
-  private[this] object ArrayCursor {
+  private object ArrayCursor {
     private[this] final case class ArrayCursorImpl(
       override val arrayValues: Vector[Json],
       override val indexValue: Int,
@@ -705,7 +793,7 @@ object Cursor {
   }
 
   /** A cursor which is pointing at an key, i.e. field, in a JSON object. */
-  private[this] sealed abstract class ObjectCursor extends NormalCursor {
+  private sealed abstract class ObjectCursor extends NormalCursor {
     def obj: JsonObject
     def keyValue: String
 
@@ -716,7 +804,7 @@ object Cursor {
       s"ObjectCursor(value = $value, obj = $obj, keyValue = $keyValue)"
   }
 
-  private[this] object ObjectCursor {
+  private object ObjectCursor {
     private[this] final case class ObjectCursorImpl(
       override val obj: JsonObject,
       override val keyValue: String,
@@ -742,6 +830,10 @@ object Cursor {
    * [[Cursor#lastCursor]] method.
    */
   private sealed abstract class FailedCursor extends Cursor {
+
+    /**
+     * FailedCursor values always have a failure reason.
+     */
     def failureReasonValue: CursorFailureReason
 
     override final def failureReason: Some[CursorFailureReason] = Some(failureReasonValue)
@@ -779,8 +871,14 @@ object Cursor {
       FailedCursorImpl(unsafeLastCursor, unsafeLastOp, failureReason)
   }
 
-  /** A representation of the cursor history. */
+  /**
+   * A representation of the cursor history. History instances can only be
+   * constructed from [[Cursor]] values. This is to ensure they always
+   * represent valid cursor historys.
+   */
   sealed abstract class History extends Product with Serializable {
+
+    /** A representation of the [[History]] as a `List`. */
     def asList: List[CursorOp]
 
     override final def toString: String =
@@ -790,8 +888,100 @@ object Cursor {
   object History {
     private[this] final case class HistoryImpl(override val asList: List[CursorOp]) extends History
 
-    def fromList(value: List[CursorOp]): History =
+    private[Cursor] def fromList(value: List[CursorOp]): History =
       HistoryImpl(value)
+  }
+
+  /**
+   * A representation of the location of a [[Cursor]], relative to the root of
+   * the JSON structure.
+   */
+  sealed abstract class CursorPath extends Product with Serializable {
+    // Developer's note: This is sealed because if we only allow CursorPath
+    // instances to be created by Cursor, then we can ensure they are always
+    // correct.
+
+    import CursorPath._
+
+    /**
+     * The [[CursorPath]] as a list of [[CursorPath#PathElem]] values. The first
+     * item in the list is the [[CursorPath#PathElem]] closest to the root of
+     * the JSON structure.
+     */
+    def asList: List[PathElem]
+
+    /**
+     * A representation of this [[CursorPath]] as a `String`.
+     */
+    def pathString: String =
+      asList
+        .foldLeft(new StringBuilder(asList.size * 3)) {
+          case (acc, value) =>
+            value match {
+              case value: PathElem.JsonObjectKey =>
+                acc.append(s".${value.value}")
+              case value: PathElem.JsonArrayIndex =>
+                acc.append(s"[${value.value}]")
+            }
+        }
+        .toString
+  }
+
+  object CursorPath {
+
+    private[this] final case class CursorPathImpl(override val asList: List[PathElem]) extends CursorPath
+
+    private[Cursor] def fromList(value: List[PathElem]): CursorPath =
+      CursorPathImpl(value)
+
+    /**
+     * A node on the path from the root of the JSON to the current location as
+     * described by the [[CursorPath]].
+     */
+    sealed abstract class PathElem extends Product with Serializable
+
+    object PathElem {
+
+      /**
+       * A element in the path from the root to the focus where to focus is on a
+       * key/field in a JSON object.
+       */
+      sealed abstract class JsonObjectKey extends PathElem {
+
+        /** The field/key at this section of the cursor path. */
+        def value: String
+
+        override final def toString: String = s"JsonObjectKey(value = ${value})"
+      }
+
+      object JsonObjectKey {
+        private[this] final case class JsonObjectKeyImpl(override val value: String) extends JsonObjectKey
+
+        private[Cursor] def apply(value: String): JsonObjectKey =
+          JsonObjectKeyImpl(value)
+      }
+
+      /**
+       * A element in the path from the root to the focus where to focus is on an
+       * element of a JSON array.
+       */
+      sealed abstract class JsonArrayIndex extends PathElem {
+
+        /**
+         * The index of the array at this section of the cursor path.
+         */
+        def value: Long
+
+        override final def toString: String = s"JsonArrayIndex(value = $value)"
+      }
+
+      object JsonArrayIndex {
+        private[this] final case class JsonArrayIndexImpl(override val value: Long) extends JsonArrayIndex
+
+        private[Cursor] def apply(value: Long): JsonArrayIndex =
+          JsonArrayIndexImpl(value)
+      }
+    }
   }
 
   /**
@@ -799,65 +989,320 @@ object Cursor {
    * failure occurred.
    */
   sealed abstract class CursorFailureReason extends RuntimeException {
+    import CursorFailureReason._
+
+    /**
+     * The [[FailureTarget]] describing the location at which the failure
+     * occurred.
+     */
+    def failureTarget: FailureTarget
+
     override final def fillInStackTrace(): Throwable = this
   }
 
   object CursorFailureReason {
+    // Developer's note: As with many types in the Cursor companion object, we
+    // do not expose the constructors for the various concrete targets and
+    // errors both in the name of binary compatibility and to ensure that
+    // instances can only be created in a valid context.
+    //
+    // The FailureTarget types (not constructors) are exposed so that they can
+    // be inspected, but the CursorFailureReason reason types are not. This is
+    // because it is expected that the concrete CursorFailureReason types will
+    // have a higher volatility than the FailureTarget types.
+
+    /**
+     * A failure target is a description of the location of a cursor
+     * failure. Usually these locations do not actually exist, for example
+     * when you attempt to move to index 0 of an empty array. The failure
+     * target is the 0th index, but obviously no such value actually exists,
+     * hence the failure.
+     */
+    sealed abstract class FailureTarget extends Product with Serializable
+
+    object FailureTarget {
+
+      /**
+       * A failure when attempting to operate at a given key/field of a JSON
+       * object.
+       */
+      sealed abstract class JsonObjectKeyTarget extends FailureTarget {
+
+        /**
+         * The key/field of a JSON object which was the location of the failure.
+         */
+        def value: String
+
+        override final def toString: String = s"JsonObjectKeyTarget(value = $value)"
+      }
+
+      object JsonObjectKeyTarget {
+        private[this] final case class JsonObjectKeyTargetImpl(override val value: String) extends JsonObjectKeyTarget
+
+        private[Cursor] def apply(value: String): JsonObjectKeyTarget =
+          JsonObjectKeyTargetImpl(value)
+      }
+
+      /**
+       * A failure when attempting to operate at a given index of a JSON
+       * array.
+       */
+      sealed abstract class JsonArrayIndexTarget extends FailureTarget {
+
+        /**
+         * The index of a JSON array which was the location of the failure.
+         */
+        def value: Long
+
+        override final def toString: String = s"JsonArrayIndexTarget(value = $value)"
+      }
+
+      object JsonArrayIndexTarget {
+        private[this] final case class JsonArrayIndexTargetImpl(override val value: Long) extends JsonArrayIndexTarget
+
+        private[Cursor] def apply(value: Long): JsonArrayIndexTarget =
+          JsonArrayIndexTargetImpl(value)
+      }
+
+      /**
+       * A special type of failure target describing the attempt to move above the
+       * top/root of a JSON value.
+       */
+      sealed abstract class MoveAboveTopTarget extends FailureTarget {
+        override final def toString: String = "MoveAboveTopTarget"
+      }
+
+      object MoveAboveTopTarget {
+        private[this] case object MoveAboveTopTargetImpl extends MoveAboveTopTarget
+
+        def value: MoveAboveTopTarget = MoveAboveTopTargetImpl
+      }
+
+      // Failed relative array operations are special because they have no
+      // context with which to describe a target index. That is, attempting to
+      // move to index 5 when the focus is an object means the failure target
+      // was index 5, but attempting to move "left" when the focus is an
+      // object has no concrete failed target index.
+
+      /**
+       * A special type of failure target describing a left relative move in an
+       * incorrect context.
+       *
+       * For example, if the focus is a key/field in a JSON, then calling
+       * [[Cursor#left]] would fail because we can't move left in an array if
+       * we are in a JSON object. When this happens, we can't use
+       * [[JsonArrayIndexTarget]] because that requires a concrete index
+       * value at which the failure occurred, but in this case the location
+       * of the failure can only be described in relative terms, as opposed
+       * to moving left from a JSON array at index 0 which can be described
+       * by the index value -1.
+       *
+       * See the following example for more details.
+       *
+       * {{{
+       * scala> val array: Json = Json.fromValues(List(Json.fromString("a")))
+       * val array: io.circe.Json =
+       * [
+       *   "a"
+       * ]
+       *
+       * scala> val cursor: Cursor = Cursor.fromJson(array)
+       * val cursor: io.circe.Cursor =
+       * TopCursor(value = [
+       *   "a"
+       * ])
+       *
+       * scala> cursor.downArray
+       * val res4: io.circe.Cursor = ArrayCursor(value = "a", indexValue = 0, arrayValues = Vector("a"))
+       *
+       * scala> cursor.downArray.cursorPathString
+       * val res5: String = [0]
+       *
+       * scala> cursor.downArray.left
+       * val res6: io.circe.Cursor = FailedCursor(failureReason = Some(io.circe.Cursor$CursorFailureReason$MoveLeftIndexOutOfBoundsFailure$: Attempted to move to index value -1 in JSON array.))
+       *
+       * scala> cursor.downArray.left.failureReason.map(_.failureTarget)
+       * val res7: Option[io.circe.Cursor.CursorFailureReason.FailureTarget] = Some(JsonArrayIndexTarget(value = -1))
+       *
+       * scala> val jsonObject: Json = Json.fromFields(List("foo" -> Json.fromInt(1)))
+       * val jsonObject: io.circe.Json =
+       * {
+       *   "foo" : 1
+       * }
+       *
+       * scala> val cursor: Cursor = Cursor.fromJson(jsonObject)
+       * val cursor: io.circe.Cursor =
+       * TopCursor(value = {
+       *   "foo" : 1
+       * })
+       *
+       * scala> cursor.downField("foo")
+       * val res8: io.circe.Cursor = ObjectCursor(value = 1, obj = object[foo -> 1], keyValue = foo)
+       *
+       * scala> cursor.downField("foo").cursorPathString
+       * val res10: String = .foo
+       *
+       * scala> cursor.downField("foo").left
+       * val res11: io.circe.Cursor = FailedCursor(failureReason = Some(io.circe.Cursor$CursorFailureReason$ExpectedFocusToBeMemberOfJsonArray: Attempted to move in JSON array, but focus was not a member of a JSON array.))
+       *
+       * scala> cursor.downField("foo").left.failureReason.map(_.failureTarget)
+       * val res12: Option[io.circe.Cursor.CursorFailureReason.FailureTarget] = Some(MoveLeftInNonArray)
+       * }}}
+       */
+      sealed abstract class MoveLeftInNonArray extends FailureTarget {
+        override final def toString: String = "MoveLeftInNonArray"
+      }
+
+      object MoveLeftInNonArray {
+        private[this] case object MoveLeftInNonArrayImpl extends MoveLeftInNonArray
+
+        def value: MoveLeftInNonArray = MoveLeftInNonArrayImpl
+      }
+
+      /**
+       * A special type of failure target describing a right relative move in an
+       * incorrect context.
+       *
+       * For example, if the focus is a key/field in a JSON, then calling
+       * [[Cursor#right]] would fail because we can't move right in an array if
+       * we are in a JSON object. When this happens, we can't use
+       * [[JsonArrayIndexTarget]] because that requires a concrete index
+       * value at which the failure occurred, but in this case the location
+       * of the failure can only be described in relative terms, as opposed
+       * to moving right from a JSON array at the last element which can be described
+       * by the index value of the last element + 1.
+       */
+      sealed abstract class MoveRightInNonArray extends FailureTarget {
+        override final def toString: String = "MoveRightInNonArray"
+      }
+
+      object MoveRightInNonArray {
+        private[this] case object MoveRightInNonArrayImpl extends MoveRightInNonArray
+
+        def value: MoveRightInNonArray = MoveRightInNonArrayImpl
+      }
+    }
+
+    /**
+     * A failure which occurs when attempting ot move left at the start of a JSON
+     * array.
+     */
     private[Cursor] final case object MoveLeftIndexOutOfBoundsFailure extends CursorFailureReason {
+      override val failureTarget: FailureTarget =
+        FailureTarget.JsonArrayIndexTarget(-1L)
+
       override def getMessage: String = "Attempted to move to index value -1 in JSON array."
     }
 
+    /**
+     * A failure which occurs when attempting to move right at the end of a JSON
+     * array.
+     */
     private[Cursor] final case class MoveRightIndexOutOfBoundsFailure(index: Long) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonArrayIndexTarget(index)
+
       override def getMessage: String = s"Attempted to move to out of bounds array index ${index + 1L}."
     }
 
-    // TODO: Record the index we were trying to navigate to? Does that always apply?
-    private[Cursor] final case object ExpectedFocusToBeMemberOfJsonArray extends CursorFailureReason {
+    /**
+     * A failure which occurs when the focus is required to be a member of a JSON
+     * array, but it is not.
+     */
+    private[Cursor] final case class ExpectedFocusToBeMemberOfJsonArray(override val failureTarget: FailureTarget)
+        extends CursorFailureReason {
+
       override def getMessage: String = "Attempted to move in JSON array, but focus was not a member of a JSON array."
     }
 
+    /**
+     * A failure which occurs when attempting to move up from the top/root of a
+     * JSON structure.
+     */
     private[Cursor] case object MoveUpFromTop extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.MoveAboveTopTarget.value
+
       override def getMessage: String = "Attempted to move up from TopCursor. There is no up from TopCursor."
     }
 
-    // TODO: Do we want to record the type of navigation operation here? Some
-    // navigation ops can fail due to other reasons and some can't ever fail
-    // due to this reason (MoveUp).
+    /**
+     * A failure which occurs when the focus type is incorrect for the
+     * operation. For example, [[Cursor#downArray]] requires the focus to be
+     * a JSON array or [[Cursor#downField]] requires the focus to be a JSON
+     * object.
+     */
     private[Cursor] final case class IncorrectFocusTypeForNavigationOperation(
       expected: JsonTypeDescription,
-      actual: JsonTypeDescription
+      actual: JsonTypeDescription,
+      override val failureTarget: FailureTarget
     ) extends CursorFailureReason {
       override def getMessage: String =
         s"Unable to navigate at focus. Expected JSON of type ${expected.value}, but got ${actual.value}."
     }
 
+    /**
+     * A failure which occurs when attempting to move down into a JSON array at
+     * an index which doesn't exist.
+     */
     private[Cursor] final case class DownArrayOutOfBounds(n: Int, actualSize: Int) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonArrayIndexTarget(n.toLong)
+
       // scalastyle:off
       override def getMessage: String =
         s"Attempted to enter into JSON array at index ${n}, but that is out of bounds for the array of size ${actualSize}."
       // scalastyle:on
     }
 
+    /**
+     * A failure which occurs when attempting to move to a sibling key/field in a
+     * JSON object, but no such sibling exists.
+     */
     private[Cursor] final case class NoSiblingWithMatchingKeyName(targetFocusKey: String) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonObjectKeyTarget(targetFocusKey)
+
       override def getMessage: String =
         s"""Attempted to navigate to sibling in JSON object with key name "$targetFocusKey", but no such key exists."""
     }
 
+    /**
+     * A failure which occurs when attempting to move a sibling in the
+     * [[TopCursor]].
+     */
     private[Cursor] final case class NoSiblingsInTopContext(targetFocusKey: String) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonObjectKeyTarget(targetFocusKey)
+
       // scalastyle:off
       override def getMessage: String =
         s"""Attempted to navigate to sibling in JSON object with key name "${targetFocusKey}", but focus was the Root of the JSON structure, not an object member."""
       // scalastyle:on
     }
 
+    /**
+     * A failure which occurs when attempting to move to a sibling when the focus
+     * is a member of a JSON array.
+     */
     private[Cursor] final case class NoSiblingsInArrayContext(targetFocusKey: String) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonObjectKeyTarget(targetFocusKey)
+
       // scalastyle:off
       override def getMessage: String =
         s"""Attempted to navigate to sibling in JSON object with key name "${targetFocusKey}", but focus was a member of a JSON array, not an object."""
       // scalastyle:on
     }
 
+    /**
+     * A failure which occurs when attempting to navigate to a key/field in a
+     * JSON object, but that key/field doesn't exist.
+     */
     private[Cursor] final case class MissingKeyInObject(targetFocusKey: String) extends CursorFailureReason {
+      override def failureTarget: FailureTarget =
+        FailureTarget.JsonObjectKeyTarget(targetFocusKey)
+
       override def getMessage: String =
         s"""Attempted to navigate to key ${targetFocusKey} in JSON object, but JSON object does not have such a key."""
     }

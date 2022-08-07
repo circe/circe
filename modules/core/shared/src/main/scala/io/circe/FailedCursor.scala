@@ -53,4 +53,5 @@ final class FailedCursor(evalLastCursor: Eval[HCursor], lastOp: CursorOp) extend
 
   override def replay(history: List[CursorOp]): ACursor = this
   override def replayOne(cursorOp: CursorOp): ACursor = this
+  override private[circe] def pathToRoot: PathToRoot = lastCursor.pathToRoot
 }

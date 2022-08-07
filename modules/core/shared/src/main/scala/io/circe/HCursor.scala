@@ -113,9 +113,12 @@ object HCursor {
         ACursor.fromCursor(cursor.replayOne(op))
 
       override def replay(history: List[CursorOp]): ACursor =
-        ACursor.fromCursor(cursor.replay(Cursor.History.fromList(history)))
+        ACursor.fromCursor(cursor.replayCursorOps(history))
 
       override final def toString: String =
         cursor.toString
+
+      override final def pathToRoot: PathToRoot =
+        PathToRoot.fromCursorPath(cursor.cursorPath)
     }
 }
