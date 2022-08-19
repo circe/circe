@@ -279,6 +279,8 @@ lazy val root = tlCrossRootProject
 lazy val scalafixInternalRules =
   baseModule("scalafix/internal/rules")
     .settings(
+      skip := tlIsScala3.value,
+      update / skip := false,
       libraryDependencies ++= List(
         "ch.epfl.scala" %% "scalafix-core" % _root_.scalafix.sbt.BuildInfo.scalafixVersion
       ).filterNot(_ => tlIsScala3.value)
@@ -287,15 +289,29 @@ lazy val scalafixInternalRules =
     .disablePlugins(ScalafixPlugin)
 
 lazy val scalafixInternalInput =
-  baseModule("scalafix/internal/input").disablePlugins(ScalafixPlugin).enablePlugins(NoPublishPlugin)
+  baseModule("scalafix/internal/input")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
 
 lazy val scalafixInternalOutput =
-  baseModule("scalafix/internal/output").disablePlugins(ScalafixPlugin).enablePlugins(NoPublishPlugin)
+  baseModule("scalafix/internal/output")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
 
 lazy val scalafixInternalTests =
   baseModule("scalafix/internal/tests")
     .enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin)
     .settings(
+      skip := tlIsScala3.value,
+      update / skip := false,
       scalafixTestkitOutputSourceDirectories :=
         (scalafixInternalOutput / Compile / sourceDirectories).value,
       scalafixTestkitInputSourceDirectories :=
@@ -480,6 +496,8 @@ lazy val tests = circeCrossModule("tests")
 lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
   .settings(
+    skip := tlIsScala3.value,
+    update / skip := false,
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(core, generic, literal, jawn)
