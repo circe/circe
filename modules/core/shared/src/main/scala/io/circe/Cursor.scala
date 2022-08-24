@@ -1084,6 +1084,7 @@ object Cursor {
       // was index 5, but attempting to move "left" when the focus is an
       // object has no concrete failed target index.
 
+      // scalastyle:off
       /**
        * A special type of failure target describing a left relative move in an
        * incorrect context.
@@ -1152,6 +1153,7 @@ object Cursor {
       sealed abstract class MoveLeftInNonArray extends FailureTarget {
         override final def toString: String = "MoveLeftInNonArray"
       }
+      // scalastyle:on
 
       object MoveLeftInNonArray {
         private[this] case object MoveLeftInNonArrayImpl extends MoveLeftInNonArray
