@@ -113,7 +113,7 @@ object HCursor {
         ACursor.fromCursor(cursor.replayOne(op))
 
       override def replay(history: List[CursorOp]): ACursor =
-        ACursor.fromCursor(cursor.replayCursorOps(history))
+        ACursor.fromCursor(cursor.replayCursorOps(history.reverse))
 
       override final def toString: String =
         cursor.toString

@@ -299,27 +299,21 @@ sealed abstract class Cursor extends Serializable {
   /**
    * Replay history against the cursor for any `Foldable` of [[CursorOp]].
    *
-   * @note In general, you should prefer [[#replay]]. [[#replay]] uses
-   *       [[Cursor#History]] which can not have an invalid construction,
-   *       e.g. nonsensical cursor ops. [[Cursor#History]] values can only be
-   *       constructed from a [[Cursor]] instance, thus this method is
-   *       provided when you need to manually construct history.
+   * @note This method is error prone as it is not clear if the first element
+   *       is the first operation or the last operation. Historically the
+   *       first element was the last operation, because of how Circe
+   *       constructed the history, but it can make intuitive sense to have
+   *       the first element be the first operation. For this reason, this
+   *       method is private.
    */
-  final def replayCursorOps[F[_]: Foldable](history: F[CursorOp]): Cursor =
+  private[circe] final def replayCursorOps[F[_]: Foldable](history: F[CursorOp]): Cursor =
     if (failed) {
       // No need to waste anyone's time.
       this
     } else {
-      // Reverse, for all foldables
-      val asReversedList: List[CursorOp] =
-        history.foldLeft(List.empty[CursorOp]) {
-          case value =>
-            value.foldLeft(List.empty[CursorOp]) {
-              case (acc, value) =>
-                value +: acc
-            }
-        }
-      asReversedList.foldLeft(this) {
+      val asList: List[CursorOp] =
+        history.toList
+      asList.foldLeft(this) {
         case (acc, value) =>
           acc.replayOne(value)
       }
