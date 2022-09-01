@@ -351,6 +351,9 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
       "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
     )
   )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+  )
   .dependsOn(core, parser % Test, testing % Test)
 
 lazy val refined = circeCrossModule("refined")
@@ -479,6 +482,9 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
+  )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
   .dependsOn(core, pointer % "compile;test->test")
 
