@@ -7,7 +7,6 @@ ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List("3.1.3", "2.12.15", "2.13.8")
-ThisBuild / tlSkipIrrelevantScalas := true
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
@@ -309,7 +308,7 @@ lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
 lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
+    publish / skip := tlIsScala3.value,
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13)
   )
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -319,11 +318,14 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
     )
   )
   .nativeSettings(
-    excludeDependencies ++= Seq(
-      "org.scala-native" % "test-interface-sbt-defs_native0.4_3",
-      "org.scala-native" % "junit-runtime_native0.4_3",
-      "org.scala-native" % "test-interface_native0.4_3"
-    )
+    excludeDependencies ++= {
+      val suffix = if (tlIsScala3.value) "2.13" else "3"
+      Seq(
+        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
+        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
+        "org.scala-native" % s"test-interface_native0.4_$suffix"
+      )
+    }
   )
   .dependsOn(core, tests % Test, literal % Test)
 
@@ -477,13 +479,16 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .dependsOn(core, pointer % "compile;test->test")
 
 lazy val extras = circeCrossModule("extras")
-  .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")))
+  .settings(publish / skip := tlIsScala3.value)
   .nativeSettings(
-    excludeDependencies ++= Seq(
-      "org.scala-native" % "test-interface-sbt-defs_native0.4_3",
-      "org.scala-native" % "junit-runtime_native0.4_3",
-      "org.scala-native" % "test-interface_native0.4_3"
-    )
+    excludeDependencies ++= {
+      val suffix = if (tlIsScala3.value) "2.13" else "3"
+      Seq(
+        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
+        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
+        "org.scala-native" % s"test-interface_native0.4_$suffix"
+      )
+    }
   )
   .enablePlugins(NoPublishPlugin)
   .dependsOn(core, tests % Test)
