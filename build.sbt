@@ -479,10 +479,6 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .dependsOn(core, pointer % "compile;test->test")
 
 lazy val extras = circeCrossModule("extras")
-  .settings(
-    publish / skip := tlIsScala3.value,
-    publishArtifact := !tlIsScala3.value
-  )
   .nativeSettings(
     excludeDependencies ++= {
       val suffix = if (tlIsScala3.value) "2.13" else "3"
