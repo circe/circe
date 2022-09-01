@@ -425,7 +425,7 @@ lazy val tests = circeCrossModule("tests")
   .nativeSettings(
     nativeConfig ~= { _.withEmbedResources(true) }
   )
-  .dependsOn(core, parser, testing)
+  .dependsOn(core, parser, testing, jawn)
 
 lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
