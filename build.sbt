@@ -318,6 +318,13 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
+  .nativeSettings(
+    excludeDependencies ++= Seq(
+      "org.scala-native" % "test-interface-sbt-defs_native0.4_3",
+      "org.scala-native" % "junit-runtime_native0.4_3",
+      "org.scala-native" % "test-interface_native0.4_3"
+    )
+  )
   .dependsOn(core, tests % Test, literal % Test)
 
 lazy val literal = circeCrossModule("literal", CrossType.Pure)
@@ -471,6 +478,13 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
 
 lazy val extras = circeCrossModule("extras")
   .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")))
+  .nativeSettings(
+    excludeDependencies ++= Seq(
+      "org.scala-native" % "test-interface-sbt-defs_native0.4_3",
+      "org.scala-native" % "junit-runtime_native0.4_3",
+      "org.scala-native" % "test-interface_native0.4_3"
+    )
+  )
   .enablePlugins(NoPublishPlugin)
   .dependsOn(core, tests % Test)
 
