@@ -103,6 +103,10 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
     .jsSettings(
       coverageEnabled := false
     )
+    .nativeSettings(
+      coverageEnabled := false,
+      tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+    )
 }
 
 lazy val docsMappingsAPIDir =
