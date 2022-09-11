@@ -28,13 +28,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.1.0, 2.12.15, 2.13.8]
+        scala: [3.1.3, 2.12.15, 2.13.8]
         java: [temurin@8, temurin@11, temurin@17]
-        project: [rootJS, rootJVM]
+        project: [rootJS, rootJVM, rootNative]
         exclude:
           - project: rootJS
             java: temurin@11
           - project: rootJS
+            java: temurin@17
+          - project: rootNative
+            java: temurin@11
+          - project: rootNative
             java: temurin@17
     runs-on: ${{ matrix.os }}
     steps:
@@ -109,6 +113,10 @@ jobs:
       - name: scalaJSLink
         if: matrix.project == 'rootJS'
         run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' Test/scalaJSLinkerResult
+
+      - name: nativeLink
+        if: matrix.project == 'rootNative'
+        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' Test/nativeLink
 
       - name: Test
         run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' test
