@@ -207,7 +207,7 @@ lazy val docs = project
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= (if (tlIsScala3.value) Nil
                            else
-                             (Seq(
+                             Seq(
                                scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
                                scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
                              ) ++ (
@@ -218,7 +218,7 @@ lazy val macroSettings: Seq[Setting[_]] = Seq(
                                    )
                                  )
                                } else Nil
-                             ))),
+                             )),
   scalacOptions ++= (
     if (Set("2.12", "3").contains(scalaBinaryVersion.value)) Nil else Seq("-Ymacro-annotations")
   ),
