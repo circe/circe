@@ -6,8 +6,7 @@ ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.8")
-ThisBuild / tlSkipIrrelevantScalas := true
+ThisBuild / crossScalaVersions := List("3.1.3", "2.12.15", "2.13.8")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
@@ -48,20 +47,20 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
   )
 )
 
-val catsVersion = "2.7.0"
-val jawnVersion = "1.3.2"
+val catsVersion = "2.8.0"
+val jawnVersion = "1.4.0"
 val shapelessVersion = "2.3.9"
-val refinedVersion = "0.9.29"
+val refinedVersion = "0.9.28"
+val refinedNativeVersion = "0.10.1"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.2.9"
-val scalaCheckVersion = "1.15.4"
-val munitVersion = "0.7.29"
-val disciplineVersion = "1.4.0"
-val disciplineScalaTestVersion = "2.1.5"
-val disciplineMunitVersion = "1.0.9"
-val scalaJavaTimeVersion = "2.3.0"
+val scalaCheckVersion = "1.16.0"
+val munitVersion = "1.0.0-M6"
+val disciplineVersion = "1.5.1"
+val disciplineScalaTestVersion = "2.2.0"
+val disciplineMunitVersion = "2.0.0-M3"
+val scalaJavaTimeVersion = "2.4.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -97,12 +96,16 @@ def circeModule(path: String): Project = {
 
 def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
   val id = path.split("-").reduce(_ + _.capitalize)
-  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
+  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
     .jsSettings(
       coverageEnabled := false
+    )
+    .nativeSettings(
+      coverageEnabled := false,
+      tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
     )
 }
 
@@ -298,7 +301,7 @@ lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
@@ -309,14 +312,25 @@ lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
 lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
+    publish / skip := tlIsScala3.value,
+    publishArtifact := !tlIsScala3.value,
     libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13)
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
+  )
+  .nativeSettings(
+    excludeDependencies ++= {
+      val suffix = if (tlIsScala3.value) "2.13" else "3"
+      Seq(
+        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
+        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
+        "org.scala-native" % s"test-interface_native0.4_$suffix"
+      )
+    }
   )
   .dependsOn(core, tests % Test, literal % Test)
 
@@ -331,30 +345,42 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
     ) ++ (if (tlIsScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test,
       "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
     )
+  )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
   .dependsOn(core, parser % Test, testing % Test)
 
 lazy val refined = circeCrossModule("refined")
   .settings(
     tlVersionIntroduced += "3" -> "0.14.3",
-    libraryDependencies ++= Seq(
-      "eu.timepit" %%% "refined" % refinedVersion,
-      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
-    ),
+    libraryDependencies ++= {
+      val refinedV =
+        if (crossProjectPlatform.value == NativePlatform) refinedNativeVersion
+        else refinedVersion
+      Seq(
+        "eu.timepit" %%% "refined" % refinedV,
+        "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
+      )
+    },
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
   .dependsOn(core, tests % Test)
 
 lazy val parser =
-  circeCrossModule("parser").jvmConfigure(_.dependsOn(jawn.jvm)).jsConfigure(_.dependsOn(scalajs)).dependsOn(core)
+  circeCrossModule("parser")
+    .jvmConfigure(_.dependsOn(jawn.jvm))
+    .jsConfigure(_.dependsOn(scalajs))
+    .nativeConfigure(_.dependsOn(jawn.native))
+    .dependsOn(core)
 
 lazy val scalajs =
   circeModule("scalajs").enablePlugins(ScalaJSPlugin).dependsOn(core.js)
@@ -370,9 +396,9 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
 
 lazy val scodec = circeCrossModule("scodec")
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.30"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.34"
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
   .dependsOn(core, tests % Test)
@@ -410,15 +436,17 @@ lazy val tests = circeCrossModule("tests")
   .jvmSettings(
     fork := true
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+  )
+  .nativeSettings(
+    nativeConfig ~= { _.withEmbedResources(true) }
   )
   .dependsOn(core, parser, testing, jawn)
 
 lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
   .settings(
-    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")),
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
   .dependsOn(core, generic, literal, jawn)
@@ -455,10 +483,22 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
   )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+  )
   .dependsOn(core, pointer % "compile;test->test")
 
 lazy val extras = circeCrossModule("extras")
-  .settings(crossScalaVersions := (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3.")))
+  .nativeSettings(
+    excludeDependencies ++= {
+      val suffix = if (tlIsScala3.value) "2.13" else "3"
+      Seq(
+        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
+        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
+        "org.scala-native" % s"test-interface_native0.4_$suffix"
+      )
+    }
+  )
   .enablePlugins(NoPublishPlugin)
   .dependsOn(core, tests % Test)
 
