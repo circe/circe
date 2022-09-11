@@ -6,7 +6,7 @@ ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.0", "2.12.16", "2.13.8")
+ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.8")
 ThisBuild / tlSkipIrrelevantScalas := true
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
