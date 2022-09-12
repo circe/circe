@@ -219,9 +219,9 @@ sealed abstract class Cursor extends Serializable {
    * Move from the current position to the root of the JSON structure.
    *
    * If the cursor is a [[Cursor#SuccessCursor]], this is the same as calling
-   * [[#up]] until [[#isRoot]] returns true. If the cursor is a has failed,
-   * then this will not move the cursor. The only way to exit a cursor in a
-   * failed state is via the [[#lastCursor]].
+   * [[#up]] until [[#isRoot]] returns true. If the cursor has failed, then
+   * this will not move the cursor. The only way to exit a cursor in a failed
+   * state is via the [[#lastCursor]].
    */
   @tailrec
   final def root: Cursor =
