@@ -313,8 +313,12 @@ lazy val scalafixInternalTests =
   baseModule("scalafix/internal/tests")
     .enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin)
     .settings(
-      skip := tlIsScala3.value,
-      update / skip := false,
+      libraryDependencies := {
+        if (tlIsScala3.value)
+          libraryDependencies.value.filterNot(_.name == "scalafix-testkit")
+        else
+          libraryDependencies.value
+      },
       scalafixTestkitOutputSourceDirectories :=
         (scalafixInternalOutput / Compile / sourceDirectories).value,
       scalafixTestkitInputSourceDirectories :=
