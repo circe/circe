@@ -162,7 +162,6 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
           case DecodingFailure.Reason.CustomReason(_) => true
           case _                                      => false
         })
-        assert(decodingResult.swap.exists(_.message.contains("invalid format")))
       }
     )
   }
