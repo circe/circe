@@ -8,7 +8,7 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
@@ -133,7 +133,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
     forAll { (i: Int, s: String, j: Int) =>
       val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
       val result = json.as[Int => Qux[String]].map(_(i))
-      assertEquals(result, Right(Qux(i, s, j)))
+      result ?= Right(Qux(i, s, j))
     }
   }
 
@@ -142,7 +142,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
       val json = Json.obj("i" -> Json.fromInt(i), "a" -> Json.fromString(s))
       val result = json.as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(_(field(j)))
 
-      assertEquals(result, Right(Qux(i, s, j)))
+      result ?= Right(Qux(i, s, j))
     }
   }
 
@@ -156,7 +156,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      assertEquals(json.as[Qux[String] => Qux[String]].map(_(q)), Right(expected))
+      json.as[Qux[String] => Qux[String]].map(_(q)) ?= Right(expected)
     }
   }
 
@@ -164,8 +164,8 @@ class AutoDerivedSuite extends CirceMunitSuite {
     property(" not interfere with base instances") {
       forAll { (is: List[Int]) =>
         val json = Encoder[List[Int]].apply(is)
-        assertEquals(json, Json.fromValues(is.map(Json.fromInt)))
-        assertEquals(json.as[List[Int]], Right(is))
+        (json ?= Json.fromValues(is.map(Json.fromInt))) &&
+        (json.as[List[Int]] ?= Right(is))
       }
     }
 
@@ -184,7 +184,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
   property("Generic decoders should not interfere with defined decoders") {
     forAll { (xs: List[String]) =>
       val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
-      assertEquals(Decoder[Foo].apply(json.hcursor), Right(Baz(xs): Foo))
+      Decoder[Foo].apply(json.hcursor) ?= Right(Baz(xs): Foo)
     }
   }
 
@@ -192,7 +192,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
     forAll { (xs: List[String]) =>
       val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-      assertEquals(Encoder[Foo].apply(Baz(xs): Foo), json)
+      Encoder[Foo].apply(Baz(xs): Foo) ?= json
     }
   }
 

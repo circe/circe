@@ -22,7 +22,7 @@ import io.circe.tests.examples.{ Foo, Wub }
 import java.net.URI
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
 
@@ -141,14 +141,14 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
     assert(maybeList.isRight)
 
     val Right(list) = maybeList
-    assert(list.length == size)
+    assertEquals(list.length, size)
     assert(list.forall(_ == 1))
   }
 
   test("A list decoder should stop after first failure") {
     object Bomb {
       implicit val decodeBomb: Decoder[Bomb] = Decoder[Int].map {
-        case 0 => throw new Exception("You shouldn't have tried to decode this")
+        case 0 => throw new RuntimeException("You shouldn't have tried to decode this")
         case i => Bomb(i)
       }
     }

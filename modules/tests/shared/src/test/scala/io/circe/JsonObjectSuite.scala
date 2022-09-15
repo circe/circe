@@ -5,7 +5,8 @@ import cats.instances.all._
 import cats.syntax.functor._
 import cats.kernel.Eq
 import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
+import org.scalacheck.Prop._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 
@@ -15,7 +16,7 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result = JsonObject.fromIterable(values.map(key -> _))
       val expected = if (values.isEmpty) JsonObject.empty else JsonObject.singleton(key, values.last)
 
-      assertEquals(result, expected)
+      result ?= expected
     }
   }
 
@@ -32,8 +33,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result1 = JsonObject.fromIterable(fields)
         val result2 = JsonObject.fromFoldable(fields)
 
-        assertEquals(result1.hashCode, result2.hashCode)
-        assertEquals(result1, result2)
+        (result1.hashCode ?= result2.hashCode) &&
+        (result1 ?= result2)
       }
     }
 
@@ -42,7 +43,7 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result = JsonObject.fromFoldable(values.map(key -> _))
         val expected = if (values.isEmpty) JsonObject.empty else JsonObject.singleton(key, values.last)
 
-        assertEquals(result, expected)
+        result ?= expected
       }
     }
 
@@ -57,7 +58,7 @@ class JsonObjectSuite extends CirceMunitSuite {
 
   property("JsonObject.apply should match JsonObject.fromIterable") {
     forAll { (fields: List[(String, Json)]) =>
-      assertEquals(JsonObject(fields: _*), JsonObject.fromIterable(fields))
+      JsonObject(fields: _*) ?= JsonObject.fromIterable(fields)
     }
   }
 
@@ -81,8 +82,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = fields.reverse.find(_._1 == key).map(_._2)
 
-        assertEquals(result1(key), expected)
-        assertEquals(result2(key), expected)
+        (result1(key) ?= expected) &&
+        (result2(key) ?= expected)
     }
   }
 
@@ -93,8 +94,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = None
 
-        assertEquals(result1(key), expected)
-        assertEquals(result2(key), expected)
+        (result1(key) ?= expected) &&
+        (result2(key) ?= expected)
     }
   }
 
@@ -105,8 +106,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         val result2 = JsonObject.fromFoldable(fields)
         val expected = fields.find(_._1 == key).nonEmpty
 
-        assertEquals(result1.contains(key), expected)
-        assertEquals(result2.contains(key), expected)
+        (result1.contains(key) ?= expected) &&
+        (result2.contains(key) ?= expected)
     }
   }
 
@@ -116,8 +117,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.toMap.size
 
-      assertEquals(result1.size, expected)
-      assertEquals(result2.size, expected)
+      (result1.size ?= expected) &&
+      (result2.size ?= expected)
     }
   }
 
@@ -127,8 +128,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.isEmpty
 
-      assertEquals(result1.isEmpty, expected)
-      assertEquals(result2.isEmpty, expected)
+      (result1.isEmpty ?= expected) &&
+      (result2.isEmpty ?= expected)
     }
   }
 
@@ -138,8 +139,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.nonEmpty
 
-      assertEquals(result1.nonEmpty, expected)
-      assertEquals(result2.nonEmpty, expected)
+      (result1.nonEmpty ?= expected) &&
+      (result2.nonEmpty ?= expected)
     }
   }
 
@@ -148,8 +149,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       case (fields, key) =>
         val expected = fields.reverse.find(_._1 == key).map(_._2)
 
-        assertEquals(JsonObject.fromIterable(fields).kleisli(key), expected)
-        assertEquals(JsonObject.fromFoldable(fields).kleisli(key), expected)
+        (JsonObject.fromIterable(fields).kleisli(key) ?= expected) &&
+        (JsonObject.fromFoldable(fields).kleisli(key) ?= expected)
     }
   }
 
@@ -157,8 +158,8 @@ class JsonObjectSuite extends CirceMunitSuite {
     forAll(fieldsWhereKeyNotIncluded) {
       case (fields, key) =>
         val expected = None
-        assertEquals(JsonObject.fromIterable(fields).kleisli(key), expected)
-        assertEquals(JsonObject.fromFoldable(fields).kleisli(key), expected)
+        (JsonObject.fromIterable(fields).kleisli(key) ?= expected) &&
+        (JsonObject.fromFoldable(fields).kleisli(key) ?= expected)
     }
   }
 
@@ -168,8 +169,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = fields.map(_._1).distinct
 
-      assertEquals(result1.keys.toList, expected)
-      assertEquals(result2.keys.toList, expected)
+      (result1.keys.toList ?= expected) &&
+      (result2.keys.toList ?= expected)
     }
   }
 
@@ -190,8 +191,8 @@ class JsonObjectSuite extends CirceMunitSuite {
         }
         .map(_._2)
 
-      assertEquals(result1.values.toList, expected)
-      assertEquals(result2.values.toList, expected)
+      (result1.values.toList ?= expected) &&
+      (result2.values.toList ?= expected)
     }
   }
 
@@ -201,8 +202,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields)
       val expected = result1
 
-      assertEquals(JsonObject.fromMap(result1.toMap), expected)
-      assertEquals(JsonObject.fromMap(result2.toMap), expected)
+      (JsonObject.fromMap(result1.toMap) ?= expected) &&
+      (JsonObject.fromMap(result2.toMap) ?= expected)
     }
   }
 
@@ -215,8 +216,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      assertEquals(result1.toIterable.toList, fields)
-      assertEquals(result2.toIterable.toList, fields)
+      (result1.toIterable.toList ?= fields) &&
+      (result2.toIterable.toList ?= fields)
     }
   }
 
@@ -229,8 +230,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      assertEquals(result1.toList, fields)
-      assertEquals(result2.toList, fields)
+      (result1.toList ?= fields) &&
+      (result2.toList ?= fields)
     }
   }
 
@@ -243,8 +244,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result1 = JsonObject.fromIterable(fields)
       val result2 = JsonObject.fromFoldable(fields)
 
-      assertEquals(result1.toVector, fields)
-      assertEquals(result2.toVector, fields)
+      (result1.toVector ?= fields) &&
+      (result2.toVector ?= fields)
     }
   }
 
@@ -256,8 +257,8 @@ class JsonObjectSuite extends CirceMunitSuite {
 
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
-      assertEquals(JsonObject.fromIterable(fields).add("0", replacement), expected)
-      assertEquals(JsonObject.fromFoldable(fields).add("0", replacement), expected)
+      (JsonObject.fromIterable(fields).add("0", replacement) ?= expected) &&
+      (JsonObject.fromFoldable(fields).add("0", replacement) ?= expected)
     }
   }
 
@@ -271,8 +272,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = JsonObject.fromFoldable(fields).add("0", replacement)
       val expected = JsonObject.fromFoldable(fields.init :+ ("0" -> replacement))
 
-      assertEquals(result1, expected)
-      assertEquals(result2, expected)
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -304,7 +305,7 @@ class JsonObjectSuite extends CirceMunitSuite {
         case (acc, Left(key)) => acc.filterNot(_._1 == key)
       }
 
-      assertEquals(result.toList, expected)
+      result.toList ?= expected
     }
   }
 
@@ -318,8 +319,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.init)
 
-      assertEquals(result1, expected)
-      assertEquals(result2, expected)
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -333,8 +334,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2 = ("0" -> replacement) +: JsonObject.fromFoldable(fields)
       val expected = JsonObject.fromFoldable(("0" -> replacement) :: fields.tail)
 
-      assertEquals(result1, expected)
-      assertEquals(result2, expected)
+      (result1 ?= expected) &&
+      (result2 ?= expected)
     }
   }
 
@@ -345,8 +346,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       }
 
       val expected = JsonObject.fromFoldable(fields.map(field => field._1 -> replacement))
-      assertEquals(JsonObject.fromIterable(fields).mapValues(_ => replacement), expected)
-      assertEquals(JsonObject.fromFoldable(fields).mapValues(_ => replacement), expected)
+      (JsonObject.fromIterable(fields).mapValues(_ => replacement) ?= expected) &&
+      (JsonObject.fromFoldable(fields).mapValues(_ => replacement) ?= expected)
     }
   }
 
@@ -360,8 +361,8 @@ class JsonObjectSuite extends CirceMunitSuite {
       val result2: Option[JsonObject] = JsonObject.fromFoldable(fields).traverse[Option](Some(_))
       val expected = JsonObject.fromFoldable(fields)
 
-      assertEquals(result1, Some(expected))
-      assertEquals(result2, Some(expected))
+      (result1 ?= Some(expected)) &&
+      (result2 ?= Some(expected))
     }
   }
 
@@ -369,26 +370,26 @@ class JsonObjectSuite extends CirceMunitSuite {
     forAll { (value: JsonObject) =>
       val result = value.traverse[({ type L[x] = Const[List[Json], x] })#L](a => Const(List(a))).getConst
 
-      assertEquals(result, value.values.toList)
+      result ?= value.values.toList
     }
   }
 
   property("filter should be consistent with Map#filter") {
     forAll { (value: JsonObject, pred: ((String, Json)) => Boolean) =>
-      assertEquals(value.filter(pred).toMap, value.toMap.filter(pred))
+      value.filter(pred).toMap ?= value.toMap.filter(pred)
     }
   }
 
   property("filterKeys should be consistent with Map#filterKeys") {
     forAll { (value: JsonObject, pred: String => Boolean) =>
-      assertEquals(value.filterKeys(pred).toMap, value.toMap.filterKeys(pred).toMap)
+      value.filterKeys(pred).toMap ?= value.toMap.filterKeys(pred).toMap
     }
   }
 
   property("Eq[JsonObject] should be consistent with comparing fields") {
     forAll { (fields1: List[(String, Json)], fields2: List[(String, Json)]) =>
       val result = Eq[JsonObject].eqv(JsonObject.fromIterable(fields1), JsonObject.fromIterable(fields2))
-      assertEquals(result, fields1 == fields2)
+      result ?= (fields1 == fields2)
     }
   }
 
@@ -396,15 +397,16 @@ class JsonObjectSuite extends CirceMunitSuite {
     forAll { (left: JsonObject, right: JsonObject) =>
       val merged = left.deepMerge(right)
 
-      assertEquals(merged.keys.toSet, left.keys.toSet ++ right.keys.toSet)
-      merged.toList.foreach {
-        case (key, value) =>
-          (left(key), right(key)) match {
-            case (Some(leftVal), Some(rightVal)) => assertEquals(value, leftVal.deepMerge(rightVal))
-            case (Some(leftVal), None)           => assertEquals(value, leftVal)
-            case (None, Some(rightVal))          => assertEquals(value, rightVal)
-            case _                               => throw new Exception("Impossible state reached in deepMerge test")
-          }
+      merged.keys.toSet ?= left.keys.toSet ++ right.keys.toSet
+      merged.toList.foldLeft(Prop.passed) {
+        case (acc, (key, value)) =>
+          acc &&
+          ((left(key), right(key)) match {
+            case (Some(leftVal), Some(rightVal)) => value ?= leftVal.deepMerge(rightVal)
+            case (Some(leftVal), None)           => value ?= leftVal
+            case (None, Some(rightVal))          => value ?= rightVal
+            case _                               => Prop.falsified :| "Impossible state reached in deepMerge test"
+          })
       }
     }
   }
@@ -418,7 +420,7 @@ class JsonObjectSuite extends CirceMunitSuite {
       val reversed = JsonObject.fromIterable(fields.reverse)
       val merged = JsonObject.fromIterable(fields).deepMerge(reversed)
 
-      assertEquals(merged.toList, fields.reverse)
+      merged.toList ?= fields.reverse
     }
   }
 
