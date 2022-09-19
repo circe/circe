@@ -3,6 +3,8 @@ package io.circe
 import cats.Invariant
 import cats.data.Validated
 
+import scala.util.Try
+
 /**
  * A type class that provides back and forth conversion between values of type `A`
  * and the [[Json]] format.
@@ -15,13 +17,22 @@ import cats.data.Validated
 trait Codec[A] extends Decoder[A] with Encoder[A] {
 
   /**
-   * Variant of `imap` which allows the [[Decoder]] to fail.
-   * @param f decode value
+   * Variant of `imap` which allows the [[Decoder]] to fail with message string.
+   * @param f decode value or fail
    * @param g encode value
    * @tparam B the type of the new [[Codec]]
    * @return a codec for [[B]]
    */
   def iemap[B](f: A => Either[String, B])(g: B => A): Codec[B] = Codec.from(emap(f), contramap(g))
+
+  /**
+   * Variant of `imap` which allows the [[Decoder]] to fail with Throwable.
+   * @param f decode value or fail
+   * @param g encode value
+   * @tparam B the type of the new [[Codec]]
+   * @return a codec for [[B]]
+   */
+  def iemapTry[B](f: A => Try[B])(g: B => A): Codec[B] = Codec.from(emapTry(f), contramap(g))
 
 }
 
