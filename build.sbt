@@ -2,12 +2,16 @@ import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
+val Scala212V: String = "2.12.15"
+val Scala213V: String = "2.13.8"
+val Scala3V: String = "3.1.3"
+
 ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseTags := false
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.3", "2.12.15", "2.13.8")
-ThisBuild / scalaVersion := crossScalaVersions.value.last
+ThisBuild / crossScalaVersions := List(Scala3V, Scala212V, Scala213V)
+ThisBuild / scalaVersion := Scala213V
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
 
@@ -47,9 +51,13 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
   )
 )
 
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
+ThisBuild / scalafixAll / skip := tlIsScala3.value
+ThisBuild / ScalafixConfig / skip := tlIsScala3.value
+
 val catsVersion = "2.8.0"
 val jawnVersion = "1.4.0"
-val shapelessVersion = "2.3.9"
+val shapelessVersion = "2.3.10"
 val refinedVersion = "0.9.28"
 val refinedNativeVersion = "0.10.1"
 
@@ -80,7 +88,7 @@ lazy val allSettings = Seq(
 )
 
 def circeProject(path: String)(project: Project) = {
-  val docName = path.split("-").mkString(" ")
+  val docName = path.split("[-/]").mkString(" ")
   project.settings(
     description := s"circe $docName",
     moduleName := s"circe-$path",
@@ -89,13 +97,20 @@ def circeProject(path: String)(project: Project) = {
   )
 }
 
-def circeModule(path: String): Project = {
-  val id = path.split("-").reduce(_ + _.capitalize)
-  Project(id, file(s"modules/$path")).configure(circeProject(path))
+/**
+ * This is here so we can use this with our internal Scalafix rules, without
+ * creating a cyclic dependency. So the scalafix modules will use this and
+ * the other modules will use either `circeModule` or `circeCrossModule`.
+ */
+def baseModule(path: String, additionalDeps: List[ClasspathDep[ProjectReference]] = Nil): Project = {
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
+  Project(id, file(s"modules/$path")).configure(circeProject(path)).configure(_.dependsOn(additionalDeps: _*))
 }
 
+def circeModule(path: String): Project = baseModule(path, List(scalafixInternalRules % ScalafixConfig))
+
 def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
-  val id = path.split("-").reduce(_ + _.capitalize)
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
   CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(crossType)
     .settings(allSettings)
@@ -103,6 +118,7 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
     .jsSettings(
       coverageEnabled := false
     )
+    .configure(_.dependsOn(scalafixInternalRules % ScalafixConfig))
     .nativeSettings(
       coverageEnabled := false,
       tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
@@ -237,26 +253,91 @@ lazy val root = tlCrossRootProject
       """.stripMargin
   )
   .aggregate(
-    numbersTesting,
-    numbers,
+    benchmark,
     core,
-    pointer,
-    pointerLiteral,
     extras,
     generic,
-    shapes,
-    literal,
-    refined,
-    parser,
-    scodec,
-    testing,
-    tests,
     hygiene,
     jawn,
+    literal,
+    numbers,
+    numbersTesting,
+    parser,
+    pointer,
+    pointerLiteral,
+    refined,
+    scalafixInternalInput,
+    scalafixInternalOutput,
+    scalafixInternalRules,
+    scalafixInternalTests,
     scalajs,
     scalajsJavaTimeTest,
-    benchmark
+    scodec,
+    shapes,
+    testing,
+    tests
   )
+  .disablePlugins(ScalafixPlugin)
+
+lazy val scalafixInternalRules =
+  baseModule("scalafix/internal/rules")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false,
+      libraryDependencies ++= List(
+        "ch.epfl.scala" %% "scalafix-core" % _root_.scalafix.sbt.BuildInfo.scalafixVersion
+      ).filterNot(_ => tlIsScala3.value)
+    )
+    .enablePlugins(NoPublishPlugin)
+    .disablePlugins(ScalafixPlugin)
+
+lazy val scalafixInternalInput =
+  baseModule("scalafix/internal/input")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalOutput =
+  baseModule("scalafix/internal/output")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalTests =
+  baseModule("scalafix/internal/tests")
+    .enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin)
+    .settings(
+      libraryDependencies := {
+        if (tlIsScala3.value)
+          libraryDependencies.value.filterNot(_.name == "scalafix-testkit")
+        else
+          libraryDependencies.value
+      },
+      scalafixTestkitOutputSourceDirectories :=
+        (scalafixInternalOutput / Compile / sourceDirectories).value,
+      scalafixTestkitInputSourceDirectories :=
+        (scalafixInternalInput / Compile / sourceDirectories).value,
+      scalafixTestkitInputClasspath :=
+        (scalafixInternalInput / Compile / fullClasspath).value,
+      scalafixTestkitInputScalacOptions :=
+        (scalafixInternalInput / Compile / scalacOptions).value,
+      scalafixTestkitInputScalaVersion :=
+        (scalafixInternalInput / Compile / scalaVersion).value,
+      libraryDependencies ++= Seq(
+        ("ch.epfl.scala" %% "scalafix-testkit" % _root_.scalafix.sbt.BuildInfo.scalafixVersion % Test)
+          .cross(CrossVersion.full)
+      ).filter(_ => !tlIsScala3.value),
+      Compile / compile :=
+        (Compile / compile).dependsOn(scalafixInternalInput / Compile / compile).value
+    )
+    .disablePlugins(ScalafixPlugin)
+    .dependsOn(scalafixInternalInput, scalafixInternalOutput, scalafixInternalRules)
 
 lazy val numbersTesting =
   circeCrossModule("numbers-testing", CrossType.Pure).settings(
@@ -321,16 +402,6 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
-  )
-  .nativeSettings(
-    excludeDependencies ++= {
-      val suffix = if (tlIsScala3.value) "2.13" else "3"
-      Seq(
-        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
-        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
-        "org.scala-native" % s"test-interface_native0.4_$suffix"
-      )
-    }
   )
   .dependsOn(core, tests % Test, literal % Test)
 
@@ -488,19 +559,7 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   )
   .dependsOn(core, pointer % "compile;test->test")
 
-lazy val extras = circeCrossModule("extras")
-  .nativeSettings(
-    excludeDependencies ++= {
-      val suffix = if (tlIsScala3.value) "2.13" else "3"
-      Seq(
-        "org.scala-native" % s"test-interface-sbt-defs_native0.4_$suffix",
-        "org.scala-native" % s"junit-runtime_native0.4_$suffix",
-        "org.scala-native" % s"test-interface_native0.4_$suffix"
-      )
-    }
-  )
-  .enablePlugins(NoPublishPlugin)
-  .dependsOn(core, tests % Test)
+lazy val extras = circeCrossModule("extras").enablePlugins(NoPublishPlugin).dependsOn(core, tests % Test)
 
 lazy val benchmark = circeModule("benchmark")
   .settings(
