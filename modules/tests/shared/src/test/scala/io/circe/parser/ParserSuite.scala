@@ -3,7 +3,7 @@ package io.circe.parser
 import io.circe.Json
 import io.circe.testing.ParserTests
 import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 
 class ParserSuite extends CirceMunitSuite {
   checkAll("Parser", ParserTests(`package`).fromString)

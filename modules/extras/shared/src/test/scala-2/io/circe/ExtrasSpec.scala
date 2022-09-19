@@ -3,7 +3,7 @@ package io.circe
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 
 class ExtrasSpec extends CirceMunitSuite {
 
