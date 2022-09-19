@@ -26,6 +26,6 @@ trait Spaces2PrinterExample { this: Spaces2PrinterSuite =>
   test("Printer.spaces2 should generate the expected output for the example doc") {
     val printed = Printer.spaces2.print(doc) + "\n"
 
-    assert(printed === expected)
+    assertEquals(printed, expected)
   }
 }
