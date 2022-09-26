@@ -75,7 +75,7 @@ trait Decoder[A] extends Serializable { self =>
         }
       )
 
-    DecodingFailure(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
+    DecodingFailure(reason, cursor.pathString, Eval.later(cursor.history))
   }
 
   /**

@@ -1,7 +1,10 @@
 package io.circe
 
+import cats.implicits.toShow
 import cats.{ Eq, Show }
+
 import java.io.Serializable
+import scala.annotation.tailrec
 
 sealed abstract class CursorOp extends Product with Serializable {
 
@@ -63,24 +66,31 @@ object CursorOp {
   private[this] sealed trait Selection
   private[this] case class SelectField(field: String) extends Selection
   private[this] case class SelectIndex(index: Int) extends Selection
-  private[this] case class Op(op: CursorOp) extends Selection
 
   /** Shows history as JS style selections, i.e. ".foo.bar[3]" */
   def opsToPath(history: List[CursorOp]): String = {
-    // Fold into sequence of selections (reducing array ops etc. into single selections)
-    val selections = history.foldRight(List.empty[Selection]) {
-      case (DownField(k), acc)                 => SelectField(k) :: acc
-      case (DownArray, acc)                    => SelectIndex(0) :: acc
-      case (MoveUp, _ :: tail)                 => tail
-      case (MoveRight, SelectIndex(i) :: tail) => SelectIndex(i + 1) :: tail
-      case (MoveLeft, SelectIndex(i) :: tail)  => SelectIndex(i - 1) :: tail
-      case (op, acc)                           => Op(op) :: acc
+    @tailrec
+    def getSelections(ops: List[CursorOp], acc: List[Selection]): List[Selection] =
+      (ops, acc) match {
+        case (Nil, acc)                                              => acc
+        case (DownField(k) :: tail, acc)                             => getSelections(tail, SelectField(k) :: acc)
+        case (DownN(n) :: tail, acc)                                 => getSelections(tail, SelectIndex(n) :: acc)
+        case (DownArray :: DeleteGoParent :: DownArray :: tail, acc) => getSelections(tail, SelectIndex(1) :: acc)
+        case (DownArray :: tail, acc)                                => getSelections(tail, SelectIndex(0) :: acc)
+        case (Field(f) :: tail, SelectField(_) :: accTail)           => getSelections(tail, SelectField(f) :: accTail)
+        case (MoveRight :: tail, SelectIndex(i) :: accTail) => getSelections(tail, SelectIndex(i + 1) :: accTail)
+        case (MoveLeft :: tail, SelectIndex(i) :: accTail)  => getSelections(tail, SelectIndex(i - 1) :: accTail)
+        case (MoveUp :: tail, _ :: tailAcc)                 => getSelections(tail, tailAcc)
+        case (_, acc)                                       => acc // This should never happen
+      }
+
+    def showSelections(selections: List[Selection]): String = {
+      selections.map {
+        case SelectField(f) => s".$f"
+        case SelectIndex(i) => s"[$i]"
+      }.mkString
     }
 
-    selections.foldLeft("") {
-      case (str, SelectField(f)) => s".$f$str"
-      case (str, SelectIndex(i)) => s"[$i]$str"
-      case (str, Op(op))         => s"{${Show[CursorOp].show(op)}}$str"
-    }
+    showSelections(getSelections(history.reverse, Nil).reverse)
   }
 }
