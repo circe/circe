@@ -21,6 +21,10 @@ Foo(13, "Qux", false).asJson
 You can also simplify to just write the last two lines as:
 
 ```scala mdoc:silent:reset
+import io.circe._ , io.circe.generic.semiauto._
+
+case class Foo(a: Int, b: String, c: Boolean)
+
 implicit val fooDecoder: Decoder[Foo] = deriveDecoder
 implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 ```
