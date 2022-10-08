@@ -1,60 +1,16 @@
 package io.circe
 
-import cats.Applicative
-import io.circe.cursor.{ ArrayCursor, ObjectCursor, TopCursor }
+import cats.syntax.all._
+import cats._
 import scala.annotation.tailrec
 
-abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
+abstract class HCursor(evalLastCursor: Eval[HCursor], lastOp: CursorOp) extends ACursor(evalLastCursor, lastOp) {
   def value: Json
 
-  def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor
-  def addOp(cursor: HCursor, op: CursorOp): HCursor
+  def replace(newValue: Json, cursor: HCursor, op: CursorOp): ACursor
 
-  final def withFocus(f: Json => Json): ACursor = replace(f(value), this, null)
-  final def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
-    F.map(f(value))(replace(_, this, null))
-
-  final def succeeded: Boolean = true
-  final def success: Option[HCursor] = Some(this)
-
-  final def focus: Option[Json] = Some(value)
-
-  final def values: Option[Iterable[Json]] = value match {
-    case Json.JArray(vs) => Some(vs)
-    case _               => None
-  }
-
-  final def keys: Option[Iterable[String]] = value match {
-    case Json.JObject(o) => Some(o.keys)
-    case _               => None
-  }
-
-  final def top: Option[Json] = {
-    var current: HCursor = this
-
-    while (!current.isInstanceOf[TopCursor]) {
-      current = current.up.asInstanceOf[HCursor]
-    }
-
-    Some(current.asInstanceOf[TopCursor].value)
-  }
-
-  override final def root: HCursor = {
-    var current: HCursor = this
-
-    while (!current.isInstanceOf[TopCursor]) {
-      current = current.up.asInstanceOf[HCursor]
-    }
-
-    current
-  }
-
-  final def downArray: ACursor = value match {
-    case Json.JArray(values) if !values.isEmpty =>
-      new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
-    case _ => fail(CursorOp.DownArray)
-  }
-
+  // TODO: This only works on arrays, unless the current focus is already
+  // valid, which is really odd. This should probably be updated.
   final def find(p: Json => Boolean): ACursor = {
     @tailrec
     def go(c: ACursor): ACursor = c match {
@@ -64,30 +20,105 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
 
     go(this)
   }
-
-  final def downField(k: String): ACursor = value match {
-    case Json.JObject(o) =>
-      if (!o.contains(k)) fail(CursorOp.DownField(k))
-      else {
-        new ObjectCursor(o, k, this, false)(this, CursorOp.DownField(k))
-      }
-    case _ => fail(CursorOp.DownField(k))
-  }
-
-  final def downN(n: Int): ACursor = value match {
-    case Json.JArray(values) if n >= 0 && values.lengthCompare(n) > 0 =>
-      new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
-    case _ => fail(CursorOp.DownN(n))
-  }
-
-  /**
-   * Create a new cursor that has failed on the given operation.
-   *
-   * @group Utilities
-   */
-  protected[this] final def fail(op: CursorOp): ACursor = new FailedCursor(this, op)
 }
 
 object HCursor {
-  def fromJson(value: Json): HCursor = new TopCursor(value)(null, null)
+  def fromJson(value: Json): HCursor =
+    fromCursor(Cursor.fromJson(value))
+
+  def fromCursor(cursor: Cursor.SuccessCursor): HCursor =
+    new HCursor(Eval.later(cursor.lastCursor.fold(null: HCursor)(fromCursor)), cursor.lastOp.getOrElse(null)) {
+      override def delete: ACursor =
+        ACursor.fromCursor(cursor.delete)
+
+      override def field(k: String): ACursor =
+        ACursor.fromCursor(cursor.field(k))
+
+      override def left: ACursor =
+        ACursor.fromCursor(cursor.left)
+
+      override def right: ACursor =
+        ACursor.fromCursor(cursor.right)
+
+      override def up: ACursor =
+        ACursor.fromCursor(cursor.up)
+
+      override def downArray: ACursor =
+        ACursor.fromCursor(cursor.downArray)
+
+      override def downField(k: String): ACursor =
+        ACursor.fromCursor(cursor.downField(k))
+
+      override def downN(n: Int): ACursor =
+        ACursor.fromCursor(cursor.downN(n))
+
+      override def focus: Option[Json] =
+        cursor.focus
+
+      override def keys: Option[Iterable[String]] =
+        cursor.keys
+
+      override def succeeded: Boolean =
+        cursor.succeeded
+
+      override def success: Option[HCursor] =
+        Some(this)
+
+      override def top: Option[Json] =
+        cursor.top
+
+      override def values: Option[Iterable[Json]] =
+        cursor.values
+
+      override def withFocus(f: Json => Json): ACursor =
+        ACursor.fromCursor(cursor.mapFocus(f))
+
+      override def withFocusM[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[ACursor] =
+        cursor.mapFocusA[F](f).map(ACursor.fromCursor)
+
+      override def replace(newValue: Json, c: HCursor, op: CursorOp): ACursor =
+        ACursor.fromCursor(cursor.set(newValue))
+
+      override def value: Json =
+        cursor.value
+
+      override def history: List[CursorOp] =
+        cursor.history.asList
+
+      override def index: Option[Int] =
+        cursor.index
+
+      override def key: Option[String] =
+        cursor.key
+
+      // Most operations on a FailedCursor are terminal, but for some unknown
+      // reason, .root will get you out of a failed state.
+      //
+      // It is my opinion we should not do this in io.circe.Cursor, but it is
+      // emulated here for backwards compatibility.
+      override def root: HCursor =
+        (cursor match {
+          case cursor if cursor.failed =>
+            cursor.lastCursor.fold(cursor: Cursor)(_.root)
+          case _ =>
+            cursor.root
+        }) match {
+          case cursor: Cursor.SuccessCursor =>
+            HCursor.fromCursor(cursor)
+          case _ =>
+            this
+        }
+
+      override def replayOne(op: CursorOp): ACursor =
+        ACursor.fromCursor(cursor.replayOne(op))
+
+      override def replay(history: List[CursorOp]): ACursor =
+        ACursor.fromCursor(cursor.replayCursorOps(history.reverse))
+
+      override final def toString: String =
+        cursor.toString
+
+      override final def pathToRoot: PathToRoot =
+        PathToRoot.fromCursorPath(cursor.cursorPath)
+    }
 }

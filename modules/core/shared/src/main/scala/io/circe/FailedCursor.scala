@@ -1,8 +1,8 @@
 package io.circe
 
-import cats.Applicative
+import cats._
 
-final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
+final class FailedCursor(evalLastCursor: Eval[HCursor], lastOp: CursorOp) extends ACursor(evalLastCursor, lastOp) {
 
   /**
    * Indicates whether the last operation failed because the type of the focus
@@ -47,4 +47,11 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
   def delete: ACursor = this
 
   def field(k: String): ACursor = this
+
+  def history: List[CursorOp] =
+    lastOp +: lastCursor.history
+
+  override def replay(history: List[CursorOp]): ACursor = this
+  override def replayOne(cursorOp: CursorOp): ACursor = this
+  override private[circe] def pathToRoot: PathToRoot = lastCursor.pathToRoot
 }

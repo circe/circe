@@ -2,7 +2,6 @@ package io.circe
 
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
-import io.circe.cursor.ObjectCursor
 
 import scala.collection.Map
 import scala.collection.mutable.Builder
@@ -24,7 +23,9 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
   }
 
   private[this] final def createObjectCursor(c: HCursor, obj: JsonObject, key: String): HCursor =
-    new ObjectCursor(obj, key, c, false)(c, CursorOp.DownField(key))
+    c.downField(key)
+      .success
+      .getOrElse(throw new AssertionError("JSON object is missing key that JsonObject had. This is a circe bug."))
 
   private[this] final def handleResult(key: K, c: HCursor, builder: Builder[(K, V), M[K, V]]): DecodingFailure =
     decodeV(c) match {
@@ -39,6 +40,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
 
     while (failed.eq(null) && it.hasNext) {
       val key = it.next()
+      // TODO: Check for performance issues here (and consider refactor here.)
       val atH = createObjectCursor(c, obj, key)
 
       failed = if (alwaysDecodeK.ne(null)) {

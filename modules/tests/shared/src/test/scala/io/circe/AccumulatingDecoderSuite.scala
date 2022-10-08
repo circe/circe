@@ -91,7 +91,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
 
       val errors = Decoder[(String, String, String)].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      assertEquals(errors.map(df => cursor.replay(df.history).focus), invalidElems)
     }
   }
 

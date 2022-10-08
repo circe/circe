@@ -1,8 +1,7 @@
 package io.circe
 
-import cats.Applicative
+import cats._
 import cats.kernel.Eq
-import io.circe.cursor._
 import java.io.Serializable
 import scala.annotation.tailrec
 
@@ -35,7 +34,7 @@ import scala.annotation.tailrec
  *
  * @author Travis Brown
  */
-abstract class ACursor(private val lastCursor: HCursor, private val lastOp: CursorOp) extends Serializable {
+abstract class ACursor(private val evalLastCursor: Eval[HCursor], private val lastOp: CursorOp) extends Serializable {
 
   /**
    * The current location in the document.
@@ -49,19 +48,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Decoding
    */
-  final def history: List[CursorOp] = {
-    var next = this
-    val builder = List.newBuilder[CursorOp]
-
-    while (next.ne(null)) {
-      if (next.lastOp.ne(null)) {
-        builder += next.lastOp
-      }
-      next = next.lastCursor
-    }
-
-    builder.result()
-  }
+  def history: List[CursorOp]
 
   /**
    * Indicate whether this cursor represents the result of a successful
@@ -98,7 +85,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Access
    */
-  def root: HCursor = null
+  def root: HCursor
 
   /**
    * Modify the focus using the given function.
@@ -133,7 +120,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ArrayAccess
    */
-  def index: Option[Int] = None
+  def index: Option[Int]
 
   /**
    * If the focus is a JSON object, return its field names in their original order.
@@ -147,7 +134,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group ObjectAccess
    */
-  def key: Option[String] = None
+  def key: Option[String]
 
   /**
    * Delete the focus and move to its parent.
@@ -205,96 +192,13 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    */
   def downField(k: String): ACursor
 
-  private[circe] final def pathToRoot: PathToRoot = {
-    import PathToRoot._
-
-    // Move to the last cursor's parent or to the last cursor if the last
-    // cursor doesn't have a parent. This should only be invoked on lastOp
-    // states where the we expect the lastCursor to have a parent, if it
-    // doesn't, then we would skip the current lastCursor anyway.
-    def lastCursorParentOrLastCursor(cursor: ACursor): ACursor =
-      cursor.lastCursor match {
-        case lastCursor: ArrayCursor =>
-          lastCursor.parent
-        case lastCursor: ObjectCursor =>
-          lastCursor.parent
-        case lastCursor =>
-          lastCursor
-      }
-
-    @tailrec
-    def loop(cursor: ACursor, acc: PathToRoot): PathToRoot =
-      if (cursor eq null) {
-        acc
-      } else {
-        if (cursor.failed) {
-          // If the cursor is in a failed state, we lose context on what the
-          // attempted last position was. Since we usually want to know this
-          // for error reporting, we use the lastOp to attempt to recover that
-          // state. We only care about operations which imply a path to the
-          // root, such as a field selection.
-          cursor.lastOp match {
-            case CursorOp.Field(field) =>
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ObjectKey(field) +: acc)
-            case CursorOp.DownField(field) =>
-              // We tried to move down, and then that failed, so the field was
-              // missing.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ObjectKey(field) +: acc)
-            case CursorOp.DownArray =>
-              // We tried to move into an array, but it must have been empty.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(0) +: acc)
-
-            case CursorOp.DownN(n) =>
-              // We tried to move into an array at index N, but there was no
-              // element there.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(n) +: acc)
-            case CursorOp.MoveLeft =>
-              // We tried to move to before the start of the array.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(-1) +: acc)
-            case CursorOp.MoveRight =>
-              cursor.lastCursor match {
-                case lastCursor: ArrayCursor =>
-                  // We tried to move to past the end of the array. Longs are
-                  // used here for the very unlikely case that we tried to
-                  // move past Int.MaxValue which shouldn't be representable.
-                  loop(lastCursor.parent, PathElem.ArrayIndex(lastCursor.indexValue.toLong + 1L) +: acc)
-                case _ =>
-                  // Invalid state, fix in 0.15.x, skip for now.
-                  loop(cursor.lastCursor, acc)
-              }
-            case _ =>
-              // CursorOp.MoveUp or CursorOp.DeleteGoParent, both are move up
-              // events.
-              //
-              // Recalling we are in a failed branch here, this should only
-              // fail if we are already at the top of the tree or if the
-              // cursor state is broken (will be fixed on 0.15.x), in either
-              // case this is the only valid action to take.
-              loop(cursor.lastCursor, acc)
-          }
-        } else {
-          cursor match {
-            case cursor: ArrayCursor =>
-              loop(cursor.parent, PathElem.ArrayIndex(cursor.indexValue) +: acc)
-            case cursor: ObjectCursor =>
-              loop(cursor.parent, PathElem.ObjectKey(cursor.keyValue) +: acc)
-            case cursor: TopCursor =>
-              acc
-            case _ =>
-              // Skip unknown cursor type. Maybe we should seal this?
-              loop(cursor.lastCursor, acc)
-          }
-        }
-      }
-
-    loop(this, PathToRoot.empty)
-  }
+  private[circe] def pathToRoot: PathToRoot
 
   /**
    * Creates a JavaScript-style path string, e.g. ".foo.bar[3]".
    */
   final def pathString: String =
-    PathToRoot.toPathString(pathToRoot)
+    pathToRoot.asPathString
 
   /**
    * Attempt to decode the focus as an `A`.
@@ -328,23 +232,17 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    *
    * @group Utilities
    */
-  final def replayOne(op: CursorOp): ACursor = op match {
-    case CursorOp.MoveLeft       => left
-    case CursorOp.MoveRight      => right
-    case CursorOp.MoveUp         => up
-    case CursorOp.Field(k)       => field(k)
-    case CursorOp.DownField(k)   => downField(k)
-    case CursorOp.DownArray      => downArray
-    case CursorOp.DownN(n)       => downN(n)
-    case CursorOp.DeleteGoParent => delete
-  }
+  def replayOne(op: CursorOp): ACursor
 
   /**
    * Replay history (a list of operations in reverse "chronological" order) against this cursor.
    *
    * @group Utilities
    */
-  final def replay(history: List[CursorOp]): ACursor = history.foldRight(this)((op, c) => c.replayOne(op))
+  def replay(history: List[CursorOp]): ACursor
+
+  protected final def lastCursor: HCursor =
+    evalLastCursor.value
 }
 
 object ACursor {
@@ -352,4 +250,15 @@ object ACursor {
 
   implicit val eqACursor: Eq[ACursor] =
     Eq.instance((a, b) => jsonOptionEq.eqv(a.focus, b.focus) && CursorOp.eqCursorOpList.eqv(a.history, b.history))
+
+  def fromCursor(cursor: Cursor): ACursor =
+    cursor match {
+      case cursor: Cursor.SuccessCursor =>
+        HCursor.fromCursor(cursor)
+      case cursor =>
+        new FailedCursor(
+          Eval.later(cursor.lastCursor.fold(null: HCursor)(HCursor.fromCursor)),
+          cursor.lastOp.getOrElse(null)
+        )
+    }
 }
