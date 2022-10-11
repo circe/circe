@@ -218,7 +218,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
         case lastCursor: ArrayCursor =>
           lastCursor.parent
         case lastCursor: ObjectCursor =>
-          lastCursor.parent
+          lastCursor
         case lastCursor =>
           lastCursor
       }
@@ -236,11 +236,17 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
           // root, such as a field selection.
           cursor.lastOp match {
             case CursorOp.Field(field) =>
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ObjectKey(field) +: acc)
+              loop(
+                cursor.lastCursor match {
+                  case lastCursor: ObjectCursor => lastCursor.parent
+                  case lastCursor               => lastCursor
+                },
+                PathElem.ObjectKey(field) +: acc
+              )
             case CursorOp.DownField(field) =>
               // We tried to move down, and then that failed, so the field was
               // missing.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ObjectKey(field) +: acc)
+              loop(cursor.lastCursor, PathElem.ObjectKey(field) +: acc)
             case CursorOp.DownArray =>
               // We tried to move into an array, but it must have been empty.
               loop(cursor.lastCursor, PathElem.ArrayIndex(0) +: acc)
@@ -248,7 +254,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
             case CursorOp.DownN(n) =>
               // We tried to move into an array at index N, but there was no
               // element there.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(n) +: acc)
+              loop(cursor.lastCursor, PathElem.ArrayIndex(n) +: acc)
             case CursorOp.MoveLeft =>
               // We tried to move to before the start of the array.
               loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(-1) +: acc)

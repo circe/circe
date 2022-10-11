@@ -321,6 +321,102 @@ class ACursorSuite extends CirceMunitSuite {
       )
     val c: ACursor = HCursor.fromJson(json)
 
+    // Field missing
+    assertEquals(
+      c.field("missing").pathString,
+      ".missing"
+    )
+
+    assertEquals(
+      c.downField("a").downArray.field("missing").pathString,
+      ".a[0].missing"
+    )
+
+    assertEquals(
+      c.downField("c").field("missing").pathString,
+      ".missing"
+    )
+
+    // Down field missing
+    assertEquals(
+      c.downField("missing").pathString,
+      ".missing"
+    )
+
+    assertEquals(
+      c.downField("g").downField("missing").pathString,
+      ".g.missing"
+    )
+
+    assertEquals(
+      c.downField("a").downArray.downField("missing").pathString,
+      ".a[0].missing"
+    )
+
+    // Down array missing
+    assertEquals(
+      c.downField("f").downArray.downField("g").downArray.pathString,
+      ".f[0].g[0]"
+    )
+
+    assertEquals(
+      c.downField("f").downArray.downArray.pathString,
+      ".f[0][0]"
+    )
+
+    assertEquals(
+      c.downArray.pathString,
+      "[0]"
+    )
+
+    // Down n missing
+    assertEquals(
+      c.downField("f").downArray.downField("g").downN(1).pathString,
+      ".f[0].g[1]"
+    )
+
+    assertEquals(
+      c.downField("f").downArray.downN(1).pathString,
+      ".f[0][1]"
+    )
+
+    assertEquals(
+      c.downN(1).pathString,
+      "[1]"
+    )
+
+    // Move left missing
+    assertEquals(
+      c.downField("f").downArray.downField("g").downField("h").downArray.left.pathString,
+      ".f[0].g.h[-1]"
+    )
+
+    assertEquals(
+      c.downField("f").downArray.downField("g").downField("h").left.pathString,
+      ".f[0].g.h[-1]"
+    )
+
+    assertEquals(
+      c.left.pathString,
+      "[-1]"
+    )
+
+    // Move right missing
+    assertEquals(
+      c.downField("f").downArray.downField("g").downField("h").downArray.right.pathString,
+      ".f[0].g.h[1]"
+    )
+
+    assertEquals(
+      c.downField("f").downArray.downField("g").downField("h").right.pathString,
+      ".f[0].g.h" // TODO is it correct?
+    )
+
+    assertEquals(
+      c.right.pathString,
+      "" // TODO is it correct?
+    )
+
     assertEquals(
       c.pathString,
       ""
@@ -364,11 +460,6 @@ class ACursorSuite extends CirceMunitSuite {
     assertEquals(
       c.downField("f").downArray.downField("g").downField("h").downArray.pathString,
       ".f[0].g.h[0]"
-    )
-
-    assertEquals(
-      c.downField("g").downArray.downField("g").downField("h").downArray.pathString,
-      ".g[0].g.h[0]"
     )
 
     assertEquals(
