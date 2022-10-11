@@ -390,4 +390,18 @@ class ACursorSuite extends CirceMunitSuite {
       )
     )
   }
+
+  test("benchmark") {
+    val dataLotsOfArrays = (0 to 100).foldLeft(Json.True) { (acc, _) =>
+      Json.fromValues {
+        (0 to 99).map(_.asJson) :+ acc
+      }
+    }
+    val cursorLotsOfArrays = (0 to 100).foldLeft[ACursor](dataLotsOfArrays.hcursor) { (acc, _) =>
+      (0 to 99).foldLeft(acc.downArray) { (acc, _) =>
+        acc.right
+      }
+    }
+    cursorLotsOfArrays.pathString
+  }
 }

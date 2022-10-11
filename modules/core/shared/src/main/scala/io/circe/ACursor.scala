@@ -243,7 +243,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
               loop(lastCursorParentOrLastCursor(cursor), PathElem.ObjectKey(field) +: acc)
             case CursorOp.DownArray =>
               // We tried to move into an array, but it must have been empty.
-              loop(lastCursorParentOrLastCursor(cursor), PathElem.ArrayIndex(0) +: acc)
+              loop(cursor.lastCursor, PathElem.ArrayIndex(0) +: acc)
 
             case CursorOp.DownN(n) =>
               // We tried to move into an array at index N, but there was no
@@ -294,7 +294,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   /**
    * Creates a JavaScript-style path string, e.g. ".foo.bar[3]".
    */
-  final def pathString: String = CursorOp.opsToPath(history)
+  final def pathString: String = PathToRoot.toPathString(pathToRoot)
 
   /**
    * Attempt to decode the focus as an `A`.
