@@ -66,6 +66,8 @@ object CursorOp {
   private[this] sealed trait Selection
   private[this] case class SelectField(field: String) extends Selection
   private[this] case class SelectIndex(index: Int) extends Selection
+  @deprecated
+  private[this] case class Op(op: CursorOp) extends Selection
 
   /** Shows history as JS style selections, i.e. ".foo.bar[3]" */
   def opsToPath(history: List[CursorOp]): String = {
@@ -88,6 +90,7 @@ object CursorOp {
       selections.map {
         case SelectField(f) => s".$f"
         case SelectIndex(i) => s"[$i]"
+        case Op(_)          => "" // This never happens
       }.mkString
     }
 

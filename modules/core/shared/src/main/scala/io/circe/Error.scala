@@ -100,10 +100,10 @@ sealed abstract class DecodingFailure(private val lazyReason: Eval[Reason]) exte
 object DecodingFailure {
   private[this] final class DecodingFailureImpl(
     lazyReason: Eval[Reason],
-    pathToRoot: String,
+    pathToRoot: Option[PathToRoot],
     ops: Eval[List[CursorOp]]
   ) extends DecodingFailure(lazyReason) {
-    override final def pathToRootString: Option[String] = Some(pathToRoot)
+    override final def pathToRootString: Option[String] = Some(CursorOp.opsToPath(history))
 
     override final def history: List[CursorOp] = ops.value
 
@@ -115,26 +115,26 @@ object DecodingFailure {
   }
 
   private[this] object DecodingFailureImpl {
-    def apply(reason: Eval[Reason], pathToRoot: String, ops: Eval[List[CursorOp]]): DecodingFailure =
+    def apply(reason: Eval[Reason], pathToRoot: Option[PathToRoot], ops: Eval[List[CursorOp]]): DecodingFailure =
       new DecodingFailureImpl(reason, pathToRoot, ops)
 
-    def apply(reason: Reason, pathToRoot: String, ops: Eval[List[CursorOp]]): DecodingFailure =
+    def apply(reason: Reason, pathToRoot: Option[PathToRoot], ops: Eval[List[CursorOp]]): DecodingFailure =
       apply(Eval.now(reason), pathToRoot, ops)
   }
 
   def apply(message: String, ops: => List[CursorOp]): DecodingFailure =
-    DecodingFailureImpl(CustomReason(message), CursorOp.opsToPath(ops), Eval.later(ops))
+    DecodingFailureImpl(CustomReason(message), None, Eval.later(ops))
 
   def apply(reason: Reason, ops: => List[CursorOp]): DecodingFailure =
-    DecodingFailureImpl(reason, CursorOp.opsToPath(ops), Eval.later(ops))
+    DecodingFailureImpl(reason, None, Eval.later(ops))
 
   def apply(reason: Reason, cursor: ACursor): DecodingFailure =
-    DecodingFailureImpl(reason, cursor.pathString, Eval.later(cursor.history))
+    DecodingFailureImpl(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
 
   // Private because this is a work around that needs to go away on 0.15.x.
   private[circe] def apply(
     reason: Eval[Reason],
-    pathToRoot: String,
+    pathToRoot: Option[PathToRoot],
     ops: Eval[List[CursorOp]]
   ): DecodingFailure =
     DecodingFailureImpl(reason, pathToRoot, ops)
