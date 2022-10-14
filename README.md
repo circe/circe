@@ -57,6 +57,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Metacommerce](https://www.metacommerce.ru)
 * [Mobile GmbH](https://www.mobile.de)
 * [New Work](https://www.new-work.se/en/)
+* [Nike](https://www.nike.com)
 * [Ocado Technology](https://ocadotechnology.com)
 * [On Air Entertainment](https://onairentertainment.com/)
 * [Onfocus](https://onfocus.io)
