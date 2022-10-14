@@ -72,7 +72,7 @@ private[circe] object PathToRoot {
       ""
     } else {
       path.value
-        .foldLeft((new StringBuilder(path.value.size * 5))) {
+        .foldLeft(new StringBuilder(path.value.size * 5)) {
           case (sb, ObjectKey(keyName)) =>
             sb.append(".").append(keyName)
           case (sb, ArrayIndex(index)) =>
