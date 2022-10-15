@@ -28,6 +28,7 @@ final case class Errors(errors: NonEmptyList[Error]) extends Exception {
  */
 final case class ParsingFailure(message: String, underlying: Throwable) extends Error {
   final override def getMessage: String = message
+  override def toString(): String = s"ParsingFailure: $message"
 }
 
 object ParsingFailure {
@@ -35,9 +36,7 @@ object ParsingFailure {
     case (ParsingFailure(m1, t1), ParsingFailure(m2, t2)) => m1 == m2 && t1 == t2
   }
 
-  implicit final val showParsingFailure: Show[ParsingFailure] = Show.show { failure =>
-    s"ParsingFailure: ${failure.message}"
-  }
+  implicit final val showParsingFailure: Show[ParsingFailure] = Show.fromToString
 }
 
 /**
@@ -85,10 +84,14 @@ sealed abstract class DecodingFailure(private val lazyReason: Eval[Reason]) exte
   def reason: Reason =
     lazyReason.value
 
+  /**
+   * Creates compact, human readable string representations for DecodingFailure
+   * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
+   */
   override final def toString: String =
-    // This should be the same as the Show instance, but we shouldn't change
-    // that until at least 0.15.x.
-    s"DecodingFailure($message, $history)"
+    pathToRootString.fold(
+      s"DecodingFailure($message, $history)"
+    )(pathToRootString => s"DecodingFailure at $pathToRootString: $message")
 
   override final def equals(that: Any): Boolean = that match {
     case other: DecodingFailure => DecodingFailure.eqDecodingFailure.eqv(this, other)
@@ -168,11 +171,7 @@ object DecodingFailure {
    * Cursor history is represented as JS style selections, i.e. ".foo.bar[3]"
    */
   implicit final val showDecodingFailure: Show[DecodingFailure] =
-    Show.show(value =>
-      value.pathToRootString.fold(
-        s"DecodingFailure(${value.message}, ${value.history})"
-      )(pathToRootString => s"DecodingFailure at ${pathToRootString}: ${value.message}")
-    )
+    Show.fromToString
 
   sealed abstract class Reason
   object Reason {
