@@ -354,8 +354,7 @@ lazy val refined = circeCrossModule("refined")
   )
   .dependsOn(core, tests % Test)
 
-lazy val parser =
-  circeCrossModule("parser").jvmConfigure(_.dependsOn(jawn.jvm)).jsConfigure(_.dependsOn(scalajs)).dependsOn(core)
+lazy val parser = circeCrossModule("parser", CrossType.Pure).dependsOn(core, jawn)
 
 lazy val scalajs =
   circeModule("scalajs").enablePlugins(ScalaJSPlugin).dependsOn(core.js)
@@ -415,6 +414,7 @@ lazy val tests = circeCrossModule("tests")
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
   .dependsOn(core, parser, testing, jawn)
+  .jsConfigure(_.dependsOn(scalajs))
 
 lazy val hygiene = circeCrossModule("hygiene")
   .enablePlugins(NoPublishPlugin)
