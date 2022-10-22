@@ -4,7 +4,11 @@ import cats.instances.either._
 import cats.instances.option._
 import cats.instances.string._
 import cats.kernel.Eq
-import io.circe.{ Decoder, Encoder, Json, KeyDecoder, KeyEncoder }
+import io.circe.Decoder
+import io.circe.Encoder
+import io.circe.Json
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
 import org.scalacheck.Arbitrary
 
 trait EqInstances { this: ArbitraryInstances =>

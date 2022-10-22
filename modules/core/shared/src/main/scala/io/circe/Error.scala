@@ -1,9 +1,11 @@
 package io.circe
 
-import cats.data.NonEmptyList
 import cats._
+import cats.data.NonEmptyList
 import io.circe.DecodingFailure.Reason
-import io.circe.DecodingFailure.Reason.{ CustomReason, MissingField, WrongTypeExpectation }
+import io.circe.DecodingFailure.Reason.CustomReason
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 
 /**
  * The base exception type for both decoding and parsing errors.

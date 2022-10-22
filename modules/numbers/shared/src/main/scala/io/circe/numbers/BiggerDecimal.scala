@@ -2,7 +2,8 @@ package io.circe.numbers
 
 import java.io.Serializable
 import java.lang.StringBuilder
-import java.math.{ BigDecimal, BigInteger }
+import java.math.BigDecimal
+import java.math.BigInteger
 import scala.annotation.switch
 
 /**

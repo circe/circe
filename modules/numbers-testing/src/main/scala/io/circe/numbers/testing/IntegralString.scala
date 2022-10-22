@@ -1,6 +1,7 @@
 package io.circe.numbers.testing
 
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
 /**
  * An integral string with an optional leading minus sign and between 1 and 25

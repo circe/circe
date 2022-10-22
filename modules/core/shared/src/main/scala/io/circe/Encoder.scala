@@ -1,8 +1,17 @@
 package io.circe
 
-import cats.{ Contravariant, Foldable }
-import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
+import cats.Contravariant
+import cats.Foldable
+import cats.data.Chain
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptyVector
+import cats.data.OneAnd
+import cats.data.Validated
 import io.circe.`export`.Exported
+
 import java.io.Serializable
 import java.net.URI
 import java.time.{
@@ -34,7 +43,8 @@ import java.util.Currency
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
-import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.collection.immutable.Set
+import scala.collection.immutable.{Map => ImmutableMap}
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.

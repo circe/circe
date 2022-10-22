@@ -1,8 +1,15 @@
 package io.circe.shapes
 
+import io.circe.Decoder
+import io.circe.DecodingFailure
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json, JsonObject }
-import shapeless.{ ::, HList, HNil }
+import io.circe.Encoder
+import io.circe.HCursor
+import io.circe.Json
+import io.circe.JsonObject
+import shapeless.::
+import shapeless.HList
+import shapeless.HNil
 
 trait HListInstances extends LowPriorityHListInstances {
   implicit final def decodeSingletonHList[H](implicit decodeH: Decoder[H]): Decoder[H :: HNil] =

@@ -1,6 +1,7 @@
 package io.circe
 
-import scala.collection.immutable.{ Map, Set }
+import scala.collection.immutable.Map
+import scala.collection.immutable.Set
 
 package object extras {
 

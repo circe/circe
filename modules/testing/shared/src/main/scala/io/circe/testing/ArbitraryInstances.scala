@@ -2,11 +2,16 @@ package io.circe.testing
 
 import cats.instances.list._
 import io.circe.DecodingFailure.Reason
-import io.circe.DecodingFailure.Reason.{ CustomReason, MissingField, WrongTypeExpectation }
-import io.circe.numbers.BiggerDecimal
-import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
+import io.circe.DecodingFailure.Reason.CustomReason
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe._
-import org.scalacheck.{ Arbitrary, Cogen, Gen }
+import io.circe.numbers.BiggerDecimal
+import io.circe.numbers.testing.IntegralString
+import io.circe.numbers.testing.JsonNumberString
+import org.scalacheck.Arbitrary
+import org.scalacheck.Cogen
+import org.scalacheck.Gen
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
 

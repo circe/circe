@@ -1,7 +1,11 @@
 package io.circe
 
-import cats.{ Applicative, Eq, Foldable, Show }
+import cats.Applicative
+import cats.Eq
+import cats.Foldable
+import cats.Show
 import cats.data.Kleisli
+
 import java.io.Serializable
 import java.util.LinkedHashMap
 import scala.collection.immutable.Map

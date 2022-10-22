@@ -2,8 +2,10 @@ package io.circe
 
 import java.io.Serializable
 import java.lang.StringBuilder
-import java.nio.{ ByteBuffer, CharBuffer }
-import java.nio.charset.{ Charset, StandardCharsets }
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 

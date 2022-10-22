@@ -1,7 +1,15 @@
 package io.circe.shapes
 
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, Json }
-import shapeless.{ :+:, CNil, Coproduct, Inl, Inr }
+import io.circe.Decoder
+import io.circe.DecodingFailure
+import io.circe.Encoder
+import io.circe.HCursor
+import io.circe.Json
+import shapeless.:+:
+import shapeless.CNil
+import shapeless.Coproduct
+import shapeless.Inl
+import shapeless.Inr
 
 trait CoproductInstances {
   implicit final val decodeCNil: Decoder[CNil] = new Decoder[CNil] {

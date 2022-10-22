@@ -1,6 +1,7 @@
 package io.circe.numbers.testing
 
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
 /**
  * An arbitrary JSON number, represented as a string.

@@ -1,9 +1,14 @@
 package io.circe.jawn
 
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.Json
+import io.circe.JsonNumber
+import io.circe.JsonObject
+import org.typelevel.jawn.FContext
+import org.typelevel.jawn.Facade
+import org.typelevel.jawn.SupportParser
+
 import java.io.Serializable
 import java.util.LinkedHashMap
-import org.typelevel.jawn.{ FContext, Facade, SupportParser }
 
 object CirceSupportParser extends CirceSupportParser(None, true)
 

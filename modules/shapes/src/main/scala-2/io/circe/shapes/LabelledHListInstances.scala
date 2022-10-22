@@ -2,9 +2,19 @@ package io.circe.shapes
 
 import cats.data.Validated
 import cats.kernel.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, JsonObject, KeyDecoder, KeyEncoder }
-import shapeless.{ ::, HList, Widen, Witness }
-import shapeless.labelled.{ FieldType, field }
+import io.circe.Decoder
+import io.circe.DecodingFailure
+import io.circe.Encoder
+import io.circe.HCursor
+import io.circe.JsonObject
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
+import shapeless.::
+import shapeless.HList
+import shapeless.Widen
+import shapeless.Witness
+import shapeless.labelled.FieldType
+import shapeless.labelled.field
 
 trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
 

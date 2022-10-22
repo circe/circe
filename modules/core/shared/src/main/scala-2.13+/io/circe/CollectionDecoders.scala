@@ -2,8 +2,9 @@ package io.circe
 
 import cats.data.OneAnd
 
+import scala.collection.Factory
+import scala.collection.Map
 import scala.collection.immutable.ArraySeq
-import scala.collection.{ Factory, Map }
 import scala.collection.mutable.Builder
 import scala.reflect.ClassTag
 

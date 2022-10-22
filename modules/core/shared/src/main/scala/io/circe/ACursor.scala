@@ -3,6 +3,7 @@ package io.circe
 import cats.Applicative
 import cats.kernel.Eq
 import io.circe.cursor._
+
 import java.io.Serializable
 import scala.annotation.tailrec
 

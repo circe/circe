@@ -1,7 +1,12 @@
 package io.circe.refined
 
-import eu.timepit.refined.api.{ RefType, Validate }
-import io.circe.{ Decoder, DecodingFailure, Encoder, KeyDecoder, KeyEncoder }
+import eu.timepit.refined.api.RefType
+import eu.timepit.refined.api.Validate
+import io.circe.Decoder
+import io.circe.DecodingFailure
+import io.circe.Encoder
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
 
 /**
  * Provides codecs for [[https://github.com/fthomas/refined refined]] types.

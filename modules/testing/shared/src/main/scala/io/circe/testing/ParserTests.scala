@@ -1,12 +1,18 @@
 package io.circe.testing
 
-import cats.data.{ Validated, ValidatedNel }
+import cats.data.Validated
+import cats.data.ValidatedNel
 import cats.instances.either._
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Error, Json, Parser, ParsingFailure }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.Error
+import io.circe.Json
+import io.circe.Parser
+import io.circe.ParsingFailure
+import org.scalacheck.Arbitrary
+import org.scalacheck.Prop
+import org.scalacheck.Shrink
 import org.typelevel.discipline.Laws
 
 case class ParserLaws[P <: Parser](parser: P) {

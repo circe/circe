@@ -1,6 +1,7 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated }
+import cats.data.NonEmptyList
+import cats.data.Validated
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 
 import scala.collection.mutable.Builder

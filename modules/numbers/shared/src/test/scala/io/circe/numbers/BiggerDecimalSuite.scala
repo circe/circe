@@ -1,12 +1,15 @@
 package io.circe.numbers
 
-import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
-import java.math.{ BigDecimal, BigInteger }
+import io.circe.numbers.testing.IntegralString
+import io.circe.numbers.testing.JsonNumberString
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
+import org.scalacheck._
+
+import java.math.BigDecimal
+import java.math.BigInteger
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
-import munit.ScalaCheckSuite
-import org.scalacheck._
-import org.scalacheck.Prop._
 
 class BiggerDecimalSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters =

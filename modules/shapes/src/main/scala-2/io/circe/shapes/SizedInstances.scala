@@ -1,11 +1,16 @@
 package io.circe.shapes
 
 import cats.data.Validated
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor }
+import io.circe.Decoder
+import io.circe.DecodingFailure
+import io.circe.Encoder
+import io.circe.HCursor
+import shapeless.AdditiveCollection
+import shapeless.Nat
+import shapeless.Sized
+import shapeless.ops.nat.ToInt
 
 import scala.collection.GenTraversable
-import shapeless.{ AdditiveCollection, Nat, Sized }
-import shapeless.ops.nat.ToInt
 
 trait SizedInstances {
   implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](implicit

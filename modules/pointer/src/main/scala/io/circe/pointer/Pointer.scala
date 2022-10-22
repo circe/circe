@@ -1,7 +1,9 @@
 package io.circe.pointer
 
 import cats.kernel.Hash
-import io.circe.{ ACursor, Encoder, Json }
+import io.circe.ACursor
+import io.circe.Encoder
+import io.circe.Json
 
 /**
  * Represents a JSON Pointer that may be either absolute or relative.

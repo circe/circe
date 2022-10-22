@@ -1,6 +1,9 @@
 package io.circe
 
-import cats.data.{ NonEmptyList, Validated, ValidatedNel }
+import cats.data.NonEmptyList
+import cats.data.Validated
+import cats.data.ValidatedNel
+
 import java.io.Serializable
 
 trait Parser extends Serializable {

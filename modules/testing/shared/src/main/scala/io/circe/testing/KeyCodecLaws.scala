@@ -2,11 +2,15 @@ package io.circe.testing
 
 import cats.instances.option._
 import cats.kernel.Eq
-import cats.kernel.laws.{ IsEq, SerializableLaws }
+import cats.kernel.laws.IsEq
+import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ KeyDecoder, KeyEncoder }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
+import org.scalacheck.Arbitrary
+import org.scalacheck.Prop
+import org.scalacheck.Shrink
 import org.typelevel.discipline.Laws
 
 trait KeyCodecLaws[A] {

@@ -1,6 +1,8 @@
 package io.circe
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 private[circe] trait EnumerationDecoders {
 

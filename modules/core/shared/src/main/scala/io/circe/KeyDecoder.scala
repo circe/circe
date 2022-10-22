@@ -1,6 +1,7 @@
 package io.circe
 
 import cats.MonadError
+
 import java.io.Serializable
 import java.net.URI
 import java.util.UUID

@@ -1,6 +1,8 @@
 package io.circe
 
-import cats.{ Eq, Show }
+import cats.Eq
+import cats.Show
+
 import java.io.Serializable
 
 sealed abstract class CursorOp extends Product with Serializable {

@@ -5,8 +5,12 @@ import cats.kernel.Eq
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Json }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.Decoder
+import io.circe.Encoder
+import io.circe.Json
+import org.scalacheck.Arbitrary
+import org.scalacheck.Prop
+import org.scalacheck.Shrink
 import org.typelevel.discipline.Laws
 
 trait CodecLaws[A] {

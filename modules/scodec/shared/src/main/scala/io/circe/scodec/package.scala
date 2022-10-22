@@ -1,6 +1,7 @@
 package io.circe
 
-import _root_.scodec.bits.{ BitVector, ByteVector }
+import _root_.scodec.bits.BitVector
+import _root_.scodec.bits.ByteVector
 
 package object scodec {
   implicit final val decodeByteVector: Decoder[ByteVector] = Decoder[String].emap(ByteVector.fromBase64Descriptive(_))
