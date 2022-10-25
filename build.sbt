@@ -2,7 +2,7 @@ import microsites.ExtraMdFileConfig
 import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
-val Scala212V: String = "2.12.17"
+val Scala212V: String = "2.12.15"
 val Scala213V: String = "2.13.8"
 val Scala3V: String = "3.1.3"
 
