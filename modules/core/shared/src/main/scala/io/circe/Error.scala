@@ -27,7 +27,7 @@ final case class Errors(errors: NonEmptyList[Error]) extends Exception {
  * provided by the parsing library.
  */
 final case class ParsingFailure(message: String, underlying: Throwable) extends Error {
-  final override def getMessage: String = message
+  final override def getMessage: String = ParsingFailure.showParsingFailure.show(this)
 }
 
 object ParsingFailure {
@@ -71,7 +71,7 @@ sealed abstract class DecodingFailure(private val lazyReason: Eval[Reason]) exte
     }
 
   final override def getMessage: String =
-    if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
+    if (history.isEmpty) message else DecodingFailure.showDecodingFailure.show(this)
 
   final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure =
     DecodingFailure(CustomReason(message), history)
