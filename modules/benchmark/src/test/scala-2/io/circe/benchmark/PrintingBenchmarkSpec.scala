@@ -19,26 +19,26 @@ class PrintingBenchmarkSpec extends FunSuite {
   }
 
   test("The string printer should correctly decode Foos") {
-    assert(decode[Map[String, Foo]](printFoosToString) === Right(foos))
+    assertEquals(decode[Map[String, Foo]](printFoosToString), Right(foos))
   }
 
   test("The string printer should correctly encode Ints") {
-    assert(decode[List[Int]](printIntsToString) === Right(ints))
+    assertEquals(decode[List[Int]](printIntsToString), Right(ints))
   }
 
   test("The string printer should correctly encode Booleans") {
-    assert(decode[List[Boolean]](printBooleansToString) === Right(booleans))
+    assertEquals(decode[List[Boolean]](printBooleansToString), Right(booleans))
   }
 
   test("The byte buffer printer should correctly decode Foos") {
-    assert(decode[Map[String, Foo]](byteBufferToString(printFoosToByteBuffer)) === Right(foos))
+    assertEquals(decode[Map[String, Foo]](byteBufferToString(printFoosToByteBuffer)), Right(foos))
   }
 
   test("The byte buffer printer should correctly encode Ints") {
-    assert(decode[List[Int]](byteBufferToString(printIntsToByteBuffer)) === Right(ints))
+    assertEquals(decode[List[Int]](byteBufferToString(printIntsToByteBuffer)), Right(ints))
   }
 
   test("The byte buffer printer should correctly encode Booleans") {
-    assert(decode[List[Boolean]](byteBufferToString(printBooleansToByteBuffer)) === Right(booleans))
+    assertEquals(decode[List[Boolean]](byteBufferToString(printBooleansToByteBuffer)), Right(booleans))
   }
 }
