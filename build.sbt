@@ -58,8 +58,7 @@ ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 val catsVersion = "2.8.0"
 val jawnVersion = "1.4.0"
 val shapelessVersion = "2.3.10"
-val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.10.1"
+val refinedVersion = "0.10.1"
 
 val paradiseVersion = "2.1.1"
 
@@ -120,8 +119,7 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
     )
     .configure(_.dependsOn(scalafixInternalRules % ScalafixConfig))
     .nativeSettings(
-      coverageEnabled := false,
-      tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+      coverageEnabled := false
     )
 }
 
@@ -409,7 +407,6 @@ lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
 lazy val literal = circeCrossModule("literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
@@ -423,23 +420,14 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
       "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
     )
   )
-  .nativeSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
-  )
   .dependsOn(core, parser % Test, testing % Test)
 
 lazy val refined = circeCrossModule("refined")
   .settings(
-    tlVersionIntroduced += "3" -> "0.14.3",
-    libraryDependencies ++= {
-      val refinedV =
-        if (crossProjectPlatform.value == NativePlatform) refinedNativeVersion
-        else refinedVersion
-      Seq(
-        "eu.timepit" %%% "refined" % refinedV,
-        "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
-      )
-    },
+    libraryDependencies ++= Seq(
+      "eu.timepit" %%% "refined" % refinedVersion,
+      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
+    ),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -527,9 +515,6 @@ lazy val jawn = circeCrossModule("jawn", CrossType.Full)
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
-  .jsSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.2").toMap
-  )
   .dependsOn(core)
 
 lazy val pointer =
@@ -545,14 +530,10 @@ lazy val pointer =
 lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
-  )
-  .nativeSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
   .dependsOn(core, pointer % "compile;test->test")
 
