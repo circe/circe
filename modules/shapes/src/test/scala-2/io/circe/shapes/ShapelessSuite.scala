@@ -8,7 +8,7 @@ import io.circe.literal._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.syntax._
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import shapeless.{ :+:, ::, CNil, HNil, Nat, Sized, Witness, tag }
 import shapeless.labelled.FieldType
 import shapeless.record.Record
@@ -43,7 +43,7 @@ class ShapelessSuite extends CirceMunitSuite {
     val expected = foo :: bar :: baz :: HNil
     val result = hlistDecoder.decodeJson(json"""[ $foo, $bar, $baz ]""")
 
-    assert(result === Right(expected))
+    result ?= Right(expected)
   }
 
   property("An hlist decoder should accumulate errors")(hlistDecoderAccumulateProp)
@@ -56,7 +56,7 @@ class ShapelessSuite extends CirceMunitSuite {
 
   property("The hnil decoder should not accept non-objects") {
     forAll { (j: Json) =>
-      assert(Decoder[HNil].decodeJson(j).isRight == j.isObject)
+      Decoder[HNil].decodeJson(j).isRight ?= j.isObject
     }
   }
 
@@ -68,7 +68,7 @@ class ShapelessSuite extends CirceMunitSuite {
     val expected = Symbol("foo") ->> foo :: Symbol("bar") ->> bar :: HNil
     val result = recordDecoder.decodeJson(json"""{ "foo": $foo, "bar": $bar }""")
 
-    assert(result === Right(expected))
+    result ?= Right(expected)
   }
 
   property("A record decoder should accumulate errors") {
@@ -129,6 +129,6 @@ class ShapelessSuite extends CirceMunitSuite {
       def eqv(x: TaggedData, y: TaggedData): Boolean = x == y
     }
 
-    assert(td.asJson.as[TaggedData] === Right(td))
+    assertEquals(td.asJson.as[TaggedData], Right(td))
   }
 }
