@@ -1,10 +1,15 @@
 package io.circe
+package scalajs
 
-import io.circe.scalajs.convertJsToJson
 import scala.scalajs.js.JSON
 import scala.util.control.NonFatal
 
-package object parser extends Parser {
+/**
+ * A parser based on the native JavaScript JSON parser.
+ *
+ * @see [[scala.scalajs.js.JSON]]
+ */
+object ScalaJSParser extends Parser {
   final def parse(input: String): Either[ParsingFailure, Json] = (
     try convertJsToJson(JSON.parse(input))
     catch {
