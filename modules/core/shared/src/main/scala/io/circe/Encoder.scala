@@ -21,7 +21,7 @@ import java.time.{
   ZoneOffset,
   ZonedDateTime
 }
-import java.time.format.DateTimeFormatter
+import java.time.format.{ DateTimeFormatter, DateTimeFormatterBuilder, SignStyle }
 import java.time.format.DateTimeFormatter.{
   ISO_LOCAL_DATE_TIME,
   ISO_LOCAL_TIME,
@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_OFFSET_TIME,
   ISO_ZONED_DATE_TIME
 }
-import java.time.temporal.TemporalAccessor
+import java.time.temporal.{ ChronoField, TemporalAccessor }
 import java.util.Currency
 import java.util.UUID
 import scala.Predef._
@@ -675,16 +675,25 @@ object Encoder
   /**
    * @group Time
    */
-  implicit final lazy val encodeYear: Encoder[Year] = new Encoder[Year] {
-    final def apply(a: Year): Json = Json.fromString(a.toString)
-  }
+  implicit final lazy val encodeYear: Encoder[Year] =
+    new JavaTimeEncoder[Year] {
+      def format = new DateTimeFormatterBuilder()
+        .parseLenient()
+        .appendValue(ChronoField.YEAR, 1, 10, SignStyle.EXCEEDS_PAD)
+        .toFormatter()
+    }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
-    final def apply(a: YearMonth): Json = Json.fromString(a.toString)
-  }
+  implicit final lazy val encodeYearMonth: Encoder[YearMonth] =
+    new JavaTimeEncoder[YearMonth] {
+      def format = new DateTimeFormatterBuilder()
+        .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+        .appendLiteral('-')
+        .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+        .toFormatter()
+    }
 
   /**
    * @group Time
