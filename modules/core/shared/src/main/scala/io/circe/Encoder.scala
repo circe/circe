@@ -678,8 +678,7 @@ object Encoder
   implicit final lazy val encodeYear: Encoder[Year] =
     new JavaTimeEncoder[Year] {
       def format = new DateTimeFormatterBuilder()
-        .parseLenient()
-        .appendValue(ChronoField.YEAR, 1, 10, SignStyle.EXCEEDS_PAD)
+        .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
         .toFormatter()
     }
 
