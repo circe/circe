@@ -1345,7 +1345,7 @@ object Decoder
           }
         }
       }
-    throw new DateTimeParseException("Text cannot be parsed to a Duration", text, 0)
+    throw new DateTimeParseException("Text cannot be parsed to a Duration", text, 0, null)
   }
 
   /**
