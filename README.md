@@ -89,6 +89,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [WeWork](https://www.wework.com)
 * [Whisk](https://whisk.com)
 * [Wide Angle Analytics](https://wideangle.co)
+* [Uberall](https://stackshare.io/uberall/uberall)
 * [Zalando](https://zalando.de)
 * [Zendesk](https://zendesk.com)
 
