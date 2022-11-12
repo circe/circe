@@ -36,8 +36,8 @@ class ScodecSuite extends CirceMunitSuite {
   // this test shows that decoder is to some extend liberal
   // even though such input could not have been produced by BitVector encoder it's getting decoded to BitVector
   test("Codec[ByteVector] should return empty BitVector in case contains only non-zero header") {
-    assert(decode("""{"bits": "mA==", "length": 8}""")(decodeBitVector) === Right(bin"10011000"))
-    assert(decode("""{"bits": "mA==", "length": 16}""")(decodeBitVector) === Right(bin"10011000"))
-    assert(decode("""{"bits": "mA==", "length": 0}""")(decodeBitVector) === Right(BitVector.empty))
+    assertEquals(decode("""{"bits": "mA==", "length": 8}""")(decodeBitVector), Right(bin"10011000"))
+    assertEquals(decode("""{"bits": "mA==", "length": 16}""")(decodeBitVector), Right(bin"10011000"))
+    assertEquals(decode("""{"bits": "mA==", "length": 0}""")(decodeBitVector), Right(BitVector.empty))
   }
 }

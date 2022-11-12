@@ -9,26 +9,26 @@ class InstantiationBenchmarkSpec extends FunSuite {
   import benchmark._
 
   test("decoderFromNew should correctly decode") {
-    assert(decoderFromNew == Right("xyz"))
+    assertEquals(decoderFromNew, Right("xyz"))
   }
 
   test("decoderFromSAM should correctly decode") {
-    assert(decoderFromNew === Right("xyz"))
+    assertEquals(decoderFromNew, Right("xyz"))
   }
 
   test("decoderFromInstance should correctly decode") {
-    assert(decoderFromNew === Right("xyz"))
+    assertEquals(decoderFromNew, Right("xyz"))
   }
 
   test("encoderFromNew should correctly encode") {
-    assert(encoderFromNew === Json.obj("value" -> Json.fromString("abc")))
+    assertEquals(encoderFromNew, Json.obj("value" -> Json.fromString("abc")))
   }
 
   test("encoderFromSAM should correctly encode") {
-    assert(encoderFromSAM === Json.obj("value" -> Json.fromString("abc")))
+    assertEquals(encoderFromSAM, Json.obj("value" -> Json.fromString("abc")))
   }
 
   test("encoderFromInstance should correctly encode") {
-    assert(encoderFromInstance === Json.obj("value" -> Json.fromString("abc")))
+    assertEquals(encoderFromInstance, Json.obj("value" -> Json.fromString("abc")))
   }
 }

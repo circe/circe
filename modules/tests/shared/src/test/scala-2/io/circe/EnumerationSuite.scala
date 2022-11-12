@@ -16,7 +16,7 @@ class EnumerationSuite extends CirceMunitSuite {
 
     val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Fri\"")
-    assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
+    assertEquals(decoder.apply(friday.hcursor), Right(WeekDay.Fri))
   }
 
   test("Decoder[Enumeration] should fail on unknown values in Scala Enumerations") {
@@ -42,7 +42,7 @@ class EnumerationSuite extends CirceMunitSuite {
     implicit val encoder = Encoder.encodeEnumeration(WeekDay)
     val json = WeekDay.Fri.asJson
     val decoder = Decoder.decodeEnumeration(WeekDay)
-    assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
+    assertEquals(decoder.apply(json.hcursor), Right(WeekDay.Fri))
   }
 }
 

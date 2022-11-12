@@ -17,7 +17,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
     parser.parse(printer.print(input)).toOption.flatMap(_.asObject) match {
       case None => fail("Cannot parse result back to an object")
       case Some(output) =>
-        assert(output.keys.toList === List("one", "three", "two"))
+        assertEquals(output.keys.toList, List("one", "three", "two"))
     }
   }
 

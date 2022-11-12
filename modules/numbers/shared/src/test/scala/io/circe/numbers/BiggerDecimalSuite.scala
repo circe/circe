@@ -43,36 +43,36 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     assert(doubleEqv(d.toDouble, -0.0))
   }
 
-  test("signum should agree with BigInteger") {
+  property("signum should agree with BigInteger") {
     forAll { (value: BigInt) =>
       val d = BiggerDecimal.fromBigInteger(value.underlying)
 
-      assert(d.signum == value.signum)
+      d.signum ?= value.signum
     }
   }
 
-  test("it should agree with BigDecimal") {
+  property("it should agree with BigDecimal") {
     forAll { (value: SBigDecimal) =>
       val d = BiggerDecimal.fromBigDecimal(value.underlying)
-      assertEquals(d.signum, value.signum)
+      d.signum ?= value.signum
     }
   }
 
-  test("it should agree with Long") {
+  property("it should agree with Long") {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
       val expected = value.signum
-      assertEquals(d.signum, expected)
+      d.signum ?= expected
     }
   }
 
-  test("it should agree with Double") {
+  property("it should agree with Double") {
     forAll { (value: Double) =>
       val d = BiggerDecimal.fromDoubleUnsafe(value)
 
       val expected = value.signum
-      assert(d.signum == expected)
+      d.signum ?= expected
     }
   }
 
@@ -80,7 +80,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
-      assertEquals(d.toBigDecimal.map(_.longValue), Some(value))
+      d.toBigDecimal.map(_.longValue) ?= Some(value)
     }
   }
 
@@ -88,7 +88,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
-      assertEquals(d.toLong, Some(value))
+      d.toLong ?= Some(value)
     }
   }
 
@@ -120,7 +120,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Int) =>
       val dl = BiggerDecimal.fromLong(value.toLong)
       val dd = BiggerDecimal.fromDoubleUnsafe(value.toDouble)
-      assertEquals(dl, dd)
+      dl ?= dd
     }
   }
 
@@ -151,7 +151,9 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: SBigDecimal) =>
       if (!isBadJsBigDecimal(value)) {
         val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
-        assertEquals(BiggerDecimal.fromBigDecimal(value.underlying), expected)
+        BiggerDecimal.fromBigDecimal(value.underlying) ?= expected
+      } else {
+        Prop.undecided
       }
     }
   }
@@ -181,13 +183,13 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
 
   property("fromBigInteger should round-trip BigInteger values") {
     forAll { (value: BigInt) =>
-      assertEquals(BiggerDecimal.fromBigInteger(value.underlying).toBigInteger, Some(value.underlying))
+      BiggerDecimal.fromBigInteger(value.underlying).toBigInteger ?= Some(value.underlying)
     }
   }
 
   property("integralIsValidLong should agree with toLong") {
     forAll { (input: IntegralString) =>
-      assertEquals(BiggerDecimal.integralIsValidLong(input.value), Try(input.value.toLong).isSuccess)
+      BiggerDecimal.integralIsValidLong(input.value) ?= Try(input.value.toLong).isSuccess
     }
   }
 
@@ -236,7 +238,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   property("it should parse integral JSON numbers") {
     forAll { (is: IntegralString) =>
       val bb = BiggerDecimal.fromBigInteger(new BigInteger(is.value))
-      assertEquals(BiggerDecimal.parseBiggerDecimal(is.value), Some(bb))
+      BiggerDecimal.parseBiggerDecimal(is.value) ?= Some(bb)
     }
   }
 

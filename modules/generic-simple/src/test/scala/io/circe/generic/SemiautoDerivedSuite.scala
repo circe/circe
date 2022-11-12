@@ -9,7 +9,7 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 

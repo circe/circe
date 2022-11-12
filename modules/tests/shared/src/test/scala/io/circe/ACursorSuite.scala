@@ -4,7 +4,7 @@ import cats.instances.all._
 import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 
 class ACursorSuite extends CirceMunitSuite {
   val j1: Json = Json.obj(
@@ -34,7 +34,7 @@ class ACursorSuite extends CirceMunitSuite {
 
   property("focus should return the JSON value in a newly created cursor") {
     forAll { (j: Json) =>
-      assert(HCursor.fromJson(j).focus === Some(j))
+      HCursor.fromJson(j).focus ?= Some(j)
     }
   }
 
@@ -72,7 +72,7 @@ class ACursorSuite extends CirceMunitSuite {
 
   property("root should return from navigation into an array") {
     forAll { (j: Json) =>
-      assert(HCursor.fromJson(j).downArray.root.focus === Some(j))
+      HCursor.fromJson(j).downArray.root.focus ?= Some(j)
     }
   }
 
@@ -105,7 +105,7 @@ class ACursorSuite extends CirceMunitSuite {
 
   property("withFocus should have no effect when given the identity function") {
     forAll { (j: Json) =>
-      assert(HCursor.fromJson(j).withFocus(identity).focus === Some(j))
+      HCursor.fromJson(j).withFocus(identity).focus ?= Some(j)
     }
   }
 
@@ -117,19 +117,19 @@ class ACursorSuite extends CirceMunitSuite {
         _.withFocus(j => j.asArray.fold(j)(a => Json.fromValues(0.asJson +: a)))
       )
 
-    assert(result.flatMap(_.top) === Some(j2))
+    assertEquals(result.flatMap(_.top), Some(j2))
   }
 
   property("withFocusM should lift a value into a List") {
     forAll { (j: Json) =>
-      assert(HCursor.fromJson(j).withFocusM[List](List(_)).head.focus === Some(j))
+      HCursor.fromJson(j).withFocusM[List](List(_)).head.focus ?= Some(j)
     }
   }
 
   test("delete should remove a value from an object") {
     val result = cursor.downField("b").success.flatMap(_.delete.success)
 
-    assert(result.flatMap(_.top) === Some(j4))
+    assertEquals(result.flatMap(_.top), Some(j4))
   }
 
   property("delete should remove a value from an array")(deleteArrayProp)
@@ -139,7 +139,7 @@ class ACursorSuite extends CirceMunitSuite {
       u <- f.delete.success
     } yield u
 
-    assert(result.flatMap(_.focus) === Some(Json.fromValues(t)))
+    result.flatMap(_.focus) ?= Some(Json.fromValues(t))
   }
 
   property("delete should fail at the top") {
@@ -153,15 +153,15 @@ class ACursorSuite extends CirceMunitSuite {
   test("set should replace an element") {
     val result = cursor.downField("b").success.map(_.set(10.asJson))
 
-    assert(result.flatMap(_.top) === Some(j3))
+    assertEquals(result.flatMap(_.top), Some(j3))
   }
 
   test("values should return the expected values") {
-    assert(cursor.downField("a").values.map(_.toVector) === Some((1 to 5).toVector.map(_.asJson)))
+    assertEquals(cursor.downField("a").values.map(_.toVector), Some((1 to 5).toVector.map(_.asJson)))
   }
 
   test("keys should return the expected values") {
-    assert(cursor.keys.map(_.toVector) === Some(Vector("a", "b", "c")))
+    assertEquals(cursor.keys.map(_.toVector), Some(Vector("a", "b", "c")))
   }
 
   test("left should successfully select an existing value") {
@@ -171,7 +171,7 @@ class ACursorSuite extends CirceMunitSuite {
       l <- a.left.success
     } yield l
 
-    assert(result.flatMap(_.focus) === Some(3.asJson))
+    assertEquals(result.flatMap(_.focus), Some(3.asJson))
   }
 
   test("left should fail to select a value that doesn't exist") {
@@ -180,7 +180,7 @@ class ACursorSuite extends CirceMunitSuite {
       l <- c.left.success
     } yield l
 
-    assert(result.flatMap(_.focus) === None)
+    assertEquals(result.flatMap(_.focus), None)
   }
 
   property("left should fail at the top") {
@@ -197,7 +197,7 @@ class ACursorSuite extends CirceMunitSuite {
       r <- a.right.success
     } yield r
 
-    assert(result.flatMap(_.focus) === Some(5.asJson))
+    assertEquals(result.flatMap(_.focus), Some(5.asJson))
   }
 
   test("right should fail to select a value that doesn't exist") {
@@ -206,7 +206,7 @@ class ACursorSuite extends CirceMunitSuite {
       r <- c.right.success
     } yield r
 
-    assert(result.flatMap(_.focus) === None)
+    assertEquals(result.flatMap(_.focus), None)
   }
 
   property("right should fail at the top") {
@@ -223,7 +223,7 @@ class ACursorSuite extends CirceMunitSuite {
       f <- a.up.downArray.success
     } yield f
 
-    assert(result.flatMap(_.focus) === Some(1.asJson))
+    assertEquals(result.flatMap(_.focus), Some(1.asJson))
   }
 
   test("downArray should fail to select a value that doesn't exist") {
@@ -232,7 +232,7 @@ class ACursorSuite extends CirceMunitSuite {
       f <- c.up.downArray.success
     } yield f
 
-    assert(result.flatMap(_.focus) === None)
+    assertEquals(result.flatMap(_.focus), None)
   }
 
   test("field should successfully select an existing value") {
@@ -242,7 +242,7 @@ class ACursorSuite extends CirceMunitSuite {
       f <- e.field("f").success
     } yield f
 
-    assert(result.flatMap(_.focus) === Some(200.2.asJson))
+    assertEquals(result.flatMap(_.focus), Some(200.2.asJson))
   }
 
   property("field should fail at the top") {
@@ -256,14 +256,14 @@ class ACursorSuite extends CirceMunitSuite {
     val result = for {
       b <- cursor.downField("b").success
     } yield b.getOrElse[List[Boolean]]("d")(Nil)
-    assert(result === Some(Right(List(true, false, true))))
+    assertEquals(result, Some(Right(List(true, false, true))))
   }
 
   test("getOrElse should use the fallback if field is missing") {
     val result = for {
       b <- cursor.downField("b").success
     } yield b.getOrElse[List[Boolean]]("z")(Nil)
-    assert(result === Some(Right(Nil)))
+    assertEquals(result, Some(Right(Nil)))
   }
 
   test("getOrElse should fail if the field is the wrong type") {

@@ -11,7 +11,7 @@ class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escap
   test("Printing object should unicode-escape all non-ASCII chars") {
     val actual = Json.obj("0 ℃" := "32 ℉").printWith(printer)
     val expected = "{\"0 \\u2103\":\"32 \\u2109\"}"
-    assert(actual === expected)
+    assertEquals(actual, expected)
   }
 }
 

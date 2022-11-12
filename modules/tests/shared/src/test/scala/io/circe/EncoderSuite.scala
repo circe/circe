@@ -13,7 +13,8 @@ import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Arbitrary
-import org.scalacheck.Prop.forAll
+import org.scalacheck._
+import org.scalacheck.Prop._
 import scala.collection.SortedMap
 
 class EncoderSuite extends CirceMunitSuite {
@@ -27,26 +28,26 @@ class EncoderSuite extends CirceMunitSuite {
       _.withObject(obj => Json.fromJsonObject(obj.add(k, v.asJson)))
     )
 
-    assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
+    Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) ?= Right(m.updated(k, v))
   }
 
   property("Encoder.AsObject#mapJsonObject should transform encoded output") {
     forAll { (m: Map[String, Int], k: String, v: Int) =>
       val newEncoder = Encoder.AsObject[Map[String, Int]].mapJsonObject(_.add(k, v.asJson))
 
-      assert(Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) === Right(m.updated(k, v)))
+      Decoder[Map[String, Int]].apply(newEncoder(m).hcursor) ?= Right(m.updated(k, v))
     }
   }
 
   property("encodeSet should match sequence encoders") {
     forAll { (xs: Set[Int]) =>
-      assert(Encoder.encodeSet[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toSeq))
+      Encoder.encodeSet[Int].apply(xs) ?= Encoder[Seq[Int]].apply(xs.toSeq)
     }
   }
 
   property("encodeList should match sequence encoders") {
     forAll { (xs: List[Int]) =>
-      assert(Encoder.encodeList[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+      Encoder.encodeList[Int].apply(xs) ?= Encoder[Seq[Int]].apply(xs)
     }
   }
 
@@ -67,32 +68,46 @@ class EncoderSuite extends CirceMunitSuite {
       case (k, v) => MyString.myStringKeyEncoder(k) -> Json.fromString(v)
     }
 
-    assert(asJsonObject.toList === expected)
+    asJsonObject.toList ?= expected
   }
 
   property("encodeVector should match sequence encoders") {
     forAll { (xs: Vector[Int]) =>
-      assert(Encoder.encodeVector[Int].apply(xs) === Encoder[Seq[Int]].apply(xs))
+      Encoder.encodeVector[Int].apply(xs) ?= Encoder[Seq[Int]].apply(xs)
     }
   }
 
   property("encodeChain should match sequence encoders") {
     forAll { (xs: Chain[Int]) =>
-      assert(Encoder.encodeChain[Int].apply(xs) === Encoder[Seq[Int]].apply(xs.toList))
+      Encoder.encodeChain[Int].apply(xs) ?= Encoder[Seq[Int]].apply(xs.toList)
     }
   }
 
-  property("encodeFloat should match string representation")(encodeFloatPreserveStringProp)
-  lazy val encodeFloatPreserveStringProp = forAll { (x: Float) =>
+  // https://docs.oracle.com/javase/8/docs/api/java/lang/Float.html#toString-float-
+  val genScientificFloat: Gen[Float] =
+    Gen
+      .oneOf(
+        Gen.choose(Float.MinValue, 1e-3f),
+        Gen.choose(1e7f, Float.MaxValue)
+      )
+      .suchThat((f: Float) => f =!= 1e-3f)
+      .suchThat((f: Float) => f =!= 1e7f)
+
+  property("encodeFloat should match string representation, when in scientific notation")(forAll(genScientificFloat) {
+    (x: Float) =>
+      // For floats which are NOT represented with scientific notation,
+      // the JSON representation should match Float.toString
+      // This should catch cases where 1.2f would previously be encoded
+      // as 1.2000000476837158 due to the use of .toDouble
+      if (x.toString.toLowerCase.contains('e')) {
+        Encoder[Float].apply(x).toString ?= x.toString
+      } else {
+        Prop.falsified :| "Generated float value which was not represented by Scientific notation, this should not be possible with this generator."
+      }
+  })
+
+  property("encodeFloat should match string representation")(forAll { (x: Float) =>
     // All Float values should be encoded in a way that match the original value.
-    assert(Encoder[Float].apply(x).toString.toFloat === x)
-
-    // For floats which are NOT represented with scientific notation,
-    // the JSON representation should match Float.toString
-    // This should catch cases where 1.2f would previously be encoded
-    // as 1.2000000476837158 due to the use of .toDouble
-    if (!x.toString.toLowerCase.contains('e')) {
-      assert(Encoder[Float].apply(x).toString === x.toString)
-    }
-  }
+    Encoder[Float].apply(x).toString.toFloat ?= x
+  })
 }

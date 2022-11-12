@@ -4,9 +4,9 @@ import cats.kernel.instances.all._
 import io.circe.{ Json, Parser, Printer }
 import io.circe.testing.PrinterTests
 import java.nio.charset.StandardCharsets.UTF_8
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 
-class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceMunitSuite with PlatformSpecificPrinterTests {
+class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceMunitSuite {
   checkAll("Printing Unit", PrinterTests[Unit].printer(printer, parser))
   checkAll("Printing Boolean", PrinterTests[Boolean].printer(printer, parser))
   checkAll("Printing Char", PrinterTests[Char].printer(printer, parser))
@@ -14,6 +14,7 @@ class PrinterSuite(val printer: Printer, val parser: Parser) extends CirceMunitS
   checkAll("Printing Double", PrinterTests[Double].printer(printer, parser))
   checkAll("Printing Short", PrinterTests[Short].printer(printer, parser))
   checkAll("Printing Int", PrinterTests[Int].printer(printer, parser))
+  checkAll("Printing Long", PrinterTests[Long].printer(printer, parser))
   checkAll("Printing Map", PrinterTests[Map[String, List[Int]]].printer(printer, parser))
 
   property("printToByteBuffer should match print")(printToBufferProp)

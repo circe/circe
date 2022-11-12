@@ -8,7 +8,7 @@ import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.glossary
 import java.io.File
 import java.nio.ByteBuffer
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.io.Source
 
 class JawnParserSuite extends CirceMunitSuite with EqInstances {
@@ -35,9 +35,9 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val url = getClass.getResource("/io/circe/tests/examples/glossary.json")
     val file = new File(url.toURI)
 
-    assert(decodeFile[Json](file) === Right(glossary))
-    assert(decodeFileAccumulating[Json](file) == Validated.valid(glossary))
-    assert(parseFile(file) === Right(glossary))
+    assertEquals(decodeFile[Json](file), Right(glossary))
+    assertEquals(decodeFileAccumulating[Json](file), Validated.valid(glossary))
+    assertEquals(parseFile(file), Right(glossary))
   }
 
   test("parseByteBuffer and decodeByteBuffer(Accumulating) should parse a byte buffer") {
@@ -46,9 +46,9 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val bytes = source.map(_.toByte).toArray
     source.close()
 
-    assert(decodeByteBuffer[Json](ByteBuffer.wrap(bytes)) === Right(glossary))
-    assert(decodeByteBufferAccumulating[Json](ByteBuffer.wrap(bytes)) == Validated.valid(glossary))
-    assert(parseByteBuffer(ByteBuffer.wrap(bytes)) === Right(glossary))
+    assertEquals(decodeByteBuffer[Json](ByteBuffer.wrap(bytes)), Right(glossary))
+    assertEquals(decodeByteBufferAccumulating[Json](ByteBuffer.wrap(bytes)), Validated.valid(glossary))
+    assertEquals(parseByteBuffer(ByteBuffer.wrap(bytes)), Right(glossary))
   }
 
   test("parseByteArray and decodeByteArray(Accumulating) should parse a byte array") {
@@ -57,8 +57,8 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val bytes = source.map(_.toByte).toArray
     source.close()
 
-    assert(decodeByteArray[Json](bytes) === Right(glossary))
-    assert(decodeByteArrayAccumulating[Json](bytes) == Validated.valid(glossary))
-    assert(parseByteArray(bytes) === Right(glossary))
+    assertEquals(decodeByteArray[Json](bytes), Right(glossary))
+    assertEquals(decodeByteArrayAccumulating[Json](bytes), Validated.valid(glossary))
+    assertEquals(parseByteArray(bytes), Right(glossary))
   }
 }

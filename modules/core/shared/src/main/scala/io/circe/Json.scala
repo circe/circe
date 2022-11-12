@@ -107,6 +107,11 @@ sealed abstract class Json extends Product with Serializable {
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(hcursor)
 
   /**
+   * Attempts to decode this JSON value to another data type, accumulating failures.
+   */
+  final def asAccumulating[A](implicit d: Decoder[A]): Decoder.AccumulatingResult[A] = d.decodeAccumulating(hcursor)
+
+  /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
    */
   final def printWith(p: Printer): String = p.print(this)

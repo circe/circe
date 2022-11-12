@@ -4,7 +4,8 @@ import cats.kernel.instances.all._
 import cats.syntax.eq._
 import io.circe.numbers.testing.JsonNumberString
 import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
+import org.scalacheck.Prop._
 
 class JsonNumberSuite extends CirceMunitSuite {
   property("fromString should parse valid JSON numbers") {
@@ -16,7 +17,7 @@ class JsonNumberSuite extends CirceMunitSuite {
   property("fromString  should match Json.fromDouble") {
     forAll { (d: Double) =>
       val expected = Json.fromDouble(d).flatMap(_.asNumber)
-      assert(JsonNumber.fromString(d.toString) === expected)
+      JsonNumber.fromString(d.toString) ?= expected
     }
   }
 
@@ -24,37 +25,37 @@ class JsonNumberSuite extends CirceMunitSuite {
     forAll { (f: Float) =>
       val expected = Json.fromFloat(f).flatMap(_.asNumber)
 
-      assert(JsonNumber.fromString(f.toString) === expected)
+      JsonNumber.fromString(f.toString) ?= expected
     }
   }
 
   test("fromString should match Json.fromFloat for Floats that don't have the same toString when Double-ed") {
     val value = -4.9913575e19f
 
-    assert(Json.fromFloat(value).flatMap(_.asNumber) === JsonNumber.fromString(value.toString))
+    assertEquals(Json.fromFloat(value).flatMap(_.asNumber), JsonNumber.fromString(value.toString))
   }
 
   property("fromString should round-trip Byte") {
     forAll { (b: Byte) =>
-      assert(JsonNumber.fromString(b.toString).flatMap(_.toByte) === Some(b))
+      JsonNumber.fromString(b.toString).flatMap(_.toByte) ?= Some(b)
     }
   }
 
   property("fromString should round-trip Short") {
     forAll { (s: Short) =>
-      assert(JsonNumber.fromString(s.toString).flatMap(_.toShort) === Some(s))
+      JsonNumber.fromString(s.toString).flatMap(_.toShort) ?= Some(s)
     }
   }
 
   property("fromString should round-trip Int") {
     forAll { (i: Int) =>
-      assert(JsonNumber.fromString(i.toString).flatMap(_.toInt) === Some(i))
+      JsonNumber.fromString(i.toString).flatMap(_.toInt) ?= Some(i)
     }
   }
 
   property("fromString should round-trip Long") {
     forAll { (l: Long) =>
-      assert(JsonNumber.fromString(l.toString).flatMap(_.toLong) === Some(l))
+      JsonNumber.fromString(l.toString).flatMap(_.toLong) ?= Some(l)
     }
   }
 
@@ -62,7 +63,7 @@ class JsonNumberSuite extends CirceMunitSuite {
     forAll { (l: Long) =>
       val invalid = l > Byte.MaxValue || l < Byte.MinValue
 
-      assert(JsonNumber.fromString(l.toString).flatMap(_.toByte).isEmpty === invalid)
+      JsonNumber.fromString(l.toString).flatMap(_.toByte).isEmpty ?= invalid
     }
   }
 
@@ -70,14 +71,14 @@ class JsonNumberSuite extends CirceMunitSuite {
     forAll { (l: Long) =>
       val invalid = l > Short.MaxValue || l < Short.MinValue
 
-      assert(JsonNumber.fromString(l.toString).flatMap(_.toShort).isEmpty === invalid)
+      JsonNumber.fromString(l.toString).flatMap(_.toShort).isEmpty ?= invalid
     }
   }
 
   property("toInt should fail on out-of-range values") {
     forAll { (l: Long) =>
       val invalid = l > Int.MaxValue || l < Int.MinValue
-      assert(JsonNumber.fromString(l.toString).flatMap(_.toInt).isEmpty === invalid)
+      JsonNumber.fromString(l.toString).flatMap(_.toInt).isEmpty ?= invalid
     }
   }
 
@@ -91,7 +92,7 @@ class JsonNumberSuite extends CirceMunitSuite {
 
   test("toBigDecimal should work for zero with a large exponent") {
     val n = JsonNumber.fromString(s"0e${Int.MaxValue.toLong + 2L}")
-    assert(n.flatMap(_.toBigDecimal).get === BigDecimal(0))
+    assertEquals(n.flatMap(_.toBigDecimal).get, BigDecimal(0))
   }
 
   test("toBigDecimal should work for other bad numbers") {
@@ -100,7 +101,7 @@ class JsonNumberSuite extends CirceMunitSuite {
     val n = JsonNumber.fromString(badNumber)
     val expected = BigDecimal(new JavaBigDecimal(JavaBigInteger.ONE, Int.MinValue))
 
-    assert(n.flatMap(_.toBigDecimal).get === expected)
+    assertEquals(n.flatMap(_.toBigDecimal).get, expected)
   }
 
   property("toBigInt should produce correct results") {
@@ -114,13 +115,15 @@ class JsonNumberSuite extends CirceMunitSuite {
   test("toBigInt should work for zero with a large exponent") {
     val n = JsonNumber.fromString(s"0e${Int.MaxValue.toLong + 1L}")
 
-    assert(n.flatMap(_.toBigInt).get === BigInt(0))
+    assertEquals(n.flatMap(_.toBigInt).get, BigInt(0))
   }
 
   property("JsonFloat.toLong should return None if outside of Long bounds") {
     forAll { (f: Float) =>
       if (f < Long.MinValue || f > Long.MaxValue) {
-        assert(JsonFloat(f).toLong === None)
+        JsonFloat(f).toLong ?= None
+      } else {
+        Prop.undecided
       }
     }
   }
@@ -132,7 +135,7 @@ class JsonNumberSuite extends CirceMunitSuite {
       case d if d.isWhole => Some(BigDecimal(f.toString).toBigInt)
       case _              => None
     }
-    assert(j.toBigInt === expected)
+    j.toBigInt ?= expected
   }
 
   val positiveZeros: List[JsonNumber] = List(
@@ -163,7 +166,7 @@ class JsonNumberSuite extends CirceMunitSuite {
   test("Eq[JsonNumber] should not distinguish any positive zeros") {
     positiveZeros.foreach { pz1 =>
       positiveZeros.foreach { pz2 =>
-        assert(pz1 === pz2)
+        assertEquals(pz1, pz2)
       }
     }
   }
@@ -171,7 +174,7 @@ class JsonNumberSuite extends CirceMunitSuite {
   test("Eq[JsonNumber] should not distinguish any negative zeros") {
     negativeZeros.foreach { nz1 =>
       negativeZeros.foreach { nz2 =>
-        assert(nz1 === nz2)
+        assertEquals(nz1, nz2)
       }
     }
   }
@@ -203,40 +206,40 @@ class JsonNumberSuite extends CirceMunitSuite {
   }
 
   test("fromDouble should fail on Double.NaN") {
-    assert(Json.fromDouble(Double.NaN) === None)
+    assertEquals(Json.fromDouble(Double.NaN), None)
   }
 
   test("fromDouble should fail on Double.PositiveInfinity") {
-    assert(Json.fromDouble(Double.PositiveInfinity) === None)
+    assertEquals(Json.fromDouble(Double.PositiveInfinity), None)
   }
 
   test("fromDouble should fail on Double.NegativeInfinity") {
-    assert(Json.fromDouble(Double.NegativeInfinity) === None)
+    assertEquals(Json.fromDouble(Double.NegativeInfinity), None)
   }
 
   test("fromFloat should fail on Float.Nan") {
-    assert(Json.fromFloat(Float.NaN) === None)
+    assertEquals(Json.fromFloat(Float.NaN), None)
   }
 
   test("fromFloat should fail on Float.PositiveInfinity") {
-    assert(Json.fromFloat(Float.PositiveInfinity) === None)
+    assertEquals(Json.fromFloat(Float.PositiveInfinity), None)
   }
 
   test("fromFloat should fail on Float.NegativeInfinity") {
-    assert(Json.fromFloat(Float.NegativeInfinity) === None)
+    assertEquals(Json.fromFloat(Float.NegativeInfinity), None)
   }
 
   property("toString should produce the same encoding as BigDecimal#toString") {
     forAll { (input: BigDecimal) =>
-      assert(JsonNumber.fromString(input.toString).get.toString == input.toString)
-      assert(Json.fromBigDecimal(input).asNumber.get.toString == input.toString)
+      JsonNumber.fromString(input.toString).get.toString ?= input.toString
+      Json.fromBigDecimal(input).asNumber.get.toString ?= input.toString
     }
   }
 
   property("toString should produce the same encoding as BigInt#toString") {
     forAll { (input: BigInt) =>
-      assert(JsonNumber.fromString(input.toString).get.toString == input.toString)
-      assert(Json.fromBigInt(input).asNumber.get.toString == input.toString)
+      JsonNumber.fromString(input.toString).get.toString ?= input.toString
+      Json.fromBigInt(input).asNumber.get.toString ?= input.toString
     }
   }
 }
