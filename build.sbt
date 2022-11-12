@@ -3,7 +3,7 @@ import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
 val Scala212V: String = "2.12.15"
-val Scala213V: String = "2.13.10"
+val Scala213V: String = "2.13.8"
 val Scala3V: String = "3.1.3"
 
 ThisBuild / tlBaseVersion := "0.14"
