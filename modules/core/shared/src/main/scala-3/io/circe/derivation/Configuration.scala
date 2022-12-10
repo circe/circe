@@ -4,7 +4,7 @@ object Configuration:
   val default: Configuration = Configuration()
 
 /**
- * Configuration allowing customisation of the JSON produced when encoding, or expected when decoding.
+ * Configuration allowing customization of the JSON produced when encoding, or expected when decoding.
  *
  * @param transformMemberNames Transforms the names of any case class members in the JSON allowing, for example,
  *                             formatting or case changes.
@@ -19,7 +19,7 @@ object Configuration:
 case class Configuration(
   transformMemberNames: String => String = Predef.identity,
   transformConstructorNames: String => String = Predef.identity,
-  useDefaults: Boolean = true,
+  useDefaults: Boolean = false,
   discriminator: Option[String] = None,
   strictDecoding: Boolean = false
 ):

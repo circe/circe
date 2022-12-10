@@ -10,10 +10,10 @@ object ConfiguredCodec:
     new ConfiguredCodec[A]
       with DerivedInstance(
         constValue[mirror.MirroredLabel],
-        summonLabels[mirror.MirroredElemLabels].toArray
+        summonLabels[mirror.MirroredElemLabels]
       ):
-      lazy val elemEncoders: Array[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes].toArray
-      lazy val elemDecoders: Array[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes].toArray
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       final def encodeObject(a: A): JsonObject =
