@@ -7,16 +7,15 @@ import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance:
-  def elemDecoders: Array[Decoder[?]]
+  def elemDecoders: List[Decoder[?]]
   def elemDefaults: Default[A]
+  val constructorNames = elemLabels.map(conf.transformConstructorNames)
 
   private def strictDecodingFailure(c: HCursor, message: String): DecodingFailure =
     DecodingFailure(s"Strict decoding $name - $message", c.history)
 
   /** Decodes a class/object/case of a Sum type handling discriminator and strict decoding. */
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
-    val constructorNames = elemLabels.map(conf.transformConstructorNames)
-
     def fromName(sumTypeName: String, cursor: ACursor): R =
       constructorNames.indexOf(sumTypeName) match
         case -1 => fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
@@ -157,9 +156,9 @@ object ConfiguredDecoder:
     new ConfiguredDecoder[A]
       with DerivedInstance(
         constValue[mirror.MirroredLabel],
-        summonLabels[mirror.MirroredElemLabels].toArray
+        summonLabels[mirror.MirroredElemLabels]
       ):
-      lazy val elemDecoders: Array[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes].toArray
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       final def apply(c: HCursor): Decoder.Result[A] =
