@@ -112,22 +112,22 @@ jobs:
 
       - name: scalaJSLink
         if: matrix.project == 'rootJS'
-        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' Test/scalaJSLinkerResult
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' Test/scalaJSLinkerResult
 
       - name: nativeLink
         if: matrix.project == 'rootNative'
-        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' Test/nativeLink
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' Test/nativeLink
 
       - name: Test
-        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' test
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' test
 
       - name: Check binary compatibility
         if: matrix.java == 'temurin@8'
-        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' mimaReportBinaryIssues
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' mimaReportBinaryIssues
 
       - name: Generate API documentation
         if: matrix.java == 'temurin@8'
-        run: sbt 'project ${{ matrix.project }}' '++${{ matrix.scala }}' doc
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' doc
 
   scalafmt:
     name: Scalafmt and Scalastyle
@@ -170,7 +170,7 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
       - name: Scalafmt and Scalastyle tests
-        run: sbt '++${{ matrix.scala }}' +scalafmtCheckAll scalafmtSbtCheck scalastyle
+        run: sbt '++ ${{ matrix.scala }}' +scalafmtCheckAll scalafmtSbtCheck scalastyle
 
   coverage:
     name: Generate coverage report
@@ -212,7 +212,7 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
-      - run: sbt '++${{ matrix.scala }}' coverage rootJVM/test coverageAggregate
+      - run: sbt '++ ${{ matrix.scala }}' coverage rootJVM/test coverageAggregate
 
       - uses: codecov/codecov-action@v2
         with:
