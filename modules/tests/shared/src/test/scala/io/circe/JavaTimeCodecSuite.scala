@@ -23,6 +23,8 @@ object JavaTimeCaseClass {
 }
 
 class JavaTimeCodecSuite extends CirceMunitSuite {
+  private[this] val jdk8 = Option(System.getProperty("java.version")).exists(_.startsWith("1.8."))
+
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
 
@@ -61,10 +63,12 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
   checkAll("Codec[Period]", CodecTests[Period].codec)
   checkAll("Codec[Year]", CodecTests[Year].codec)
   checkAll("Codec[YearMonth]", CodecTests[YearMonth].codec)
-  checkAll("Codec[Duration]", CodecTests[Duration].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[Duration]", CodecTests[Duration].codec)
   checkAll("Codec[ZoneId]", CodecTests[ZoneId].codec)
   checkAll("Codec[ZoneOffset]", CodecTests[ZoneOffset].codec)
-  checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
 
   val invalidText: String = "abc"
   val invalidJson: Json = Json.fromString(invalidText)

@@ -37,10 +37,9 @@ import java.time.{
   ZoneOffset,
   ZonedDateTime
 }
-import java.time.format.{ DateTimeFormatter, DateTimeParseException }
+import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
-import java.util.regex.{ Matcher, Pattern }
 
 import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
 
@@ -1223,137 +1222,12 @@ object Decoder
     protected[this] final def formatMessage(input: String, message: String): String = message
   }
 
-  private[this] lazy val DurationPattern = Pattern.compile(
-    "([-+]?)P(?:([-+]?[0-9]+)D)?" +
-      "(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?",
-    Pattern.CASE_INSENSITIVE
-  )
-
-  private[this] def parseDuration(text: CharSequence): Duration = {
-
-    /*
-     * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
-     *
-     * All rights reserved.
-     *
-     * Redistribution and use in source and binary forms, with or without
-     * modification, are permitted provided that the following conditions are met:
-     *
-     *  * Redistributions of source code must retain the above copyright notice,
-     *    this list of conditions and the following disclaimer.
-     *
-     *  * Redistributions in binary form must reproduce the above copyright notice,
-     *    this list of conditions and the following disclaimer in the documentation
-     *    and/or other materials provided with the distribution.
-     *
-     *  * Neither the name of JSR-310 nor the names of its contributors
-     *    may be used to endorse or promote products derived from this software
-     *    without specific prior written permission.
-     *
-     * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-     * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-     * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-     * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-     * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-     * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-     * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-     * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-     * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-     * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-     * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-     */
-
-    def parseNumber(
-      text: CharSequence,
-      parsed: String,
-      multiplier: Int,
-      errorText: String
-    ): Long = {
-      var _parsed = parsed
-      if (_parsed == null)
-        return 0
-      try {
-        if (_parsed.startsWith("+"))
-          _parsed = _parsed.substring(1)
-        val `val`: Long = java.lang.Long.parseLong(_parsed)
-        Math.multiplyExact(`val`, multiplier.toLong)
-      } catch {
-        case ex: NumberFormatException =>
-          throw new DateTimeParseException(s"Text cannot be parsed to a Duration: $errorText", text, 0, ex)
-        case ex: ArithmeticException =>
-          throw new DateTimeParseException(s"Text cannot be parsed to a Duration: $errorText", text, 0, ex)
-      }
-    }
-
-    def parseFraction(text: CharSequence, parsed: String, negate: Int): Int = {
-      var _parsed = parsed
-      if (_parsed == null || _parsed.length == 0)
-        return 0
-      try {
-        _parsed = (_parsed + "000000000").substring(0, 9)
-        _parsed.toInt * negate
-      } catch {
-        case ex: NumberFormatException =>
-          throw new DateTimeParseException("Text cannot be parsed to a Duration: fraction", text, 0, ex)
-        case ex: ArithmeticException =>
-          throw new DateTimeParseException("Text cannot be parsed to a Duration: fraction", text, 0, ex)
-      }
-    }
-
-    def create(
-      negate: Boolean,
-      daysAsSecs: Long,
-      hoursAsSecs: Long,
-      minsAsSecs: Long,
-      secs: Long,
-      nanos: Int
-    ): Duration = {
-      val seconds: Long =
-        Math.addExact(daysAsSecs, Math.addExact(hoursAsSecs, Math.addExact(minsAsSecs, secs)))
-      if (negate)
-        Duration.ofSeconds(seconds, nanos.toLong).negated
-      else
-        Duration.ofSeconds(seconds, nanos.toLong)
-    }
-
-    val SECONDS_PER_MINUTE = 60
-    val MINUTES_PER_HOUR = 60
-    val HOURS_PER_DAY = 24
-    val SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR
-    val SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY
-
-    val matcher: Matcher = DurationPattern.matcher(text)
-    if (matcher.matches)
-      if (!("T" == matcher.group(3))) {
-        val negate: Boolean = "-" == matcher.group(1)
-        val dayMatch: String = matcher.group(2)
-        val hourMatch: String = matcher.group(4)
-        val minuteMatch: String = matcher.group(5)
-        val secondMatch: String = matcher.group(6)
-        val fractionMatch: String = matcher.group(7)
-        if (dayMatch != null || hourMatch != null || minuteMatch != null || secondMatch != null) {
-          val daysAsSecs: Long = parseNumber(text, dayMatch, SECONDS_PER_DAY, "days")
-          val hoursAsSecs: Long = parseNumber(text, hourMatch, SECONDS_PER_HOUR, "hours")
-          val minsAsSecs: Long = parseNumber(text, minuteMatch, SECONDS_PER_MINUTE, "minutes")
-          val seconds: Long = parseNumber(text, secondMatch, 1, "seconds")
-          val negativeSecs: Boolean = secondMatch != null && secondMatch.charAt(0) == '-'
-          val nanos: Int = parseFraction(text, fractionMatch, if (negativeSecs) -1 else 1)
-          try return create(negate, daysAsSecs, hoursAsSecs, minsAsSecs, seconds, nanos)
-          catch {
-            case ex: ArithmeticException =>
-              throw new DateTimeParseException("Text cannot be parsed to a Duration: overflow", text, 0, ex)
-          }
-        }
-      }
-    throw new DateTimeParseException("Text cannot be parsed to a Duration", text, 0, null)
-  }
-
   /**
    * @group Time
    */
   implicit final lazy val decodeDuration: Decoder[Duration] =
     new JavaTimeDecoder[Duration]("Duration") {
-      protected[this] final def parseUnsafe(input: String): Duration = parseDuration(input)
+      protected[this] final def parseUnsafe(input: String): Duration = Duration.parse(input)
 
       // For some reason the error message for `Duration` does not contain the
       // input string by default.
