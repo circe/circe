@@ -70,8 +70,7 @@ sealed abstract class DecodingFailure(private val lazyReason: Eval[Reason]) exte
       case CustomReason(message)              => message
     }
 
-  final override def getMessage: String =
-    if (history.isEmpty) message else s"$message: ${history.mkString(",")}"
+  final override def getMessage: String = DecodingFailure.showDecodingFailure.show(this)
 
   final def copy(message: String = message, history: => List[CursorOp] = history): DecodingFailure =
     DecodingFailure(CustomReason(message), history)
