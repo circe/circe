@@ -23,90 +23,10 @@ object JavaTimeCaseClass {
 }
 
 class JavaTimeCodecSuite extends CirceMunitSuite {
+  private[this] val jdk8 = Option(System.getProperty("java.version")).exists(_.startsWith("1.8."))
+
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
-
-  // Backported from ScalaCheck
-  // https://github.com/typelevel/scalacheck/blob/v1.16.0/core/shared/src/main/scala/org/scalacheck/time/JavaTimeChoose.scala#L225
-  private[this] implicit final lazy val chooseZoneOffset: Choose[ZoneOffset] =
-    new Choose[ZoneOffset] {
-      override def choose(min: ZoneOffset, max: ZoneOffset): Gen[ZoneOffset] =
-        min.compareTo(max) match {
-          case 0                    => Gen.const(min)
-          case result if result > 0 => Gen.fail
-          case _                    =>
-            // Looks flipped, but it is not.
-            Gen.choose(max.getTotalSeconds, min.getTotalSeconds).map(value => ZoneOffset.ofTotalSeconds(value))
-        }
-    }
-
-  implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
-    Arbitrary(
-      Gen.oneOf(
-        Gen.oneOf(ZoneOffset.MAX, ZoneOffset.MIN, ZoneOffset.UTC),
-        Gen.choose(ZoneOffset.MAX, ZoneOffset.MIN) // These look flipped, but they are not.
-      )
-    )
-
-  implicit val arbitraryZoneId: Arbitrary[ZoneId] = Arbitrary(
-    Gen.oneOf(ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of).toSeq)
-  )
-
-  implicit val arbitraryInstant: Arbitrary[Instant] = Arbitrary(
-    Gen.choose(minInstant.getEpochSecond, maxInstant.getEpochSecond).map(Instant.ofEpochSecond)
-  )
-
-  implicit val arbitraryPeriod: Arbitrary[Period] = Arbitrary(
-    for {
-      years <- arbitrary[Int]
-      months <- arbitrary[Int]
-      days <- arbitrary[Int]
-    } yield Period.of(years, months, days)
-  )
-
-  implicit val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      offset <- arbitrary[ZoneOffset]
-    } yield LocalDateTime.ofInstant(instant, offset)
-  )
-
-  implicit val arbitraryZonedDateTime: Arbitrary[ZonedDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      offset <- arbitrary[ZoneOffset]
-    } yield ZonedDateTime.ofInstant(instant, offset)
-  )
-
-  implicit val arbitraryOffsetDateTime: Arbitrary[OffsetDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      offset <- arbitrary[ZoneOffset]
-    } yield OffsetDateTime.ofInstant(instant, offset)
-  )
-
-  implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalDate))
-
-  implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
-
-  implicit val arbitraryMonthDay: Arbitrary[MonthDay] = Arbitrary(
-    arbitrary[LocalDateTime].map(ldt => MonthDay.of(ldt.getMonth, ldt.getDayOfMonth))
-  )
-
-  implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
-
-  implicit val arbitraryYear: Arbitrary[Year] = Arbitrary(arbitrary[LocalDateTime].map(ldt => Year.of(ldt.getYear)))
-
-  implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(
-    arbitrary[LocalDateTime].map(ldt => YearMonth.of(ldt.getYear, ldt.getMonth))
-  )
-
-  implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
-    for {
-      first <- arbitrary[Instant]
-      second <- arbitrary[Instant]
-    } yield Duration.between(first, second)
-  )
 
   implicit val arbitraryJavaTimeCaseClass: Arbitrary[JavaTimeCaseClass] = Arbitrary(
     for {
@@ -143,10 +63,12 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
   checkAll("Codec[Period]", CodecTests[Period].codec)
   checkAll("Codec[Year]", CodecTests[Year].codec)
   checkAll("Codec[YearMonth]", CodecTests[YearMonth].codec)
-  checkAll("Codec[Duration]", CodecTests[Duration].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[Duration]", CodecTests[Duration].codec)
   checkAll("Codec[ZoneId]", CodecTests[ZoneId].codec)
   checkAll("Codec[ZoneOffset]", CodecTests[ZoneOffset].codec)
-  checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
 
   val invalidText: String = "abc"
   val invalidJson: Json = Json.fromString(invalidText)
