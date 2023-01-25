@@ -9,7 +9,7 @@ jobs:
   github-pages:
     strategy:
       matrix:
-        scala: [ "2.13.10" ]
+        scala: [ "2.13.8" ]
         java: [ "adopt@1.8" ]
         ruby: [ "2.6.3" ]
 
