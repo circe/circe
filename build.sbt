@@ -87,15 +87,16 @@ lazy val allSettings = Seq(
   Compile / scalastyleSources ++= (Compile / unmanagedSourceDirectories).value
 )
 
-/** Replace '/' with '-' in a path which represents a module name.
-  *
-  * The circe module's path is used in most cases to derive the module
-  * name. For some modules, this path includes sub-directories, e.g. scalafix
-  * internal rules. When this is the case, since the path is represented as a
-  * simple String, the '/' character can cause problems as the module name is
-  * used inside SBT and Coursier for Maven style artifact operations and '/'
-  * is not a valid character in a module name.
-  */
+/**
+ * Replace '/' with '-' in a path which represents a module name.
+ *
+ * The circe module's path is used in most cases to derive the module
+ * name. For some modules, this path includes sub-directories, e.g. scalafix
+ * internal rules. When this is the case, since the path is represented as a
+ * simple String, the '/' character can cause problems as the module name is
+ * used inside SBT and Coursier for Maven style artifact operations and '/'
+ * is not a valid character in a module name.
+ */
 def normalizeModuleNameFromPath(path: String): String =
   path.replaceAll("/", "-")
 
