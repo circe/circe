@@ -11,3 +11,5 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.6")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("io.kevinlee" % "sbt-github-pages" % "0.8.1")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.1")
+
+dependencyOverrides += "org.scala-lang.modules" %% "scala-xml" % "2.1.0"
