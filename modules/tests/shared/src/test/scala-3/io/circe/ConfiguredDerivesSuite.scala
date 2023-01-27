@@ -5,6 +5,7 @@ import cats.kernel.instances.all.*
 import cats.syntax.eq.*
 import cats.data.Validated
 import io.circe.{ Codec, Decoder, DecodingFailure, Encoder, Json }
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.CursorOp.DownField
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
@@ -50,7 +51,7 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     given Codec[ConfigExampleBase.ConfigExampleFoo] = Codec.AsObject.derivedConfigured
 
     val json = Json.fromString("a string")
-    def failure(name: String) = DecodingFailure(s"$name: expected a json object.", List())
+    def failure(name: String) = DecodingFailure(WrongTypeExpectation("object", json), List())
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(failure("ConfigExampleBase"))) // sum type
     assert(
       Decoder[ConfigExampleBase.ConfigExampleFoo].decodeJson(json) === Left(failure("ConfigExampleFoo"))

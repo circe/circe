@@ -5,6 +5,7 @@ import scala.compiletime.constValue
 import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance:
   def elemDecoders: List[Decoder[?]]
@@ -36,10 +37,11 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
           case Right(Some(sumTypeName)) => fromName(sumTypeName, c)
       case _ =>
         c.keys match
-          case None => fail(DecodingFailure(s"$name: expected a json object.", c.history))
+          case None => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
           case Some(keys) =>
             val iter = keys.iterator
-            if !iter.hasNext then fail(DecodingFailure(s"$name: expected non-empty json object.", c.history))
+            if !iter.hasNext then
+              fail(DecodingFailure(WrongTypeExpectation("non-empty json object", c.value), c.history))
             else
               val sumTypeName = iter.next
               if iter.hasNext && conf.strictDecoding then
@@ -80,7 +82,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
     strictFail: (List[String], IndexedSeq[String]) => R
   )(decodeProduct: => R): R =
     c.value.isObject match
-      case false                        => fail(DecodingFailure(s"$name: expected a json object.", c.history))
+      case false                        => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
       case true if !conf.strictDecoding => decodeProduct
       case true =>
         val expectedFields = elemLabels.toIndexedSeq.map(conf.transformMemberNames) ++ conf.discriminator
