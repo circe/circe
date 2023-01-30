@@ -5,25 +5,57 @@ import scala.deriving.Mirror
 import scala.collection.mutable.WrappedArray
 import scala.compiletime.{ constValue, erasedValue, error, summonFrom }
 
-object Derivation {
+enum DerivationType {
+  case Auto
+  case SemiAuto
+}
 
+object Derivation {
   inline final def summonLabels[T <: Tuple]: Array[String] = summonLabelsRec[T].toArray
+
+  inline final def summonLabelsRec[T <: Tuple]: List[String] = inline erasedValue[T] match {
+    case _: EmptyTuple => Nil
+    case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabelsRec[ts]
+  }
+}
+
+object DerivationAuto {
   inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] = summonDecodersRec[T].toArray
   inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] = summonEncodersRec[T].toArray
 
   inline final def summonEncoder[A]: Encoder[A] = summonFrom {
     case encodeA: Encoder[A] => encodeA
-    case _: Mirror.Of[A]     => Encoder.AsObject.derived[A]
+    case _: Mirror.Of[A]     => Encoder.AsObject.derived[A](DerivationType.Auto)
   }
 
   inline final def summonDecoder[A]: Decoder[A] = summonFrom {
     case decodeA: Decoder[A] => decodeA
-    case _: Mirror.Of[A]     => Decoder.derived[A]
+    case _: Mirror.Of[A]     => Decoder.derived[A](DerivationType.Auto)
   }
 
-  inline final def summonLabelsRec[T <: Tuple]: List[String] = inline erasedValue[T] match {
-    case _: EmptyTuple => Nil
-    case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabelsRec[ts]
+  inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
+    inline erasedValue[T] match {
+      case _: EmptyTuple => Nil
+      case _: (t *: ts)  => summonDecoder[t] :: summonDecodersRec[ts]
+    }
+
+  inline final def summonEncodersRec[T <: Tuple]: List[Encoder[_]] =
+    inline erasedValue[T] match {
+      case _: EmptyTuple => Nil
+      case _: (t *: ts)  => summonEncoder[t] :: summonEncodersRec[ts]
+    }
+}
+
+object DerivationSemiAuto {
+  inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] = summonDecodersRec[T].toArray
+  inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] = summonEncodersRec[T].toArray
+
+  inline final def summonEncoder[A]: Encoder[A] = summonFrom {
+    case encodeA: Encoder[A] => encodeA
+  }
+
+  inline final def summonDecoder[A]: Decoder[A] = summonFrom {
+    case decodeA: Decoder[A] => decodeA
   }
 
   inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
@@ -40,14 +72,21 @@ object Derivation {
 }
 
 private[circe] trait EncoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+  inline final def derived[A](
+    inline derivationType: DerivationType
+  )(using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
     new DerivedEncoder[A]
       with DerivedInstance[A](
         constValue[A.MirroredLabel],
         Derivation.summonLabels[A.MirroredElemLabels]
       ) {
       protected[this] lazy val elemEncoders: Array[Encoder[_]] =
-        Derivation.summonEncoders[A.MirroredElemTypes]
+        inline derivationType match {
+          case DerivationType.Auto =>
+            DerivationAuto.summonEncoders[A.MirroredElemTypes]
+          case DerivationType.SemiAuto =>
+            DerivationSemiAuto.summonEncoders[A.MirroredElemTypes]
+        }
 
       final def encodeObject(a: A): JsonObject = inline A match {
         case m: Mirror.ProductOf[A] =>
@@ -61,14 +100,19 @@ private[circe] trait EncoderDerivation {
 }
 
 private[circe] trait DecoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
+  inline final def derived[A](inline derivationType: DerivationType)(using inline A: Mirror.Of[A]): Decoder[A] =
     new DerivedDecoder[A]
       with DerivedInstance[A](
         constValue[A.MirroredLabel],
         Derivation.summonLabels[A.MirroredElemLabels]
       ) {
       protected[this] lazy val elemDecoders: Array[Decoder[_]] =
-        Derivation.summonDecoders[A.MirroredElemTypes]
+        inline derivationType match {
+          case DerivationType.Auto =>
+            DerivationAuto.summonDecoders[A.MirroredElemTypes]
+          case DerivationType.SemiAuto =>
+            DerivationSemiAuto.summonDecoders[A.MirroredElemTypes]
+        }
 
       final def apply(c: HCursor): Decoder.Result[A] = inline A match {
         case m: Mirror.ProductOf[A] =>
@@ -132,7 +176,7 @@ private[circe] trait DecoderDerivation {
 }
 
 private[circe] trait CodecDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
+  inline final def derived[A](inline derivationType: DerivationType)(using inline A: Mirror.Of[A]): Codec.AsObject[A] =
     new Codec.AsObject[A]
       with DerivedDecoder[A]
       with DerivedEncoder[A]
@@ -141,9 +185,20 @@ private[circe] trait CodecDerivation {
         Derivation.summonLabels[A.MirroredElemLabels]
       ) {
       protected[this] lazy val elemDecoders: Array[Decoder[_]] =
-        Derivation.summonDecoders[A.MirroredElemTypes]
+        inline derivationType match {
+          case DerivationType.Auto =>
+            DerivationAuto.summonDecoders[A.MirroredElemTypes]
+          case DerivationType.SemiAuto =>
+            DerivationSemiAuto.summonDecoders[A.MirroredElemTypes]
+        }
+
       protected[this] lazy val elemEncoders: Array[Encoder[_]] =
-        Derivation.summonEncoders[A.MirroredElemTypes]
+        inline derivationType match {
+          case DerivationType.Auto =>
+            DerivationAuto.summonEncoders[A.MirroredElemTypes]
+          case DerivationType.SemiAuto =>
+            DerivationSemiAuto.summonEncoders[A.MirroredElemTypes]
+        }
 
       final def encodeObject(a: A): JsonObject = inline A match {
         case m: Mirror.ProductOf[A] =>
