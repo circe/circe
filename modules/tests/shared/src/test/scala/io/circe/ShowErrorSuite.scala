@@ -52,6 +52,13 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     assertEquals(DecodingFailure("the message", ops).show, "DecodingFailure at .foo.bar[2]: the message")
   }
 
+  test("DecodingFailure.toString should be equivalent to Show") {
+    val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
+
+    val df = DecodingFailure("the message", ops)
+    assertEquals(df.show, df.toString)
+  }
+
   test("Show[DecodingFailure] should produce the expected output on a larger example") {
     val ops = List(
       MoveLeft,

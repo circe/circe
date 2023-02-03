@@ -16,7 +16,7 @@ object JsonLiteralMacros {
     val replacements = args match {
       case Varargs(argExprs) =>
         argExprs.map(Replacement(stringParts, _))
-      case other => report.error("Invalid arguments for json literal."); Nil
+      case other => report.errorAndAbort("Invalid arguments for json literal.")
     }
 
     val jsonString = stringParts.zip(replacements.map(_.placeholder)).foldLeft("") {
@@ -87,8 +87,7 @@ object JsonLiteralMacros {
     Parser.parseFromString[Expr[Json]](jsonString) match {
       case Success(jsonExpr) => jsonExpr
       case Failure(e) =>
-        report.error(e.toString)
-        '{ null }
+        report.errorAndAbort(e.toString)
     }
   }
 }

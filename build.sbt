@@ -55,7 +55,7 @@ ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaV
 ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 
-val catsVersion = "2.8.0"
+val catsVersion = "2.9.0"
 val jawnVersion = "1.4.0"
 val shapelessVersion = "2.3.10"
 val refinedVersion = "0.9.29"
@@ -64,11 +64,11 @@ val refinedNativeVersion = "0.10.1"
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.17.0"
-val munitVersion = "1.0.0-M6"
+val munitVersion = "1.0.0-M7"
 val disciplineVersion = "1.5.1"
 val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
-val scalaJavaTimeVersion = "2.4.0"
+val scalaJavaTimeVersion = "2.5.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -87,11 +87,24 @@ lazy val allSettings = Seq(
   Compile / scalastyleSources ++= (Compile / unmanagedSourceDirectories).value
 )
 
+/**
+ * Replace '/' with '-' in a path which represents a module name.
+ *
+ * The circe module's path is used in most cases to derive the module
+ * name. For some modules, this path includes sub-directories, e.g. scalafix
+ * internal rules. When this is the case, since the path is represented as a
+ * simple String, the '/' character can cause problems as the module name is
+ * used inside SBT and Coursier for Maven style artifact operations and '/'
+ * is not a valid character in a module name.
+ */
+def normalizeModuleNameFromPath(path: String): String =
+  path.replaceAll("/", "-")
+
 def circeProject(path: String)(project: Project) = {
   val docName = path.split("[-/]").mkString(" ")
   project.settings(
     description := s"circe $docName",
-    moduleName := s"circe-$path",
+    moduleName := s"circe-${normalizeModuleNameFromPath(path)}",
     name := s"Circe $docName",
     allSettings
   )
