@@ -1,9 +1,8 @@
 package io.circe
 
 import cats.kernel.Eq
-import cats.kernel.instances.all._
 import io.circe.testing.CodecTests
-import io.circe.tests.{ CirceMunitSuite, PlatformSpecificInstances }
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 import scala.quoted.staging
 
@@ -168,7 +167,7 @@ object DerivesSuite {
     given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
 }
 
-class DerivesSuite extends CirceMunitSuite with PlatformSpecificInstances {
+class DerivesSuite extends CirceMunitSuite {
   import DerivesSuite._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)
@@ -180,13 +179,13 @@ class DerivesSuite extends CirceMunitSuite with PlatformSpecificInstances {
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
 
-  property("Derives under explicit-nulls") {
+  property("Derives under `-Yexplicit-nulls` should work") {
     val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
     val explicitNullsCompiler = staging.Compiler.make(getClass.getClassLoader)(settings)
-    staging.run {
+    staging.run('{
       val encoder = Encoder.AsObject.derived[Box[Wub]];
       val decoder = Decoder.derived[Box[Wub]];
       val codec = Codec.AsObject.derived[Box[Wub]];
-    }(using explicitNullsCompiler)
+    })(using explicitNullsCompiler)
   }
 }
