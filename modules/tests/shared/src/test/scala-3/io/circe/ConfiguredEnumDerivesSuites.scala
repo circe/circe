@@ -30,19 +30,16 @@ object ConfiguredEnumDerivesSuites:
 class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
   import ConfiguredEnumDerivesSuites.*
 
-  /* // compileErrors cannot handle scala.compiletime.error: https://github.com/scalameta/munit/issues/453
   test("ConfiguredEnum derivation must fail to compile for enums with non singleton cases") {
     val error = compileErrors("""
         object WithNonSingletonCase:
-          given EnumConfiguration = EnumConfiguration.default
+          given Configuration = Configuration.default
         enum WithNonSingletonCase derives ConfiguredEnumCodec:
           case SingletonCase
           case NonSingletonCase(field: Int)""")
-    val expectedError = """  enum WithNonSingletonCase derives ConfiguredEnumCodec:
-                          |                                    ^
-                          |Enum "WithNonSingletonCase" contains non singleton case "NonSingletonCase"""".stripMargin
-    assertNoDiff(error, expectedError)
-  }*/
+    val expectedError = """error: Enum "WithNonSingletonCase" contains non singleton case "NonSingletonCase""""
+    assert(error.contains(expectedError) == true)
+  }
 
   {
     given Configuration = Configuration.default
