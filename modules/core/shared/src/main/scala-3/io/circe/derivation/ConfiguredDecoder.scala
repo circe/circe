@@ -7,10 +7,12 @@ import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 
-trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], DerivedInstance:
-  def elemDecoders: List[Decoder[?]]
-  def elemDefaults: Default[A]
-  val constructorNames = elemLabels.map(conf.transformConstructorNames)
+trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
+  val name: String
+  val elemLabels: List[String]
+  val elemDecoders: List[Decoder[?]]
+  lazy val elemDefaults: Default[A]
+  lazy val constructorNames: List[String] = elemLabels.map(conf.transformConstructorNames)
 
   private def strictDecodingFailure(c: HCursor, message: String): DecodingFailure =
     DecodingFailure(s"Strict decoding $name - $message", c.history)
@@ -155,12 +157,10 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A], Derive
 
 object ConfiguredDecoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
-    new ConfiguredDecoder[A]
-      with DerivedInstance(
-        constValue[mirror.MirroredLabel],
-        summonLabels[mirror.MirroredElemLabels]
-      ):
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+    new ConfiguredDecoder[A]:
+      val name = constValue[mirror.MirroredLabel]
+      val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
+      val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       final def apply(c: HCursor): Decoder.Result[A] =

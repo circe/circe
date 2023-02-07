@@ -9,8 +9,10 @@ import io.circe.derivation._
 @deprecated(since = "0.14.4")
 object Derivation {
   inline final def summonLabels[T <: Tuple]: Array[String] = summonLabelsRec[T].toArray
-  inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] = derivation.summonDecoders[T](using Configuration.default).toArray
-  inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] = derivation.summonEncoders[T](using Configuration.default).toArray
+  inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] =
+    derivation.summonDecoders[T](using Configuration.default).toArray
+  inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] =
+    derivation.summonEncoders[T](using Configuration.default).toArray
 
   inline final def summonEncoder[A]: Encoder[A] = derivation.summonEncoder[A](using Configuration.default)
   inline final def summonDecoder[A]: Decoder[A] = derivation.summonDecoder[A](using Configuration.default)

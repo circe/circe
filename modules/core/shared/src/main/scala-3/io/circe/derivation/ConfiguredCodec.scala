@@ -7,13 +7,11 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredCodec[A] =
-    new ConfiguredCodec[A]
-      with DerivedInstance(
-        constValue[mirror.MirroredLabel],
-        summonLabels[mirror.MirroredElemLabels]
-      ):
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+    new ConfiguredCodec[A]:
+      val name = constValue[mirror.MirroredLabel]
+      val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
+      val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+      val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       final def encodeObject(a: A): JsonObject =
