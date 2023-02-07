@@ -21,5 +21,9 @@ object renaming:
     swapPattern.matcher(partial).replaceAll("$1-$2").toLowerCase
   }
 
+  val pascalCase: String => String = { s =>
+    s"${s.charAt(0).toUpper}${s.substring(1)}"
+  }
+
   final def replaceWith(pairs: (String, String)*): String => String =
     original => pairs.toMap.getOrElse(original, original)

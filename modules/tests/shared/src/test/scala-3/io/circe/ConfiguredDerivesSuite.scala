@@ -141,6 +141,20 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
   }
 
+  property("Configuration#transformMemberNames should support member name transformation using PascalCase") {
+    forAll { (foo: ConfigExampleBase.ConfigExampleFoo) =>
+      given Configuration = Configuration.default.withPascalCaseMemberNames
+      given Codec[ConfigExampleBase.ConfigExampleFoo] = Codec.AsObject.derivedConfigured
+      val json = Json.obj(
+        "ThisIsAField" -> foo.thisIsAField.asJson,
+        "A" -> foo.a.asJson,
+        "B" -> foo.b.asJson
+      )
+      assert(Encoder[ConfigExampleBase.ConfigExampleFoo].apply(foo) === json)
+      assert(Decoder[ConfigExampleBase.ConfigExampleFoo].decodeJson(json) === Right(foo))
+    }
+  }
+
   property("Configuration#useDefaults should support using default values during decoding") {
     forAll { (f: String, b: Double) =>
       given Configuration = Configuration.default.withDefaults

@@ -27,11 +27,13 @@ case class Configuration(
   def withSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.snakeCase)
   def withScreamingSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.screamingSnakeCase)
   def withKebabCaseMemberNames: Configuration = withTransformMemberNames(renaming.kebabCase)
+  def withPascalCaseMemberNames: Configuration = withTransformMemberNames(renaming.pascalCase)
 
   def withTransformConstructorNames(f: String => String): Configuration = copy(transformConstructorNames = f)
   def withSnakeCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.snakeCase)
   def withScreamingSnakeCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.screamingSnakeCase)
   def withKebabCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.kebabCase)
+  def withPascalCaseConstructorNames: Configuration = withTransformConstructorNames(renaming.pascalCase)
 
   def withDefaults: Configuration = copy(useDefaults = true)
   def withoutDefaults: Configuration = copy(useDefaults = false)
