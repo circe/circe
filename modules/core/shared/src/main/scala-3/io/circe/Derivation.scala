@@ -26,7 +26,9 @@ object Derivation {
 
 @deprecated(since = "0.14.4")
 private[circe] trait DerivedInstance
+@deprecated(since = "0.14.4")
 private[circe] trait DerivedEncoder
+@deprecated(since = "0.14.4")
 private[circe] trait DerivedDecoder
 
 private[circe] trait EncoderDerivation:

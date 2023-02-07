@@ -5,8 +5,8 @@ import scala.compiletime.constValue
 import io.circe.{ Encoder, Json, JsonObject }
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A]:
-  val elemLabels: List[String]
-  val elemEncoders: List[Encoder[?]]
+  lazy val elemLabels: List[String]
+  lazy val elemEncoders: List[Encoder[?]]
 
   final def encodeElemAt(index: Int, elem: Any, transformName: String => String): (String, Json) =
     (transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem))
@@ -28,8 +28,8 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A]:
-      val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
 
       final def encodeObject(a: A): JsonObject =
         inline mirror match
