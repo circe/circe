@@ -7,7 +7,7 @@ val Scala213V: String = "2.13.8"
 val Scala3V: String = "3.2.1"
 
 ThisBuild / tlBaseVersion := "0.14"
-ThisBuild / tlCiReleaseTags := false
+ThisBuild / tlCiReleaseTags := true
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3V, Scala212V, Scala213V)
