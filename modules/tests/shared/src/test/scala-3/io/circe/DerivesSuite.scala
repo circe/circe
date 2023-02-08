@@ -126,6 +126,47 @@ object DerivesSuite {
     implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
       Arbitrary(atDepth(0))
   }
+
+  enum Vegetable derives Codec.AsObject:
+    case Potato(species: String)
+    case Carrot(length: Double)
+    case Onion(layers: Int)
+    case Turnip
+  object Vegetable:
+    given Eq[Vegetable] = Eq.fromUniversalEquals
+    given Arbitrary[Vegetable.Potato] = Arbitrary(
+      Arbitrary.arbitrary[String].map(Vegetable.Potato.apply)
+    )
+    given Arbitrary[Vegetable.Carrot] = Arbitrary(
+      Arbitrary.arbitrary[Double].map(Vegetable.Carrot.apply)
+    )
+    given Arbitrary[Vegetable.Onion] = Arbitrary(
+      Arbitrary.arbitrary[Int].map(Vegetable.Onion.apply)
+    )
+    given Arbitrary[Vegetable.Turnip.type] = Arbitrary(Gen.const(Vegetable.Turnip))
+    given Arbitrary[Vegetable] = Arbitrary(
+      Gen.oneOf(
+        Arbitrary.arbitrary[Vegetable.Potato],
+        Arbitrary.arbitrary[Vegetable.Carrot],
+        Arbitrary.arbitrary[Vegetable.Onion],
+        Arbitrary.arbitrary[Vegetable.Turnip.type]
+      )
+    )
+
+  enum RecursiveEnumAdt derives Codec.AsObject:
+    case BaseAdtExample(a: String)
+    case NestedAdtExample(r: RecursiveEnumAdt)
+  object RecursiveEnumAdt:
+    given Eq[RecursiveEnumAdt] = Eq.fromUniversalEquals
+
+    private def atDepth(depth: Int): Gen[RecursiveEnumAdt] = if (depth < 3)
+      Gen.oneOf(
+        Arbitrary.arbitrary[String].map(RecursiveEnumAdt.BaseAdtExample(_)),
+        atDepth(depth + 1).map(RecursiveEnumAdt.NestedAdtExample(_))
+      )
+    else Arbitrary.arbitrary[String].map(RecursiveEnumAdt.BaseAdtExample(_))
+
+    given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
 }
 
 class DerivesSuite extends CirceMunitSuite {
@@ -137,4 +178,6 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
+  checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
+  checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
 }
