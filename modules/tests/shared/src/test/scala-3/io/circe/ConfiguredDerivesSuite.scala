@@ -231,6 +231,7 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
   }
 
+
   test(
     "Decoding when Configuration#discriminator is set should fail if the discriminator field does not exist or its null"
   ) {
@@ -412,3 +413,23 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
       )
     )
   }
+
+  {
+    given Configuration = Configuration.default.withDiscriminator("type")
+    sealed trait GrandParent derives ConfiguredCodec
+    object GrandParent:
+      given Eq[GrandParent] = Eq.fromUniversalEquals
+
+      sealed trait Parent extends GrandParent
+
+      case class Child(a: Int) extends Parent
+
+      test("Codec for hierarchy of more than 1 level with discriminator should encode and decode correctly") {
+        val child: GrandParent = Child(1)
+        val json = Encoder.AsObject[GrandParent].apply(child)
+        val result = Decoder[GrandParent].decodeJson(json)
+        assert(result === Right(child), result)
+      }
+
+  }
+

@@ -6,6 +6,7 @@ import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+import cats.implicits.*
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   val name: String
@@ -19,10 +20,20 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
 
   /** Decodes a class/object/case of a Sum type handling discriminator and strict decoding. */
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
+
     def fromName(sumTypeName: String, cursor: ACursor): R =
-      constructorNames.indexOf(sumTypeName) match
-        case -1 => fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
-        case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
+      def findDecoder(decoder: Decoder[?], searched: List[ConfiguredDecoder[?]]): Option[Decoder[?]] =
+        decoder match {
+          case cd: ConfiguredDecoder[?] if !searched.contains(cd)=>
+            cd.constructorNames.indexOf(sumTypeName) match {
+              case -1 => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
+              case index => Option(cd.elemDecoders(index))
+            }
+          case _ => None
+        }
+      findDecoder(this, Nil).fold(fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))) { decoder =>
+        decode(decoder.asInstanceOf[Decoder[A]])(cursor)
+      }
 
     conf.discriminator match
       case Some(discriminator) =>

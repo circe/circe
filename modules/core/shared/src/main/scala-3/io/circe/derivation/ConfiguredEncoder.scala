@@ -22,8 +22,10 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)
     conf.discriminator match
       case None => JsonObject.singleton(constructorName, json)
-      case Some(discriminator) =>
-        json.asObject.getOrElse(JsonObject.empty).add(discriminator, Json.fromString(constructorName))
+      case Some(discriminator) => {
+        val jo = json.asObject.getOrElse(JsonObject.empty)
+        if(jo.contains(discriminator)) jo else jo.add(discriminator, Json.fromString(constructorName))
+      }
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
