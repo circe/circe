@@ -35,8 +35,12 @@ object Default:
     val companion = TypeRepr.of[T].typeSymbol.companionModule
 
     val expressions: List[Expr[Option[Any]]] = List.tabulate(n) { i =>
-      val termOpt =
-        companion.declaredMethod(s"$$lessinit$$greater$$default$$${i + 1}").headOption.map(Select(Ref(companion), _))
+      val termOpt = companion.declaredMethod(s"$$lessinit$$greater$$default$$${i + 1}").headOption.map { s =>
+        val select = Ref(companion).select(s)
+        TypeRepr.of[T].typeArgs match
+          case Nil      => select
+          case typeArgs => select.appliedToTypes(typeArgs)
+      }
 
       termOpt match
         case None     => Expr(None)
