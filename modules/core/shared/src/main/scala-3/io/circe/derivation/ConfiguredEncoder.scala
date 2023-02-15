@@ -26,7 +26,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
         json.asObject.getOrElse(JsonObject.empty).add(discriminator, Json.fromString(constructorName))
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A]:
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
