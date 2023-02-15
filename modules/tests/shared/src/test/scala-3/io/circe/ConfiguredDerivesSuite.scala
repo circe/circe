@@ -155,7 +155,7 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
   }
 
-  property("Configuration#useDefaults should support using default values during decoding") {
+  property("Configuration#withDefaults should support using default values during decoding") {
     forAll { (f: String, b: Double) =>
       given Configuration = Configuration.default.withDefaults
       given Codec[ConfigExampleBase.ConfigExampleFoo] = Codec.AsObject.derivedConfigured
@@ -231,6 +231,19 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
   }
 
+  {
+    given Configuration = Configuration.default.withDefaults
+
+    case class GenericFoo[T](a: List[T] = List.empty, b: String = "b")
+    object GenericFoo:
+      given [T: Encoder: Decoder]: Codec.AsObject[GenericFoo[T]] = ConfiguredCodec.derived
+      given [T: Eq]: Eq[GenericFoo[T]] = Eq.fromUniversalEquals
+
+    test("Configuration#withDefaults should support generic classes") {
+      val json = Json.obj()
+      assert(Decoder[GenericFoo[Int]].decodeJson(json) === Right(GenericFoo(List.empty[Int], "b")))
+    }
+  }
 
   test(
     "Decoding when Configuration#discriminator is set should fail if the discriminator field does not exist or its null"

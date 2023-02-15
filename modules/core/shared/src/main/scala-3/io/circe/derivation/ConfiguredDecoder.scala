@@ -167,7 +167,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
+  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A]:
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
