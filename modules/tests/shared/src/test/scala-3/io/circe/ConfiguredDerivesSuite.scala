@@ -416,20 +416,22 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
 
   {
     given Configuration = Configuration.default.withDiscriminator("type")
+
     sealed trait GrandParent derives ConfiguredCodec
     object GrandParent:
       given Eq[GrandParent] = Eq.fromUniversalEquals
 
-      sealed trait Parent extends GrandParent
+    sealed trait Parent extends GrandParent
 
-      case class Child(a: Int) extends Parent
+    case class Child(a: Int, b: String) extends Parent
 
-      test("Codec for hierarchy of more than 1 level with discriminator should encode and decode correctly") {
-        val child: GrandParent = Child(1)
-        val json = Encoder.AsObject[GrandParent].apply(child)
-        val result = Decoder[GrandParent].decodeJson(json)
-        assert(result === Right(child), result)
-      }
-
+    test("Codec for hierarchy of more than 1 level with discriminator should encode and decode correctly") {
+      val child: GrandParent = Child(1, "a")
+      val json = Encoder.AsObject[GrandParent].apply(child)
+      val result = Decoder[GrandParent].decodeJson(json)
+      assert(result === Right(child), result)
+    }
   }
+
+
 

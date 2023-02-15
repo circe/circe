@@ -24,7 +24,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     def fromName(sumTypeName: String, cursor: ACursor): R =
       def findDecoder(decoder: Decoder[?], searched: List[ConfiguredDecoder[?]]): Option[Decoder[?]] =
         decoder match {
-          case cd: ConfiguredDecoder[?] if !searched.contains(cd)=>
+          case cd: ConfiguredDecoder[?] if !searched.contains(cd) =>
             cd.constructorNames.indexOf(sumTypeName) match {
               case -1 => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
               case index => Option(cd.elemDecoders(index))
