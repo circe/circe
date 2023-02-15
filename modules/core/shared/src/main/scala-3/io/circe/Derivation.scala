@@ -41,7 +41,7 @@ private[circe] trait DerivedInstance[A](
   }
 }
 @deprecated(since = "0.14.4")
-private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] {
+private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] with Encoder.AsObject[A] {
   protected[this] def elemEncoders: Array[Encoder[_]]
 
   final def encodeWith(index: Int)(value: Any): (String, Json) =
@@ -64,7 +64,7 @@ private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] {
     }
 }
 @deprecated(since = "0.14.4")
-private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] {
+private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A] {
   protected[this] def elemDecoders: Array[Decoder[_]]
 
   final def decodeWith(index: Int)(c: HCursor): Decoder.Result[AnyRef] =
