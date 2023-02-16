@@ -30,11 +30,6 @@ object ConfiguredCodec:
           case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
           case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
 
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
-
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
