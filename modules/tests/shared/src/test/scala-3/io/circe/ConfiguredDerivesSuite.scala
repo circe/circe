@@ -445,6 +445,3 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
       assert(result === Right(child), result)
     }
   }
-
-
-

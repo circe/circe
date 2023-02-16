@@ -26,12 +26,14 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
         decoder match {
           case cd: ConfiguredDecoder[?] if !searched.contains(cd) =>
             cd.constructorNames.indexOf(sumTypeName) match {
-              case -1 => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
+              case -1    => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
               case index => Option(cd.elemDecoders(index))
             }
           case _ => None
         }
-      findDecoder(this, Nil).fold(fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))) { decoder =>
+      findDecoder(this, Nil).fold(
+        fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
+      ) { decoder =>
         decode(decoder.asInstanceOf[Decoder[A]])(cursor)
       }
 

@@ -25,17 +25,16 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 
     val isConcrete = elemEncoders(index) match {
       case ce: ConfiguredEncoder[?] => !ce.isSum
-      case _ => true
+      case _                        => true
     }
 
     conf.discriminator match
       case Some(discriminator) =>
         val jo = json.asObject.getOrElse(JsonObject.empty)
-        if(isConcrete)
+        if (isConcrete)
           jo.add(discriminator, Json.fromString(constructorName))
         else jo
       case None => JsonObject.singleton(constructorName, json)
-
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
@@ -45,7 +44,7 @@ object ConfiguredEncoder:
       lazy val isSum: Boolean =
         inline mirror match
           case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]   => true
+          case _: Mirror.SumOf[A]     => true
 
       final def encodeObject(a: A): JsonObject =
         inline mirror match

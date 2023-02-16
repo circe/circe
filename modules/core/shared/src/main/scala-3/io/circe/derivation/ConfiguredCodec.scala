@@ -33,7 +33,7 @@ object ConfiguredCodec:
       lazy val isSum: Boolean =
         inline mirror match
           case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]   => true
+          case _: Mirror.SumOf[A]     => true
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
