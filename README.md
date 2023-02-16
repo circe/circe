@@ -35,6 +35,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Datalogue](https://datalogue.io)
 * [Dreamlines](https://www.dreamlines.com/)
 * [DriveTribe](https://drivetribe.com)
+* [Dassault Systèmes](https://www.3ds.com/)
 * [Earnest](https://www.earnest.com)
 * [Elastic](https://www.elastic.co)
 * [Emmy Sharing](https://emmy-sharing.de/en/)
