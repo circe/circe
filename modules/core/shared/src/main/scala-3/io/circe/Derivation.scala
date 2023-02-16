@@ -25,11 +25,96 @@ object Derivation {
 }
 
 @deprecated(since = "0.14.4")
-private[circe] trait DerivedInstance
+private[circe] trait DerivedInstance[A](
+  final val name: String,
+  protected[this] final val elemLabels: Array[String]
+) {
+  final def elemCount: Int = elemLabels.length
+
+  protected[this] final def findLabel(name: String): Int = {
+    var i = 0
+    while (i < elemCount) {
+      if (elemLabels(i) == name) return i
+      i += 1
+    }
+    return -1
+  }
+}
 @deprecated(since = "0.14.4")
-private[circe] trait DerivedEncoder
+private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] with Encoder.AsObject[A] {
+  protected[this] def elemEncoders: Array[Encoder[_]]
+
+  final def encodeWith(index: Int)(value: Any): (String, Json) =
+    (elemLabels(index), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(value))
+
+  final def encodedIterable(value: Product): Iterable[(String, Json)] =
+    new Iterable[(String, Json)] {
+      def iterator: Iterator[(String, Json)] = new Iterator[(String, Json)] {
+        private[this] val elems: Iterator[Any] = value.productIterator
+        private[this] var index: Int = 0
+
+        def hasNext: Boolean = elems.hasNext
+
+        def next(): (String, Json) = {
+          val field = encodeWith(index)(elems.next())
+          index += 1
+          field
+        }
+      }
+    }
+}
 @deprecated(since = "0.14.4")
-private[circe] trait DerivedDecoder
+private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A] {
+  protected[this] def elemDecoders: Array[Decoder[_]]
+
+  final def decodeWith(index: Int)(c: HCursor): Decoder.Result[AnyRef] =
+    elemDecoders(index).asInstanceOf[Decoder[AnyRef]].tryDecode(c.downField(elemLabels(index)))
+
+  final def decodeAccumulatingWith(index: Int)(c: HCursor): Decoder.AccumulatingResult[AnyRef] =
+    elemDecoders(index).asInstanceOf[Decoder[AnyRef]].tryDecodeAccumulating(c.downField(elemLabels(index)))
+
+  final def resultIterator(c: HCursor): Iterator[Decoder.Result[AnyRef]] =
+    new Iterator[Decoder.Result[AnyRef]] {
+      private[this] var i: Int = 0
+
+      def hasNext: Boolean = i < elemCount
+
+      def next: Decoder.Result[AnyRef] = {
+        val result = decodeWith(i)(c)
+        i += 1
+        result
+      }
+    }
+
+  final def resultAccumulatingIterator(c: HCursor): Iterator[Decoder.AccumulatingResult[AnyRef]] =
+    new Iterator[Decoder.AccumulatingResult[AnyRef]] {
+      private[this] var i: Int = 0
+
+      def hasNext: Boolean = i < elemCount
+
+      def next: Decoder.AccumulatingResult[AnyRef] = {
+        val result = decodeAccumulatingWith(i)(c)
+        i += 1
+        result
+      }
+    }
+
+  final def extractIndexFromWrapper(c: HCursor): Int = c.keys match {
+    case Some(keys) =>
+      val iter = keys.iterator
+      if (iter.hasNext) {
+        val key = iter.next
+        if (iter.hasNext) {
+          -1
+        } else {
+          findLabel(key)
+        }
+      } else {
+        -1
+      }
+    case None => -1
+  }
+}
 
 private[circe] trait EncoderDerivation:
   inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
