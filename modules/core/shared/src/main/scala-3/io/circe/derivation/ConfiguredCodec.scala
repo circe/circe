@@ -8,21 +8,32 @@ trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], Config
 object ConfiguredCodec:
 
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredCodec[A] =
-    val decoder: ConfiguredDecoder[A] = ConfiguredDecoder.derived[A]
-    val encoder: ConfiguredEncoder[A] = ConfiguredEncoder.derived[A]
     new ConfiguredCodec[A]:
       val name = constValue[mirror.MirroredLabel]
-      lazy val elemLabels: List[String] = decoder.elemLabels
-      lazy val elemEncoders: List[Encoder[?]] = encoder.elemEncoders
-      lazy val isSum: Boolean = encoder.isSum
-      lazy val elemDecoders: List[Decoder[?]] = decoder.elemDecoders
-      lazy val elemDefaults: Default[A] = decoder.elemDefaults
+      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+      lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
-      final def encodeObject(a: A): JsonObject = encoder.encodeObject(a)
+      final def encodeObject(a: A): JsonObject =
+        inline mirror match
+          case _: Mirror.ProductOf[A] => encodeProduct(a)
+          case sum: Mirror.SumOf[A]   => encodeSum(sum.ordinal(a), a)
 
-      final def apply(c: HCursor): Decoder.Result[A] = decoder(c)
+      final def apply(c: HCursor): Decoder.Result[A] =
+        inline mirror match
+          case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
+          case _: Mirror.SumOf[A]           => decodeSum(c)
 
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
+      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
+        inline mirror match
+          case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
+          case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
+
+      lazy val isSum: Boolean =
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]   => true
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
