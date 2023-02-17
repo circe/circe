@@ -7,6 +7,7 @@ import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import cats.implicits.*
+import scala.collection.immutable.Map
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   val name: String
@@ -15,6 +16,16 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   lazy val elemDefaults: Default[A]
   lazy val constructorNames: List[String] = elemLabels.map(conf.transformConstructorNames)
 
+  private lazy val decodersDict: Map[String, Decoder[?]] = {
+    def findDecoderDict(p: (String, Decoder[?])): List[(String, Decoder[?])] =
+      p._2 match {
+        case cd: ConfiguredDecoder[?] with SumOrProduct if cd.isSum =>
+          cd.constructorNames.zip(cd.elemDecoders).flatMap(findDecoderDict)
+        case  _ => List(p)
+      }
+    constructorNames.zip(elemDecoders).flatMap(findDecoderDict).toMap
+  }
+
   private def strictDecodingFailure(c: HCursor, message: String): DecodingFailure =
     DecodingFailure(s"Strict decoding $name - $message", c.history)
 
@@ -22,16 +33,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
 
     def fromName(sumTypeName: String, cursor: ACursor): R =
-      def findDecoder(decoder: Decoder[?], searched: List[ConfiguredDecoder[?]]): Option[Decoder[?]] =
-        decoder match {
-          case cd: ConfiguredDecoder[?] with SumOrProduct if cd.isSum && !searched.contains(cd) =>
-            cd.constructorNames.indexOf(sumTypeName) match {
-              case -1    => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
-              case index => Option(cd.elemDecoders(index))
-            }
-          case _ => None
-        }
-      findDecoder(this, Nil).fold(
+      decodersDict.get(sumTypeName).fold(
         fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
       ) { decoder =>
         decode(decoder.asInstanceOf[Decoder[A]])(cursor)
