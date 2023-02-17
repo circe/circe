@@ -24,11 +24,11 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 
     conf.discriminator match
       case Some(discriminator) =>
+        val jo = json.asObject.getOrElse(JsonObject.empty)
         val elemIsSum = elemEncoders(index) match {
           case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
-          case _                                          => true
+          case _                                          => jo.contains(discriminator)
         }
-        val jo = json.asObject.getOrElse(JsonObject.empty)
         if (elemIsSum)
           jo
         else jo.add(discriminator, Json.fromString(constructorName)) // only add discriminator if elem is a Product
