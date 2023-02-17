@@ -21,7 +21,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
       p._2 match {
         case cd: ConfiguredDecoder[?] with SumOrProduct if cd.isSum =>
           cd.constructorNames.zip(cd.elemDecoders).flatMap(findDecoderDict)
-        case  _ => List(p)
+        case _ => List(p)
       }
     constructorNames.zip(elemDecoders).flatMap(findDecoderDict).toMap
   }
@@ -33,11 +33,13 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
 
     def fromName(sumTypeName: String, cursor: ACursor): R =
-      decodersDict.get(sumTypeName).fold(
-        fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
-      ) { decoder =>
-        decode(decoder.asInstanceOf[Decoder[A]])(cursor)
-      }
+      decodersDict
+        .get(sumTypeName)
+        .fold(
+          fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
+        ) { decoder =>
+          decode(decoder.asInstanceOf[Decoder[A]])(cursor)
+        }
 
     conf.discriminator match
       case Some(discriminator) =>
