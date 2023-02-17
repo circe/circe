@@ -24,7 +24,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     def fromName(sumTypeName: String, cursor: ACursor): R =
       def findDecoder(decoder: Decoder[?], searched: List[ConfiguredDecoder[?]]): Option[Decoder[?]] =
         decoder match {
-          case cd: ConfiguredDecoder[?] if !searched.contains(cd) =>
+          case cd: ConfiguredDecoder[?] with SumOrProduct if !searched.contains(cd) && cd.isSum =>
             cd.constructorNames.indexOf(sumTypeName) match {
               case -1    => cd.elemDecoders.collectFirstSome(d => findDecoder(d, cd :: searched))
               case index => Option(cd.elemDecoders(index))
@@ -169,12 +169,19 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
-    new ConfiguredDecoder[A]:
+  inline final def derived[A](using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredDecoder[A] =
+    new ConfiguredDecoder[A] with SumOrProduct:
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
+
+      lazy val isSum: Boolean =
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
 
       final def apply(c: HCursor): Decoder.Result[A] =
         inline mirror match

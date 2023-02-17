@@ -24,18 +24,27 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 
     conf.discriminator match
       case Some(discriminator) =>
+        val elemIsSum = elemEncoders(index) match {
+          case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
+          case _                                          => true
+        }
         val jo = json.asObject.getOrElse(JsonObject.empty)
-        if (jo.contains(discriminator)) // current type is a sum if the json of the elem has the discriminator
+        if (elemIsSum)
           jo
-        else
-          jo.add(discriminator, Json.fromString(constructorName))
+        else jo.add(discriminator, Json.fromString(constructorName)) // only add discriminator if elem is a Product
+
       case None => JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
-    new ConfiguredEncoder[A]:
+    new ConfiguredEncoder[A] with SumOrProduct:
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+
+      lazy val isSum: Boolean =
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
 
       final def encodeObject(a: A): JsonObject =
         inline mirror match
