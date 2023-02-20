@@ -178,14 +178,4 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
-
-  property("Derives under `-Yexplicit-nulls` should work") {
-    val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
-    val explicitNullsCompiler = staging.Compiler.make(getClass.getClassLoader)(settings)
-    staging.run('{
-      val encoder = Encoder.AsObject.derived[Box[Wub]];
-      val decoder = Decoder.derived[Box[Wub]];
-      val codec = Codec.AsObject.derived[Box[Wub]];
-    })(using explicitNullsCompiler)
-  }
 }

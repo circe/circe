@@ -121,7 +121,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
 
     decodeProductBase(c, Left.apply, strictFail) {
       val res = new Array[Any](elemLabels.length)
-      var failed: Left[DecodingFailure, _] = null
+      var failed: Left[DecodingFailure, _] | Null = null
 
       def withDefault(result: Decoder.Result[Any], cursor: ACursor, default: Any): Decoder.Result[Any] = result match
         case r @ Right(_) if r.ne(Decoder.keyMissingNone)                      => r
