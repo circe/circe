@@ -11,7 +11,6 @@ import io.circe.tests.CirceMunitSuite
 import io.circe.derivation.*
 import io.circe.syntax.*
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
 
 object ConfiguredEnumDerivesSuites:
   // "derives ConfiguredEnumCodec" is not here so we can change the configuration for the derivation in each test
