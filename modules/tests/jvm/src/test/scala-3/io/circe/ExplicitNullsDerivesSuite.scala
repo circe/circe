@@ -21,10 +21,10 @@ object ExplicitNullsDerivesSuite {
 class ExplicitNullsDerivesSuite extends CirceMunitSuite {
   import ExplicitNullsDerivesSuite._
 
-  test("Derives under `-Yexplicit-nulls` should be compilable") {
-    val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
-    given explicitNullsCompiler: staging.Compiler = staging.Compiler.make(getClass.getClassLoader)(settings)
+  val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
+  given explicitNullsCompiler: staging.Compiler = staging.Compiler.make(getClass.getClassLoader)(settings)
 
+  test("Derives under `-Yexplicit-nulls` should be compilable") {
     def code(using Quotes) = '{
       given Encoder[Bar[Foo]] = Encoder.AsObject.derived[Bar[Foo]]
       given Decoder[Bar[Foo]] = Decoder.derived[Bar[Foo]]
@@ -35,9 +35,6 @@ class ExplicitNullsDerivesSuite extends CirceMunitSuite {
   }
 
   test("Java boxed class would require `.nn` postfix with `-Yexplicit-nulls`") {
-    val settings = staging.Compiler.Settings.make(compilerArgs = List("-Yexplicit-nulls"))
-    given explicitNullsCompiler: staging.Compiler = staging.Compiler.make(getClass.getClassLoader)(settings)
-
     def code(using Quotes) = '{
       given Encoder[Instant] = Encoder.encodeString.contramap[Instant](t =>
         ISO_OFFSET_DATE_TIME.nn
@@ -46,7 +43,6 @@ class ExplicitNullsDerivesSuite extends CirceMunitSuite {
           )
           .nn
       )
-
       given Codec[Event] = Codec.AsObject.derived[Event]
     }
 
