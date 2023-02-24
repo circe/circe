@@ -4,7 +4,6 @@ import cats.kernel.Eq
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
-import scala.quoted.staging
 
 object DerivesSuite {
   case class Box[A](a: A) derives Decoder, Encoder.AsObject

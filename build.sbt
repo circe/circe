@@ -510,7 +510,7 @@ lazy val tests = circeCrossModule("tests")
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef", "-source:3.0-migration"))
     },
-    Test / scalacOptions ++= Seq("-language:implicitConversions"),
+    Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
       "org.scalameta" %%% "munit" % munitVersion,
