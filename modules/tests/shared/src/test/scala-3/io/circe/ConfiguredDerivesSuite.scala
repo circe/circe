@@ -471,3 +471,20 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
 
   }
+
+  {
+    given Configuration = Configuration.default.withDiscriminator("type")
+
+    sealed trait Tree derives ConfiguredCodec;
+    case class Branch(l: Tree, r: Tree) extends Tree;
+    case object Leaf extends Tree;
+    object Tree:
+      given Eq[Tree] = Eq.fromUniversalEquals[Tree]
+
+    test("Codec for recursive type should encode and decode correctly") {
+      val tree: Tree = Branch(Branch(Leaf, Leaf), Leaf)
+      val json = Encoder.AsObject[Tree].apply(tree)
+      val result = Decoder[Tree].decodeJson(json)
+      assert(result === Right(tree), result)
+    }
+  }
