@@ -584,13 +584,14 @@ object Json {
    */
   private[this] def isReal(value: Float): Boolean = java.lang.Float.isFinite(value)
 
-  private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
+  private[this] final def arrayEq(x: Vector[Json], y: Vector[Json]): Boolean = {
+    if (x.length != y.length) return false
     val it0 = x.iterator
     val it1 = y.iterator
-    while (it0.hasNext && it1.hasNext) {
+    while (it0.hasNext) {
       if (Json.eqJson.neqv(it0.next(), it1.next())) return false
     }
-    it0.hasNext == it1.hasNext
+    true
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {
