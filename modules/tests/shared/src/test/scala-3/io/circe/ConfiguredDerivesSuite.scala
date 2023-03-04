@@ -426,3 +426,65 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
       )
     )
   }
+
+  {
+    given Configuration = Configuration.default.withDiscriminator("type")
+
+    sealed trait GrandParent derives ConfiguredCodec
+    object GrandParent:
+      given Eq[GrandParent] = Eq.fromUniversalEquals
+
+    sealed trait Parent extends GrandParent
+
+    case class Child(a: Int, b: String) extends Parent
+
+    test("Codec for hierarchy of more than 1 level with discriminator should encode and decode correctly") {
+      val child: GrandParent = Child(1, "a")
+      val json = Encoder.AsObject[GrandParent].apply(child)
+      val result = Decoder[GrandParent].decodeJson(json)
+      assert(result === Right(child), result)
+    }
+  }
+
+  {
+    sealed trait GreatGrandParent
+    object GreatGrandParent:
+      given Eq[GreatGrandParent] = Eq.fromUniversalEquals[GreatGrandParent]
+
+    sealed trait GrandParent extends GreatGrandParent
+    case class Uncle(Child: Int)
+        extends GrandParent // The field name, `Child` matches a existing case class in the hierarchy and is important for the tests.
+    sealed trait Parent extends GrandParent
+
+    case class Child(a: Int, b: String) extends Parent
+
+    test(
+      "Codec for hierarchy of more than 2 level with discriminator should encode and decode correctly, even if a parent's sibling has a field with the same name as a Child type"
+    ) {
+      given Configuration = Configuration.default.withDiscriminator("type")
+      given Codec.AsObject[GreatGrandParent] = ConfiguredCodec.derived[GreatGrandParent]
+
+      val child: GrandParent = Child(1, "a")
+      val json = Encoder.AsObject[GreatGrandParent].apply(child)
+      val result = Decoder[GreatGrandParent].decodeJson(json)
+      assert(result === Right(child), result)
+    }
+
+  }
+
+  {
+    given Configuration = Configuration.default.withDiscriminator("type")
+
+    sealed trait Tree derives ConfiguredCodec;
+    case class Branch(l: Tree, r: Tree) extends Tree;
+    case object Leaf extends Tree;
+    object Tree:
+      given Eq[Tree] = Eq.fromUniversalEquals[Tree]
+
+    test("Codec for recursive type should encode and decode correctly") {
+      val tree: Tree = Branch(Branch(Leaf, Leaf), Leaf)
+      val json = Encoder.AsObject[Tree].apply(tree)
+      val result = Decoder[Tree].decodeJson(json)
+      assert(result === Right(tree), result)
+    }
+  }
