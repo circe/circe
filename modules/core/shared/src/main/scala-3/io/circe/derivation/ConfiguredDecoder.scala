@@ -6,6 +6,8 @@ import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+import cats.implicits.*
+import scala.collection.immutable.Map
 
 trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   val name: String
@@ -14,15 +16,30 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   lazy val elemDefaults: Default[A]
   lazy val constructorNames: List[String] = elemLabels.map(conf.transformConstructorNames)
 
+  private lazy val decodersDict: Map[String, Decoder[?]] = {
+    def findDecoderDict(p: (String, Decoder[?])): List[(String, Decoder[?])] =
+      p._2 match {
+        case cd: ConfiguredDecoder[?] with SumOrProduct if cd.isSum =>
+          cd.constructorNames.zip(cd.elemDecoders).flatMap(findDecoderDict)
+        case _ => List(p)
+      }
+    constructorNames.zip(elemDecoders).flatMap(findDecoderDict).toMap
+  }
+
   private def strictDecodingFailure(c: HCursor, message: String): DecodingFailure =
     DecodingFailure(s"Strict decoding $name - $message", c.history)
 
   /** Decodes a class/object/case of a Sum type handling discriminator and strict decoding. */
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
+
     def fromName(sumTypeName: String, cursor: ACursor): R =
-      constructorNames.indexOf(sumTypeName) match
-        case -1 => fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
-        case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
+      decodersDict
+        .get(sumTypeName)
+        .fold(
+          fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
+        ) { decoder =>
+          decode(decoder.asInstanceOf[Decoder[A]])(cursor)
+        }
 
     conf.discriminator match
       case Some(discriminator) =>
@@ -156,12 +173,19 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
-    new ConfiguredDecoder[A]:
+  inline final def derived[A](using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredDecoder[A] =
+    new ConfiguredDecoder[A] with SumOrProduct:
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
+
+      lazy val isSum: Boolean =
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
 
       final def apply(c: HCursor): Decoder.Result[A] =
         inline mirror match
