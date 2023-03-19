@@ -86,13 +86,16 @@ final case class Printer(
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
   }
 
-  private[this] final def concat(left: String, text: String, right: String): String = {
-    val builder = new StringBuilder()
-    builder.append(left)
-    builder.append(text)
-    builder.append(right)
-    builder.toString
-  }
+  private[this] final def concat(left: String, text: String, right: String): String =
+    if (left.isEmpty && right.isEmpty)
+      text
+    else {
+      val builder = new StringBuilder()
+      builder.append(left)
+      builder.append(text)
+      builder.append(right)
+      builder.toString
+    }
 
   private[this] final val pieces: Printer.PiecesAtDepth =
     if (indent.isEmpty)
