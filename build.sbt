@@ -59,7 +59,7 @@ val catsVersion = "2.9.0"
 val jawnVersion = "1.4.0"
 val shapelessVersion = "2.3.10"
 val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.10.1"
+val refinedNativeVersion = "0.10.2"
 
 val paradiseVersion = "2.1.1"
 
