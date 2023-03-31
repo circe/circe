@@ -1,8 +1,9 @@
 package io.circe
 
-import cats.{ Contravariant, Foldable }
+import cats.{ Contravariant, Defer, Foldable }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
 import io.circe.`export`.Exported
+
 import java.io.Serializable
 import java.net.URI
 import java.time.{
@@ -128,6 +129,16 @@ object Encoder
   final def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(a)
   }
+
+  /**
+   * Create an `Encoder` which assumes one already exists
+   *
+   * Certain recursive data structures (particularly when generic) greatly benefit from
+   * being able to be written this way. See `cats.Defer`
+   *
+   * @group Utilities
+   */
+  final def recursive[A](fn: Encoder[A] => Encoder[A]): Encoder[A] = Defer[Encoder].fix(fn)
 
   /**
    * Construct an instance for a given type with a [[cats.Foldable]] instance.
@@ -710,6 +721,23 @@ object Encoder
 
   implicit final lazy val currencyEncoder: Encoder[Currency] =
     Encoder[String].contramap(_.getCurrencyCode())
+
+  private case class DeferredEncoder[A](encoder: () => Encoder[A]) extends Encoder[A] {
+    override def apply(a: A): Json = {
+      @annotation.tailrec
+      def loop(f: () => Encoder[A]): Json =
+        f() match {
+          case DeferredEncoder(f) => loop(f)
+          case next               => next(a)
+        }
+
+      loop(encoder)
+    }
+  }
+
+  implicit val encoderInstances: Defer[Encoder] = new Defer[Encoder] {
+    override def defer[A](fa: => Encoder[A]): Encoder[A] = DeferredEncoder(() => fa)
+  }
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

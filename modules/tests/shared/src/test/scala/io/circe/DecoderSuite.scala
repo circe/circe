@@ -1,11 +1,12 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{ Chain, NonEmptyList, Validated }
+import cats.data.{Chain, NonEmptyList, Validated}
 import cats.implicits._
 import cats.kernel.Eq
-import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.{ DownArray, DownN }
+import cats.laws.discipline.{DeferTests, MiniInt, MonadErrorTests, SemigroupKTests}
+import cats.laws.discipline.arbitrary._
+import io.circe.CursorOp.{DownArray, DownN}
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.parser.parse
 import io.circe.syntax._
@@ -15,7 +16,7 @@ import io.circe.tests.examples.WrappedOptionalField
 import org.scalacheck.Prop
 import org.scalacheck.Prop._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 import scala.util.control.NoStackTrace
 
 class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
@@ -763,4 +764,6 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     assert(result.isInvalid)
     assertEquals(result.swap.toOption.map(_.size), Some(2))
   }
+
+  checkAll("Defer[Decoder]", DeferTests[Decoder].defer[MiniInt])
 }

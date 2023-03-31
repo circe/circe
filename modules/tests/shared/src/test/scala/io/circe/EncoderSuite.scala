@@ -8,13 +8,14 @@ import cats.kernel.instances.map._
 import cats.kernel.instances.string._
 import cats.kernel.instances.tuple._
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.ContravariantTests
+import cats.laws.discipline.{ContravariantTests, DeferTests, MiniInt}
 import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Arbitrary
 import org.scalacheck._
 import org.scalacheck.Prop._
+
 import scala.collection.SortedMap
 
 class EncoderSuite extends CirceMunitSuite {
@@ -110,4 +111,6 @@ class EncoderSuite extends CirceMunitSuite {
     // All Float values should be encoded in a way that match the original value.
     Encoder[Float].apply(x).toString.toFloat ?= x
   })
+
+  checkAll("Defer[Encoder]", DeferTests[Encoder].defer[MiniInt])
 }
