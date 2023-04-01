@@ -196,7 +196,7 @@ sealed abstract class JsonObject extends Serializable {
    * @group Other
    */
   final override def equals(that: Any): Boolean = that match {
-    case that: JsonObject => toMap == that.toMap
+    case that: JsonObject => this.size == that.size && this.toMap == that.toMap
     case _                => false
   }
 
