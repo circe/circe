@@ -19,6 +19,7 @@ import cats.syntax.all._
  *       reason it is intentionally minimal and private. A more dramatic
  *       change which will involve deprecations is planned for 0.15.x.
  */
+@deprecated
 private[circe] final case class PathToRoot private (value: Vector[PathToRoot.PathElem]) extends AnyVal {
 
   /**

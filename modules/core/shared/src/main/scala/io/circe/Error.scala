@@ -105,13 +105,7 @@ object DecodingFailure {
     pathToRoot: Option[PathToRoot],
     ops: Eval[List[CursorOp]]
   ) extends DecodingFailure(lazyReason) {
-    override final def pathToRootString: Option[String] =
-      if (pathToRoot == Some(PathToRoot.empty)) {
-        // For backwards compatibility. We'll make this more consistent in 0.15.x
-        Some("")
-      } else {
-        pathToRoot.orElse(PathToRoot.fromHistory(ops.value).toOption).map(_.asPathString)
-      }
+    override final def pathToRootString: Option[String] = Some(CursorOp.opsToPath(history))
 
     override final def history: List[CursorOp] = ops.value
 
