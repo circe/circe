@@ -86,19 +86,27 @@ final case class Printer(
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
   }
 
-  private[this] final def concat(left: String, text: String, right: String): String =
-    if (left.isEmpty && right.isEmpty)
-      text
-    else {
-      val builder = new StringBuilder()
-      builder.append(left)
-      builder.append(text)
-      builder.append(right)
-      builder.toString
-    }
-
   private[this] final val pieces: Printer.PiecesAtDepth =
-    if (indent.isEmpty)
+    if (indent.isEmpty) {
+      var builder: StringBuilder = null
+
+      def concat(left: String, text: String, right: String): String =
+        if (left.isEmpty && right.isEmpty)
+          text
+        else {
+          val size = left.length + text.length + right.length
+          if (builder == null)
+            builder = new StringBuilder(Math.max(16, size))
+          else {
+            builder.setLength(0)
+            builder.ensureCapacity(left.length + text.length + right.length)
+          }
+          builder.append(left)
+          builder.append(text)
+          builder.append(right)
+          builder.toString
+        }
+
       new Printer.ConstantPieces(
         Printer.Pieces(
           concat(lbraceLeft, openBraceText, lbraceRight),
@@ -111,7 +119,7 @@ final case class Printer(
           concat(colonLeft, colonText, colonRight)
         )
       )
-    else
+    } else
       new Printer.MemoizedPieces(indent) {
         final def compute(i: Int): Printer.Pieces = {
           val builder = new StringBuilder()
