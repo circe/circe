@@ -113,4 +113,34 @@ class EncoderSuite extends CirceMunitSuite {
   })
 
   checkAll("Defer[Encoder]", DeferTests[Encoder].defer[MiniInt])
+
+  test("Encoder.recursive should prevent undesirable grown in the number of instances created") {
+    var counter = 0
+
+    implicit def uglyListEncoder[A: Encoder]: Encoder[List[A]] = {
+      counter += 1
+      Encoder.recursive[List[A]] { implicit recurse =>
+        Encoder.instance {
+          case Nil => Json.Null
+          case car :: Nil => Json.obj("car" := car.asJson)
+          case car :: cdr => Json.obj("car" := car.asJson, "cdr" := cdr.asJson)
+        }
+      }
+    }
+
+    assertEquals(
+      (0 :: 1 :: 2 :: 3 :: Nil).asJson,
+      Json.obj(
+        "car" := 0,
+        "cdr" := Json.obj(
+          "car" := 1,
+          "cdr" := Json.obj(
+            "car" := 2,
+            "cdr" := Json.obj(
+              "car" := 3
+            ))))
+    )
+    // Without `Encoder.recursive`, this would create 4 instances of an `Encoder[List[Int]]`
+    assertEquals(counter, 1)
+  }
 }
