@@ -1450,7 +1450,7 @@ object Decoder
     private def resolve(f: () => Decoder[A]): Decoder[A] =
       f() match {
         case DeferredDecoder(f) => resolve(f)
-        case next => next
+        case next               => next
       }
 
     override def apply(c: HCursor): Result[A] = resolved(c)

@@ -8,7 +8,7 @@ import cats.kernel.instances.map._
 import cats.kernel.instances.string._
 import cats.kernel.instances.tuple._
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.{ContravariantTests, DeferTests, MiniInt}
+import cats.laws.discipline.{ ContravariantTests, DeferTests, MiniInt }
 import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
@@ -121,7 +121,7 @@ class EncoderSuite extends CirceMunitSuite {
       counter += 1
       Encoder.recursive[List[A]] { implicit recurse =>
         Encoder.instance {
-          case Nil => Json.Null
+          case Nil        => Json.Null
           case car :: Nil => Json.obj("car" := car.asJson)
           case car :: cdr => Json.obj("car" := car.asJson, "cdr" := cdr.asJson)
         }
@@ -138,7 +138,10 @@ class EncoderSuite extends CirceMunitSuite {
             "car" := 2,
             "cdr" := Json.obj(
               "car" := 3
-            ))))
+            )
+          )
+        )
+      )
     )
     // Without `Encoder.recursive`, this would create 4 instances of an `Encoder[List[Int]]`
     assertEquals(counter, 1)

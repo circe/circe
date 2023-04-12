@@ -1,12 +1,12 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{Chain, NonEmptyList, Validated}
+import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.implicits._
 import cats.kernel.Eq
-import cats.laws.discipline.{DeferTests, MiniInt, MonadErrorTests, SemigroupKTests}
+import cats.laws.discipline.{ DeferTests, MiniInt, MonadErrorTests, SemigroupKTests }
 import cats.laws.discipline.arbitrary._
-import io.circe.CursorOp.{DownArray, DownN}
+import io.circe.CursorOp.{ DownArray, DownN }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.parser.parse
 import io.circe.syntax._
@@ -16,7 +16,7 @@ import io.circe.tests.examples.WrappedOptionalField
 import org.scalacheck.Prop
 import org.scalacheck.Prop._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
 class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
@@ -778,15 +778,20 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       }
     }
     assertEquals(
-      Json.obj(
-        "car" := 0,
-        "cdr" := Json.obj(
-          "car" := 1,
+      Json
+        .obj(
+          "car" := 0,
           "cdr" := Json.obj(
-            "car" := 2,
+            "car" := 1,
             "cdr" := Json.obj(
-              "car" := 3
-            )))).as[List[Int]],
+              "car" := 2,
+              "cdr" := Json.obj(
+                "car" := 3
+              )
+            )
+          )
+        )
+        .as[List[Int]],
       (0 :: 1 :: 2 :: 3 :: Nil).asRight
     )
     // Without `Decoder.recursive`, this should create 5 instances of a `Decoder[List[Int]]`
