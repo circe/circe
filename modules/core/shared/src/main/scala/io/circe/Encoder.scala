@@ -723,16 +723,16 @@ object Encoder
     Encoder[String].contramap(_.getCurrencyCode())
 
   private case class DeferredEncoder[A](encoder: () => Encoder[A]) extends Encoder[A] {
-    override def apply(a: A): Json = {
-      @annotation.tailrec
-      def loop(f: () => Encoder[A]): Json =
-        f() match {
-          case DeferredEncoder(f) => loop(f)
-          case next               => next(a)
-        }
+    private lazy val resolved: Encoder[A] = resolve(encoder)
 
-      loop(encoder)
-    }
+    @annotation.tailrec
+    private def resolve(f: () => Encoder[A]): Encoder[A] =
+      f() match {
+        case DeferredEncoder(f) => resolve(f)
+        case next               => next
+      }
+
+    override def apply(a: A): Json = resolved(a)
   }
 
   implicit val encoderInstances: Defer[Encoder] = new Defer[Encoder] {

@@ -1444,18 +1444,18 @@ object Decoder
     }
 
   private final case class DeferredDecoder[A](decoder: () => Decoder[A]) extends Decoder[A] {
-    override def apply(c: HCursor): Result[A] = decodeAccumulating(c).toEither.leftMap(_.head)
+    private lazy val resolved: Decoder[A] = resolve(decoder)
 
-    override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = {
-      @annotation.tailrec
-      def loop(f: () => Decoder[A]): AccumulatingResult[A] =
-        f() match {
-          case DeferredDecoder(f) => loop(f)
-          case next               => next.decodeAccumulating(c)
-        }
+    @annotation.tailrec
+    private def resolve(f: () => Decoder[A]): Decoder[A] =
+      f() match {
+        case DeferredDecoder(f) => resolve(f)
+        case next => next
+      }
 
-      loop(decoder)
-    }
+    override def apply(c: HCursor): Result[A] = resolved(c)
+
+    override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = resolved.decodeAccumulating(c)
   }
 
   /**
