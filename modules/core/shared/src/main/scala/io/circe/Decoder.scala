@@ -1457,13 +1457,15 @@ object Decoder
 
     override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = resolved.decodeAccumulating(c)
   }
-
+  implicit val decoderDefer: Defer[Decoder] = new Defer[Decoder] {
+    override def defer[A](fa: => Decoder[A]): Decoder[A] = DeferredDecoder(() => fa)
+  }
   /**
    * @group Instances
    */
   implicit final val decoderInstances
-    : SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] with Defer[Decoder] =
-    new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] with Defer[Decoder] {
+    : SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+    new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
       override final def map[A, B](fa: Decoder[A])(f: A => B): Decoder[B] = fa.map(f)
@@ -1499,8 +1501,6 @@ object Decoder
 
         final def apply(c: HCursor): Result[B] = step(c, a)
       }
-
-      override def defer[A](fa: => Decoder[A]): Decoder[A] = DeferredDecoder(() => fa)
     }
 
   implicit final lazy val currencyDecoder: Decoder[Currency] =
