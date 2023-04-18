@@ -253,6 +253,30 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
+  test ("fromStringOrNull return Null on None") {
+    assertEquals(Json.fromStringOrNull(None), Json.Null)
+  }
+
+  test("fromBooleanOrNull return Null on None") {
+    assertEquals(Json.fromBooleanOrNull(None), Json.Null)
+  }
+
+  test("fromIntOrNull return Null on None") {
+    assertEquals(Json.fromIntOrNull(None), Json.Null)
+  }
+
+  test("fromLongOrNull return Null on None") {
+    assertEquals(Json.fromLongOrNull(None), Json.Null)
+  }
+
+  test("fromBigIntOrNull returns Null on None") {
+    assertEquals(Json.fromBigIntOrNull(None), Json.Null)
+  }
+
+  test("fromBigDecimalOrNull return Null on None") {
+    assertEquals(Json.fromBigDecimalOrNull(None), Json.Null)
+  }
+
   test("fromDouble should fail on Double.NaN") {
     assertEquals(Json.fromDouble(Double.NaN), None)
   }
