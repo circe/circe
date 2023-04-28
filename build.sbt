@@ -5,6 +5,7 @@ val Scala213V: String = "2.13.8"
 val Scala3V: String = "3.2.2"
 
 ThisBuild / tlBaseVersion := "0.14"
+ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
 ThisBuild / tlCiReleaseTags := true
 ThisBuild / tlFatalWarningsInCi := false // we currently have a lot of warnings that will need to be fixed
 
@@ -110,7 +111,6 @@ lazy val docs = project
       "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
-  .enablePlugins(NoPublishPlugin)
   .enablePlugins(CirceOrgSitePlugin)
   .settings(macroSettings)
 
@@ -470,7 +470,7 @@ lazy val benchmark = circeModule("benchmark")
   .dependsOn(core.jvm, generic.jvm, jawn.jvm, pointer.jvm)
 
 ThisBuild / homepage := Some(url("https://github.com/circe/circe"))
-ThisBuild / licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+ThisBuild / licenses := Seq(License.Apache2)
 ThisBuild / developers := List(
   Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
   Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
