@@ -67,6 +67,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [OVO Energy](https://www.ovoenergy.com)
 * [Panaseer](https://panaseer.com)
 * [Permutive](http://permutive.com)
+* [PITS Global Data Recovery Services](https://www.pitsdatarecovery.net/)
 * [Prezi](https://prezi.com)
 * [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
 * [Raster Foundry](https://github.com/raster-foundry/raster-foundry/)
