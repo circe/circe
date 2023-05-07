@@ -20,11 +20,7 @@ Foo(13, "Qux", false).asJson
 
 You can also simplify to just write the last two lines as:
 
-```scala mdoc:invisible:reset
-import io.circe._, io.circe.generic.semiauto._, io.circe.syntax._
-```
-
-```scala mdoc:silent
+```scala mdoc:silent:nest
 implicit val fooDecoder: Decoder[Foo] = deriveDecoder
 implicit val fooEncoder: Encoder[Foo] = deriveEncoder
 ```
@@ -51,7 +47,7 @@ The expected serialization for `Foo(123)` is simply `123`
 The `circe-generic` project includes a `@JsonCodec` annotation that simplifies the
 use of semi-automatic generic derivation:
 
-```scala mdoc
+```scala mdoc:reset
 import io.circe.generic.JsonCodec, io.circe.syntax._
 
 @JsonCodec case class Bar(i: Int, s: String)
