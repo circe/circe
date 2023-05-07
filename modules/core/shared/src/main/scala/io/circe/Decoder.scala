@@ -65,7 +65,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.Set
 import scala.collection.immutable.SortedMap
 import scala.collection.immutable.SortedSet
-import scala.collection.immutable.{Map => ImmutableMap}
+import scala.collection.immutable.{ Map => ImmutableMap }
 import scala.collection.mutable.Builder
 import scala.util.Failure
 import scala.util.Success

@@ -60,7 +60,7 @@ import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
 import scala.collection.immutable.Set
-import scala.collection.immutable.{Map => ImmutableMap}
+import scala.collection.immutable.{ Map => ImmutableMap }
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
