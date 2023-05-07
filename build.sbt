@@ -1,6 +1,6 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 
-val Scala212V: String = "2.12.15"
+val Scala212V: String = "2.12.17"
 val Scala213V: String = "2.13.10"
 val Scala3V: String = "3.2.2"
 
@@ -334,6 +334,9 @@ lazy val refined = circeCrossModule("refined")
         "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
       )
     },
+    dependencyOverrides ++= Seq(
+      "org.scala-lang.modules" %% "scala-xml" % "2.1.0"
+    ),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .platformsSettings(JSPlatform, NativePlatform)(
