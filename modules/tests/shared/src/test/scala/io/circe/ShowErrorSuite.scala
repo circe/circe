@@ -3,6 +3,7 @@ package io.circe
 import cats.kernel.instances.string._
 import cats.syntax.all._
 import io.circe.CursorOp._
+import io.circe.parser.decode
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
 import org.scalacheck.Prop._
@@ -122,13 +123,39 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       Left("DecodingFailure at .foo: Missing required field")
     )
   }
+
+  test("Failing error messages on decoders should show whole path form root.") {
+    val jsonString =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        | }
+        |}""".stripMargin
+
+    assertEquals(
+      decode[TestDataRoot](jsonString).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested: Missing required field")
+    )
+  }
 }
 
 object ShowErrorSuite {
   final case class TestData(foo: String, bar: Int)
 
+  final case class TestDataNested(nested: Int)
+  final case class TestDataRoot(foo: String, bar: TestDataNested)
+
   object TestData {
     implicit val decoder: Decoder[TestData] =
       Decoder.forProduct2("foo", "bar")(TestData.apply _)
+  }
+
+  object TestDataNested {
+    implicit val decoder: Decoder[TestDataNested] =
+      Decoder.forProduct1("nested")(TestDataNested.apply _)
+  }
+  object TestDataRoot {
+    implicit val decoder: Decoder[TestDataRoot] =
+      Decoder.forProduct2("foo", "bar")(TestDataRoot.apply _)
   }
 }
