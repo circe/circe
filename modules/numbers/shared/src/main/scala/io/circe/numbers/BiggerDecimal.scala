@@ -261,6 +261,7 @@ object BiggerDecimal {
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
+      val startIndex = i
       var parsedNonZeroIntegralDigit: Boolean = false
 
       if (i >= len) {
@@ -281,7 +282,7 @@ object BiggerDecimal {
                 zeros = 0
               } else if (c == '.') {
                 state = AFTER_DOT
-              } else if (c == 'e' || c == 'E') {
+              } else if ((c == 'e' || c == 'E') && ( i != startIndex)) {
                 state = AFTER_E
               } else {
                 state = FAILED
