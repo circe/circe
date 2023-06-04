@@ -102,7 +102,7 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
 }
 
 lazy val docs = project
-  .in(file("site"))
+  .in(file("docs"))
   .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
