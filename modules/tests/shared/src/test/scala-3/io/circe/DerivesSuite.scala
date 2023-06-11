@@ -189,4 +189,15 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
+
+  test("Nested sums should not be encoded redundantly") {
+    import io.circe.syntax._
+    val foo: ADTWithSubTraitExample = TheClass(0)
+    val expected = Json.obj(
+      "TheClass" -> Json.obj(
+        "a" -> 0.asJson
+      )
+    )
+    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+  }
 }
