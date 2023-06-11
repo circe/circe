@@ -32,8 +32,14 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
   /** Decodes a class/object/case of a Sum type handling discriminator and strict decoding. */
   private def decodeSumElement[R](c: HCursor)(fail: DecodingFailure => R, decode: Decoder[A] => ACursor => R): R =
 
-    def nameNotFound(sumTypeName: String, cursor: ACursor): R =
-      fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
+    def fromName(sumTypeName: String, cursor: ACursor): R =
+      decodersDict
+        .get(sumTypeName)
+        .fold(
+          fail(DecodingFailure(s"type $name has no class/object/case named '$sumTypeName'.", cursor.history))
+        ) { decoder =>
+          decode(decoder.asInstanceOf[Decoder[A]])(cursor)
+        }
 
     conf.discriminator match
       case Some(discriminator) =>
@@ -47,14 +53,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
                 cursor.history
               )
             )
-          case Right(Some(sumTypeName)) =>
-            decodersDict
-              .get(sumTypeName)
-              .fold(
-                nameNotFound(sumTypeName, c)
-              ) { decoder =>
-                decode(decoder.asInstanceOf[Decoder[A]])(c)
-              }
+          case Right(Some(sumTypeName)) => fromName(sumTypeName, c)
       case _ =>
         c.keys match
           case None => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
@@ -71,11 +70,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
                     s"expected a single key json object with one of: ${constructorNames.iterator.mkString(", ")}."
                   )
                 )
-              else
-                val cursor = c.downField(sumTypeName)
-                constructorNames.indexOf(sumTypeName) match
-                  case -1    => nameNotFound(sumTypeName, cursor)
-                  case index => decode(elemDecoders(index).asInstanceOf[Decoder[A]])(cursor)
+              else fromName(sumTypeName, c.downField(sumTypeName))
 
   final def decodeSum(c: HCursor): Decoder.Result[A] =
     decodeSumElement(c)(Left.apply, _.tryDecode)
