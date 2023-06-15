@@ -422,7 +422,7 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     assert(Decoder[ConfigExampleBase].decodeJson(json) === Left(failure("unexpected fields: anotherField")))
     assert(
       Decoder[ConfigExampleBase].decodeAccumulating(json.hcursor) === Validated.invalidNel(
-        failure("unexpected field: anotherField")
+        failure("unexpected fields: anotherField")
       )
     )
   }
