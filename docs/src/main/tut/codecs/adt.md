@@ -21,9 +21,7 @@ case class Qux(values: List[String]) extends Event
 And the encoder / decoder instances:
 
 ```scala mdoc:silent
-import cats.data.NonEmptyList
 import cats.syntax.functor._
-import cats.syntax.reducible._
 import io.circe.{ Decoder, Encoder }, io.circe.generic.auto._
 import io.circe.syntax._
 
@@ -36,12 +34,12 @@ object GenericDerivation {
   }
 
   implicit val decodeEvent: Decoder[Event] =
-    NonEmptyList.of[Decoder[Event]](
+    List[Decoder[Event]](
       Decoder[Foo].widen,
       Decoder[Bar].widen,
       Decoder[Baz].widen,
       Decoder[Qux].widen
-    ).reduceK
+    ).reduceLeft(_ or _)
 }
 ```
 
