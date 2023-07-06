@@ -112,7 +112,7 @@ lazy val docs = project
       "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
-  .enablePlugins(CirceOrgSitePlugin)
+  // .enablePlugins(CirceOrgSitePlugin) // TODO: Fixme later.
   .settings(macroSettings)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
