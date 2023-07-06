@@ -70,6 +70,8 @@ val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
 val scalaJavaTimeVersion = "2.5.0"
 
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
  * different Scala versions depend on different versions of Discipline, etc.
