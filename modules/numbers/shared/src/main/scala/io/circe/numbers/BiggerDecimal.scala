@@ -282,7 +282,7 @@ object BiggerDecimal {
                 zeros = 0
               } else if (c == '.') {
                 state = AFTER_DOT
-              } else if ((c == 'e' || c == 'E') && ( i != startIndex)) {
+              } else if ((c == 'e' || c == 'E') && (i != startIndex)) {
                 state = AFTER_E
               } else {
                 state = FAILED
