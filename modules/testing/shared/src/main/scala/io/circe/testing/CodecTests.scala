@@ -17,22 +17,22 @@ trait CodecLaws[A] {
   def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
     encode(a).as(decode) <-> Right(a)
 
-  def codecFromConsistency(json: Json, a: A):
-    IsEq[(
+  def codecFromConsistency(json: Json, a: A): IsEq[
+    (
       Decoder.Result[A],
       Decoder.Result[A],
       Decoder.AccumulatingResult[A],
       Decoder.AccumulatingResult[A],
       Json
-    )]
-  = {
+    )
+  ] = {
     def output(d: Decoder[A], e: Encoder[A]) = (
-        d.apply(json.hcursor),
-        d.tryDecode(json.hcursor),
-        d.decodeAccumulating(json.hcursor),
-        d.tryDecodeAccumulating(json.hcursor),
-        e.apply(a)
-      )
+      d.apply(json.hcursor),
+      d.tryDecode(json.hcursor),
+      d.decodeAccumulating(json.hcursor),
+      d.tryDecodeAccumulating(json.hcursor),
+      e.apply(a)
+    )
 
     output(decode, encode) <-> output(from, from)
   }
@@ -63,7 +63,7 @@ trait CodecTests[A] extends Laws {
     "roundTrip" -> Prop.forAll { (a: A) =>
       laws.codecRoundTrip(a)
     },
-    "consistency with Codec.from" -> Prop.forAll{ (json: Json, a: A) =>
+    "consistency with Codec.from" -> Prop.forAll { (json: Json, a: A) =>
       laws.codecFromConsistency(json, a)
     },
     "consistency with accumulating" -> Prop.forAll { (json: Json) =>
