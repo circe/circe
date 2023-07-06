@@ -417,9 +417,9 @@ object Boilerplate {
         s"Decoder.accumulatingResultInstance.map$arity($accumulatingResults)(f)"
 
       val kvs =
-          synTypes.zipWithIndex.map {
-            case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
-          }.mkString(", ")
+        synTypes.zipWithIndex.map {
+          case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
+        }.mkString(", ")
 
       val outputType = s"(${`A..N`})"
 
