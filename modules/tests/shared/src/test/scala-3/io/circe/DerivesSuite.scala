@@ -167,6 +167,14 @@ object DerivesSuite {
     else Arbitrary.arbitrary[String].map(RecursiveEnumAdt.BaseAdtExample(_))
 
     given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
+
+  sealed trait ADTWithSubTraitExample derives Codec.AsObject
+  sealed trait SubTrait extends ADTWithSubTraitExample
+  case class TheClass(a: Int) extends SubTrait
+
+  object ADTWithSubTraitExample:
+    given Arbitrary[ADTWithSubTraitExample] = Arbitrary(Arbitrary.arbitrary[Int].map(TheClass.apply))
+    given Eq[ADTWithSubTraitExample] = Eq.fromUniversalEquals
 }
 
 class DerivesSuite extends CirceMunitSuite {
@@ -180,4 +188,16 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
+  checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
+
+  test("Nested sums should not be encoded redundantly") {
+    import io.circe.syntax._
+    val foo: ADTWithSubTraitExample = TheClass(0)
+    val expected = Json.obj(
+      "TheClass" -> Json.obj(
+        "a" -> 0.asJson
+      )
+    )
+    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+  }
 }
