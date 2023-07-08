@@ -70,6 +70,10 @@ object Codec extends ProductCodecs with EnumerationCodecs {
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
     new Codec[A] {
       def apply(c: HCursor): Decoder.Result[A] = decodeA(c)
+      override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeA.decodeAccumulating(c)
+      override def tryDecode(c: ACursor): Decoder.Result[A] = decodeA.tryDecode(c)
+      override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = decodeA.tryDecodeAccumulating(c)
+
       def apply(a: A): Json = encodeA(a)
     }
 
