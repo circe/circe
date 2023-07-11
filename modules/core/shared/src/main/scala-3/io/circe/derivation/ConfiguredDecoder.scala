@@ -189,13 +189,13 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration)(using
+  inline private def derivedBase[A](inline autoRecurse: Boolean)(using conf: Configuration)(using
     inline mirror: Mirror.Of[A]
   ): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A] with SumOrProduct:
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](autoRecurse)
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       lazy val isSum: Boolean =
@@ -212,13 +212,22 @@ object ConfiguredDecoder:
           case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
           case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
 
+  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
+    derivedBase(true)
+
+  inline final def derivedNoAutoRecursion[A](using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredDecoder[A] =
+    derivedBase(false)
+
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
-    strictDecoding: Boolean = Configuration.default.strictDecoding
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
+    inline autoRecurse: Boolean = true
   ): ConfiguredDecoder[A] =
-    derived[A](using
+    derivedBase[A](autoRecurse)(using
       Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding)
     )

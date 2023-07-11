@@ -54,10 +54,12 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+  inline private def derivedBase[A](inline autoRecurse: Boolean)(using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with SumOrProduct:
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes](autoRecurse)
 
       lazy val isSum: Boolean =
         inline mirror match
@@ -69,9 +71,20 @@ object ConfiguredEncoder:
           case _: Mirror.ProductOf[A] => encodeProduct(a)
           case sum: Mirror.SumOf[A]   => encodeSum(sum.ordinal(a), a)
 
+  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+    derivedBase(true)
+
+  inline final def derivedNoAutoRecursion[A](using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredEncoder[A] =
+    derivedBase(false)
+
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
-    discriminator: Option[String] = Configuration.default.discriminator
+    discriminator: Option[String] = Configuration.default.discriminator,
+    inline autoRecurse: Boolean = true
   ): ConfiguredEncoder[A] =
-    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator))
+    derivedBase[A](autoRecurse)(using
+      Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator)
+    )
