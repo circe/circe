@@ -201,8 +201,16 @@ object ConfiguredDecoder:
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
-    strictDecoding: Boolean = Configuration.default.strictDecoding
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
+    autoRecursiveDerivation: Boolean = Configuration.default.autoRecursiveDerivation
   ): ConfiguredDecoder[A] =
     derived[A](using
-      Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding)
+      Configuration(
+        transformMemberNames,
+        transformConstructorNames,
+        useDefaults,
+        discriminator,
+        strictDecoding,
+        autoRecursiveDerivation
+      )
     )

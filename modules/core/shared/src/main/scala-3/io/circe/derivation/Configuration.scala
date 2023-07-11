@@ -21,7 +21,8 @@ case class Configuration(
   transformConstructorNames: String => String = Predef.identity,
   useDefaults: Boolean = false,
   discriminator: Option[String] = None,
-  strictDecoding: Boolean = false
+  strictDecoding: Boolean = false,
+  autoRecursiveDerivation: Boolean = true
 ):
   def withTransformMemberNames(f: String => String): Configuration = copy(transformMemberNames = f)
   def withSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.snakeCase)
@@ -43,3 +44,6 @@ case class Configuration(
 
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
   def withoutStrictDecoding: Configuration = copy(strictDecoding = false)
+
+  def withAutoRecursiveDerivation: Configuration = copy(autoRecursiveDerivation = true)
+  def withoutAutoRecursiveDerivation: Configuration = copy(autoRecursiveDerivation = false)
