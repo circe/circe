@@ -23,6 +23,10 @@ private[circe] inline final def summonEncoderAutoRecurse[A](using conf: Configur
 private[circe] inline final def summonEncoderNoAutoRecurse[A](using conf: Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
+    case m: Mirror.Of[A] =>
+      inline m match
+        case _: Mirror.Singleton => ConfiguredEncoder.derived[A]
+        case m: Mirror           => error("Failed to find an instance of Encoder[" + constValue[m.MirroredLabel] + "]")
   }
 
 private[circe] inline final def summonEncoder[A](using conf: Configuration): Encoder[A] =
@@ -42,6 +46,10 @@ private[circe] inline final def summonDecoderAutoRecurse[A](using Configuration)
 private[circe] inline final def summonDecoderNoAutoRecurse[A](using conf: Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
+    case m: Mirror.Of[A] =>
+      inline m match
+        case _: Mirror.Singleton => ConfiguredDecoder.derived[A]
+        case m: Mirror           => error("Failed to find an instance of Decoder[" + constValue[m.MirroredLabel] + "]")
   }
 
 private[circe] inline final def summonDecoder[A](using conf: Configuration): Decoder[A] =
