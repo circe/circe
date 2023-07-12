@@ -262,7 +262,8 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   }
 
   test("it should fail on bad input") {
-    val badNumbers = List("", "x", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
+    val badNumbers =
+      List("", "x", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-", "E7", "-E7", "e7", "-e7")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input).isEmpty)

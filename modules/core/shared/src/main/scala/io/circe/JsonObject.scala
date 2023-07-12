@@ -138,6 +138,13 @@ sealed abstract class JsonObject extends Serializable {
   final def toVector: Vector[(String, Json)] = toIterable.toVector
 
   /**
+   * Return this `JsonObject` as a `Json`
+   *
+   * @group Conversions
+   */
+  final def toJson: Json = Json.fromJsonObject(this)
+
+  /**
    * Insert the given key and value.
    *
    * @group Modification

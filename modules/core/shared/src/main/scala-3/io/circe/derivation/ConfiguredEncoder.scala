@@ -37,19 +37,21 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 
   final def encodeSum(index: Int, a: A): JsonObject =
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)
+    val jo = json.asObject.getOrElse(JsonObject.empty)
+    val elemIsSum = elemEncoders(index) match {
+      case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
+      case _                                          => conf.discriminator.exists(jo.contains)
+    }
+    if (elemIsSum)
+      jo
+    else
+      // only add discriminator if elem is a Product
+      conf.discriminator match
+        case Some(discriminator) =>
+          jo.add(discriminator, Json.fromString(constructorName))
 
-    conf.discriminator match
-      case Some(discriminator) =>
-        val jo = json.asObject.getOrElse(JsonObject.empty)
-        val elemIsSum = elemEncoders(index) match {
-          case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
-          case _                                          => jo.contains(discriminator)
-        }
-        if (elemIsSum)
-          jo
-        else jo.add(discriminator, Json.fromString(constructorName)) // only add discriminator if elem is a Product
-
-      case None => JsonObject.singleton(constructorName, json)
+        case None =>
+          JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =

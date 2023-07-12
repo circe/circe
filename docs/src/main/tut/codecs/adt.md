@@ -27,10 +27,10 @@ import io.circe.syntax._
 
 object GenericDerivation {
   implicit val encodeEvent: Encoder[Event] = Encoder.instance {
-    case foo @ Foo(_) => foo.asJson
-    case bar @ Bar(_) => bar.asJson
-    case baz @ Baz(_) => baz.asJson
-    case qux @ Qux(_) => qux.asJson
+    case foo: Foo => foo.asJson
+    case bar: Bar => bar.asJson
+    case baz: Baz => baz.asJson
+    case qux: Qux => qux.asJson
   }
 
   implicit val decodeEvent: Decoder[Event] =

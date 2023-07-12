@@ -32,9 +32,30 @@ import org.typelevel.discipline.Laws
 trait CodecLaws[A] {
   def decode: Decoder[A]
   def encode: Encoder[A]
+  def from: Codec[A] = Codec.from(decode, encode)
 
   def codecRoundTrip(a: A): IsEq[Decoder.Result[A]] =
     encode(a).as(decode) <-> Right(a)
+
+  def codecFromConsistency(json: Json, a: A): IsEq[
+    (
+      Decoder.Result[A],
+      Decoder.Result[A],
+      Decoder.AccumulatingResult[A],
+      Decoder.AccumulatingResult[A],
+      Json
+    )
+  ] = {
+    def output(d: Decoder[A], e: Encoder[A]) = (
+      d.apply(json.hcursor),
+      d.tryDecode(json.hcursor),
+      d.decodeAccumulating(json.hcursor),
+      d.tryDecodeAccumulating(json.hcursor),
+      e.apply(a)
+    )
+
+    output(decode, encode) <-> output(from, from)
+  }
 
   def codecAccumulatingConsistency(json: Json): IsEq[Decoder.Result[A]] =
     decode(json.hcursor) <-> decode.decodeAccumulating(json.hcursor).leftMap(_.head).toEither
@@ -61,6 +82,9 @@ trait CodecTests[A] extends Laws {
     parent = None,
     "roundTrip" -> Prop.forAll { (a: A) =>
       laws.codecRoundTrip(a)
+    },
+    "consistency with Codec.from" -> Prop.forAll { (json: Json, a: A) =>
+      laws.codecFromConsistency(json, a)
     },
     "consistency with accumulating" -> Prop.forAll { (json: Json) =>
       laws.codecAccumulatingConsistency(json)
