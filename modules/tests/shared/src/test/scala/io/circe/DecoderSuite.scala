@@ -4,7 +4,8 @@ import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.implicits._
 import cats.kernel.Eq
-import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
+import cats.laws.discipline.{ DeferTests, MiniInt, MonadErrorTests, SemigroupKTests }
+import cats.laws.discipline.arbitrary._
 import io.circe.CursorOp.{ DownArray, DownN }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.parser.parse
@@ -762,5 +763,56 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
     assert(result.isInvalid)
     assertEquals(result.swap.toOption.map(_.size), Some(2))
+  }
+
+  checkAll("Defer[Decoder]", DeferTests[Decoder].defer[MiniInt])
+
+  test("Decoder.recursive should prevent undesirable grown in the number of instances created") {
+    var counter = 0
+    implicit def uglyListDecoder[A: Decoder]: Decoder[List[A]] = {
+      counter += 1
+      Decoder.recursive[List[A]] { implicit recurse =>
+        Decoder.instance { c =>
+          (c.downField("car").as[A], c.downField("cdr").as[Option[List[A]]]).mapN(_ :: _.getOrElse(Nil))
+        }
+      }
+    }
+    assertEquals(
+      Json
+        .obj(
+          "car" := 0,
+          "cdr" := Json.obj(
+            "car" := 1,
+            "cdr" := Json.obj(
+              "car" := 2,
+              "cdr" := Json.obj(
+                "car" := 3
+              )
+            )
+          )
+        )
+        .as[List[Int]],
+      (0 :: 1 :: 2 :: 3 :: Nil).asRight
+    )
+    // Without `Decoder.recursive`, this should create 5 instances of a `Decoder[List[Int]]`
+    // (1 for each instance, and 1 that gets created but not called because because the last "cdr" field is missing)
+    assertEquals(counter, 1)
+  }
+
+  test("Decoder.recursive should be stack safe") {
+    // Pretty much the same as the one in the other test, we just don't need to count for this one
+    implicit def uglyListDecoder[A: Decoder]: Decoder[List[A]] =
+      Decoder.recursive[List[A]] { implicit recurse =>
+        Decoder.instance { c =>
+          (c.downField("car").as[A], c.downField("cdr").as[Option[List[A]]]).mapN(_ :: _.getOrElse(Nil))
+        }
+      }
+    val list = List.range(0, 10000)
+    val json = list.foldRight[Json](Json.Null) { (i, accum) =>
+      if (accum === Json.Null) Json.obj("car" := i)
+      else Json.obj("car" := i, "cdr" := accum)
+    }
+
+    assertEquals(json.as[List[Int]], list.asRight)
   }
 }

@@ -1,6 +1,6 @@
 package io.circe
 
-import cats.{ ApplicativeError, Eval, MonadError, SemigroupK }
+import cats.{ ApplicativeError, Defer, Eval, MonadError, SemigroupK }
 import cats.data.{
   Chain,
   Kleisli,
@@ -18,6 +18,7 @@ import cats.data.Validated.{ Invalid, Valid }
 import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
 import cats.kernel.Order
 import io.circe.`export`.Exported
+
 import java.io.Serializable
 import java.net.{ URI, URISyntaxException }
 import java.time.{
@@ -40,7 +41,6 @@ import java.time.{
 import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
-
 import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
 
 import scala.annotation.tailrec
@@ -571,6 +571,16 @@ object Decoder
     override final def decodeAccumulating(c: HCursor): AccumulatingResult[A] =
       Validated.invalidNel(DecodingFailure(message, c.history))
   }
+
+  /**
+   * Create a `Decoder` which assumes one already exists
+   *
+   * Certain recursive data structures (particularly when generic) greatly benefit from
+   * being able to be written this way. See `cats.Defer`
+   *
+   * @group Utilities
+   */
+  final def recursive[A](fn: Decoder[A] => Decoder[A]): Decoder[A] = Defer[Decoder].fix(fn)
 
   /**
    * @group Decoding
@@ -1433,10 +1443,28 @@ object Decoder
       protected[this] final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
     }
 
+  private final case class DeferredDecoder[A](decoder: () => Decoder[A]) extends Decoder[A] {
+    private lazy val resolved: Decoder[A] = resolve(decoder)
+
+    @annotation.tailrec
+    private def resolve(f: () => Decoder[A]): Decoder[A] =
+      f() match {
+        case DeferredDecoder(f) => resolve(f)
+        case next               => next
+      }
+
+    override def apply(c: HCursor): Result[A] = resolved(c)
+
+    override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = resolved.decodeAccumulating(c)
+  }
+  implicit val decoderDefer: Defer[Decoder] = new Defer[Decoder] {
+    override def defer[A](fa: => Decoder[A]): Decoder[A] = DeferredDecoder(() => fa)
+  }
   /**
    * @group Instances
    */
-  implicit final val decoderInstances: SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
+  implicit final val decoderInstances
+    : SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] =
     new SemigroupK[Decoder] with MonadError[Decoder, DecodingFailure] {
       final def combineK[A](x: Decoder[A], y: Decoder[A]): Decoder[A] = x.or(y)
       final def pure[A](a: A): Decoder[A] = const(a)
