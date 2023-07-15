@@ -21,9 +21,7 @@ import cats.kernel.Eq
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.Decoder
-import io.circe.Encoder
-import io.circe.Json
+import io.circe._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import org.scalacheck.Shrink
