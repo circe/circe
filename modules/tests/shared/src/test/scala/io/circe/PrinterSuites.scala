@@ -9,7 +9,7 @@ class Spaces4PrinterSuite extends PrinterSuite(Printer.spaces4, parser.`package`
 class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escapeNonAscii = true), parser.`package`) {
   import io.circe.syntax._
   test("Printing object should unicode-escape all non-ASCII chars") {
-    val actual = Json.obj("0 ℃" := "32 ℉").printWith(printer)
+    val actual = Json.obj("0 ℃" := "32 ℉").printWith(circePrinter)
     val expected = "{\"0 \\u2103\":\"32 \\u2109\"}"
     assertEquals(actual, expected)
   }
