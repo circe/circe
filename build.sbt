@@ -1,13 +1,13 @@
-import microsites.ExtraMdFileConfig
-import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
 
-val Scala212V: String = "2.12.15"
-val Scala213V: String = "2.13.8"
+val Scala212V: String = "2.12.17"
+val Scala213V: String = "2.13.10"
 val Scala3V: String = "3.2.2"
 
 ThisBuild / tlBaseVersion := "0.14"
+ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
 ThisBuild / tlCiReleaseTags := true
+ThisBuild / tlFatalWarningsInCi := false // we currently have a lot of warnings that will need to be fixed
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3V, Scala212V, Scala213V)
@@ -15,45 +15,11 @@ ThisBuild / scalaVersion := Scala213V
 
 ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
 
-ThisBuild / githubWorkflowAddedJobs ++= Seq(
-  WorkflowJob(
-    id = "scalafmt",
-    name = "Scalafmt and Scalastyle",
-    scalas = List(crossScalaVersions.value.last),
-    steps = List(WorkflowStep.Checkout) ++ WorkflowStep.SetupJava(
-      List(githubWorkflowJavaVersions.value.last)
-    ) ++ githubWorkflowGeneratedCacheSteps.value ++ List(
-      WorkflowStep.Sbt(
-        List("+scalafmtCheckAll", "scalafmtSbtCheck", "scalastyle"),
-        name = Some("Scalafmt and Scalastyle tests")
-      )
-    )
-  ),
-  WorkflowJob(
-    id = "coverage",
-    name = "Generate coverage report",
-    scalas = crossScalaVersions.value.filterNot(_.startsWith("3.")).toList,
-    steps = List(WorkflowStep.Checkout) ++ WorkflowStep.SetupJava(
-      List(githubWorkflowJavaVersions.value.last)
-    ) ++ githubWorkflowGeneratedCacheSteps.value ++ List(
-      WorkflowStep.Sbt(List("coverage", "rootJVM/test", "coverageAggregate")),
-      WorkflowStep.Use(
-        UseRef.Public(
-          "codecov",
-          "codecov-action",
-          "v2"
-        ),
-        params = Map(
-          "flags" -> List("${{matrix.scala}}", "${{matrix.java}}").mkString(",")
-        )
-      )
-    )
-  )
-)
-
+ThisBuild / tlCiScalafixCheck := false // TODO: Address these in a follow up PR
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
+ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
 val catsVersion = "2.9.0"
 val jawnVersion = "1.5.1"
@@ -64,7 +30,7 @@ val refinedNativeVersion = "0.10.3"
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.17.0"
-val munitVersion = "1.0.0-M7"
+val munitVersion = "1.0.0-M8"
 val disciplineVersion = "1.5.1"
 val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
@@ -82,10 +48,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
 
 val scalaFiddleCirceVersion = "0.9.1"
 
-lazy val allSettings = Seq(
-  coverageHighlighting := true,
-  Compile / scalastyleSources ++= (Compile / unmanagedSourceDirectories).value
-)
+lazy val allSettings = Seq()
 
 /**
  * Replace '/' with '-' in a path which represents a module name.
@@ -138,100 +101,19 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
     )
 }
 
-lazy val docsMappingsAPIDir =
-  settingKey[String]("Name of subdirectory in site target directory for api docs")
-
-lazy val docSettings = allSettings ++ Seq(
-  micrositeName := "circe",
-  micrositeDescription := "A JSON library for Scala powered by Cats",
-  micrositeAuthor := "Travis Brown",
-  micrositeHighlightTheme := "atom-one-light",
-  micrositeHomepage := "https://circe.github.io/circe/",
-  micrositeBaseUrl := "/circe",
-  micrositeDocumentationUrl := s"${docsMappingsAPIDir.value}/io/circe",
-  micrositeDocumentationLabelDescription := "API Documentation",
-  micrositeGithubOwner := "circe",
-  micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(
-    file("CONTRIBUTING.md") -> ExtraMdFileConfig(
-      "contributing.md",
-      "docs",
-      Map("title" -> "Contributing", "position" -> "6")
-    )
-  ),
-  micrositeExtraMdFilesOutput := resourceManaged.value / "main" / "jekyll",
-  micrositeTheme := "pattern",
-  micrositePalette := Map(
-    "brand-primary" -> "#5B5988",
-    "brand-secondary" -> "#292E53",
-    "brand-tertiary" -> "#222749",
-    "gray-dark" -> "#49494B",
-    "gray" -> "#7B7B7E",
-    "gray-light" -> "#E5E5E6",
-    "gray-lighter" -> "#F4F3F4",
-    "white-color" -> "#FFFFFF"
-  ),
-  micrositeConfigYaml := ConfigYml(yamlInline = s"""
-      |scalafiddle:
-      |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
-    """.stripMargin),
-  docsMappingsAPIDir := "api",
-  addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, docsMappingsAPIDir),
-  ghpagesNoJekyll := true,
-  ScalaUnidoc / unidoc / scalacOptions ++= Seq(
-    "-groups",
-    "-implicits",
-    "-skip-packages",
-    "scalaz",
-    "-doc-source-url",
-    scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-    "-sourcepath",
-    (LocalRootProject / baseDirectory).value.getAbsolutePath
-  ),
-  /* Publish GitHub Pages { */
-  gitHubPagesOrgName := "circe",
-  gitHubPagesRepoName := "circe",
-  gitHubPagesSiteDir := baseDirectory.value / "target" / "site",
-  /* } Publish GitHub Pages */
-  scalacOptions ~= {
-    _.filterNot(Set("-Yno-predef"))
-  },
-  git.remoteRepo := "git@github.com:circe/circe.git",
-  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(
-    numbers.jvm,
-    core.jvm,
-    pointer.jvm,
-    pointerLiteral.jvm,
-    generic.jvm,
-    shapes.jvm,
-    literal.jvm,
-    refined.jvm,
-    parser.jvm,
-    scodec.jvm,
-    jawn.jvm,
-    scalajs
-  ),
-  makeSite / includeFilter := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
-)
-
 lazy val docs = project
+  .in(file("docs"))
   .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
-    mdocIn := file("docs/src/main/tut"),
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-generic-extras" % "0.14.1",
       "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
-  .settings(docSettings)
-  .enablePlugins(NoPublishPlugin)
+  // .enablePlugins(CirceOrgSitePlugin) // TODO: Fixme later.
   .settings(macroSettings)
-  .enablePlugins(GhpagesPlugin)
-  .enablePlugins(MicrositesPlugin)
-  .enablePlugins(ScalaUnidocPlugin)
-  .enablePlugins(GitHubPagesPlugin)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= (if (tlIsScala3.value) Nil
@@ -453,6 +335,9 @@ lazy val refined = circeCrossModule("refined")
         "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
       )
     },
+    dependencyOverrides ++= Seq(
+      "org.scala-lang.modules" %% "scala-xml" % "2.1.0"
+    ),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -589,7 +474,7 @@ lazy val benchmark = circeModule("benchmark")
   .dependsOn(core.jvm, generic.jvm, jawn.jvm, pointer.jvm)
 
 ThisBuild / homepage := Some(url("https://github.com/circe/circe"))
-ThisBuild / licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+ThisBuild / licenses := Seq(License.Apache2)
 ThisBuild / developers := List(
   Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
   Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
