@@ -41,7 +41,7 @@ facade. Jawn is fast, cross-platform, and offers asynchronous parsing. The [circ
 circe also provides a [`parser`][circe-parser] subproject that provides parsing support for Scala.js,
 with JVM parsing provided by `io.circe.jawn` and JavaScript parsing from `scalajs.js.JSON`.
 
-See the [Parsing page](parsing.html) for more details.
+See the [Parsing page](parsing.md) for more details.
 
 ### Lenses
 
@@ -49,7 +49,7 @@ circe doesn't use or provide lenses in the `core` project. This is related to th
 since [Monocle][monocle] has a Scalaz dependency, but we also feel that it simplifies the API. The
 0.3.0 release added [an experimental `optics` subproject][optics-pr] that provides Monocle lenses.
 
-See the [Optics page](optics.html) for more details.
+See the [Optics page](optics.md) for more details.
 
 ### Codec derivation
 
@@ -63,7 +63,7 @@ instances (see my recent [blog post][incompletes] for details). Note that if you
 `-Ypartial-unification` and `auto`, incomplete decoders will not work (see
 [#724](https://github.com/circe/circe/pull/724)).
 
-See the [Encoding and Decoding page](codec.html) for more details.
+See the [Encoding and Decoding page](codec.md) for more details.
 
 ### Aliases
 
@@ -77,7 +77,7 @@ early days for this.
 
 ### Performance
 
-circe is developed with a focus on performance. See the [Performance](performance.html) page for
+circe is developed with a focus on performance. See the [Performance](performance.md) page for
 details.
 
 ## License
