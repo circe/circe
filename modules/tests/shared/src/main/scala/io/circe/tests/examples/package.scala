@@ -132,9 +132,9 @@ package examples {
     )
 
     val decodeBam: Decoder[Bam] = Decoder.forProduct2("w", "d")(Bam.apply)(Wub.decodeWub, implicitly)
-    val encodeBam: Encoder[Bam] = Encoder.forProduct2[Bam, Wub, Double]("w", "d") {
+    val encodeBam: Encoder[Bam] = Encoder.forTupleProduct2[Bam, Wub, Double]("w", "d") {
       case Bam(w, d) => (w, d)
-    }(Wub.encodeWub, implicitly, implicitly)
+    }(Wub.encodeWub, implicitly)
   }
 
   object Foo {

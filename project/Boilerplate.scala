@@ -272,6 +272,10 @@ object Boilerplate {
         }
       val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
 
+      val deprecate = if (arity != 1)
+        s"""@deprecated(message="does not work correctly for Scala 3. Prefer forTupleProduct$arity", since="0.14.6")"""
+      else ""
+
       block"""
         |package io.circe
         |
@@ -279,6 +283,7 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
+        -  $deprecate
         -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
         -  ): Encoder.AsObject[Source] =
@@ -317,8 +322,8 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
-        -    $instances, dummy: DummyImplicit
+        -  final def forTupleProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
+        -    $instances
         -  ): Encoder.AsObject[Source] =
         -    new Encoder.AsObject[Source] {
         -      final def encodeObject(a: Source): JsonObject = {
@@ -365,6 +370,10 @@ object Boilerplate {
         }
       val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
 
+      val deprecate = if (arity != 1)
+        s"""@deprecated(message="does not work correctly for Scala 3. Prefer forTupleProduct$arity", since="0.14.6")"""
+      else ""
+
       block"""
         |package io.circe
         |
@@ -372,6 +381,7 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
+        -  $deprecate
         -  final def forProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
         -    $decoderInstances,
         -    $encoderInstances
@@ -430,10 +440,9 @@ object Boilerplate {
         -  /**
         -   * @group Product
         -   */
-        -  final def forProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
+        -  final def forTupleProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
         -    $decoderInstances,
-        -    $encoderInstances,
-        -    dummy: DummyImplicit
+        -    $encoderInstances
         -  ): Codec.AsObject[A] =
         -    new Codec.AsObject[A] {
         -      final def apply(c: HCursor): Decoder.Result[A] = $result
@@ -466,6 +475,8 @@ object Boilerplate {
       val memberVariableNames = (0 until arity).map(i => s"s$i").mkString(", ")
       val memberArbitraryItems = (0 until arity).map(i => s"s$i <- Arbitrary.arbitrary[String]").mkString("; ")
 
+      val forProduct = if (arity != 1) "forTupleProduct" else "forProduct"
+
       block"""
         |package io.circe
         |
@@ -485,11 +496,11 @@ object Boilerplate {
         -      case Cc$arity($memberVariableNames) => ($memberVariableNames)
         -    }
         -    implicit val encodeCc$arity: Encoder[Cc$arity] =
-        -      Encoder.forProduct$arity($memberNames)(toTuple)
+        -      Encoder.$forProduct$arity($memberNames)(toTuple)
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
         -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
         -    val codecForCc$arity: Codec[Cc$arity] =
-        -      Codec.forProduct$arity($memberNames)(Cc$arity.apply)(toTuple)
+        -      Codec.$forProduct$arity($memberNames)(Cc$arity.apply)(toTuple)
         -  }
         -  checkAll("Codec[Cc$arity]", CodecTests[Cc$arity].unserializableCodec)
         -  checkAll(

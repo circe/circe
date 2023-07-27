@@ -8,7 +8,7 @@ class FromProductSuite extends CirceMunitSuite:
   test("encode correctly Example(id: Int, value: String)") {
     case class Example(id: Int, value: String)
 
-    given Encoder[Example] = Encoder.forProduct2("id", "value")(Tuple.fromProductTyped[Example])
+    given Encoder[Example] = Encoder.forTupleProduct2("id", "value")(Tuple.fromProductTyped[Example])
     given Decoder[Example] = Decoder.forProduct2("id", "value")(Example.apply)
 
     val example = Example(1, "hello")
@@ -22,7 +22,7 @@ class FromProductSuite extends CirceMunitSuite:
   test("codec encode/decode correctly Example(id: Int, value: String)") {
     case class Example(id: Int, value: String)
 
-    given Codec[Example] = Codec.forProduct2("id", "value")(Example.apply)(Tuple.fromProductTyped[Example])
+    given Codec[Example] = Codec.forTupleProduct2("id", "value")(Example.apply)(Tuple.fromProductTyped[Example])
 
     val example = Example(1, "hello")
 
