@@ -16,10 +16,10 @@
 
 package io.circe.internal.fix
 
-import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuiteLike
 import scalafix.testkit._
 
-final class AssertRewriteSuite extends AbstractSyntacticRuleSuite with FunSuiteLike {
+final class AssertRewriteSuite extends AbstractSyntacticRuleSuite with AnyFunSuiteLike {
   val original0: String =
     """object Tests {
       |property("property") { forAll(a =>
