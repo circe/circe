@@ -1,12 +1,33 @@
+/*
+ * Copyright 2023 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.testing
 
 import cats.instances.list._
 import io.circe.DecodingFailure.Reason
-import io.circe.DecodingFailure.Reason.{ CustomReason, MissingField, WrongTypeExpectation }
-import io.circe.numbers.BiggerDecimal
-import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
+import io.circe.DecodingFailure.Reason.CustomReason
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe._
-import org.scalacheck.{ Arbitrary, Cogen, Gen }
+import io.circe.numbers.BiggerDecimal
+import io.circe.numbers.testing.IntegralString
+import io.circe.numbers.testing.JsonNumberString
+import org.scalacheck.Arbitrary
+import org.scalacheck.Cogen
+import org.scalacheck.Gen
 
 trait ArbitraryInstances extends ArbitraryJsonNumberTransformer with CogenInstances with ShrinkInstances {
 
