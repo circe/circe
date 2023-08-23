@@ -192,25 +192,27 @@ object ConfiguredDecoder:
   inline final def derived[A](using conf: Configuration)(using
     inline mirror: Mirror.Of[A]
   ): ConfiguredDecoder[A] =
-    new ConfiguredDecoder[A] with SumOrProduct:
-      val name = constValue[mirror.MirroredLabel]
-      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
-      lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
+    given result: ConfiguredDecoder[A] =
+      new ConfiguredDecoder[A] with SumOrProduct:
+        val name = constValue[mirror.MirroredLabel]
+        lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
+        lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+        lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
+        lazy val isSum: Boolean =
+          inline mirror match
+            case _: Mirror.ProductOf[A] => false
+            case _: Mirror.SumOf[A]     => true
 
-      final def apply(c: HCursor): Decoder.Result[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSum(c)
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
+        final def apply(c: HCursor): Decoder.Result[A] =
+          inline mirror match
+            case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
+            case _: Mirror.SumOf[A]           => decodeSum(c)
+        final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
+          inline mirror match
+            case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
+            case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
+    result
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
