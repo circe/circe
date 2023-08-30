@@ -38,17 +38,18 @@ object DerivedSuite:
       // maxRemainingDepth limits the depth of the tree to prevent a stack overflow in decoder/encoder at Runtime
       // TODO: Fix the Encoder/Decoder to use something like 'defer' to handle deep nested recursive ADTs
       def genTree(maxRemainingDepth: Long): Gen[Tree] =
-        if(maxRemainingDepth <= 0) Gen.const(Leaf)
-        else Gen.oneOf(
-          for {
-            // the following line is an awkward trick to add sufficient lazyness to avoid endin up
-            // in an endless loop at runtime
-            f <- Gen.const(Branch.apply)
-            l <- genTree(maxRemainingDepth-1)
-            r <- genTree(maxRemainingDepth-1)
-          } yield f(l, r),
-          Gen.const(Leaf)
-        )
+        if (maxRemainingDepth <= 0) Gen.const(Leaf)
+        else
+          Gen.oneOf(
+            for {
+              // the following line is an awkward trick to add sufficient lazyness to avoid endin up
+              // in an endless loop at runtime
+              f <- Gen.const(Branch.apply)
+              l <- genTree(maxRemainingDepth - 1)
+              r <- genTree(maxRemainingDepth - 1)
+            } yield f(l, r),
+            Gen.const(Leaf)
+          )
       Arbitrary(genTree(1000))
 
     given Eq[Tree] = Eq.fromUniversalEquals
