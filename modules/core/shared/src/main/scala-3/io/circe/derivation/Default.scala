@@ -38,7 +38,9 @@ object Default:
     new Default[T]:
       type Out = Tuple.Map[mirror.MirroredElemTypes, Option]
       lazy val defaults: Out =
-        val size = constValue[Tuple.Size[mirror.MirroredElemTypes]]
+        // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
+        // in some rare edge cases, the latter fails (and both always have the same size)
+        val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
         getDefaults[T](size).asInstanceOf[Out]
 
   inline def getDefaults[T](inline s: Int): Tuple = ${ getDefaultsImpl[T]('s) }
