@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.derivation
 
 import scala.deriving.Mirror
@@ -21,19 +37,21 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 
   final def encodeSum(index: Int, a: A): JsonObject =
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)
+    val jo = json.asObject.getOrElse(JsonObject.empty)
+    val elemIsSum = elemEncoders(index) match {
+      case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
+      case _                                          => conf.discriminator.exists(jo.contains)
+    }
+    if (elemIsSum)
+      jo
+    else
+      // only add discriminator if elem is a Product
+      conf.discriminator match
+        case Some(discriminator) =>
+          jo.add(discriminator, Json.fromString(constructorName))
 
-    conf.discriminator match
-      case Some(discriminator) =>
-        val jo = json.asObject.getOrElse(JsonObject.empty)
-        val elemIsSum = elemEncoders(index) match {
-          case ce: ConfiguredEncoder[?] with SumOrProduct => ce.isSum
-          case _                                          => jo.contains(discriminator)
-        }
-        if (elemIsSum)
-          jo
-        else jo.add(discriminator, Json.fromString(constructorName)) // only add discriminator if elem is a Product
-
-      case None => JsonObject.singleton(constructorName, json)
+        case None =>
+          JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =

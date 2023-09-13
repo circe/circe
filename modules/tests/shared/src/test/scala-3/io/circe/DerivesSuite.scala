@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.kernel.Eq
@@ -167,6 +183,40 @@ object DerivesSuite {
     else Arbitrary.arbitrary[String].map(RecursiveEnumAdt.BaseAdtExample(_))
 
     given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
+
+  sealed trait ADTWithSubTraitExample derives Codec.AsObject
+  sealed trait SubTrait extends ADTWithSubTraitExample
+  case class TheClass(a: Int) extends SubTrait
+
+  object ADTWithSubTraitExample:
+    given Arbitrary[ADTWithSubTraitExample] = Arbitrary(Arbitrary.arbitrary[Int].map(TheClass.apply))
+    given Eq[ADTWithSubTraitExample] = Eq.fromUniversalEquals
+
+  case class ProductWithTaggedMember(x: ProductWithTaggedMember.TaggedString) derives Codec.AsObject
+
+  object ProductWithTaggedMember:
+    sealed trait Tag
+
+    type TaggedString = String with Tag
+
+    object TaggedString:
+      val decoder: Decoder[TaggedString] =
+        summon[Decoder[String]].map(_.asInstanceOf[TaggedString])
+      val encoder: Encoder[TaggedString] =
+        summon[Encoder[String]].contramap(x => x)
+
+    given Codec[TaggedString] =
+      Codec.from(TaggedString.decoder, TaggedString.encoder)
+
+    def fromUntagged(x: String): ProductWithTaggedMember =
+      ProductWithTaggedMember(x.asInstanceOf[TaggedString])
+
+    given Arbitrary[ProductWithTaggedMember] =
+      Arbitrary {
+        Arbitrary.arbitrary[String].map(fromUntagged)
+      }
+    given Eq[ProductWithTaggedMember] = Eq.fromUniversalEquals
+
 }
 
 class DerivesSuite extends CirceMunitSuite {
@@ -180,4 +230,17 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
+  checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
+  checkAll("Codec[ProductWithTaggedMember] (#2135)", CodecTests[ProductWithTaggedMember].codec)
+
+  test("Nested sums should not be encoded redundantly") {
+    import io.circe.syntax._
+    val foo: ADTWithSubTraitExample = TheClass(0)
+    val expected = Json.obj(
+      "TheClass" -> Json.obj(
+        "a" -> 0.asJson
+      )
+    )
+    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+  }
 }
