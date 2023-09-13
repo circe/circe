@@ -269,7 +269,7 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
-  test ("fromStringOrNull return Null on None") {
+  test("fromStringOrNull return Null on None") {
     assertEquals(Json.fromStringOrNull(None), Json.Null)
   }
 
