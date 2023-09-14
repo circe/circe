@@ -569,6 +569,11 @@ object Json {
   final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
 
   /**
+    * Create a `Json` value representing a JSON number or null from an optional `Double`
+    */
+  final def fromDoubleOrNull(value: Option[Double]): Json = value.fold(Json.Null)(fromDoubleOrNull)
+
+  /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
    *
    * The result is a JSON null if the argument cannot be represented as a JSON
@@ -583,6 +588,11 @@ object Json {
    * number.
    */
   final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(JsonFloat(value)) else Null
+
+  /**
+    * Create a `Json` value representing a JSON number or null from an optional `Float`
+    */
+  final def fromFloatOrNull(value: Option[Float]): Json = value.fold(Json.Null)(fromFloatOrNull)
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
