@@ -269,6 +269,62 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
+  test("fromStringOrNull return Null on None") {
+    assertEquals(Json.fromStringOrNull(None), Json.Null)
+  }
+
+  test("fromStringOrNull return value on Some") {
+    val s = "egg"
+    assertEquals(Json.fromStringOrNull(Some(s)), Json.fromString(s))
+  }
+
+  test("fromBooleanOrNull return Null on None") {
+    assertEquals(Json.fromBooleanOrNull(None), Json.Null)
+  }
+
+  property("fromBooleanOrNull return value on Some") {
+    forAll { (value: Boolean) =>
+      assertEquals(Json.fromBooleanOrNull(Some(value)), Json.fromBoolean(value))
+    }
+  }
+
+  test("fromIntOrNull return Null on None") {
+    assertEquals(Json.fromIntOrNull(None), Json.Null)
+  }
+
+  property("fromIntOrNull return value on Some") {
+    forAll { (value: Int) =>
+      assertEquals(Json.fromIntOrNull(Some(value)), Json.fromInt(value))
+    }
+  }
+
+  test("fromLongOrNull return Null on None") {
+    assertEquals(Json.fromLongOrNull(None), Json.Null)
+  }
+
+  property("fromLongOrNull return value on Some") {
+    forAll { (value: Long) =>
+      assertEquals(Json.fromLongOrNull(Some(value)), Json.fromLong(value))
+    }
+  }
+
+  test("fromBigIntOrNull returns Null on None") {
+    assertEquals(Json.fromBigIntOrNull(None), Json.Null)
+  }
+
+  property("fromBigDecimalOrNull return value on Some") {
+    forAll { (value: BigDecimal) =>
+      assertEquals(
+        Json.fromBigDecimalOrNull(Some(value)),
+        Json.fromBigDecimal(value)
+      )
+    }
+  }
+
+  test("fromBigDecimalOrNull return Null on None") {
+    assertEquals(Json.fromBigDecimalOrNull(None), Json.Null)
+  }
+
   test("fromDouble should fail on Double.NaN") {
     assertEquals(Json.fromDouble(Double.NaN), None)
   }
@@ -291,6 +347,26 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
 
   test("fromDoubleOrNull should return Null on Double.NegativeInfinity") {
     assertEquals(Json.fromDoubleOrNull(Double.NegativeInfinity), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on None") {
+    assertEquals(Json.fromDoubleOrNull(None), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.NaN") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.NaN)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.PositiveInfinity") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.PositiveInfinity)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.NegativeInfinity") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.NegativeInfinity)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return value") {
+    assertEquals(Json.fromDoubleOrNull(Some(1.23)), Json.fromDoubleOrNull(1.23))
   }
 
   test("fromDoubleOrString should return String on Double.NaN") {
@@ -332,6 +408,26 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
 
   test("fromFloatOrNull should return Null on Float.NegativeInfinity") {
     assertEquals(Json.fromFloatOrNull(Float.NegativeInfinity), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on None") {
+    assertEquals(Json.fromFloatOrNull(None), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.NaN") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.NaN)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.PositiveInfinity") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.PositiveInfinity)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.NegativeInfinity") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.NegativeInfinity)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return value") {
+    assertEquals(Json.fromFloatOrNull(Some(1.23f)), Json.fromFloatOrNull(1.23f))
   }
 
   test("fromFloatOrString should return String on Float.NaN") {
