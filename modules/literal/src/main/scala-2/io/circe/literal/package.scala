@@ -16,8 +16,6 @@
 
 package io.circe
 
-import scala.language.experimental.macros
-
 package object literal {
   implicit final class JsonStringContext(sc: StringContext) {
     final def json(args: Any*): Json = macro JsonLiteralMacros.jsonStringContext

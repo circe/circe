@@ -20,7 +20,6 @@ import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Codec, Decoder, DecodingFailure, HCursor, JsonObject }
 import io.circe.generic.Deriver
 
-import scala.language.experimental.macros
 import shapeless.HNil
 
 /**

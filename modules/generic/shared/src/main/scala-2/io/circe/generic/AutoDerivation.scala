@@ -22,8 +22,6 @@ import io.circe.generic.decoding.DerivedDecoder
 import io.circe.generic.encoding.DerivedAsObjectEncoder
 import io.circe.generic.util.macros.ExportMacros
 
-import scala.language.experimental.macros
-
 /**
  * Fully automatic codec derivation.
  *

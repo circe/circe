@@ -18,11 +18,6 @@ package io.circe
 
 import cats.data.Chain
 import cats.kernel.instances.float._
-import cats.kernel.instances.int._
-import cats.kernel.instances.list._
-import cats.kernel.instances.map._
-import cats.kernel.instances.string._
-import cats.kernel.instances.tuple._
 import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.ContravariantTests
 import cats.syntax.eq._
