@@ -17,7 +17,6 @@
 package io.circe.benchmark
 
 import io.circe.Json
-import cats.syntax.eq._
 import munit.FunSuite
 class InstantiationBenchmarkSpec extends FunSuite {
   val benchmark: InstantiationBenchmark = new InstantiationBenchmark

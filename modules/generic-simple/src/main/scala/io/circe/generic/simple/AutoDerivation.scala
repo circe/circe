@@ -5,7 +5,6 @@ import io.circe.export.Exported
 import io.circe.generic.simple.decoding.DerivedDecoder
 import io.circe.generic.simple.encoding.DerivedAsObjectEncoder
 import io.circe.generic.simple.util.macros.ExportMacros
-import scala.language.experimental.macros
 
 /**
  * Fully automatic codec derivation.

@@ -16,8 +16,6 @@
 
 package io.circe.scalajs
 
-import cats.instances.all._
-import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
