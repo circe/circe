@@ -10,6 +10,7 @@ import sbt._
  * @author Kevin Wright
  */
 object Boilerplate {
+
   import scala.StringContext._
 
   implicit class BlockHelper(val sc: StringContext) extends AnyVal {
@@ -21,19 +22,28 @@ object Boilerplate {
     }
   }
 
-  val templates: Seq[Template] = Seq(
+  val commonTemplates: Seq[Template] = Seq(
     GenTupleDecoders,
     GenTupleEncoders,
     GenProductDecoders,
     GenProductEncoders,
-    GenProductTupleEncoders,
-    GenProductCodecs,
-    GenProductTupleCodecs
+    GenProductCodecs
+  )
+
+  val templates212: Seq[Template] = commonTemplates ++ Seq(
+    Gen212TypedProductEncoders,
+    Gen212TypedProductCodecs
+  )
+
+  val templates213: Seq[Template] = commonTemplates ++ Seq(
+    GenTypedProductEncoders,
+    GenTypedProductCodecs
   )
 
   val testTemplates: Seq[Template] = Seq(
     GenTupleTests,
-    GenProductTests
+    GenProductTests,
+    GenTypedProductTests
   )
 
   val header = "// auto-generated boilerplate"
@@ -44,10 +54,17 @@ object Boilerplate {
    *
    * As a side-effect, it actually generates them...
    */
-  def gen(dir: File): Seq[File] = templates.map { template =>
-    val tgtFile = template.filename(dir)
-    IO.write(tgtFile, template.body)
-    tgtFile
+  def gen(dir: File, scalaBinaryVersion: String): Seq[File] = {
+    val templates = scalaBinaryVersion match {
+      case "2.12" => templates212
+      case "3"    => templates213
+      case "2.13" => templates213
+    }
+    templates.map { template =>
+      val tgtFile = template.filename(dir)
+      IO.write(tgtFile, template.body)
+      tgtFile
+    }
   }
 
   /**
@@ -79,7 +96,7 @@ object Boilerplate {
    * - The contents of the `header` val is output first
    * - Then the first block of lines beginning with '|'
    * - Then the block of lines beginning with '-' is replicated once for each arity,
-   *   with the `templateVals` already pre-populated with relevant vals for that arity
+   * with the `templateVals` already pre-populated with relevant vals for that arity
    * - Then the last block of lines prefixed with '|'
    *
    * The block otherwise behaves as a standard interpolated string with regards to variable
@@ -87,8 +104,11 @@ object Boilerplate {
    */
   trait Template {
     def filename(root: File): File
+
     def content(tv: TemplateVals): String
+
     def range: IndexedSeq[Int] = 1 to maxArity
+
     def body: String = {
       val headerLines = header.split('\n')
       val raw = range.map(n => content(new TemplateVals(n)).split('\n').filterNot(_.isEmpty))
@@ -253,15 +273,17 @@ object Boilerplate {
     }
   }
 
-  object GenProductEncoders extends Template {
+  class GenProductEncoders(traitName: String, byName: Boolean, forProduct: String, outputTypeF: (Int, String) => String)
+      extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root / "io" / "circe" / "ProductEncoders.scala"
+    def filename(root: File): File = root / "io" / "circe" / s"${traitName}.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
 
-      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val byn = if (byName) "=> " else ""
+      val instances = synTypes.map(tpe => s"encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
       val kvs =
         if (arity == 1) s"(name${synTypes.head}, encode${synTypes.head}(members))"
@@ -272,19 +294,14 @@ object Boilerplate {
         }
       val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
 
-      val deprecate = if (arity != 1)
-        s"""@deprecated(message="does not work correctly for Scala 3. Prefer forTupleProduct$arity", since="0.14.6")"""
-      else ""
-
       block"""
         |package io.circe
         |
-        |private[circe] trait ProductEncoders {
+        |private[circe] trait $traitName {
         -  /**
         -   * @group Product
         -   */
-        -  $deprecate
-        -  final def forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
+        -  final def $forProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
         -    $instances
         -  ): Encoder.AsObject[Source] =
         -    new Encoder.AsObject[Source] {
@@ -298,54 +315,18 @@ object Boilerplate {
     }
   }
 
-  object GenProductTupleEncoders extends Template {
-    override def range: IndexedSeq[Int] = 2 to maxArity
-
-    def filename(root: File): File = root / "io" / "circe" / "ProductTupleEncoders.scala"
-
-    def content(tv: TemplateVals): String = {
-      import tv._
-
-      val instances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
-      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
-      val kvs =
-        synTypes.zipWithIndex.map {
-          case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
-        }.mkString(", ")
-
-      val outputType = s"(${`A..N`})"
-
-      block"""
-        |package io.circe
-        |
-        |private[circe] trait ProductTupleEncoders {
-        -  /**
-        -   * @group Product
-        -   */
-        -  final def forTupleProduct$arity[Source, ${`A..N`}]($memberNames)(f: Source => $outputType)(implicit
-        -    $instances
-        -  ): Encoder.AsObject[Source] =
-        -    new Encoder.AsObject[Source] {
-        -      final def encodeObject(a: Source): JsonObject = {
-        -        val members = f(a)
-        -        JsonObject.fromIterable(Vector($kvs))
-        -      }
-        -    }
-        |}
-      """
-    }
-  }
-
-  object GenProductCodecs extends Template {
+  class GenProductCodecs(traitName: String, byName: Boolean, basenameDef: String, outputTypeF: (Int, String) => String)
+      extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root / "io" / "circe" / "ProductCodecs.scala"
+    def filename(root: File): File = root / "io" / "circe" / s"${traitName}.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
 
-      val decoderInstances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
-      val encoderInstances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
+      val byn = if (byName) "=> " else ""
+      val decoderInstances = synTypes.map(tpe => s"decode$tpe: ${byn}Decoder[$tpe]").mkString(", ")
+      val encoderInstances = synTypes.map(tpe => s"encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
 
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
 
@@ -368,21 +349,16 @@ object Boilerplate {
             case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
           }.mkString(", ")
         }
-      val outputType = if (arity != 1) s"Product$arity[${`A..N`}]" else `A..N`
-
-      val deprecate = if (arity != 1)
-        s"""@deprecated(message="does not work correctly for Scala 3. Prefer forTupleProduct$arity", since="0.14.6")"""
-      else ""
+      val outputType = outputTypeF(arity, `A..N`)
 
       block"""
         |package io.circe
         |
-        |private[circe] trait ProductCodecs {
+        |private[circe] trait $traitName {
         -  /**
         -   * @group Product
         -   */
-        -  $deprecate
-        -  final def forProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
+        -  final def $basenameDef$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
         -    $decoderInstances,
         -    $encoderInstances
         -  ): Codec.AsObject[A] =
@@ -402,68 +378,10 @@ object Boilerplate {
     }
   }
 
-  object GenProductTupleCodecs extends Template {
-    override def range: IndexedSeq[Int] = 2 to maxArity
-
-    def filename(root: File): File = root / "io" / "circe" / "ProductTupleCodecs.scala"
-
-    def content(tv: TemplateVals): String = {
-      import tv._
-
-      val decoderInstances = synTypes.map(tpe => s"decode$tpe: Decoder[$tpe]").mkString(", ")
-      val encoderInstances = synTypes.map(tpe => s"encode$tpe: Encoder[$tpe]").mkString(", ")
-
-      val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
-
-      val results = synTypes.map(tpe => s"c.get[$tpe](name$tpe)(decode$tpe)").mkString(", ")
-
-      val accumulatingResults =
-        synTypes.map(tpe => s"decode$tpe.tryDecodeAccumulating(c.downField(name$tpe))").mkString(",")
-
-      val result =
-        s"Decoder.resultInstance.map$arity($results)(f)"
-
-      val accumulatingResult =
-        s"Decoder.accumulatingResultInstance.map$arity($accumulatingResults)(f)"
-
-      val kvs =
-        synTypes.zipWithIndex.map {
-          case (tpe, i) => s"(name$tpe, encode$tpe(members._${i + 1}))"
-        }.mkString(", ")
-
-      val outputType = s"(${`A..N`})"
-
-      block"""
-        |package io.circe
-        |
-        |private[circe] trait ProductTupleCodecs {
-        -  /**
-        -   * @group Product
-        -   */
-        -  final def forTupleProduct$arity[A, ${`A..N`}]($memberNames)(f: (${`A..N`}) => A)(g: A => $outputType)(implicit
-        -    $decoderInstances,
-        -    $encoderInstances
-        -  ): Codec.AsObject[A] =
-        -    new Codec.AsObject[A] {
-        -      final def apply(c: HCursor): Decoder.Result[A] = $result
-        -
-        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        -        $accumulatingResult
-        -
-        -      final def encodeObject(a: A): JsonObject = {
-        -        val members = g(a)
-        -        JsonObject.fromIterable(Vector($kvs))
-        -      }
-        -    }
-        |}
-      """
-    }
-  }
-
-  object GenProductTests extends Template {
+  class GenProductTests(testClassName: String, forProduct: String) extends Template {
     override def range: IndexedSeq[Int] = 1 to maxArity
 
-    def filename(root: File): File = root / "io" / "circe" / "ProductCodecSuite.scala"
+    def filename(root: File): File = root / "io" / "circe" / s"${testClassName}.scala"
 
     def content(tv: TemplateVals): String = {
       import tv._
@@ -475,8 +393,6 @@ object Boilerplate {
       val memberVariableNames = (0 until arity).map(i => s"s$i").mkString(", ")
       val memberArbitraryItems = (0 until arity).map(i => s"s$i <- Arbitrary.arbitrary[String]").mkString("; ")
 
-      val forProduct = if (arity != 1) "forTupleProduct" else "forProduct"
-
       block"""
         |package io.circe
         |
@@ -485,7 +401,7 @@ object Boilerplate {
         |import io.circe.tests.CirceMunitSuite
         |import org.scalacheck.Arbitrary
         |
-        |class ProductCodecSuite extends CirceMunitSuite {
+        |class $testClassName extends CirceMunitSuite {
         -  case class Cc$arity($members)
         -  object Cc$arity {
         -    implicit val eqCc$arity: Eq[Cc$arity] = Eq.fromUniversalEquals
@@ -519,4 +435,57 @@ object Boilerplate {
       """
     }
   }
+
+  object GenProductEncoders
+      extends GenProductEncoders(
+        "ProductEncoders",
+        false,
+        "forProduct",
+        (arity, typ) => if (arity != 1) s"Product$arity[$typ]" else typ
+      )
+
+  object GenTypedProductEncoders
+      extends GenProductEncoders(
+        "ProductTypedEncoders",
+        true,
+        "forTypedProduct",
+        (arity, typ) => if (arity != 1) s"($typ)" else typ
+      )
+
+  object Gen212TypedProductEncoders
+      extends GenProductEncoders(
+        "ProductTypedEncoders",
+        false,
+        "forTypedProduct",
+        (arity, typ) => if (arity != 1) s"($typ)" else typ
+      )
+
+  object GenProductCodecs
+      extends GenProductCodecs(
+        "ProductCodecs",
+        false,
+        "forProduct",
+        (arity, typ) => if (arity != 1) s"Product$arity[$typ]" else typ
+      )
+
+  object GenTypedProductCodecs
+      extends GenProductCodecs(
+        "ProductTypedCodecs",
+        true,
+        "forTypedProduct",
+        (arity, typ) => if (arity != 1) s"($typ)" else typ
+      )
+
+  object Gen212TypedProductCodecs
+      extends GenProductCodecs(
+        "ProductTypedCodecs",
+        false,
+        "forTypedProduct",
+        (arity, typ) => if (arity != 1) s"($typ)" else typ
+      )
+
+  object GenTypedProductTests extends GenProductTests("ProductTypedCodecSuite", "forTypedProduct")
+
+  object GenProductTests extends GenProductTests("ProductCodecSuite", "forProduct")
+
 }

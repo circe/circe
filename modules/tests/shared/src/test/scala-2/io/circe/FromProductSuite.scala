@@ -24,7 +24,7 @@ class FromProductSuite extends CirceMunitSuite {
   test("encode correctly Example(id: Int, value: String)") {
     case class Example(id: Int, value: String)
 
-    implicit val encoder: Encoder[Example] = Encoder.forTupleProduct2("id", "value")(Example.unapply(_).get)
+    implicit val encoder: Encoder[Example] = Encoder.forTypedProduct2("id", "value")(Example.unapply(_).get)
     implicit val decoder: Decoder[Example] = Decoder.forProduct2("id", "value")(Example.apply)
 
     val example = Example(1, "hello")
@@ -38,7 +38,7 @@ class FromProductSuite extends CirceMunitSuite {
   test("codec encode/decode correctly Example(id: Int, value: String)") {
     case class Example(id: Int, value: String)
 
-    implicit val encoder: Codec[Example] = Codec.forTupleProduct2("id", "value")(Example.apply)(Example.unapply(_).get)
+    implicit val encoder: Codec[Example] = Codec.forTypedProduct2("id", "value")(Example.apply)(Example.unapply(_).get)
 
     val example = Example(1, "hello")
 

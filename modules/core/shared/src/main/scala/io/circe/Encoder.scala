@@ -135,7 +135,7 @@ trait Encoder[A] extends Serializable { self =>
 object Encoder
     extends TupleEncoders
     with ProductEncoders
-    with ProductTupleEncoders
+    with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
     with MidPriorityEncoders {
