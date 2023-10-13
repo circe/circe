@@ -283,8 +283,14 @@ object Boilerplate {
       import tv._
 
       val byn = if (byName) "=> " else ""
-      val instances = synTypes.map(tpe => s"encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
+      val prefixInstance = if (byName) "_" else ""
+      val instances = synTypes.map(tpe => s"${prefixInstance}encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
+      val cachedInstances =
+        if (byName)
+          synTypes.map(tpe => s"lazy val encode$tpe = ${prefixInstance}encode$tpe").mkString("", "\n-      ", "")
+        else ""
+
       val kvs =
         if (arity == 1) s"(name${synTypes.head}, encode${synTypes.head}(members))"
         else {
@@ -305,6 +311,7 @@ object Boilerplate {
         -    $instances
         -  ): Encoder.AsObject[Source] =
         -    new Encoder.AsObject[Source] {
+        -      $cachedInstances
         -      final def encodeObject(a: Source): JsonObject = {
         -        val members = f(a)
         -        JsonObject.fromIterable(Vector($kvs))
@@ -325,8 +332,17 @@ object Boilerplate {
       import tv._
 
       val byn = if (byName) "=> " else ""
-      val decoderInstances = synTypes.map(tpe => s"decode$tpe: ${byn}Decoder[$tpe]").mkString(", ")
-      val encoderInstances = synTypes.map(tpe => s"encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
+      val prefixInstance = if (byName) "_" else ""
+      val decoderInstances = synTypes.map(tpe => s"${prefixInstance}decode$tpe: ${byn}Decoder[$tpe]").mkString(", ")
+      val encoderInstances = synTypes.map(tpe => s"${prefixInstance}encode$tpe: ${byn}Encoder[$tpe]").mkString(", ")
+      val cachedEncoderInstances =
+        if (byName)
+          synTypes.map(tpe => s"lazy val encode$tpe = ${prefixInstance}encode$tpe").mkString("", "\n-      ", "")
+        else ""
+      val cachedDecoderInstances =
+        if (byName)
+          synTypes.map(tpe => s"lazy val decode$tpe = ${prefixInstance}decode$tpe").mkString("", "\n-      ", "")
+        else ""
 
       val memberNames = synTypes.map(tpe => s"name$tpe: String").mkString(", ")
 
@@ -363,6 +379,8 @@ object Boilerplate {
         -    $encoderInstances
         -  ): Codec.AsObject[A] =
         -    new Codec.AsObject[A] {
+        -      $cachedDecoderInstances
+        -      $cachedEncoderInstances
         -      final def apply(c: HCursor): Decoder.Result[A] = $result
         -
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
