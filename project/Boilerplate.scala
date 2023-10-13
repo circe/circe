@@ -268,6 +268,19 @@ object Boilerplate {
         -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Target] =
         -        $accumulatingResult
         -    }
+        -
+        -  /**
+        -   * @group Product
+        -   */
+        -  final def forTypedProduct$arity[Target, ${`A..N`}]($memberNames)(f: (${`A..N`}) => Target)(implicit
+        -    $instances
+        -  ): Decoder[Target] =
+        -    new Decoder[Target] {
+        -      final def apply(c: HCursor): Decoder.Result[Target] = $result
+        -
+        -      override final def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Target] =
+        -        $accumulatingResult
+        -    }
         |}
       """
     }
@@ -432,7 +445,7 @@ object Boilerplate {
         -    implicit val encodeCc$arity: Encoder[Cc$arity] =
         -      Encoder.$forProduct$arity($memberNames)(toTuple)
         -    implicit val decodeCc$arity: Decoder[Cc$arity] =
-        -      Decoder.forProduct$arity($memberNames)(Cc$arity.apply)
+        -      Decoder.$forProduct$arity($memberNames)(Cc$arity.apply)
         -    val codecForCc$arity: Codec[Cc$arity] =
         -      Codec.$forProduct$arity($memberNames)(Cc$arity.apply)(toTuple)
         -  }
