@@ -16,9 +16,6 @@
 
 package io.circe
 
-import cats.kernel.instances.list._
-import cats.kernel.instances.string._
-import cats.syntax.eq._
 import io.circe.tests.PrinterSuite
 import org.scalacheck.Prop._
 

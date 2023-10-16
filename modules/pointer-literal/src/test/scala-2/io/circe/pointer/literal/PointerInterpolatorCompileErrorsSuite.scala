@@ -16,10 +16,7 @@
 
 package io.circe.pointer.literal
 
-import io.circe.pointer.Pointer
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop
-import io.circe.pointer.ScalaCheckInstances
 
 final class PointerInterpolatorCompileErrorsSuite extends ScalaCheckSuite {
 

@@ -17,9 +17,7 @@
 package io.circe
 
 import cats.data.NonEmptyList
-import cats.instances.all._
 import cats.laws.discipline.arbitrary._
-import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop

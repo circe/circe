@@ -20,7 +20,6 @@ import io.circe.jawn.decode
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
 import munit.FunSuite
-import cats.syntax.eq._
 
 class PrintingBenchmarkSpec extends FunSuite {
   val benchmark: PrintingBenchmark = new PrintingBenchmark

@@ -18,7 +18,6 @@ package io.circe.benchmark
 
 import io.circe.{ Json, JsonObject }
 import munit.FunSuite
-import cats.syntax.eq._
 
 class JsonObjectBenchmarkSpec extends FunSuite {
   val benchmark: JsonObjectBenchmark = new JsonObjectBenchmark

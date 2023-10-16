@@ -16,9 +16,6 @@
 
 package io.circe.syntax
 
-import cats.kernel.instances.string._
-import cats.kernel.instances.tuple._
-import cats.syntax.eq._
 import io.circe.{ Encoder, Json, KeyEncoder }
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop._

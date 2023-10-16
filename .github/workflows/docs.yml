@@ -8,16 +8,17 @@ jobs:
     strategy:
       matrix:
         scala: [ "2.13.8" ]
-        java: [ "adopt@1.8" ]
+        java: [ "8" ]
         ruby: [ "2.6.3" ]
 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v12
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
+          distribution: temurin
 
       - name: Cache sbt
         uses: actions/cache@v2

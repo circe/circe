@@ -16,7 +16,6 @@
 
 package io.circe
 
-import cats.syntax.eq._
 import io.circe.tests.CirceMunitSuite
 
 /**

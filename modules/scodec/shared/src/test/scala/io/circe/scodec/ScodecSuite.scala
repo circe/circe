@@ -17,7 +17,6 @@
 package io.circe.scodec
 
 import cats.kernel.Eq
-import cats.syntax.eq._
 import io.circe.Json
 import io.circe.parser.decode
 import io.circe.testing.CodecTests

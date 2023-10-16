@@ -21,7 +21,6 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import java.time._
 import org.scalacheck._
-import org.scalacheck.Gen.Choose
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Prop._
 import scala.collection.JavaConverters._

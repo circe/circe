@@ -16,9 +16,8 @@
 
 package io.circe
 
-import cats.instances.all._
 import io.circe.parser.parse
-import io.circe.tests.{ CirceMunitSuite, CirceSuite }
+import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop._
 
 /**
