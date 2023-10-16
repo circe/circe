@@ -17,7 +17,6 @@
 package io.circe.benchmark
 
 import munit.FunSuite
-import cats.syntax.eq._
 
 class GenericDerivationBenchmarkSpec extends FunSuite {
   val benchmark: GenericDerivationBenchmark = new GenericDerivationBenchmark

@@ -18,7 +18,6 @@ package io.circe.shapes
 
 import cats.kernel.Eq
 import cats.kernel.instances.all._
-import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.literal._
 import io.circe.testing.CodecTests

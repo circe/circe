@@ -18,7 +18,6 @@ package io.circe.generic.encoding
 
 import io.circe.Encoder
 import io.circe.generic.Deriver
-import scala.language.experimental.macros
 
 /**
  * An encoder for a generic representation of a case class or ADT.

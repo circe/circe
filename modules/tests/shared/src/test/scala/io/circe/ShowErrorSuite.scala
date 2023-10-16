@@ -16,7 +16,6 @@
 
 package io.circe
 
-import cats.kernel.instances.string._
 import cats.syntax.all._
 import io.circe.CursorOp._
 import munit.ScalaCheckSuite

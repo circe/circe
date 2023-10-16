@@ -16,7 +16,6 @@
 
 package io.circe
 
-import cats.syntax.eq._
 import io.circe.tests.CirceMunitSuite
 import io.circe.syntax.EncoderOps
 import cats.instances.int.catsKernelStdOrderForInt

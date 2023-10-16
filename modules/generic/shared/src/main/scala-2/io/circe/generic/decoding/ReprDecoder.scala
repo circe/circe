@@ -22,7 +22,6 @@ import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Decoder, DecodingFailure, HCursor }
 import io.circe.generic.Deriver
 
-import scala.language.experimental.macros
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
 import shapeless.labelled.{ FieldType, field }
 

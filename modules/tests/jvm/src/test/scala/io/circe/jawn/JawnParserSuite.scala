@@ -17,7 +17,6 @@
 package io.circe.jawn
 
 import cats.data.Validated
-import cats.syntax.eq._
 import io.circe.Json
 import io.circe.testing.{ EqInstances, ParserTests }
 import io.circe.tests.CirceMunitSuite
