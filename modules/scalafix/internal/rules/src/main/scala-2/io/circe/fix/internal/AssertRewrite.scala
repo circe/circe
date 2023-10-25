@@ -65,10 +65,10 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
    */
   private def applyWithName[A](tree: Tree, name: String, f: Tree => A, default: A): A =
     tree match {
-      case t @ Term.Apply(Term.Apply(Term.Name(n), _), _) if n == name     => f(t)
-      case t @ Term.Block(Term.Apply(Term.Name(n), _) :: _) if n == name   => f(t)
-      case t @ Defn.Val(_, _, _, Term.Apply(Term.Name(n), _)) if n == name => f(t)
-      case _                                                               => default
+      case t @ Term.Apply.Initial(Term.Apply.Initial(Term.Name(n), _), _) if n == name => f(t)
+      case t @ Term.Block(Term.Apply.Initial(Term.Name(n), _) :: _) if n == name       => f(t)
+      case t @ Defn.Val(_, _, _, Term.Apply.Initial(Term.Name(n), _)) if n == name     => f(t)
+      case _                                                                           => default
     }
 
   /**
@@ -76,9 +76,9 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
    */
   private def assertToAssertEquals(tree: Tree): Patch =
     tree match {
-      case t @ Term.Apply(
+      case t @ Term.Apply.Initial(
             Term.Name("assert"),
-            List(Term.ApplyInfix(actual, Term.Name(op), List(), List(expected)))
+            List(Term.ApplyInfix.Initial(actual, Term.Name(op), List(), List(expected)))
           ) if op == "==" || op == "===" =>
         Patch.replaceTree(t, s"assertEquals($actual, $expected)")
       case _ =>
@@ -90,12 +90,12 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
    */
   private def assertToPropEquals(tree: Tree): Patch =
     tree match {
-      case t @ Term.Apply(
+      case t @ Term.Apply.Initial(
             Term.Name("assert"),
-            List(Term.ApplyInfix(actual, Term.Name(op), List(), List(expected)))
+            List(Term.ApplyInfix.Initial(actual, Term.Name(op), List(), List(expected)))
           ) if op == "==" || op == "===" =>
         Patch.replaceTree(t, s"$actual ?= $expected")
-      case t @ Term.Apply(Term.Name("assertEquals"), List(actual, expected)) =>
+      case t @ Term.Apply.Initial(Term.Name("assertEquals"), List(actual, expected)) =>
         Patch.replaceTree(t, s"$actual ?= $expected")
       case _ =>
         Patch.empty
@@ -104,7 +104,10 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
   /** Convert a test to a property check, if that test is using forAll. */
   private def testToProperty(tree: Tree): Patch =
     tree match {
-      case Term.Apply(Term.Apply(t @ Term.Name("test"), _), Term.Block(Term.Apply(Term.Name("forAll"), _) :: _) :: _) =>
+      case Term.Apply.Initial(
+            Term.Apply.Initial(t @ Term.Name("test"), _),
+            Term.Block(Term.Apply.Initial(Term.Name("forAll"), _) :: _) :: _
+          ) =>
         Patch.replaceTree(t, "property")
       case _ =>
         Patch.empty
