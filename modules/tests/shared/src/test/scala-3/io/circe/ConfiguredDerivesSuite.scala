@@ -504,3 +504,21 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
       assert(result === Right(tree), result)
     }
   }
+
+  {
+    given Configuration = Configuration.default.withSnakeCaseMemberNames
+
+    case class Bar(barValue: Int)
+    case class Foo(fooValue: Option[Bar]) derives ConfiguredEncoder
+
+    test("Transitive derivation should use default option encoding") {
+      val expected = Json.obj(
+        "foo_value" -> Json.obj(
+          "bar_value" -> 1.asJson
+        )
+      )
+      val foo: Foo = Foo(Some(Bar(1)))
+      val json = Encoder.AsObject[Foo].apply(foo)
+      assert(json === expected, json)
+    }
+  }

@@ -19,6 +19,7 @@ package io.circe.derivation
 import scala.deriving.Mirror
 import scala.compiletime.constValue
 import io.circe.{ Encoder, Json, JsonObject }
+import io.circe.`export`.Exported
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A]:
   lazy val elemLabels: List[String]
@@ -54,8 +55,17 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
+
+  // needed to make derivation implicitly available when summoning elemEncoders:
+  private object GivenDerivation:
+    inline given deriveEncoder[A](using conf: Configuration)(using
+      inline A: Mirror.Of[A]
+    ): Exported[ConfiguredEncoder[A]] =
+      Exported(ConfiguredEncoder.derived[A])
+
   inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with SumOrProduct:
+      import GivenDerivation.deriveEncoder
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
 
