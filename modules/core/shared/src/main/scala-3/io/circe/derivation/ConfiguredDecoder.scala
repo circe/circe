@@ -195,7 +195,12 @@ object ConfiguredDecoder:
     new ConfiguredDecoder[A] with SumOrProduct:
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](autoRecurse)
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](
+        autoRecurse,
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
+      )
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
 
       lazy val isSum: Boolean =

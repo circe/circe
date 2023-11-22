@@ -59,7 +59,13 @@ object ConfiguredEncoder:
   ): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with SumOrProduct:
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes](autoRecurse)
+      lazy val elemEncoders: List[Encoder[?]] =
+        summonEncoders[mirror.MirroredElemTypes](
+          autoRecurse,
+          inline mirror match
+            case _: Mirror.ProductOf[A] => false
+            case _: Mirror.SumOf[A]     => true
+        )
 
       lazy val isSum: Boolean =
         inline mirror match

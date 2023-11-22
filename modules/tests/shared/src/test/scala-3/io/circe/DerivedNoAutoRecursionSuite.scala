@@ -104,7 +104,34 @@ object DerivedNoAutoRecursionSuite {
     case class Class1() extends Adt3
     case object Object1 extends Adt3
 
-    // We cannot derive a `Decoder` or `Encoder` for `Adt3` because no instances exist for `Class1`
+    given decoder: Decoder[Adt3] = Decoder.derivedNoAutoRecursion
+    given encoder: Encoder.AsObject[Adt3] = Encoder.AsObject.derivedNoAutoRecursion
+
+    given eq: Eq[Adt3] = Eq.fromUniversalEquals
+    given arbitrary: Arbitrary[Adt3] = Arbitrary(Gen.oneOf(Gen.const(Class1()), Gen.const(Object1)))
+  }
+
+  sealed trait Adt4
+  object Adt4 {
+    sealed trait SubTrait1 extends Adt4
+    case class Class1() extends SubTrait1
+    sealed trait SubTrait2 extends Adt4
+    case object Object1 extends SubTrait2
+
+    given decoder: Decoder[Adt4] = Decoder.derivedNoAutoRecursion
+    given encoder: Encoder.AsObject[Adt4] = Encoder.AsObject.derivedNoAutoRecursion
+
+    given eq: Eq[Adt4] = Eq.fromUniversalEquals
+    given arbitrary: Arbitrary[Adt4] = Arbitrary(Gen.oneOf(Gen.const(Class1()), Gen.const(Object1)))
+  }
+
+  sealed trait Adt5
+  object Adt5 {
+    case class Nested()
+    case class Class1(nested: Nested) extends Adt5
+    case object Object1 extends Adt5
+
+    // We cannot derive a `Decoder` or `Encoder` for `Adt5` because no instances exist for `Nested`
     // see test below for proof that deriving instances fails to compile
   }
 }
@@ -118,6 +145,8 @@ class DerivedNoAutoRecursionSuite extends CirceMunitSuite {
   checkAll("Codec[Box[Bar]]", CodecTests[Box[Bar]].codec)
   checkAll("Codec[Adt1]", CodecTests[Adt1].codec)
   checkAll("Codec[Adt2]", CodecTests[Adt2].codec)
+  checkAll("Codec[Adt3]", CodecTests[Adt3].codec)
+  checkAll("Codec[Adt4]", CodecTests[Adt4].codec)
 
   test("Nested case classes cannot be derived") {
     assert(compileErrors("Decoder.derivedNoAutoRecursion[Quux]").nonEmpty)
@@ -125,7 +154,7 @@ class DerivedNoAutoRecursionSuite extends CirceMunitSuite {
   }
 
   test("Nested ADTs cannot be derived") {
-    assert(compileErrors("Decoder.derivedNoAutoRecursion[Adt3]").nonEmpty)
-    assert(compileErrors("Encoder.AsObject.derivedNoAutoRecursion[Adt3]").nonEmpty)
+    assert(compileErrors("Decoder.derivedNoAutoRecursion[Adt5]").nonEmpty)
+    assert(compileErrors("Encoder.AsObject.derivedNoAutoRecursion[Adt5]").nonEmpty)
   }
 }

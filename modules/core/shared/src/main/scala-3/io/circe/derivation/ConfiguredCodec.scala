@@ -26,10 +26,21 @@ object ConfiguredCodec:
     inline mirror: Mirror.Of[A]
   ): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with SumOrProduct:
+
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes](autoRecurse)
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](autoRecurse)
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes](
+        autoRecurse,
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
+      )
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](
+        autoRecurse,
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
+      )
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
       lazy val isSum: Boolean =
         inline mirror match
