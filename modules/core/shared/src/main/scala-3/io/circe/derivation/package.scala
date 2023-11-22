@@ -27,11 +27,12 @@ private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
 
 private[circe] inline final def summonEncoders[T <: Tuple](
   inline autoRecurse: Boolean,
-  inline derivingForSum: Boolean,
+  inline derivingForSum: Boolean
 )(using Configuration): List[Encoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonEncoder[t](autoRecurse, derivingForSum) :: summonEncoders[ts](autoRecurse, derivingForSum)
+    case _: (t *: ts) =>
+      summonEncoder[t](autoRecurse, derivingForSum) :: summonEncoders[ts](autoRecurse, derivingForSum)
 
 @deprecated("Use summonEncoders(autoRecurse: Boolean) instead", "0.14.6")
 private[circe] inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
@@ -43,7 +44,9 @@ private[circe] inline final def summonEncoderAutoRecurse[A](using Configuration)
     case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
   }
 
-private[circe] inline final def summonEncoderNoAutoRecurse[A](inline derivingForSum: Boolean)(using conf: Configuration): Encoder[A] =
+private[circe] inline final def summonEncoderNoAutoRecurse[A](
+  inline derivingForSum: Boolean
+)(using conf: Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
     case m: Mirror.Of[A] =>
@@ -53,7 +56,7 @@ private[circe] inline final def summonEncoderNoAutoRecurse[A](inline derivingFor
 
 private[circe] inline final def summonEncoder[A](
   inline autoRecurse: Boolean,
-  inline derivingForSum: Boolean,
+  inline derivingForSum: Boolean
 )(using Configuration): Encoder[A] =
   inline if (autoRecurse) summonEncoderAutoRecurse[A] else summonEncoderNoAutoRecurse[A](derivingForSum)
 
@@ -62,14 +65,16 @@ private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A
 
 private[circe] inline final def summonDecoders[T <: Tuple](
   inline autoRecurse: Boolean,
-  inline derivingForSum: Boolean,
+  inline derivingForSum: Boolean
 )(using Configuration): List[Decoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonDecoder[t](autoRecurse, derivingForSum) :: summonDecoders[ts](autoRecurse, derivingForSum)
+    case _: (t *: ts) =>
+      summonDecoder[t](autoRecurse, derivingForSum) :: summonDecoders[ts](autoRecurse, derivingForSum)
 
 @deprecated("Use summonDecoders(autoRecurse: Boolean) instead", "0.14.6")
-private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] = summonDecoders(true, false)
+private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+  summonDecoders(true, false)
 
 private[circe] inline final def summonDecoderAutoRecurse[A](using Configuration): Decoder[A] =
   summonFrom {
@@ -77,7 +82,9 @@ private[circe] inline final def summonDecoderAutoRecurse[A](using Configuration)
     case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
   }
 
-private[circe] inline final def summonDecoderNoAutoRecurse[A](inline derivingForSum: Boolean)(using conf: Configuration): Decoder[A] =
+private[circe] inline final def summonDecoderNoAutoRecurse[A](
+  inline derivingForSum: Boolean
+)(using conf: Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
     case m: Mirror.Of[A] =>
@@ -85,7 +92,9 @@ private[circe] inline final def summonDecoderNoAutoRecurse[A](inline derivingFor
       else error("Failed to find an instance of Decoder[" + constValue[m.MirroredLabel] + "]")
   }
 
-private[circe] inline final def summonDecoder[A](inline autoRecurse: Boolean, inline derivingForSum: Boolean)(using Configuration): Decoder[A] =
+private[circe] inline final def summonDecoder[A](inline autoRecurse: Boolean, inline derivingForSum: Boolean)(using
+  Configuration
+): Decoder[A] =
   inline if (autoRecurse) summonDecoderAutoRecurse[A] else summonDecoderNoAutoRecurse[A](derivingForSum)
 
 @deprecated("Use summonDecoder(autoRecurse: Boolean) instead", "0.14.6")
