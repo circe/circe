@@ -22,7 +22,6 @@ import io.circe.{ Decoder, Encoder }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
-import scala.compiletime.testing.typeChecks
 
 object DerivedNoAutoRecursionSuite {
   case class Box[A](a: A)
@@ -121,12 +120,12 @@ class DerivedNoAutoRecursionSuite extends CirceMunitSuite {
   checkAll("Codec[Adt2]", CodecTests[Adt2].codec)
 
   test("Nested case classes cannot be derived") {
-    assert(!typeChecks("Decoder.derivedNoAutoRecursion[Quux]"))
-    assert(!typeChecks("Encoder.AsObject.derivedNoAutoRecursion[Quux]"))
+    assert(compileErrors("Decoder.derivedNoAutoRecursion[Quux]").nonEmpty)
+    assert(compileErrors("Encoder.AsObject.derivedNoAutoRecursion[Quux]").nonEmpty)
   }
 
   test("Nested ADTs cannot be derived") {
-    assert(!typeChecks("Decoder.derivedNoAutoRecursion[Adt3]"))
-    assert(!typeChecks("Encoder.AsObject.derivedNoAutoRecursion[Adt3]"))
+    assert(compileErrors("Decoder.derivedNoAutoRecursion[Adt3]").nonEmpty)
+    assert(compileErrors("Encoder.AsObject.derivedNoAutoRecursion[Adt3]").nonEmpty)
   }
 }
