@@ -27,6 +27,8 @@ object ConfiguredCodec:
     inline mirror: Mirror.Of[A]
   ): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with SumOrProduct:
+      import ConfiguredDecoder.GivenDerivation.deriveDecoder
+      import ConfiguredEncoder.GivenDerivation.deriveEncoder
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]

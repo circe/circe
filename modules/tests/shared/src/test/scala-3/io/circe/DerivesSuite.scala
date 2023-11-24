@@ -20,6 +20,7 @@ import cats.kernel.Eq
 import cats.kernel.instances.all._
 import cats.syntax.eq._
 import io.circe.{ Codec, Decoder, Encoder, Json }
+import io.circe.syntax.*
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
@@ -216,4 +217,35 @@ class DerivesSuite extends CirceMunitSuite {
     )
     assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
   }
+
+  {
+    case class Bar(barValue: Int)
+
+    object Bar:
+      given Arbitrary[Bar] = Arbitrary {
+        Arbitrary.arbitrary[Int].map(Bar.apply)
+      }
+    case class Foo(fooValue: Option[Bar]) derives Codec.AsObject
+
+    object Foo:
+      given Eq[Foo] = Eq.fromUniversalEquals[Foo]
+      given Arbitrary[Foo] = Arbitrary {
+        Arbitrary.arbitrary[Option[Bar]].map(Foo.apply)
+      }
+
+    test("Transitive derivation should use default option encoding") {
+      val expected = Json.obj(
+        "fooValue" -> Json.obj(
+          "barValue" -> 1.asJson
+        )
+      )
+      val foo: Foo = Foo(Some(Bar(1)))
+      val json = Encoder.AsObject[Foo].apply(foo)
+      val result = Decoder[Foo].decodeJson(json)
+      assert(json === expected, json)
+      assert(result === Right(foo), result)
+    }
+    checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  }
+
 }

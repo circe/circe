@@ -57,7 +57,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 object ConfiguredEncoder:
 
   // needed to make derivation implicitly available when summoning elemEncoders:
-  private object GivenDerivation:
+  private[circe] object GivenDerivation:
     inline given deriveEncoder[A](using conf: Configuration)(using
       inline A: Mirror.Of[A]
     ): Exported[ConfiguredEncoder[A]] =
