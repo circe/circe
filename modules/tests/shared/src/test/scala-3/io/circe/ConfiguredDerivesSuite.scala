@@ -52,6 +52,32 @@ object ConfiguredDerivesSuite:
       )
     )
 
+  object TransitiveWithOption:
+    case class Bar(barValue: Int)
+
+    object Bar:
+      given Arbitrary[Bar] = Arbitrary {
+        Arbitrary.arbitrary[Int].map(Bar.apply)
+      }
+
+    case class Foo(fooValue: Option[Bar])
+
+    object Foo:
+      given Eq[Foo] = Eq.fromUniversalEquals[Foo]
+      given Arbitrary[Foo] = Arbitrary {
+        Arbitrary.arbitrary[Option[Bar]].map(Foo.apply)
+      }
+
+    object SnakeCaseMembers:
+      given Configuration = Configuration.default.withSnakeCaseMemberNames
+
+      object Codec:
+        given Codec[Foo] = ConfiguredCodec.derived
+
+      object EncoderDecoder:
+        given Encoder[Foo] = ConfiguredEncoder.derived
+        given Decoder[Foo] = ConfiguredDecoder.derived
+
 class ConfiguredDerivesSuite extends CirceMunitSuite:
   import ConfiguredDerivesSuite.{ *, given }
 
@@ -505,53 +531,39 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
     }
   }
 
-  {
-    given Configuration = Configuration.default.withSnakeCaseMemberNames
-
-    case class Bar(barValue: Int)
-
-    object Bar:
-      given Arbitrary[Bar] = Arbitrary {
-        Arbitrary.arbitrary[Int].map(Bar.apply)
-      }
-
-    case class Foo(fooValue: Option[Bar])
-
-    object Foo:
-      given Eq[Foo] = Eq.fromUniversalEquals[Foo]
-      given Arbitrary[Foo] = Arbitrary {
-        Arbitrary.arbitrary[Option[Bar]].map(Foo.apply)
-      }
-
-    def testFoo(using encoder: Encoder[Foo], decoder: Decoder[Foo]): Unit = {
-      val expected = Json.obj(
-        "foo_value" -> Json.obj(
-          "bar_value" -> 1.asJson
-        )
+  def testTransitiveWithOptionSnakeCaseMembers(using
+    encoder: Encoder[TransitiveWithOption.Foo],
+    decoder: Decoder[TransitiveWithOption.Foo]
+  ): Unit = {
+    import TransitiveWithOption.*
+    val expected = Json.obj(
+      "foo_value" -> Json.obj(
+        "bar_value" -> 1.asJson
       )
-      val foo: Foo = Foo(Some(Bar(1)))
-      val json = encoder(foo)
-      val result = decoder.decodeJson(json)
-      assert(json === expected, json)
-      assert(result === Right(foo), result)
+    )
+    val foo: Foo = Foo(Some(Bar(1)))
+    val json = encoder(foo)
+    val result = decoder.decodeJson(json)
+    assert(json === expected, json)
+    assert(result === Right(foo), result)
+  }
+
+  {
+    import TransitiveWithOption.SnakeCaseMembers.Codec.given
+
+    test("Transitive derivation should use default option encoding for Codec") {
+      testTransitiveWithOptionSnakeCaseMembers
     }
 
-    { // tests for Foo with ConfiguredCodec.derived
-      given Codec[Foo] = ConfiguredCodec.derived[Foo]
-      test("Transitive derivation should use default option encoding for Codec") {
-        testFoo
-      }
+    checkAll("Codec[TransitiveWithOption.Foo]", CodecTests[TransitiveWithOption.Foo].codec)
+  }
 
-      checkAll("Codec[Foo]", CodecTests[Foo].codec)
+  {
+    import TransitiveWithOption.SnakeCaseMembers.EncoderDecoder.given
+
+    test("Transitive derivation should use default option encoding for Decoder & Encoder") {
+      testTransitiveWithOptionSnakeCaseMembers
     }
 
-    { // tests for Foo with ConfiguredEncoder.derived and ConfiguredDecoder.derived
-      given Encoder[Foo] = ConfiguredEncoder.derived[Foo]
-      given Decoder[Foo] = ConfiguredDecoder.derived[Foo]
-      test("Transitive derivation should use default option encoding for Decoder & Encoder") {
-        testFoo
-      }
-
-      checkAll("Decoder[Foo] & Encoder[Foo]", CodecTests[Foo].codec)
-    }
+    checkAll("Decoder[Foo] & Encoder[Foo]", CodecTests[TransitiveWithOption.Foo].codec)
   }

@@ -192,6 +192,23 @@ object DerivesSuite {
   object ADTWithSubTraitExample:
     given Arbitrary[ADTWithSubTraitExample] = Arbitrary(Arbitrary.arbitrary[Int].map(TheClass.apply))
     given Eq[ADTWithSubTraitExample] = Eq.fromUniversalEquals
+
+  object TransitiveWithOption:
+    case class Bar(barValue: Int)
+
+    object Bar:
+      given Arbitrary[Bar] = Arbitrary {
+        Arbitrary.arbitrary[Int].map(Bar.apply)
+      }
+
+    case class Foo(fooValue: Option[Bar]) derives Codec.AsObject
+
+    object Foo:
+      given Eq[Foo] = Eq.fromUniversalEquals[Foo]
+      given Arbitrary[Foo] = Arbitrary {
+        Arbitrary.arbitrary[Option[Bar]].map(Foo.apply)
+      }
+
 }
 
 class DerivesSuite extends CirceMunitSuite {
@@ -206,6 +223,7 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[Vegetable]", CodecTests[Vegetable].codec)
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
+  checkAll("Codec[TransitiveWithOption.Foo]", CodecTests[TransitiveWithOption.Foo].codec)
 
   test("Nested sums should not be encoded redundantly") {
     import io.circe.syntax._
@@ -218,34 +236,18 @@ class DerivesSuite extends CirceMunitSuite {
     assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
   }
 
-  {
-    case class Bar(barValue: Int)
-
-    object Bar:
-      given Arbitrary[Bar] = Arbitrary {
-        Arbitrary.arbitrary[Int].map(Bar.apply)
-      }
-    case class Foo(fooValue: Option[Bar]) derives Codec.AsObject
-
-    object Foo:
-      given Eq[Foo] = Eq.fromUniversalEquals[Foo]
-      given Arbitrary[Foo] = Arbitrary {
-        Arbitrary.arbitrary[Option[Bar]].map(Foo.apply)
-      }
-
-    test("Transitive derivation should use default option encoding") {
-      val expected = Json.obj(
-        "fooValue" -> Json.obj(
-          "barValue" -> 1.asJson
-        )
+  test("Transitive derivation should use default option encoding") {
+    import TransitiveWithOption._
+    val expected = Json.obj(
+      "fooValue" -> Json.obj(
+        "barValue" -> 1.asJson
       )
-      val foo: Foo = Foo(Some(Bar(1)))
-      val json = Encoder.AsObject[Foo].apply(foo)
-      val result = Decoder[Foo].decodeJson(json)
-      assert(json === expected, json)
-      assert(result === Right(foo), result)
-    }
-    checkAll("Codec[Foo]", CodecTests[Foo].codec)
+    )
+    val foo: Foo = Foo(Some(Bar(1)))
+    val json = Encoder.AsObject[Foo].apply(foo)
+    val result = Decoder[Foo].decodeJson(json)
+    assert(json === expected, json)
+    assert(result === Right(foo), result)
   }
 
 }
