@@ -22,6 +22,7 @@ import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+import io.circe.`export`.Exported
 import cats.implicits.*
 import scala.collection.immutable.Map
 
@@ -189,10 +190,18 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
+
+  // needed to make derivation implicitly available when summoning elemEncoders:
+  private[circe] object GivenDerivation:
+    inline given deriveDecoder[A](using conf: Configuration)(using
+      inline A: Mirror.Of[A]
+    ): Exported[ConfiguredDecoder[A]] = Exported(ConfiguredDecoder.derived[A])
+
   inline final def derived[A](using conf: Configuration)(using
     inline mirror: Mirror.Of[A]
   ): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A] with SumOrProduct:
+      import GivenDerivation.deriveDecoder
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
