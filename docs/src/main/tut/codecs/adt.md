@@ -188,7 +188,7 @@ object Payload {
 }
 ```
 
-Thanks to `ConfiguredDecoder` and `ConfiguredEncoder` classes we're able to customize transformation of field naming strategy. 
+Thanks to `ConfiguredDecoder` and `ConfiguredEncoder` classes we're able to customize transformation of fields naming strategy. 
 
 Let's check everything works as expected. After running the following code:
 
