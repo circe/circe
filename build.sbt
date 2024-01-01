@@ -102,7 +102,7 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
 }
 
 lazy val docs = project
-  .in(file("docs"))
+  .in(file("site"))
   .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
@@ -112,7 +112,7 @@ lazy val docs = project
       "io.circe" %% "circe-optics" % "0.14.1"
     )
   )
-  // .enablePlugins(CirceOrgSitePlugin) // TODO: Fixme later.
+  .enablePlugins(CirceOrgSitePlugin)
   .settings(macroSettings)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(

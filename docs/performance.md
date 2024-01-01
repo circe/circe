@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Performance"
-position: 5
----
-
-# Performance
+Performance
+===========
 
 circe aims to be more focused on performance. I'm still experimenting with the right balance, but I'm
 open to using mutability, inheritance, and all kinds of other horrible things under the hood if they
