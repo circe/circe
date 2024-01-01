@@ -108,8 +108,8 @@ lazy val docs = project
     moduleName := "circe-docs",
     name := "Circe docs",
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-generic-extras" % "0.14.6",
-      "io.circe" %% "circe-optics" % "0.14.6"
+      "io.circe" %% "circe-generic-extras" % "0.14.3",
+      "io.circe" %% "circe-optics" % "0.15.0"
     ),
     tlSitePublishBranch := Some("series/0.14.x")
   )
