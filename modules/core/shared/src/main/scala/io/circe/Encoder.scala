@@ -369,9 +369,9 @@ object Encoder
   implicit final def encodeNullable[A](implicit e: Encoder[A]): Encoder[Nullable[A]] = new Encoder[Nullable[A]] {
     final def apply(a: Nullable[A]): Json = {
       a match {
-        case Nullable.Value(v) => e(v)
-        case Nullable.Null       => Json.Null
-        case Nullable.Undefined  => Json.Null
+        case Nullable.Value(v)  => e(v)
+        case Nullable.Null      => Json.Null
+        case Nullable.Undefined => Json.Null
       }
     }
   }
