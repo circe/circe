@@ -29,7 +29,9 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
   }
 
   final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): Option[(String, Json)] =
-    if (elem == Nullable.Undefined) {
+    if (elem == None && conf.dropNoneValues) {
+      None
+    } else if (elem == Nullable.Undefined) {
       None
     } else if (elem == Nullable.Null) {
       Some((transformName(elemLabels(index)), Json.Null))
@@ -81,6 +83,9 @@ object ConfiguredEncoder:
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
-    discriminator: Option[String] = Configuration.default.discriminator
+    discriminator: Option[String] = Configuration.default.discriminator,
+    dropNoneValues: Boolean = false
   ): ConfiguredEncoder[A] =
-    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator))
+    derived[A](using
+      Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator, dropNoneValues)
+    )
