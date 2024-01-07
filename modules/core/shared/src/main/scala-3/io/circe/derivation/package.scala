@@ -34,31 +34,10 @@ private[circe] inline def summonEncoders[T <: Tuple](using Configuration): List[
     case _: (t *: ts)  => summonEncoder[t] :: summonEncoders[ts]
 
 private[circe] inline def summonEncoder[A](using Configuration): Encoder[A] =
-  inline erasedValue[A] match
-//    case _: String      => Encoder.encodeString.asInstanceOf[Encoder[A]]
-//    case _: Option[t]   => Encoder.encodeOption(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: Nullable[t] => Encoder.encodeNullable(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: List[t]     => Encoder.encodeList(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: Vector[t]   => Encoder.encodeVector(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: Seq[t]      => Encoder.encodeSeq(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: SortedSet[t] =>
-//      Encoder.encodeSet(summonEncoder[t]).contramap[SortedSet[t]](_.unsorted).asInstanceOf[Encoder[A]]
-//    case _: Set[t]          => Encoder.encodeSet(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: Chain[t]        => Encoder.encodeChain(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: NonEmptyList[t] => Encoder.encodeNonEmptyList(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: NonEmptySet[t] => // NonEmptySet is a NewType, matching does not seem to work
-//      Encoder.encodeNonEmptySet(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: NonEmptyVector[t] => Encoder.encodeNonEmptyVector(summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: Map[k, t]         => Encoder.encodeMap(summonKeyEncoder[k], summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: NonEmptyMap[k, t] => // NonEmptyMap is a NewType, matching does not seem to work
-//      Encoder.encodeNonEmptyMap(summonKeyEncoder[k], summonEncoder[t]).asInstanceOf[Encoder[A]]
-//    case _: NonEmptyChain[t] => // NonEmptyChain is a NewType, matching does not seem to work
-//      Encoder.encodeNonEmptyChain(summonEncoder[t]).asInstanceOf[Encoder[A]]
-    case _ =>
-      summonFrom {
-        case encodeA: Encoder[A] => encodeA
-        case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
-      }
+  summonFrom {
+    case encodeA: Encoder[A] => encodeA
+    case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
+  }
 
 private[circe] inline def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
   inline erasedValue[T] match
@@ -66,31 +45,10 @@ private[circe] inline def summonDecoders[T <: Tuple](using Configuration): List[
     case _: (t *: ts)  => summonDecoder[t] :: summonDecoders[ts]
 
 private[circe] inline def summonDecoder[A](using Configuration): Decoder[A] =
-  inline erasedValue[A] match
-//    case _: String      => Decoder.decodeString.asInstanceOf[Decoder[A]]
-//    case _: Option[t]   => Decoder.decodeOption(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: Nullable[t] => Decoder.decodeNullable(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: List[t]     => Decoder.decodeList(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: Vector[t]   => Decoder.decodeVector(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: Seq[t]      => Decoder.decodeSeq(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: SortedSet[t] =>
-//      Decoder.decodeSet(summonDecoder[t]).map(SortedSet.from(_)(summonOrdering[t])).asInstanceOf[Decoder[A]]
-//    case _: Set[t]          => Decoder.decodeSet(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: Chain[t]        => Decoder.decodeChain(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: NonEmptyList[t] => Decoder.decodeNonEmptyList(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: NonEmptySet[t] => // NonEmptySet is a NewType, matching does not seem to work
-//      Decoder.decodeNonEmptySet(summonDecoder[t], summonOrder[t]).asInstanceOf[Decoder[A]]
-//    case _: NonEmptyVector[t] => Decoder.decodeNonEmptyVector(summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: Map[k, t]         => Decoder.decodeMap(summonKeyDecoder[k], summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: NonEmptyMap[k, t] => // NonEmptyMap is a NewType, matching does not seem to work
-//      Decoder.decodeNonEmptyMap(summonKeyDecoder[k], summonOrder[k], summonDecoder[t]).asInstanceOf[Decoder[A]]
-//    case _: NonEmptyChain[t] => // NonEmptyChain is a NewType, matching does not seem to work
-//      Decoder.decodeNonEmptyChain(summonDecoder[t]).asInstanceOf[Decoder[A]]
-    case _ =>
-      summonFrom {
-        case decodeA: Decoder[A] => decodeA
-        case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
-      }
+  summonFrom {
+    case decodeA: Decoder[A] => decodeA
+    case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
+  }
 
 private[circe] inline def summonOrder[A]: Order[A] = summonFrom { case orderA: Order[A] => orderA }
 
