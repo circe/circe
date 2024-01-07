@@ -18,7 +18,7 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import scala.compiletime.constValue
-import io.circe.{ Encoder, Json, JsonObject }
+import io.circe.{ Encoder, Json, JsonObject, Nullable }
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A]:
   lazy val elemLabels: List[String]
@@ -28,12 +28,25 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
     (transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem))
   }
 
+  final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): (String, Option[Json]) =
+    if (elem == None && conf.dropNoneValues) {
+      (transformName(elemLabels(index)), None)
+    } else if (elem == Nullable.Undefined) {
+      (transformName(elemLabels(index)), None)
+    } else if (elem == Nullable.Null) {
+      (transformName(elemLabels(index)), Some(Json.Null))
+    } else {
+      (transformName(elemLabels(index)), Some(elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)))
+    }
+
   final def encodeProduct(a: A): JsonObject =
     val product = a.asInstanceOf[Product]
     val iterable = Iterable.tabulate(product.productArity) { index =>
-      encodeElemAt(index, product.productElement(index), conf.transformMemberNames)
+      optionallyEncodeElemAt(index, product.productElement(index), conf.transformMemberNames)
     }
-    JsonObject.fromIterable(iterable)
+    JsonObject.fromIterable(iterable.collect {
+      case (key, Some(value)) => (key, value)
+    })
 
   final def encodeSum(index: Int, a: A): JsonObject =
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)
@@ -54,7 +67,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+  inline final def derived[A](using conf: Configuration)(using mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with SumOrProduct:
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]

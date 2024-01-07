@@ -329,35 +329,39 @@ object Printer {
     final def onNull: Unit = writer.append("null")
 
     final def onString(value: String): Unit = {
-      writer.append('"')
+      if (value ne null) {
+        writer.append('"')
 
-      var i = 0
-      var offset = 0
+        var i = 0
+        var offset = 0
 
-      while (i < value.length) {
-        val c = value.charAt(i)
+        while (i < value.length) {
+          val c = value.charAt(i)
 
-        val esc = (c: @switch) match {
-          case '"'  => '"'
-          case '\\' => '\\'
-          case '\b' => 'b'
-          case '\f' => 'f'
-          case '\n' => 'n'
-          case '\r' => 'r'
-          case '\t' => 't'
-          case _    => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
+          val esc = (c: @switch) match {
+            case '"'  => '"'
+            case '\\' => '\\'
+            case '\b' => 'b'
+            case '\f' => 'f'
+            case '\n' => 'n'
+            case '\r' => 'r'
+            case '\t' => 't'
+            case _    => (if ((escapeNonAscii && c.toInt > 127) || Character.isISOControl(c)) 1 else 0).toChar
+          }
+          if (esc != 0) {
+            writer.append(value, offset, i).append('\\')
+            if (esc != 1) writer.append(esc) else writeEscapedChar(writer, c)
+            offset = i + 1
+          }
+
+          i += 1
         }
-        if (esc != 0) {
-          writer.append(value, offset, i).append('\\')
-          if (esc != 1) writer.append(esc) else writeEscapedChar(writer, c)
-          offset = i + 1
-        }
 
-        i += 1
+        if (offset < i) writer.append(value, offset, i)
+        writer.append('"')
+      } else {
+        writer.append("null")
       }
-
-      if (offset < i) writer.append(value, offset, i)
-      writer.append('"')
     }
 
     final def onArray(value: Vector[Json]): Unit = {
