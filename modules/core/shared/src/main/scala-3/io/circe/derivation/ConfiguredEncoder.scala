@@ -28,15 +28,15 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
     (transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem))
   }
 
-  final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): (String, Option[Json]) =
+  final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): Option[(String, Json)] =
     if (elem == None && conf.dropNoneValues) {
-      (transformName(elemLabels(index)), None)
+      None
     } else if (elem == Nullable.Undefined) {
-      (transformName(elemLabels(index)), None)
+      None
     } else if (elem == Nullable.Null) {
-      (transformName(elemLabels(index)), Some(Json.Null))
+      Some((transformName(elemLabels(index)), Json.Null))
     } else {
-      (transformName(elemLabels(index)), Some(elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)))
+      Some((transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)))
     }
 
   final def encodeProduct(a: A): JsonObject =
@@ -44,9 +44,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
     val iterable = Iterable.tabulate(product.productArity) { index =>
       optionallyEncodeElemAt(index, product.productElement(index), conf.transformMemberNames)
     }
-    JsonObject.fromIterable(iterable.collect {
-      case (key, Some(value)) => (key, value)
-    })
+    JsonObject.fromIterable(iterable.flatten)
 
   final def encodeSum(index: Int, a: A): JsonObject =
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)

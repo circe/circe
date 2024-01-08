@@ -75,8 +75,9 @@ class Deriver(val c: whitebox.Context)
   """
 
   protected[this] def encodeField(name: String, encode: TermName, value: TermName): Tree =
-    q"($name, $encode($value))"
+    q"""(if ($value == io.circe.Nullable.Undefined) { None } else if ($value == io.circe.Nullable.Null) { Some(($name, io.circe.Json.Null)) } else { Some(($name, $encode($value))) })"""
 
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree =
     q"_root_.io.circe.JsonObject.singleton($name, $encode($value))"
+
 }
