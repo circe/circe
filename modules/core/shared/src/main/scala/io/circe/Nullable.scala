@@ -29,6 +29,16 @@ sealed abstract class Nullable[+A] extends Product with Serializable {
   def toOption: Option[A]
   def toEither: Option[Either[Unit, A]]
 
+  def fold[O](
+    whenUndefined: => O,
+    whenNull: => O,
+    whenValue: A => O
+  ): O = this match {
+    case Nullable.Undefined => whenUndefined
+    case Nullable.Null      => whenNull
+    case Nullable.Value(x)  => whenValue(x)
+  }
+
 }
 
 object Nullable {
