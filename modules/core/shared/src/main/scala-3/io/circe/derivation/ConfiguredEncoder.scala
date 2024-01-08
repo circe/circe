@@ -85,6 +85,9 @@ object ConfiguredEncoder:
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
-    discriminator: Option[String] = Configuration.default.discriminator
+    discriminator: Option[String] = Configuration.default.discriminator,
+    dropNoneValues: Boolean = false
   ): ConfiguredEncoder[A] =
-    derived[A](using Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator))
+    derived[A](using
+      Configuration(transformMemberNames, transformConstructorNames, useDefaults = false, discriminator, dropNoneValues)
+    )
