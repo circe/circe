@@ -320,7 +320,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
       q"""
         a match {
           case $pattern =>
-            _root_.io.circe.JsonObject.fromIterable($fields.flatten)
+            _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields).flatten)
         }
       """
     )

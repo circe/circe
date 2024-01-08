@@ -32,7 +32,22 @@ case class Foo(
   b: scala.List[scala.Boolean]
 ) extends Base
 
-case object Bar extends Base
+case object Bar extends Base {
+
+  val circeGenericHListBindingFori: _root_.scala.Any = null
+  val circeGenericEncoderFori: (_root_.scala.Any => _root_.io.circe.Json) = x => null
+
+  _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(
+    if (circeGenericHListBindingFori == _root_.io.circe.Nullable.Undefined)
+      _root_.scala.None
+    else
+      if (circeGenericHListBindingFori == _root_.io.circe.Nullable.Null)
+        _root_.scala.Some(_root_.scala.Tuple2("i", _root_.io.circe.Json.Null))
+      else
+        _root_.scala.Some(_root_.scala.Tuple2("i", circeGenericEncoderFori(circeGenericHListBindingFori)))
+  ).flatten)
+
+}
 
 /**
  * Compilation tests for macro hygiene.
