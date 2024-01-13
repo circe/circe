@@ -35,7 +35,9 @@ Warnings and known issues
    range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by
    Shapeless) that rely on compiler functionality that is not always perfectly robust
    ("[SI-7046](https://issues.scala-lang.org/browse/SI-7046) is like [playing roulette](https://twitter.com/li_haoyi/status/637281580847878145)"), and if you're running into
-   problems, it's likely that they're not your fault. Please file an issue here or ask a question on [Discord](https://discord.gg/XF3CXcMzqD), 
+   problems, it's likely that they're not your fault. Please file an issue here 
+   or ask a question on [Discord](https://discord.gg/XF3CXcMzqD) 
+   (use the [#circe](https://discordapp.com/channels/632277896739946517/877550996191084554) channel), 
    and we'll do our best to figure out whether the problem is something we can fix.
 
 4. When using the `io.circe.generic.JsonCodec` annotation, the following will not compile:
