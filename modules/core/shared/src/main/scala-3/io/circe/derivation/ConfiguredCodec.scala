@@ -57,16 +57,8 @@ object ConfiguredCodec:
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
-    strictDecoding: Boolean = Configuration.default.strictDecoding,
-    dropNoneValues: Boolean = false
+    strictDecoding: Boolean = Configuration.default.strictDecoding
   ): ConfiguredCodec[A] =
     derived[A](using
-      Configuration(
-        transformMemberNames,
-        transformConstructorNames,
-        useDefaults,
-        discriminator,
-        strictDecoding,
-        dropNoneValues
-      )
+      Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding)
     )
