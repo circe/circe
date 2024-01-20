@@ -25,14 +25,14 @@ import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
 object DerivesSuite {
-  case class Box[A](a: A) derives Decoder, Encoder.AsObject
+  case class Box[A](a: A) derives Decoder, Encoder
 
   object Box {
     implicit def eqBox[A: Eq]: Eq[Box[A]] = Eq.by(_.a)
     implicit def arbitraryBox[A](implicit A: Arbitrary[A]): Arbitrary[Box[A]] = Arbitrary(A.arbitrary.map(Box(_)))
   }
 
-  case class Qux[A](i: Int, a: A, j: Int) derives Codec.AsObject
+  case class Qux[A](i: Int, a: A, j: Int) derives Codec
 
   object Qux {
     implicit def eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(q => (q.i, q.a, q.j))
@@ -47,17 +47,17 @@ object DerivesSuite {
       )
   }
 
-  case class Wub(x: Long) derives Codec.AsObject
+  case class Wub(x: Long) derives Codec
 
   object Wub {
     implicit val eqWub: Eq[Wub] = Eq.by(_.x)
     implicit val arbitraryWub: Arbitrary[Wub] = Arbitrary(Arbitrary.arbitrary[Long].map(Wub(_)))
   }
 
-  sealed trait Foo derives Codec.AsObject
+  sealed trait Foo derives Codec
   case class Bar(i: Int, s: String) extends Foo
   case class Baz(xs: List[String]) extends Foo
-  case class Bam(w: Wub, d: Double) extends Foo derives Codec.AsObject
+  case class Bam(w: Wub, d: Double) extends Foo derives Codec
 
   object Bar {
     implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
@@ -108,9 +108,9 @@ object DerivesSuite {
     )
   }
 
-  sealed trait RecursiveAdtExample derives Codec.AsObject
-  case class BaseAdtExample(a: String) extends RecursiveAdtExample derives Codec.AsObject
-  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample derives Codec.AsObject
+  sealed trait RecursiveAdtExample derives Codec
+  case class BaseAdtExample(a: String) extends RecursiveAdtExample derives Codec
+  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample derives Codec
 
   object RecursiveAdtExample {
     implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
@@ -126,7 +126,7 @@ object DerivesSuite {
       Arbitrary(atDepth(0))
   }
 
-  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample]) derives Codec.AsObject
+  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample]) derives Codec
 
   object RecursiveWithOptionExample {
     implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
@@ -143,7 +143,7 @@ object DerivesSuite {
       Arbitrary(atDepth(0))
   }
 
-  enum Vegetable derives Codec.AsObject:
+  enum Vegetable derives Codec:
     case Potato(species: String)
     case Carrot(length: Double)
     case Onion(layers: Int)
@@ -169,7 +169,7 @@ object DerivesSuite {
       )
     )
 
-  enum RecursiveEnumAdt derives Codec.AsObject:
+  enum RecursiveEnumAdt derives Codec:
     case BaseAdtExample(a: String)
     case NestedAdtExample(r: RecursiveEnumAdt)
   object RecursiveEnumAdt:
@@ -184,7 +184,7 @@ object DerivesSuite {
 
     given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
 
-  sealed trait ADTWithSubTraitExample derives Codec.AsObject
+  sealed trait ADTWithSubTraitExample derives Codec
   sealed trait SubTrait extends ADTWithSubTraitExample
   case class TheClass(a: Int) extends SubTrait
 
@@ -192,7 +192,7 @@ object DerivesSuite {
     given Arbitrary[ADTWithSubTraitExample] = Arbitrary(Arbitrary.arbitrary[Int].map(TheClass.apply))
     given Eq[ADTWithSubTraitExample] = Eq.fromUniversalEquals
 
-  case class ProductWithTaggedMember(x: ProductWithTaggedMember.TaggedString) derives Codec.AsObject
+  case class ProductWithTaggedMember(x: ProductWithTaggedMember.TaggedString) derives Codec
 
   object ProductWithTaggedMember:
     sealed trait Tag
@@ -217,10 +217,17 @@ object DerivesSuite {
       }
     given Eq[ProductWithTaggedMember] = Eq.fromUniversalEquals
 
+  case class Inner[A](field: A) derives Encoder, Decoder
+  case class Outer(a: Option[Inner[String]]) derives Encoder, Decoder
+  object Outer:
+    given Eq[Outer] = Eq.fromUniversalEquals
+    given Arbitrary[Outer] =
+      Arbitrary(Gen.option(Arbitrary.arbitrary[String].map(Inner.apply)).map(Outer.apply))
 }
 
 class DerivesSuite extends CirceMunitSuite {
   import DerivesSuite._
+  import io.circe.syntax._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)
   checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
@@ -232,15 +239,20 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
   checkAll("Codec[ProductWithTaggedMember] (#2135)", CodecTests[ProductWithTaggedMember].codec)
+  checkAll("Codec[Outer]", CodecTests[Outer].codec)
 
   test("Nested sums should not be encoded redundantly") {
-    import io.circe.syntax._
     val foo: ADTWithSubTraitExample = TheClass(0)
-    val expected = Json.obj(
-      "TheClass" -> Json.obj(
-        "a" -> 0.asJson
-      )
-    )
-    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+    val expected = Json.obj("TheClass" -> Json.obj("a" -> 0.asJson))
+    assertEquals(foo.asJson, expected)
+  }
+
+  test("Derived Encoder respects existing instances") {
+    val some = Outer(Some(Inner("c")))
+    val none = Outer(None)
+    val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
+    val expectedNone = Json.obj("a" -> Json.Null)
+    assertEquals(some.asJson, expectedSome)
+    assertEquals(none.asJson, expectedNone)
   }
 }
