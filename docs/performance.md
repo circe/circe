@@ -120,4 +120,3 @@ of integers. `C` suffixes indicate circe's throughput, `A` is for Argonaut, `P` 
 approaches of the other libraries listed here (it simply throws exceptions), and this difference
 should be taken into account when comparing its results with the others.
 
-{% include references.md %}

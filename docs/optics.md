@@ -153,4 +153,3 @@ val modifiedJson = doubleQuantities(json)
 This code will compile just fine, but not do what you expect. Because the JSON document doesn't have
 an `itemss` field, the same document will be returned unmodified.
 
-{% include references.md %}

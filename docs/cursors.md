@@ -82,4 +82,3 @@ circe has three slightly different cursor implementations:
 Optics are an alternative way to traverse JSON documents. See the [Optics page](optics.md) for
 more details.
 
-{% include references.md %}

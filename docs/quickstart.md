@@ -31,7 +31,6 @@ addCompilerPlugin(
 Then type `sbt console` to start a REPL and then paste the following (this will also work from the
 root directory of this repository):
 
-{% scalafiddle %}
 ```scala
 import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
@@ -47,7 +46,6 @@ println(json)
 val decodedFoo = decode[Foo](json)
 println(decodedFoo)
 ```
-{% endscalafiddle %}
 
 Alternatively you can experiment with circe directly in your browser by clicking the `Run` button in the code block and
 making modifications in the code.
