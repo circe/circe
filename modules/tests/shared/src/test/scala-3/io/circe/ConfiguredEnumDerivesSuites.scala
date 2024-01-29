@@ -43,6 +43,24 @@ object ConfiguredEnumDerivesSuites:
         Gen.const(IntercardinalDirections.NorthWest)
       )
     )
+
+  sealed trait Animal
+
+  object Animal:
+    sealed trait Mammal extends Animal
+    case object Dog extends Mammal
+    case object Cat extends Mammal
+    case object Bird extends Animal
+
+    given Eq[Animal] = Eq.fromUniversalEquals
+    given Arbitrary[Animal] = Arbitrary(
+      Gen.oneOf(
+        Gen.const(Animal.Dog),
+        Gen.const(Animal.Cat),
+        Gen.const(Animal.Bird)
+      )
+    )
+
 class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
   import ConfiguredEnumDerivesSuites.*
 
@@ -70,6 +88,30 @@ class ConfiguredEnumDerivesSuites extends CirceMunitSuite:
     val failure = DecodingFailure("enum IntercardinalDirections does not contain case: NorthNorth", List())
     assert(Decoder[IntercardinalDirections].decodeJson(json) === Left(failure))
     assert(Decoder[IntercardinalDirections].decodeAccumulating(json.hcursor) === Validated.invalidNel(failure))
+  }
+
+  test("nested hierarchy") {
+    given Configuration = Configuration.default
+    given Codec[Animal] = ConfiguredEnumCodec.derived
+    {
+      val animal = Animal.Dog
+      val json = Json.fromString("Dog")
+      assertEquals(summon[Encoder[Animal]].apply(animal), json)
+      assertEquals(summon[Decoder[Animal]].decodeJson(json), Right(animal))
+    }
+
+    {
+      val animal = Animal.Bird
+      val json = Json.fromString("Bird")
+      assertEquals(summon[Encoder[Animal]].apply(animal), json)
+      assertEquals(summon[Decoder[Animal]].decodeJson(json), Right(animal))
+    }
+  }
+
+  {
+    given Configuration = Configuration.default
+    given Codec[Animal] = ConfiguredEnumCodec.derived
+    checkAll("Codec[Animal] (default configuration)", CodecTests[Animal].codec)
   }
 
   test("Configuration#transformConstructorNames should support constructor name transformation with snake_case") {

@@ -20,12 +20,13 @@ import scala.deriving.Mirror
 import scala.compiletime.constValue
 import Predef.genericArrayOps
 import io.circe.{ Decoder, DecodingFailure, HCursor }
+import scala.collection.mutable.ArraySeq
 
 trait ConfiguredEnumDecoder[A] extends Decoder[A]
 object ConfiguredEnumDecoder:
   inline final def derived[A](using conf: Configuration)(using mirror: Mirror.SumOf[A]): ConfiguredEnumDecoder[A] =
-    val cases = summonSingletonCases[mirror.MirroredElemTypes, A](constValue[mirror.MirroredLabel])
-    val labels = summonLabels[mirror.MirroredElemLabels].toArray.map(conf.transformConstructorNames)
+    val cases = summonSingletonCases[mirror.MirroredElemTypes, A](constValue[mirror.MirroredLabel]).toVector
+    val labels = summonLabelsRecursively[mirror.MirroredElemTypes].toArray.map(conf.transformConstructorNames)
     new ConfiguredEnumDecoder[A]:
       def apply(c: HCursor): Decoder.Result[A] =
         c.as[String].flatMap { caseName =>
