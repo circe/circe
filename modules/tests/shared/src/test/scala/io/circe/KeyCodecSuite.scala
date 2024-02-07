@@ -33,5 +33,6 @@ class KeyCodecSuite extends CirceMunitSuite {
   checkAll("KeyCodec[Short]", KeyCodecTests[Short].keyCodec)
   checkAll("KeyCodec[Int]", KeyCodecTests[Int].keyCodec)
   checkAll("KeyCodec[Long]", KeyCodecTests[Long].keyCodec)
+  checkAll("KeyCodec[Double]", KeyCodecTests[Double].keyCodec)
 
 }
