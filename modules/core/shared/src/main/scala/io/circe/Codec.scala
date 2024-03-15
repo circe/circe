@@ -52,7 +52,7 @@ trait Codec[A] extends Decoder[A] with Encoder[A] {
 
 }
 
-object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodecs {
+object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodecs with CodecDerivationRelaxed {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {
