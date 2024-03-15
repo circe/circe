@@ -315,15 +315,28 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
           )
       }
 
-    (
-      instanceDefs,
-      q"""
-        a match {
-          case $pattern =>
-            _root_.io.circe.JsonObject.fromIterable(_root_.scala.collection.immutable.Vector(..$fields))
-        }
-      """
-    )
+    if (fields.isEmpty) {
+      (
+        instanceDefs,
+        q"""
+          _root_.io.circe.JsonObject.empty
+        """
+      )
+    } else {
+      (
+        instanceDefs,
+        q"""
+          a match {
+            case $pattern =>
+              val fields = _root_.scala.collection.immutable.Vector(..$fields).collect {
+                case x if x.isDefined => x.get
+              }
+              _root_.io.circe.JsonObject.fromIterable(fields)
+          }
+        """
+      )
+    }
+
   }
 
   private[this] def coproductEncoderParts(members: Members): (List[c.Tree], c.Tree) = {
