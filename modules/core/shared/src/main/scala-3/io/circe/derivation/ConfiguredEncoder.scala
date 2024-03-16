@@ -54,20 +54,25 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
-    new ConfiguredEncoder[A] with SumOrProduct:
-      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+  def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
+    conf: Configuration,
+    mirror: Mirror.Of[A]
+  ): ConfiguredEncoder[A] = mirror match
+    case _: Mirror.ProductOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = false
+        def encodeObject(a: A) = encodeProduct(a)
+    case mirror: Mirror.SumOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = true
+        def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
 
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
-
-      final def encodeObject(a: A): JsonObject =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => encodeProduct(a)
-          case sum: Mirror.SumOf[A]   => encodeSum(sum.ordinal(a), a)
+  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+    ConfiguredEncoder.of[A](summonEncoders[mirror.MirroredElemTypes], summonLabels[mirror.MirroredElemLabels])
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
