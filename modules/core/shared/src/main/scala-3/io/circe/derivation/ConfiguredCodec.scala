@@ -22,15 +22,25 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
-
-  inline final def derived[A](using conf: Configuration)(using
+  inline private def derivedBase[A](inline autoRecurse: Boolean)(using conf: Configuration)(using
     inline mirror: Mirror.Of[A]
   ): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with SumOrProduct:
+
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
+      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes](
+        autoRecurse,
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
+      )
+      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes](
+        autoRecurse,
+        inline mirror match
+          case _: Mirror.ProductOf[A] => false
+          case _: Mirror.SumOf[A]     => true
+      )
       lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
       lazy val isSum: Boolean =
         inline mirror match
@@ -52,13 +62,22 @@ object ConfiguredCodec:
           case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
           case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
 
+  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredCodec[A] =
+    derivedBase[A](true)
+
+  inline final def derivedNoAutoRecursion[A](using conf: Configuration)(using
+    inline mirror: Mirror.Of[A]
+  ): ConfiguredCodec[A] =
+    derivedBase[A](false)
+
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
-    strictDecoding: Boolean = Configuration.default.strictDecoding
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
+    inline autoRecurse: Boolean = true
   ): ConfiguredCodec[A] =
-    derived[A](using
+    derivedBase[A](autoRecurse)(using
       Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding)
     )

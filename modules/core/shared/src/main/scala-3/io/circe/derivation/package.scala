@@ -25,27 +25,80 @@ private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabels[ts]
 
-private[circe] inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
+private[circe] inline final def summonEncoders[T <: Tuple](
+  inline autoRecurse: Boolean,
+  inline derivingForSum: Boolean
+)(using Configuration): List[Encoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonEncoder[t] :: summonEncoders[ts]
+    case _: (t *: ts) =>
+      summonEncoder[t](autoRecurse, derivingForSum) :: summonEncoders[ts](autoRecurse, derivingForSum)
 
-private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A] =
+@deprecated("Use summonEncoders(autoRecurse: Boolean) instead", "0.14.6")
+private[circe] inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
+  summonEncoders(true, false)
+
+private[circe] inline final def summonEncoderAutoRecurse[A](using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
     case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
   }
 
-private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+private[circe] inline final def summonEncoderNoAutoRecurse[A](
+  inline derivingForSum: Boolean
+)(using conf: Configuration): Encoder[A] =
+  summonFrom {
+    case encodeA: Encoder[A] => encodeA
+    case m: Mirror.Of[A] =>
+      inline if (derivingForSum) ConfiguredEncoder.derivedNoAutoRecursion[A]
+      else error("Failed to find an instance of Encoder[" + constValue[m.MirroredLabel] + "]")
+  }
+
+private[circe] inline final def summonEncoder[A](
+  inline autoRecurse: Boolean,
+  inline derivingForSum: Boolean
+)(using Configuration): Encoder[A] =
+  inline if (autoRecurse) summonEncoderAutoRecurse[A] else summonEncoderNoAutoRecurse[A](derivingForSum)
+
+@deprecated("Use summonEncoder(autoRecurse: Boolean) instead", "0.14.6")
+private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A] = summonEncoder(true, false)
+
+private[circe] inline final def summonDecoders[T <: Tuple](
+  inline autoRecurse: Boolean,
+  inline derivingForSum: Boolean
+)(using Configuration): List[Decoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonDecoder[t] :: summonDecoders[ts]
+    case _: (t *: ts) =>
+      summonDecoder[t](autoRecurse, derivingForSum) :: summonDecoders[ts](autoRecurse, derivingForSum)
 
-private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A] =
+@deprecated("Use summonDecoders(autoRecurse: Boolean) instead", "0.14.6")
+private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+  summonDecoders(true, false)
+
+private[circe] inline final def summonDecoderAutoRecurse[A](using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
     case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
   }
+
+private[circe] inline final def summonDecoderNoAutoRecurse[A](
+  inline derivingForSum: Boolean
+)(using conf: Configuration): Decoder[A] =
+  summonFrom {
+    case decodeA: Decoder[A] => decodeA
+    case m: Mirror.Of[A] =>
+      inline if (derivingForSum) ConfiguredDecoder.derivedNoAutoRecursion[A]
+      else error("Failed to find an instance of Decoder[" + constValue[m.MirroredLabel] + "]")
+  }
+
+private[circe] inline final def summonDecoder[A](inline autoRecurse: Boolean, inline derivingForSum: Boolean)(using
+  Configuration
+): Decoder[A] =
+  inline if (autoRecurse) summonDecoderAutoRecurse[A] else summonDecoderNoAutoRecurse[A](derivingForSum)
+
+@deprecated("Use summonDecoder(autoRecurse: Boolean) instead", "0.14.6")
+private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A] = summonDecoder(true, false)
 
 private[circe] inline def summonSingletonCases[T <: Tuple, A](inline typeName: Any): List[A] =
   inline erasedValue[T] match
