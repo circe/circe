@@ -24,7 +24,7 @@ trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], Config
 object ConfiguredCodec:
 
   inline final def derived[A](using conf: Configuration)(using
-    inline mirror: Mirror.Of[A]
+    mirror: Mirror.Of[A]
   ): ConfiguredCodec[A] =
     new ConfiguredCodec[A] with SumOrProduct:
       val name = constValue[mirror.MirroredLabel]
@@ -57,8 +57,16 @@ object ConfiguredCodec:
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,
     discriminator: Option[String] = Configuration.default.discriminator,
-    strictDecoding: Boolean = Configuration.default.strictDecoding
+    strictDecoding: Boolean = Configuration.default.strictDecoding,
+    dropNoneValues: Boolean = false
   ): ConfiguredCodec[A] =
     derived[A](using
-      Configuration(transformMemberNames, transformConstructorNames, useDefaults, discriminator, strictDecoding)
+      Configuration(
+        transformMemberNames,
+        transformConstructorNames,
+        useDefaults,
+        discriminator,
+        strictDecoding,
+        dropNoneValues
+      )
     )

@@ -37,7 +37,8 @@ case class Configuration(
   transformConstructorNames: String => String = Predef.identity,
   useDefaults: Boolean = false,
   discriminator: Option[String] = None,
-  strictDecoding: Boolean = false
+  strictDecoding: Boolean = false,
+  dropNoneValues: Boolean = false
 ):
   def withTransformMemberNames(f: String => String): Configuration = copy(transformMemberNames = f)
   def withSnakeCaseMemberNames: Configuration = withTransformMemberNames(renaming.snakeCase)
@@ -59,3 +60,6 @@ case class Configuration(
 
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
   def withoutStrictDecoding: Configuration = copy(strictDecoding = false)
+
+  def withDropNoneValues: Configuration = copy(dropNoneValues = true)
+  def withoutDropNoneValues: Configuration = copy(dropNoneValues = false)
