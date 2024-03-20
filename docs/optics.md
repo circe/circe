@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Optics"
-position: 4
----
-
-# Optics
+Optics
+======
 
 Optics are a powerful tool for traversing and modifying JSON documents. They can reduce boilerplate
 considerably, especially if you are working with deeply nested JSON.
@@ -158,4 +153,3 @@ val modifiedJson = doubleQuantities(json)
 This code will compile just fine, but not do what you expect. Because the JSON document doesn't have
 an `itemss` field, the same document will be returned unmodified.
 
-{% include references.md %}

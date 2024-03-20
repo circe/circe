@@ -1,7 +1,5 @@
----
-layout: docs
-title:  "ADT (Algebraic Data Types)"
----
+ADT (Algebraic Data Types)
+=========================
 
 ### ADTs encoding and decoding
 
@@ -62,7 +60,7 @@ This works, and if you need to be able to specify the order that the ADT constru
 
 ### A more generic solution
 
-As discussed [on Gitter](https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a), we can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
+We can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
 
 ```scala mdoc:silent
 // To suppress previously imported implicit codecs.

@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Parsing JSON"
-position: 1
----
-
-# Parsing JSON
+Parsing JSON
+============
 
 circe includes a parsing module, which on the JVM is a wrapper around the [Jawn][jawn] JSON parser and for JavaScript uses the built-in [`JSON.parse`][json.parse].
 
@@ -70,4 +65,3 @@ strings and convert them to their final value via the JSON AST.
 
  [#393]: https://github.com/circe/circe/issues/393
 
-{% include references.md %}

@@ -1,9 +1,5 @@
----
-layout: docs
-title:  "Warnings and known issues"
----
-
-### Warnings and known issues
+Warnings and known issues
+=========================
 
 1. Generic derivation may not work as expected when the type definitions that you're trying to
    derive instances for are at the same level as the attempted derivation. For example:
@@ -39,9 +35,10 @@ title:  "Warnings and known issues"
    range of test cases, and is likely to _just work_ for you, but it relies on macros (provided by
    Shapeless) that rely on compiler functionality that is not always perfectly robust
    ("[SI-7046](https://issues.scala-lang.org/browse/SI-7046) is like [playing roulette](https://twitter.com/li_haoyi/status/637281580847878145)"), and if you're running into
-   problems, it's likely that they're not your fault. Please file an issue here or ask a question on
-   the [Gitter channel](https://gitter.im/circe/circe), and we'll do our best to figure out whether the problem is
-   something we can fix.
+   problems, it's likely that they're not your fault. Please file an issue here 
+   or ask a question on [Discord](https://discord.gg/XF3CXcMzqD) 
+   (use the [#circe](https://discordapp.com/channels/632277896739946517/877550996191084554) channel), 
+   and we'll do our best to figure out whether the problem is something we can fix.
 
 4. When using the `io.circe.generic.JsonCodec` annotation, the following will not compile:
 

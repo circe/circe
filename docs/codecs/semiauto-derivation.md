@@ -1,9 +1,5 @@
----
-layout: docs
-title:  "Semi-automatic derivation"
----
-
-### Semi-automatic Derivation
+Semi-automatic Derivation
+=========================
 
 Sometimes it's convenient to have an `Encoder` or `Decoder` defined in your code, and semi-automatic derivation can help. You'd write:
 

@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Performance"
-position: 5
----
-
-# Performance
+Performance
+===========
 
 circe aims to be more focused on performance. I'm still experimenting with the right balance, but I'm
 open to using mutability, inheritance, and all kinds of other horrible things under the hood if they
@@ -125,4 +120,3 @@ of integers. `C` suffixes indicate circe's throughput, `A` is for Argonaut, `P` 
 approaches of the other libraries listed here (it simply throws exceptions), and this difference
 should be taken into account when comparing its results with the others.
 
-{% include references.md %}
