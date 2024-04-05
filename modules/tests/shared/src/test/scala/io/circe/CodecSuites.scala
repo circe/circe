@@ -21,6 +21,7 @@ import cats.data.{
   NonEmptyChain,
   NonEmptyList,
   NonEmptyMap,
+  NonEmptySeq,
   NonEmptySet,
   NonEmptyStream,
   NonEmptyVector,
@@ -192,6 +193,7 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
 class CatsCodecSuite extends CirceMunitSuite with StreamFactoryInstance {
   checkAll("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
+  checkAll("Codec[NonEmptySeq[Int]]", CodecTests[NonEmptySeq[Int]].codec)
   checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkAll("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
   checkAll("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
