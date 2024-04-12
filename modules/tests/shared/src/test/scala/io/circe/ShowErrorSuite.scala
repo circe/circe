@@ -141,16 +141,61 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
   }
 
   test("Failing error messages on decoders should show whole path form root.") {
-    val jsonString =
+    val jsonStringCase1 =
       """{
         | "foo": "Test data",
         | "bar": {
         | }
         |}""".stripMargin
 
+    val jsonStringCase2 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": "string"
+        | }
+        |}""".stripMargin
+
+
+    val jsonStringCase3 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test"
+        |   }
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase4 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test",
+        |     "bar": "invalid"
+        |   }
+        | }
+        |}""".stripMargin
+
     assertEquals(
-      decode[TestDataRoot](jsonString).leftMap(_.show),
+      decode[TestDataRoot](jsonStringCase1).leftMap(_.show),
       Left("DecodingFailure at .bar.nested: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase2).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.foo: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase3).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase4).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Int")
     )
   }
 }
@@ -158,7 +203,7 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
 object ShowErrorSuite {
   final case class TestData(foo: String, bar: Int)
 
-  final case class TestDataNested(nested: Int)
+  final case class TestDataNested(nested: TestData)
   final case class TestDataRoot(foo: String, bar: TestDataNested)
 
   object TestData {
