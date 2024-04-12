@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,6 @@ package io.circe
 
 import cats.data.Chain
 import cats.kernel.instances.float._
-import cats.kernel.instances.int._
-import cats.kernel.instances.list._
-import cats.kernel.instances.map._
-import cats.kernel.instances.string._
-import cats.kernel.instances.tuple._
 import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.ContravariantTests
 import cats.syntax.eq._

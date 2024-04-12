@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Decoder, DecodingFailure, HCursor }
 import io.circe.generic.Deriver
 
-import scala.language.experimental.macros
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
 import shapeless.labelled.{ FieldType, field }
 

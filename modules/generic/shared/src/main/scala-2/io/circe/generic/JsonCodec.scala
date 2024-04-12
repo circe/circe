@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package io.circe.generic
 
 import io.circe.generic.util.macros.JsonCodecMacros
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 class JsonCodec(

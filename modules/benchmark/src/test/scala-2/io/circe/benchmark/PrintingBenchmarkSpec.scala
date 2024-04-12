@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import io.circe.jawn.decode
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
 import munit.FunSuite
-import cats.syntax.eq._
 
 class PrintingBenchmarkSpec extends FunSuite {
   val benchmark: PrintingBenchmark = new PrintingBenchmark

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package io.circe.benchmark
+package io.circe
 
-import munit.FunSuite
+import syntax._
+import io.circe.tests.CirceMunitSuite
 
-class FoldingBenchmarkSpec extends FunSuite {
-  val benchmark: FoldingBenchmark = new FoldingBenchmark
+class RecursiveProductSuite extends CirceMunitSuite {
+  test("recursive") {
+    case class Example(id: Int, children: List[Example])
 
-  test("withFoldWith should give the correct result") {
-    assertEquals(benchmark.withFoldWith, 5463565)
-  }
+    implicit def codec: Codec[Example] = Codec.forTypedProduct2("id", "children")(Example.apply)(Example.unapply(_).get)
 
-  test("withFold should give the correct result") {
-    assertEquals(benchmark.withFold, 5463565)
-  }
+    val example = Example(1, Nil)
 
-  test("withPatternMatch should give the correct result") {
-    assertEquals(benchmark.withPatternMatch, 5463565)
+    val encoded = example.asJson
+    val decoded = encoded.as[Example]
+
+    assertEquals(decoded, Right(example))
   }
 }

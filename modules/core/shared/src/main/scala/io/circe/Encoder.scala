@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,6 +135,7 @@ trait Encoder[A] extends Serializable { self =>
 object Encoder
     extends TupleEncoders
     with ProductEncoders
+    with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
     with MidPriorityEncoders {

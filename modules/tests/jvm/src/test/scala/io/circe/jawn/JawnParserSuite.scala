@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package io.circe.jawn
 
 import cats.data.Validated
-import cats.syntax.eq._
 import io.circe.Json
 import io.circe.testing.{ EqInstances, ParserTests }
 import io.circe.tests.CirceMunitSuite
