@@ -124,6 +124,100 @@ decode[Event]("""{ "i": 1000, "what_am_i": "Foo" }""")
 
 Instead of a wrapper object in the JSON we have an extra field that indicates the constructor. This isn't the default behavior since it has some weird corner cases (e.g. if one of our case classes had a member named `what_am_i`), but in many cases it's reasonable and it's been supported in `generic-extras` since that module was introduced.
 
+### Example
+Suppose we have a system which receives messages. Each message has `message_id` which is an integer and possibly may contain additional 
+fields. We model this by case class
+
+```scala mdoc
+case class RemoteData[A](msgId: Int, additionalData: A)
+```
+
+The problem is that the example message looks like follows:
+
+```json
+{
+    "msg_id": 42,
+    "leader_node_id": 3,
+    "node_ids": [5, 2, 1]
+```
+
+So we cannot use derived codecs because we're then mixing snake_case with camelCase. Also additional fields occur at the root
+level of this JSON, rather that under `additionalData` key!
+
+We start with creating codecs for our `RemoteData` class. 
+
+```scala mdoc
+object RemoteData {
+  given remoteDataEncoder[A: Encoder]: Encoder[RemoteData[A]] =
+    new Encoder[RemoteData[A]] {
+      override def apply(remoteData: RemoteData[A]): Json = {
+        val msgIdJson = Json
+          .fromFields(("msg_id" -> Json.fromInt(remoteData.msgId) :: Nil))
+        val additionalDataJson = remoteData.additionalData.asJson
+
+        additionalDataJson.deepMerge(msgIdJson)
+      }
+    }
+
+  given remoteDataEncoder[A: Decoder]: Decoder[RemoteData[A]] =
+    new Decoder[RemoteData[A]] {
+      override def apply(c: HCursor): Result[RemoteData[A]] =
+        for {
+          msgId <- c.get[Int]("msg_id")
+          a <- Decoder[A].tryDecode(c)
+        } yield RemoteData[A](msgId, a)
+    }
+}
+```
+
+Nothing special happened here. In each codec we assume we're given corresponding codec for the generic data type. 
+The interesting part is writing customized codecs for concrete data type needed to model our messages. 
+
+```scala mdoc
+case class Payload(masterNodeId: Int, nodeIds: List[Int])
+
+object Payload {
+  implicit val payloadEncoder: Encoder[Payload] =
+    ConfiguredEncoder.derived[Payload](using
+      Configuration.default.withSnakeCaseMemberNames
+    )
+  implicit val payloadDecoder: Decoder[Payload] =
+    ConfiguredDecoder.derived[Payload](using
+      Configuration.default.withSnakeCaseMemberNames
+    )
+}
+```
+
+Thanks to `ConfiguredDecoder` and `ConfiguredEncoder` classes we're able to customize transformation of fields naming strategy. 
+
+Let's check everything works as expected. After running the following code:
+
+```scala mdoc
+val remoteData = RemoteData[Payload](1, Payload(2, List(1, 2, 8)))
+println(remoteData.asJson)
+
+val remoteDataJsonString =
+  """{"msg_id": 120, "node_ids": [20, 8, 42], "master_node_id": 42}"""
+
+val remoteDataDecoded = decode[RemoteData[Payload]](remoteDataJsonString)
+println(remoteDataDecoded)
+```
+
+The output is as follows: 
+
+```bash
+{
+  "msg_id" : 1,
+  "master_node_id" : 2,
+  "node_ids" : [
+    1,
+    2,
+    8
+  ]
+}
+Right(RemoteData(120,Payload(42,List(20, 8, 42))))
+```
+
 ### Notes
 
 This still doesn't get us exactly what we want, but it's closer than the default behavior. It's also been considered to change `withDiscriminator` to take an `Option[String]` instead of a `String`, with `None` indicating that we don't want an extra field indicating the constructor, giving us the same behavior as our `circe-shape`s instances in the previous section, but haven't been implemented so far.
