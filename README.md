@@ -181,7 +181,7 @@ circe is a fork of [Argonaut][argonaut], and if you find it at all useful, you s
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently maintained by [Darren Gibson][zarthross]. 
+circe is currently maintained by [Darren Gibson][zarthross] and [Erlend Hamnaberg][hamnis]. 
 After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
