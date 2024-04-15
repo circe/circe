@@ -1,79 +1,198 @@
-<!DOCTYPE html><html><head><title>circe: Semi-automatic derivation</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Travis Brown" /><meta name="description" content="A JSON library for Scala powered by Cats" /><meta name="og:image" content="/circe/img/poster.png" /><meta name="image" property="og:image" content="/circe/img/poster.png" /><meta name="og:title" content="circe: Semi-automatic derivation" /><meta name="title" property="og:title" content="circe: Semi-automatic derivation" /><meta name="og:site_name" content="circe" /><meta name="og:url" content="https://circe.github.io/circe/" /><meta name="og:type" content="website" /><meta name="og:description" content="A JSON library for Scala powered by Cats" /><link rel="icon" type="image/png" href="/circe/img/favicon.png" /><meta name="twitter:title" content="circe: Semi-automatic derivation" /><meta name="twitter:image" content="/circe/img/poster.png" /><meta name="twitter:description" content="A JSON library for Scala powered by Cats" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/circe/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/circe/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/circe/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/circe/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/circe/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/circe/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/circe/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/circe/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/circe/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/circe/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/circe/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/circe/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/circe/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/circe/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/circe/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/circe/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/circe/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/circe/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/circe/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/circe/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/circe/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/circe/css/pattern-style.css" /><link rel="stylesheet" href="/circe/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/circe/" class="brand"><div class="brand-wrapper"><span>circe</span></div></a></li> <li><a href="/circe/parsing.html" class="">Parsing JSON</a></li> <li><a href="/circe/cursors.html" class="">Traversing and modifying JSON</a></li> <li><a href="/circe/codec.html" class="">Encoding and decoding</a> <ul class="sub-section"> <li><a href="/circe/codecs/semiauto-derivation.html" class=" active ">Semi-automatic derivation</a></li> <li><a href="/circe/codecs/auto-derivation.html" class="">Automatic derivation</a></li> <li><a href="/circe/codecs/custom-codecs.html" class="">Custom codecs</a></li> <li><a href="/circe/codecs/adt.html" class="">ADT (Algebraic Data Types)</a></li> <li><a href="/circe/codecs/testing.html" class="">Codec testing</a></li> <li><a href="/circe/codecs/known-issues.html" class="">Warnings and known issues</a></li></ul></li> <li><a href="/circe/optics.html" class="">Optics</a></li> <li><a href="/circe/performance.html" class="">Performance</a></li> <li><a href="/circe/contributing.html" class="">Guide for contributors</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="search-nav hidden-xs hidden-sm"><div id="search-dropdown"><label><i class="fa fa-search"></i>Search</label><input id="search-bar" type="text" placeholder="Enter keywords here..." onclick="displayToggleSearch(event)" /><ul id="search-dropdown-content" class="dropdown dropdown-content"></ul></div></li><li id="gh-eyes-item" class="hidden-xs to-uppercase"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i><span>Watchers<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs to-uppercase"><a href="https://github.com/circe/circe" target="_blank" rel="noopener noreferrer"><i class="fa fa-star-o"></i><span>Stars<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('circe A JSON library for Scala powered by Cats');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('circe A JSON library for Scala powered by Cats');"><i class="fa fa-facebook"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="circe" data-github-repo="circe"><div class="content-wrapper"><section><h3 id="semi-automatic-derivation">Semi-automatic Derivation</h3>
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Typelevel Laika + Helium Theme" />
+  <title>Semi-automatic Derivation</title>
+  
+  <meta name="author" content="Travis Brown"/>
+  
+  <meta name="author" content="Zach McCoy"/>
+  
+  <meta name="author" content="Darren Gibson"/>
+  
+  
+  <meta name="description" content="Circe docs"/>
+  
+  
+  
+  <link rel="icon" sizes="32x32" type="image/png" href="../images/circe_light_no_border_146x173.png"/>
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
+  
+  <link rel="stylesheet" type="text/css" href="../helium/site/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../helium/site/laika-helium.css" />
+  <script src="../helium/site/laika-helium.js"></script>
+  
+  
+  <script> /* for avoiding page load transitions */ </script>
+</head>
 
-<p>Sometimes it’s convenient to have an <code class="language-plaintext highlighter-rouge">Encoder</code> or <code class="language-plaintext highlighter-rouge">Decoder</code> defined in your code, and semi-automatic derivation can help. You’d write:</p>
+  <body>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="nv">io</span><span class="o">.</span><span class="py">circe</span><span class="o">.</span><span class="py">generic</span><span class="o">.</span><span class="py">semiauto</span><span class="o">.</span><span class="py">_</span>
+    <header id="top-bar" class="light-default dark-default">
 
-<span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">c</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span>
+  <div class="row">
+    <a id="nav-icon">
+      <i class="icofont-laika navigationMenu" title="Navigation">&#xefa2;</i>
+    </a>
+    
+    
+  </div>
 
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">fooDecoder</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveDecoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span>
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">fooEncoder</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveEncoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span>
-</code></pre></div></div>
+  <a class="image-link" href="https://github.com/circe/circe"><img src="../images/circe_light_no_border_146x173.png"></a>
 
-<p>Or simply:</p>
+  <div class="row links">
+    
+    <a class="icon-link svg-link" href="https://github.com/circe/circe"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+    <a class="icon-link glyph-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika chat" title="Chat">&#xeed5;</i></a>
+    
+  </div>  
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe._</span><span class="o">,</span> <span class="nv">io</span><span class="o">.</span><span class="py">circe</span><span class="o">.</span><span class="py">generic</span><span class="o">.</span><span class="py">semiauto</span><span class="o">.</span><span class="py">_</span>
+</header>
+    
+    <nav id="sidebar">
 
-<span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">c</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span>
+  <div class="row">
+    
+    <a class="icon-link svg-link" href="https://github.com/circe/circe"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a>
+    
+    <a class="icon-link glyph-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika chat" title="Chat">&#xeed5;</i></a>
+    
+  </div>
 
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">fooDecoder</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveDecoder</span>
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">fooEncoder</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">Foo</span><span class="o">]</span> <span class="k">=</span> <span class="n">deriveEncoder</span>
-</code></pre></div></div>
+  <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="../quickstart.html">Quick Start</a></li>
+    <li class="level1 nav-leaf"><a href="../parsing.html">Parsing JSON</a></li>
+    <li class="level1 nav-leaf"><a href="../cursors.html">Traversing and modifying JSON</a></li>
+    <li class="level1 nav-node"><a href="index.html">Encoding and Decoding</a></li>
+    <li class="level2 active nav-leaf"><a href="#">Semi-automatic Derivation</a></li>
+    <li class="level2 nav-leaf"><a href="auto-derivation.html">Automatic Derivation</a></li>
+    <li class="level2 nav-leaf"><a href="custom-codecs.html">Custom Codecs</a></li>
+    <li class="level2 nav-leaf"><a href="adt.html">ADT (Algebraic Data Types)</a></li>
+    <li class="level2 nav-leaf"><a href="testing.html">Codec Testing</a></li>
+    <li class="level2 nav-leaf"><a href="known-issues.html">Warnings and known issues</a></li>
+    <li class="level1 nav-leaf"><a href="../optics.html">Optics</a></li>
+    <li class="level1 nav-leaf"><a href="../performance.html">Performance</a></li>
+    <li class="level1 nav-header">Related Projects</li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-fs2">circe-fs2</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-iteratee">circe-iteratee</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-generic-extras">circe-generic-extras</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-derivation">circe-derivation</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-optics">circe-optics</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-droste">circe-droste</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-spire">circe-spire</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-config">circe-config</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-yaml">circe-yaml</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-bson">circe-bson</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-schema">circe-schema</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-golden">circe-golden</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-json-schema">circe-json-schema</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-jackson">circe-jackson</a></li>
+    <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-argus">circe-argus</a></li>
+  </ul>
 
-<h3 id="jsoncodec">@JsonCodec</h3>
+</nav>
 
-<p>The circe-generic project includes a <code class="language-plaintext highlighter-rouge">@JsonCodec</code> annotation that simplifies the
-use of semi-automatic generic derivation:</p>
+    <div id="container">
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.generic.JsonCodec</span><span class="o">,</span> <span class="nv">io</span><span class="o">.</span><span class="py">circe</span><span class="o">.</span><span class="py">syntax</span><span class="o">.</span><span class="py">_</span>
+      
+<nav id="page-nav">
+  <p class="header"><a href="#">Semi-automatic Derivation</a></p>
 
-<span class="nd">@JsonCodec</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">Bar</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+  <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="#specific-case-for-value-class">Specific case for Value Class</a></li>
+    <li class="level1 nav-leaf"><a href="#jsoncodec">@JsonCodec</a></li>
+    <li class="level1 nav-leaf"><a href="#forproductn-helper-methods">forProductN helper methods</a></li>
+  </ul>
 
-<span class="nc">Bar</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="s">"Qux"</span><span class="o">).</span><span class="py">asJson</span>
-<span class="c1">// res1: Json = JObject(value = object[i -&gt; 13,s -&gt; "Qux"])</span>
-</code></pre></div></div>
+  <p class="footer"></p>
+</nav>
 
-<p>This works with both case classes and sealed trait hierarchies.</p>
 
-<p>NOTE: You will need to use the <code class="language-plaintext highlighter-rouge">-Ymacro-annotations</code> flag to use <a href="https://docs.scala-lang.org/overviews/macros/annotations.html">annotation macros</a> like <code class="language-plaintext highlighter-rouge">@JsonCodec</code>. (If you’re using Scala 2.10.x to Scala 2.12.x you will need the <a href="https://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a> plugin instead).</p>
+      <main class="content">
 
-<h3 id="forproductn-helper-methods">forProductN helper methods</h3>
+        <h1 id="semi-automatic-derivation" class="title">Semi-automatic Derivation</h1>
+        <p>Sometimes it&#39;s convenient to have an <code>Encoder</code> or <code>Decoder</code> defined in your code, and semi-automatic derivation can help. You&#39;d write:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="identifier">semiauto</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
 
-<p>It’s also possible to construct encoders and decoders for case class-like types
-in a relatively boilerplate-free way without generic derivation:</p>
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Foo</span><span>(</span><span class="identifier">a</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">b</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">c</span><span>: </span><span class="type-name">Boolean</span><span>)
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.circe.</span><span class="o">{</span> <span class="nc">Decoder</span><span class="o">,</span> <span class="nc">Encoder</span> <span class="o">}</span>
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooDecoder</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveDecoder</span><span>[</span><span class="type-name">Foo</span><span>]
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooEncoder</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveEncoder</span><span>[</span><span class="type-name">Foo</span><span>]
 
-<span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">firstName</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">lastName</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+</span><span class="type-name">Foo</span><span>(</span><span class="number-literal">13</span><span>, </span><span class="string-literal">&quot;Qux&quot;</span><span>, </span><span class="boolean-literal">false</span><span>).</span><span class="identifier">asJson</span></code></pre>
+        <p>You can also simplify to just write the last two lines as:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooDecoder</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveDecoder</span><span>
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooEncoder</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveEncoder</span></code></pre>
+        
+        <h4 id="specific-case-for-value-class" class="section"><a class="anchor-link left" href="#specific-case-for-value-class"><i class="icofont-laika link">&#xef71;</i></a>Specific case for Value Class</h4>
+        <p>Most of the time, when using Value Class, we expect only the inner value in the serialized format.</p>
+        <p>It can be achieved using <code>circe-generic-extras</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="identifier">extras</span><span>.</span><span class="identifier">semiauto</span><span>.</span><span class="identifier">_</span><span>
 
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">decodeUser</span><span class="k">:</span> <span class="kt">Decoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
-  <span class="nv">Decoder</span><span class="o">.</span><span class="py">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="nv">User</span><span class="o">.</span><span class="py">apply</span><span class="o">)</span>
-<span class="c1">// decodeUser: Decoder[User] = io.circe.ProductDecoders$$anon$3@75a934cf</span>
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Foo</span><span>(</span><span class="identifier">a</span><span>: </span><span class="type-name">Int</span><span>)
 
-<span class="k">implicit</span> <span class="k">val</span> <span class="nv">encodeUser</span><span class="k">:</span> <span class="kt">Encoder</span><span class="o">[</span><span class="kt">User</span><span class="o">]</span> <span class="k">=</span>
-  <span class="nv">Encoder</span><span class="o">.</span><span class="py">forProduct3</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="s">"first_name"</span><span class="o">,</span> <span class="s">"last_name"</span><span class="o">)(</span><span class="n">u</span> <span class="k">=&gt;</span>
-    <span class="o">(</span><span class="nv">u</span><span class="o">.</span><span class="py">id</span><span class="o">,</span> <span class="nv">u</span><span class="o">.</span><span class="py">firstName</span><span class="o">,</span> <span class="nv">u</span><span class="o">.</span><span class="py">lastName</span><span class="o">)</span>
-  <span class="o">)</span>
-<span class="c1">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$3@298dfe0b</span>
-</code></pre></div></div>
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooDecoder</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveUnwrappedDecoder</span><span>[</span><span class="type-name">Foo</span><span>]
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooEncoder</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="identifier">deriveUnwrappedEncoder</span><span>[</span><span class="type-name">Foo</span><span>]</span></code></pre>
+        <p>The expected serialization for <code>Foo(123)</code> is simply <code>123</code></p>
+        
+        <h3 id="jsoncodec" class="section"><a class="anchor-link left" href="#jsoncodec"><i class="icofont-laika link">&#xef71;</i></a>@JsonCodec</h3>
+        <p>The <code>circe-generic</code> project includes a <code>@JsonCodec</code> annotation that simplifies the
+        use of semi-automatic generic derivation:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="type-name">JsonCodec</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
 
-<p>It’s not as clean or as maintainable as generic derivation, but it’s less magical, it requires nothing but <code class="language-plaintext highlighter-rouge">circe-core</code>, and if you need a custom name mapping it’s currently the best solution (although <code class="language-plaintext highlighter-rouge">0.6.0</code> introduces experimental configurable generic derivation in the <code class="language-plaintext highlighter-rouge">circe-generic-extras</code> module).</p>
-</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/circe/highlight/highlight.pack.js"></script><script src="/circe/lunr/lunr.js"></script><script>
-// For all code blocks, copy the language from the containing div
-// to the inner code tag (where hljs expects it to be)
-const langPrefix = 'language-';
-document.querySelectorAll(`div[class^='${langPrefix}']`).forEach(function(div) {
-  div.classList.forEach(function(cssClass) {
-    if (cssClass.startsWith(langPrefix)) {
-      const lang = cssClass.substring(langPrefix.length);
-      div.querySelectorAll('pre code').forEach(function(code) {
-        code.classList.add(lang);
-      });
-    }
-  });
-});
+</span><span class="annotation">@JsonCodec</span><span> </span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Bar</span><span>(</span><span class="identifier">i</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span>)
 
-hljs.configure({languages:['scala','java','bash']});
-hljs.initHighlightingOnLoad();
-      </script><script>console.info('\x57\x65\x62\x73\x69\x74\x65\x20\x62\x75\x69\x6c\x74\x20\x77\x69\x74\x68\x3a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x5f\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5f\x20\x5f\x5f\x0a\x20\x20\x20\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x5f\x20\x20\x2f\x20\x2f\x5f\x20\x20\x20\x20\x20\x20\x5f\x5f\x5f\x5f\x20\x5f\x5f\x5f\x20\x20\x28\x5f\x29\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x28\x5f\x29\x20\x2f\x5f\x5f\x5f\x5f\x20\x20\x5f\x5f\x5f\x5f\x5f\x0a\x20\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x60\x5f\x5f\x20\x5c\x2f\x20\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x5f\x2f\x20\x5f\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x20\x2f\x20\x5f\x5f\x2f\x20\x5f\x20\x5c\x2f\x20\x5f\x5f\x5f\x2f\x0a\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x5f\x2f\x20\x2f\x20\x2f\x5f\x2f\x5f\x5f\x5f\x5f\x5f\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x20\x2f\x5f\x5f\x2f\x20\x2f\x20\x20\x2f\x20\x2f\x5f\x2f\x20\x28\x5f\x5f\x20\x20\x29\x20\x2f\x20\x2f\x5f\x2f\x20\x20\x5f\x5f\x28\x5f\x5f\x20\x20\x29\x0a\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2e\x5f\x5f\x5f\x2f\x5c\x5f\x5f\x2f\x20\x20\x20\x20\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x20\x2f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x2f\x20\x20\x20\x5c\x5f\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x5f\x2f\x5c\x5f\x5f\x2f\x5c\x5f\x5f\x5f\x2f\x5f\x5f\x5f\x5f\x2f\x0a\x0a\x68\x74\x74\x70\x73\x3a\x2f\x2f\x34\x37\x64\x65\x67\x2e\x67\x69\x74\x68\x75\x62\x2e\x69\x6f\x2f\x73\x62\x74\x2d\x6d\x69\x63\x72\x6f\x73\x69\x74\x65\x73')</script><script>((window.gitter = {}).chat = {}).options = {
-room: 'circe/circe'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/circe/js/search.js"></script><script src="/circe/js/main.js"></script></body></html>
+</span><span class="type-name">Bar</span><span>(</span><span class="number-literal">13</span><span>, </span><span class="string-literal">&quot;Qux&quot;</span><span>).</span><span class="identifier">asJson</span><span>
+</span><span class="comment">// res3: io.circe.Json = JObject(value = object[i -&gt; 13,s -&gt; &quot;Qux&quot;])</span></code></pre>
+        <p>This works with both case classes and sealed trait hierarchies.</p>
+        <p>NOTE: You will need to use the <code>-Ymacro-annotations</code> flag to use <a href="https://docs.scala-lang.org/overviews/macros/annotations.html">annotation macros</a> like <code>@JsonCodec</code>. (If you&#39;re using Scala 2.10.x to Scala 2.12.x you will need the <a href="https://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a> plugin instead).</p>
+        
+        <h3 id="forproductn-helper-methods" class="section"><a class="anchor-link left" href="#forproductn-helper-methods"><i class="icofont-laika link">&#xef71;</i></a>forProductN helper methods</h3>
+        <p>It&#39;s also possible to construct encoders and decoders for case class-like types
+        in a relatively boilerplate-free way without generic derivation:</p>
+        <pre><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.{ </span><span class="type-name">Decoder</span><span>, </span><span class="type-name">Encoder</span><span> }
+
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">User</span><span>(</span><span class="identifier">id</span><span>: </span><span class="type-name">Long</span><span>, </span><span class="identifier">firstName</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">lastName</span><span>: </span><span class="type-name">String</span><span>)
+
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">decodeUser</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">User</span><span>] =
+  </span><span class="type-name">Decoder</span><span>.</span><span class="identifier">forProduct3</span><span>(</span><span class="string-literal">&quot;id&quot;</span><span>, </span><span class="string-literal">&quot;first_name&quot;</span><span>, </span><span class="string-literal">&quot;last_name&quot;</span><span>)(</span><span class="type-name">User</span><span>.</span><span class="identifier">apply</span><span>)
+</span><span class="comment">// decodeUser: Decoder[User] = io.circe.ProductDecoders$$anon$5@5ea214a7
+</span><span>
+</span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">encodeUser</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">User</span><span>] =
+  </span><span class="type-name">Encoder</span><span>.</span><span class="identifier">forProduct3</span><span>(</span><span class="string-literal">&quot;id&quot;</span><span>, </span><span class="string-literal">&quot;first_name&quot;</span><span>, </span><span class="string-literal">&quot;last_name&quot;</span><span>)(</span><span class="identifier">u</span><span> =&gt;
+    (</span><span class="identifier">u</span><span>.</span><span class="identifier">id</span><span>, </span><span class="identifier">u</span><span>.</span><span class="identifier">firstName</span><span>, </span><span class="identifier">u</span><span>.</span><span class="identifier">lastName</span><span>)
+  )
+</span><span class="comment">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$3@1f68bcb0</span></code></pre>
+        <p>It&#39;s not as clean or as maintainable as generic derivation, but it&#39;s less magical, it requires nothing but <code>circe-core</code>, and if you need a custom name mapping it&#39;s currently the best solution (although <code>0.6.0</code> introduces experimental configurable generic derivation in the <code>generic-extras</code> module).</p>
+
+        
+<hr class="footer-rule"/>
+<footer>
+  Site generated by <a href="https://typelevel.org/Laika/">Laika</a> with the Helium theme.
+</footer>
+
+
+      </main>
+
+    </div>
+
+  </body>
+
+</html>

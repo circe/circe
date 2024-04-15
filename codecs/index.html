@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Typelevel Laika + Helium Theme" />
-  <title>Automatic Derivation</title>
+  <title>Encoding and Decoding</title>
   
   <meta name="author" content="Travis Brown"/>
   
@@ -80,9 +80,9 @@
     <li class="level1 nav-leaf"><a href="../quickstart.html">Quick Start</a></li>
     <li class="level1 nav-leaf"><a href="../parsing.html">Parsing JSON</a></li>
     <li class="level1 nav-leaf"><a href="../cursors.html">Traversing and modifying JSON</a></li>
-    <li class="level1 nav-node"><a href="index.html">Encoding and Decoding</a></li>
+    <li class="level1 active nav-node"><a href="#">Encoding and Decoding</a></li>
     <li class="level2 nav-leaf"><a href="semiauto-derivation.html">Semi-automatic Derivation</a></li>
-    <li class="level2 active nav-leaf"><a href="#">Automatic Derivation</a></li>
+    <li class="level2 nav-leaf"><a href="auto-derivation.html">Automatic Derivation</a></li>
     <li class="level2 nav-leaf"><a href="custom-codecs.html">Custom Codecs</a></li>
     <li class="level2 nav-leaf"><a href="adt.html">ADT (Algebraic Data Types)</a></li>
     <li class="level2 nav-leaf"><a href="testing.html">Codec Testing</a></li>
@@ -113,7 +113,7 @@
 
       
 <nav id="page-nav">
-  <p class="header"><a href="#">Automatic Derivation</a></p>
+  <p class="header"><a href="#">Encoding and Decoding</a></p>
 
   <ul class="nav-list">
   </ul>
@@ -124,19 +124,33 @@
 
       <main class="content">
 
-        <h1 id="automatic-derivation" class="title">Automatic Derivation</h1>
-        <p>It is also possible to derive <code>Encoder</code>s and <code>Decoder</code>s for many types with no boilerplate at all. circe uses <a href="https://github.com/milessabin/shapeless">shapeless</a> to automatically derive the necessary type class instances:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="identifier">auto</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
+        <h1 id="encoding-and-decoding" class="title">Encoding and Decoding</h1>
+        <p>circe uses <code>Encoder</code> and <code>Decoder</code> type classes for encoding and decoding. An <code>Encoder[A]</code> instance
+        provides a function that will convert any <code>A</code> to a <code>Json</code>, and a <code>Decoder[A]</code> takes a <code>Json</code> value
+        to either an exception or an <code>A</code>. circe provides implicit instances of these type classes for many
+        types from the Scala standard library, including <code>Int</code>, <code>String</code>, and <a href="https://circe.github.io/circe/api/io/circe/Encoder$.html">others</a>. It also
+        provides instances for <code>List[A]</code>, <code>Option[A]</code>, and other generic types, but only if <code>A</code> has an
+        <code>Encoder</code> instance.</p>
+        <p>Encoding data to <code>Json</code> can be done using the <code>.asJson</code> syntax:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
 
-</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Person</span><span>(</span><span class="identifier">name</span><span>: </span><span class="type-name">String</span><span>)
-</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Greeting</span><span>(</span><span class="identifier">salutation</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">person</span><span>: </span><span class="type-name">Person</span><span>, </span><span class="identifier">exclamationMarks</span><span>: </span><span class="type-name">Int</span><span>)
-
-</span><span class="type-name">Greeting</span><span>(</span><span class="string-literal">&quot;Hey&quot;</span><span>, </span><span class="type-name">Person</span><span>(</span><span class="string-literal">&quot;Chris&quot;</span><span>), </span><span class="number-literal">3</span><span>).</span><span class="identifier">asJson</span><span>
-</span><span class="comment">// res0: io.circe.Json = JObject(
-//   value = object[salutation -&gt; &quot;Hey&quot;,person -&gt; {
-//   &quot;name&quot; : &quot;Chris&quot;
-// },exclamationMarks -&gt; 3]
+</span><span class="keyword">val</span><span> </span><span class="identifier">intsJson</span><span> = </span><span class="type-name">List</span><span>(</span><span class="number-literal">1</span><span>, </span><span class="number-literal">2</span><span>, </span><span class="number-literal">3</span><span>).</span><span class="identifier">asJson</span><span>
+</span><span class="comment">// intsJson: io.circe.Json = JArray(
+//   value = Vector(
+//     JNumber(value = JsonLong(value = 1L)),
+//     JNumber(value = JsonLong(value = 2L)),
+//     JNumber(value = JsonLong(value = 3L))
+//   )
 // )</span></code></pre>
+        <p>Use the <code>.as</code> syntax for decoding data from <code>Json</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">intsJson</span><span>.</span><span class="identifier">as</span><span>[</span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]]
+</span><span class="comment">// res0: io.circe.Decoder.Result[List[Int]] = Right(value = List(1, 2, 3))</span></code></pre>
+        <p>The <code>decode</code> function from the included <code>parser</code> module can be used to directly decode
+        a JSON <code>String</code>:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">parser</span><span>.</span><span class="identifier">decode</span><span>
+
+</span><span class="identifier">decode</span><span>[</span><span class="type-name">List</span><span>[</span><span class="type-name">Int</span><span>]](</span><span class="string-literal">&quot;[1, 2, 3]&quot;</span><span>)
+</span><span class="comment">// res1: Either[io.circe.Error, List[Int]] = Right(value = List(1, 2, 3))</span></code></pre>
 
         
 <hr class="footer-rule"/>

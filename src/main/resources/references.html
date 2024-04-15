@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Typelevel Laika + Helium Theme" />
-  <title>Automatic Derivation</title>
+  <title></title>
   
   <meta name="author" content="Travis Brown"/>
   
@@ -19,16 +19,16 @@
   
   
   
-  <link rel="icon" sizes="32x32" type="image/png" href="../images/circe_light_no_border_146x173.png"/>
+  <link rel="icon" sizes="32x32" type="image/png" href="../../../images/circe_light_no_border_146x173.png"/>
   
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
   
-  <link rel="stylesheet" type="text/css" href="../helium/site/icofont.min.css" />
-    <link rel="stylesheet" type="text/css" href="../helium/site/laika-helium.css" />
-  <script src="../helium/site/laika-helium.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../../helium/site/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../helium/site/laika-helium.css" />
+  <script src="../../../helium/site/laika-helium.js"></script>
   
   
   <script> /* for avoiding page load transitions */ </script>
@@ -46,7 +46,7 @@
     
   </div>
 
-  <a class="image-link" href="https://github.com/circe/circe"><img src="../images/circe_light_no_border_146x173.png"></a>
+  <a class="image-link" href="https://github.com/circe/circe"><img src="../../../images/circe_light_no_border_146x173.png"></a>
 
   <div class="row links">
     
@@ -77,18 +77,18 @@
   </div>
 
   <ul class="nav-list">
-    <li class="level1 nav-leaf"><a href="../quickstart.html">Quick Start</a></li>
-    <li class="level1 nav-leaf"><a href="../parsing.html">Parsing JSON</a></li>
-    <li class="level1 nav-leaf"><a href="../cursors.html">Traversing and modifying JSON</a></li>
-    <li class="level1 nav-node"><a href="index.html">Encoding and Decoding</a></li>
-    <li class="level2 nav-leaf"><a href="semiauto-derivation.html">Semi-automatic Derivation</a></li>
-    <li class="level2 active nav-leaf"><a href="#">Automatic Derivation</a></li>
-    <li class="level2 nav-leaf"><a href="custom-codecs.html">Custom Codecs</a></li>
-    <li class="level2 nav-leaf"><a href="adt.html">ADT (Algebraic Data Types)</a></li>
-    <li class="level2 nav-leaf"><a href="testing.html">Codec Testing</a></li>
-    <li class="level2 nav-leaf"><a href="known-issues.html">Warnings and known issues</a></li>
-    <li class="level1 nav-leaf"><a href="../optics.html">Optics</a></li>
-    <li class="level1 nav-leaf"><a href="../performance.html">Performance</a></li>
+    <li class="level1 nav-leaf"><a href="../../../quickstart.html">Quick Start</a></li>
+    <li class="level1 nav-leaf"><a href="../../../parsing.html">Parsing JSON</a></li>
+    <li class="level1 nav-leaf"><a href="../../../cursors.html">Traversing and modifying JSON</a></li>
+    <li class="level1 nav-node"><a href="../../../codecs/">Encoding and Decoding</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/semiauto-derivation.html">Semi-automatic Derivation</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/auto-derivation.html">Automatic Derivation</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/custom-codecs.html">Custom Codecs</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/adt.html">ADT (Algebraic Data Types)</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/testing.html">Codec Testing</a></li>
+    <li class="level2 nav-leaf"><a href="../../../codecs/known-issues.html">Warnings and known issues</a></li>
+    <li class="level1 nav-leaf"><a href="../../../optics.html">Optics</a></li>
+    <li class="level1 nav-leaf"><a href="../../../performance.html">Performance</a></li>
     <li class="level1 nav-header">Related Projects</li>
     <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-fs2">circe-fs2</a></li>
     <li class="level2 nav-leaf"><a href="https://github.com/circe/circe-iteratee">circe-iteratee</a></li>
@@ -113,7 +113,7 @@
 
       
 <nav id="page-nav">
-  <p class="header"><a href="#">Automatic Derivation</a></p>
+  <p class="header"><a href="#"></a></p>
 
   <ul class="nav-list">
   </ul>
@@ -124,19 +124,7 @@
 
       <main class="content">
 
-        <h1 id="automatic-derivation" class="title">Automatic Derivation</h1>
-        <p>It is also possible to derive <code>Encoder</code>s and <code>Decoder</code>s for many types with no boilerplate at all. circe uses <a href="https://github.com/milessabin/shapeless">shapeless</a> to automatically derive the necessary type class instances:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="identifier">auto</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
-
-</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Person</span><span>(</span><span class="identifier">name</span><span>: </span><span class="type-name">String</span><span>)
-</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Greeting</span><span>(</span><span class="identifier">salutation</span><span>: </span><span class="type-name">String</span><span>, </span><span class="identifier">person</span><span>: </span><span class="type-name">Person</span><span>, </span><span class="identifier">exclamationMarks</span><span>: </span><span class="type-name">Int</span><span>)
-
-</span><span class="type-name">Greeting</span><span>(</span><span class="string-literal">&quot;Hey&quot;</span><span>, </span><span class="type-name">Person</span><span>(</span><span class="string-literal">&quot;Chris&quot;</span><span>), </span><span class="number-literal">3</span><span>).</span><span class="identifier">asJson</span><span>
-</span><span class="comment">// res0: io.circe.Json = JObject(
-//   value = object[salutation -&gt; &quot;Hey&quot;,person -&gt; {
-//   &quot;name&quot; : &quot;Chris&quot;
-// },exclamationMarks -&gt; 3]
-// )</span></code></pre>
+        
 
         
 <hr class="footer-rule"/>

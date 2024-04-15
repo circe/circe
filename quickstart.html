@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Typelevel Laika + Helium Theme" />
-  <title>Parsing JSON</title>
+  <title>Quick Start</title>
   
   <meta name="author" content="Travis Brown"/>
   
@@ -77,8 +77,8 @@
   </div>
 
   <ul class="nav-list">
-    <li class="level1 nav-leaf"><a href="quickstart.html">Quick Start</a></li>
-    <li class="level1 active nav-leaf"><a href="#">Parsing JSON</a></li>
+    <li class="level1 active nav-leaf"><a href="#">Quick Start</a></li>
+    <li class="level1 nav-leaf"><a href="parsing.html">Parsing JSON</a></li>
     <li class="level1 nav-leaf"><a href="cursors.html">Traversing and modifying JSON</a></li>
     <li class="level1 nav-node"><a href="codecs/">Encoding and Decoding</a></li>
     <li class="level2 nav-leaf"><a href="codecs/semiauto-derivation.html">Semi-automatic Derivation</a></li>
@@ -113,10 +113,9 @@
 
       
 <nav id="page-nav">
-  <p class="header"><a href="#">Parsing JSON</a></p>
+  <p class="header"><a href="#">Quick Start</a></p>
 
   <ul class="nav-list">
-    <li class="level1 nav-leaf"><a href="#warnings-and-known-issues">Warnings and known issues</a></li>
   </ul>
 
   <p class="footer"></p>
@@ -125,82 +124,43 @@
 
       <main class="content">
 
-        <h1 id="parsing-json" class="title">Parsing JSON</h1>
-        <p>circe includes a parsing module, which on the JVM is a wrapper around the <a href="https://github.com/non/jawn">Jawn</a> JSON parser and for JavaScript uses the built-in <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code>JSON.parse</code></a>.</p>
-        <p>Parsing is not part of the <code>circe-core</code> module, so you will need to include a dependency on the <code>circe-parser</code> module in your build:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.circe&quot;</span><span> %% </span><span class="string-literal">&quot;circe-parser&quot;</span><span> % </span><span class="identifier">circeVersion</span></code></pre>
-        <p>Parsing is done as follows.</p>
-        <pre><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">parser</span><span>.</span><span class="identifier">_</span><span>
+        <h1 id="quick-start" class="title">Quick Start</h1>
+        <p>circe is published to <a href="http://search.maven.org/">Maven Central</a> and cross-built for Scala 2.12 and 2.13,
+        so you can just add the following to your build:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">circeVersion</span><span> = </span><span class="string-literal">&quot;0.14.1&quot;</span><span>
 
-</span><span class="keyword">val</span><span> </span><span class="identifier">rawJson</span><span>: </span><span class="type-name">String</span><span> = </span><span class="string-literal">&quot;&quot;&quot;
-{
-  &quot;foo&quot;: &quot;bar&quot;,
-  &quot;baz&quot;: 123,
-  &quot;list of stuff&quot;: [ 4, 5, 6 ]
-}
-&quot;&quot;&quot;</span><span>
-</span><span class="comment">// rawJson: String = &quot;&quot;&quot;
-// {
-//   &quot;foo&quot;: &quot;bar&quot;,
-//   &quot;baz&quot;: 123,
-//   &quot;list of stuff&quot;: [ 4, 5, 6 ]
-// }
-// &quot;&quot;&quot;
-</span><span>
-</span><span class="keyword">val</span><span> </span><span class="identifier">parseResult</span><span> = </span><span class="identifier">parse</span><span>(</span><span class="identifier">rawJson</span><span>)
-</span><span class="comment">// parseResult: Either[ParsingFailure, Json] = Right(
-//   value = JObject(
-//     value = object[foo -&gt; &quot;bar&quot;,baz -&gt; 123,list of stuff -&gt; [
-//   4,
-//   5,
-//   6
-// ]]
-//   )
-// )</span></code></pre>
-        <p>Because parsing might fail, the result is an <code>Either</code> with an <code>io.circe.Error</code> on the left side.
-        In the example above, the input was valid JSON, so the result was a <code>Right</code> containing the
-        corresponding JSON representation.</p>
-        <p>Let&#39;s see what happens when you try to parse invalid JSON:</p>
-        <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">badJson</span><span>: </span><span class="type-name">String</span><span> = </span><span class="string-literal">&quot;yolo&quot;</span><span>
-</span><span class="comment">// badJson: String = &quot;yolo&quot;
-</span><span>
-</span><span class="identifier">parse</span><span>(</span><span class="identifier">badJson</span><span>)
-</span><span class="comment">// res0: Either[ParsingFailure, Json] = Left(
-//   value = ParsingFailure(
-//     message = &quot;expected json value got &#39;yolo&#39; (line 1, column 1)&quot;,
-//     underlying = ParseException(
-//       msg = &quot;expected json value got &#39;yolo&#39; (line 1, column 1)&quot;,
-//       index = 0,
-//       line = 1,
-//       col = 1
-//     )
-//   )
-// )</span></code></pre>
-        <p>There are a number of ways to extract the parse result from the <code>Either</code>. For example you could pattern
-        match on it:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">parse</span><span>(</span><span class="identifier">rawJson</span><span>) </span><span class="keyword">match</span><span> {
-  </span><span class="keyword">case</span><span> </span><span class="type-name">Left</span><span>(</span><span class="identifier">failure</span><span>) =&gt; </span><span class="identifier">println</span><span>(</span><span class="string-literal">&quot;Invalid JSON :(&quot;</span><span>)
-  </span><span class="keyword">case</span><span> </span><span class="type-name">Right</span><span>(</span><span class="identifier">json</span><span>) =&gt; </span><span class="identifier">println</span><span>(</span><span class="string-literal">&quot;Yay, got some JSON!&quot;</span><span>)
-}
-</span><span class="comment">// Yay, got some JSON!</span></code></pre>
-        <p>Or use <code>getOrElse</code> (an extension method provided by Cats):</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">json</span><span>: </span><span class="type-name">Json</span><span> = </span><span class="identifier">parse</span><span>(</span><span class="identifier">rawJson</span><span>).</span><span class="identifier">getOrElse</span><span>(</span><span class="type-name">Json</span><span>.</span><span class="type-name">Null</span><span>)
-</span><span class="comment">// json: Json = JObject(
-//   value = object[foo -&gt; &quot;bar&quot;,baz -&gt; 123,list of stuff -&gt; [
-//   4,
-//   5,
-//   6
-// ]]
-// )</span></code></pre>
-        
-        <h2 id="warnings-and-known-issues" class="section"><a class="anchor-link left" href="#warnings-and-known-issues"><i class="icofont-laika link">&#xef71;</i></a>Warnings and known issues</h2>
-        <p>When using the Scala.js version of circe, numerical values like <code>Long</code> may <a href="https://github.com/circe/circe/issues/393">lose
-        precision</a> when decoded. For example <code>decode[Long](&quot;767946224062369796&quot;)</code>
-        will return <code>Right(767946224062369792L)</code>. This is not a limitation of how
-        Scala.js represents <code>scala.Long</code>s nor circe&#39;s decoders for numerical values but
-        due to <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"><code>JSON.parse</code></a> converting numerical values to JavaScript
-        numbers. If precision is required consider representing numerical values as
-        strings and convert them to their final value via the JSON AST.</p>
+</span><span class="identifier">libraryDependencies</span><span> ++= </span><span class="type-name">Seq</span><span>(
+  </span><span class="string-literal">&quot;io.circe&quot;</span><span> %% </span><span class="string-literal">&quot;circe-core&quot;</span><span>,
+  </span><span class="string-literal">&quot;io.circe&quot;</span><span> %% </span><span class="string-literal">&quot;circe-generic&quot;</span><span>,
+  </span><span class="string-literal">&quot;io.circe&quot;</span><span> %% </span><span class="string-literal">&quot;circe-parser&quot;</span><span>
+).</span><span class="identifier">map</span><span>(</span><span class="identifier">_</span><span> % </span><span class="identifier">circeVersion</span><span>)</span></code></pre>
+        <p>In case of large or deep-nested case classes, there is a chance to get stack overflow during compilation,
+        please refer to <a href="codecs/known-issues.html">known-issues</a> for workaround.</p>
+        <p>If you&#39;re using the <code>@JsonCodec</code> macro annotations in circe&#39;s <code>generic-extras</code> module,
+        you&#39;ll need to add <code>-Ymacro-annotations</code> to your compiler options on Scala 2.13,
+        or include the <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a> compiler plugin in your build on
+        earlier Scala versions:</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">addCompilerPlugin</span><span>(
+  </span><span class="string-literal">&quot;org.scalamacros&quot;</span><span> % </span><span class="string-literal">&quot;paradise&quot;</span><span> % </span><span class="string-literal">&quot;2.1.1&quot;</span><span> </span><span class="identifier">cross</span><span> </span><span class="type-name">CrossVersion</span><span>.</span><span class="identifier">full</span><span>
+)</span></code></pre>
+        <p>Then type <code>sbt console</code> to start a REPL and then paste the following (this will also work from the
+        root directory of this repository):</p>
+        <pre><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">generic</span><span>.</span><span class="identifier">auto</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">parser</span><span>.</span><span class="identifier">_</span><span>, </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">syntax</span><span>.</span><span class="identifier">_</span><span>
+
+</span><span class="keyword">sealed</span><span> </span><span class="keyword">trait</span><span> </span><span class="type-name">Foo</span><span>
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Bar</span><span>(</span><span class="identifier">xs</span><span>: </span><span class="type-name">Vector</span><span>[</span><span class="type-name">String</span><span>]) </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">Qux</span><span>(</span><span class="identifier">i</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">d</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">Double</span><span>]) </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>
+
+</span><span class="keyword">val</span><span> </span><span class="identifier">foo</span><span>: </span><span class="type-name">Foo</span><span> = </span><span class="type-name">Qux</span><span>(</span><span class="number-literal">13</span><span>, </span><span class="type-name">Some</span><span>(</span><span class="number-literal">14.0</span><span>))
+
+</span><span class="keyword">val</span><span> </span><span class="identifier">json</span><span> = </span><span class="identifier">foo</span><span>.</span><span class="identifier">asJson</span><span>.</span><span class="identifier">noSpaces</span><span>
+</span><span class="identifier">println</span><span>(</span><span class="identifier">json</span><span>)
+
+</span><span class="keyword">val</span><span> </span><span class="identifier">decodedFoo</span><span> = </span><span class="identifier">decode</span><span>[</span><span class="type-name">Foo</span><span>](</span><span class="identifier">json</span><span>)
+</span><span class="identifier">println</span><span>(</span><span class="identifier">decodedFoo</span><span>)</span></code></pre>
+        <p>Alternatively you can experiment with circe directly in your browser by clicking the <code>Run</code> button in the code block and
+        making modifications in the code.</p>
+        <p>No boilerplate, no runtime reflection.</p>
 
         
 <hr class="footer-rule"/>
