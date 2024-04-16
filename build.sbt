@@ -2,7 +2,7 @@ import sbtcrossproject.{ CrossProject, CrossType }
 
 val Scala212V: String = "2.12.18"
 val Scala213V: String = "2.13.12"
-val Scala3V: String = "3.2.2"
+val Scala3V: String = "3.3.3"
 
 ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
@@ -30,7 +30,7 @@ val refinedNativeVersion = "0.10.3"
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.17.0"
-val munitVersion = "1.0.0-M10"
+val munitVersion = "1.0.0-M11"
 val disciplineVersion = "1.5.1"
 val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
