@@ -21,7 +21,7 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, Json }
 
 trait ConfiguredEnumCodec[A] extends Codec[A]
 object ConfiguredEnumCodec:
-  def of[A](decoder: Decoder[A], encoder: Encoder[A]): ConfiguredEnumCodec[A] =
+  private def of[A](decoder: Decoder[A], encoder: Encoder[A]): ConfiguredEnumCodec[A] =
     new ConfiguredEnumCodec[A]:
       def apply(c: HCursor) = decoder(c)
       def apply(a: A) = encoder(a)

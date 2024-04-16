@@ -22,7 +22,8 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
-  def of[A](nme: String, decoders: => List[Decoder[?]], encoders: => List[Encoder[?]], labels: List[String])(using
+  private def of[A](nme: String, decoders: => List[Decoder[?]], encoders: => List[Encoder[?]], labels: List[String])(
+    using
     conf: Configuration,
     mirror: Mirror.Of[A],
     defaults: Default[A]

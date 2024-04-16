@@ -34,7 +34,7 @@ trait Default[T] extends Serializable:
     case defaults: NonEmptyTuple => defaults(index).asInstanceOf[Option[Any]]
 
 object Default:
-  def of[T, O <: Tuple](values: => O) = new Default[T]:
+  private def of[T, O <: Tuple](values: => O) = new Default[T]:
     type Out = O
     lazy val defaults: Out = values
 

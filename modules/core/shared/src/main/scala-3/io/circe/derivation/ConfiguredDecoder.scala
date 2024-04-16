@@ -189,7 +189,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  def of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
+  private def of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
     conf: Configuration,
     mirror: Mirror.Of[A],
     defaults: Default[A]

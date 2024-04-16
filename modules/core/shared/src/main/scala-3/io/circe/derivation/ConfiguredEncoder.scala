@@ -54,7 +54,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
+  private def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
     conf: Configuration,
     mirror: Mirror.Of[A]
   ): ConfiguredEncoder[A] = mirror match
