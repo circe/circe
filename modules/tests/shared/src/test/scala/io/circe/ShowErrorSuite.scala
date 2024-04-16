@@ -155,7 +155,6 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
         | }
         |}""".stripMargin
 
-
     val jsonStringCase3 =
       """{
         | "foo": "Test data",
