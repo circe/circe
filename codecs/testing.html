@@ -167,18 +167,18 @@
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">testing</span><span>.</span><span class="type-name">CodecTests</span><span>
 
 </span><span class="keyword">val</span><span> </span><span class="identifier">personCodecTests</span><span> = </span><span class="type-name">CodecTests</span><span>[</span><span class="type-name">Person</span><span>]
-</span><span class="comment">// personCodecTests: CodecTests[Person] = io.circe.testing.CodecTests$$anon$2@5e8a94b4</span></code></pre>
+</span><span class="comment">// personCodecTests: CodecTests[Person] = io.circe.testing.CodecTests$$anon$2@31635970</span></code></pre>
         <p><code>CodecTests[T]</code> expose two <a href="https://typelevel.org/blog/2013/11/17/discipline.html#interface">&quot;rule sets&quot;</a>
         that can be used with <a href="https://github.com/typelevel/discipline"><code>Discipline</code></a>. The less restrictive set
         is <code>unserializableCodec</code>.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="type-name">Implicits</span><span>.</span><span class="identifier">_</span><span>
 </span><span class="identifier">personCodecTests</span><span>.</span><span class="identifier">unserializableCodec</span><span>
-</span><span class="comment">// res1: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@46bad80d</span></code></pre>
+</span><span class="comment">// res1: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@59f6c02e</span></code></pre>
         <p>It checks whether the <code>Codec</code> for your type successfully round trips through json serialization and
         deserialization and whether your decoder satisfies consistent error accumulation.</p>
         <p>The more restrictive set is <code>codec</code>:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">personCodecTests</span><span>.</span><span class="identifier">codec</span><span>
-</span><span class="comment">// res2: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@6517441a</span></code></pre>
+</span><span class="comment">// res2: personCodecTests.RuleSet = org.typelevel.discipline.Laws$DefaultRuleSet@1bc86077</span></code></pre>
         <p>It checks the laws from <code>unserializableCodec</code> and ensures that your encoder and decoder can be serialized
         to and from Java byte array streams. It is generally a good idea to use the stronger laws from <code>.codec</code>, and
         you definitely should use them if you&#39;re in a setting where the JVM has to ship a lot of data around, for
