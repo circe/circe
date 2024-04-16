@@ -23,7 +23,9 @@ import io.circe.{ Encoder, Json }
 
 trait ConfiguredEnumEncoder[A] extends Encoder[A]
 object ConfiguredEnumEncoder:
-  def of[A](labels: List[String])(using conf: Configuration, mirror: Mirror.SumOf[A]): ConfiguredEnumEncoder[A] =
+  private def of[A](
+    labels: List[String]
+  )(using conf: Configuration, mirror: Mirror.SumOf[A]): ConfiguredEnumEncoder[A] =
     new ConfiguredEnumEncoder[A]:
       private val labelOf = labels.toArray.map(conf.transformConstructorNames)
       def apply(a: A) = Json.fromString(labelOf(mirror.ordinal(a)))

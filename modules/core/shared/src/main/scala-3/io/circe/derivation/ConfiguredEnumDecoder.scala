@@ -23,7 +23,7 @@ import io.circe.{ Decoder, DecodingFailure, HCursor }
 
 trait ConfiguredEnumDecoder[A] extends Decoder[A]
 object ConfiguredEnumDecoder:
-  def of[A](name: String, cases: List[A], labels: List[String])(using
+  private def of[A](name: String, cases: List[A], labels: List[String])(using
     conf: Configuration
   ): ConfiguredEnumDecoder[A] = new ConfiguredEnumDecoder[A]:
     private val caseOf = cases.toVector
