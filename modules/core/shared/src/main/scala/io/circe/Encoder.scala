@@ -23,6 +23,7 @@ import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
 import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
 import cats.data.NonEmptyVector
 import cats.data.OneAnd
 import cats.data.Validated
@@ -410,6 +411,14 @@ object Encoder
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
     new AsArray[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptySeq[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySeq[A]] =
+    new AsArray[NonEmptySeq[A]] {
+      final def encodeArray(a: NonEmptySeq[A]): Vector[Json] = a.toSeq.toVector.map(encodeA(_))
     }
 
   /**

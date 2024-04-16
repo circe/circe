@@ -21,7 +21,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
 * [Babylon Health](https://www.babylonhealth.com/)
-* [Banno inside of Jack Henry & Associates](https://banno.com/)
+* [Banno inside of Jack Henry](https://banno.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
@@ -181,7 +181,7 @@ circe is a fork of [Argonaut][argonaut], and if you find it at all useful, you s
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently maintained by [Darren Gibson][zarthross] and [Zach McCoy][zmccoy]. 
+circe is currently maintained by [Darren Gibson][zarthross] and [Erlend Hamnaberg][hamnis]. 
 After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
