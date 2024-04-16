@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,9 @@ object Default:
     new Default[T]:
       type Out = Tuple.Map[mirror.MirroredElemTypes, Option]
       lazy val defaults: Out =
-        val size = constValue[Tuple.Size[mirror.MirroredElemTypes]]
+        // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
+        // in some rare edge cases, the latter fails (and both always have the same size)
+        val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
         getDefaults[T](size).asInstanceOf[Out]
 
   inline def getDefaults[T](inline s: Int): Tuple = ${ getDefaultsImpl[T]('s) }

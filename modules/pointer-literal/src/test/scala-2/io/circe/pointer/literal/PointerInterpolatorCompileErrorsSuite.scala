@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 
 package io.circe.pointer.literal
 
-import io.circe.pointer.Pointer
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop
-import io.circe.pointer.ScalaCheckInstances
 
 final class PointerInterpolatorCompileErrorsSuite extends ScalaCheckSuite {
 
