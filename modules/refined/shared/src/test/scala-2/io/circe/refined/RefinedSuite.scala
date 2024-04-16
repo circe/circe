@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package io.circe.refined
 
 import cats.kernel.Eq
-import cats.kernel.instances.all._
-import cats.syntax.eq._
 import eu.timepit.refined.{ refineMV, refineV }
 import eu.timepit.refined.api.{ RefType, Refined }
 import eu.timepit.refined.string.StartsWith

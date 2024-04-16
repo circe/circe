@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package io.circe.benchmark
 
 import io.circe.Json
-import cats.syntax.eq._
 import munit.FunSuite
 class InstantiationBenchmarkSpec extends FunSuite {
   val benchmark: InstantiationBenchmark = new InstantiationBenchmark

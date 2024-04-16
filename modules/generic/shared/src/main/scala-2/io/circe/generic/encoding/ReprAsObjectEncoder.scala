@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package io.circe.generic.encoding
 
 import io.circe.Encoder
 import io.circe.generic.Deriver
-import scala.language.experimental.macros
 
 /**
  * An encoder for a generic representation of a case class or ADT.

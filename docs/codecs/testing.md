@@ -1,9 +1,5 @@
----
-layout: docs
-title:  "Codec testing"
----
-
-### Codec testing
+Codec Testing
+=============
 
 Suppose you have the following `Person` case class and hand-written encoders and decoders. In this
 case, your decoder includes a typo, `"mame"` instead of `"name"`.
