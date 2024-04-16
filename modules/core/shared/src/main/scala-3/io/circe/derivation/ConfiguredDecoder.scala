@@ -190,9 +190,10 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
 
 object ConfiguredDecoder:
   inline final def derived[A](using conf: Configuration)(using
-    inline mirror: Mirror.Of[A]
+    inline mOf: Mirror.Of[A]
   ): ConfiguredDecoder[A] =
     new ConfiguredDecoder[A] with SumOrProduct:
+      inline val mirror = Predef.summon[Mirror.Of[A]]
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]

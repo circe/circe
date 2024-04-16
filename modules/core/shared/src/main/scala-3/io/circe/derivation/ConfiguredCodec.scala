@@ -24,9 +24,10 @@ trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], Config
 object ConfiguredCodec:
 
   inline final def derived[A](using conf: Configuration)(using
-    inline mirror: Mirror.Of[A]
-  ): ConfiguredCodec[A] =
+    inline mOf: Mirror.Of[A]
+  ): ConfiguredCodec[A] = 
     new ConfiguredCodec[A] with SumOrProduct:
+      inline val mirror = summon[Mirror.Of[A]]
       val name = constValue[mirror.MirroredLabel]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]

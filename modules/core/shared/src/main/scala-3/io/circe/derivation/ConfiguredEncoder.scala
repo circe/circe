@@ -54,8 +54,9 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+  inline final def derived[A](using conf: Configuration)(using inline mOf: Mirror.Of[A]): ConfiguredEncoder[A] =
     new ConfiguredEncoder[A] with SumOrProduct:
+      inline val mirror = summon[Mirror.Of[A]]
       lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
       lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
 
