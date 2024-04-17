@@ -26,6 +26,7 @@ import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
 import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
 import cats.data.NonEmptyVector
 import cats.data.StateT
 import cats.data.Validated
@@ -1172,6 +1173,15 @@ object Decoder
     new NonEmptySeqDecoder[A, List, NonEmptyList[A]](decodeA) {
       final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
       final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeNonEmptySeq[A](implicit decodeA: Decoder[A]): Decoder[NonEmptySeq[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptySeq[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+      final protected val create: (A, List[A]) => NonEmptySeq[A] = (h, t) => NonEmptySeq(h, t)
     }
 
   /**

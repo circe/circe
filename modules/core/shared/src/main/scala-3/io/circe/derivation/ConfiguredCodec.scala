@@ -22,35 +22,42 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
+  private def of[A](nme: String, decoders: => List[Decoder[?]], encoders: => List[Encoder[?]], labels: List[String])(
+    using
+    conf: Configuration,
+    mirror: Mirror.Of[A],
+    defaults: Default[A]
+  ): ConfiguredCodec[A] = mirror match
+    case mirror: Mirror.ProductOf[A] =>
+      new ConfiguredCodec[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = false
+        def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
+        def encodeObject(a: A) = encodeProduct(a)
+        override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
+    case mirror: Mirror.SumOf[A] =>
+      new ConfiguredCodec[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = true
+        def apply(c: HCursor) = decodeSum(c)
+        def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
+        override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
-  inline final def derived[A](using conf: Configuration)(using
-    mirror: Mirror.Of[A]
-  ): ConfiguredCodec[A] =
-    new ConfiguredCodec[A] with SumOrProduct:
-      val name = constValue[mirror.MirroredLabel]
-      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
-      lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
-
-      final def encodeObject(a: A): JsonObject =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => encodeProduct(a)
-          case sum: Mirror.SumOf[A]   => encodeSum(sum.ordinal(a), a)
-
-      final def apply(c: HCursor): Decoder.Result[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSum(c)
-
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
+  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredCodec[A] =
+    ConfiguredCodec.of(
+      constValue[mirror.MirroredLabel],
+      summonDecoders[mirror.MirroredElemTypes],
+      summonEncoders[mirror.MirroredElemTypes],
+      summonLabels[mirror.MirroredElemLabels]
+    )
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
