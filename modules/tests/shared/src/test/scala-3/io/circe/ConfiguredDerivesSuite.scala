@@ -32,6 +32,18 @@ import org.scalacheck.Prop.forAll
 
 object ConfiguredDerivesSuite:
   // "derives ConfiguredCodec" is not here so we can change the configuration for the derivation in each test
+  case class ConfigExampleWithOptions(
+    thisIsAField: String,
+    thisIsAnOptionalField: Option[String]
+  )
+  object ConfigExampleWithOptions:
+    given Eq[ConfigExampleWithOptions] = Eq.fromUniversalEquals
+    given genConfigExampleWithOptions: Gen[ConfigExampleWithOptions] = for {
+      thisIsAField <- Arbitrary.arbitrary[String]
+      thisIsAnOptionalField <- Arbitrary.arbitrary[Option[String]]
+    } yield ConfigExampleWithOptions(thisIsAField, thisIsAnOptionalField)
+    given Arbitrary[ConfigExampleWithOptions] = Arbitrary(genConfigExampleWithOptions)
+
   enum ConfigExampleBase:
     case ConfigExampleFoo(thisIsAField: String, a: Int = 0, b: Double)
     case ConfigExampleBar
@@ -441,6 +453,48 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
         failure("unexpected field: anotherField")
       )
     )
+  }
+
+  property("Configuration#dropNoneValues should drop None values from json") {
+    given Configuration = Configuration.default.withDropNoneValues
+    given Codec[ConfigExampleWithOptions] = Codec.AsObject.derivedConfigured
+
+    forAll { (foo: ConfigExampleWithOptions) =>
+
+      val json =
+        foo.thisIsAnOptionalField match {
+          case Some(thisIsAnOptionalField) =>
+            Json.obj(
+              "thisIsAField" -> foo.thisIsAField.asJson,
+              "thisIsAnOptionalField" -> thisIsAnOptionalField.asJson
+            )
+          case None =>
+            Json.obj(
+              "thisIsAField" -> foo.thisIsAField.asJson
+            )
+        }
+
+      assert(summon[Encoder[ConfigExampleWithOptions]].apply(foo) === json)
+      assert(summon[Decoder[ConfigExampleWithOptions]].decodeJson(json) === Right(foo))
+    }
+  }
+
+  test("Configuration#dropNoneValues should parse undefined as None") {
+    given Configuration = Configuration.default.withDropNoneValues
+    given Codec[ConfigExampleWithOptions] = Codec.AsObject.derivedConfigured
+
+    val value = ConfigExampleWithOptions(
+      thisIsAField = "field value",
+      thisIsAnOptionalField = None
+    )
+
+    val json = Json.obj(
+      "thisIsAField" -> value.thisIsAField.asJson
+    )
+
+    println(summon[Decoder[ConfigExampleWithOptions]].decodeJson(json))
+    assert(summon[Encoder[ConfigExampleWithOptions]].apply(value) === json)
+    assert(summon[Decoder[ConfigExampleWithOptions]].decodeJson(json) === Right(value))
   }
 
   {

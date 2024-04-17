@@ -975,9 +975,16 @@ object Decoder
   private[this] final val rightNone: Either[DecodingFailure, None.type] = Right(None)
   private[this] final val validNone: ValidatedNel[DecodingFailure, None.type] = Validated.valid(None)
 
+  private[this] final val rightNull: Either[DecodingFailure, Nullable.Null.type] = Right(Nullable.Null)
+  private[this] final val validNull: ValidatedNel[DecodingFailure, Nullable.Null.type] = Validated.valid(Nullable.Null)
+
   private[circe] final val keyMissingNone: Decoder.Result[None.type] = Right(None)
   private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
     Validated.valid(None)
+
+  private[circe] final val keyMissingUndefined: Decoder.Result[Nullable.Undefined.type] = Right(Nullable.Undefined)
+  private[circe] final val keyMissingUndefinedAccumulating: AccumulatingResult[Nullable.Undefined.type] =
+    Validated.valid(Nullable.Undefined)
 
   /**
    * A decoder for `Option[A]`.
@@ -1020,9 +1027,54 @@ object Decoder
   }
 
   /**
+   * A decoder for `Nullable[A]`.
+   *
+   * This is modeled as a separate, named, subtype because Nullable decoders
+   * have special semantics around the handling of `JNull`.
+   */
+  final class NullableDecoder[A](implicit A: Decoder[A]) extends Decoder[Nullable[A]] {
+    final override def apply(c: HCursor): Result[Nullable[A]] = tryDecode(c)
+
+    final override def tryDecode(c: ACursor): Decoder.Result[Nullable[A]] = {
+      c match {
+        case c: HCursor =>
+          if (c.value.isNull) rightNull
+          else
+            A(c) match {
+              case Right(a) => Right(Nullable.Value(a))
+              case Left(df) => Left(df)
+            }
+        case c: FailedCursor =>
+          if (!c.incorrectFocus) keyMissingUndefined
+          else Left(DecodingFailure(MissingField, c.history))
+      }
+    }
+
+    final override def decodeAccumulating(c: HCursor): AccumulatingResult[Nullable[A]] = tryDecodeAccumulating(c)
+
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[Nullable[A]] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) validNull
+        else
+          A.decodeAccumulating(c) match {
+            case Valid(a)       => Valid(Nullable.Value(a))
+            case i @ Invalid(_) => i
+          }
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingUndefinedAccumulating
+        else Validated.invalidNel(DecodingFailure(MissingField, c.history))
+    }
+  }
+
+  /**
    * @group Decoding
    */
   implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new OptionDecoder[A]
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeNullable[A](implicit d: Decoder[A]): Decoder[Nullable[A]] = new Decoder.NullableDecoder[A]
 
   /**
    * @group Decoding

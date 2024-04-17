@@ -18,34 +18,48 @@ package io.circe.derivation
 
 import scala.compiletime.{ codeOf, constValue, erasedValue, error, summonFrom, summonInline }
 import scala.deriving.Mirror
-import io.circe.{ Codec, Decoder, Encoder }
+import scala.collection.immutable.SortedSet
+import io.circe.{ Codec, Decoder, Encoder, KeyDecoder, KeyEncoder, Nullable }
+import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector }
+import cats.kernel.Order
 
-private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
+private[circe] inline def summonLabels[T <: Tuple]: List[String] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabels[ts]
 
-private[circe] inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
+private[circe] inline def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => summonEncoder[t] :: summonEncoders[ts]
 
-private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A] =
+private[circe] inline def summonEncoder[A](using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
     case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
   }
 
-private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+private[circe] inline def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => summonDecoder[t] :: summonDecoders[ts]
 
-private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A] =
+private[circe] inline def summonDecoder[A](using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
     case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
   }
+
+private[circe] inline def summonOrder[A]: Order[A] = summonFrom { case orderA: Order[A] => orderA }
+
+private[circe] inline def summonOrdering[A]: Ordering[A] = summonFrom { case orderA: Ordering[A] => orderA }
+
+private[circe] inline def summonKeyDecoder[A]: KeyDecoder[A] = summonFrom {
+  case decodeK: KeyDecoder[A] => decodeK
+}
+private[circe] inline def summonKeyEncoder[A]: KeyEncoder[A] = summonFrom {
+  case encodeK: KeyEncoder[A] => encodeK
+}
 
 private[circe] inline def summonSingletonCases[T <: Tuple, A](inline typeName: Any): List[A] =
   inline erasedValue[T] match
