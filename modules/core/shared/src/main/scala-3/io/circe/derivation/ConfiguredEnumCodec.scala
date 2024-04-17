@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,17 @@
 package io.circe.derivation
 
 import scala.deriving.Mirror
-import io.circe.{ Codec, Decoder, HCursor, Json }
+import io.circe.{ Codec, Decoder, Encoder, HCursor, Json }
 
 trait ConfiguredEnumCodec[A] extends Codec[A]
 object ConfiguredEnumCodec:
-  inline final def derived[A](using conf: Configuration)(using Mirror.SumOf[A]): ConfiguredEnumCodec[A] =
-    val decoder = ConfiguredEnumDecoder.derived[A]
-    val encoder = ConfiguredEnumEncoder.derived[A]
+  private def of[A](decoder: Decoder[A], encoder: Encoder[A]): ConfiguredEnumCodec[A] =
     new ConfiguredEnumCodec[A]:
-      override def apply(c: HCursor): Decoder.Result[A] = decoder(c)
-      override def apply(a: A): Json = encoder(a)
+      def apply(c: HCursor) = decoder(c)
+      def apply(a: A) = encoder(a)
+
+  inline final def derived[A: Mirror.SumOf](using conf: Configuration): ConfiguredEnumCodec[A] =
+    ConfiguredEnumCodec.of[A](ConfiguredEnumDecoder.derived[A], ConfiguredEnumEncoder.derived[A])
 
   inline final def derive[R: Mirror.SumOf](
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames

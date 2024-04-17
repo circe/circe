@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package io.circe
 
-import cats.kernel.instances.string._
 import cats.syntax.all._
 import io.circe.CursorOp._
 import munit.ScalaCheckSuite

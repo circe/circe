@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -518,9 +518,21 @@ object Json {
   final def fromString(value: String): Json = JString(value)
 
   /**
+   * Create a `Json` value representing a JSON String or null from an `Option[String]`.
+   *
+   * Note that this does not parse the argument.
+   */
+  final def fromStringOrNull(value: Option[String]): Json = value.fold(Json.Null)(fromString)
+
+  /**
    * Create a `Json` value representing a JSON boolean.
    */
   final def fromBoolean(value: Boolean): Json = if (value) True else False
+
+  /**
+   * Create a `Json` value representing a JSON boolean or null from an `Option[Boolean]`.
+   */
+  final def fromBooleanOrNull(value: Option[Boolean]): Json = value.fold(Json.Null)(fromBoolean)
 
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
@@ -528,9 +540,19 @@ object Json {
   final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
 
   /**
+   * Create a `Json` value representing a JSON number or a null from an `Option[Int]`.
+   */
+  final def fromIntOrNull(value: Option[Int]): Json = value.fold(Json.Null)(fromInt)
+
+  /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
   final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an optional `Long`.
+   */
+  final def fromLongOrNull(value: Option[Long]): Json = value.fold(Json.Null)(fromLong)
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Double`.
@@ -547,6 +569,11 @@ object Json {
   final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
 
   /**
+   * Create a `Json` value representing a JSON number or null from an optional `Double`
+   */
+  final def fromDoubleOrNull(value: Option[Double]): Json = value.fold(Json.Null)(fromDoubleOrNull)
+
+  /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
    *
    * The result is a JSON null if the argument cannot be represented as a JSON
@@ -561,6 +588,11 @@ object Json {
    * number.
    */
   final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(JsonFloat(value)) else Null
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an optional `Float`
+   */
+  final def fromFloatOrNull(value: Option[Float]): Json = value.fold(Json.Null)(fromFloatOrNull)
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -588,9 +620,19 @@ object Json {
   )
 
   /**
+   * Create a `Json` value representing a JSON number or null from an `Option[BigInt]`.
+   */
+  final def fromBigIntOrNull(value: Option[BigInt]): Json = value.fold(Json.Null)(fromBigInt)
+
+  /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an `Option[BigDecimal]`.
+   */
+  final def fromBigDecimalOrNull(value: Option[BigDecimal]): Json = value.fold(Json.Null)(fromBigDecimal)
 
   /**
    * Calling `.isFinite` directly on the value boxes; we explicitly avoid that here.
