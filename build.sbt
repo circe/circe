@@ -1,13 +1,13 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 
 val Scala212V: String = "2.12.18"
-val Scala213V: String = "2.13.11"
-val Scala3V: String = "3.3.1"
+val Scala213V: String = "2.13.12"
+val Scala3V: String = "3.3.3"
 
 ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
 ThisBuild / tlCiReleaseTags := true
-ThisBuild / tlFatalWarningsInCi := false // we currently have a lot of warnings that will need to be fixed
+ThisBuild / tlFatalWarnings := false // we currently have a lot of warnings that will need to be fixed
 
 ThisBuild / organization := "io.circe"
 ThisBuild / crossScalaVersions := List(Scala3V, Scala212V, Scala213V)
@@ -21,16 +21,16 @@ ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
-val catsVersion = "2.9.0"
-val jawnVersion = "1.4.0"
+val catsVersion = "2.10.0"
+val jawnVersion = "1.5.1"
 val shapelessVersion = "2.3.10"
 val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.10.3"
+val refinedNativeVersion = "0.11.1"
 
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.17.0"
-val munitVersion = "1.0.0-M10"
+val munitVersion = "1.0.0-M11"
 val disciplineVersion = "1.5.1"
 val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
@@ -102,17 +102,18 @@ def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
 }
 
 lazy val docs = project
-  .in(file("docs"))
+  .in(file("site"))
   .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-generic-extras" % "0.14.1",
-      "io.circe" %% "circe-optics" % "0.14.1"
-    )
+      "io.circe" %% "circe-generic-extras" % "0.14.3",
+      "io.circe" %% "circe-optics" % "0.15.0"
+    ),
+    tlSitePublishBranch := Some("series/0.14.x")
   )
-  // .enablePlugins(CirceOrgSitePlugin) // TODO: Fixme later.
+  .enablePlugins(CirceOrgSitePlugin)
   .settings(macroSettings)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
