@@ -139,7 +139,8 @@ object Encoder
     with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
-    with MidPriorityEncoders {
+    with MidPriorityEncoders
+    with EncoderDerivationRelaxed {
 
   /**
    * Return an instance for a given type `A`.
