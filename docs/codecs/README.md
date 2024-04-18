@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Encoding and decoding"
-position: 3
----
-
-# Encoding and decoding
+Encoding and Decoding
+==========
 
 circe uses `Encoder` and `Decoder` type classes for encoding and decoding. An `Encoder[A]` instance
 provides a function that will convert any `A` to a `Json`, and a `Decoder[A]` takes a `Json` value
@@ -35,5 +30,3 @@ import io.circe.parser.decode
 
 decode[List[Int]]("[1, 2, 3]")
 ```
-
-{% include references.md %}

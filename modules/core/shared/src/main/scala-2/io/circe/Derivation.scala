@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,4 +18,6 @@ package io.circe
 
 private[circe] trait DecoderDerivation
 private[circe] trait EncoderDerivation
+private[circe] trait EncoderDerivationRelaxed
 private[circe] trait CodecDerivation
+private[circe] trait CodecDerivationRelaxed

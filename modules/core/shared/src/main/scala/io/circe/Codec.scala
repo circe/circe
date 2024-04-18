@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ trait Codec[A] extends Decoder[A] with Encoder[A] {
   final override def at(field: String): Codec[A] = Codec.from(super[Decoder].at(field), super[Encoder].at(field))
 }
 
-object Codec extends ProductCodecs with EnumerationCodecs {
+object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodecs with CodecDerivationRelaxed {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {

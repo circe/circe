@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,15 @@ trait Default[T] extends Serializable:
     case defaults: NonEmptyTuple => defaults(index).asInstanceOf[Option[Any]]
 
 object Default:
+  private def of[T, O <: Tuple](values: => O) = new Default[T]:
+    type Out = O
+    lazy val defaults: Out = values
+
   transparent inline given mkDefault[T](using mirror: Mirror.Of[T]): Default[T] =
-    new Default[T]:
-      type Out = Tuple.Map[mirror.MirroredElemTypes, Option]
-      lazy val defaults: Out =
-        // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
-        // in some rare edge cases, the latter fails (and both always have the same size)
-        val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
-        getDefaults[T](size).asInstanceOf[Out]
+    // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
+    // in some rare edge cases, the latter fails (and both always have the same size)
+    val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
+    Default.of(getDefaults[T](size).asInstanceOf[Tuple.Map[mirror.MirroredElemTypes, Option]])
 
   inline def getDefaults[T](inline s: Int): Tuple = ${ getDefaultsImpl[T]('s) }
 
