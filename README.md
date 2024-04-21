@@ -243,6 +243,7 @@ limitations under the License.
 [github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
+[hamnis]: https://github.com/hamnis
 [http4s]: https://github.com/http4s/http4s
 [iteratee]: https://github.com/travisbrown/iteratee
 [iglu]: https://github.com/snowplow/iglu
