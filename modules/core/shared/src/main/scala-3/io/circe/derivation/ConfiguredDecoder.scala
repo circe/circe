@@ -214,7 +214,7 @@ object ConfiguredDecoder:
         override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
   private[derivation] inline final def decoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Decoder[?]] =
-    summonDecoders[mirror.MirroredElemTypes](inline mirror match {
+    summonDecoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
       case _: Mirror.ProductOf[A] => false
       case _: Mirror.SumOf[A]     => true
     })
