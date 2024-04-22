@@ -1,9 +1,36 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ Contravariant, Foldable }
-import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
+import cats.Contravariant
+import cats.Foldable
+import cats.data.Chain
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
+import cats.data.NonEmptyVector
+import cats.data.OneAnd
+import cats.data.Validated
 import io.circe.`export`.Exported
+
 import java.io.Serializable
+import java.net.URI
 import java.time.{
   Duration,
   Instant,
@@ -20,7 +47,7 @@ import java.time.{
   ZoneOffset,
   ZonedDateTime
 }
-import java.time.format.DateTimeFormatter
+import java.time.format.{ DateTimeFormatter, DateTimeFormatterBuilder, SignStyle }
 import java.time.format.DateTimeFormatter.{
   ISO_LOCAL_DATE_TIME,
   ISO_LOCAL_TIME,
@@ -28,11 +55,13 @@ import java.time.format.DateTimeFormatter.{
   ISO_OFFSET_TIME,
   ISO_ZONED_DATE_TIME
 }
-import java.time.temporal.TemporalAccessor
+import java.time.temporal.{ ChronoField, TemporalAccessor }
+import java.util.Currency
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
-import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.collection.immutable.Set
+import scala.collection.immutable.{ Map => ImmutableMap }
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -107,9 +136,11 @@ trait Encoder[A] extends Serializable { self =>
 object Encoder
     extends TupleEncoders
     with ProductEncoders
+    with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
-    with MidPriorityEncoders {
+    with MidPriorityEncoders
+    with EncoderDerivationRelaxed {
 
   /**
    * Return an instance for a given type `A`.
@@ -308,6 +339,13 @@ object Encoder
   /**
    * @group Encoding
    */
+  implicit final lazy val encodeURI: Encoder[URI] = new Encoder[URI] {
+    final def apply(a: URI): Json = Json.fromString(a.toString)
+  }
+
+  /**
+   * @group Encoding
+   */
   implicit final def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
     final def apply(a: Option[A]): Json = a match {
       case Some(v) => e(v)
@@ -373,6 +411,14 @@ object Encoder
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
     new AsArray[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptySeq[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySeq[A]] =
+    new AsArray[NonEmptySeq[A]] {
+      final def encodeArray(a: NonEmptySeq[A]): Vector[Json] = a.toSeq.toVector.map(encodeA(_))
     }
 
   /**
@@ -666,16 +712,23 @@ object Encoder
   /**
    * @group Time
    */
-  implicit final lazy val encodeYear: Encoder[Year] = new Encoder[Year] {
-    final def apply(a: Year): Json = Json.fromString(a.toString)
-  }
+  implicit final lazy val encodeYear: Encoder[Year] =
+    new JavaTimeEncoder[Year] {
+      def format =
+        new DateTimeFormatterBuilder().appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD).toFormatter()
+    }
 
   /**
    * @group Time
    */
-  implicit final lazy val encodeYearMonth: Encoder[YearMonth] = new Encoder[YearMonth] {
-    final def apply(a: YearMonth): Json = Json.fromString(a.toString)
-  }
+  implicit final lazy val encodeYearMonth: Encoder[YearMonth] =
+    new JavaTimeEncoder[YearMonth] {
+      def format = new DateTimeFormatterBuilder()
+        .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+        .appendLiteral('-')
+        .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+        .toFormatter()
+    }
 
   /**
    * @group Time
@@ -691,6 +744,9 @@ object Encoder
   implicit final lazy val encodeZoneOffset: Encoder[ZoneOffset] = new Encoder[ZoneOffset] {
     final def apply(a: ZoneOffset): Json = Json.fromString(a.toString)
   }
+
+  implicit final lazy val currencyEncoder: Encoder[Currency] =
+    Encoder[String].contramap(_.getCurrencyCode())
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes
@@ -825,7 +881,7 @@ object Encoder
     def encodeObject(a: A): JsonObject
 
     /**
-     * Create a new [[AsObject]] by applying a function to a value of type `B` before encoding as an
+     * Create a new [[Encoder.AsObject]] by applying a function to a value of type `B` before encoding as an
      * `A`.
      */
     final def contramapObject[B](f: B => A): AsObject[B] = new AsObject[B] {
@@ -833,7 +889,7 @@ object Encoder
     }
 
     /**
-     * Create a new [[AsObject]] by applying a function to the output of this
+     * Create a new [[Encoder.AsObject]] by applying a function to the output of this
      * one.
      */
     final def mapJsonObject(f: JsonObject => JsonObject): AsObject[A] = new AsObject[A] {

@@ -1,121 +1,159 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.numbers
 
-import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
-import java.math.{ BigDecimal, BigInteger }
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import io.circe.numbers.testing.IntegralString
+import io.circe.numbers.testing.JsonNumberString
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
+import org.scalacheck._
+
+import java.math.BigDecimal
+import java.math.BigInteger
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
 
-class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
-  implicit override val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
-    minSuccessful = 1000,
-    sizeRange = 10000
-  )
+class BiggerDecimalSuite extends ScalaCheckSuite {
+  override def scalaCheckTestParameters =
+    super.scalaCheckTestParameters.withMinSuccessfulTests(1000)
 
   private[this] def doubleEqv(x: Double, y: Double): Boolean = java.lang.Double.compare(x, y) == 0
   private[this] def trailingZeros(i: BigInt): Int = i.toString.reverse.takeWhile(_ == '0').size
   private[this] def significantDigits(i: BigInt): Int = i.toString.size - trailingZeros(i)
 
-  "fromDoubleUnsafe(0)" should "equal fromBigDecimal(ZERO) (#348)" in {
-    assert(BiggerDecimal.fromDoubleUnsafe(0) === BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
+  private[this] val ZERO: SBigDecimal = SBigDecimal(0)
+
+  private[this] def toStringWithLeadingZeros(leadingZeros: Int, value: SBigDecimal): String =
+    if (value < ZERO) {
+      s"-${List.fill(leadingZeros)('0').mkString}${value.abs}"
+    } else {
+      s"${List.fill(leadingZeros)('0').mkString}${value}"
+    }
+
+  test("fromDoubleUnsafe(0) should equal fromBigDecimal(ZERO) (#348)") {
+    assertEquals(BiggerDecimal.fromDoubleUnsafe(0), BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
   }
 
-  "fromDoubleUnsafe" should "round-trip Double values" in forAll { (value: Double) =>
-    val d = BiggerDecimal.fromDoubleUnsafe(value)
+  property("fromDoubleUnsafe should round-trip Double values") {
+    forAll { (value: Double) =>
+      val d = BiggerDecimal.fromDoubleUnsafe(value)
 
-    assert(
-      doubleEqv(d.toDouble, value) && d.toBigDecimal.exists { roundTripped =>
-        doubleEqv(roundTripped.doubleValue, value)
-      }
-    )
+      assert(doubleEqv(d.toDouble, value))
+      assert(d.toBigDecimal.exists(roundTripped => doubleEqv(roundTripped.doubleValue, value)))
+    }
   }
 
-  it should "round-trip negative zero" in {
+  test("it should round-trip negative zero") {
     val d = BiggerDecimal.fromDoubleUnsafe(-0.0)
-
     assert(doubleEqv(d.toDouble, -0.0))
   }
 
-  "signum" should "agree with BigInteger" in forAll { (value: BigInt) =>
-    val d = BiggerDecimal.fromBigInteger(value.underlying)
+  property("signum should agree with BigInteger") {
+    forAll { (value: BigInt) =>
+      val d = BiggerDecimal.fromBigInteger(value.underlying)
 
-    assert(d.signum == value.signum)
+      d.signum ?= value.signum
+    }
   }
 
-  it should "agree with BigDecimal" in forAll { (value: SBigDecimal) =>
-    val d = BiggerDecimal.fromBigDecimal(value.underlying)
-
-    assert(d.signum == value.signum)
+  property("it should agree with BigDecimal") {
+    forAll { (value: SBigDecimal) =>
+      val d = BiggerDecimal.fromBigDecimal(value.underlying)
+      d.signum ?= value.signum
+    }
   }
 
-  it should "agree with Long" in forAll { (value: Long) =>
-    val d = BiggerDecimal.fromLong(value)
+  property("it should agree with Long") {
+    forAll { (value: Long) =>
+      val d = BiggerDecimal.fromLong(value)
 
-    val expected = value.signum
-    assert(d.signum == expected)
+      val expected = value.signum
+      d.signum ?= expected
+    }
   }
 
-  it should "agree with Double" in forAll { (value: Double) =>
-    val d = BiggerDecimal.fromDoubleUnsafe(value)
+  property("it should agree with Double") {
+    forAll { (value: Double) =>
+      val d = BiggerDecimal.fromDoubleUnsafe(value)
 
-    val expected = value.signum
-    assert(d.signum == expected)
+      val expected = value.signum
+      d.signum ?= expected
+    }
   }
 
-  "fromLong" should "round-trip Long values" in forAll { (value: Long) =>
-    val d = BiggerDecimal.fromLong(value)
+  property("fromLong should round-trip Long values") {
+    forAll { (value: Long) =>
+      val d = BiggerDecimal.fromLong(value)
 
-    assert(d.toBigDecimal.map(_.longValue) === Some(value))
+      d.toBigDecimal.map(_.longValue) ?= Some(value)
+    }
   }
 
-  "toLong" should "round-trip Long values" in forAll { (value: Long) =>
-    val d = BiggerDecimal.fromLong(value)
+  property("toLong should round-trip Long values") {
+    forAll { (value: Long) =>
+      val d = BiggerDecimal.fromLong(value)
 
-    assert(d.toLong === Some(value))
+      d.toLong ?= Some(value)
+    }
   }
 
-  "toBigInteger" should "fail on very large values" in {
+  test("toBigInteger should fail on very large values") {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("1e262144")
 
-    assert(d.toBigInteger === None)
+    assertEquals(d.toBigInteger, None)
   }
 
-  it should "not count the sign against the digit length" in {
+  test("it should not count the sign against the digit length") {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("-1e262143")
 
-    assert(d.toBigInteger === Some(new BigDecimal("-1e262143").toBigInteger))
+    assertEquals(d.toBigInteger, Some(new BigDecimal("-1e262143").toBigInteger))
   }
 
-  "toBigIntegerWithMaxDigits" should "fail on values whose representation is too large" in {
+  test("toBigIntegerWithMaxDigits should fail on values whose representation is too large") {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("123456789")
 
-    assert(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(8L)) === None)
+    assertEquals(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(8L)), None)
   }
 
-  it should "succeed when the representation is exactly the maximum size" in {
+  test("it should succeed when the representation is exactly the maximum size") {
     val Some(d) = BiggerDecimal.parseBiggerDecimal("123456789")
 
-    assert(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(9L)) === d.toBigInteger)
+    assertEquals(d.toBigIntegerWithMaxDigits(BigInteger.valueOf(9L)), d.toBigInteger)
   }
 
-  "fromLong and fromDoubleUnsafe" should "agree on Int-sized integral values" in forAll { (value: Int) =>
-    val dl = BiggerDecimal.fromLong(value.toLong)
-    val dd = BiggerDecimal.fromDoubleUnsafe(value.toDouble)
-
-    assert(dl === dd)
+  property("fromLong and fromDoubleUnsafe should agree on Int-sized integral values") {
+    forAll { (value: Int) =>
+      val dl = BiggerDecimal.fromLong(value.toLong)
+      val dd = BiggerDecimal.fromDoubleUnsafe(value.toDouble)
+      dl ?= dd
+    }
   }
 
-  "fromBigDecimal" should "round-trip BigDecimal values" in forAll { (value: SBigDecimal) =>
-    val result = BiggerDecimal.fromBigDecimal(value.underlying)
-
-    assert(
-      Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
-        result.toBigDecimal.exists { roundTripped =>
-          roundTripped.compareTo(parsedValue) == 0
+  property("fromBigDecimal should round-trip BigDecimal values") {
+    forAll { (value: SBigDecimal) =>
+      val result = BiggerDecimal.fromBigDecimal(value.underlying)
+      assert(
+        Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
+          result.toBigDecimal.exists { roundTripped =>
+            roundTripped.compareTo(parsedValue) == 0
+          }
         }
-      }
-    )
+      )
+    }
   }
 
   /**
@@ -128,58 +166,67 @@ class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks
   private[this] def isBadJsBigDecimal(d: SBigDecimal): Boolean =
     d.abs > 1 && d.toString.contains("E-")
 
-  it should "agree with parseBiggerDecimalUnsafe" in forAll { (value: SBigDecimal) =>
-    whenever(!isBadJsBigDecimal(value)) {
-      val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
-
-      assert(BiggerDecimal.fromBigDecimal(value.underlying) === expected)
+  property("it should agree with parseBiggerDecimalUnsafe") {
+    forAll { (value: SBigDecimal) =>
+      if (!isBadJsBigDecimal(value)) {
+        val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
+        BiggerDecimal.fromBigDecimal(value.underlying) ?= expected
+      } else {
+        Prop.undecided
+      }
     }
   }
 
-  it should "agree with parseBiggerDecimalUnsafe on 0.000" in {
+  test("agree with parseBiggerDecimalUnsafe on 0.000") {
     val value = "0.000"
     val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value)
 
-    assert(BiggerDecimal.fromBigDecimal(new BigDecimal(value)) === expected)
+    assertEquals(BiggerDecimal.fromBigDecimal(new BigDecimal(value)), expected)
   }
 
-  it should "agree with parseBiggerDecimalUnsafe on multiples of ten with trailing zeros" in {
+  test("it should agree with parseBiggerDecimalUnsafe on multiples of ten with trailing zeros") {
     val bigDecimal = new BigDecimal("10.0")
     val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
     val fromString = BiggerDecimal.parseBiggerDecimalUnsafe(bigDecimal.toString)
 
-    assert(fromBigDecimal === fromString)
+    assertEquals(fromBigDecimal, fromString)
   }
 
-  it should "work correctly on values whose string representations have exponents larger than Int.MaxValue" in {
+  test("it should work correctly on values whose string representations have exponents larger than Int.MaxValue") {
     val bigDecimal = new BigDecimal("-17014118346046923173168730371588410572800E+2147483647")
     val fromBigDecimal = BiggerDecimal.fromBigDecimal(bigDecimal)
     val fromString = BiggerDecimal.parseBiggerDecimalUnsafe(bigDecimal.toString)
 
-    assert(fromBigDecimal === fromString)
+    assertEquals(fromBigDecimal, fromString)
   }
 
-  "fromBigInteger" should "round-trip BigInteger values" in forAll { (value: BigInt) =>
-    assert(BiggerDecimal.fromBigInteger(value.underlying).toBigInteger === Some(value.underlying))
+  property("fromBigInteger should round-trip BigInteger values") {
+    forAll { (value: BigInt) =>
+      BiggerDecimal.fromBigInteger(value.underlying).toBigInteger ?= Some(value.underlying)
+    }
   }
 
-  "integralIsValidLong" should "agree with toLong" in forAll { (input: IntegralString) =>
-    assert(BiggerDecimal.integralIsValidLong(input.value) === Try(input.value.toLong).isSuccess)
+  property("integralIsValidLong should agree with toLong") {
+    forAll { (input: IntegralString) =>
+      BiggerDecimal.integralIsValidLong(input.value) ?= Try(input.value.toLong).isSuccess
+    }
   }
 
-  "parseBiggerDecimal" should "parse any BigDecimal string" in forAll { (value: SBigDecimal) =>
-    val d = BiggerDecimal.parseBiggerDecimal(value.toString)
+  property("parseBiggerDecimal should parse any BigDecimal string") {
+    forAll { (value: SBigDecimal) =>
+      val d = BiggerDecimal.parseBiggerDecimal(value.toString)
 
-    assert(
-      d.nonEmpty && Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
-        d.flatMap(_.toBigDecimal).exists { roundTripped =>
-          roundTripped.compareTo(parsedValue) == 0
+      assert(
+        d.nonEmpty && Try(new BigDecimal(value.toString)).toOption.forall { parsedValue =>
+          d.flatMap(_.toBigDecimal).exists { roundTripped =>
+            roundTripped.compareTo(parsedValue) == 0
+          }
         }
-      }
-    )
+      )
+    }
   }
 
-  it should "parse number strings with big exponents" in {
+  property("parse number strings with big exponents") {
     forAll { (integral: BigInt, fractionalDigits: BigInt, exponent: BigInt) =>
       val fractional = fractionalDigits.abs
       val s = s"$integral.${fractional}e$exponent"
@@ -201,19 +248,33 @@ class BiggerDecimalSuite extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks
     }
   }
 
-  it should "parse JSON numbers" in forAll { (jns: JsonNumberString) =>
-    assert(BiggerDecimal.parseBiggerDecimal(jns.value).nonEmpty)
+  property("it should parse JSON numbers") {
+    forAll { (jns: JsonNumberString) =>
+      assert(BiggerDecimal.parseBiggerDecimal(jns.value).nonEmpty)
+    }
   }
 
-  it should "parse integral JSON numbers" in forAll { (is: IntegralString) =>
-    assert(BiggerDecimal.parseBiggerDecimal(is.value) === Some(BiggerDecimal.fromBigInteger(new BigInteger(is.value))))
+  property("it should parse integral JSON numbers") {
+    forAll { (is: IntegralString) =>
+      val bb = BiggerDecimal.fromBigInteger(new BigInteger(is.value))
+      BiggerDecimal.parseBiggerDecimal(is.value) ?= Some(bb)
+    }
   }
 
-  it should "fail on bad input" in {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
+  test("it should fail on bad input") {
+    val badNumbers =
+      List("", "x", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-", "E7", "-E7", "e7", "-e7")
 
     badNumbers.foreach { input =>
-      assert(BiggerDecimal.parseBiggerDecimal(input) === None)
+      assert(BiggerDecimal.parseBiggerDecimal(input).isEmpty)
+    }
+  }
+
+  property("leading zeros should be parseable") {
+    forAll(Gen.choose(1, 100), Arbitrary.arbitrary[SBigDecimal]) { (leadingZeros: Int, bd: SBigDecimal) =>
+      BiggerDecimal.parseBiggerDecimal(toStringWithLeadingZeros(leadingZeros, bd)) ?= Some(
+        BiggerDecimal.fromBigDecimal(bd.bigDecimal)
+      )
     }
   }
 }

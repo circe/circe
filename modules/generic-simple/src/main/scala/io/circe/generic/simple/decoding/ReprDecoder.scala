@@ -13,8 +13,8 @@ import shapeless.labelled.{ FieldType, field }
 abstract class ReprDecoder[A] extends Decoder[A]
 
 object ReprDecoder {
-  private[this] def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(
-    implicit F: Apply[F]
+  private[this] def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(implicit
+    F: Apply[F]
   ): F[FieldType[K, V] :: T] =
     F.map2(hv, tr)((v, t) => field[K].apply[V](v) :: t)
 
@@ -22,8 +22,7 @@ object ReprDecoder {
     def apply(c: HCursor): Decoder.Result[HNil] = Right(HNil)
   }
 
-  implicit def decodeHCons[K <: Symbol, H, T <: HList](
-    implicit
+  implicit def decodeHCons[K <: Symbol, H, T <: HList](implicit
     key: Witness.Aux[K],
     decodeH: Decoder[H],
     decodeT: ReprDecoder[T]
@@ -44,8 +43,7 @@ object ReprDecoder {
     def apply(c: HCursor): Decoder.Result[CNil] = Left(DecodingFailure("CNil", c.history))
   }
 
-  implicit def decodeCoproduct[K <: Symbol, L, R <: Coproduct](
-    implicit
+  implicit def decodeCoproduct[K <: Symbol, L, R <: Coproduct](implicit
     key: Witness.Aux[K],
     decodeL: Decoder[L],
     decodeR: => ReprDecoder[R]

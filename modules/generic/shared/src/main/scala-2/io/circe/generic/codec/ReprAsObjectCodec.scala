@@ -1,8 +1,25 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.generic.codec
 
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Codec, Decoder, DecodingFailure, HCursor, JsonObject }
 import io.circe.generic.Deriver
-import scala.language.experimental.macros
+
 import shapeless.HNil
 
 /**
@@ -17,7 +34,8 @@ object ReprAsObjectCodec {
 
   val hnilReprCodec: ReprAsObjectCodec[HNil] = new ReprAsObjectCodec[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] =
-      if (c.value.isObject) Right(HNil) else Left(DecodingFailure("HNil", c.history))
+      if (c.value.isObject) Right(HNil)
+      else Left(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
     def encodeObject(a: HNil): JsonObject = JsonObject.empty
   }
 }

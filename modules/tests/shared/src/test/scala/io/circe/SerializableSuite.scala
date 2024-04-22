@@ -1,16 +1,37 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.laws.discipline.SerializableTests
 import cats.kernel.laws.SerializableLaws
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
+import org.scalacheck.Prop
 
-class SerializableSuite extends CirceSuite {
-  "Json" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(j); ()
+class SerializableSuite extends CirceMunitSuite {
+  property("Json should be serializable") {
+    Prop.forAll { (j: Json) =>
+      SerializableLaws.serializable(j); ()
+    }
   }
 
-  "HCursor" should "be serializable" in forAll { (j: Json) =>
-    SerializableLaws.serializable(j.hcursor); ()
+  property("HCursor should be serializable") {
+    Prop.forAll { (j: Json) =>
+      SerializableLaws.serializable(j.hcursor); ()
+    }
   }
 
   checkAll("Decoder[Int]", SerializableTests.serializable(Decoder[Int]))

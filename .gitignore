@@ -7,5 +7,9 @@ target/
 .settings
 .project
 .classpath
+.bsp/
 tmp/
-docs/src/main/tut/contributing.md
+.metals/
+.vscode/
+.bloop/
+*metals.sbt

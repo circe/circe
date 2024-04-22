@@ -1,20 +1,43 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.cursor
 
-import io.circe.{ ACursor, CursorOp, HCursor, Json }
+import io.circe._
 
-private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent: HCursor, changed: Boolean)(
+private[circe] final class ArrayCursor(
+  values: Vector[Json],
+  val indexValue: Int,
+  val parent: HCursor,
+  changed: Boolean
+)(
   lastCursor: HCursor,
   lastOp: CursorOp
 ) extends HCursor(lastCursor, lastOp) {
-  def value: Json = values(index)
+  def value: Json = values(indexValue)
+  override def index: Option[Int] = Some(indexValue)
+  override def key: Option[String] = None
 
-  private[this] def valuesExcept: Vector[Json] = values.take(index) ++ values.drop(index + 1)
+  private[this] def valuesExcept: Vector[Json] = values.take(indexValue) ++ values.drop(indexValue + 1)
 
   def replace(newValue: Json, cursor: HCursor, op: CursorOp): HCursor =
-    new ArrayCursor(values.updated(index, newValue), index, parent, true)(cursor, op)
+    new ArrayCursor(values.updated(indexValue, newValue), indexValue, parent, true)(cursor, op)
 
   def addOp(cursor: HCursor, op: CursorOp): HCursor =
-    new ArrayCursor(values, index, parent, changed)(cursor, op)
+    new ArrayCursor(values, indexValue, parent, changed)(cursor, op)
 
   def up: ACursor =
     if (!changed) parent.addOp(this, CursorOp.MoveUp)
@@ -24,16 +47,15 @@ private[circe] final class ArrayCursor(values: Vector[Json], index: Int, parent:
 
   def delete: ACursor = parent.replace(Json.fromValues(valuesExcept), this, CursorOp.DeleteGoParent)
 
-  def left: ACursor = if (index == 0) fail(CursorOp.MoveLeft)
+  def left: ACursor = if (indexValue == 0) fail(CursorOp.MoveLeft)
   else {
-    new ArrayCursor(values, index - 1, parent, changed)(this, CursorOp.MoveLeft)
+    new ArrayCursor(values, indexValue - 1, parent, changed)(this, CursorOp.MoveLeft)
   }
 
-  def right: ACursor = if (index == values.size - 1) fail(CursorOp.MoveRight)
+  def right: ACursor = if (indexValue == values.size - 1) fail(CursorOp.MoveRight)
   else {
-    new ArrayCursor(values, index + 1, parent, changed)(this, CursorOp.MoveRight)
+    new ArrayCursor(values, indexValue + 1, parent, changed)(this, CursorOp.MoveRight)
   }
 
-  def first: ACursor = new ArrayCursor(values, 0, parent, changed)(this, CursorOp.MoveFirst)
   def field(k: String): ACursor = fail(CursorOp.Field(k))
 }

@@ -1,6 +1,6 @@
 # circe
 
-[![Build status](https://img.shields.io/travis/circe/circe/master.svg)](https://travis-ci.org/circe/circe)
+[![Build status](https://img.shields.io/github/actions/workflow/status/circe/circe/ci.yml)](https://github.com/circe/circe/actions)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
 [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/circe/circe)
 [![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.13)
@@ -21,40 +21,50 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
 * [Babylon Health](https://www.babylonhealth.com/)
+* [Banno inside of Jack Henry](https://banno.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
 * [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
 * [ClearScore](https://www.clearscore.com)
 * [Codacy](https://www.codacy.com)
+* [Colisweb](https://www.colisweb.com)
 * [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
 * [Coya](https://www.coya.com/)
 * [Criteo](https://www.criteo.com/) ([collecting 200.000 events per second from our banners](https://medium.com/criteo-labs/migrate-a-service-getting-200kqps-from-jackson-to-circe-a475b2718206))
+* [Dassault Systèmes](https://www.3ds.com/)
 * [Datalogue](https://datalogue.io)
 * [Dreamlines](https://www.dreamlines.com/)
 * [DriveTribe](https://drivetribe.com)
 * [Earnest](https://www.earnest.com)
 * [Elastic](https://www.elastic.co)
+* [Emmy Sharing](https://emmy-sharing.de/en/)
 * [FOLIO](https://folio-sec.com/)
 * [GLNGN Server](https://glngn.com)
 * [Gympass](https://www.gympass.com/)
 * [Gutefrage](https://www.gutefrage.net)
 * [Hello Soda](https://hellosoda.com/)
+* [HERE Technologies](https://www.here.com/)
+* [Hireproof](https://hireproof.io/)
 * [HolidayCheck](https://www.holidaycheck.de)
 * [ImmobilienScout24](https://www.immobilienscout24.de/)
 * [Immozentral](https://www.immozentral.com/)
 * [Indix](https://www.indix.com)
 * [ITV](https://www.itv.com/)
+* [Kinoplan](https://kinoplan.ru/)
 * [Latitude Financial Services](https://www.latitudefinancial.com.au/)
 * [MatchesFashion](https://www.matchesfashion.com)
 * [Merit](https://merits.com)
 * [Metacommerce](https://www.metacommerce.ru)
-* [Miras Technologies](http://miras-tech.com/)
 * [Mobile GmbH](https://www.mobile.de)
+* [MomentFeed](https://momentfeed.com)
+* [New Work](https://www.new-work.se/en/)
+* [Nike](https://www.nike.com)
 * [Ocado Technology](https://ocadotechnology.com)
-* [OVO Energy](https://www.ovoenergy.com)
+* [On Air Entertainment](https://onairentertainment.com/)
 * [Onfocus](https://onfocus.io)
 * [Opt Technologies](https://opt-technologies.jp/)
+* [OVO Energy](https://www.ovoenergy.com)
 * [Panaseer](https://panaseer.com)
 * [Permutive](http://permutive.com)
 * [Prezi](https://prezi.com)
@@ -72,13 +82,16 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Stripe](https://stripe.com)
 * [Stylight](https://stylight.de)
 * [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
+* [Tinkoff](https://tinkoff.ru/)
 * [The Guardian](https://www.theguardian.com)
 * [Threat Stack](https://www.threatstack.com/)
 * [Tranzzo](https://tranzzo.com/)
 * [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [Uberall](https://stackshare.io/uberall/uberall)
 * [VEACT](https://veact.net/)
 * [WeWork](https://www.wework.com)
 * [Whisk](https://whisk.com)
+* [Wide Angle Analytics](https://wideangle.co)
 * [Zalando](https://zalando.de)
 * [Zendesk](https://zendesk.com)
 
@@ -127,6 +140,7 @@ The following open source projects are either built on circe or provide circe su
 * [IdeaLingua][izumi-r2]: Staged Interface Definition and Data Modeling Language & RPC system currently targeting Scala, Go, C# and TypeScript. Scala codegen generates models and JSON codecs using circe.
 * [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
 * [jsactor][jsactor]: An actor library for Scala.js with circe support.
+* [jsoniter-scala-circe][jsoniter-scala-circe]: A booster for faster parsing/printing to/from circe AST and decoding/encoding of `java.time._` and `BigInt` types.
 * [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
@@ -167,8 +181,8 @@ circe is a fork of [Argonaut][argonaut], and if you find it at all useful, you s
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently maintained by [Travis Brown][travisbrown], [Alexandre Archambault][archambault],
-and [Vladimir Kostyukov][vkostyukov]. After the 1.0 release, all pull requests will require two
+circe is currently maintained by [Darren Gibson][zarthross] and [Erlend Hamnaberg][hamnis]. 
+After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
 The circe project supports the [Scala code of conduct][code-of-conduct] and wants
@@ -239,6 +253,7 @@ limitations under the License.
 [jsactor]: https://github.com/codemettle/jsactor
 [json-schema]: http://json-schema.org/
 [json-rpc]: http://www.jsonrpc.org
+[jsoniter-scala-circe]: https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-circe
 [jwt]: https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
 [jwt-circe]: http://pauldijou.fr/jwt-scala/samples/jwt-circe/
 [kadai-log]: https://bitbucket.org/atlassian/kadai-log
@@ -279,3 +294,5 @@ limitations under the License.
 [vkostyukov]: https://twitter.com/vkostyukov
 [xuwei-k]: https://github.com/xuwei-k
 [zenith]: https://github.com/sungiant/zenith
+[zarthross]: https://github.com/zarthross/
+[zmccoy]: https://github.com/zmccoy/

@@ -1,11 +1,28 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.kernel.Eq
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import java.time._
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Prop._
 import scala.collection.JavaConverters._
 
 case class JavaTimeCaseClass(foo: Duration, bar: Option[LocalTime], baz: List[ZoneId])
@@ -20,72 +37,11 @@ object JavaTimeCaseClass {
     }
 }
 
-class JavaTimeCodecSuite extends CirceSuite {
+class JavaTimeCodecSuite extends CirceMunitSuite {
+  private[this] val jdk8 = Option(System.getProperty("java.version")).exists(_.startsWith("1.8."))
+
   private[this] val minInstant: Instant = Instant.EPOCH
   private[this] val maxInstant: Instant = Instant.parse("3000-01-01T00:00:00.00Z")
-
-  implicit val arbitraryZoneId: Arbitrary[ZoneId] = Arbitrary(
-    Gen.oneOf(ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of).toSeq)
-  )
-
-  implicit val arbitraryInstant: Arbitrary[Instant] = Arbitrary(
-    Gen.choose(minInstant.getEpochSecond, maxInstant.getEpochSecond).map(Instant.ofEpochSecond)
-  )
-
-  implicit val arbitraryPeriod: Arbitrary[Period] = Arbitrary(
-    for {
-      years <- arbitrary[Int]
-      months <- arbitrary[Int]
-      days <- arbitrary[Int]
-    } yield Period.of(years, months, days)
-  )
-
-  implicit val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId]
-    } yield LocalDateTime.ofInstant(instant, zoneId)
-  )
-
-  implicit val arbitraryZonedDateTime: Arbitrary[ZonedDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId].suchThat(_ != ZoneId.of("GMT0")) // #280 - avoid JDK-8138664
-    } yield ZonedDateTime.ofInstant(instant, zoneId)
-  )
-
-  implicit val arbitraryOffsetDateTime: Arbitrary[OffsetDateTime] = Arbitrary(
-    for {
-      instant <- arbitrary[Instant]
-      zoneId <- arbitrary[ZoneId]
-    } yield OffsetDateTime.ofInstant(instant, zoneId)
-  )
-
-  implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalDate))
-
-  implicit val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary(arbitrary[LocalDateTime].map(_.toLocalTime))
-
-  implicit val arbitraryMonthDay: Arbitrary[MonthDay] = Arbitrary(
-    arbitrary[LocalDateTime].map(ldt => MonthDay.of(ldt.getMonth, ldt.getDayOfMonth))
-  )
-
-  implicit val arbitraryOffsetTime: Arbitrary[OffsetTime] = Arbitrary(arbitrary[OffsetDateTime].map(_.toOffsetTime))
-
-  implicit val arbitraryYear: Arbitrary[Year] = Arbitrary(arbitrary[LocalDateTime].map(ldt => Year.of(ldt.getYear)))
-
-  implicit val arbitraryYearMonth: Arbitrary[YearMonth] = Arbitrary(
-    arbitrary[LocalDateTime].map(ldt => YearMonth.of(ldt.getYear, ldt.getMonth))
-  )
-
-  implicit val arbitraryZoneOffset: Arbitrary[ZoneOffset] =
-    Arbitrary(Gen.choose(-18 * 60 * 60, 18 * 60 * 60).map(ZoneOffset.ofTotalSeconds))
-
-  implicit val arbitraryDuration: Arbitrary[Duration] = Arbitrary(
-    for {
-      first <- arbitrary[Instant]
-      second <- arbitrary[Instant]
-    } yield Duration.between(first, second)
-  )
 
   implicit val arbitraryJavaTimeCaseClass: Arbitrary[JavaTimeCaseClass] = Arbitrary(
     for {
@@ -122,38 +78,41 @@ class JavaTimeCodecSuite extends CirceSuite {
   checkAll("Codec[Period]", CodecTests[Period].codec)
   checkAll("Codec[Year]", CodecTests[Year].codec)
   checkAll("Codec[YearMonth]", CodecTests[YearMonth].codec)
-  checkAll("Codec[Duration]", CodecTests[Duration].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[Duration]", CodecTests[Duration].codec)
   checkAll("Codec[ZoneId]", CodecTests[ZoneId].codec)
   checkAll("Codec[ZoneOffset]", CodecTests[ZoneOffset].codec)
-  checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
+  if (!jdk8) // JDK 8 is bugged
+    checkAll("Codec[JavaTimeCaseClass]", CodecTests[JavaTimeCaseClass].codec)
 
   val invalidText: String = "abc"
   val invalidJson: Json = Json.fromString(invalidText)
   val parseExceptionMessage = s"Text '$invalidText'"
 
-  "Decoder[ZoneId]" should "fail for invalid ZoneId" in {
+  property("Decoder[ZoneId] should fail for invalid ZoneId") {
     forAll((s: String) =>
-      whenever(!ZoneId.getAvailableZoneIds.contains(s)) {
+      if (!ZoneId.getAvailableZoneIds.contains(s)) {
         val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
 
         assert(decodingResult.isLeft)
-        // The middle part of the message depends on the type of zone.
-        assert(decodingResult.swap.exists(_.message.contains("ZoneId (Invalid")))
-        assert(decodingResult.swap.exists(_.message.contains(s", invalid format: $s)")))
+        assert(decodingResult.swap.right.get.reason match {
+          case DecodingFailure.Reason.CustomReason(_) => true
+          case _                                      => false
+        })
       }
     )
   }
 
-  "Decoder[Instant]" should "fail on invalid values" in {
+  test("Decoder[Instant] should fail on invalid values") {
     val decodingResult = Decoder[Instant].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[Instant]" should "serialize 00 seconds and drop zeroes in nanos to millis or micros" in {
+  test("Encoder[Instant] should serialize 00 seconds and drop zeroes in nanos to millis or micros") {
     def check(s: String): Unit =
-      assert(Encoder[Instant].apply(Instant.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[Instant].apply(Instant.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z")
     check("2018-07-10T00:00:00.100Z")
@@ -166,16 +125,16 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("2018-07-10T00:00:00.000000010Z")
   }
 
-  "Decoder[LocalDateTime]" should "fail on invalid values" in {
+  test("Decoder[LocalDateTime] should fail on invalid values") {
     val decodingResult = Decoder[LocalDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[LocalDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+  test("Encoder[LocalDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[LocalDateTime].apply(LocalDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[LocalDateTime].apply(LocalDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00")
     check("2018-07-10T00:00:00.1")
@@ -188,16 +147,16 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("2018-07-10T00:00:00.00000001")
   }
 
-  "Decoder[ZonedDateTime]" should "fail on invalid values" in {
+  test("Decoder[ZonedDateTime] should fail on invalid values") {
     val decodingResult = Decoder[ZonedDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[ZonedDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+  test("Encoder[ZonedDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z[UTC]")
     check("2018-07-10T00:00:00.1Z[UTC]")
@@ -210,16 +169,16 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("2018-07-10T00:00:00.00000001Z[UTC]")
   }
 
-  "Decoder[OffsetDateTime]" should "fail on invalid values" in {
+  test("Decoder[OffsetDateTime] should fail on invalid values") {
     val decodingResult = Decoder[OffsetDateTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[OffsetDateTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+  test("Encoder[OffsetDateTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[OffsetDateTime].apply(OffsetDateTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[OffsetDateTime].apply(OffsetDateTime.parse(s)), Json.fromString(s))
 
     check("2018-07-10T00:00:00Z")
     check("2018-07-10T00:00:00.1Z")
@@ -232,23 +191,23 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("2018-07-10T00:00:00.00000001Z")
   }
 
-  "Decoder[LocalDate]" should "fail on invalid values" in {
+  test("Decoder[LocalDate] should fail on invalid values") {
     val decodingResult = Decoder[LocalDate].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Decoder[LocalTime]" should "fail on invalid values" in {
+  test("Decoder[LocalTime] should fail on invalid values") {
     val decodingResult = Decoder[LocalTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[LocalTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+  test("Encoder[LocalTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[LocalTime].apply(LocalTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[LocalTime].apply(LocalTime.parse(s)), Json.fromString(s))
 
     check("00:00:00")
     check("00:00:00.1")
@@ -261,23 +220,23 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("00:00:00.00000001")
   }
 
-  "Decoder[MonthDay]" should "fail on invalid values" in {
+  test("Decoder[MonthDay] should fail on invalid values") {
     val decodingResult = Decoder[MonthDay].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Decoder[OffsetTime]" should "fail on invalid values" in {
+  test("Decoder[OffsetTime] should fail on invalid values") {
     val decodingResult = Decoder[OffsetTime].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Encoder[OffsetTime]" should "serialize 00 seconds and drop all remaining zeroes in nanos" in {
+  test("Encoder[OffsetTime] should serialize 00 seconds and drop all remaining zeroes in nanos") {
     def check(s: String): Unit =
-      assert(Encoder[OffsetTime].apply(OffsetTime.parse(s)) == Json.fromString(s))
+      assertEquals(Encoder[OffsetTime].apply(OffsetTime.parse(s)), Json.fromString(s))
 
     check("00:00:00Z")
     check("00:00:00.1Z")
@@ -290,38 +249,42 @@ class JavaTimeCodecSuite extends CirceSuite {
     check("00:00:00.00000001Z")
   }
 
-  "Decoder[Period]" should "fail on invalid values" in {
+  test("Decoder[Period] should fail on invalid values") {
     val decodingResult = Decoder[Period].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(s"Text '$invalidText' cannot be parsed to a Period")))
   }
 
-  "Decoder[Year]" should "fail on invalid values" in {
+  test("Decoder[Year] should fail on invalid values") {
     val decodingResult = Decoder[Year].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Decoder[YearMonth]" should "fail on invalid values" in {
+  test("Decoder[YearMonth] should fail on invalid values") {
     val decodingResult = Decoder[YearMonth].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(parseExceptionMessage)))
   }
 
-  "Decoder[Duration]" should "fail on invalid values" in {
+  test("Decoder[Duration] should fail on invalid values") {
     val decodingResult = Decoder[Duration].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
     assert(decodingResult.swap.exists(_.message.contains(s"Text '$invalidText' cannot be parsed to a Duration")))
   }
 
-  "Decoder[ZoneOffset]" should "fail on invalid values" in {
+  test("Decoder[ZoneOffset] should fail on invalid values") {
     val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.swap.exists(_.message.contains("ZoneOffset (Invalid ID for ZoneOffset, ")))
+    assert(decodingResult.swap.right.get.reason match {
+      case DecodingFailure.Reason.CustomReason(_) => true
+      case _                                      => false
+    })
+    assert(decodingResult.swap.exists(_.message.contains(invalidText)))
   }
 }

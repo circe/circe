@@ -1,7 +1,26 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.Applicative
-import io.circe.cursor.{ ArrayCursor, ObjectCursor, TopCursor }
+import io.circe.cursor.ArrayCursor
+import io.circe.cursor.ObjectCursor
+import io.circe.cursor.TopCursor
+
 import scala.annotation.tailrec
 
 abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(lastCursor, lastOp) {
@@ -39,6 +58,16 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     Some(current.asInstanceOf[TopCursor].value)
   }
 
+  override final def root: HCursor = {
+    var current: HCursor = this
+
+    while (!current.isInstanceOf[TopCursor]) {
+      current = current.up.asInstanceOf[HCursor]
+    }
+
+    current
+  }
+
   final def downArray: ACursor = value match {
     case Json.JArray(values) if !values.isEmpty =>
       new ArrayCursor(values, 0, this, false)(this, CursorOp.DownArray)
@@ -65,25 +94,9 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
   }
 
   final def downN(n: Int): ACursor = value match {
-    case Json.JArray(values) if n >= 0 && values.size > n =>
+    case Json.JArray(values) if n >= 0 && values.lengthCompare(n) > 0 =>
       new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))
     case _ => fail(CursorOp.DownN(n))
-  }
-
-  final def leftN(n: Int): ACursor = if (n < 0) rightN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.left)
-
-    go(n, this)
-  }
-
-  final def rightN(n: Int): ACursor = if (n < 0) leftN(-n)
-  else {
-    @tailrec
-    def go(i: Int, c: ACursor): ACursor = if (i == 0) c else go(i - 1, c.right)
-
-    go(n, this)
   }
 
   /**
