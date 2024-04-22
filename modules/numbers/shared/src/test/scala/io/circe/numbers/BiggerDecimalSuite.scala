@@ -1,11 +1,31 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.numbers
 
-import io.circe.numbers.testing.{ IntegralString, JsonNumberString }
-import java.math.{ BigDecimal, BigInteger }
+import io.circe.numbers.testing.IntegralString
+import io.circe.numbers.testing.JsonNumberString
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
+import org.scalacheck._
+
+import java.math.BigDecimal
+import java.math.BigInteger
 import scala.math.{ BigDecimal => SBigDecimal }
 import scala.util.Try
-import munit.ScalaCheckSuite
-import org.scalacheck.Prop.forAll
 
 class BiggerDecimalSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters =
@@ -14,6 +34,15 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   private[this] def doubleEqv(x: Double, y: Double): Boolean = java.lang.Double.compare(x, y) == 0
   private[this] def trailingZeros(i: BigInt): Int = i.toString.reverse.takeWhile(_ == '0').size
   private[this] def significantDigits(i: BigInt): Int = i.toString.size - trailingZeros(i)
+
+  private[this] val ZERO: SBigDecimal = SBigDecimal(0)
+
+  private[this] def toStringWithLeadingZeros(leadingZeros: Int, value: SBigDecimal): String =
+    if (value < ZERO) {
+      s"-${List.fill(leadingZeros)('0').mkString}${value.abs}"
+    } else {
+      s"${List.fill(leadingZeros)('0').mkString}${value}"
+    }
 
   test("fromDoubleUnsafe(0) should equal fromBigDecimal(ZERO) (#348)") {
     assertEquals(BiggerDecimal.fromDoubleUnsafe(0), BiggerDecimal.fromBigDecimal(BigDecimal.ZERO))
@@ -33,36 +62,36 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     assert(doubleEqv(d.toDouble, -0.0))
   }
 
-  test("signum should agree with BigInteger") {
+  property("signum should agree with BigInteger") {
     forAll { (value: BigInt) =>
       val d = BiggerDecimal.fromBigInteger(value.underlying)
 
-      assert(d.signum == value.signum)
+      d.signum ?= value.signum
     }
   }
 
-  test("it should agree with BigDecimal") {
+  property("it should agree with BigDecimal") {
     forAll { (value: SBigDecimal) =>
       val d = BiggerDecimal.fromBigDecimal(value.underlying)
-      assertEquals(d.signum, value.signum)
+      d.signum ?= value.signum
     }
   }
 
-  test("it should agree with Long") {
+  property("it should agree with Long") {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
       val expected = value.signum
-      assertEquals(d.signum, expected)
+      d.signum ?= expected
     }
   }
 
-  test("it should agree with Double") {
+  property("it should agree with Double") {
     forAll { (value: Double) =>
       val d = BiggerDecimal.fromDoubleUnsafe(value)
 
       val expected = value.signum
-      assert(d.signum == expected)
+      d.signum ?= expected
     }
   }
 
@@ -70,7 +99,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
-      assertEquals(d.toBigDecimal.map(_.longValue), Some(value))
+      d.toBigDecimal.map(_.longValue) ?= Some(value)
     }
   }
 
@@ -78,7 +107,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Long) =>
       val d = BiggerDecimal.fromLong(value)
 
-      assertEquals(d.toLong, Some(value))
+      d.toLong ?= Some(value)
     }
   }
 
@@ -110,7 +139,7 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: Int) =>
       val dl = BiggerDecimal.fromLong(value.toLong)
       val dd = BiggerDecimal.fromDoubleUnsafe(value.toDouble)
-      assertEquals(dl, dd)
+      dl ?= dd
     }
   }
 
@@ -141,7 +170,9 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     forAll { (value: SBigDecimal) =>
       if (!isBadJsBigDecimal(value)) {
         val expected = BiggerDecimal.parseBiggerDecimalUnsafe(value.toString)
-        assertEquals(BiggerDecimal.fromBigDecimal(value.underlying), expected)
+        BiggerDecimal.fromBigDecimal(value.underlying) ?= expected
+      } else {
+        Prop.undecided
       }
     }
   }
@@ -171,13 +202,13 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
 
   property("fromBigInteger should round-trip BigInteger values") {
     forAll { (value: BigInt) =>
-      assertEquals(BiggerDecimal.fromBigInteger(value.underlying).toBigInteger, Some(value.underlying))
+      BiggerDecimal.fromBigInteger(value.underlying).toBigInteger ?= Some(value.underlying)
     }
   }
 
   property("integralIsValidLong should agree with toLong") {
     forAll { (input: IntegralString) =>
-      assertEquals(BiggerDecimal.integralIsValidLong(input.value), Try(input.value.toLong).isSuccess)
+      BiggerDecimal.integralIsValidLong(input.value) ?= Try(input.value.toLong).isSuccess
     }
   }
 
@@ -226,15 +257,24 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
   property("it should parse integral JSON numbers") {
     forAll { (is: IntegralString) =>
       val bb = BiggerDecimal.fromBigInteger(new BigInteger(is.value))
-      assertEquals(BiggerDecimal.parseBiggerDecimal(is.value), Some(bb))
+      BiggerDecimal.parseBiggerDecimal(is.value) ?= Some(bb)
     }
   }
 
   test("it should fail on bad input") {
-    val badNumbers = List("", "x", "01", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-")
+    val badNumbers =
+      List("", "x", "1x", "1ex", "1.0x", "1.x", "1e-x", "1e-0x", "1.", "1e", "1e-", "-", "E7", "-E7", "e7", "-e7")
 
     badNumbers.foreach { input =>
       assert(BiggerDecimal.parseBiggerDecimal(input).isEmpty)
+    }
+  }
+
+  property("leading zeros should be parseable") {
+    forAll(Gen.choose(1, 100), Arbitrary.arbitrary[SBigDecimal]) { (leadingZeros: Int, bd: SBigDecimal) =>
+      BiggerDecimal.parseBiggerDecimal(toStringWithLeadingZeros(leadingZeros, bd)) ?= Some(
+        BiggerDecimal.fromBigDecimal(bd.bigDecimal)
+      )
     }
   }
 }

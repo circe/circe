@@ -23,13 +23,15 @@ import spray.routing.{ HttpService, MalformedRequestContentRejection, RejectionH
 
 case class Todo(id: UUID, title: String, completed: Boolean, order: Int, dueDate: LocalDateTime)
 
-object Boot extends App {
-  implicit val system: ActorSystem = ActorSystem("todo-service")
-  implicit val timeout: Timeout = Timeout(1.second)
-  val service: ActorRef = system.actorOf(Props[TodoService], "todo-service")
+object Boot {
+  def main(args: Array[String]): Unit = {
+    implicit val system: ActorSystem = ActorSystem("todo-service")
+    implicit val timeout: Timeout = Timeout(1.second)
+    val service: ActorRef = system.actorOf(Props[TodoService], "todo-service")
 
-  IO(Http).ask(Http.Bind(service, interface = "localhost", port = 8080)).mapTo[Http.Event].map {
-    case Http.CommandFailed(_) => system.shutdown()
+    IO(Http).ask(Http.Bind(service, interface = "localhost", port = 8080)).mapTo[Http.Event].map {
+      case Http.CommandFailed(_) => system.shutdown()
+    }
   }
 }
 

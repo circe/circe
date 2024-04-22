@@ -1,7 +1,25 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.Invariant
 import cats.data.Validated
+
+import scala.util.Try
 
 /**
  * A type class that provides back and forth conversion between values of type `A`
@@ -15,17 +33,26 @@ import cats.data.Validated
 trait Codec[A] extends Decoder[A] with Encoder[A] {
 
   /**
-   * Variant of `imap` which allows the [[Decoder]] to fail.
-   * @param f decode value
+   * Variant of `imap` which allows the [[Decoder]] to fail with message string.
+   * @param f decode value or fail
    * @param g encode value
    * @tparam B the type of the new [[Codec]]
    * @return a codec for [[B]]
    */
   def iemap[B](f: A => Either[String, B])(g: B => A): Codec[B] = Codec.from(emap(f), contramap(g))
 
+  /**
+   * Variant of `imap` which allows the [[Decoder]] to fail with Throwable.
+   * @param f decode value or fail
+   * @param g encode value
+   * @tparam B the type of the new [[Codec]]
+   * @return a codec for [[B]]
+   */
+  def iemapTry[B](f: A => Try[B])(g: B => A): Codec[B] = Codec.from(emapTry(f), contramap(g))
+
 }
 
-object Codec extends ProductCodecs with EnumerationCodecs {
+object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodecs with CodecDerivationRelaxed {
   def apply[A](implicit instance: Codec[A]): Codec[A] = instance
 
   /**
@@ -65,6 +92,10 @@ object Codec extends ProductCodecs with EnumerationCodecs {
   def from[A](decodeA: Decoder[A], encodeA: Encoder[A]): Codec[A] =
     new Codec[A] {
       def apply(c: HCursor): Decoder.Result[A] = decodeA(c)
+      override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeA.decodeAccumulating(c)
+      override def tryDecode(c: ACursor): Decoder.Result[A] = decodeA.tryDecode(c)
+      override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = decodeA.tryDecodeAccumulating(c)
+
       def apply(a: A): Json = encodeA(a)
     }
 

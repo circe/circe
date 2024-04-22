@@ -12,7 +12,7 @@ import shapeless.ops.record.RemoveAll
 /**
  * Semi-automatic codec derivation.
  *
- * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.ObjectEncoder]]
+ * This object provides helpers for creating [[io.circe.Decoder]] and [[io.circe.Encoder.AsObject]]
  * instances for case classes, "incomplete" case classes, sealed trait hierarchies, etc.
  *
  * Typical usage will look like the following:
@@ -24,7 +24,7 @@ import shapeless.ops.record.RemoveAll
  *
  *   object Foo {
  *     implicit val decodeFoo: Decoder[Foo] = deriveDecoder[Foo]
- *     implicit val encodeFoo: ObjectEncoder[Foo] = deriveEncoder[Foo]
+ *     implicit val encodeFoo: Encoder.AsObject[Foo] = deriveEncoder[Foo]
  *   }
  * }}}
  */

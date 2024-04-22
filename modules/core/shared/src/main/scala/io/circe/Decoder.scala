@@ -1,52 +1,76 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ ApplicativeError, MonadError, SemigroupK }
-import cats.data.{
-  Chain,
-  Kleisli,
-  NonEmptyChain,
-  NonEmptyList,
-  NonEmptyMap,
-  NonEmptySet,
-  NonEmptyVector,
-  StateT,
-  Validated,
-  ValidatedNel
-}
-import cats.syntax.either._
-import cats.data.Validated.{ Invalid, Valid }
-import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
+import cats.ApplicativeError
+import cats.Eval
+import cats.MonadError
+import cats.SemigroupK
+import cats.data.Chain
+import cats.data.Kleisli
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
+import cats.data.NonEmptyVector
+import cats.data.StateT
+import cats.data.Validated
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
+import cats.data.ValidatedNel
+import cats.instances.either.catsStdInstancesForEither
+import cats.instances.either.catsStdSemigroupKForEither
 import cats.kernel.Order
+import cats.syntax.either._
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.`export`.Exported
+
 import java.io.Serializable
-import java.net.{ URI, URISyntaxException }
-import java.time.{
-  DateTimeException,
-  Duration,
-  Instant,
-  LocalDate,
-  LocalDateTime,
-  LocalTime,
-  MonthDay,
-  OffsetDateTime,
-  OffsetTime,
-  Period,
-  Year,
-  YearMonth,
-  ZoneId,
-  ZoneOffset,
-  ZonedDateTime
-}
+import java.net.URI
+import java.net.URISyntaxException
+import java.time.DateTimeException
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.MonthDay
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.Period
+import java.time.Year
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
-
-import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
-
 import scala.annotation.tailrec
-import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
+import scala.collection.immutable.Set
+import scala.collection.immutable.SortedMap
+import scala.collection.immutable.SortedSet
+import scala.collection.immutable.{ Map => ImmutableMap }
 import scala.collection.mutable.Builder
-import scala.util.{ Failure, Success, Try }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 /**
  * A type class that provides a way to produce a value of type `A` from a [[Json]] value.
@@ -63,6 +87,21 @@ trait Decoder[A] extends Serializable { self =>
     case Left(e)  => Validated.invalidNel(e)
   }
 
+  private[this] def cursorToDecodingFailure(cursor: ACursor): DecodingFailure = {
+    val reason: Eval[DecodingFailure.Reason] =
+      Eval.later(
+        cursor match {
+          case cursor: FailedCursor if cursor.missingField =>
+            DecodingFailure.Reason.MissingField
+          case _ =>
+            val field: String = cursor.pathString.replaceFirst("^\\.", "")
+            DecodingFailure.Reason.CustomReason(s"Couldn't decode $field")
+        }
+      )
+
+    DecodingFailure(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
+  }
+
   /**
    * Decode the given [[ACursor]].
    *
@@ -73,9 +112,7 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
-      Left(
-        cursorToDecodingFailure(c)
-      )
+      Left(cursorToDecodingFailure(c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
@@ -84,18 +121,6 @@ trait Decoder[A] extends Serializable { self =>
       Validated.invalidNel(
         cursorToDecodingFailure(c)
       )
-  }
-
-  private[this] def cursorToDecodingFailure(cursor: ACursor) = {
-    val history = cursor.history
-    val historyToFailedCursor = history.takeWhile(_ != CursorOp.DeleteGoParent)
-    val field = CursorOp.opsToPath(historyToFailedCursor).replaceFirst("^\\.", "")
-    val down = cursor.downField(field)
-    if (down.succeeded) {
-      DecodingFailure(s"Couldn't decode $field", history)
-    } else {
-      DecodingFailure(MissingField, history)
-    }
   }
 
   /**
@@ -955,16 +980,21 @@ object Decoder
     Validated.valid(None)
 
   /**
-   * @group Decoding
+   * A decoder for `Option[A]`.
+   *
+   * This is modeled as a separate, named, subtype because Option decoders
+   * often have special semantics around the handling of `JNull`. By having
+   * this as a named subtype, we premit certain optimizations that would
+   * otherwise not be possible. See `circe-generic-extras` for some examples.
    */
-  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
-    final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
+  final class OptionDecoder[A](implicit A: Decoder[A]) extends Decoder[Option[A]] {
+    final override def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 
     final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) rightNone
         else
-          d(c) match {
+          A(c) match {
             case Right(a) => Right(Some(a))
             case Left(df) => Left(df)
           }
@@ -979,7 +1009,7 @@ object Decoder
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
-          d.decodeAccumulating(c) match {
+          A.decodeAccumulating(c) match {
             case Valid(a)       => Valid(Some(a))
             case i @ Invalid(_) => i
           }
@@ -988,6 +1018,11 @@ object Decoder
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new OptionDecoder[A]
 
   /**
    * @group Decoding
@@ -1086,6 +1121,15 @@ object Decoder
     new NonEmptySeqDecoder[A, List, NonEmptyList[A]](decodeA) {
       final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
       final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeNonEmptySeq[A](implicit decodeA: Decoder[A]): Decoder[NonEmptySeq[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptySeq[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+      final protected val create: (A, List[A]) => NonEmptySeq[A] = (h, t) => NonEmptySeq(h, t)
     }
 
   /**
@@ -1442,6 +1486,8 @@ object Decoder
         fa.product(fb).map {
           case (a, b) => f(a, b)
         }
+      override final def map2Eval[A, B, Z](fa: Decoder[A], fb: Eval[Decoder[B]])(f: (A, B) => Z): Eval[Decoder[Z]] =
+        fb.map(fb => map2(fa, fb)(f))
       override final def productR[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[B] = fa.product(fb).map(_._2)
       override final def productL[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[A] = fa.product(fb).map(_._1)
 

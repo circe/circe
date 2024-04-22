@@ -1,80 +1,40 @@
-import ReleaseTransformations._
-import microsites.ExtraMdFileConfig
-import microsites.ConfigYml
 import sbtcrossproject.{ CrossProject, CrossType }
-import scala.xml.{ Elem, Node => XmlNode, NodeSeq => XmlNodeSeq }
-import scala.xml.transform.{ RewriteRule, RuleTransformer }
+
+val Scala212V: String = "2.12.18"
+val Scala213V: String = "2.13.12"
+val Scala3V: String = "3.3.3"
+
+ThisBuild / tlBaseVersion := "0.14"
+ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
+ThisBuild / tlCiReleaseTags := true
+ThisBuild / tlFatalWarnings := false // we currently have a lot of warnings that will need to be fixed
 
 ThisBuild / organization := "io.circe"
-ThisBuild / crossScalaVersions := List("3.1.0", "2.12.15", "2.13.6")
-ThisBuild / scalaVersion := crossScalaVersions.value.last
+ThisBuild / crossScalaVersions := List(Scala3V, Scala212V, Scala213V)
+ThisBuild / scalaVersion := Scala213V
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
-ThisBuild / githubWorkflowScalaVersions := (ThisBuild / crossScalaVersions).value.tail
-ThisBuild / githubWorkflowPublishTargetBranches := Nil
-ThisBuild / githubWorkflowBuild := Seq(
-  WorkflowStep
-    .Use(UseRef.Public("ruby", "setup-ruby", "v1"), params = Map("ruby-version" -> "2.7"), name = Some("Set up Ruby")),
-  WorkflowStep.Run(
-    List("gem install sass", "gem install jekyll -v 4.0.0"),
-    name = Some("Install Jekyll")
-  ),
-  WorkflowStep.Sbt(
-    List(
-      "clean",
-      "coverage",
-      "scalastyle",
-      "scalafmtCheckAll",
-      "scalafmtSbtCheck",
-      "validateJVM",
-      "benchmark/test"
-    ),
-    id = None,
-    name = Some("Test")
-  ),
-  WorkflowStep.Sbt(
-    List("coverageReport"),
-    id = None,
-    name = Some("Coverage")
-  ),
-  WorkflowStep.Use(
-    UseRef.Public(
-      "codecov",
-      "codecov-action",
-      "v1"
-    )
-  )
-)
+ThisBuild / githubWorkflowJavaVersions := Seq("8", "11", "17").map(JavaSpec.temurin)
 
-val compilerOptions = Seq(
-  "-deprecation",
-  "-encoding",
-  "UTF-8",
-  "-feature",
-  "-language:existentials",
-  "-language:higherKinds",
-  "-unchecked",
-  "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Xfuture",
-  "-Yno-predef",
-  "-Ywarn-unused-import"
-)
+ThisBuild / tlCiScalafixCheck := false // TODO: Address these in a follow up PR
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
+ThisBuild / scalafixAll / skip := tlIsScala3.value
+ThisBuild / ScalafixConfig / skip := tlIsScala3.value
+ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
-val catsVersion = "2.6.1"
-val jawnVersion = "1.2.0"
-val shapelessVersion = "2.3.7"
-val refinedVersion = "0.9.27"
+val catsVersion = "2.10.0"
+val jawnVersion = "1.5.1"
+val shapelessVersion = "2.3.10"
+val refinedVersion = "0.9.29"
+val refinedNativeVersion = "0.11.1"
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.2.9"
-val scalaCheckVersion = "1.15.4"
-val munitVersion = "0.7.29"
-val disciplineVersion = "1.3.0"
-val disciplineScalaTestVersion = "2.1.5"
-val disciplineMunitVersion = "1.0.9"
-val scalaJavaTimeVersion = "2.3.0"
+val scalaCheckVersion = "1.17.1"
+val munitVersion = "1.0.0-M11"
+val disciplineVersion = "1.6.0"
+val disciplineScalaTestVersion = "2.2.0"
+val disciplineMunitVersion = "2.0.0-M3"
+val scalaJavaTimeVersion = "2.5.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -86,233 +46,98 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val previousCirceVersion = Some("0.14.0-M3")
 val scalaFiddleCirceVersion = "0.9.1"
 
-lazy val baseSettings = Seq(
-  scalacOptions ++= {
-    if (priorTo2_13(scalaVersion.value)) compilerOptions
-    else
-      compilerOptions.flatMap {
-        case "-Ywarn-unused-import" => Seq("-Ywarn-unused:imports")
-        case "-Xfuture"             => Nil
-        case other                  => Seq(other)
-      }
-  },
-  Compile / console / scalacOptions ~= {
-    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
-  },
-  Test / console / scalacOptions ~= {
-    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports", "-Yno-predef"))
-  },
-  Test / scalacOptions ~= {
-    _.filterNot(Set("-Yno-predef"))
-  },
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots")
-  ),
-  coverageHighlighting := true,
-  Compile / scalastyleSources ++= (Compile / unmanagedSourceDirectories).value,
-  ivyConfigurations += CompileTime.hide,
-  Compile / unmanagedClasspath ++= update.value.select(configurationFilter(CompileTime.name)),
-  Test / unmanagedClasspath ++= update.value.select(configurationFilter(CompileTime.name)),
-  testFrameworks += new TestFramework("munit.Framework")
-)
+lazy val allSettings = Seq()
 
-lazy val allSettings = baseSettings ++ publishSettings
-
-lazy val jsProjectSettings = Seq(
-  Test / scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-)
-
-val isScala3 = Def.setting {
-  CrossVersion.partialVersion(scalaVersion.value).exists(_._1 != 2)
-}
+/**
+ * Replace '/' with '-' in a path which represents a module name.
+ *
+ * The circe module's path is used in most cases to derive the module
+ * name. For some modules, this path includes sub-directories, e.g. scalafix
+ * internal rules. When this is the case, since the path is represented as a
+ * simple String, the '/' character can cause problems as the module name is
+ * used inside SBT and Coursier for Maven style artifact operations and '/'
+ * is not a valid character in a module name.
+ */
+def normalizeModuleNameFromPath(path: String): String =
+  path.replaceAll("/", "-")
 
 def circeProject(path: String)(project: Project) = {
-  val docName = path.split("-").mkString(" ")
+  val docName = path.split("[-/]").mkString(" ")
   project.settings(
     description := s"circe $docName",
-    moduleName := s"circe-$path",
+    moduleName := s"circe-${normalizeModuleNameFromPath(path)}",
     name := s"Circe $docName",
     allSettings
   )
 }
 
-def circeModule(path: String, mima: Option[String]): Project = {
-  val id = path.split("-").reduce(_ + _.capitalize)
-  Project(id, file(s"modules/$path"))
-    .configure(circeProject(path))
-    .settings(mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet)
+/**
+ * This is here so we can use this with our internal Scalafix rules, without
+ * creating a cyclic dependency. So the scalafix modules will use this and
+ * the other modules will use either `circeModule` or `circeCrossModule`.
+ */
+def baseModule(path: String, additionalDeps: List[ClasspathDep[ProjectReference]] = Nil): Project = {
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
+  Project(id, file(s"modules/$path")).configure(circeProject(path)).configure(_.dependsOn(additionalDeps: _*))
 }
 
-def circeCrossModule(path: String, mima: Option[String], crossType: CrossType = CrossType.Full) = {
-  val id = path.split("-").reduce(_ + _.capitalize)
-  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform)
+def circeModule(path: String): Project = baseModule(path, List(scalafixInternalRules % ScalafixConfig))
+
+def circeCrossModule(path: String, crossType: CrossType = CrossType.Full) = {
+  val id = path.split("[-/]").reduce(_ + _.capitalize)
+  CrossProject(id, file(s"modules/$path"))(JVMPlatform, JSPlatform, NativePlatform)
     .crossType(crossType)
     .settings(allSettings)
     .configure(circeProject(path))
-    .jvmSettings(
-      mimaPreviousArtifacts := mima.map("io.circe" %% moduleName.value % _).toSet
-    )
     .jsSettings(
+      coverageEnabled := false
+    )
+    .configure(_.dependsOn(scalafixInternalRules % ScalafixConfig))
+    .nativeSettings(
       coverageEnabled := false,
-      jsProjectSettings,
-      scalacOptions += {
-        val tagOrHash =
-          if (!isSnapshot.value) s"v${version.value}"
-          else git.gitHeadCommit.value.getOrElse("master")
-        val local = (LocalRootProject / baseDirectory).value.toURI.toString
-        val remote = s"https://raw.githubusercontent.com/circe/circe/$tagOrHash/"
-        val opt = if (isScala3.value) "-scalajs-mapSourceURI" else "-P:scalajs:mapSourceURI"
-        s"$opt:$local->$remote"
-      }
+      tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
     )
 }
 
-/**
- * We omit all Scala.js projects from Unidoc generation.
- */
-def noDocProjects(sv: String): Seq[ProjectReference] =
-  (circeCrossModules.map(_._2) :+ tests :+ genericSimple :+ genericSimpleJS :+ benchmarkDotty).map(p =>
-    p: ProjectReference
-  )
-
-lazy val docsMappingsAPIDir =
-  settingKey[String]("Name of subdirectory in site target directory for api docs")
-
-lazy val docSettings = allSettings ++ Seq(
-  micrositeName := "circe",
-  micrositeDescription := "A JSON library for Scala powered by Cats",
-  micrositeAuthor := "Travis Brown",
-  micrositeHighlightTheme := "atom-one-light",
-  micrositeHomepage := "https://circe.github.io/circe/",
-  micrositeBaseUrl := "/circe",
-  micrositeDocumentationUrl := s"${docsMappingsAPIDir.value}/io/circe",
-  micrositeDocumentationLabelDescription := "API Documentation",
-  micrositeGithubOwner := "circe",
-  micrositeGithubRepo := "circe",
-  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> ExtraMdFileConfig("contributing.md", "docs")),
-  micrositeTheme := "pattern",
-  micrositePalette := Map(
-    "brand-primary" -> "#5B5988",
-    "brand-secondary" -> "#292E53",
-    "brand-tertiary" -> "#222749",
-    "gray-dark" -> "#49494B",
-    "gray" -> "#7B7B7E",
-    "gray-light" -> "#E5E5E6",
-    "gray-lighter" -> "#F4F3F4",
-    "white-color" -> "#FFFFFF"
-  ),
-  micrositeConfigYaml := ConfigYml(yamlInline = s"""
-      |scalafiddle:
-      |  dependency: io.circe %%% circe-core % $scalaFiddleCirceVersion,io.circe %%% circe-generic % $scalaFiddleCirceVersion,io.circe %%% circe-parser % $scalaFiddleCirceVersion
-    """.stripMargin),
-  docsMappingsAPIDir := "api",
-  addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, docsMappingsAPIDir),
-  ghpagesNoJekyll := true,
-  ScalaUnidoc / unidoc / scalacOptions ++= Seq(
-    "-groups",
-    "-implicits",
-    "-skip-packages",
-    "scalaz",
-    "-doc-source-url",
-    scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-    "-sourcepath",
-    (LocalRootProject / baseDirectory).value.getAbsolutePath
-  ),
-  /* Publish GitHub Pages { */
-  gitHubPagesOrgName := "circe",
-  gitHubPagesRepoName := "circe",
-  gitHubPagesSiteDir := baseDirectory.value / "target" / "site",
-  /* } Publish GitHub Pages */
-  scalacOptions ~= {
-    _.filterNot(Set("-Yno-predef"))
-  },
-  git.remoteRepo := "git@github.com:circe/circe.git",
-  ScalaUnidoc / unidoc / unidocProjectFilter :=
-    inAnyProject -- inProjects(noDocProjects(scalaVersion.value): _*),
-  makeSite / includeFilter := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
-)
-
 lazy val docs = project
-  .dependsOn(core, parser, shapes, testing)
+  .in(file("site"))
+  .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
   .settings(
     moduleName := "circe-docs",
     name := "Circe docs",
-    mdocIn := file("docs/src/main/tut"),
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-generic-extras" % "0.14.1",
-      "io.circe" %% "circe-optics" % "0.14.1"
-    )
+      "io.circe" %% "circe-generic-extras" % "0.14.3",
+      "io.circe" %% "circe-optics" % "0.15.0"
+    ),
+    tlSitePublishBranch := Some("series/0.14.x")
   )
-  .settings(docSettings)
-  .settings(noPublishSettings)
+  .enablePlugins(CirceOrgSitePlugin)
   .settings(macroSettings)
-  .enablePlugins(GhpagesPlugin)
-  .enablePlugins(MicrositesPlugin)
-  .enablePlugins(ScalaUnidocPlugin)
-  .enablePlugins(GitHubPagesPlugin)
-
-lazy val circeCrossModules = Seq[(Project, Project)](
-  (numbersTesting, numbersTestingJS),
-  (numbers, numbersJS),
-  (core, coreJS),
-  (pointer, pointerJS),
-  (pointerLiteral, pointerLiteralJS),
-  (extras, extrasJS),
-  (generic, genericJS),
-  (shapes, shapesJS),
-  (literal, literalJS),
-  (refined, refinedJS),
-  (parser, parserJS),
-  (scodec, scodecJS),
-  (testing, testingJS),
-  (tests, testsJS),
-  (hygiene, hygieneJS),
-  (jawn, jawnJS)
-)
-
-lazy val circeJsModules = Seq[Project](scalajs, scalajsJavaTimeTest)
-lazy val circeJvmModules = Seq[Project](benchmark, jawn)
-lazy val circeDocsModules = Seq[Project](docs)
-
-lazy val jvmProjects: Seq[Project] =
-  circeCrossModules.map(_._1) ++ circeJvmModules
-
-lazy val jsProjects: Seq[Project] =
-  circeCrossModules.map(_._2) ++ circeJsModules
-
-lazy val aggregatedProjects: Seq[ProjectReference] = (
-  circeCrossModules.flatMap(cp => Seq(cp._1, cp._2)) ++
-    circeJsModules ++ circeJvmModules
-).map(p => p: ProjectReference)
 
 lazy val macroSettings: Seq[Setting[_]] = Seq(
-  libraryDependencies ++= (if (isScala3.value) Nil
+  libraryDependencies ++= (if (tlIsScala3.value) Nil
                            else
-                             (Seq(
+                             Seq(
                                scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
                                scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
                              ) ++ (
-                               if (priorTo2_13(scalaVersion.value)) {
+                               if (scalaBinaryVersion.value == "2.12") {
                                  Seq(
                                    compilerPlugin(
                                      ("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch)
                                    )
                                  )
                                } else Nil
-                             ))),
+                             )),
   scalacOptions ++= (
-    if (priorTo2_13(scalaVersion.value) || isScala3.value) Nil else Seq("-Ymacro-annotations")
-  )
+    if (Set("2.12", "3").contains(scalaBinaryVersion.value)) Nil else Seq("-Ymacro-annotations")
+  ),
+  scalacOptions -= "-source:3.0-migration"
 )
 
-lazy val circe = project
-  .in(file("."))
-  .settings(allSettings)
-  .settings(noPublishSettings)
+lazy val root = tlCrossRootProject
   .settings(
     console / initialCommands :=
       """
@@ -323,76 +148,125 @@ lazy val circe = project
         |import io.circe.syntax._
       """.stripMargin
   )
-  .aggregate(aggregatedProjects: _*)
-  .dependsOn(core, generic, literal, parser)
-
-lazy val numbersTestingBase = circeCrossModule("numbers-testing", mima = previousCirceVersion, CrossType.Pure).settings(
-  scalacOptions ~= {
-    _.filterNot(Set("-Yno-predef"))
-  },
-  libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
-  coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
-)
-
-lazy val numbersTesting = numbersTestingBase.jvm
-lazy val numbersTestingJS = numbersTestingBase.js
-
-lazy val numbersBase = circeCrossModule("numbers", mima = previousCirceVersion)
-  .settings(
-    Test / scalacOptions += "-language:implicitConversions",
-    libraryDependencies +=
-      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
+  .aggregate(
+    benchmark,
+    core,
+    extras,
+    generic,
+    hygiene,
+    jawn,
+    literal,
+    numbers,
+    numbersTesting,
+    parser,
+    pointer,
+    pointerLiteral,
+    refined,
+    scalafixInternalInput,
+    scalafixInternalOutput,
+    scalafixInternalRules,
+    scalafixInternalTests,
+    scalajs,
+    scalajsJavaTimeTest,
+    scodec,
+    shapes,
+    testing,
+    tests
   )
-  .dependsOn(numbersTestingBase % Test)
+  .disablePlugins(ScalafixPlugin)
 
-lazy val numbers = numbersBase.jvm
-lazy val numbersJS = numbersBase.js
+lazy val scalafixInternalRules =
+  baseModule("scalafix/internal/rules")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false,
+      libraryDependencies ++= List(
+        "ch.epfl.scala" %% "scalafix-core" % _root_.scalafix.sbt.BuildInfo.scalafixVersion
+      ).filterNot(_ => tlIsScala3.value)
+    )
+    .enablePlugins(NoPublishPlugin)
+    .disablePlugins(ScalafixPlugin)
 
-lazy val coreBase = circeCrossModule("core", mima = previousCirceVersion)
+lazy val scalafixInternalInput =
+  baseModule("scalafix/internal/input")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalOutput =
+  baseModule("scalafix/internal/output")
+    .settings(
+      skip := tlIsScala3.value,
+      update / skip := false
+    )
+    .disablePlugins(ScalafixPlugin)
+    .enablePlugins(NoPublishPlugin)
+
+lazy val scalafixInternalTests =
+  baseModule("scalafix/internal/tests")
+    .enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin)
+    .settings(
+      libraryDependencies := {
+        if (tlIsScala3.value)
+          libraryDependencies.value.filterNot(_.name == "scalafix-testkit")
+        else
+          libraryDependencies.value
+      },
+      scalafixTestkitOutputSourceDirectories :=
+        (scalafixInternalOutput / Compile / sourceDirectories).value,
+      scalafixTestkitInputSourceDirectories :=
+        (scalafixInternalInput / Compile / sourceDirectories).value,
+      scalafixTestkitInputClasspath :=
+        (scalafixInternalInput / Compile / fullClasspath).value,
+      scalafixTestkitInputScalacOptions :=
+        (scalafixInternalInput / Compile / scalacOptions).value,
+      scalafixTestkitInputScalaVersion :=
+        (scalafixInternalInput / Compile / scalaVersion).value,
+      libraryDependencies ++= Seq(
+        ("ch.epfl.scala" %% "scalafix-testkit" % _root_.scalafix.sbt.BuildInfo.scalafixVersion % Test)
+          .cross(CrossVersion.full)
+      ).filter(_ => !tlIsScala3.value),
+      Compile / compile :=
+        (Compile / compile).dependsOn(scalafixInternalInput / Compile / compile).value
+    )
+    .disablePlugins(ScalafixPlugin)
+    .dependsOn(scalafixInternalInput, scalafixInternalOutput, scalafixInternalRules)
+
+lazy val numbersTesting =
+  circeCrossModule("numbers-testing", CrossType.Pure).settings(
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+    coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
+  )
+
+lazy val numbers = circeCrossModule("numbers")
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
+    )
+  )
+  .dependsOn(numbersTesting % Test)
+
+lazy val core = circeCrossModule("core")
   .settings(
     libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
-    Compile / sourceGenerators += (Compile / sourceManaged).map(Boilerplate.gen).taskValue,
-    Compile / unmanagedSourceDirectories ++= {
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
-      }
-    }
+    Compile / sourceGenerators += Def.task {
+      val managedSource = (Compile / sourceManaged).value
+      val currentScalaVersion = (Compile / scalaBinaryVersion).value
+      Boilerplate.gen(managedSource, currentScalaVersion)
+    },
+    scalacOptions ~= (_.filterNot(Set("-source:3.0-migration")))
   )
-  .dependsOn(numbersBase)
+  .dependsOn(numbers)
 
-lazy val core = coreBase.jvm
-lazy val coreJS = coreBase.js
-
-lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
+lazy val generic = circeCrossModule("generic")
   .settings(macroSettings)
   .settings(
-    libraryDependencies ++= (if (isScala3.value) Nil else Seq("com.chuusai" %%% "shapeless" % shapelessVersion)),
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars,
-    Compile / unmanagedSourceDirectories ++= {
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + suffix))
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
-      }
-    },
-    Test / unmanagedSourceDirectories ++= {
-      def extraDirs(suffix: String) =
-        CrossType.Full.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + suffix))
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
-      }
-    }
+    libraryDependencies ++= (if (tlIsScala3.value) Nil
+                             else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
   .jsSettings(
     libraryDependencies ++= Seq(
@@ -400,118 +274,111 @@ lazy val genericBase = circeCrossModule("generic", mima = previousCirceVersion)
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
-  .dependsOn(coreBase, testsBase % Test)
+  .dependsOn(core, tests % Test)
 
-lazy val generic = genericBase.jvm
-lazy val genericJS = genericBase.js
-
-lazy val genericSimpleBase = circeCrossModule("generic-simple", mima = previousCirceVersion, CrossType.Pure)
+lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    crossScalaVersions := Seq("2.13.6"),
+    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filter(_.startsWith("2.13")),
     libraryDependencies += "com.chuusai" %%% "shapeless" % shapelessVersion,
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
-  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
+  .dependsOn(core, tests % Test, literal % Test)
 
-lazy val genericSimple = genericSimpleBase.jvm
-lazy val genericSimpleJS = genericSimpleBase.js
-
-lazy val shapesBase = circeCrossModule("shapes", mima = previousCirceVersion, CrossType.Pure)
+lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
   .settings(macroSettings)
   .settings(
-    libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
+    publish / skip := tlIsScala3.value,
+    publishArtifact := !tlIsScala3.value,
+    libraryDependencies += ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13)
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
       "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
       "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
     )
   )
-  .dependsOn(coreBase, testsBase % Test, literalBase % Test)
+  .dependsOn(core, tests % Test, literal % Test)
 
-lazy val shapes = shapesBase.jvm
-lazy val shapesJS = shapesBase.js
-
-lazy val literalBase = circeCrossModule("literal", mima = previousCirceVersion, CrossType.Pure)
+lazy val literal = circeCrossModule("literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
-      ("com.chuusai" %%% "shapeless" % shapelessVersion % Test).cross(CrossVersion.for3Use2_13),
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
-    )
+    ) ++ (if (tlIsScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
+          else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "jawn-parser" % jawnVersion % Test,
-      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test,
+      "org.typelevel" %%% "jawn-parser" % jawnVersion % Provided
     )
   )
-  .dependsOn(coreBase, parserBase % Test, testingBase % Test)
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+  )
+  .dependsOn(core, parser % Test, testing % Test)
 
-lazy val literal = literalBase.jvm
-lazy val literalJS = literalBase.js
-
-lazy val refinedBase = circeCrossModule("refined", mima = previousCirceVersion)
+lazy val refined = circeCrossModule("refined")
   .settings(
-    libraryDependencies ++= Seq(
-      "eu.timepit" %%% "refined" % refinedVersion,
-      "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
+    tlVersionIntroduced += "3" -> "0.14.3",
+    libraryDependencies ++= {
+      val refinedV =
+        if (crossProjectPlatform.value == NativePlatform) refinedNativeVersion
+        else refinedVersion
+      Seq(
+        "eu.timepit" %%% "refined" % refinedV,
+        "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
+      )
+    },
+    dependencyOverrides ++= Seq(
+      "org.scala-lang.modules" %% "scala-xml" % "2.1.0"
     ),
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
-  .dependsOn(coreBase, testsBase % Test)
+  .dependsOn(core, tests % Test)
 
-lazy val refined = refinedBase.jvm
-lazy val refinedJS = refinedBase.js
-
-lazy val parserBase = circeCrossModule("parser", mima = previousCirceVersion)
-  .jvmConfigure(_.dependsOn(jawn))
-  .jsConfigure(_.dependsOn(scalajs))
-  .dependsOn(coreBase)
-
-lazy val parser = parserBase.jvm
-lazy val parserJS = parserBase.js
+lazy val parser =
+  circeCrossModule("parser")
+    .jvmConfigure(_.dependsOn(jawn.jvm))
+    .jsConfigure(_.dependsOn(scalajs))
+    .nativeConfigure(_.dependsOn(jawn.native))
+    .dependsOn(core)
 
 lazy val scalajs =
-  circeModule("scalajs", mima = None).enablePlugins(ScalaJSPlugin).settings(jsProjectSettings).dependsOn(coreJS)
-lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test", mima = None)
+  circeModule("scalajs").enablePlugins(ScalaJSPlugin).dependsOn(core.js)
+lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
   .enablePlugins(ScalaJSPlugin)
-  .settings(noPublishSettings: _*)
+  .enablePlugins(NoPublishPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test
-    ),
-    jsProjectSettings
+    )
   )
-  .dependsOn(coreJS)
+  .dependsOn(core.js)
 
-lazy val scodecBase = circeCrossModule("scodec", mima = previousCirceVersion)
+lazy val scodec = circeCrossModule("scodec")
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.29",
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.38"
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
-  .dependsOn(coreBase, testsBase % Test)
+  .dependsOn(core, tests % Test)
 
-lazy val scodec = scodecBase.jvm
-lazy val scodecJS = scodecBase.js
-
-lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
+lazy val testing = circeCrossModule("testing")
   .settings(
     scalacOptions ~= {
       _.filterNot(Set("-Yno-predef"))
@@ -525,46 +392,22 @@ lazy val testingBase = circeCrossModule("testing", mima = previousCirceVersion)
   .settings(
     coverageExcludedPackages := "io\\.circe\\.testing\\..*"
   )
-  .dependsOn(coreBase, numbersTestingBase)
+  .dependsOn(core, numbersTesting)
 
-lazy val testing = testingBase.jvm
-lazy val testingJS = testingBase.js
-
-lazy val testsBase = circeCrossModule("tests", mima = None)
-  .settings(noPublishSettings: _*)
+lazy val tests = circeCrossModule("tests")
+  .enablePlugins(NoPublishPlugin)
   .settings(
     scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
+      _.filterNot(Set("-Yno-predef", "-source:3.0-migration"))
     },
     Test / scalacOptions += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       ("com.chuusai" %%% "shapeless" % shapelessVersion).cross(CrossVersion.for3Use2_13),
+      "org.scalameta" %%% "munit" % munitVersion,
       "org.typelevel" %%% "discipline-scalatest" % disciplineScalaTestVersion,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion
     ),
-    Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue,
-    Compile / unmanagedResourceDirectories +=
-      file("modules/tests") / "shared" / "src" / "main" / "resources",
-    Compile / unmanagedSourceDirectories ++= {
-      def extraDirs(suffix: String) =
-        List("main").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
-      }
-    },
-    Test / unmanagedSourceDirectories ++= {
-      def extraDirs(suffix: String) =
-        List("test").flatMap(CrossType.Full.sharedSrcDir(baseDirectory.value, _)).map(f => file(f.getPath + suffix))
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, y)) => extraDirs("-2") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-        case Some((3, _)) => extraDirs("-3") ++ extraDirs("-2.13+")
-        case _            => Nil
-      }
-    }
+    Test / sourceGenerators += (Test / sourceManaged).map(Boilerplate.genTests).taskValue
   )
   .settings(
     coverageExcludedPackages := "io\\.circe\\.tests\\..*"
@@ -572,169 +415,73 @@ lazy val testsBase = circeCrossModule("tests", mima = None)
   .jvmSettings(
     fork := true
   )
-  .jsSettings(
+  .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
-  .dependsOn(coreBase, parserBase, testingBase)
+  .nativeSettings(
+    nativeConfig ~= { _.withEmbedResources(true) }
+  )
+  .dependsOn(core, parser, testing, jawn)
 
-lazy val tests = testsBase.jvm
-lazy val testsJS = testsBase.js
-
-lazy val hygieneBase = circeCrossModule("hygiene", mima = None)
-  .settings(noPublishSettings)
+lazy val hygiene = circeCrossModule("hygiene")
+  .enablePlugins(NoPublishPlugin)
   .settings(
     scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
   )
-  .dependsOn(coreBase, genericBase, literalBase)
+  .dependsOn(core, generic, literal, jawn)
 
-lazy val hygiene = hygieneBase.jvm.dependsOn(jawn)
-lazy val hygieneJS = hygieneBase.js
-
-lazy val jawnBase = circeCrossModule("jawn", mima = previousCirceVersion, CrossType.Full)
+lazy val jawn = circeCrossModule("jawn", CrossType.Full)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "jawn-parser" % jawnVersion,
+      "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
     )
   )
-  .dependsOn(coreBase)
+  .jsSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.2").toMap
+  )
+  .dependsOn(core)
 
-lazy val jawn = jawnBase.jvm
-lazy val jawnJS = jawnBase.js
-
-lazy val pointerBase =
-  circeCrossModule("pointer", mima = previousCirceVersion, CrossType.Pure)
+lazy val pointer =
+  circeCrossModule("pointer", CrossType.Pure)
     .settings(
       libraryDependencies ++= Seq(
+        "org.scalameta" %%% "munit" % munitVersion % Test,
         "org.typelevel" %%% "discipline-munit" % disciplineMunitVersion % Test
       )
     )
-    .dependsOn(coreBase, parserBase % Test)
+    .dependsOn(core, parser % Test)
 
-lazy val pointer = pointerBase.jvm
-lazy val pointerJS = pointerBase.js
-
-lazy val pointerLiteralBase = circeCrossModule("pointer-literal", mima = previousCirceVersion, CrossType.Pure)
+lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
   .settings(macroSettings)
   .settings(
+    tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
     )
   )
-  .dependsOn(coreBase, pointerBase)
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+  )
+  .dependsOn(core, pointer % "compile;test->test")
 
-lazy val pointerLiteral = pointerLiteralBase.jvm
-lazy val pointerLiteralJS = pointerLiteralBase.js
+lazy val extras = circeCrossModule("extras").enablePlugins(NoPublishPlugin).dependsOn(core, tests % Test)
 
-lazy val extrasBase = circeCrossModule("extras", mima = previousCirceVersion).dependsOn(coreBase, testsBase % Test)
-
-lazy val extras = extrasBase.jvm
-lazy val extrasJS = extrasBase.js
-
-lazy val benchmark = circeModule("benchmark", mima = None)
-  .settings(noPublishSettings)
+lazy val benchmark = circeModule("benchmark")
   .settings(
-    scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
-    },
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-optics" % "0.13.0",
       "org.scalameta" %% "munit" % munitVersion % Test
-    )
+    ) ++ { if (tlIsScala3.value) Nil else List("io.circe" %% "circe-optics" % "0.14.1") }
   )
-  .enablePlugins(JmhPlugin)
-  .dependsOn(core, generic, jawn, pointer)
+  .enablePlugins(JmhPlugin, NoPublishPlugin)
+  .dependsOn(core.jvm, generic.jvm, jawn.jvm, pointer.jvm)
 
-lazy val benchmarkDotty = circeModule("benchmark-dotty", mima = None)
-  .settings(noPublishSettings)
-  .settings(
-    scalacOptions ~= {
-      _.filterNot(Set("-Yno-predef"))
-    }
-  )
-  .enablePlugins(JmhPlugin)
-  .dependsOn(core, jawn)
-
-lazy val publishSettings = Seq(
-  releaseCrossBuild := true,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  releaseVcsSign := true,
-  homepage := Some(url("https://github.com/circe/circe")),
-  licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  publishMavenStyle := true,
-  Test / publishArtifact := false,
-  pomIncludeRepository := { _ =>
-    false
-  },
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else
-      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
-  autoAPIMappings := true,
-  apiURL := Some(url("https://circe.github.io/circe/api/")),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/circe/circe"),
-      "scm:git:git@github.com:circe/circe.git"
-    )
-  ),
-  developers := List(
-    Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
-  ),
-  pomPostProcess := { (node: XmlNode) =>
-    new RuleTransformer(
-      new RewriteRule {
-        private def isTestScope(elem: Elem): Boolean =
-          elem.label == "dependency" && elem.child.exists(child => child.label == "scope" && child.text == "test")
-
-        override def transform(node: XmlNode): XmlNodeSeq = node match {
-          case elem: Elem if isTestScope(elem) => Nil
-          case _                               => node
-        }
-      }
-    ).transform(node).head
-  },
-  Compile / doc / sources := {
-    val src = (Compile / doc / sources).value
-
-    if (isScala3.value) Nil else src
-  }
+ThisBuild / homepage := Some(url("https://github.com/circe/circe"))
+ThisBuild / licenses := Seq(License.Apache2)
+ThisBuild / developers := List(
+  Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
+  Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
+  Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
 )
-
-lazy val noPublishSettings = Seq(
-  publish := {},
-  publishLocal := {},
-  publishArtifact := false
-)
-
-credentials ++= (
-  for {
-    username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-    password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-  } yield Credentials(
-    "Sonatype Nexus Repository Manager",
-    "oss.sonatype.org",
-    username,
-    password
-  )
-).toSeq
-
-lazy val CompileTime = config("compile-time")
-
-val formatCommands = ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalastyle"
-
-addCommandAlias("buildJVM", jvmProjects.map(";" + _.id + "/compile").mkString)
-addCommandAlias(
-  "validateJVM",
-  ";buildJVM" + jvmProjects.map(";" + _.id + "/test").mkString + formatCommands
-)
-addCommandAlias("buildJS", jsProjects.map(";" + _.id + "/compile").mkString)
-addCommandAlias(
-  "validateJS",
-  ";buildJS" + jsProjects.map(";" + _.id + "/test").mkString + formatCommands
-)
-addCommandAlias("validate", ";validateJVM;validateJS")

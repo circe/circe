@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.data.Validated.Invalid
@@ -12,7 +28,8 @@ import io.circe.syntax._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.WrappedOptionalField
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
+import org.scalacheck.Prop._
 
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
@@ -36,27 +53,27 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   )
 
   property("transformations should do nothing when used with identity") {
-    transformations[Int].foreach { transformation =>
+    transformations[Int].map { transformation =>
       val decoder = transformation(Decoder[Int])
       forAll { (i: Int) =>
         assertEquals(decoder.decodeJson(i.asJson), Right(i))
         assertEquals(decoder.decodeAccumulating(i.asJson.hcursor), Validated.valid(i))
       }
-    }
+    }.reduce(_ && _)
   }
 
   property("transformations should fail when called on failed decoder") {
-    transformations[Int].foreach { transformation =>
+    transformations[Int].map { transformation =>
       val decoder = transformation(Decoder.failedWithMessage("Some message"))
       val failure = DecodingFailure("Some message", Nil)
       forAll { (i: Int) =>
         assertEquals(decoder.decodeJson(i.asJson), Left(failure))
         assertEquals(decoder.decodeAccumulating(i.asJson.hcursor), Validated.invalidNel(failure))
       }
-    }
+    }.reduce(_ && _)
   }
 
-  property("transformations should not break derived decoders when called on Decoder[Option[T]]") {
+  test("transformations should not break derived decoders when called on Decoder[Option[T]]") {
     transformations[Option[String]].foreach { transformation =>
       implicit val decodeOptionString: Decoder[Option[String]] =
         transformation(Decoder.decodeOption(Decoder.decodeString))
@@ -75,13 +92,13 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
   property("prepare should move appropriately with downField") {
     forAll { (i: Int, k: String, m: Map[String, Int]) =>
-      assertEquals(Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson), Right(i))
+      Decoder[Int].prepare(_.downField(k)).decodeJson(m.updated(k, i).asJson) ?= Right(i)
     }
   }
 
   property("at should move appropriately") {
     forAll { (i: Int, k: String, m: Map[String, Int]) =>
-      assertEquals(Decoder[Int].at(k).decodeJson(m.updated(k, i).asJson), Right(i))
+      Decoder[Int].at(k).decodeJson(m.updated(k, i).asJson) ?= Right(i)
     }
   }
 
@@ -89,13 +106,13 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     forAll { (k: String, x: Boolean, xs: List[Boolean], m: Map[String, Int]) =>
       val json = m.mapValues(_.asJson).toMap.updated(k, (x :: xs).asJson).asJson
       val actual = Decoder[List[Int]].at(k).decodeAccumulating(json.hcursor).leftMap(_.size)
-      assertEquals(actual, Validated.invalid(xs.size + 1))
+      actual ?= Validated.invalid(xs.size + 1)
     }
   }
 
   property("emap should appropriately transform the result with an operation that can't fail") {
     forAll { (i: Int) =>
-      assertEquals(Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson), Right(i + 1))
+      Decoder[Int].emap(v => Right(v + 1)).decodeJson(i.asJson) ?= Right(i + 1)
     }
   }
 
@@ -104,22 +121,22 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       val decoder = Decoder[Int].emap(v => if (v % 2 == 0) Right(v) else Left("Odd"))
       val expected = if (i % 2 == 0) Right(i) else Left(DecodingFailure("Odd", Nil))
 
-      assertEquals(decoder.decodeJson(i.asJson), expected)
+      decoder.decodeJson(i.asJson) ?= expected
     }
   }
 
   property("emapTry should appropriately transform the result with an operation that can't fail") {
     forAll { (i: Int) =>
-      assertEquals(Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson), Right(i + 1))
+      Decoder[Int].emapTry(v => Success(v + 1)).decodeJson(i.asJson) ?= Right(i + 1)
     }
   }
 
   property("emapTry should appropriately transform the result with an operation that may fail") {
     forAll { (i: Int) =>
-      val exception = new Exception("Odd") with NoStackTrace
+      val exception = new RuntimeException("Odd") with NoStackTrace
       val decoder = Decoder[Int].emapTry(v => if (v % 2 == 0) Success(v) else Failure(exception))
 
-      assertEquals(decoder.decodeJson(i.asJson).isRight, i % 2 == 0)
+      decoder.decodeJson(i.asJson).isRight ?= i % 2 == 0
     }
   }
 
@@ -140,7 +157,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
   property("failedWithMessage should replace the message") {
     forAll { (json: Json) =>
-      assertEquals(Decoder.failedWithMessage[Int]("Bad").decodeJson(json), Left(DecodingFailure("Bad", Nil)))
+      Decoder.failedWithMessage[Int]("Bad").decodeJson(json) ?= Left(DecodingFailure("Bad", Nil))
     }
   }
 
@@ -252,11 +269,11 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
   property("instanceTry should provide instances that succeed or fail appropriately") {
     forAll { (json: Json) =>
-      val exception = new Exception("Not an Int")
+      val exception = new RuntimeException("Not an Int")
       val expected = json.hcursor.as[Int].leftMap(_ => DecodingFailure.fromThrowable(exception, Nil))
       val instance = Decoder.instanceTry(c => Try(c.as[Int].getOrElse(throw exception)))
 
-      assertEquals(instance.decodeJson(json), expected)
+      instance.decodeJson(json) ?= expected
     }
   }
 
@@ -284,7 +301,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         val zeros = "0" * (math.abs(n.toInt) + 1)
         val Right(json) = parse(s"$v.$zeros")
 
-        assertEquals(Decoder[Byte].apply(json.hcursor), Right(v))
+        Decoder[Byte].apply(json.hcursor) ?= Right(v)
       }
     }
   }
@@ -313,7 +330,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         val zeros = "0" * (math.abs(n.toInt) + 1)
         val Right(json) = parse(s"$v.$zeros")
 
-        assertEquals(Decoder[Short].apply(json.hcursor), Right(v))
+        Decoder[Short].apply(json.hcursor) ?= Right(v)
       }
     }
   }
@@ -342,7 +359,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         val zeros = "0" * (math.abs(n.toInt) + 1)
         val Right(json) = parse(s"$v.$zeros")
 
-        assertEquals(Decoder[Int].apply(json.hcursor), Right(v))
+        Decoder[Int].apply(json.hcursor) ?= Right(v)
       }
     }
 
@@ -353,7 +370,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       val json = Json.fromBigDecimal(BigDecimal(i))
       val result = Decoder[Long].apply(json.hcursor)
 
-      if (BigInt(i.toLong) == i) assertEquals(result, Right(i.toLong)) else assert(result.isLeft)
+      if (BigInt(i.toLong) == i) result ?= Right(i.toLong) else Prop(result.isLeft)
     }
   }
 
@@ -371,7 +388,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       forAll { (d: Float) =>
         val Right(json) = parse("\"" + d.toString + "\"")
 
-        assertEquals(Decoder[Float].apply(json.hcursor), Right(d))
+        Decoder[Float].apply(json.hcursor) ?= Right(d)
       }
     }
 
@@ -379,11 +396,14 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       forAll { (d: Double) =>
         val Right(json) = parse(d.toString)
 
-        assertEquals(Decoder[Float].apply(json.hcursor), Right(java.lang.Float.parseFloat(d.toString)))
+        Decoder[Float].apply(json.hcursor) ?= Right(java.lang.Float.parseFloat(d.toString))
       }
     }
 
     test(" should match the rounding of Float.parseFloat for known problematic inputs (#1063)") {
+      assume(
+        !scala.sys.props.get("java.vm.name").contains("Scala.js")
+      ) // Disabling on JS because it behaves very differently from JVM
       val bad1 = "1.199999988079071"
       val bad2 = "7.038531E-26"
 
@@ -399,7 +419,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     forAll { (d: Double) =>
       val Right(json) = parse("\"" + d.toString + "\"")
 
-      assertEquals(Decoder[Double].apply(json.hcursor), Right(d))
+      Decoder[Double].apply(json.hcursor) ?= Right(d)
     }
   }
 
@@ -421,7 +441,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         val decodePositiveInt: Decoder[Int] = Decoder[Int].ensure(_ > 0, message)
         val expected = if (i > 0) Right(i) else Left(DecodingFailure(message, Nil))
 
-        assertEquals(decodePositiveInt.decodeJson(Json.fromInt(i)), expected)
+        decodePositiveInt.decodeJson(Json.fromInt(i)) ?= expected
       }
     }
 
@@ -443,7 +463,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
           Validated.invalidNel(DecodingFailure(positiveMessage, Nil))
         }
 
-        assertEquals(badDecodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor), expected)
+        badDecodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) ?= expected
       }
     }
 
@@ -480,7 +500,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
           }
         }
 
-        assertEquals(decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor), expected)
+        decodePositiveOddInt.decodeAccumulating(Json.fromInt(i).hcursor) ?= expected
       }
     }
   }
@@ -492,7 +512,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         val decodePositiveInt: Decoder[Int] = Decoder[Int].validate(_.as[Int].exists(_ > 0), message)
         val expected = if (i > 0) Right(i) else Left(DecodingFailure(message, Nil))
 
-        assertEquals(decodePositiveInt.decodeJson(Json.fromInt(i)), expected)
+        decodePositiveInt.decodeJson(Json.fromInt(i)) ?= expected
       }
     }
 
@@ -504,13 +524,13 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
         val expected = if (i > 0) Validated.valid(i) else Validated.invalidNel(DecodingFailure(message, Nil))
 
-        assertEquals(decodePositiveInt.decodeAccumulating(Json.fromInt(i).hcursor), expected)
+        decodePositiveInt.decodeAccumulating(Json.fromInt(i).hcursor) ?= expected
       }
     }
 
     property("not infinitely recurse (#396)") {
       forAll { (i: Int) =>
-        assertEquals(Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor), Right(i))
+        Decoder[Int].validate(_ => true, "whatever").apply(Json.fromInt(i).hcursor) ?= Right(i)
       }
     }
 
@@ -566,7 +586,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
         case Right(b) => Json.fromBoolean(b)
       }
 
-      assertEquals(Decoder[String].either(Decoder[Boolean]).decodeJson(json), Right(value))
+      Decoder[String].either(Decoder[Boolean]).decodeJson(json) ?= Right(value)
     }
   }
 
@@ -700,21 +720,21 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   property("decodeSet should match sequence decoders") {
     forAll { (xs: List[Int]) =>
       val sequence = Decoder[Seq[Int]].map(_.toSet).decodeJson(xs.asJson)
-      assertEquals(Decoder.decodeSet[Int].decodeJson(xs.asJson), sequence)
+      Decoder.decodeSet[Int].decodeJson(xs.asJson) ?= sequence
     }
   }
 
   property("decodeList should match sequence decoders") {
     forAll { (xs: List[Int]) =>
       val sequence = Decoder[Seq[Int]].map(_.toList).decodeJson(xs.asJson)
-      assertEquals(Decoder.decodeList[Int].decodeJson(xs.asJson), sequence)
+      Decoder.decodeList[Int].decodeJson(xs.asJson) ?= sequence
     }
   }
 
   property("decodeVector should match sequence decoders") {
     forAll { (xs: List[Int]) =>
       val sequence = Decoder[Seq[Int]].map(_.toVector).decodeJson(xs.asJson)
-      assertEquals(Decoder.decodeVector[Int].decodeJson(xs.asJson), sequence)
+      Decoder.decodeVector[Int].decodeJson(xs.asJson) ?= sequence
     }
   }
 
@@ -722,7 +742,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     forAll { (xs: List[Int]) =>
       val sequence = Decoder[Seq[Int]].map(Chain.fromSeq(_)).decodeJson(xs.asJson)
       val chainDec = Decoder.decodeChain[Int].decodeJson(xs.asJson)
-      assertEquals(sequence, chainDec)
+      sequence ?= chainDec
     }
   }
 
@@ -737,7 +757,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   case class NotDecodable(a: Int)
   implicit val decodeNotDecodable: Decoder[NotDecodable] = Decoder.failedWithMessage("Some message")
 
-  property("container decoder should pass through error message from item") {
+  test("container decoder should pass through error message from item") {
     containerDecoders[NotDecodable].foreach { decoder =>
       val json = Json.arr(Json.obj("a" -> 1.asJson))
       val failure = DecodingFailure("Some message", List(DownArray))

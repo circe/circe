@@ -1,8 +1,25 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.numbers
 
 import java.io.Serializable
 import java.lang.StringBuilder
-import java.math.{ BigDecimal, BigInteger }
+import java.math.BigDecimal
+import java.math.BigInteger
 import scala.annotation.switch
 
 /**
@@ -237,14 +254,12 @@ object BiggerDecimal {
   }
 
   private[this] final val FAILED = 0
-  private[this] final val START = 1
-  private[this] final val AFTER_ZERO = 2
-  private[this] final val AFTER_DOT = 3
-  private[this] final val FRACTIONAL = 4
-  private[this] final val AFTER_E = 5
-  private[this] final val AFTER_EXP_SIGN = 6
-  private[this] final val EXPONENT = 7
-  private[this] final val INTEGRAL = 8
+  private[this] final val AFTER_DOT = 1
+  private[this] final val FRACTIONAL = 2
+  private[this] final val AFTER_E = 3
+  private[this] final val AFTER_EXP_SIGN = 4
+  private[this] final val EXPONENT = 5
+  private[this] final val INTEGRAL = 6
 
   /**
    * Parse string into [[BiggerDecimal]].
@@ -263,132 +278,116 @@ object BiggerDecimal {
       var decIndex = -1
       var expIndex = -1
       var i = if (input.charAt(0) == '-') 1 else 0
+      val startIndex = i
+      var parsedNonZeroIntegralDigit: Boolean = false
 
-      var state =
-        if (i >= len) FAILED
+      if (i >= len) {
+        null // state = FAILED
+      } else {
+        var state = INTEGRAL
+
+        while (i < len && state != FAILED) {
+          val c = input.charAt(i)
+          (state: @switch) match {
+            case INTEGRAL =>
+              if (c == '0') {
+                if (parsedNonZeroIntegralDigit) {
+                  zeros = zeros + 1
+                }
+              } else if (c >= '1' && c <= '9') {
+                parsedNonZeroIntegralDigit = true
+                zeros = 0
+              } else if (c == '.') {
+                state = AFTER_DOT
+              } else if ((c == 'e' || c == 'E') && (i != startIndex)) {
+                state = AFTER_E
+              } else {
+                state = FAILED
+              }
+            case AFTER_DOT =>
+              decIndex = i - 1
+              if (c == '0') {
+                zeros = zeros + 1
+                state = FRACTIONAL
+              } else if (c >= '1' && c <= '9') {
+                zeros = 0
+                state = FRACTIONAL
+              } else {
+                state = FAILED
+              }
+            case AFTER_E =>
+              expIndex = i - 1
+              if (c >= '0' && c <= '9') {
+                state = EXPONENT
+              } else if (c == '+' || c == '-') {
+                state = AFTER_EXP_SIGN
+              } else {
+                state = FAILED
+              }
+            case FRACTIONAL =>
+              if (c == '0') {
+                zeros = zeros + 1
+                state = FRACTIONAL
+              } else if (c >= '1' && c <= '9') {
+                zeros = 0
+                state = FRACTIONAL
+              } else if (c == 'e' || c == 'E') {
+                state = AFTER_E
+              } else {
+                state = FAILED
+              }
+            case AFTER_EXP_SIGN =>
+              if (c >= '0' && c <= '9') {
+                state = EXPONENT
+              } else {
+                state = FAILED
+              }
+            case EXPONENT =>
+              if (c >= '0' && c <= '9') {
+                state = EXPONENT
+              } else {
+                state = FAILED
+              }
+          }
+
+          i += 1
+        }
+
+        if (state == FAILED || state == AFTER_DOT || state == AFTER_E || state == AFTER_EXP_SIGN) null
         else {
-          if (input.charAt(i) != '0') START
-          else {
-            i = i + 1
-            AFTER_ZERO
-          }
-        }
-
-      while (i < len && state != FAILED) {
-        val c = input.charAt(i)
-
-        (state: @switch) match {
-          case START =>
-            if (c >= '1' && c <= '9') {
-              state = INTEGRAL
-            } else {
-              state = FAILED
-            }
-          case AFTER_ZERO =>
-            if (c == '.') {
-              state = AFTER_DOT
-            } else if (c == 'e' || c == 'E') {
-              state = AFTER_E
-            } else {
-              state = FAILED
-            }
-          case INTEGRAL =>
-            if (c == '0') {
-              zeros = zeros + 1
-              state = INTEGRAL
-            } else if (c >= '1' && c <= '9') {
-              zeros = 0
-              state = INTEGRAL
-            } else if (c == '.') {
-              state = AFTER_DOT
-            } else if (c == 'e' || c == 'E') {
-              state = AFTER_E
-            } else {
-              state = FAILED
-            }
-          case AFTER_DOT =>
-            decIndex = i - 1
-            if (c == '0') {
-              zeros = zeros + 1
-              state = FRACTIONAL
-            } else if (c >= '1' && c <= '9') {
-              zeros = 0
-              state = FRACTIONAL
-            } else {
-              state = FAILED
-            }
-          case AFTER_E =>
-            expIndex = i - 1
-            if (c >= '0' && c <= '9') {
-              state = EXPONENT
-            } else if (c == '+' || c == '-') {
-              state = AFTER_EXP_SIGN
-            } else {
-              state = FAILED
-            }
-          case FRACTIONAL =>
-            if (c == '0') {
-              zeros = zeros + 1
-              state = FRACTIONAL
-            } else if (c >= '1' && c <= '9') {
-              zeros = 0
-              state = FRACTIONAL
-            } else if (c == 'e' || c == 'E') {
-              state = AFTER_E
-            } else {
-              state = FAILED
-            }
-          case AFTER_EXP_SIGN =>
-            if (c >= '0' && c <= '9') {
-              state = EXPONENT
-            } else {
-              state = FAILED
-            }
-          case EXPONENT =>
-            if (c >= '0' && c <= '9') {
-              state = EXPONENT
-            } else {
-              state = FAILED
-            }
-        }
-
-        i += 1
-      }
-
-      if (state == FAILED || state == AFTER_DOT || state == AFTER_E || state == AFTER_EXP_SIGN) null
-      else {
-        val integral =
-          if (decIndex >= 0) input.substring(0, decIndex)
-          else {
-            if (expIndex == -1) input
+          val integral =
+            if (decIndex >= 0) input.substring(0, decIndex)
             else {
-              input.substring(0, expIndex)
+              if (expIndex == -1) input
+              else {
+                input.substring(0, expIndex)
+              }
             }
-          }
 
-        val fractional =
-          if (decIndex == -1) ""
-          else {
-            if (expIndex == -1) input.substring(decIndex + 1)
+          val fractional =
+            if (decIndex == -1) ""
             else {
-              input.substring(decIndex + 1, expIndex)
+              if (expIndex == -1) input.substring(decIndex + 1)
+              else {
+                input.substring(decIndex + 1, expIndex)
+              }
             }
+
+          val unscaledString = integral + fractional
+          val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
+
+          if (unscaled == BigInteger.ZERO) {
+            if (input.charAt(0) == '-') NegativeZero else UnsignedZero
+          } else {
+            val rescale = BigInteger.valueOf((fractional.length - zeros).toLong)
+            val scale =
+              if (expIndex == -1) rescale
+              else {
+                rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
+              }
+
+            new SigAndExp(unscaled, scale)
           }
-
-        val unscaledString = integral + fractional
-        val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
-
-        if (unscaled == BigInteger.ZERO) {
-          if (input.charAt(0) == '-') NegativeZero else UnsignedZero
-        } else {
-          val rescale = BigInteger.valueOf((fractional.length - zeros).toLong)
-          val scale =
-            if (expIndex == -1) rescale
-            else {
-              rescale.subtract(new BigInteger(input.substring(expIndex + 1)))
-            }
-
-          new SigAndExp(unscaled, scale)
         }
       }
     }

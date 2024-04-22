@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.Applicative
@@ -10,6 +26,15 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
    */
   def incorrectFocus: Boolean =
     (lastOp.requiresObject && !lastCursor.value.isObject) || (lastOp.requiresArray && !lastCursor.value.isArray)
+
+  /**
+   * Indicates whether the last operation failed because of a missing field.
+   */
+  def missingField: Boolean =
+    lastOp match {
+      case _: CursorOp.Field | _: CursorOp.DownField => true
+      case _                                         => false
+    }
 
   def succeeded: Boolean = false
   def success: Option[HCursor] = None

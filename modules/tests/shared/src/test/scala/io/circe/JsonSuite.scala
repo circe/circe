@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.instances.all._
@@ -5,7 +21,7 @@ import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 
 class JsonSuite extends CirceMunitSuite with FloatJsonTests {
 
@@ -41,67 +57,67 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
 
   property("asBoolean should give the same result as fold") {
     forAll { (json: Json) =>
-      assert(json.asBoolean === json.fold(None, Some(_), _ => None, _ => None, _ => None, _ => None))
+      json.asBoolean ?= json.fold(None, Some(_), _ => None, _ => None, _ => None, _ => None)
     }
   }
 
   property("asNumber should give the same result as fold") {
     forAll { (json: Json) =>
-      assert(json.asNumber === json.fold(None, _ => None, Some(_), _ => None, _ => None, _ => None))
+      json.asNumber ?= json.fold(None, _ => None, Some(_), _ => None, _ => None, _ => None)
     }
   }
 
   property("asString should give the same result as fold") {
     forAll { (json: Json) =>
-      assert(json.asString === json.fold(None, _ => None, _ => None, Some(_), _ => None, _ => None))
+      json.asString ?= json.fold(None, _ => None, _ => None, Some(_), _ => None, _ => None)
     }
   }
 
   property("asArray should give the same result as fold") {
     forAll { (json: Json) =>
-      assert(json.asArray === json.fold(None, _ => None, _ => None, _ => None, Some(_), _ => None))
+      json.asArray ?= json.fold(None, _ => None, _ => None, _ => None, Some(_), _ => None)
     }
   }
 
   property("asObject should give the same result as fold") {
     forAll { (json: Json) =>
-      assert(json.asObject === json.fold(None, _ => None, _ => None, _ => None, _ => None, Some(_)))
+      json.asObject ?= json.fold(None, _ => None, _ => None, _ => None, _ => None, Some(_))
     }
   }
 
   property("withNull should be identity with Json.Null") {
     forAll { (json: Json) =>
-      assert(json.withNull(Json.Null) === json)
+      json.withNull(Json.Null) ?= json
     }
   }
 
   property("withBoolean should be identity with Json.fromBoolean") {
     forAll { (json: Json) =>
-      assert(json.withBoolean(Json.fromBoolean) === json)
+      json.withBoolean(Json.fromBoolean) ?= json
     }
   }
 
   property("withNumber should be identity with Json.fromJsonNumber") {
     forAll { (json: Json) =>
-      assert(json.withNumber(Json.fromJsonNumber) === json)
+      json.withNumber(Json.fromJsonNumber) ?= json
     }
   }
 
   property("withString should be identity with Json.fromString") {
     forAll { (json: Json) =>
-      assert(json.withString(Json.fromString) === json)
+      json.withString(Json.fromString) ?= json
     }
   }
 
   property("withArray should be identity with Json.fromValues") {
     forAll { (json: Json) =>
-      assert(json.withArray(Json.fromValues) === json)
+      json.withArray(Json.fromValues) ?= json
     }
   }
 
   property("withObject should be identity with Json.fromJsonObject") {
     forAll { (json: Json) =>
-      assert(json.withObject(Json.fromJsonObject) === json)
+      json.withObject(Json.fromJsonObject) ?= json
     }
   }
 
@@ -114,7 +130,7 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
     val reversed = Json.fromFields(fields.reverse)
     val merged = Json.fromFields(fields).deepMerge(reversed)
 
-    assert(merged.asObject.map(_.toList) === Some(fields.reverse))
+    merged.asObject.map(_.toList) ?= Some(fields.reverse)
   }
 
   test("dropEmptyValues should remove empty values for JsonObject") {
@@ -130,8 +146,9 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
       )
       .dropEmptyValues
 
-    assert(
-      actual == Json.fromFields(
+    assertEquals(
+      actual,
+      Json.fromFields(
         List(
           "c" -> Json.fromValues(List(Json.fromInt(1))),
           "d" -> Json.fromFields(List("a" -> Json.fromInt(1))),
@@ -153,8 +170,9 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
       )
       .deepDropNullValues
 
-    assert(
-      actual == Json.fromFields(
+    assertEquals(
+      actual,
+      Json.fromFields(
         List(
           "b" -> Json.fromString("c"),
           "d" -> Json.fromInt(1),
@@ -167,7 +185,7 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
   test("deepDropNullValues should remove null value for JsonArray") {
     val actual = Json.fromValues(List(Json.Null, Json.fromString("a"))).deepDropNullValues
 
-    assert(actual == Json.fromValues(List(Json.fromString("a"))))
+    assertEquals(actual, Json.fromValues(List(Json.fromString("a"))))
   }
 
   test("deepDropNullValues should remove null value for nested object") {
@@ -180,8 +198,9 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
       )
       .deepDropNullValues
 
-    assert(
-      actual == Json.fromFields(
+    assertEquals(
+      actual,
+      Json.fromFields(
         List(
           "child1" -> Json.fromFields(List("b" -> Json.fromString("c"))),
           "child2" -> Json.fromValues(List(Json.fromString("a")))
@@ -250,81 +269,177 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
     assert(result === expected && resultAlias === expected)
   }
 
+  test("fromStringOrNull return Null on None") {
+    assertEquals(Json.fromStringOrNull(None), Json.Null)
+  }
+
+  test("fromStringOrNull return value on Some") {
+    val s = "egg"
+    assertEquals(Json.fromStringOrNull(Some(s)), Json.fromString(s))
+  }
+
+  test("fromBooleanOrNull return Null on None") {
+    assertEquals(Json.fromBooleanOrNull(None), Json.Null)
+  }
+
+  property("fromBooleanOrNull return value on Some") {
+    forAll { (value: Boolean) =>
+      assertEquals(Json.fromBooleanOrNull(Some(value)), Json.fromBoolean(value))
+    }
+  }
+
+  test("fromIntOrNull return Null on None") {
+    assertEquals(Json.fromIntOrNull(None), Json.Null)
+  }
+
+  property("fromIntOrNull return value on Some") {
+    forAll { (value: Int) =>
+      assertEquals(Json.fromIntOrNull(Some(value)), Json.fromInt(value))
+    }
+  }
+
+  test("fromLongOrNull return Null on None") {
+    assertEquals(Json.fromLongOrNull(None), Json.Null)
+  }
+
+  property("fromLongOrNull return value on Some") {
+    forAll { (value: Long) =>
+      assertEquals(Json.fromLongOrNull(Some(value)), Json.fromLong(value))
+    }
+  }
+
+  test("fromBigIntOrNull returns Null on None") {
+    assertEquals(Json.fromBigIntOrNull(None), Json.Null)
+  }
+
+  property("fromBigDecimalOrNull return value on Some") {
+    forAll { (value: BigDecimal) =>
+      assertEquals(
+        Json.fromBigDecimalOrNull(Some(value)),
+        Json.fromBigDecimal(value)
+      )
+    }
+  }
+
+  test("fromBigDecimalOrNull return Null on None") {
+    assertEquals(Json.fromBigDecimalOrNull(None), Json.Null)
+  }
+
   test("fromDouble should fail on Double.NaN") {
-    assert(Json.fromDouble(Double.NaN) === None)
+    assertEquals(Json.fromDouble(Double.NaN), None)
   }
 
   test("fromDouble should fail on Double.PositiveInfinity") {
-    assert(Json.fromDouble(Double.PositiveInfinity) === None)
+    assertEquals(Json.fromDouble(Double.PositiveInfinity), None)
   }
 
   test("fromDouble should fail on Double.NegativeInfinity") {
-    assert(Json.fromDouble(Double.NegativeInfinity) === None)
+    assertEquals(Json.fromDouble(Double.NegativeInfinity), None)
   }
 
   test("fromDoubleOrNull should return Null on Double.NaN") {
-    assert(Json.fromDoubleOrNull(Double.NaN) === Json.Null)
+    assertEquals(Json.fromDoubleOrNull(Double.NaN), Json.Null)
   }
 
   test("fromDoubleOrNull return Null on Double.PositiveInfinity") {
-    assert(Json.fromDoubleOrNull(Double.PositiveInfinity) === Json.Null)
+    assertEquals(Json.fromDoubleOrNull(Double.PositiveInfinity), Json.Null)
   }
 
   test("fromDoubleOrNull should return Null on Double.NegativeInfinity") {
-    assert(Json.fromDoubleOrNull(Double.NegativeInfinity) === Json.Null)
+    assertEquals(Json.fromDoubleOrNull(Double.NegativeInfinity), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on None") {
+    assertEquals(Json.fromDoubleOrNull(None), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.NaN") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.NaN)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.PositiveInfinity") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.PositiveInfinity)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return Null on some Double.NegativeInfinity") {
+    assertEquals(Json.fromDoubleOrNull(Some(Double.NegativeInfinity)), Json.Null)
+  }
+
+  test("fromDoubleOrNull should return value") {
+    assertEquals(Json.fromDoubleOrNull(Some(1.23)), Json.fromDoubleOrNull(1.23))
   }
 
   test("fromDoubleOrString should return String on Double.NaN") {
-    assert(Json.fromDoubleOrString(Double.NaN) === Json.fromString("NaN"))
+    assertEquals(Json.fromDoubleOrString(Double.NaN), Json.fromString("NaN"))
   }
 
   test("fromDoubleOrString return String on Double.PositiveInfinity") {
-    assert(Json.fromDoubleOrString(Double.PositiveInfinity) === Json.fromString("Infinity"))
+    assertEquals(Json.fromDoubleOrString(Double.PositiveInfinity), Json.fromString("Infinity"))
   }
 
   test("fromDoubleOrString should return String on Double.NegativeInfinity") {
-    assert(Json.fromDoubleOrString(Double.NegativeInfinity) === Json.fromString("-Infinity"))
+    assertEquals(Json.fromDoubleOrString(Double.NegativeInfinity), Json.fromString("-Infinity"))
   }
 
   test("fromDoubleOrString should return JsonNumber Json values for valid Doubles") {
-    assert(Json.fromDoubleOrString(1.1) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
-    assert(Json.fromDoubleOrString(-1.2) === Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
+    assertEquals(Json.fromDoubleOrString(1.1), Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("1.1")))
+    assertEquals(Json.fromDoubleOrString(-1.2), Json.fromJsonNumber(JsonNumber.fromDecimalStringUnsafe("-1.2")))
   }
 
   test("fromFloat should fail on Float.NaN") {
-    assert(Json.fromFloat(Float.NaN) === None)
+    assertEquals(Json.fromFloat(Float.NaN), None)
   }
 
   test("fromFloat should fail on Float.PositiveInfinity") {
-    assert(Json.fromFloat(Float.PositiveInfinity) === None)
+    assertEquals(Json.fromFloat(Float.PositiveInfinity), None)
   }
 
   test("fromFloat should fail on Float.NegativeInfinity") {
-    assert(Json.fromFloat(Float.NegativeInfinity) === None)
+    assertEquals(Json.fromFloat(Float.NegativeInfinity), None)
   }
 
   test("fromFloatOrNull should return Null on Float.NaN") {
-    assert(Json.fromFloatOrNull(Float.NaN) === Json.Null)
+    assertEquals(Json.fromFloatOrNull(Float.NaN), Json.Null)
   }
 
   test("fromFloatOrNull should return Null on Float.PositiveInfinity") {
-    assert(Json.fromFloatOrNull(Float.PositiveInfinity) === Json.Null)
+    assertEquals(Json.fromFloatOrNull(Float.PositiveInfinity), Json.Null)
   }
 
   test("fromFloatOrNull should return Null on Float.NegativeInfinity") {
-    assert(Json.fromFloatOrNull(Float.NegativeInfinity) === Json.Null)
+    assertEquals(Json.fromFloatOrNull(Float.NegativeInfinity), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on None") {
+    assertEquals(Json.fromFloatOrNull(None), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.NaN") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.NaN)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.PositiveInfinity") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.PositiveInfinity)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return Null on some Float.NegativeInfinity") {
+    assertEquals(Json.fromFloatOrNull(Some(Float.NegativeInfinity)), Json.Null)
+  }
+
+  test("fromFloatOrNull should return value") {
+    assertEquals(Json.fromFloatOrNull(Some(1.23f)), Json.fromFloatOrNull(1.23f))
   }
 
   test("fromFloatOrString should return String on Float.NaN") {
-    assert(Json.fromFloatOrString(Float.NaN) === Json.fromString("NaN"))
+    assertEquals(Json.fromFloatOrString(Float.NaN), Json.fromString("NaN"))
   }
 
   test("fromFloatOrString should return String on Float.PositiveInfinity") {
-    assert(Json.fromFloatOrString(Float.PositiveInfinity) === Json.fromString("Infinity"))
+    assertEquals(Json.fromFloatOrString(Float.PositiveInfinity), Json.fromString("Infinity"))
   }
 
   test("fromFloatOrString should return String on Float.NegativeInfinity") {
-    assert(Json.fromFloatOrString(Float.NegativeInfinity) === Json.fromString("-Infinity"))
+    assertEquals(Json.fromFloatOrString(Float.NegativeInfinity), Json.fromString("-Infinity"))
   }
 
   test("obj should create object fluently") {
@@ -340,16 +455,16 @@ class JsonSuite extends CirceMunitSuite with FloatJsonTests {
         ("c", Json.arr(Json.fromLong(1L), Json.fromLong(2L), Json.fromLong(3L)))
       )
     )
-    assert(actual === expected)
+    assertEquals(actual, expected)
   }
 
   property("printer shortcuts should print the object")(printerShortcutsProp)
   lazy val printerShortcutsProp = forAll { (json: Json) =>
-    assert(json.noSpaces === Printer.noSpaces.print(json))
-    assert(json.spaces2 === Printer.spaces2.print(json))
-    assert(json.spaces4 === Printer.spaces4.print(json))
-    assert(json.noSpacesSortKeys === Printer.noSpacesSortKeys.print(json))
-    assert(json.spaces2SortKeys === Printer.spaces2SortKeys.print(json))
-    assert(json.spaces4SortKeys === Printer.spaces4SortKeys.print(json))
+    json.noSpaces ?= Printer.noSpaces.print(json)
+    json.spaces2 ?= Printer.spaces2.print(json)
+    json.spaces4 ?= Printer.spaces4.print(json)
+    json.noSpacesSortKeys ?= Printer.noSpacesSortKeys.print(json)
+    json.spaces2SortKeys ?= Printer.spaces2SortKeys.print(json)
+    json.spaces4SortKeys ?= Printer.spaces4SortKeys.print(json)
   }
 }
