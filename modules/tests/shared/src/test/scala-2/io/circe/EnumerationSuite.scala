@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.kernel.Eq
@@ -16,7 +32,7 @@ class EnumerationSuite extends CirceMunitSuite {
 
     val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Fri\"")
-    assert(decoder.apply(friday.hcursor) == Right(WeekDay.Fri))
+    assertEquals(decoder.apply(friday.hcursor), Right(WeekDay.Fri))
   }
 
   test("Decoder[Enumeration] should fail on unknown values in Scala Enumerations") {
@@ -28,7 +44,9 @@ class EnumerationSuite extends CirceMunitSuite {
     val decoder = Decoder.decodeEnumeration(WeekDay)
     val Right(friday) = parse("\"Friday\"")
 
-    assert(decoder.apply(friday.hcursor).isLeft)
+    val result = decoder.apply(friday.hcursor)
+    assert(result.isLeft)
+    assert(result.swap.exists(_.message.contains("Couldn't decode value 'Friday'. Allowed values:")))
   }
 
   test("Encoder[Enumeration] should write Scala Enumerations") {
@@ -40,7 +58,7 @@ class EnumerationSuite extends CirceMunitSuite {
     implicit val encoder = Encoder.encodeEnumeration(WeekDay)
     val json = WeekDay.Fri.asJson
     val decoder = Decoder.decodeEnumeration(WeekDay)
-    assert(decoder.apply(json.hcursor) == Right(WeekDay.Fri))
+    assertEquals(decoder.apply(json.hcursor), Right(WeekDay.Fri))
   }
 }
 

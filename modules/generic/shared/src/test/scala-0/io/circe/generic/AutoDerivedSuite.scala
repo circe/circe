@@ -50,7 +50,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
   checkAll("Codec[OuterCaseClassExample]", CodecTests[OuterCaseClassExample].codec)
 
-  property("A generically derived codec should not interfere with base instances"){
+  property("A generically derived codec should not interfere with base instances") {
     Prop.forAll { (is: List[Int]) =>
       val json = Encoder[List[Int]].apply(is)
 
@@ -63,12 +63,12 @@ class AutoDerivedSuite extends CirceMunitSuite {
     assertTypeError("Encoder[Object]")
   }
 
-  test("A generically derived codec should not be derived for AnyRef"){
+  test("A generically derived codec should not be derived for AnyRef") {
     assertTypeError("Decoder[AnyRef]")
     assertTypeError("Encoder[AnyRef]")
   }
 
-  property("Generic decoders should not interfere with defined decoders"){
+  property("Generic decoders should not interfere with defined decoders") {
     Prop.forAll { (xs: List[String]) =>
       val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
@@ -76,7 +76,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
     }
   }
 
-  property("Generic encoders should not interfere with defined encoders"){
+  property("Generic encoders should not interfere with defined encoders") {
     Prop.forAll { (xs: List[String]) =>
       val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 

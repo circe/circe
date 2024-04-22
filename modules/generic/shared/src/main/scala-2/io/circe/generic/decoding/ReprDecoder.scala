@@ -1,10 +1,27 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.generic.decoding
 
 import cats.Apply
 import cats.data.Validated
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.{ Decoder, DecodingFailure, HCursor }
 import io.circe.generic.Deriver
-import scala.language.experimental.macros
+
 import shapeless.{ :+:, ::, Coproduct, HList, HNil, Inl }
 import shapeless.labelled.{ FieldType, field }
 
@@ -20,7 +37,8 @@ object ReprDecoder {
 
   val hnilReprDecoder: ReprDecoder[HNil] = new ReprDecoder[HNil] {
     def apply(c: HCursor): Decoder.Result[HNil] =
-      if (c.value.isObject) Right(HNil) else Left(DecodingFailure("HNil", c.history))
+      if (c.value.isObject) Right(HNil)
+      else Left(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
   }
 
   def consResults[F[_], K, V, T <: HList](hv: F[V], tr: F[T])(implicit F: Apply[F]): F[FieldType[K, V] :: T] =

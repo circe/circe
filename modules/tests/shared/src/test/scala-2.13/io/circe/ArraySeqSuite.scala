@@ -1,12 +1,27 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.syntax.eq._
 import io.circe.tests.CirceMunitSuite
 import io.circe.syntax.EncoderOps
 import cats.instances.int.catsKernelStdOrderForInt
 import cats.instances.string.catsKernelStdOrderForString
 import io.circe.testing.CodecTests
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.collection.immutable.ArraySeq
 
 class ArraySeqSuite extends CirceMunitSuite {
@@ -16,13 +31,13 @@ class ArraySeqSuite extends CirceMunitSuite {
 
   property("decoding an arraySeq should succeed when the type is fully specified") {
     forAll { int: Int =>
-      assert(Json.arr(int.asJson).as[ArraySeq[Int]] === Right(ArraySeq(int)))
+      Json.arr(int.asJson).as[ArraySeq[Int]] ?= Right(ArraySeq(int))
     }
   }
 
   property("decoding an arraySeq should succeed for polymorphic decoders") {
     forAll { string: String =>
-      assert(decodeArraySeqWithoutClassTag[String](Json.arr(string.asJson)) === Right(ArraySeq(string)))
+      decodeArraySeqWithoutClassTag[String](Json.arr(string.asJson)) ?= Right(ArraySeq(string))
     }
   }
 
@@ -30,7 +45,7 @@ class ArraySeqSuite extends CirceMunitSuite {
     forAll { intArray: Array[Int] =>
       val jsonArray = Json.arr(intArray.map(_.asJson): _*)
 
-      assert(jsonArray.as[ArraySeq[Int]].map(_.getClass) == Right(classOf[ArraySeq.ofInt]))
+      jsonArray.as[ArraySeq[Int]].map(_.getClass) ?= Right(classOf[ArraySeq.ofInt])
     }
   }
 
@@ -38,7 +53,9 @@ class ArraySeqSuite extends CirceMunitSuite {
     forAll { intArray: Array[Int] =>
       val jsonArray = Json.arr(intArray.map(_.asJson): _*)
 
-      assert(decodeArraySeqWithoutClassTag[Int](jsonArray).map(_.getClass) == Right(classOf[ArraySeq.ofRef[_]]))
+      decodeArraySeqWithoutClassTag[Int](jsonArray).map(_.getClass) ?= Right(
+        classOf[ArraySeq.ofRef[_]].asInstanceOf[Class[_ <: ArraySeq[Int]]]
+      )
     }
   }
 

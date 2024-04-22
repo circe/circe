@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.generic
 
 import cats.kernel.Eq
@@ -10,7 +26,7 @@ import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
@@ -160,13 +176,13 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
       .as[Int => Qux[String]]
       .map(_(i))
 
-    assert(result === Right(Qux(i, s, j)))
+    result ?= Right(Qux(i, s, j))
   }
 
   test("Decoder[Int => Qux[String]] should return as many errors as invalid elements in a partial case class") {
     val decoded = deriveFor[Int => Qux[String]].incomplete.decodeAccumulating(Json.obj().hcursor)
 
-    assert(decoded.fold(_.tail.size + 1, _ => 0) === 2)
+    assertEquals(decoded.fold(_.tail.size + 1, _ => 0), 2)
   }
 
   property("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] should decode partial JSON representations") {
@@ -181,7 +197,7 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
           _(field(j))
         )
 
-      assert(result === Right(Qux(i, s, j)))
+      result ?= Right(Qux(i, s, j))
     }
   }
 
@@ -195,7 +211,7 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
+      json.as[Qux[String] => Qux[String]].map(_(q)) ?= Right(expected)
     }
   }
 
@@ -231,8 +247,8 @@ class SemiautoDerivedSuite extends CirceMunitSuite {
     forAll { (j: Json) =>
       case class EmptyCc()
 
-      assert(deriveDecoder[EmptyCc].decodeJson(j).isRight == j.isObject)
-      assert(deriveCodec[EmptyCc].decodeJson(j).isRight == j.isObject)
+      (deriveDecoder[EmptyCc].decodeJson(j).isRight ?= j.isObject) &&
+      (deriveCodec[EmptyCc].decodeJson(j).isRight ?= j.isObject)
     }
   }
 }

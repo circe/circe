@@ -1,12 +1,27 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.data.NonEmptyList
-import cats.instances.all._
 import cats.laws.discipline.arbitrary._
-import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
+import org.scalacheck.Prop._
 
 class AccumulatingDecoderSpec extends CirceMunitSuite {
   private case class BadSample(a: Int, b: Boolean, c: Int)
@@ -33,7 +48,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val decoded = Decoder[List[String]].decodeAccumulating(json.hcursor)
       val intElems = xs.collect { case Left(elem) => elem }
 
-      assert(decoded.fold(_.tail.size + 1, _ => 0) === intElems.size)
+      decoded.fold(_.tail.size + 1, _ => 0) ?= intElems.size
     }
   }
 
@@ -43,7 +58,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val invalidElems = xs.collect { case Left(e) => Some(e.asJson) }
       val errors = Decoder[List[String]].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      errors.map(df => cursor.replay(df.history).focus) ?= invalidElems
     }
   }
 
@@ -53,7 +68,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val invalidElems = xs.values.collect { case Left(e) => e.asJson }.toSet
       val errors = Decoder[Map[String, String]].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.flatMap(df => cursor.replay(df.history).focus).toSet === invalidElems)
+      errors.flatMap(df => cursor.replay(df.history).focus).toSet ?= invalidElems
     }
   }
 
@@ -63,7 +78,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val invalidElems = xs.collect { case Left(e) => Some(e.asJson): Option[Json] }
       val errors = Decoder[Set[String]].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus).toSet === invalidElems)
+      errors.map(df => cursor.replay(df.history).focus).toSet ?= invalidElems
     }
   }
 
@@ -73,7 +88,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val invalidElems = xs.toList.collect { case Left(e) => Some(e.asJson) }
       val errors = Decoder[NonEmptyList[String]].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      errors.map(df => cursor.replay(df.history).focus) ?= invalidElems
     }
   }
 
@@ -91,7 +106,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
 
       val errors = Decoder[(String, String, String)].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      errors.map(df => cursor.replay(df.history).focus) ?= invalidElems
     }
   }
 
@@ -101,7 +116,7 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
       val invalidElems = List(Some(a.asJson), Some(b.asJson), Some(c.asJson))
       val errors = Decoder[Sample].decodeAccumulating(cursor).fold(_.toList, _ => Nil)
 
-      assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
+      errors.map(df => cursor.replay(df.history).focus) ?= invalidElems
     }
   }
 
@@ -113,9 +128,9 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
 
       result.fold(_.toList, _ => Nil) match {
         case validationError :: errors =>
-          assert(validationError === DecodingFailure("problem", List.empty))
-          assert(errors.map(df => cursor.replay(df.history).focus) === invalidElems)
-        case _ => ()
+          (validationError ?= DecodingFailure("problem", List.empty)) &&
+          (errors.map(df => cursor.replay(df.history).focus) ?= invalidElems)
+        case _ => Prop.undecided
       }
     }
   }
