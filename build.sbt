@@ -1,7 +1,7 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 
 val Scala212V: String = "2.12.18"
-val Scala213V: String = "2.13.12"
+val Scala213V: String = "2.13.13"
 val Scala3V: String = "3.3.3"
 
 ThisBuild / tlBaseVersion := "0.14"
