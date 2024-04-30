@@ -3,7 +3,7 @@
 [![Build status](https://img.shields.io/github/actions/workflow/status/circe/circe/ci.yml)](https://github.com/circe/circe/actions)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
 ![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13?versionPrefix=0.14)
-
+[![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/XF3CXcMzqD)
 
 circe is a JSON library for Scala (and [Scala.js][scala-js]).
 
@@ -185,8 +185,7 @@ circe is currently maintained by [Darren Gibson][zarthross] and [Erlend Hamnaber
 After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
-The circe project supports the [Scala code of conduct][code-of-conduct] and wants
-all of its channels (Gitter, GitHub, etc.) to be inclusive environments.
+The circe project is a typelevel affiliate project, and follow the [Typelevel Code of Conduct](CODE_OF_CONDUCT.md)
 
 Please see the [contributors' guide](CONTRIBUTING.md) for details on how to submit a pull request.
 
