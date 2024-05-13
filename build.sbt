@@ -25,8 +25,7 @@ ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 val catsVersion = "2.10.0"
 val jawnVersion = "1.5.1"
 val shapelessVersion = "2.3.10"
-val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.11.1"
+val refinedVersion = "0.11.1"
 
 val paradiseVersion = "2.1.1"
 
@@ -333,12 +332,9 @@ lazy val refined = circeCrossModule("refined")
   .settings(
     tlVersionIntroduced += "3" -> "0.14.3",
     libraryDependencies ++= {
-      val refinedV =
-        if (crossProjectPlatform.value == NativePlatform) refinedNativeVersion
-        else refinedVersion
       Seq(
-        "eu.timepit" %%% "refined" % refinedV,
-        "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
+        "eu.timepit" %%% "refined" % refinedVersion,
+        "eu.timepit" %%% "refined-scalacheck" % refinedVersion % Test
       )
     },
     dependencyOverrides ++= Seq(
