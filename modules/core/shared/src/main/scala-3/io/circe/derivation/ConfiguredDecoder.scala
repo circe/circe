@@ -213,12 +213,14 @@ object ConfiguredDecoder:
         def apply(c: HCursor) = decodeSum(c)
         override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
+  private[derivation] inline final def decoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Decoder[?]] =
+    summonDecoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
+      case _: Mirror.ProductOf[A] => false
+      case _: Mirror.SumOf[A]     => true
+    })
+
   inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
-    ConfiguredDecoder.of[A](
-      constValue[mirror.MirroredLabel],
-      summonDecoders[mirror.MirroredElemTypes],
-      summonLabels[mirror.MirroredElemLabels]
-    )
+    ConfiguredDecoder.of[A](constValue[mirror.MirroredLabel], decoders[A], summonLabels[mirror.MirroredElemLabels])
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,

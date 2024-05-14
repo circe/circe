@@ -2,11 +2,11 @@ Introduction and Motivation
 ===========
 [![Build status](https://github.com/circe/circe/actions/workflows/ci.yml/badge.svg?branch=series%2F0.14.x)](https://github.com/circe/circe/actions/workflows/ci.yml)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.13/badge.svg?version=0.14.6)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.13?version=0.14.6)
+![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13?versionPrefix=0.14)
 [![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/XF3CXcMzqD)
 
 `circe` (pronounced SUR-see, or KEER-kee in classical Greek, or CHEER-chay in Ecclesiastical Latin) is
-a JSON library for Scala (and [Scala.js][scala-js]).
+a JSON library for Scala.
 
 ## Why?
 
