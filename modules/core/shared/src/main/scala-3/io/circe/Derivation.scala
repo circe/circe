@@ -1,223 +1,52 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.data.{NonEmptyList, Validated}
+import scala.compiletime.constValue
 import scala.deriving.Mirror
-import scala.collection.mutable.WrappedArray
-import scala.compiletime.{constValue, erasedValue, error, summonFrom}
+import Predef.genericArrayOps
+import cats.data.{ NonEmptyList, Validated }
+import io.circe.derivation._
 
+@deprecated(since = "0.14.4")
 object Derivation {
-
   inline final def summonLabels[T <: Tuple]: Array[String] = summonLabelsRec[T].toArray
-  inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] = summonDecodersRec[T].toArray
-  inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] = summonEncodersRec[T].toArray
+  inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] =
+    derivation.summonDecoders[T](derivingForSum = false)(using Configuration.default).toArray
+  inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] =
+    derivation.summonEncoders[T](derivingForSum = false)(using Configuration.default).toArray
 
-  inline final def summonEncoder[A]: Encoder[A] = summonFrom {
-    case encodeA: Encoder[A] => encodeA
-    case _: Mirror.Of[A] => Encoder.AsObject.derived[A]
-  }
+  inline final def summonEncoder[A]: Encoder[A] = derivation.summonEncoder[A](false)(using Configuration.default)
+  inline final def summonDecoder[A]: Decoder[A] = derivation.summonDecoder[A](false)(using Configuration.default)
 
-  inline final def summonDecoder[A]: Decoder[A] = summonFrom {
-    case decodeA: Decoder[A] => decodeA
-    case _: Mirror.Of[A] => Decoder.derived[A]
-  }
-
-  inline final def summonLabelsRec[T <: Tuple]: List[String] = inline erasedValue[T] match {
-    case _: EmptyTuple => Nil
-    case _: (t *: ts) => constValue[t].asInstanceOf[String] :: summonLabelsRec[ts]
-  }
-
+  inline final def summonLabelsRec[T <: Tuple]: List[String] = derivation.summonLabels[T]
   inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
-    inline erasedValue[T] match {
-      case _: EmptyTuple => Nil
-      case _: (t *: ts) => summonDecoder[t] :: summonDecodersRec[ts]
-    }
-
+    derivation.summonDecoders[T](derivingForSum = false)(using Configuration.default)
   inline final def summonEncodersRec[T <: Tuple]: List[Encoder[_]] =
-    inline erasedValue[T] match {
-      case _: EmptyTuple => Nil
-      case _: (t *: ts) => summonEncoder[t] :: summonEncodersRec[ts]
-    }
+    derivation.summonEncoders[T](derivingForSum = false)(using Configuration.default)
 }
 
-private[circe] trait EncoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
-    new DerivedEncoder[A]
-        with DerivedInstance[A](
-          constValue[A.MirroredLabel],
-          Derivation.summonLabels[A.MirroredElemLabels]
-        ) {
-      protected[this] lazy val elemEncoders: Array[Encoder[_]] =
-        Derivation.summonEncoders[A.MirroredElemTypes]
-
-      final def encodeObject(a: A): JsonObject = inline A match {
-        case m: Mirror.ProductOf[A] =>
-          JsonObject.fromIterable(encodedIterable(a.asInstanceOf[Product]))
-        case m: Mirror.SumOf[A] => encodeWith(m.ordinal(a))(a) match {
-          case (k, v) => JsonObject.singleton(k, v)
-        }
-      }
-    }
-}
-
-private[circe] trait DecoderDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
-    new DerivedDecoder[A]
-        with DerivedInstance[A](
-          constValue[A.MirroredLabel],
-          Derivation.summonLabels[A.MirroredElemLabels]
-        ) {
-      protected[this] lazy val elemDecoders: Array[Decoder[_]] =
-        Derivation.summonDecoders[A.MirroredElemTypes]
-
-      final def apply(c: HCursor): Decoder.Result[A] = inline A match {
-        case m: Mirror.ProductOf[A] =>
-          if (c.value.isObject) {
-            val iter = resultIterator(c)
-            val res = new Array[AnyRef](elemCount)
-            var failed: Left[DecodingFailure, _] = null
-            var i: Int = 0
-
-            while (iter.hasNext && (failed eq null)) {
-              iter.next match {
-                case Right(value) => res(i) = value
-                case l @ Left(_) => failed = l
-              }
-              i += 1
-            }
-
-            if (failed eq null) {
-              Right(m.fromProduct(Tuple.fromArray(res)))
-            } else {
-              failed.asInstanceOf[Decoder.Result[A]]
-            }
-          } else Left(DecodingFailure(name, c.history))
-        case m: Mirror.SumOf[A] =>
-          extractIndexFromWrapper(c) match {
-            case -1 => Left(DecodingFailure(name, c.history))
-            case index => decodeWith(index)(c).asInstanceOf[Decoder.Result[A]]
-          }
-      }
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        inline A match {
-          case m: Mirror.ProductOf[A] =>
-            if (c.value.isObject) {
-              val iter = resultAccumulatingIterator(c)
-              val res = new Array[AnyRef](elemCount)
-              val failed = List.newBuilder[DecodingFailure]
-              var i: Int = 0
-
-              while (iter.hasNext) {
-                iter.next match {
-                  case Validated.Valid(value) => res(i) = value
-                  case Validated.Invalid(failures) => failed ++= failures.toList
-                }
-                i += 1
-              }
-
-              val failures = failed.result()
-              if (failures.isEmpty) {
-                Validated.valid(m.fromProduct(Tuple.fromArray(res)))
-              } else {
-                Validated.invalid(NonEmptyList.fromListUnsafe(failures))
-              }
-            } else Validated.invalidNel(DecodingFailure(name, c.history))
-          case m: Mirror.SumOf[A] =>
-            extractIndexFromWrapper(c) match {
-              case -1 => Validated.invalidNel(DecodingFailure(name, c.history))
-              case index => decodeAccumulatingWith(index)(c).asInstanceOf[Decoder.AccumulatingResult[A]]
-            }
-        }
-  }
-}
-
-private[circe] trait CodecDerivation {
-  inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
-    new Codec.AsObject[A]
-        with DerivedDecoder[A]
-        with DerivedEncoder[A]
-        with DerivedInstance[A](
-          constValue[A.MirroredLabel],
-          Derivation.summonLabels[A.MirroredElemLabels]
-        ) {
-      protected[this] lazy val elemDecoders: Array[Decoder[_]] =
-        Derivation.summonDecoders[A.MirroredElemTypes]
-      protected[this] lazy val elemEncoders: Array[Encoder[_]] =
-        Derivation.summonEncoders[A.MirroredElemTypes]
-
-      final def encodeObject(a: A): JsonObject = inline A match {
-        case m: Mirror.ProductOf[A] =>
-          JsonObject.fromIterable(encodedIterable(a.asInstanceOf[Product]))
-        case m: Mirror.SumOf[A] => encodeWith(m.ordinal(a))(a) match {
-          case (k, v) => JsonObject.singleton(k, v)
-        }
-      }
-
-      final def apply(c: HCursor): Decoder.Result[A] = inline A match {
-        case m: Mirror.ProductOf[A] =>
-          if (c.value.isObject) {
-            val iter = resultIterator(c)
-            val res = new Array[AnyRef](elemCount)
-            var failed: Left[DecodingFailure, _] = null
-            var i: Int = 0
-
-            while (iter.hasNext && (failed eq null)) {
-              iter.next match {
-                case Right(value) => res(i) = value
-                case l @ Left(_) => failed = l
-              }
-              i += 1
-            }
-
-            if (failed eq null) {
-              Right(m.fromProduct(Tuple.fromArray(res)))
-            } else {
-              failed.asInstanceOf[Decoder.Result[A]]
-            }
-          } else Left(DecodingFailure(name, c.history))
-        case m: Mirror.SumOf[A] =>
-          extractIndexFromWrapper(c) match {
-            case -1 => Left(DecodingFailure(name, c.history))
-            case index => decodeWith(index)(c).asInstanceOf[Decoder.Result[A]]
-          }
-      }
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        inline A match {
-          case m: Mirror.ProductOf[A] =>
-            if (c.value.isObject) {
-              val iter = resultAccumulatingIterator(c)
-              val res = new Array[AnyRef](elemCount)
-              val failed = List.newBuilder[DecodingFailure]
-              var i: Int = 0
-
-              while (iter.hasNext) {
-                iter.next match {
-                  case Validated.Valid(value) => res(i) = value
-                  case Validated.Invalid(failures) => failed ++= failures.toList
-                }
-                i += 1
-              }
-
-              val failures = failed.result()
-              if (failures.isEmpty) {
-                Validated.valid(m.fromProduct(Tuple.fromArray(res)))
-              } else {
-                Validated.invalid(NonEmptyList.fromListUnsafe(failures))
-              }
-            } else Validated.invalidNel(DecodingFailure(name, c.history))
-          case m: Mirror.SumOf[A] =>
-            extractIndexFromWrapper(c) match {
-              case -1 => Validated.invalidNel(DecodingFailure(name, c.history))
-              case index => decodeAccumulatingWith(index)(c).asInstanceOf[Decoder.AccumulatingResult[A]]
-            }
-        }
-  }
-}
-
+@deprecated(since = "0.14.4")
 private[circe] trait DerivedInstance[A](
   final val name: String,
   protected[this] final val elemLabels: Array[String]
 ) {
   final def elemCount: Int = elemLabels.length
+
   protected[this] final def findLabel(name: String): Int = {
     var i = 0
     while (i < elemCount) {
@@ -227,7 +56,7 @@ private[circe] trait DerivedInstance[A](
     return -1
   }
 }
-
+@deprecated(since = "0.14.4")
 private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] with Encoder.AsObject[A] {
   protected[this] def elemEncoders: Array[Encoder[_]]
 
@@ -239,7 +68,9 @@ private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] with Encoder.A
       def iterator: Iterator[(String, Json)] = new Iterator[(String, Json)] {
         private[this] val elems: Iterator[Any] = value.productIterator
         private[this] var index: Int = 0
+
         def hasNext: Boolean = elems.hasNext
+
         def next(): (String, Json) = {
           val field = encodeWith(index)(elems.next())
           index += 1
@@ -248,7 +79,7 @@ private[circe] trait DerivedEncoder[A] extends DerivedInstance[A] with Encoder.A
       }
     }
 }
-
+@deprecated(since = "0.14.4")
 private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A] {
   protected[this] def elemDecoders: Array[Decoder[_]]
 
@@ -261,7 +92,9 @@ private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A
   final def resultIterator(c: HCursor): Iterator[Decoder.Result[AnyRef]] =
     new Iterator[Decoder.Result[AnyRef]] {
       private[this] var i: Int = 0
+
       def hasNext: Boolean = i < elemCount
+
       def next: Decoder.Result[AnyRef] = {
         val result = decodeWith(i)(c)
         i += 1
@@ -272,7 +105,9 @@ private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A
   final def resultAccumulatingIterator(c: HCursor): Iterator[Decoder.AccumulatingResult[AnyRef]] =
     new Iterator[Decoder.AccumulatingResult[AnyRef]] {
       private[this] var i: Int = 0
+
       def hasNext: Boolean = i < elemCount
+
       def next: Decoder.AccumulatingResult[AnyRef] = {
         val result = decodeAccumulatingWith(i)(c)
         i += 1
@@ -296,3 +131,39 @@ private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A
     case None => -1
   }
 }
+
+private[circe] trait EncoderDerivation:
+  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+    ConfiguredEncoder.derived[A](using Configuration.default)
+  inline final def derivedConfigured[A](using
+    inline A: Mirror.Of[A],
+    inline configuration: Configuration
+  ): Encoder.AsObject[A] =
+    ConfiguredEncoder.derived[A]
+
+private[circe] trait EncoderDerivationRelaxed:
+  inline final def derived[A: Mirror.Of](using
+    configuration: Configuration = Configuration.default
+  ): Encoder.AsObject[A] =
+    ConfiguredEncoder.derived[A]
+
+private[circe] trait DecoderDerivation:
+  inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
+    ConfiguredDecoder.derived[A](using Configuration.default)
+  inline final def derivedConfigured[A](using inline A: Mirror.Of[A], inline configuration: Configuration): Decoder[A] =
+    ConfiguredDecoder.derived[A]
+
+private[circe] trait CodecDerivation:
+  inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
+    ConfiguredCodec.derived[A](using Configuration.default)
+  inline final def derivedConfigured[A](using
+    inline A: Mirror.Of[A],
+    inline configuration: Configuration
+  ): Codec.AsObject[A] =
+    ConfiguredCodec.derived[A]
+
+private[circe] trait CodecDerivationRelaxed:
+  inline final def derived[A: Mirror.Of](using
+    configuration: Configuration = Configuration.default
+  ): Codec.AsObject[A] =
+    ConfiguredCodec.derived[A]

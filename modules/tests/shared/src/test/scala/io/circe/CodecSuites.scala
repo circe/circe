@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.data.{
@@ -5,6 +21,7 @@ import cats.data.{
   NonEmptyChain,
   NonEmptyList,
   NonEmptyMap,
+  NonEmptySeq,
   NonEmptySet,
   NonEmptyStream,
   NonEmptyVector,
@@ -19,11 +36,13 @@ import cats.syntax.eq._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.{ Foo, Wub }
+import java.net.URI
 import java.util.UUID
 import org.scalacheck.{ Arbitrary, Gen }
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.HashMap
+import scala.util.Success
 
 trait SpecialEqForFloatAndDouble {
 
@@ -93,6 +112,7 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)
   checkAll("Codec[UUID]", CodecTests[UUID].codec)
+  checkAll("Codec[URI]", CodecTests[URI].codec)
   checkAll("Codec[Option[Int]]", CodecTests[Option[Int]].codec)
   checkAll("Codec[Some[Int]]", CodecTests[Some[Int]].codec)
   checkAll("Codec[None.type]", CodecTests[None.type].codec)
@@ -101,6 +121,7 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
   checkAll("Codec[Map[String, Int]]", CodecTests[Map[String, Int]].codec)
   checkAll("Codec[Map[Symbol, Int]]", CodecTests[Map[Symbol, Int]].codec)
   checkAll("Codec[Map[UUID, Int]]", CodecTests[Map[UUID, Int]].codec)
+  checkAll("Codec[Map[URI, Int]]", CodecTests[Map[URI, Int]].codec)
   checkAll("Codec[Map[Byte, Int]]", CodecTests[Map[Byte, Int]].codec)
   checkAll("Codec[Map[Short, Int]]", CodecTests[Map[Short, Int]].codec)
   checkAll("Codec[Map[Int, Int]]", CodecTests[Map[Int, Int]].codec)
@@ -138,14 +159,14 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
     assert(maybeList.isRight)
 
     val Right(list) = maybeList
-    assert(list.length == size)
+    assertEquals(list.length, size)
     assert(list.forall(_ == 1))
   }
 
   test("A list decoder should stop after first failure") {
     object Bomb {
       implicit val decodeBomb: Decoder[Bomb] = Decoder[Int].map {
-        case 0 => throw new Exception("You shouldn't have tried to decode this")
+        case 0 => throw new RuntimeException("You shouldn't have tried to decode this")
         case i => Bomb(i)
       }
     }
@@ -157,11 +178,22 @@ class StdLibCodecSuite extends CirceMunitSuite with ArrayFactoryInstance {
 
     assert(result.isLeft)
   }
+
+  test("None.type decoder should succeed for missing fields") {
+    val n = Json.obj()
+    val decoder = Decoder[None.type].at("foo")
+
+    val result1 = decoder.decodeJson(n)
+    assert(result1.isRight)
+    val result2 = decoder.decodeAccumulating(HCursor.fromJson(n))
+    assert(result2.isValid)
+  }
 }
 
 class CatsCodecSuite extends CirceMunitSuite with StreamFactoryInstance {
   checkAll("Codec[Chain[Int]]", CodecTests[Chain[Int]].codec)
   checkAll("Codec[NonEmptyList[Int]]", CodecTests[NonEmptyList[Int]].codec)
+  checkAll("Codec[NonEmptySeq[Int]]", CodecTests[NonEmptySeq[Int]].codec)
   checkAll("Codec[NonEmptyVector[Int]]", CodecTests[NonEmptyVector[Int]].codec)
   checkAll("Codec[NonEmptyStream[Int]]", CodecTests[NonEmptyStream[Int]].codec)
   checkAll("Codec[NonEmptySet[Int]]", CodecTests[NonEmptySet[Int]].codec)
@@ -179,9 +211,11 @@ class CirceCodecSuite extends CirceMunitSuite {
 class InvariantCodecSuite extends CirceMunitSuite {
   val wubCodec = Codec.from(Decoder[Long], Encoder[Long]).imap(Wub(_))(_.x)
   val wubCodecE = Codec.from(Decoder[Long], Encoder[Long]).iemap(l => Right(Wub(l)))(_.x)
+  val wubCodecT = Codec.from(Decoder[Long], Encoder[Long]).iemapTry(l => Success(Wub(l)))(_.x)
 
   checkAll("Codec[Wub] via imap", CodecTests[Wub](wubCodec, wubCodec).codec)
   checkAll("Codec[Wub] via iemap", CodecTests[Wub](wubCodecE, wubCodecE).codec)
+  checkAll("Codec[Wub] via iemapTry", CodecTests[Wub](wubCodecT, wubCodecT).codec)
 }
 
 class EitherCodecSuite extends CirceMunitSuite {

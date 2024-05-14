@@ -1,14 +1,30 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.generic
 
 import cats.kernel.Eq
 import cats.syntax.contravariant._
-import cats.syntax.eq._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.generic.auto._
 import io.circe.testing.CodecTests
-import io.circe.tests.CirceSuite
+import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples._
 import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Prop._
 import shapeless.Witness, shapeless.labelled.{ FieldType, field }
 import shapeless.test.illTyped
 
@@ -116,7 +132,7 @@ object AutoDerivedSuite {
   }
 }
 
-class AutoDerivedSuite extends CirceSuite {
+class AutoDerivedSuite extends CirceMunitSuite {
   import AutoDerivedSuite._
 
   checkAll("Codec[Tuple1[Int]]", CodecTests[Tuple1[Int]].codec)
@@ -129,35 +145,24 @@ class AutoDerivedSuite extends CirceSuite {
   checkAll("Codec[RecursiveAdtExample]", CodecTests[RecursiveAdtExample].codec)
   checkAll("Codec[RecursiveWithOptionExample]", CodecTests[RecursiveWithOptionExample].codec)
 
-  "Decoder[Int => Qux[String]]" should "decode partial JSON representations" in forAll { (i: Int, s: String, j: Int) =>
-    val result = Json
-      .obj(
-        "a" -> Json.fromString(s),
-        "j" -> Json.fromInt(j)
-      )
-      .as[Int => Qux[String]]
-      .map(_(i))
-
-    assert(result === Right(Qux(i, s, j)))
-  }
-
-  "Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]]" should "decode partial JSON representations" in {
+  property("Decoder[Int => Qux[String]] should decode partial JSON representations") {
     forAll { (i: Int, s: String, j: Int) =>
-      val result = Json
-        .obj(
-          "i" -> Json.fromInt(i),
-          "a" -> Json.fromString(s)
-        )
-        .as[FieldType[Witness.`'j`.T, Int] => Qux[String]]
-        .map(
-          _(field(j))
-        )
-
-      assert(result === Right(Qux(i, s, j)))
+      val json = Json.obj("a" -> Json.fromString(s), "j" -> Json.fromInt(j))
+      val result = json.as[Int => Qux[String]].map(_(i))
+      result ?= Right(Qux(i, s, j))
     }
   }
 
-  "Decoder[Qux[String] => Qux[String]]" should "decode patch JSON representations" in {
+  property("Decoder[FieldType[Witness.`'j`.T, Int] => Qux[String]] should decode partial JSON representations") {
+    forAll { (i: Int, s: String, j: Int) =>
+      val json = Json.obj("i" -> Json.fromInt(i), "a" -> Json.fromString(s))
+      val result = json.as[FieldType[Witness.`'j`.T, Int] => Qux[String]].map(_(field(j)))
+
+      result ?= Right(Qux(i, s, j))
+    }
+  }
+
+  property("Decoder[Qux[String] => Qux[String]] should decode patch JSON representations") {
     forAll { (q: Qux[String], i: Option[Int], a: Option[String], j: Option[Int]) =>
       val json = Json.obj(
         "i" -> Encoder[Option[Int]].apply(i),
@@ -167,36 +172,44 @@ class AutoDerivedSuite extends CirceSuite {
 
       val expected = Qux[String](i.getOrElse(q.i), a.getOrElse(q.a), j.getOrElse(q.j))
 
-      assert(json.as[Qux[String] => Qux[String]].map(_(q)) === Right(expected))
+      json.as[Qux[String] => Qux[String]].map(_(q)) ?= Right(expected)
     }
   }
 
-  "A generically derived codec" should "not interfere with base instances" in forAll { (is: List[Int]) =>
-    val json = Encoder[List[Int]].apply(is)
+  group("A generically derived codec should") {
+    property(" not interfere with base instances") {
+      forAll { (is: List[Int]) =>
+        val json = Encoder[List[Int]].apply(is)
+        (json ?= Json.fromValues(is.map(Json.fromInt))) &&
+        (json.as[List[Int]] ?= Right(is))
+      }
+    }
 
-    assert(json === Json.fromValues(is.map(Json.fromInt)) && json.as[List[Int]] === Right(is))
+    test("not be derived for Object") {
+      illTyped("Decoder[Object]")
+      illTyped("Encoder[Object]")
+    }
+
+    test("not be derived for AnyRef") {
+      illTyped("Decoder[AnyRef]")
+      illTyped("Encoder[AnyRef]")
+    }
+
   }
 
-  it should "not be derived for Object" in {
-    illTyped("Decoder[Object]")
-    illTyped("Encoder[Object]")
+  property("Generic decoders should not interfere with defined decoders") {
+    forAll { (xs: List[String]) =>
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
+      Decoder[Foo].apply(json.hcursor) ?= Right(Baz(xs): Foo)
+    }
   }
 
-  it should "not be derived for AnyRef" in {
-    illTyped("Decoder[AnyRef]")
-    illTyped("Encoder[AnyRef]")
-  }
+  property("Generic encoders should not interfere with defined encoders") {
+    forAll { (xs: List[String]) =>
+      val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
 
-  "Generic decoders" should "not interfere with defined decoders" in forAll { (xs: List[String]) =>
-    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
-
-    assert(Decoder[Foo].apply(json.hcursor) === Right(Baz(xs): Foo))
-  }
-
-  "Generic encoders" should "not interfere with defined encoders" in forAll { (xs: List[String]) =>
-    val json = Json.obj("Baz" -> Json.fromValues(xs.map(Json.fromString)))
-
-    assert(Encoder[Foo].apply(Baz(xs): Foo) === json)
+      Encoder[Foo].apply(Baz(xs): Foo) ?= json
+    }
   }
 
   checkAll("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)

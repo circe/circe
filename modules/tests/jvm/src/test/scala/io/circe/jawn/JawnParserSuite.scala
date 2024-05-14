@@ -1,14 +1,29 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.jawn
 
 import cats.data.Validated
-import cats.syntax.eq._
 import io.circe.Json
 import io.circe.testing.{ EqInstances, ParserTests }
 import io.circe.tests.CirceMunitSuite
 import io.circe.tests.examples.glossary
 import java.io.File
 import java.nio.ByteBuffer
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop._
 import scala.io.Source
 
 class JawnParserSuite extends CirceMunitSuite with EqInstances {
@@ -35,9 +50,9 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val url = getClass.getResource("/io/circe/tests/examples/glossary.json")
     val file = new File(url.toURI)
 
-    assert(decodeFile[Json](file) === Right(glossary))
-    assert(decodeFileAccumulating[Json](file) == Validated.valid(glossary))
-    assert(parseFile(file) === Right(glossary))
+    assertEquals(decodeFile[Json](file), Right(glossary))
+    assertEquals(decodeFileAccumulating[Json](file), Validated.valid(glossary))
+    assertEquals(parseFile(file), Right(glossary))
   }
 
   test("parseByteBuffer and decodeByteBuffer(Accumulating) should parse a byte buffer") {
@@ -46,9 +61,9 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val bytes = source.map(_.toByte).toArray
     source.close()
 
-    assert(decodeByteBuffer[Json](ByteBuffer.wrap(bytes)) === Right(glossary))
-    assert(decodeByteBufferAccumulating[Json](ByteBuffer.wrap(bytes)) == Validated.valid(glossary))
-    assert(parseByteBuffer(ByteBuffer.wrap(bytes)) === Right(glossary))
+    assertEquals(decodeByteBuffer[Json](ByteBuffer.wrap(bytes)), Right(glossary))
+    assertEquals(decodeByteBufferAccumulating[Json](ByteBuffer.wrap(bytes)), Validated.valid(glossary))
+    assertEquals(parseByteBuffer(ByteBuffer.wrap(bytes)), Right(glossary))
   }
 
   test("parseByteArray and decodeByteArray(Accumulating) should parse a byte array") {
@@ -57,8 +72,8 @@ class JawnParserSuite extends CirceMunitSuite with EqInstances {
     val bytes = source.map(_.toByte).toArray
     source.close()
 
-    assert(decodeByteArray[Json](bytes) === Right(glossary))
-    assert(decodeByteArrayAccumulating[Json](bytes) == Validated.valid(glossary))
-    assert(parseByteArray(bytes) === Right(glossary))
+    assertEquals(decodeByteArray[Json](bytes), Right(glossary))
+    assertEquals(decodeByteArrayAccumulating[Json](bytes), Validated.valid(glossary))
+    assertEquals(parseByteArray(bytes), Right(glossary))
   }
 }

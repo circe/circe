@@ -1,7 +1,6 @@
 package io.circe.generic.simple
 
 import io.circe.generic.simple.util.macros.JsonCodecMacros
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 class JsonCodec(

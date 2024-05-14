@@ -1,41 +1,90 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.kernel.instances.string._
-import cats.syntax.eq._
-import cats.syntax.show._
+import cats.syntax.all._
 import io.circe.CursorOp._
+import io.circe.parser.decode
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
+import org.scalacheck.Prop._
 
 trait GenCursorOps {
-  val arrayMoves: Gen[List[CursorOp]] = Gen.listOf(
-    Gen.oneOf(
-      Gen.const(MoveLeft),
-      Gen.const(MoveRight),
-      Gen.choose(1, 10000).map(LeftN),
-      Gen.choose(1, 10000).map(RightN)
-    )
-  )
+  val arrayMoves: Gen[List[CursorOp]] = {
+
+    def loop(movesRemaining: Int, leftMoves: Int, rightMoves: Int, acc: Gen[List[CursorOp]]): Gen[List[CursorOp]] =
+      if (movesRemaining <= 0) {
+        acc
+      } else {
+        if (leftMoves >= rightMoves) {
+          // Can't move left again, otherwise we'll go < the 0 index.
+          loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
+        } else {
+          // Can move either direction
+          Gen
+            .oneOf(
+              MoveLeft,
+              MoveRight
+            )
+            .flatMap {
+              case MoveLeft =>
+                loop(movesRemaining - 1, leftMoves + 1, rightMoves, acc.map(value => MoveLeft :: value))
+              case MoveRight =>
+                loop(movesRemaining - 1, leftMoves, rightMoves + 1, acc.map(value => MoveRight :: value))
+            }
+        }
+      }
+
+    Gen.choose(1, 100).flatMap(moves => loop(moves, 0, 0, Gen.const(List.empty)))
+  }
 
   val downFields: Gen[List[CursorOp]] = Gen.listOf(Gen.identifier.map(DownField))
 }
 
 class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
+  import ShowErrorSuite._
+
   test("Show[ParsingFailure] should produce the expected output") {
-    assert(ParsingFailure("the message", new Exception()).show === "ParsingFailure: the message")
+    assertEquals(ParsingFailure("the message", new RuntimeException()).show, "ParsingFailure: the message")
   }
 
   test("Show[DecodingFailure] should produce the expected output on a small example") {
     val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
 
-    assert(DecodingFailure("the message", ops).show === "DecodingFailure at .foo.bar[2]: the message")
+    assertEquals(DecodingFailure("the message", ops).show, "DecodingFailure at .foo.bar[2]: the message")
+  }
+
+  test("DecodingFailure.toString should be equivalent to Show") {
+    val ops = List(MoveRight, MoveRight, DownArray, DownField("bar"), DownField("foo"))
+
+    val df = DecodingFailure("the message", ops)
+    assertEquals(df.show, df.toString)
   }
 
   test("Show[DecodingFailure] should produce the expected output on a larger example") {
     val ops = List(
       MoveLeft,
-      LeftN(2),
-      RightN(5),
+      MoveLeft,
+      MoveLeft,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
+      MoveRight,
       DownArray,
       DownArray,
       DownField("bar"),
@@ -47,18 +96,18 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
     )
 
     val expected = "DecodingFailure at .foo.bar[0][2]: the message"
-    assert(DecodingFailure("the message", ops).show === expected)
+    assertEquals(DecodingFailure("the message", ops).show, expected)
   }
 
   property("Show[DecodingFailure] should display field selection") {
     Prop.forAll(downFields) { moves =>
       val selection = moves.foldRight("") {
         case (DownField(f), s) => s"$s.$f"
-        case (_, s)            => s
+        case (_, s)            => throw new AssertionError("Impossible case")
       }
 
       val expected = s"DecodingFailure at $selection: the message"
-      DecodingFailure("the message", moves).show === expected
+      DecodingFailure("the message", moves).show ?= expected
     }
   }
 
@@ -68,13 +117,104 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       val index = moves.foldLeft(0) {
         case (i, MoveLeft)  => i - 1
         case (i, MoveRight) => i + 1
-        case (i, LeftN(n))  => i - n
-        case (i, RightN(n)) => i + n
         case (i, _)         => i
       }
 
       val expected = s"DecodingFailure at [$index]: the message"
-      DecodingFailure("the message", ops).show === expected
+      DecodingFailure("the message", ops).show ?= expected
     }
+  }
+
+  test("Failing error messages on decoders should be of the typical format.") {
+    val json: Json =
+      Json.fromJsonObject(
+        JsonObject(
+          "derp" -> Json.fromInt(1)
+        )
+      )
+
+    assertEquals(
+      Decoder[TestData].decodeJson(json).leftMap(_.show),
+      Left("DecodingFailure at .foo: Missing required field")
+    )
+  }
+
+  test("Failing error messages on decoders should show whole path form root.") {
+    val jsonStringCase1 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase2 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": "string"
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase3 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test"
+        |   }
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase4 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test",
+        |     "bar": "invalid"
+        |   }
+        | }
+        |}""".stripMargin
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase1).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase2).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.foo: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase3).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase4).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Int")
+    )
+  }
+}
+
+object ShowErrorSuite {
+  final case class TestData(foo: String, bar: Int)
+
+  final case class TestDataNested(nested: TestData)
+  final case class TestDataRoot(foo: String, bar: TestDataNested)
+
+  object TestData {
+    implicit val decoder: Decoder[TestData] =
+      Decoder.forProduct2("foo", "bar")(TestData.apply _)
+  }
+
+  object TestDataNested {
+    implicit val decoder: Decoder[TestDataNested] =
+      Decoder.forProduct1("nested")(TestDataNested.apply _)
+  }
+  object TestDataRoot {
+    implicit val decoder: Decoder[TestDataRoot] =
+      Decoder.forProduct2("foo", "bar")(TestDataRoot.apply _)
   }
 }

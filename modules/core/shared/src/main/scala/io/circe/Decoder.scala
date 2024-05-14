@@ -1,48 +1,76 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ ApplicativeError, MonadError, SemigroupK }
-import cats.data.{
-  Chain,
-  Kleisli,
-  NonEmptyChain,
-  NonEmptyList,
-  NonEmptyMap,
-  NonEmptySet,
-  NonEmptyVector,
-  StateT,
-  Validated,
-  ValidatedNel
-}
-import cats.syntax.either._
-import cats.data.Validated.{ Invalid, Valid }
-import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
+import cats.ApplicativeError
+import cats.Eval
+import cats.MonadError
+import cats.SemigroupK
+import cats.data.Chain
+import cats.data.Kleisli
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
+import cats.data.NonEmptyVector
+import cats.data.StateT
+import cats.data.Validated
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
+import cats.data.ValidatedNel
+import cats.instances.either.catsStdInstancesForEither
+import cats.instances.either.catsStdSemigroupKForEither
 import cats.kernel.Order
+import cats.syntax.either._
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.`export`.Exported
+
 import java.io.Serializable
-import java.time.{
-  DateTimeException,
-  Duration,
-  Instant,
-  LocalDate,
-  LocalDateTime,
-  LocalTime,
-  MonthDay,
-  OffsetDateTime,
-  OffsetTime,
-  Period,
-  Year,
-  YearMonth,
-  ZoneId,
-  ZoneOffset,
-  ZonedDateTime
-}
+import java.net.URI
+import java.net.URISyntaxException
+import java.time.DateTimeException
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.MonthDay
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.Period
+import java.time.Year
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
 import scala.annotation.tailrec
-import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
+import scala.collection.immutable.Set
+import scala.collection.immutable.SortedMap
+import scala.collection.immutable.SortedSet
+import scala.collection.immutable.{ Map => ImmutableMap }
 import scala.collection.mutable.Builder
-import scala.util.{ Failure, Success, Try }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 /**
  * A type class that provides a way to produce a value of type `A` from a [[Json]] value.
@@ -59,6 +87,21 @@ trait Decoder[A] extends Serializable { self =>
     case Left(e)  => Validated.invalidNel(e)
   }
 
+  private[this] def cursorToDecodingFailure(cursor: ACursor): DecodingFailure = {
+    val reason: Eval[DecodingFailure.Reason] =
+      Eval.later(
+        cursor match {
+          case cursor: FailedCursor if cursor.missingField =>
+            DecodingFailure.Reason.MissingField
+          case _ =>
+            val field: String = cursor.pathString.replaceFirst("^\\.", "")
+            DecodingFailure.Reason.CustomReason(s"Couldn't decode $field")
+        }
+      )
+
+    DecodingFailure(reason, Some(cursor.pathToRoot), Eval.later(cursor.history))
+  }
+
   /**
    * Decode the given [[ACursor]].
    *
@@ -69,16 +112,14 @@ trait Decoder[A] extends Serializable { self =>
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
     case _ =>
-      Left(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
-      )
+      Left(cursorToDecodingFailure(c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
     case _ =>
       Validated.invalidNel(
-        DecodingFailure("Attempt to decode value on failed cursor", c.history)
+        cursorToDecodingFailure(c)
       )
   }
 
@@ -86,9 +127,6 @@ trait Decoder[A] extends Serializable { self =>
    * Decode the given [[Json]] value.
    */
   final def decodeJson(j: Json): Decoder.Result[A] = apply(HCursor.fromJson(j))
-
-  @deprecated("Use decodeAccumulating", "0.12.0")
-  final def accumulating(c: HCursor): Decoder.AccumulatingResult[A] = decodeAccumulating(c)
 
   /**
    * Map a function over this [[Decoder]].
@@ -578,7 +616,7 @@ object Decoder
   implicit final val decodeJsonObject: Decoder[JsonObject] = new Decoder[JsonObject] {
     final def apply(c: HCursor): Result[JsonObject] = c.value.asObject match {
       case Some(v) => Right(v)
-      case None    => Left(DecodingFailure("JsonObject", c.history))
+      case None    => Left(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
     }
   }
 
@@ -588,7 +626,7 @@ object Decoder
   implicit final val decodeJsonNumber: Decoder[JsonNumber] = new Decoder[JsonNumber] {
     final def apply(c: HCursor): Result[JsonNumber] = c.value.asNumber match {
       case Some(v) => Right(v)
-      case None    => Left(DecodingFailure("JsonNumber", c.history))
+      case None    => Left(DecodingFailure(WrongTypeExpectation("number", c.value), c.history))
     }
   }
 
@@ -598,7 +636,7 @@ object Decoder
   implicit final val decodeString: Decoder[String] = new Decoder[String] {
     final def apply(c: HCursor): Result[String] = c.value match {
       case Json.JString(string) => Right(string)
-      case _                    => Left(DecodingFailure("String", c.history))
+      case json                 => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
 
@@ -610,7 +648,8 @@ object Decoder
       case Json.JObject(obj) if obj.isEmpty => Right(())
       case Json.JArray(arr) if arr.isEmpty  => Right(())
       case other if other.isNull            => Right(())
-      case _                                => Left(DecodingFailure("Unit", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("'null' or '[]' or '{}'", json), c.history))
     }
   }
 
@@ -620,7 +659,8 @@ object Decoder
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
     final def apply(c: HCursor): Result[Boolean] = c.value match {
       case Json.JBoolean(b) => Right(b)
-      case _                => Left(DecodingFailure("Boolean", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("'true' or 'false'", json), c.history))
     }
   }
 
@@ -637,7 +677,8 @@ object Decoder
   implicit final val decodeChar: Decoder[Char] = new Decoder[Char] {
     final def apply(c: HCursor): Result[Char] = c.value match {
       case Json.JString(string) if string.length == 1 => Right(string.charAt(0))
-      case _                                          => Left(DecodingFailure("Char", c.history))
+      case json =>
+        Left(DecodingFailure(WrongTypeExpectation("character", json), c.history))
     }
   }
 
@@ -901,41 +942,65 @@ object Decoder
    * @group Decoding
    */
   implicit final lazy val decodeUUID: Decoder[UUID] = new Decoder[UUID] {
-    private[this] def fail(c: HCursor): Result[UUID] = Left(DecodingFailure("UUID", c.history))
 
     final def apply(c: HCursor): Result[UUID] = c.value match {
       case Json.JString(string) if string.length == 36 =>
         try Right(UUID.fromString(string))
         catch {
-          case _: IllegalArgumentException => fail(c)
+          case _: IllegalArgumentException =>
+            Left(DecodingFailure("Couldn't decode a valid UUID", c.history))
         }
-      case _ => fail(c)
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
-
-  private[this] final val rightNone: Either[DecodingFailure, Option[Nothing]] = Right(None)
-  private[this] final val validNone: ValidatedNel[DecodingFailure, Option[Nothing]] = Validated.valid(None)
-
-  private[circe] final val keyMissingNone: Decoder.Result[Option[Nothing]] = Right(None)
-  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[Option[Nothing]] =
-    Validated.valid(None)
 
   /**
    * @group Decoding
    */
-  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
-    final def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
+  implicit final lazy val decodeURI: Decoder[URI] = new Decoder[URI] {
+
+    final def apply(c: HCursor): Result[URI] = c.value match {
+      case Json.JString(string) =>
+        try Right(new URI(string))
+        catch {
+          case _: URISyntaxException =>
+            Left(DecodingFailure("String could not be parsed as a URI reference, it violates RFC 2396.", c.history))
+          case _: NullPointerException =>
+            Left(DecodingFailure("String is null.", c.history))
+        }
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
+    }
+  }
+
+  private[this] final val rightNone: Either[DecodingFailure, None.type] = Right(None)
+  private[this] final val validNone: ValidatedNel[DecodingFailure, None.type] = Validated.valid(None)
+
+  private[circe] final val keyMissingNone: Decoder.Result[None.type] = Right(None)
+  private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
+    Validated.valid(None)
+
+  /**
+   * A decoder for `Option[A]`.
+   *
+   * This is modeled as a separate, named, subtype because Option decoders
+   * often have special semantics around the handling of `JNull`. By having
+   * this as a named subtype, we premit certain optimizations that would
+   * otherwise not be possible. See `circe-generic-extras` for some examples.
+   */
+  final class OptionDecoder[A](implicit A: Decoder[A]) extends Decoder[Option[A]] {
+    final override def apply(c: HCursor): Result[Option[A]] = tryDecode(c)
 
     final override def tryDecode(c: ACursor): Decoder.Result[Option[A]] = c match {
       case c: HCursor =>
         if (c.value.isNull) rightNone
         else
-          d(c) match {
+          A(c) match {
             case Right(a) => Right(Some(a))
             case Left(df) => Left(df)
           }
       case c: FailedCursor =>
-        if (!c.incorrectFocus) keyMissingNone else Left(DecodingFailure("[A]Option[A]", c.history))
+        if (!c.incorrectFocus) keyMissingNone
+        else Left(DecodingFailure(MissingField, c.history))
     }
 
     final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[A]] = tryDecodeAccumulating(c)
@@ -944,15 +1009,20 @@ object Decoder
       case c: HCursor =>
         if (c.value.isNull) validNone
         else
-          d.decodeAccumulating(c) match {
+          A.decodeAccumulating(c) match {
             case Valid(a)       => Valid(Some(a))
             case i @ Invalid(_) => i
           }
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNoneAccumulating
-        else Validated.invalidNel(DecodingFailure("[A]Option[A]", c.history))
+        else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
+
+  /**
+   * @group Decoding
+   */
+  implicit final def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new OptionDecoder[A]
 
   /**
    * @group Decoding
@@ -965,7 +1035,24 @@ object Decoder
   implicit final val decodeNone: Decoder[None.type] = new Decoder[None.type] {
     final def apply(c: HCursor): Result[None.type] = if (c.value.isNull) Right(None)
     else {
-      Left(DecodingFailure("None", c.history))
+      Left(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+    }
+    final override def tryDecode(c: ACursor): Decoder.Result[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) rightNone
+        else Left(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNone
+        else Left(DecodingFailure(MissingField, c.history))
+    }
+
+    final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[None.type] = c match {
+      case c: HCursor =>
+        if (c.value.isNull) validNone
+        else Validated.invalidNel(DecodingFailure(WrongTypeExpectation("null", c.value), c.history))
+      case c: FailedCursor =>
+        if (!c.incorrectFocus) keyMissingNoneAccumulating
+        else Validated.invalidNel(DecodingFailure(MissingField, c.history))
     }
   }
 
@@ -1039,6 +1126,15 @@ object Decoder
   /**
    * @group Collection
    */
+  implicit final def decodeNonEmptySeq[A](implicit decodeA: Decoder[A]): Decoder[NonEmptySeq[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptySeq[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+      final protected val create: (A, List[A]) => NonEmptySeq[A] = (h, t) => NonEmptySeq(h, t)
+    }
+
+  /**
+   * @group Collection
+   */
   implicit final def decodeNonEmptyVector[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyVector[A]] =
     new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]](decodeA) {
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
@@ -1089,7 +1185,7 @@ object Decoder
     decodeB: Decoder[B]
   ): Decoder[Either[A, B]] = new Decoder[Either[A, B]] {
     private[this] def failure(c: HCursor): Decoder.Result[Either[A, B]] =
-      Left(DecodingFailure("[A, B]Either[A, B]", c.history))
+      Left(DecodingFailure(MissingField, c.history))
 
     final def apply(c: HCursor): Result[Either[A, B]] = {
       val lf = c.downField(leftKey)
@@ -1145,13 +1241,13 @@ object Decoder
           case e: DateTimeException =>
             val message = e.getMessage
 
-            if (message.eq(null)) Left(DecodingFailure(name, c.history))
+            if (message.eq(null)) Left(DecodingFailure("Couldn't decode time", c.history))
             else {
               val newMessage = formatMessage(string, message)
-              Left(DecodingFailure(s"$name ($newMessage)", c.history))
+              Left(DecodingFailure(message = newMessage, ops = c.history))
             }
         }
-      case _ => Left(DecodingFailure(name, c.history))
+      case json => Left(DecodingFailure(WrongTypeExpectation("string", json), c.history))
     }
   }
 
@@ -1390,6 +1486,8 @@ object Decoder
         fa.product(fb).map {
           case (a, b) => f(a, b)
         }
+      override final def map2Eval[A, B, Z](fa: Decoder[A], fb: Eval[Decoder[B]])(f: (A, B) => Z): Eval[Decoder[Z]] =
+        fb.map(fb => map2(fa, fb)(f))
       override final def productR[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[B] = fa.product(fb).map(_._2)
       override final def productL[A, B](fa: Decoder[A])(fb: Decoder[B]): Decoder[A] = fa.product(fb).map(_._1)
 

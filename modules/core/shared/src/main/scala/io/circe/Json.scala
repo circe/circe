@@ -1,7 +1,26 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ Applicative, Eq, Show }
+import cats.Applicative
+import cats.Eq
+import cats.Show
 import io.circe.numbers.BiggerDecimal
+
 import java.io.Serializable
 
 import scala.collection.mutable.ListBuffer
@@ -114,15 +133,14 @@ sealed abstract class Json extends Product with Serializable {
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d(hcursor)
 
   /**
-   * Pretty-print this JSON value to a string using the given pretty-printer.
+   * Attempts to decode this JSON value to another data type, accumulating failures.
    */
-  final def printWith(p: Printer): String = p.print(this)
+  final def asAccumulating[A](implicit d: Decoder[A]): Decoder.AccumulatingResult[A] = d.decodeAccumulating(hcursor)
 
   /**
    * Pretty-print this JSON value to a string using the given pretty-printer.
    */
-  @deprecated("Use printWith", "0.12.0")
-  final def pretty(p: Printer): String = printWith(p)
+  final def printWith(p: Printer): String = p.print(this)
 
   /**
    * Pretty-print this JSON value to a string with no spaces.
@@ -280,7 +298,7 @@ object Json {
     def onObject(value: JsonObject): X
   }
 
-  private[circe] final case object JNull extends Json {
+  private[circe] case object JNull extends Json {
     final def foldWith[X](folder: Folder[X]): X = folder.onNull
 
     final def isNull: Boolean = true
@@ -554,9 +572,21 @@ object Json {
   final def fromString(value: String): Json = JString(value)
 
   /**
+   * Create a `Json` value representing a JSON String or null from an `Option[String]`.
+   *
+   * Note that this does not parse the argument.
+   */
+  final def fromStringOrNull(value: Option[String]): Json = value.fold(Json.Null)(fromString)
+
+  /**
    * Create a `Json` value representing a JSON boolean.
    */
   final def fromBoolean(value: Boolean): Json = if (value) True else False
+
+  /**
+   * Create a `Json` value representing a JSON boolean or null from an `Option[Boolean]`.
+   */
+  final def fromBooleanOrNull(value: Option[Boolean]): Json = value.fold(Json.Null)(fromBoolean)
 
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
@@ -564,9 +594,19 @@ object Json {
   final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
 
   /**
+   * Create a `Json` value representing a JSON number or a null from an `Option[Int]`.
+   */
+  final def fromIntOrNull(value: Option[Int]): Json = value.fold(Json.Null)(fromInt)
+
+  /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
   final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an optional `Long`.
+   */
+  final def fromLongOrNull(value: Option[Long]): Json = value.fold(Json.Null)(fromLong)
 
   /**
    * Try to create a `Json` value representing a JSON number from a `Double`.
@@ -583,6 +623,11 @@ object Json {
   final def fromFloat(value: Float): Option[Json] = if (isReal(value)) Some(JNumber(JsonFloat(value))) else None
 
   /**
+   * Create a `Json` value representing a JSON number or null from an optional `Double`
+   */
+  final def fromDoubleOrNull(value: Option[Double]): Json = value.fold(Json.Null)(fromDoubleOrNull)
+
+  /**
    * Create a `Json` value representing a JSON number or null from a `Double`.
    *
    * The result is a JSON null if the argument cannot be represented as a JSON
@@ -597,6 +642,11 @@ object Json {
    * number.
    */
   final def fromFloatOrNull(value: Float): Json = if (isReal(value)) JNumber(JsonFloat(value)) else Null
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an optional `Float`
+   */
+  final def fromFloatOrNull(value: Option[Float]): Json = value.fold(Json.Null)(fromFloatOrNull)
 
   /**
    * Create a `Json` value representing a JSON number or string from a `Double`.
@@ -624,9 +674,19 @@ object Json {
   )
 
   /**
+   * Create a `Json` value representing a JSON number or null from an `Option[BigInt]`.
+   */
+  final def fromBigIntOrNull(value: Option[BigInt]): Json = value.fold(Json.Null)(fromBigInt)
+
+  /**
    * Create a `Json` value representing a JSON number from a `BigDecimal`.
    */
   final def fromBigDecimal(value: BigDecimal): Json = JNumber(JsonBigDecimal(value.underlying))
+
+  /**
+   * Create a `Json` value representing a JSON number or null from an `Option[BigDecimal]`.
+   */
+  final def fromBigDecimalOrNull(value: Option[BigDecimal]): Json = value.fold(Json.Null)(fromBigDecimal)
 
   /**
    * Calling `.isFinite` directly on the value boxes; we explicitly avoid that here.
@@ -638,13 +698,14 @@ object Json {
    */
   private[this] def isReal(value: Float): Boolean = java.lang.Float.isFinite(value)
 
-  private[this] final def arrayEq(x: Seq[Json], y: Seq[Json]): Boolean = {
+  private[this] final def arrayEq(x: Vector[Json], y: Vector[Json]): Boolean = {
+    if (x.length != y.length) return false
     val it0 = x.iterator
     val it1 = y.iterator
-    while (it0.hasNext && it1.hasNext) {
-      if (Json.eqJson.neqv(it0.next, it1.next)) return false
+    while (it0.hasNext) {
+      if (Json.eqJson.neqv(it0.next(), it1.next())) return false
     }
-    it0.hasNext == it1.hasNext
+    true
   }
 
   implicit final val eqJson: Eq[Json] = Eq.instance {

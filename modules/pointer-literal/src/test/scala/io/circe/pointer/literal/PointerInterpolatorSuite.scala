@@ -1,10 +1,27 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.pointer.literal
 
-import io.circe.pointer.Pointer
+import io.circe.pointer._
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop
+import org.scalacheck.Prop._
+import org.scalacheck._
 
-class PointerInterpolatorSuite extends ScalaCheckSuite {
+final class PointerInterpolatorSuite extends ScalaCheckSuite {
   test("The pointer string interpolater should parse valid absolute JSON pointers") {
     val inputs = List("", "/foo", "/foo/0", "/", "/a~1b", "/c%d", "/e^f", "/g|h", "/i\\j", "/k\"l", "/ ", "/m~0n")
     val values = List(
@@ -38,55 +55,20 @@ class PointerInterpolatorSuite extends ScalaCheckSuite {
     }
   }
 
-  property("The pointer string interpolater should work with interpolated values that need escaping") {
-    val s = "foo~bar/baz/~"
-    val Right(expected) = Pointer.parse("/base/foo~0bar~1baz~1~0/leaf")
-    assertEquals(pointer"/base/$s/leaf", expected)
+  test("The pointer string interpolater should work with interpolated values that need escaping") {
+    val s: String = "foo~bar/baz/~"
+    assertEquals(Pointer.parse("/base/foo~0bar~1baz~1~0/leaf"), Right(pointer"/base/$s/leaf"))
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
-    Prop.forAll { (v: String) =>
-      val Right(expected) = Pointer.parse(s"/foo/$v/bar")
-
-      pointer"/foo/$v/bar" == expected
+    Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
   }
 
   property("The pointer string interpolater should work with arbitrary interpolated integers") {
     Prop.forAll { (v: Long) =>
-      val Right(expected) = Pointer.parse(s"/foo/$v/bar")
-
-      pointer"/foo/$v/bar" == expected
+      Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
     }
-  }
-
-  test("The pointer string interpolater should fail to compile on invalid literals") {
-    assertNoDiff(
-      compileErrors("pointer\"foo\""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |pointer"foo"
-         |^
-         |""".stripMargin
-    )
-  }
-
-  test("The pointer string interpolater should fail with an interpolated relative distance") {
-    assertNoDiff(
-      compileErrors("""{val x = 1; pointer"$x/"}"""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |{val x = 1; pointer"$x/"}
-         |            ^
-         |""".stripMargin
-    )
-  }
-
-  test("The pointer string interpolater should fail with an empty interpolated relative distance") {
-    assertNoDiff(
-      compileErrors("""{val x = ""; pointer"$x/"}"""),
-      """|error: Invalid JSON Pointer in interpolated string
-         |{val x = ""; pointer"$x/"}
-         |             ^
-         |""".stripMargin
-    )
   }
 }

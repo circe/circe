@@ -1,9 +1,27 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import java.io.Serializable
 import java.lang.StringBuilder
-import java.nio.{ ByteBuffer, CharBuffer }
-import java.nio.charset.{ Charset, StandardCharsets }
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
 
@@ -74,8 +92,13 @@ final case class Printer(
     final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
   }
 
+  @deprecated("Use AppendableFolder", since = "0.14.2")
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
+  ) extends AppendableFolder(writer)
+
+  private[this] sealed class AppendableFolder(
+    writer: Appendable
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
     final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
     final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
@@ -189,18 +212,10 @@ final case class Printer(
       w
     } else new StringBuilder()
 
-    val folder = new StringBuilderFolder(writer)
-
-    json.foldWith(folder)
+    unsafePrintToAppendable(json, writer)
 
     writer.toString
   }
-
-  /**
-   * Returns a string representation of a pretty-printed JSON value.
-   */
-  @deprecated("Use print", "0.12.0")
-  final def pretty(json: Json): String = print(json)
 
   @transient
   private[this] final val sizePredictor: ThreadLocal[Printer.SizePredictor] =
@@ -215,20 +230,22 @@ final case class Printer(
       else Printer.NoSizePredictor
 
     val writer = new Printer.AppendableByteBuffer(cs, predictor)
-    val folder = new AppendableByteBufferFolder(writer)
-
-    json.foldWith(folder)
+    unsafePrintToAppendable(json, writer)
 
     writer.toByteBuffer
   }
 
   final def printToByteBuffer(json: Json): ByteBuffer =
     printToByteBuffer(json, StandardCharsets.UTF_8)
-  @deprecated("Use printToByteBuffer", "0.12.0")
-  final def prettyByteBuffer(json: Json, cs: Charset): ByteBuffer = printToByteBuffer(json)
 
-  @deprecated("Use printToByteBuffer", "0.12.0")
-  final def prettyByteBuffer(json: Json): ByteBuffer = printToByteBuffer(json)
+  /**
+   * Prints the JSON value by appending directly to the provided `Appendable`.
+   * This method is UNSAFE and SIDE-EFFECTING!
+   */
+  final def unsafePrintToAppendable(json: Json, out: Appendable): Unit = {
+    val folder = new AppendableFolder(out)
+    json.foldWith(folder)
+  }
 
   /**
    * The same pretty-printer configuration that outputs fields in sorted order.
