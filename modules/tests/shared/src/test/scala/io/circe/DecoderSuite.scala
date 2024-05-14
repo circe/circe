@@ -814,21 +814,4 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     // (1 for each instance, and 1 that gets created but not called because because the last "cdr" field is missing)
     assertEquals(counter, 1)
   }
-
-  test("Decoder.recursive should be stack safe") {
-    // Pretty much the same as the one in the other test, we just don't need to count for this one
-    implicit def uglyListDecoder[A: Decoder]: Decoder[List[A]] =
-      Decoder.recursive[List[A]] { implicit recurse =>
-        Decoder.instance { c =>
-          (c.downField("car").as[A], c.downField("cdr").as[Option[List[A]]]).mapN(_ :: _.getOrElse(Nil))
-        }
-      }
-    val list = List.range(0, 10000)
-    val json = list.foldRight[Json](Json.Null) { (i, accum) =>
-      if (accum === Json.Null) Json.obj("car" := i)
-      else Json.obj("car" := i, "cdr" := accum)
-    }
-
-    assertEquals(json.as[List[Int]], list.asRight)
-  }
 }

@@ -26,8 +26,8 @@ import cats.data.Kleisli
 import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
-import cats.data.NonEmptySet
 import cats.data.NonEmptySeq
+import cats.data.NonEmptySet
 import cats.data.NonEmptyVector
 import cats.data.StateT
 import cats.data.Validated
@@ -602,6 +602,9 @@ object Decoder
    *
    * Certain recursive data structures (particularly when generic) greatly benefit from
    * being able to be written this way. See `cats.Defer`
+   *
+   * Note: while a `Decoder` written using `Decoder.recursive` can prevent unneeded creation of
+   * `Decoder` instances when recursing, the resulting `Decoder` cannot be guaranteed to be stack-safe.
    *
    * @group Utilities
    */
