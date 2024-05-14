@@ -1,10 +1,5 @@
----
-layout: docs
-title:  "Traversing and modifying JSON"
-position: 2
----
-
-# Traversing and modifying JSON
+Traversing and modifying JSON
+=============================
 
 Working with JSON in circe usually involves using a cursor. Cursors are used both for extracting
 data and for performing modification.
@@ -84,7 +79,6 @@ circe has three slightly different cursor implementations:
 
 ## Optics
 
-Optics are an alternative way to traverse JSON documents. See the [Optics page](optics.html) for
+Optics are an alternative way to traverse JSON documents. See the [Optics page](optics.md) for
 more details.
 
-{% include references.md %}

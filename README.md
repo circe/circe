@@ -2,8 +2,8 @@
 
 [![Build status](https://img.shields.io/github/actions/workflow/status/circe/circe/ci.yml)](https://github.com/circe/circe/actions)
 [![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
-[![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/circe/circe)
-[![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-core_2.13)
+![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13?versionPrefix=0.14)
+[![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/XF3CXcMzqD)
 
 circe is a JSON library for Scala (and [Scala.js][scala-js]).
 
@@ -21,7 +21,7 @@ Are you using circe? Please consider opening a pull request to list your organiz
 * [Apollo Agriculture](https://apolloagriculture.com/)
 * [AutoScout24](https://www.autoscout24.com/)
 * [Babylon Health](https://www.babylonhealth.com/)
-* [Banno inside of Jack Henry & Associates](https://banno.com/)
+* [Banno inside of Jack Henry](https://banno.com/)
 * [BBC](http://www.bbc.co.uk)
 * [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
 * [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
@@ -181,12 +181,11 @@ circe is a fork of [Argonaut][argonaut], and if you find it at all useful, you s
 [Mark Hibberd][markhibberd], [Tony Morris][tonymorris], [Kenji Yoshida][xuwei-k], and the rest of
 the [Argonaut contributors][argonaut-contributors].
 
-circe is currently maintained by [Darren Gibson][zarthross] and [Zach McCoy][zmccoy]. 
+circe is currently maintained by [Darren Gibson][zarthross] and [Erlend Hamnaberg][hamnis]. 
 After the 1.0 release, all pull requests will require two
 sign-offs by a maintainer to be merged.
 
-The circe project supports the [Scala code of conduct][code-of-conduct] and wants
-all of its channels (Gitter, GitHub, etc.) to be inclusive environments.
+The circe project is a typelevel affiliate project, and follow the [Typelevel Code of Conduct](CODE_OF_CONDUCT.md)
 
 Please see the [contributors' guide](CONTRIBUTING.md) for details on how to submit a pull request.
 
@@ -243,6 +242,7 @@ limitations under the License.
 [github4s]: https://github.com/47deg/github4s
 [gitter]: https://gitter.im/circe/circe
 [guardian-content-api-models]: https://github.com/guardian/content-api-models
+[hamnis]: https://github.com/hamnis
 [http4s]: https://github.com/http4s/http4s
 [iteratee]: https://github.com/travisbrown/iteratee
 [iglu]: https://github.com/snowplow/iglu

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.derivation
 
 import scala.deriving.Mirror
@@ -38,20 +54,31 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  inline final def derived[A](using conf: Configuration)(using inline mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
-    new ConfiguredEncoder[A] with SumOrProduct:
-      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemEncoders: List[Encoder[?]] = summonEncoders[mirror.MirroredElemTypes]
+  private def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
+    conf: Configuration,
+    mirror: Mirror.Of[A]
+  ): ConfiguredEncoder[A] = mirror match
+    case _: Mirror.ProductOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = false
+        def encodeObject(a: A) = encodeProduct(a)
+    case mirror: Mirror.SumOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = true
+        def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
 
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
+  private[derivation] inline final def encoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Encoder[?]] =
+    summonEncoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
+      case _: Mirror.ProductOf[A] => false
+      case _: Mirror.SumOf[A]     => true
+    })
 
-      final def encodeObject(a: A): JsonObject =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => encodeProduct(a)
-          case sum: Mirror.SumOf[A]   => encodeSum(sum.ordinal(a), a)
+  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
+    ConfiguredEncoder.of[A](encoders[A], summonLabels[mirror.MirroredElemLabels])
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,

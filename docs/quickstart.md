@@ -1,4 +1,5 @@
-## Quick start
+Quick Start
+===========
 
 circe is published to [Maven Central][maven-central] and cross-built for Scala 2.12 and 2.13,
 so you can just add the following to your build:
@@ -14,7 +15,7 @@ libraryDependencies ++= Seq(
 ```
 
 In case of large or deep-nested case classes, there is a chance to get stack overflow during compilation,
-please refer to [known-issues](codecs/known-issues.html) for workaround.
+please refer to [known-issues](codecs/known-issues.md) for workaround.
 
 If you're using the `@JsonCodec` macro annotations in circe's `generic-extras` module,
 you'll need to add `-Ymacro-annotations` to your compiler options on Scala 2.13,
@@ -30,7 +31,6 @@ addCompilerPlugin(
 Then type `sbt console` to start a REPL and then paste the following (this will also work from the
 root directory of this repository):
 
-{% scalafiddle %}
 ```scala
 import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
@@ -46,7 +46,6 @@ println(json)
 val decodedFoo = decode[Foo](json)
 println(decodedFoo)
 ```
-{% endscalafiddle %}
 
 Alternatively you can experiment with circe directly in your browser by clicking the `Run` button in the code block and
 making modifications in the code.

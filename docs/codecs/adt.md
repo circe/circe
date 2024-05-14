@@ -1,7 +1,5 @@
----
-layout: docs
-title:  "ADT (Algebraic Data Types)"
----
+ADT (Algebraic Data Types)
+=========================
 
 ### ADTs encoding and decoding
 
@@ -27,10 +25,10 @@ import io.circe.syntax._
 
 object GenericDerivation {
   implicit val encodeEvent: Encoder[Event] = Encoder.instance {
-    case foo @ Foo(_) => foo.asJson
-    case bar @ Bar(_) => bar.asJson
-    case baz @ Baz(_) => baz.asJson
-    case qux @ Qux(_) => qux.asJson
+    case foo: Foo => foo.asJson
+    case bar: Bar => bar.asJson
+    case baz: Baz => baz.asJson
+    case qux: Qux => qux.asJson
   }
 
   implicit val decodeEvent: Decoder[Event] =
@@ -64,7 +62,7 @@ Finally, this approach has limitations for ADTs that are recursively defined. Se
 
 ### A more generic solution
 
-As discussed [on Gitter](https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a), we can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
+We can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
 
 ```scala mdoc:silent
 // To suppress previously imported implicit codecs.

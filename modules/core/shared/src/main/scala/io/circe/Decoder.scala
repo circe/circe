@@ -1,52 +1,77 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ ApplicativeError, Defer, Eval, MonadError, SemigroupK }
-import cats.data.{
-  Chain,
-  Kleisli,
-  NonEmptyChain,
-  NonEmptyList,
-  NonEmptyMap,
-  NonEmptySet,
-  NonEmptyVector,
-  StateT,
-  Validated,
-  ValidatedNel
-}
-import cats.syntax.either._
-import cats.data.Validated.{ Invalid, Valid }
-import cats.instances.either.{ catsStdInstancesForEither, catsStdSemigroupKForEither }
+import cats.ApplicativeError
+import cats.Defer
+import cats.Eval
+import cats.MonadError
+import cats.SemigroupK
+import cats.data.Chain
+import cats.data.Kleisli
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
+import cats.data.NonEmptyVector
+import cats.data.StateT
+import cats.data.Validated
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
+import cats.data.ValidatedNel
+import cats.instances.either.catsStdInstancesForEither
+import cats.instances.either.catsStdSemigroupKForEither
 import cats.kernel.Order
+import cats.syntax.either._
+import io.circe.DecodingFailure.Reason.MissingField
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 import io.circe.`export`.Exported
 
 import java.io.Serializable
-import java.net.{ URI, URISyntaxException }
-import java.time.{
-  DateTimeException,
-  Duration,
-  Instant,
-  LocalDate,
-  LocalDateTime,
-  LocalTime,
-  MonthDay,
-  OffsetDateTime,
-  OffsetTime,
-  Period,
-  Year,
-  YearMonth,
-  ZoneId,
-  ZoneOffset,
-  ZonedDateTime
-}
+import java.net.URI
+import java.net.URISyntaxException
+import java.time.DateTimeException
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.MonthDay
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.Period
+import java.time.Year
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.UUID
-import io.circe.DecodingFailure.Reason.{ MissingField, WrongTypeExpectation }
-
 import scala.annotation.tailrec
-import scala.collection.immutable.{ Map => ImmutableMap, Set, SortedMap, SortedSet }
+import scala.collection.immutable.Set
+import scala.collection.immutable.SortedMap
+import scala.collection.immutable.SortedSet
+import scala.collection.immutable.{ Map => ImmutableMap }
 import scala.collection.mutable.Builder
-import scala.util.{ Failure, Success, Try }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 /**
  * A type class that provides a way to produce a value of type `A` from a [[Json]] value.
@@ -1107,6 +1132,15 @@ object Decoder
     new NonEmptySeqDecoder[A, List, NonEmptyList[A]](decodeA) {
       final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
       final protected val create: (A, List[A]) => NonEmptyList[A] = (h, t) => NonEmptyList(h, t)
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def decodeNonEmptySeq[A](implicit decodeA: Decoder[A]): Decoder[NonEmptySeq[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptySeq[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+      final protected val create: (A, List[A]) => NonEmptySeq[A] = (h, t) => NonEmptySeq(h, t)
     }
 
   /**

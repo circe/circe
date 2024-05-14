@@ -1,8 +1,25 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
 import cats.Applicative
 import cats.kernel.Eq
 import io.circe.cursor._
+
 import java.io.Serializable
 import scala.annotation.tailrec
 
@@ -208,15 +225,12 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   private[circe] final def pathToRoot: PathToRoot = {
     import PathToRoot._
 
-    // Move to the last cursor's parent or to the last cursor if the last
-    // cursor doesn't have a parent. This should only be invoked on lastOp
-    // states where the we expect the lastCursor to have a parent, if it
-    // doesn't, then we would skip the current lastCursor anyway.
+    // Move to the last cursor or to the last cursor`s parent
+    // if cursor is intermediate. Empty the last cursor should call
+    // termination of cursors`s traverse
     def lastCursorParentOrLastCursor(cursor: ACursor): ACursor =
       cursor.lastCursor match {
         case lastCursor: ArrayCursor =>
-          lastCursor.parent
-        case lastCursor: ObjectCursor =>
           lastCursor.parent
         case lastCursor =>
           lastCursor

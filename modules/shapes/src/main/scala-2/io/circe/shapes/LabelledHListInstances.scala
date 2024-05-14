@@ -1,10 +1,36 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.shapes
 
 import cats.data.Validated
 import cats.kernel.Eq
-import io.circe.{ Decoder, DecodingFailure, Encoder, HCursor, JsonObject, KeyDecoder, KeyEncoder }
-import shapeless.{ ::, HList, Widen, Witness }
-import shapeless.labelled.{ FieldType, field }
+import io.circe.Decoder
+import io.circe.DecodingFailure
+import io.circe.Encoder
+import io.circe.HCursor
+import io.circe.JsonObject
+import io.circe.KeyDecoder
+import io.circe.KeyEncoder
+import shapeless.::
+import shapeless.HList
+import shapeless.Widen
+import shapeless.Witness
+import shapeless.labelled.FieldType
+import shapeless.labelled.field
 
 trait LabelledHListInstances extends LowPriorityLabelledHListInstances {
 

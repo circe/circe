@@ -1,8 +1,24 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.kernel.instances.string._
 import cats.syntax.all._
 import io.circe.CursorOp._
+import io.circe.parser.decode
 import munit.ScalaCheckSuite
 import org.scalacheck.{ Gen, Prop }
 import org.scalacheck.Prop._
@@ -122,13 +138,83 @@ class ShowErrorSuite extends ScalaCheckSuite with GenCursorOps {
       Left("DecodingFailure at .foo: Missing required field")
     )
   }
+
+  test("Failing error messages on decoders should show whole path form root.") {
+    val jsonStringCase1 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase2 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": "string"
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase3 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test"
+        |   }
+        | }
+        |}""".stripMargin
+
+    val jsonStringCase4 =
+      """{
+        | "foo": "Test data",
+        | "bar": {
+        |   "nested": {
+        |     "foo": "test",
+        |     "bar": "invalid"
+        |   }
+        | }
+        |}""".stripMargin
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase1).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase2).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.foo: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase3).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Missing required field")
+    )
+
+    assertEquals(
+      decode[TestDataRoot](jsonStringCase4).leftMap(_.show),
+      Left("DecodingFailure at .bar.nested.bar: Int")
+    )
+  }
 }
 
 object ShowErrorSuite {
   final case class TestData(foo: String, bar: Int)
 
+  final case class TestDataNested(nested: TestData)
+  final case class TestDataRoot(foo: String, bar: TestDataNested)
+
   object TestData {
     implicit val decoder: Decoder[TestData] =
       Decoder.forProduct2("foo", "bar")(TestData.apply _)
+  }
+
+  object TestDataNested {
+    implicit val decoder: Decoder[TestDataNested] =
+      Decoder.forProduct1("nested")(TestDataNested.apply _)
+  }
+  object TestDataRoot {
+    implicit val decoder: Decoder[TestDataRoot] =
+      Decoder.forProduct2("foo", "bar")(TestDataRoot.apply _)
   }
 }

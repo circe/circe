@@ -1,7 +1,33 @@
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe
 
-import cats.{ Contravariant, Defer, Foldable }
-import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector, OneAnd, Validated }
+import cats.Contravariant
+import cats.Defer
+import cats.Foldable
+import cats.data.Chain
+import cats.data.NonEmptyChain
+import cats.data.NonEmptyList
+import cats.data.NonEmptyMap
+import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
+import cats.data.NonEmptyVector
+import cats.data.OneAnd
+import cats.data.Validated
 import io.circe.`export`.Exported
 
 import java.io.Serializable
@@ -35,7 +61,8 @@ import java.util.Currency
 import java.util.UUID
 import scala.Predef._
 import scala.collection.Map
-import scala.collection.immutable.{ Map => ImmutableMap, Set }
+import scala.collection.immutable.Set
+import scala.collection.immutable.{ Map => ImmutableMap }
 
 /**
  * A type class that provides a conversion from a value of type `A` to a [[Json]] value.
@@ -110,9 +137,11 @@ trait Encoder[A] extends Serializable { self =>
 object Encoder
     extends TupleEncoders
     with ProductEncoders
+    with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
-    with MidPriorityEncoders {
+    with MidPriorityEncoders
+    with EncoderDerivationRelaxed {
 
   /**
    * Return an instance for a given type `A`.
@@ -393,6 +422,14 @@ object Encoder
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
     new AsArray[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptySeq[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySeq[A]] =
+    new AsArray[NonEmptySeq[A]] {
+      final def encodeArray(a: NonEmptySeq[A]): Vector[Json] = a.toSeq.toVector.map(encodeA(_))
     }
 
   /**
