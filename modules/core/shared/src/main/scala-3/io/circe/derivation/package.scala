@@ -28,26 +28,50 @@ private[circe] inline def summonLabels[T <: Tuple]: List[String] =
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabels[ts]
 
-private[circe] inline def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
+@deprecated("Use summonEncoders(derivingForSum: Boolean) instead", "0.14.7")
+private[circe] inline final def summonEncoders[T <: Tuple](using Configuration): List[Encoder[_]] =
+  summonEncoders(false)
+
+private[circe] inline final def summonEncoders[T <: Tuple](inline derivingForSum: Boolean)(using
+  Configuration
+): List[Encoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonEncoder[t] :: summonEncoders[ts]
+    case _: (t *: ts)  => summonEncoder[t](derivingForSum) :: summonEncoders[ts](derivingForSum)
 
-private[circe] inline def summonEncoder[A](using Configuration): Encoder[A] =
+@deprecated("Use summonEncoder(derivingForSum: Boolean) instead", "0.14.7")
+private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A] =
+  summonEncoder(false)
+
+private[circe] inline final def summonEncoder[A](inline derivingForSum: Boolean)(using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
-    case _: Mirror.Of[A]     => ConfiguredEncoder.derived[A]
+    case m: Mirror.Of[A] =>
+      inline if (derivingForSum) ConfiguredEncoder.derived[A]
+      else error("Failed to find an instance of Encoder[" + typeName[A] + "]")
   }
 
-private[circe] inline def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+@deprecated("Use summonDecoders(derivingForSum: Boolean) instead", "0.14.7")
+private[circe] inline final def summonDecoders[T <: Tuple](using Configuration): List[Decoder[_]] =
+  summonDecoders(false)
+
+private[circe] inline final def summonDecoders[T <: Tuple](inline derivingForSum: Boolean)(using
+  Configuration
+): List[Decoder[_]] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
-    case _: (t *: ts)  => summonDecoder[t] :: summonDecoders[ts]
+    case _: (t *: ts)  => summonDecoder[t](derivingForSum) :: summonDecoders[ts](derivingForSum)
 
-private[circe] inline def summonDecoder[A](using Configuration): Decoder[A] =
+@deprecated("Use summonDecoder(derivingForSum: Boolean) instead", "0.14.7")
+private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A] =
+  summonDecoder(false)
+
+private[circe] inline final def summonDecoder[A](inline derivingForSum: Boolean)(using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
-    case _: Mirror.Of[A]     => ConfiguredDecoder.derived[A]
+    case m: Mirror.Of[A] =>
+      inline if (derivingForSum) ConfiguredDecoder.derived[A]
+      else error("Failed to find an instance of Decoder[" + typeName[A] + "]")
   }
 
 private[circe] inline def summonOrder[A]: Order[A] = summonFrom { case orderA: Order[A] => orderA }

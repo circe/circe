@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package io.circe
+package io.circe.derivation
 
-private[circe] trait DecoderDerivation
-private[circe] trait EncoderDerivation
-private[circe] trait EncoderDerivationRelaxed
-private[circe] trait CodecDerivation
-private[circe] trait CodecDerivationRelaxed
+import scala.quoted.*
+
+private def typeNameImpl[A: Type](using Quotes): Expr[String] = Expr(Type.show[A])
+
+private[derivation] inline def typeName[A]: String = ${ typeNameImpl[A] }

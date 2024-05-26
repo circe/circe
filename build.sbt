@@ -1,9 +1,10 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 
-val Scala212V: String = "2.12.18"
-val Scala213V: String = "2.13.12"
+val Scala212V: String = "2.12.19"
+val Scala213V: String = "2.13.13"
 val Scala3V: String = "3.3.3"
 
+ThisBuild / startYear := Some(2024)
 ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / tlCiReleaseBranches := Seq() // set to `series/0.14.x` once we get the automated publishing process up and running
 ThisBuild / tlCiReleaseTags := true
@@ -29,9 +30,9 @@ val refinedNativeVersion = "0.11.1"
 
 val paradiseVersion = "2.1.1"
 
-val scalaCheckVersion = "1.17.0"
+val scalaCheckVersion = "1.17.1"
 val munitVersion = "1.0.0-M11"
-val disciplineVersion = "1.5.1"
+val disciplineVersion = "1.6.0"
 val disciplineScalaTestVersion = "2.2.0"
 val disciplineMunitVersion = "2.0.0-M3"
 val scalaJavaTimeVersion = "2.5.0"
@@ -371,7 +372,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
 
 lazy val scodec = circeCrossModule("scodec")
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.37"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.38"
   )
   .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test

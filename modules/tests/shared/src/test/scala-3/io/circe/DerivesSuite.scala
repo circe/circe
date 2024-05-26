@@ -25,18 +25,16 @@ import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
 object DerivesSuite {
-  case class Box[A](a: A)
+  case class Box[A](a: A) derives Decoder, Encoder
 
   object Box {
-    given codec[A: Encoder: Decoder]: Codec[Box[A]] = Codec.AsObject.derived
-    given eqBox[A: Eq]: Eq[Box[A]] = Eq.by(_.a)
-    given arbitraryBox[A](using A: Arbitrary[A]): Arbitrary[Box[A]] = Arbitrary(A.arbitrary.map(Box(_)))
+    implicit def eqBox[A: Eq]: Eq[Box[A]] = Eq.by(_.a)
+    implicit def arbitraryBox[A](implicit A: Arbitrary[A]): Arbitrary[Box[A]] = Arbitrary(A.arbitrary.map(Box(_)))
   }
 
-  case class InnerBox[A](inner: A)
+  case class InnerBox[A](inner: A) derives Decoder, Encoder
 
   object InnerBox {
-    given codec[A: Encoder: Decoder]: Codec[InnerBox[A]] = Codec.AsObject.derived
     given eqInnerBox[A: Eq]: Eq[InnerBox[A]] = Eq.by(_.inner)
     given arbitraryInnerBox[A](using A: Arbitrary[A]): Arbitrary[InnerBox[A]] = Arbitrary(
       A.arbitrary.map(InnerBox(_))
@@ -44,33 +42,33 @@ object DerivesSuite {
   }
 
   case class WithNullables(
-    a: String,
-    b: Nullable[String],
-    c: Nullable[Int],
-    d: Nullable[Boolean],
-    e: Nullable[Box[String]],
-    f: Nullable[List[String]],
-    g: Option[Box[String]]
-  ) derives Decoder,
-        Encoder.AsObject
+                            a: String,
+                            b: Nullable[String],
+                            c: Nullable[Int],
+                            d: Nullable[Boolean],
+                            e: Nullable[Box[String]],
+                            f: Nullable[List[String]],
+                            g: Option[Box[String]]
+                          ) derives Decoder,
+  Encoder.AsObject
 
   object WithNullables {
     implicit def eqNullable[A]: Eq[Nullable[A]] = Eq.fromUniversalEquals
     given Eq[WithNullables] = Eq.fromUniversalEquals
     given Arbitrary[WithNullables] = {
       given aNullable[A](using A: Arbitrary[A]): Arbitrary[Nullable[A]] =
-        Arbitrary[Nullable[A]](
-          A.arbitrary.flatMap { a =>
-            summon[Arbitrary[Int]].arbitrary.map {
-              case byte if byte % 3 == 0 =>
-                Nullable.Null: Nullable[A]
-              case byte if byte % 3 == 1 =>
-                Nullable.Undefined: Nullable[A]
-              case _ =>
-                Nullable.Value(a): Nullable[A]
-            }
+      Arbitrary[Nullable[A]](
+        A.arbitrary.flatMap { a =>
+          summon[Arbitrary[Int]].arbitrary.map {
+            case byte if byte % 3 == 0 =>
+              Nullable.Null: Nullable[A]
+            case byte if byte % 3 == 1 =>
+              Nullable.Undefined: Nullable[A]
+            case _ =>
+              Nullable.Value(a): Nullable[A]
           }
-        )
+        }
+      )
 
       val gen = for {
         a <- summon[Arbitrary[String]].arbitrary
@@ -86,7 +84,7 @@ object DerivesSuite {
 
   }
 
-  case class Qux[A](i: Int, a: A, j: Int)
+  case class Qux[A](i: Int, a: A, j: Int) derives Codec
 
   object Qux {
     given codec[A: Encoder: Decoder]: Codec[Qux[A]] = Codec.AsObject.derived
@@ -198,7 +196,7 @@ object DerivesSuite {
       Arbitrary(atDepth(0))
   }
 
-  enum Vegetable derives Codec.AsObject:
+  enum Vegetable derives Codec:
     case Potato(species: String)
     case Carrot(length: Double)
     case Onion(layers: Int)
@@ -224,7 +222,7 @@ object DerivesSuite {
       )
     )
 
-  enum RecursiveEnumAdt derives Codec.AsObject:
+  enum RecursiveEnumAdt derives Codec:
     case BaseAdtExample(a: String)
     case NestedAdtExample(r: RecursiveEnumAdt)
   object RecursiveEnumAdt:
@@ -272,12 +270,21 @@ object DerivesSuite {
       }
     given Eq[ProductWithTaggedMember] = Eq.fromUniversalEquals
 
+  case class Inner[A](field: A) derives Encoder, Decoder
+  case class Outer(a: Option[Inner[String]]) derives Encoder.AsObject, Decoder
+  object Outer:
+    given Eq[Outer] = Eq.fromUniversalEquals
+    given Arbitrary[Outer] =
+      Arbitrary(Gen.option(Arbitrary.arbitrary[String].map(Inner.apply)).map(Outer.apply))
 }
 
 class DerivesSuite extends CirceMunitSuite {
   import DerivesSuite._
+  import io.circe.syntax._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)
+  checkAll("Codec[Box[Long]]", CodecTests[Box[Long]].codec)
+  // checkAll("Codec[Qux[Long]]", CodecTests[Qux[Long]].codec) Does not compile because Scala 3 requires a `Codec[Long]` for this when you use `derives Codec`
   checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
   checkAll("Codec[Baz]", CodecTests[Baz].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
@@ -287,17 +294,22 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
   checkAll("Codec[ProductWithTaggedMember] (#2135)", CodecTests[ProductWithTaggedMember].codec)
+  checkAll("Codec[Outer]", CodecTests[Outer].codec)
   checkAll("Codec[WithNullables]", CodecTests[WithNullables].codec)
 
   test("Nested sums should not be encoded redundantly") {
-    import io.circe.syntax._
     val foo: ADTWithSubTraitExample = TheClass(0)
-    val expected = Json.obj(
-      "TheClass" -> Json.obj(
-        "a" -> 0.asJson
-      )
-    )
-    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+    val expected = Json.obj("TheClass" -> Json.obj("a" -> 0.asJson))
+    assertEquals(foo.asJson, expected)
+  }
+
+  test("Derived Encoder respects existing instances") {
+    val some = Outer(Some(Inner("c")))
+    val none = Outer(None)
+    val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
+    val expectedNone = Json.obj("a" -> Json.Null)
+    assertEquals(some.asJson, expectedSome)
+    assertEquals(none.asJson, expectedNone)
   }
 
   test("Derivation uses pre-existing given codecs") {
