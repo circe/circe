@@ -340,7 +340,7 @@ class DerivesSuite extends CirceMunitSuite {
     assert(foo.asJson === expected)
   }
 
-  test("Nullable codecs work as expected") {
+  test("NullOr codecs work as expected") {
     import io.circe.syntax._
 
     val foo =

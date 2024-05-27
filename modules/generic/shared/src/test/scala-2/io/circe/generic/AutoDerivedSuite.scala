@@ -134,7 +134,7 @@ object AutoDerivedSuite {
   case class WithNullables(
     a: String,
     b: NullOr[String],
-    c: Option[Nullable[Int]],
+    c: Option[NullOr[Int]],
     d: NullOr[Boolean],
     e: NullOr[Box[String]],
     f: NullOr[List[String]],
@@ -226,7 +226,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
   checkAll("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
   checkAll("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)
 
-  test("Nullable codecs work as expected") {
+  test("NullOr codecs work as expected") {
     import io.circe.syntax._
 
     val foo =
