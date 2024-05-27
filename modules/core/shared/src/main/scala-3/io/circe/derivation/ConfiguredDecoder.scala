@@ -140,9 +140,9 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
       var failed: Left[DecodingFailure, _] = null
 
       def withDefault(result: Decoder.Result[Any], cursor: ACursor, default: Any): Decoder.Result[Any] = result match
-        case r @ Right(_) if r.ne(Decoder.keyMissingNone) && r.ne(Decoder.keyMissingUndefined) => r
-        case l @ Left(_) if cursor.succeeded && !cursor.focus.exists(_.isNull)                 => l
-        case _                                                                                 => Right(default)
+        case r @ Right(_) if r.ne(Decoder.keyMissingNone)                      => r
+        case l @ Left(_) if cursor.succeeded && !cursor.focus.exists(_.isNull) => l
+        case _                                                                 => Right(default)
 
       var index = 0
       while index < elemLabels.length && (failed eq null) do
@@ -171,10 +171,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
         cursor: ACursor,
         default: Any
       ): Decoder.AccumulatingResult[Any] = result match
-        case v @ Validated.Valid(_)
-            if v.ne(Decoder.keyMissingNoneAccumulating) &&
-              v.ne(Decoder.keyMissingUndefinedAccumulating) =>
-          v
+        case v @ Validated.Valid(_) if v.ne(Decoder.keyMissingNoneAccumulating)             => v
         case i @ Validated.Invalid(_) if cursor.succeeded && !cursor.focus.exists(_.isNull) => i
         case _                                                                              => Validated.Valid(default)
 

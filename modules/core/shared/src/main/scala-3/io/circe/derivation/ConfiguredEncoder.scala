@@ -18,7 +18,7 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import scala.compiletime.constValue
-import io.circe.{ Encoder, Json, JsonObject, Nullable }
+import io.circe.{ Encoder, Json, JsonObject, NullOr }
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A]:
   lazy val elemLabels: List[String]
@@ -29,9 +29,9 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
   }
 
   final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): Option[(String, Json)] =
-    if (elem == Nullable.Undefined) {
+    if (elem == None && conf.dropNoneValues) {
       None
-    } else if (elem == Nullable.Null) {
+    } else if (elem == NullOr.Null) {
       Some((transformName(elemLabels(index)), Json.Null))
     } else {
       Some((transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)))

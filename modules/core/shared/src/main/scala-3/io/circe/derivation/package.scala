@@ -19,7 +19,7 @@ package io.circe.derivation
 import scala.compiletime.{ codeOf, constValue, erasedValue, error, summonFrom, summonInline }
 import scala.deriving.Mirror
 import scala.collection.immutable.SortedSet
-import io.circe.{ Codec, Decoder, Encoder, KeyDecoder, KeyEncoder, Nullable }
+import io.circe.{ Codec, Decoder, Encoder, KeyDecoder, KeyEncoder }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector }
 import cats.kernel.Order
 

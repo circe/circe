@@ -59,3 +59,5 @@ case class Configuration(
 
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
   def withoutStrictDecoding: Configuration = copy(strictDecoding = false)
+
+  def dropNoneValues: Boolean = true // TODO: make configurable

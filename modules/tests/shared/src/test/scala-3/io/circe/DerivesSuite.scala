@@ -19,7 +19,6 @@ package io.circe
 import cats.kernel.Eq
 import cats.kernel.instances.all._
 import cats.syntax.eq._
-import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
@@ -42,41 +41,38 @@ object DerivesSuite {
   }
 
   case class WithNullables(
-                            a: String,
-                            b: Nullable[String],
-                            c: Nullable[Int],
-                            d: Nullable[Boolean],
-                            e: Nullable[Box[String]],
-                            f: Nullable[List[String]],
-                            g: Option[Box[String]]
-                          ) derives Decoder,
-  Encoder.AsObject
+    a: String,
+    b: NullOr[String],
+    c: Option[NullOr[Int]],
+    d: NullOr[Boolean],
+    e: NullOr[Box[String]],
+    f: NullOr[List[String]],
+    g: Option[Box[String]]
+  ) derives Decoder,
+        Encoder.AsObject
 
   object WithNullables {
-    implicit def eqNullable[A]: Eq[Nullable[A]] = Eq.fromUniversalEquals
     given Eq[WithNullables] = Eq.fromUniversalEquals
     given Arbitrary[WithNullables] = {
-      given aNullable[A](using A: Arbitrary[A]): Arbitrary[Nullable[A]] =
-      Arbitrary[Nullable[A]](
-        A.arbitrary.flatMap { a =>
-          summon[Arbitrary[Int]].arbitrary.map {
-            case byte if byte % 3 == 0 =>
-              Nullable.Null: Nullable[A]
-            case byte if byte % 3 == 1 =>
-              Nullable.Undefined: Nullable[A]
-            case _ =>
-              Nullable.Value(a): Nullable[A]
+      given aNullable[A](using A: Arbitrary[A]): Arbitrary[NullOr[A]] =
+        Arbitrary[NullOr[A]](
+          A.arbitrary.flatMap { a =>
+            summon[Arbitrary[Int]].arbitrary.map {
+              case byte if byte % 3 == 0 =>
+                NullOr.Null: NullOr[A]
+              case _ =>
+                NullOr.Value(a): NullOr[A]
+            }
           }
-        }
-      )
+        )
 
       val gen = for {
         a <- summon[Arbitrary[String]].arbitrary
-        b <- summon[Arbitrary[Nullable[String]]].arbitrary
-        c <- summon[Arbitrary[Nullable[Int]]].arbitrary
-        d <- summon[Arbitrary[Nullable[Boolean]]].arbitrary
-        e <- summon[Arbitrary[Nullable[Box[String]]]].arbitrary
-        f <- summon[Arbitrary[Nullable[List[String]]]].arbitrary
+        b <- summon[Arbitrary[NullOr[String]]].arbitrary
+        c <- summon[Arbitrary[Option[NullOr[Int]]]].arbitrary
+        d <- summon[Arbitrary[NullOr[Boolean]]].arbitrary
+        e <- summon[Arbitrary[NullOr[Box[String]]]].arbitrary
+        f <- summon[Arbitrary[NullOr[List[String]]]].arbitrary
         g <- summon[Arbitrary[Option[Box[String]]]].arbitrary
       } yield WithNullables(a, b, c, d, e, f, g)
       Arbitrary(gen)
@@ -307,7 +303,7 @@ class DerivesSuite extends CirceMunitSuite {
     val some = Outer(Some(Inner("c")))
     val none = Outer(None)
     val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
-    val expectedNone = Json.obj("a" -> Json.Null)
+    val expectedNone = Json.obj(/* "a" -> Json.Null */) // TODO: revisit after dropNoneValue is made configurable
     assertEquals(some.asJson, expectedSome)
     assertEquals(none.asJson, expectedNone)
   }
@@ -350,11 +346,11 @@ class DerivesSuite extends CirceMunitSuite {
     val foo =
       WithNullables(
         a = "a value",
-        b = Nullable.Value("b value"),
-        c = Nullable.Undefined,
-        d = Nullable.Null,
-        e = Nullable.Value(Box("boxed value")),
-        f = Nullable.Value(List("a", "b", "c")),
+        b = NullOr.Value("b value"),
+        c = None,
+        d = NullOr.Null,
+        e = NullOr.Value(Box("boxed value")),
+        f = NullOr.Value(List("a", "b", "c")),
         g = Some(Box("boxed in option"))
       )
 

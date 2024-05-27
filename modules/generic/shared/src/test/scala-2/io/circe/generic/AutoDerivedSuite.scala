@@ -18,7 +18,7 @@ package io.circe.generic
 
 import cats.kernel.Eq
 import cats.syntax.contravariant._
-import io.circe.{ Decoder, Encoder, Json, Nullable }
+import io.circe.{ Decoder, Encoder, Json, NullOr }
 import io.circe.generic.auto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
@@ -133,11 +133,11 @@ object AutoDerivedSuite {
 
   case class WithNullables(
     a: String,
-    b: Nullable[String],
-    c: Nullable[Int],
-    d: Nullable[Boolean],
-    e: Nullable[Box[String]],
-    f: Nullable[List[String]],
+    b: NullOr[String],
+    c: Option[Nullable[Int]],
+    d: NullOr[Boolean],
+    e: NullOr[Box[String]],
+    f: NullOr[List[String]],
     g: Option[Box[String]]
   )
 
@@ -232,11 +232,11 @@ class AutoDerivedSuite extends CirceMunitSuite {
     val foo =
       WithNullables(
         a = "a value",
-        b = Nullable.Value("b value"),
-        c = Nullable.Undefined,
-        d = Nullable.Null,
-        e = Nullable.Value(Box("boxed value")),
-        f = Nullable.Value(List("a", "b", "c")),
+        b = NullOr.Value("b value"),
+        c = None,
+        d = NoneNullOr.Null,
+        e = NullOr.Value(Box("boxed value")),
+        f = NullOr.Value(List("a", "b", "c")),
         g = Some(Box("boxed in option"))
       )
 

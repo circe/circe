@@ -368,12 +368,11 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final def encodeNullable[A](implicit e: Encoder[A]): Encoder[Nullable[A]] = new Encoder[Nullable[A]] {
-    final def apply(a: Nullable[A]): Json = {
+  implicit final def encodeNullOr[A](implicit e: Encoder[A]): Encoder[NullOr[A]] = new Encoder[NullOr[A]] {
+    final def apply(a: NullOr[A]): Json = {
       a match {
-        case Nullable.Value(v)  => e(v)
-        case Nullable.Null      => Json.Null
-        case Nullable.Undefined => Json.Null
+        case NullOr.Value(v) => e(v)
+        case NullOr.Null     => Json.Null
       }
     }
   }
@@ -381,22 +380,14 @@ object Encoder
   /**
    * @group Encoding
    */
-  implicit final def encodeDefined[A](implicit e: Encoder[A]): Encoder[Nullable.Value[A]] = e.contramap(_.value)
+  implicit final def encodeNullOrValue[A](implicit e: Encoder[A]): Encoder[NullOr.Value[A]] = e.contramap(_.value)
 
   /**
    * @group Encoding
    */
-  implicit final def encodeUndefined: Encoder[Nullable.Undefined.type] =
-    new Encoder[Nullable.Undefined.type] {
-      final def apply(a: Nullable.Undefined.type): Json = Json.Null
-    }
-
-  /**
-   * @group Encoding
-   */
-  implicit final def encodeNullableNull: Encoder[Nullable.Null.type] =
-    new Encoder[Nullable.Null.type] {
-      final def apply(a: Nullable.Null.type): Json = Json.Null
+  implicit final def encodeNullOrNull: Encoder[NullOr.Null.type] =
+    new Encoder[NullOr.Null.type] {
+      final def apply(a: NullOr.Null.type): Json = Json.Null
     }
 
   /**
