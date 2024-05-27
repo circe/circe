@@ -234,7 +234,7 @@ class AutoDerivedSuite extends CirceMunitSuite {
         a = "a value",
         b = NullOr.Value("b value"),
         c = None,
-        d = NoneNullOr.Null,
+        d = NullOr.Null,
         e = NullOr.Value(Box("boxed value")),
         f = NullOr.Value(List("a", "b", "c")),
         g = Some(Box("boxed in option"))
