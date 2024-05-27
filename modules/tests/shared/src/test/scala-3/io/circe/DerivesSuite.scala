@@ -303,7 +303,7 @@ class DerivesSuite extends CirceMunitSuite {
     val some = Outer(Some(Inner("c")))
     val none = Outer(None)
     val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
-    val expectedNone = Json.obj(/* "a" -> Json.Null */) // TODO: revisit after dropNoneValue is made configurable
+    val expectedNone = Json.obj( /* "a" -> Json.Null */ ) // TODO: revisit after dropNoneValue is made configurable
     assertEquals(some.asJson, expectedSome)
     assertEquals(none.asJson, expectedNone)
   }

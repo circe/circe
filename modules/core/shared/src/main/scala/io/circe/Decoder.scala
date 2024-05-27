@@ -979,8 +979,8 @@ object Decoder
   private[this] final val validNull: ValidatedNel[DecodingFailure, NullOr.Null.type] = Validated.valid(NullOr.Null)
 
   private[this] final val rightSomeNull: Either[DecodingFailure, Some[NullOr.Null.type]] = Right(Some(NullOr.Null))
-  private[this] final val validSomeNull: ValidatedNel[DecodingFailure, Some[NullOr.Null.type]] = Validated.valid(Some(NullOr.Null))
-
+  private[this] final val validSomeNull: ValidatedNel[DecodingFailure, Some[NullOr.Null.type]] =
+    Validated.valid(Some(NullOr.Null))
 
   private[circe] final val keyMissingNone: Decoder.Result[None.type] = Right(None)
   private[circe] final val keyMissingNoneAccumulating: AccumulatingResult[None.type] =
@@ -1115,7 +1115,8 @@ object Decoder
   /**
    * @group Decoding
    */
-  implicit final def decodeOptionNullOr[A](implicit d: Decoder[A]): Decoder[Option[NullOr[A]]] = new Decoder.OptionOfNullOrDecoder[A]
+  implicit final def decodeOptionNullOr[A](implicit d: Decoder[A]): Decoder[Option[NullOr[A]]] =
+    new Decoder.OptionOfNullOrDecoder[A]
 
   /**
    * @group Decoding
