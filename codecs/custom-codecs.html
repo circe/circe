@@ -144,7 +144,7 @@
     (</span><span class="string-literal">&quot;bar&quot;</span><span>, </span><span class="type-name">Json</span><span>.</span><span class="identifier">fromInt</span><span>(</span><span class="identifier">a</span><span>.</span><span class="identifier">bar</span><span>))
   )
 }
-</span><span class="comment">// encodeFoo: Encoder[Thing] = repl.MdocSession$MdocApp$$anon$1@fecdb1
+</span><span class="comment">// encodeFoo: Encoder[Thing] = repl.MdocSession$MdocApp$$anon$1@67b88518
 </span><span>
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">decodeFoo</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Thing</span><span>] = </span><span class="keyword">new</span><span> </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Thing</span><span>] {
   </span><span class="keyword">final</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">apply</span><span>(</span><span class="identifier">c</span><span>: </span><span class="type-name">HCursor</span><span>): </span><span class="type-name">Decoder</span><span>.</span><span class="type-name">Result</span><span>[</span><span class="type-name">Thing</span><span>] =
@@ -155,7 +155,7 @@
       </span><span class="keyword">new</span><span> </span><span class="type-name">Thing</span><span>(</span><span class="identifier">foo</span><span>, </span><span class="identifier">bar</span><span>)
     }
 }
-</span><span class="comment">// decodeFoo: Decoder[Thing] = repl.MdocSession$MdocApp$$anon$2@6ca2ea66</span></code></pre>
+</span><span class="comment">// decodeFoo: Decoder[Thing] = repl.MdocSession$MdocApp$$anon$2@1a4de594</span></code></pre>
         <p>But in many cases you might find it more convenient to piggyback on top of the decoders that are
         already available. For example, a codec for <code>java.time.Instant</code> might look like this:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.{ </span><span class="type-name">Decoder</span><span>, </span><span class="type-name">Encoder</span><span> }
@@ -163,12 +163,12 @@
 </span><span class="keyword">import</span><span> </span><span class="identifier">scala</span><span>.</span><span class="identifier">util</span><span>.</span><span class="type-name">Try</span><span>
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">encodeInstant</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">Instant</span><span>] = </span><span class="type-name">Encoder</span><span>.</span><span class="identifier">encodeString</span><span>.</span><span class="identifier">contramap</span><span>[</span><span class="type-name">Instant</span><span>](</span><span class="identifier">_</span><span>.</span><span class="identifier">toString</span><span>)
-</span><span class="comment">// encodeInstant: Encoder[Instant] = io.circe.Encoder$$anon$1@27d03215
+</span><span class="comment">// encodeInstant: Encoder[Instant] = io.circe.Encoder$$anon$1@3014e3ff
 </span><span>
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">decodeInstant</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Instant</span><span>] = </span><span class="type-name">Decoder</span><span>.</span><span class="identifier">decodeString</span><span>.</span><span class="identifier">emapTry</span><span> { </span><span class="identifier">str</span><span> =&gt;
   </span><span class="type-name">Try</span><span>(</span><span class="type-name">Instant</span><span>.</span><span class="identifier">parse</span><span>(</span><span class="identifier">str</span><span>))
 }
-</span><span class="comment">// decodeInstant: Decoder[Instant] = io.circe.Decoder$$anon$14@470888fd</span></code></pre>
+</span><span class="comment">// decodeInstant: Decoder[Instant] = io.circe.Decoder$$anon$14@524a501d</span></code></pre>
         
         <h4 id="older-scala-versions" class="section"><a class="anchor-link left" href="#older-scala-versions"><i class="icofont-laika link">&#xef71;</i></a>Older scala versions</h4>
         <p>If you are using custom codecs and an older versions of scala (below 2.12) and you get errors like 
@@ -187,7 +187,7 @@
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooKeyEncoder</span><span>: </span><span class="type-name">KeyEncoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="keyword">new</span><span> </span><span class="type-name">KeyEncoder</span><span>[</span><span class="type-name">Foo</span><span>] {
   </span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">apply</span><span>(</span><span class="identifier">foo</span><span>: </span><span class="type-name">Foo</span><span>): </span><span class="type-name">String</span><span> = </span><span class="identifier">foo</span><span>.</span><span class="identifier">value</span><span>
 }
-</span><span class="comment">// fooKeyEncoder: KeyEncoder[Foo] = repl.MdocSession$MdocApp$$anon$3@31ed56e8
+</span><span class="comment">// fooKeyEncoder: KeyEncoder[Foo] = repl.MdocSession$MdocApp$$anon$3@71f98f09
 </span><span class="keyword">val</span><span> </span><span class="identifier">map</span><span> = </span><span class="type-name">Map</span><span>[</span><span class="type-name">Foo</span><span>, </span><span class="type-name">Int</span><span>](
   </span><span class="type-name">Foo</span><span>(</span><span class="string-literal">&quot;hello&quot;</span><span>) -&gt; </span><span class="number-literal">123</span><span>,
   </span><span class="type-name">Foo</span><span>(</span><span class="string-literal">&quot;world&quot;</span><span>) -&gt; </span><span class="number-literal">456</span><span>
@@ -203,7 +203,7 @@
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">fooKeyDecoder</span><span>: </span><span class="type-name">KeyDecoder</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="keyword">new</span><span> </span><span class="type-name">KeyDecoder</span><span>[</span><span class="type-name">Foo</span><span>] {
   </span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">apply</span><span>(</span><span class="identifier">key</span><span>: </span><span class="type-name">String</span><span>): </span><span class="type-name">Option</span><span>[</span><span class="type-name">Foo</span><span>] = </span><span class="type-name">Some</span><span>(</span><span class="type-name">Foo</span><span>(</span><span class="identifier">key</span><span>))
 }
-</span><span class="comment">// fooKeyDecoder: KeyDecoder[Foo] = repl.MdocSession$MdocApp$$anon$4@27bfd880
+</span><span class="comment">// fooKeyDecoder: KeyDecoder[Foo] = repl.MdocSession$MdocApp$$anon$4@14b33cfd
 </span><span>
 </span><span class="identifier">json</span><span>.</span><span class="identifier">as</span><span>[</span><span class="type-name">Map</span><span>[</span><span class="type-name">Foo</span><span>, </span><span class="type-name">Int</span><span>]]
 </span><span class="comment">// res0: Decoder.Result[Map[Foo, Int]] = Right(
@@ -221,8 +221,8 @@
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">config</span><span>: </span><span class="type-name">Configuration</span><span> = </span><span class="type-name">Configuration</span><span>.</span><span class="keyword">default</span><span>.</span><span class="identifier">withSnakeCaseMemberNames</span><span>
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15602/0x0000000803f39840@75fc061c,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18707/0x0000000804613840@629c766,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = false,
 //   discriminator = None,
 //   strictDecoding = false
@@ -245,7 +245,7 @@
 )
 </span><span class="comment">// config: Configuration = Configuration(
 //   transformMemberNames = &lt;function1&gt;,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = false,
 //   discriminator = None,
 //   strictDecoding = false
@@ -260,8 +260,8 @@
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">config</span><span>: </span><span class="type-name">Configuration</span><span> = </span><span class="type-name">Configuration</span><span>.</span><span class="keyword">default</span><span>
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15600/0x0000000803f38040@6d0fd2af,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18705/0x0000000804615040@7b9f8bf9,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = false,
 //   discriminator = None,
 //   strictDecoding = false
@@ -280,11 +280,11 @@
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">encodeUser</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">User</span><span>] =
   </span><span class="type-name">Encoder</span><span>.</span><span class="identifier">forProduct2</span><span>(</span><span class="string-literal">&quot;first_name&quot;</span><span>, </span><span class="string-literal">&quot;last_name&quot;</span><span>)(</span><span class="identifier">u</span><span> =&gt; (</span><span class="identifier">u</span><span>.</span><span class="identifier">firstName</span><span>, </span><span class="identifier">u</span><span>.</span><span class="identifier">lastName</span><span>))
-</span><span class="comment">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$2@99544a4
+</span><span class="comment">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$2@510878fd
 </span><span>
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">encodeBar</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">Bar</span><span>] =
   </span><span class="type-name">Encoder</span><span>.</span><span class="identifier">forProduct2</span><span>(</span><span class="string-literal">&quot;my-int&quot;</span><span>, </span><span class="string-literal">&quot;s&quot;</span><span>)(</span><span class="identifier">b</span><span> =&gt; (</span><span class="identifier">b</span><span>.</span><span class="identifier">i</span><span>, </span><span class="identifier">b</span><span>.</span><span class="identifier">s</span><span>))
-</span><span class="comment">// encodeBar: Encoder[Bar] = io.circe.ProductEncoders$$anon$2@31bd46a2
+</span><span class="comment">// encodeBar: Encoder[Bar] = io.circe.ProductEncoders$$anon$2@64fb39d0
 </span><span>
 </span><span class="type-name">User</span><span>(</span><span class="string-literal">&quot;Foo&quot;</span><span>, </span><span class="string-literal">&quot;McBar&quot;</span><span>).</span><span class="identifier">asJson</span><span>
 </span><span class="comment">// res7: io.circe.Json = JObject(
@@ -305,7 +305,7 @@
   </span><span class="identifier">transformConstructorNames</span><span> = </span><span class="identifier">_</span><span>.</span><span class="identifier">toLowerCase</span><span>
 )
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15600/0x0000000803f38040@6d0fd2af,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18705/0x0000000804615040@7b9f8bf9,
 //   transformConstructorNames = &lt;function1&gt;,
 //   useDefaults = false,
 //   discriminator = None,
@@ -329,8 +329,8 @@
   </span><span class="identifier">useDefaults</span><span> = </span><span class="boolean-literal">true</span><span>
 )
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15600/0x0000000803f38040@6d0fd2af,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18705/0x0000000804615040@7b9f8bf9,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = true,
 //   discriminator = None,
 //   strictDecoding = false
@@ -352,8 +352,8 @@
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">config</span><span>: </span><span class="type-name">Configuration</span><span> = </span><span class="type-name">Configuration</span><span>.</span><span class="keyword">default</span><span>
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15600/0x0000000803f38040@6d0fd2af,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18705/0x0000000804615040@7b9f8bf9,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = false,
 //   discriminator = None,
 //   strictDecoding = false
@@ -374,8 +374,8 @@
   </span><span class="identifier">strictDecoding</span><span> = </span><span class="boolean-literal">true</span><span>
 )
 </span><span class="comment">// config: Configuration = Configuration(
-//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$15600/0x0000000803f38040@6d0fd2af,
-//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$15601/0x0000000803f39040@3a21400a,
+//   transformMemberNames = io.circe.generic.extras.Configuration$$$Lambda$18705/0x0000000804615040@7b9f8bf9,
+//   transformConstructorNames = io.circe.generic.extras.Configuration$$$Lambda$18706/0x0000000804614840@277e4a8e,
 //   useDefaults = false,
 //   discriminator = None,
 //   strictDecoding = true
