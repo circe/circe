@@ -24,7 +24,7 @@ ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
 val catsVersion = "2.10.0"
 val jawnVersion = "1.5.1"
-val shapelessVersion = "2.3.10"
+val shapelessVersion = "2.3.11"
 val refinedVersion = "0.9.29"
 val refinedNativeVersion = "0.11.1"
 
