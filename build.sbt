@@ -22,7 +22,7 @@ ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
-val catsVersion = "2.10.0"
+val catsVersion = "2.12.0"
 val jawnVersion = "1.5.1"
 val shapelessVersion = "2.3.11"
 val refinedVersion = "0.9.29"
@@ -30,11 +30,11 @@ val refinedNativeVersion = "0.11.1"
 
 val paradiseVersion = "2.1.1"
 
-val scalaCheckVersion = "1.17.1"
-val munitVersion = "1.0.0-M11"
-val disciplineVersion = "1.6.0"
+val scalaCheckVersion = "1.18.0"
+val munitVersion = "1.0.0"
+val disciplineVersion = "1.7.0"
 val disciplineScalaTestVersion = "2.2.0"
-val disciplineMunitVersion = "2.0.0-M3"
+val disciplineMunitVersion = "2.0.0"
 val scalaJavaTimeVersion = "2.5.0"
 
 /**
