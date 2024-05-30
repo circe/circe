@@ -23,8 +23,8 @@ ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
 val catsVersion = "2.12.0"
-val jawnVersion = "1.5.1"
-val shapelessVersion = "2.3.11"
+val jawnVersion = "1.6.0"
+val shapelessVersion = "2.3.12"
 val refinedVersion = "0.9.29"
 val refinedNativeVersion = "0.11.1"
 
@@ -33,7 +33,7 @@ val paradiseVersion = "2.1.1"
 val scalaCheckVersion = "1.18.0"
 val munitVersion = "1.0.0"
 val disciplineVersion = "1.7.0"
-val disciplineScalaTestVersion = "2.2.0"
+val disciplineScalaTestVersion = "2.3.0"
 val disciplineMunitVersion = "2.0.0"
 val scalaJavaTimeVersion = "2.5.0"
 
@@ -484,5 +484,6 @@ ThisBuild / licenses := Seq(License.Apache2)
 ThisBuild / developers := List(
   Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown")),
   Developer("zmccoy", "Zach McCoy", "zachabbott@gmail.com", url("https://twitter.com/zachamccoy")),
-  Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross"))
+  Developer("zarthross", "Darren Gibson", "zarthross@gmail.com", url("https://twitter.com/zarthross")),
+  Developer("hamnis", "Erlend Hamnaberg", "erlend@hamnaberg.net", url("https://github.com/hamnis"))
 )
