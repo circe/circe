@@ -1,7 +1,5 @@
----
-layout: docs
-title: "Recursive ADT (Algebraic Data Types)
----
+Recursive ADT (Algebraic Data Types)
+====================================
 
 ### Recursive ADT encoding and decoding
 
@@ -10,7 +8,12 @@ however much of the complexity can be avoided by leveraging the `Defer` typeclas
 
 Consider the following ADT:
 
-```scala mdoc:silent
+```scala mdoc
+import io.circe.{Json, Decoder, HCursor}
+import io.circe.Decoder.{Result, AccumulatingResult}
+import io.circe.syntax._
+import cats.syntax.all._
+
 sealed trait Tree[A]
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 case class Leaf[A](value: A) extends Tree[A]
@@ -18,10 +21,7 @@ case class Leaf[A](value: A) extends Tree[A]
 
 And these encoder / decoder instances:
 
-```scala mdoc:silent
-import io.circe.{Json, Decoder}
-import io.circe.syntax._
-
+```scala mdoc:nest
 implicit def branchDecoder[A: Decoder]: Decoder[Branch[A]] =
   Decoder.forProduct2[Branch[A], Tree[A], Tree[A]]("l", "r")(Branch.apply)
 
@@ -42,10 +42,7 @@ endless loop of calls to `treeDecoder` and `branchDecoder`.
 Adjusting the implicit parameters to be more granular produces a diverging implicits error that is more
 clear about the source of the issue:
 
-```scala mdoc:silent
-import io.circe.{Json, Decoder}
-import io.circe.syntax._
-
+```scala mdoc:nest
 implicit def branchDecoder[A](implicit TD: Decoder[Tree[A]]): Decoder[Branch[A]] =
   Decoder.forProduct2[Branch[A], Tree[A], Tree[A]]("l", "r")(
     Branch.apply
@@ -69,10 +66,7 @@ using `Defer[Decoder].fix`, or the `recursive` helper provided on the `Decoder` 
 objects.
 
 The `Decoder` instances for `Tree` would look like this: 
-```scala mdoc:silent
-import io.circe.{Json, Decoder}
-import io.circe.syntax._
-
+```scala mdoc:nest
 implicit def branchDecoder[A](implicit DTA: Decoder[Tree[A]]): Decoder[Branch[A]] =
   Decoder.forProduct2[Branch[A], Tree[A], Tree[A]]("l", "r")(Branch.apply)
 
@@ -84,7 +78,7 @@ implicit def treeDecoder[A: Decoder]: Decoder[Tree[A]] =
     List[Decoder[Tree[A]]](
       Decoder[Branch[A]].widen,
       Decoder[Leaf[A]].widen
-    ).reduce(_ combine _)
+    ).reduce(_ or _)
   }
 ```
 
@@ -97,10 +91,7 @@ It's possible to manually create an equivalent `Decoder` to what is produced by 
 however it's generally not worth the trouble.
 
 Consider these decoders:
-```scala mdoc:silent
-import io.circe.{Json, Decoder}
-import io.circe.syntax._
-
+```scala mdoc:nest
 implicit def branchDecoder[A](implicit DTA: Decoder[Tree[A]]): Decoder[Branch[A]] =
   Decoder.forProduct2[Branch[A], Tree[A], Tree[A]]("left", "right")(Branch.apply)
 
@@ -114,10 +105,9 @@ implicit def treeDecoder[A: Decoder]: Decoder[Tree[A]] =
       List[Decoder[Tree[A]]](
         Decoder[Branch[A]].widen,
         Decoder[Leaf[A]].widen
-      ).reduce(_ combine _)
+      ).reduce(_ or _)
       
     override def apply(c: HCursor): Result[Tree[A]] = delegate(c)
-    override def decodeAccumulating(c: HCursor): AccumulatingResult[Tree[A]] = delegate.decodeAccumulating(c)
   }
 ```
 
