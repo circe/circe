@@ -16,7 +16,6 @@
 
 package io.circe.derivation
 
-import scala.deriving.Mirror
 import scala.compiletime.constValue
 import io.circe.{ Encoder, Json, JsonObject }
 
@@ -56,31 +55,29 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
 object ConfiguredEncoder:
   private def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
     conf: Configuration,
-    mirror: Mirror.Of[A]
+    mirror: LazyMirror[A]
   ): ConfiguredEncoder[A] = mirror match
-    case _: Mirror.ProductOf[A] =>
+    case _: LazyMirror.Product[A] =>
       new ConfiguredEncoder[A] with SumOrProduct:
         lazy val elemEncoders = encoders
         lazy val elemLabels = labels
         def isSum = false
         def encodeObject(a: A) = encodeProduct(a)
-    case mirror: Mirror.SumOf[A] =>
+    case mirror: LazyMirror.Sum[A] =>
       new ConfiguredEncoder[A] with SumOrProduct:
         lazy val elemEncoders = encoders
         lazy val elemLabels = labels
         def isSum = true
         def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
 
-  private[derivation] inline final def encoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Encoder[?]] =
-    summonEncoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
-      case _: Mirror.ProductOf[A] => false
-      case _: Mirror.SumOf[A]     => true
-    })
+  inline final def derived[A](using
+    conf: Configuration,
+    mirror: LazyMirror[A],
+    encoders: Encoders[A]
+  ): ConfiguredEncoder[A] =
+    ConfiguredEncoder.of[A](encoders.encoders, mirror.mirroredElemLabels)
 
-  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
-    ConfiguredEncoder.of[A](encoders[A], summonLabels[mirror.MirroredElemLabels])
-
-  inline final def derive[A: Mirror.Of](
+  inline final def derive[A: LazyMirror: Encoders](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     discriminator: Option[String] = Configuration.default.discriminator

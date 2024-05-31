@@ -16,8 +16,8 @@
 
 package io.circe.derivation
 
+import scala.deriving.Mirror
 import scala.quoted.*
-import scala.deriving.*
 import scala.compiletime.constValue
 
 /**
@@ -38,11 +38,14 @@ object Default:
     type Out = O
     lazy val defaults: Out = values
 
+  private[derivation] transparent inline def mkDefault0[T, ET <: Tuple](inline s: Int): Default[T] =
+    Default.of(getDefaults[T](s).asInstanceOf[Tuple.Map[ET, Option]])
+
   transparent inline given mkDefault[T](using mirror: Mirror.Of[T]): Default[T] =
     // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
     // in some rare edge cases, the latter fails (and both always have the same size)
     val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
-    Default.of(getDefaults[T](size).asInstanceOf[Tuple.Map[mirror.MirroredElemTypes, Option]])
+    mkDefault0[T, mirror.MirroredElemTypes](size)
 
   inline def getDefaults[T](inline s: Int): Tuple = ${ getDefaultsImpl[T]('s) }
 

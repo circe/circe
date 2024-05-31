@@ -18,7 +18,7 @@ package io.circe.derivation
 
 import scala.compiletime.{ codeOf, constValue, erasedValue, error, summonFrom, summonInline }
 import scala.deriving.Mirror
-import io.circe.{ Codec, Decoder, Encoder }
+import io.circe.{ Decoder, Encoder }
 
 private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
   inline erasedValue[T] match
@@ -43,8 +43,8 @@ private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A
 private[circe] inline final def summonEncoder[A](inline derivingForSum: Boolean)(using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
-    case m: Mirror.Of[A] =>
-      inline if (derivingForSum) ConfiguredEncoder.derived[A]
+    case m: LazyMirror[A] =>
+      inline if (derivingForSum) summonFrom { case e: Encoders[A] => ConfiguredEncoder.derived[A] }
       else error("Failed to find an instance of Encoder[" + typeName[A] + "]")
   }
 
@@ -66,8 +66,8 @@ private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A
 private[circe] inline final def summonDecoder[A](inline derivingForSum: Boolean)(using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
-    case m: Mirror.Of[A] =>
-      inline if (derivingForSum) ConfiguredDecoder.derived[A]
+    case m: LazyMirror[A] =>
+      inline if (derivingForSum) summonFrom { case d: Decoders[A] => ConfiguredDecoder.derived[A] }
       else error("Failed to find an instance of Decoder[" + typeName[A] + "]")
   }
 

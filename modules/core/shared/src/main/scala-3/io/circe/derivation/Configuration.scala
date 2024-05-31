@@ -59,3 +59,11 @@ case class Configuration(
 
   def withStrictDecoding: Configuration = copy(strictDecoding = true)
   def withoutStrictDecoding: Configuration = copy(strictDecoding = false)
+
+private[circe] final class ConfigurationOrDefault(val conf: Configuration) extends AnyVal
+
+private[circe] trait ConfigurationOrDefaultLP:
+  final given fromDefault: ConfigurationOrDefault = ConfigurationOrDefault(Configuration.default)
+
+object ConfigurationOrDefault extends ConfigurationOrDefaultLP:
+  given fromConfig(using conf: Configuration): ConfigurationOrDefault = ConfigurationOrDefault(conf)

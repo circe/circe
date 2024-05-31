@@ -16,50 +16,48 @@
 
 package io.circe.derivation
 
-import scala.deriving.Mirror
 import scala.compiletime.constValue
-import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
+import io.circe.{ Codec, Decoder, Encoder, HCursor }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
   private def of[A](nme: String, decoders: => List[Decoder[?]], encoders: => List[Encoder[?]], labels: List[String])(
     using
     conf: Configuration,
-    mirror: Mirror.Of[A],
-    defaults: Default[A]
+    mirror: LazyMirror[A]
   ): ConfiguredCodec[A] = mirror match
-    case mirror: Mirror.ProductOf[A] =>
+    case mirror: LazyMirror.Product[A] =>
       new ConfiguredCodec[A] with SumOrProduct:
         val name = nme
         lazy val elemDecoders = decoders
         lazy val elemEncoders = encoders
         lazy val elemLabels = labels
-        lazy val elemDefaults = defaults
+        lazy val elemDefaults = mirror.default
         def isSum = false
         def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
         def encodeObject(a: A) = encodeProduct(a)
         override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
-    case mirror: Mirror.SumOf[A] =>
+    case mirror: LazyMirror.Sum[A] =>
       new ConfiguredCodec[A] with SumOrProduct:
         val name = nme
         lazy val elemDecoders = decoders
         lazy val elemEncoders = encoders
         lazy val elemLabels = labels
-        lazy val elemDefaults = defaults
+        lazy val elemDefaults = mirror.default
         def isSum = true
         def apply(c: HCursor) = decodeSum(c)
         def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
         override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
-  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredCodec[A] =
-    ConfiguredCodec.of(
-      constValue[mirror.MirroredLabel],
-      ConfiguredDecoder.decoders[A],
-      ConfiguredEncoder.encoders[A],
-      summonLabels[mirror.MirroredElemLabels]
-    )
+  inline final def derived[A](using
+    conf: Configuration,
+    mirror: LazyMirror[A],
+    decoders: Decoders[A],
+    encoders: Encoders[A]
+  ): ConfiguredCodec[A] =
+    ConfiguredCodec.of(mirror.mirroredLabel, decoders.decoders, encoders.encoders, mirror.mirroredElemLabels)
 
-  inline final def derive[A: Mirror.Of](
+  inline final def derive[A: LazyMirror: Decoders: Encoders](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,

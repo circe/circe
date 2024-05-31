@@ -17,8 +17,8 @@
 package io.circe.generic
 
 import io.circe.{ Decoder, Encoder }
+import io.circe.derivation.{ Decoders, Encoders, LazyMirror }
 import io.circe.`export`.Exported
-import scala.deriving.Mirror
 
 /**
  * Fully automatic codec derivation.
@@ -28,9 +28,15 @@ import scala.deriving.Mirror
  * trait hierarchies, etc.
  */
 trait AutoDerivation {
-  implicit inline final def deriveDecoder[A](using inline A: Mirror.Of[A]): Exported[Decoder[A]] =
+  implicit inline final def deriveDecoder[A](using
+    inline A: LazyMirror[A],
+    inline D: Decoders[A]
+  ): Exported[Decoder[A]] =
     Exported(Decoder.derived[A])
-  implicit inline final def deriveEncoder[A](using inline A: Mirror.Of[A]): Exported[Encoder.AsObject[A]] =
+  implicit inline final def deriveEncoder[A](using
+    inline A: LazyMirror[A],
+    inline E: Encoders[A]
+  ): Exported[Encoder.AsObject[A]] =
     Exported(Encoder.AsObject.derived[A])
 }
 

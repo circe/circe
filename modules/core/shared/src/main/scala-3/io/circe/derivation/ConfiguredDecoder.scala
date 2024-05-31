@@ -16,9 +16,7 @@
 
 package io.circe.derivation
 
-import scala.deriving.Mirror
 import scala.compiletime.constValue
-import Predef.genericArrayOps
 import cats.data.{ NonEmptyList, Validated }
 import io.circe.{ ACursor, Decoder, DecodingFailure, HCursor }
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
@@ -191,38 +189,35 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
 object ConfiguredDecoder:
   private def of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
     conf: Configuration,
-    mirror: Mirror.Of[A],
-    defaults: Default[A]
+    mirror: LazyMirror[A]
   ): ConfiguredDecoder[A] = mirror match
-    case mirror: Mirror.ProductOf[A] =>
+    case mirror: LazyMirror.Product[A] =>
       new ConfiguredDecoder[A] with SumOrProduct:
         val name = nme
         lazy val elemDecoders = decoders
         lazy val elemLabels = labels
-        lazy val elemDefaults = defaults
+        lazy val elemDefaults = mirror.default
         def isSum = false
         def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
         override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
-    case _: Mirror.SumOf[A] =>
+    case _: LazyMirror.Sum[A] =>
       new ConfiguredDecoder[A] with SumOrProduct:
         val name = nme
         lazy val elemDecoders = decoders
         lazy val elemLabels = labels
-        lazy val elemDefaults = defaults
+        lazy val elemDefaults = mirror.default
         def isSum = true
         def apply(c: HCursor) = decodeSum(c)
         override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
-  private[derivation] inline final def decoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Decoder[?]] =
-    summonDecoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
-      case _: Mirror.ProductOf[A] => false
-      case _: Mirror.SumOf[A]     => true
-    })
+  inline final def derived[A](using
+    conf: Configuration,
+    mirror: LazyMirror[A],
+    decoders: Decoders[A]
+  ): ConfiguredDecoder[A] =
+    ConfiguredDecoder.of[A](mirror.mirroredLabel, decoders.decoders, mirror.mirroredElemLabels)
 
-  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
-    ConfiguredDecoder.of[A](constValue[mirror.MirroredLabel], decoders[A], summonLabels[mirror.MirroredElemLabels])
-
-  inline final def derive[A: Mirror.Of](
+  inline final def derive[A: LazyMirror: Decoders](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,
     transformConstructorNames: String => String = Configuration.default.transformConstructorNames,
     useDefaults: Boolean = Configuration.default.useDefaults,

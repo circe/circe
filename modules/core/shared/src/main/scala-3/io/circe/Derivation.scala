@@ -16,10 +16,7 @@
 
 package io.circe
 
-import scala.compiletime.constValue
 import scala.deriving.Mirror
-import Predef.genericArrayOps
-import cats.data.{ NonEmptyList, Validated }
 import io.circe.derivation._
 
 @deprecated(since = "0.14.4")
@@ -133,37 +130,62 @@ private[circe] trait DerivedDecoder[A] extends DerivedInstance[A] with Decoder[A
 }
 
 private[circe] trait EncoderDerivation:
-  inline final def derived[A](using inline A: Mirror.Of[A]): Encoder.AsObject[A] =
+  inline final def derived[A](using inline A: LazyMirror[A], inline E: Encoders[A]): Encoder.AsObject[A] =
     ConfiguredEncoder.derived[A](using Configuration.default)
   inline final def derivedConfigured[A](using
-    inline A: Mirror.Of[A],
+    inline A: LazyMirror[A],
+    inline E: Encoders[A],
     inline configuration: Configuration
   ): Encoder.AsObject[A] =
     ConfiguredEncoder.derived[A]
 
-private[circe] trait EncoderDerivationRelaxed:
+private[circe] trait EncoderDerivationRelaxedLP:
+  @deprecated("Use variant that takes a LazyMirror", "0.14.8")
   inline final def derived[A: Mirror.Of](using
     configuration: Configuration = Configuration.default
   ): Encoder.AsObject[A] =
+    given lm: LazyMirror[A] = LazyMirror.fromMirror(summon[Mirror.Of[A]])
+    ConfiguredEncoder.derived[A]
+
+private[circe] trait EncoderDerivationRelaxed extends EncoderDerivationRelaxedLP:
+  inline final def derived[A: LazyMirror: Encoders](using c: ConfigurationOrDefault): Encoder.AsObject[A] =
+    given conf: Configuration = c.conf
     ConfiguredEncoder.derived[A]
 
 private[circe] trait DecoderDerivation:
-  inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
+  inline final def derived[A](using inline A: LazyMirror[A], inline D: Decoders[A]): Decoder[A] =
     ConfiguredDecoder.derived[A](using Configuration.default)
-  inline final def derivedConfigured[A](using inline A: Mirror.Of[A], inline configuration: Configuration): Decoder[A] =
+  inline final def derivedConfigured[A](using
+    inline A: LazyMirror[A],
+    inline D: Decoders[A],
+    inline configuration: Configuration
+  ): Decoder[A] =
     ConfiguredDecoder.derived[A]
 
 private[circe] trait CodecDerivation:
-  inline final def derived[A](using inline A: Mirror.Of[A]): Codec.AsObject[A] =
+  inline final def derived[A](using
+    inline A: LazyMirror[A],
+    inline D: Decoders[A],
+    inline E: Encoders[A]
+  ): Codec.AsObject[A] =
     ConfiguredCodec.derived[A](using Configuration.default)
   inline final def derivedConfigured[A](using
-    inline A: Mirror.Of[A],
+    inline A: LazyMirror[A],
+    inline D: Decoders[A],
+    inline E: Encoders[A],
     inline configuration: Configuration
   ): Codec.AsObject[A] =
     ConfiguredCodec.derived[A]
 
-private[circe] trait CodecDerivationRelaxed:
+private[circe] trait CodecDerivationRelaxedLP:
+  @deprecated("Use variant that takes a LazyMirror", "0.14.8")
   inline final def derived[A: Mirror.Of](using
     configuration: Configuration = Configuration.default
   ): Codec.AsObject[A] =
+    given lm: LazyMirror[A] = LazyMirror.fromMirror(summon[Mirror.Of[A]])
+    ConfiguredCodec.derived[A]
+
+private[circe] trait CodecDerivationRelaxed extends CodecDerivationRelaxedLP:
+  inline final def derived[A: LazyMirror: Decoders: Encoders](using c: ConfigurationOrDefault): Codec.AsObject[A] =
+    given conf: Configuration = c.conf
     ConfiguredCodec.derived[A]
