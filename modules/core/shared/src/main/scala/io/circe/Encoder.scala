@@ -23,8 +23,8 @@ import cats.data.Chain
 import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
-import cats.data.NonEmptySeq
 import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
 import cats.data.NonEmptyVector
 import cats.data.OneAnd
 import cats.data.Validated
@@ -32,30 +32,31 @@ import io.circe.`export`.Exported
 
 import java.io.Serializable
 import java.net.URI
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.MonthDay
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.time.Period
-import java.time.Year
-import java.time.YearMonth
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
-import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
-import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
-import java.time.format.DateTimeFormatter.ISO_OFFSET_TIME
-import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.SignStyle
-import java.time.temporal.ChronoField
-import java.time.temporal.TemporalAccessor
+import java.time.{
+  Duration,
+  Instant,
+  LocalDate,
+  LocalDateTime,
+  LocalTime,
+  MonthDay,
+  OffsetDateTime,
+  OffsetTime,
+  Period,
+  Year,
+  YearMonth,
+  ZoneId,
+  ZoneOffset,
+  ZonedDateTime
+}
+import java.time.format.{ DateTimeFormatter, DateTimeFormatterBuilder, SignStyle }
+import java.time.format.DateTimeFormatter.{
+  ISO_LOCAL_DATE_TIME,
+  ISO_LOCAL_TIME,
+  ISO_OFFSET_DATE_TIME,
+  ISO_OFFSET_TIME,
+  ISO_ZONED_DATE_TIME
+}
+import java.time.temporal.{ ChronoField, TemporalAccessor }
 import java.util.Currency
 import java.util.UUID
 import scala.Predef._
