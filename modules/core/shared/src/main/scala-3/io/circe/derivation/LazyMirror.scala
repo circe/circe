@@ -36,10 +36,10 @@ object LazyMirror {
   }
 
   final class SumImpl[A, L <: String, EL <: Tuple, ET <: Tuple](
-    l: L,
-    el: EL,
-    d: Default[A],
-    ord: A => Int
+    l: => L,
+    el: => EL,
+    d: => Default[A],
+    ord: => A => Int
   ) extends Sum[A]
       with Serializable {
     final lazy val mirroredLabel: L = l
@@ -51,10 +51,10 @@ object LazyMirror {
   }
 
   final class ProductImpl[A, L <: String, EL <: Tuple, ET <: Tuple](
-    l: L,
-    el: EL,
-    d: Default[A],
-    fp: scala.Product => A
+    l: => L,
+    el: => EL,
+    d: => Default[A],
+    fp: => scala.Product => A
   ) extends Product[A]
       with Serializable {
     final lazy val mirroredLabel: L = l

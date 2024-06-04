@@ -21,8 +21,12 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
-  private def of[A](nme: String, decoders: => List[Decoder[?]], encoders: => List[Encoder[?]], labels: List[String])(
-    using
+  private def of[A](
+    nme: => String,
+    decoders: => List[Decoder[?]],
+    encoders: => List[Encoder[?]],
+    labels: => List[String]
+  )(using
     conf: Configuration,
     mirror: LazyMirror[A]
   ): ConfiguredCodec[A] = mirror match

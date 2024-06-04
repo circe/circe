@@ -187,7 +187,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  private def of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
+  private def of[A](nme: => String, decoders: => List[Decoder[?]], labels: => List[String])(using
     conf: Configuration,
     mirror: LazyMirror[A]
   ): ConfiguredDecoder[A] = mirror match

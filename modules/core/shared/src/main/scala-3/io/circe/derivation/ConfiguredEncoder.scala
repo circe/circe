@@ -53,7 +53,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
-  private def of[A](encoders: => List[Encoder[?]], labels: List[String])(using
+  private def of[A](encoders: => List[Encoder[?]], labels: => List[String])(using
     conf: Configuration,
     mirror: LazyMirror[A]
   ): ConfiguredEncoder[A] = mirror match
