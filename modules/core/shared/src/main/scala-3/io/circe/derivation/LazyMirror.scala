@@ -35,6 +35,7 @@ object LazyMirror {
     def fromProduct(p: scala.Product): A
   }
 
+  // It's important that all of these parameters are by-name, see https://github.com/circe/circe/pull/2278
   final class SumImpl[A, L <: String, EL <: Tuple, ET <: Tuple](
     l: => L,
     el: => EL,
@@ -50,6 +51,7 @@ object LazyMirror {
     final def ordinal(a: A): Int = ord(a)
   }
 
+  // It's important that all of these parameters are by-name, see https://github.com/circe/circe/pull/2278
   final class ProductImpl[A, L <: String, EL <: Tuple, ET <: Tuple](
     l: => L,
     el: => EL,

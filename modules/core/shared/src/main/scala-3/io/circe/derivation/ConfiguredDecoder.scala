@@ -187,6 +187,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
+  // It's important that all of these parameters are by-name, see https://github.com/circe/circe/pull/2278
   private def of[A](nme: => String, decoders: => List[Decoder[?]], labels: => List[String])(using
     conf: Configuration,
     mirror: LazyMirror[A]

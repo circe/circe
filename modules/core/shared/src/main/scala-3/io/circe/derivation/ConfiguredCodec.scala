@@ -21,6 +21,7 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
+  // It's important that all of these parameters are by-name, see https://github.com/circe/circe/pull/2278
   private def of[A](
     nme: => String,
     decoders: => List[Decoder[?]],

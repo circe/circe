@@ -53,6 +53,7 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
+  // It's important that all of these parameters are by-name, see https://github.com/circe/circe/pull/2278
   private def of[A](encoders: => List[Encoder[?]], labels: => List[String])(using
     conf: Configuration,
     mirror: LazyMirror[A]
