@@ -52,8 +52,7 @@ import java.time.format.DateTimeFormatter.{
   ISO_LOCAL_DATE_TIME,
   ISO_LOCAL_TIME,
   ISO_OFFSET_DATE_TIME,
-  ISO_OFFSET_TIME,
-  ISO_ZONED_DATE_TIME
+  ISO_OFFSET_TIME
 }
 import java.time.temporal.{ ChronoField, TemporalAccessor }
 import java.util.Currency
@@ -731,11 +730,17 @@ object Encoder
     }
 
   /**
+   * Encodes a `ZonedDateTime` following the ISO-8601 format by using
+   * `java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME`.
+   * In comparison `java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME` does not strictly follow the ISO-8601
+   * standard as it adds the zone ID in brackets in the format of `Region/City` which is not part of the standard and
+   * breaks other non-JVM parsers e.g. `the Date.parse(...)` in JavaScript
+   *
    * @group Time
    */
   implicit final lazy val encodeZonedDateTime: Encoder[ZonedDateTime] =
     new JavaTimeEncoder[ZonedDateTime] {
-      protected final def format: DateTimeFormatter = ISO_ZONED_DATE_TIME
+      protected final def format: DateTimeFormatter = ISO_OFFSET_DATE_TIME
     }
 
   /**

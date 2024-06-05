@@ -158,15 +158,23 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
     def check(s: String): Unit =
       assertEquals(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)), Json.fromString(s))
 
-    check("2018-07-10T00:00:00Z[UTC]")
-    check("2018-07-10T00:00:00.1Z[UTC]")
-    check("2018-07-10T00:00:00.01Z[UTC]")
-    check("2018-07-10T00:00:00.001Z[UTC]")
-    check("2018-07-10T00:00:00.0001Z[UTC]")
-    check("2018-07-10T00:00:00.00001Z[UTC]")
-    check("2018-07-10T00:00:00.000001Z[UTC]")
-    check("2018-07-10T00:00:00.0000001Z[UTC]")
-    check("2018-07-10T00:00:00.00000001Z[UTC]")
+    check("2018-07-10T00:00:00Z")
+    check("2018-07-10T00:00:00.1Z")
+    check("2018-07-10T00:00:00.01Z")
+    check("2018-07-10T00:00:00.001Z")
+    check("2018-07-10T00:00:00.0001Z")
+    check("2018-07-10T00:00:00.00001Z")
+    check("2018-07-10T00:00:00.000001Z")
+    check("2018-07-10T00:00:00.0000001Z")
+    check("2018-07-10T00:00:00.00000001Z")
+  }
+
+  test("Encoder[ZonedDateTime] should use strict ISO-8601 without adding the zone ID in brackets as a suffix") {
+    def check(s: String): Unit =
+      assertEquals(Encoder[ZonedDateTime].apply(ZonedDateTime.parse(s)), Json.fromString(s))
+
+    check("2018-07-10T00:00:00Z")
+    check("2018-07-10T00:00:00+01:00")
   }
 
   test("Decoder[OffsetDateTime] should fail on invalid values") {
