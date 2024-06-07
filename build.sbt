@@ -26,7 +26,7 @@ val catsVersion = "2.12.0"
 val jawnVersion = "1.6.0"
 val shapelessVersion = "2.3.12"
 val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.11.1"
+val refinedNativeVersion = "0.11.2"
 
 val paradiseVersion = "2.1.1"
 
@@ -35,7 +35,7 @@ val munitVersion = "1.0.0"
 val disciplineVersion = "1.7.0"
 val disciplineScalaTestVersion = "2.3.0"
 val disciplineMunitVersion = "2.0.0"
-val scalaJavaTimeVersion = "2.5.0"
+val scalaJavaTimeVersion = "2.6.0"
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -372,7 +372,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
 
 lazy val scodec = circeCrossModule("scodec")
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.1.38"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.2.0"
   )
   .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
