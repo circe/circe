@@ -1,7 +1,7 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 
 val Scala212V: String = "2.12.19"
-val Scala213V: String = "2.13.13"
+val Scala213V: String = "2.13.14"
 val Scala3V: String = "3.3.3"
 
 ThisBuild / startYear := Some(2024)
@@ -24,7 +24,7 @@ ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
 val catsVersion = "2.10.0"
 val jawnVersion = "1.5.1"
-val shapelessVersion = "2.3.10"
+val shapelessVersion = "2.3.11"
 val refinedVersion = "0.9.29"
 val refinedNativeVersion = "0.11.1"
 
