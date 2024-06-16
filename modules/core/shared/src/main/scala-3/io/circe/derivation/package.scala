@@ -23,7 +23,7 @@ import io.circe.{ Codec, Decoder, Encoder, KeyDecoder, KeyEncoder }
 import cats.data.{ Chain, NonEmptyChain, NonEmptyList, NonEmptyMap, NonEmptySet, NonEmptyVector }
 import cats.kernel.Order
 
-private[circe] inline def summonLabels[T <: Tuple]: List[String] =
+private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
   inline erasedValue[T] match
     case _: EmptyTuple => Nil
     case _: (t *: ts)  => constValue[t].asInstanceOf[String] :: summonLabels[ts]
@@ -73,17 +73,6 @@ private[circe] inline final def summonDecoder[A](inline derivingForSum: Boolean)
       inline if (derivingForSum) ConfiguredDecoder.derived[A]
       else error("Failed to find an instance of Decoder[" + typeName[A] + "]")
   }
-
-private[circe] inline def summonOrder[A]: Order[A] = summonFrom { case orderA: Order[A] => orderA }
-
-private[circe] inline def summonOrdering[A]: Ordering[A] = summonFrom { case orderA: Ordering[A] => orderA }
-
-private[circe] inline def summonKeyDecoder[A]: KeyDecoder[A] = summonFrom {
-  case decodeK: KeyDecoder[A] => decodeK
-}
-private[circe] inline def summonKeyEncoder[A]: KeyEncoder[A] = summonFrom {
-  case encodeK: KeyEncoder[A] => encodeK
-}
 
 private[circe] inline def summonSingletonCases[T <: Tuple, A](inline typeName: Any): List[A] =
   inline erasedValue[T] match
