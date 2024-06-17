@@ -176,7 +176,7 @@
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">optics</span><span>.</span><span class="type-name">JsonPath</span><span>.</span><span class="identifier">_</span><span>
 
 </span><span class="keyword">val</span><span> </span><span class="identifier">_phoneNum</span><span> = </span><span class="identifier">root</span><span>.</span><span class="identifier">order</span><span>.</span><span class="identifier">customer</span><span>.</span><span class="identifier">contactDetails</span><span>.</span><span class="identifier">phone</span><span>.</span><span class="identifier">string</span><span>
-</span><span class="comment">// _phoneNum: monocle.package.Optional[Json, String] = monocle.POptional$$anon$1@532f57ac
+</span><span class="comment">// _phoneNum: monocle.package.Optional[Json, String] = monocle.POptional$$anon$1@6f1dd94c
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">phoneNum</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">String</span><span>] = </span><span class="identifier">_phoneNum</span><span>.</span><span class="identifier">getOption</span><span>(</span><span class="identifier">json</span><span>)
 </span><span class="comment">// phoneNum: Option[String] = Some(value = &quot;0123-456-789&quot;)</span></code></pre>
@@ -213,7 +213,7 @@
         can be achieved with a small change to the code we wrote for traversal:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">doubleQuantities</span><span>: </span><span class="type-name">Json</span><span> =&gt; </span><span class="type-name">Json</span><span> =
   </span><span class="identifier">root</span><span>.</span><span class="identifier">order</span><span>.</span><span class="identifier">items</span><span>.</span><span class="identifier">each</span><span>.</span><span class="identifier">quantity</span><span>.</span><span class="identifier">int</span><span>.</span><span class="identifier">modify</span><span>(</span><span class="identifier">_</span><span> * </span><span class="number-literal">2</span><span>)
-</span><span class="comment">// doubleQuantities: Json =&gt; Json = monocle.PTraversal$$Lambda$19288/0x0000000803847040@e1327ec
+</span><span class="comment">// doubleQuantities: Json =&gt; Json = monocle.PTraversal$$Lambda$19129/0x0000000804665040@7c595678
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">modifiedJson</span><span> = </span><span class="identifier">doubleQuantities</span><span>(</span><span class="identifier">json</span><span>)
 </span><span class="comment">// modifiedJson: Json = JObject(
