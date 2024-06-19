@@ -269,27 +269,33 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   }
 
   test("SeqDecoder should keep track of cursor history on failure") {
-    val payload = Json.obj("outer" -> Json.arr(
-      Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
-      Json.obj("f1" -> Json.obj()),
-      Json.obj(),
-    ))
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
 
     val innerDecoder = Decoder[String] { c =>
       c.downField("f1").get[String]("f2")
     }
 
     val result = Decoder.decodeSeq(innerDecoder)(payload.hcursor.downField("outer").success.get)
-    val expected = Left(DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer"))))
+    val expected = Left(
+      DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer")))
+    )
     assertEquals(result, expected)
   }
 
   test("SeqDecoder should keep track of cursor history when accumulating failures") {
-    val payload = Json.obj("outer" -> Json.arr(
-      Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
-      Json.obj("f1" -> Json.obj()),
-      Json.obj(),
-    ))
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
 
     val innerDecoder = Decoder[String] { c =>
       c.downField("f1").get[String]("f2")
@@ -299,7 +305,7 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     val expected = Validated.invalid(
       NonEmptyList.of(
         DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer"))),
-        DecodingFailure(MissingField, List(DownField("f1"), MoveRight, MoveRight, DownArray, DownField("outer"))),
+        DecodingFailure(MissingField, List(DownField("f1"), MoveRight, MoveRight, DownArray, DownField("outer")))
       )
     )
     assertEquals(result, expected)
