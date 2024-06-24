@@ -87,6 +87,7 @@
     <li class="level2 nav-leaf"><a href="adt.html">ADT (Algebraic Data Types)</a></li>
     <li class="level2 nav-leaf"><a href="testing.html">Codec Testing</a></li>
     <li class="level2 nav-leaf"><a href="known-issues.html">Warnings and known issues</a></li>
+    <li class="level2 nav-leaf"><a href="recursive-adt.html">Recursive ADT (Algebraic Data Types)</a></li>
     <li class="level1 nav-leaf"><a href="../optics.html">Optics</a></li>
     <li class="level1 nav-leaf"><a href="../performance.html">Performance</a></li>
     <li class="level1 nav-header">Related Projects</li>
@@ -173,13 +174,13 @@
 
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">decodeUser</span><span>: </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">User</span><span>] =
   </span><span class="type-name">Decoder</span><span>.</span><span class="identifier">forProduct3</span><span>(</span><span class="string-literal">&quot;id&quot;</span><span>, </span><span class="string-literal">&quot;first_name&quot;</span><span>, </span><span class="string-literal">&quot;last_name&quot;</span><span>)(</span><span class="type-name">User</span><span>.</span><span class="identifier">apply</span><span>)
-</span><span class="comment">// decodeUser: Decoder[User] = io.circe.ProductDecoders$$anon$5@2ea46c55
+</span><span class="comment">// decodeUser: Decoder[User] = io.circe.ProductDecoders$$anon$5@bc17742
 </span><span>
 </span><span class="keyword">implicit</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">encodeUser</span><span>: </span><span class="type-name">Encoder</span><span>[</span><span class="type-name">User</span><span>] =
   </span><span class="type-name">Encoder</span><span>.</span><span class="identifier">forProduct3</span><span>(</span><span class="string-literal">&quot;id&quot;</span><span>, </span><span class="string-literal">&quot;first_name&quot;</span><span>, </span><span class="string-literal">&quot;last_name&quot;</span><span>)(</span><span class="identifier">u</span><span> =&gt;
     (</span><span class="identifier">u</span><span>.</span><span class="identifier">id</span><span>, </span><span class="identifier">u</span><span>.</span><span class="identifier">firstName</span><span>, </span><span class="identifier">u</span><span>.</span><span class="identifier">lastName</span><span>)
   )
-</span><span class="comment">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$3@110f5f1c</span></code></pre>
+</span><span class="comment">// encodeUser: Encoder[User] = io.circe.ProductEncoders$$anon$3@7d27266c</span></code></pre>
         <p>It&#39;s not as clean or as maintainable as generic derivation, but it&#39;s less magical, it requires nothing but <code>circe-core</code>, and if you need a custom name mapping it&#39;s currently the best solution (although <code>0.6.0</code> introduces experimental configurable generic derivation in the <code>generic-extras</code> module).</p>
 
         

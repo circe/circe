@@ -87,6 +87,7 @@
     <li class="level2 active nav-leaf"><a href="#">ADT (Algebraic Data Types)</a></li>
     <li class="level2 nav-leaf"><a href="testing.html">Codec Testing</a></li>
     <li class="level2 nav-leaf"><a href="known-issues.html">Warnings and known issues</a></li>
+    <li class="level2 nav-leaf"><a href="recursive-adt.html">Recursive ADT (Algebraic Data Types)</a></li>
     <li class="level1 nav-leaf"><a href="../optics.html">Optics</a></li>
     <li class="level1 nav-leaf"><a href="../performance.html">Performance</a></li>
     <li class="level1 nav-header">Related Projects</li>
@@ -172,6 +173,7 @@
 (</span><span class="type-name">Foo</span><span>(</span><span class="number-literal">100</span><span>): </span><span class="type-name">Event</span><span>).</span><span class="identifier">asJson</span><span>.</span><span class="identifier">noSpaces</span><span>
 </span><span class="comment">// res1: String = &quot;{\&quot;i\&quot;:100}&quot;</span></code></pre>
         <p>This works, and if you need to be able to specify the order that the ADT constructors are tried, it&#39;s currently the best solution. Having to enumerate the constructors like this is obviously not ideal, though, even if we get the case class instances for free.</p>
+        <p>Finally, this approach has limitations for ADTs that are recursively defined. See the <a href="recursive-adt.html">Recursive ADT page</a> for more details.</p>
         
         <h3 id="a-more-generic-solution" class="section"><a class="anchor-link left" href="#a-more-generic-solution"><i class="icofont-laika link">&#xef71;</i></a>A more generic solution</h3>
         <p>We can avoid the fuss of writing out all the cases by using the <code>circe-shapes</code> module:</p>
