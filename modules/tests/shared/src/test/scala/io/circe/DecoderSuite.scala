@@ -22,8 +22,8 @@ import cats.implicits._
 import cats.kernel.Eq
 import cats.laws.discipline.{ DeferTests, MiniInt, MonadErrorTests, SemigroupKTests }
 import cats.laws.discipline.arbitrary._
-import io.circe.CursorOp.{ DownArray, DownN }
-import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+import io.circe.CursorOp._
+import io.circe.DecodingFailure.Reason._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -34,6 +34,7 @@ import org.scalacheck.Prop._
 
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
+import io.circe.CursorOp.DownField
 
 class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
@@ -263,6 +264,49 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       NonEmptyList.of(
         DecodingFailure(WrongTypeExpectation("string", Json.fromInt(1)), List(DownN(0))),
         DecodingFailure(WrongTypeExpectation("string", Json.fromInt(2)), List(DownN(1)))
+      )
+    )
+    assertEquals(result, expected)
+  }
+
+  test("SeqDecoder should keep track of cursor history on failure") {
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
+
+    val innerDecoder = Decoder[String] { c =>
+      c.downField("f1").get[String]("f2")
+    }
+
+    val result = Decoder.decodeSeq(innerDecoder)(payload.hcursor.downField("outer").success.get)
+    val expected = Left(
+      DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer")))
+    )
+    assertEquals(result, expected)
+  }
+
+  test("SeqDecoder should keep track of cursor history when accumulating failures") {
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
+
+    val innerDecoder = Decoder[String] { c =>
+      c.downField("f1").get[String]("f2")
+    }
+
+    val result = Decoder.decodeSeq(innerDecoder).decodeAccumulating(payload.hcursor.downField("outer").success.get)
+    val expected = Validated.invalid(
+      NonEmptyList.of(
+        DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer"))),
+        DecodingFailure(MissingField, List(DownField("f1"), MoveRight, MoveRight, DownArray, DownField("outer")))
       )
     )
     assertEquals(result, expected)
