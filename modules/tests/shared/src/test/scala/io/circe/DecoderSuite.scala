@@ -21,8 +21,8 @@ import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.implicits._
 import cats.kernel.Eq
 import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.*
-import io.circe.DecodingFailure.Reason.*
+import io.circe.CursorOp._
+import io.circe.DecodingFailure.Reason._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
