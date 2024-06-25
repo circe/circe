@@ -349,6 +349,9 @@ lazy val refined = circeCrossModule("refined")
   .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
   )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.9").toMap
+  )
   .dependsOn(core, tests % Test)
 
 lazy val parser =
