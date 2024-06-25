@@ -443,7 +443,7 @@ lazy val jawn = circeCrossModule("jawn", CrossType.Full)
     )
   )
   .jsSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.9").toMap
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.2").toMap
   )
   .dependsOn(core)
 
