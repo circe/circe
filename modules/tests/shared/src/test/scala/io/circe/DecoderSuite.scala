@@ -20,9 +20,10 @@ import cats.data.Validated.Invalid
 import cats.data.{ Chain, NonEmptyList, Validated }
 import cats.implicits._
 import cats.kernel.Eq
-import cats.laws.discipline.{ MonadErrorTests, SemigroupKTests }
-import io.circe.CursorOp.{ DownArray, DownN }
-import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+import cats.laws.discipline.{ DeferTests, MiniInt, MonadErrorTests, SemigroupKTests }
+import cats.laws.discipline.arbitrary._
+import io.circe.CursorOp._
+import io.circe.DecodingFailure.Reason._
 import io.circe.parser.parse
 import io.circe.syntax._
 import io.circe.testing.CodecTests
@@ -33,6 +34,7 @@ import org.scalacheck.Prop._
 
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
+import io.circe.CursorOp.DownField
 
 class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
   checkAll("Decoder[Int]", MonadErrorTests[Decoder, DecodingFailure].monadError[Int, Int, Int])
@@ -262,6 +264,49 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
       NonEmptyList.of(
         DecodingFailure(WrongTypeExpectation("string", Json.fromInt(1)), List(DownN(0))),
         DecodingFailure(WrongTypeExpectation("string", Json.fromInt(2)), List(DownN(1)))
+      )
+    )
+    assertEquals(result, expected)
+  }
+
+  test("SeqDecoder should keep track of cursor history on failure") {
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
+
+    val innerDecoder = Decoder[String] { c =>
+      c.downField("f1").get[String]("f2")
+    }
+
+    val result = Decoder.decodeSeq(innerDecoder)(payload.hcursor.downField("outer").success.get)
+    val expected = Left(
+      DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer")))
+    )
+    assertEquals(result, expected)
+  }
+
+  test("SeqDecoder should keep track of cursor history when accumulating failures") {
+    val payload = Json.obj(
+      "outer" -> Json.arr(
+        Json.obj("f1" -> Json.obj("f2" -> Json.fromString("value"))),
+        Json.obj("f1" -> Json.obj()),
+        Json.obj()
+      )
+    )
+
+    val innerDecoder = Decoder[String] { c =>
+      c.downField("f1").get[String]("f2")
+    }
+
+    val result = Decoder.decodeSeq(innerDecoder).decodeAccumulating(payload.hcursor.downField("outer").success.get)
+    val expected = Validated.invalid(
+      NonEmptyList.of(
+        DecodingFailure(MissingField, List(DownField("f2"), DownField("f1"), MoveRight, DownArray, DownField("outer"))),
+        DecodingFailure(MissingField, List(DownField("f1"), MoveRight, MoveRight, DownArray, DownField("outer")))
       )
     )
     assertEquals(result, expected)
@@ -778,5 +823,39 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
     assert(result.isInvalid)
     assertEquals(result.swap.toOption.map(_.size), Some(2))
+  }
+
+  checkAll("Defer[Decoder]", DeferTests[Decoder].defer[MiniInt])
+
+  test("Decoder.recursive should prevent undesirable grown in the number of instances created") {
+    var counter = 0
+    implicit def uglyListDecoder[A: Decoder]: Decoder[List[A]] = {
+      counter += 1
+      Decoder.recursive[List[A]] { implicit recurse =>
+        Decoder.instance { c =>
+          (c.downField("car").as[A], c.downField("cdr").as[Option[List[A]]]).mapN(_ :: _.getOrElse(Nil))
+        }
+      }
+    }
+    assertEquals(
+      Json
+        .obj(
+          "car" := 0,
+          "cdr" := Json.obj(
+            "car" := 1,
+            "cdr" := Json.obj(
+              "car" := 2,
+              "cdr" := Json.obj(
+                "car" := 3
+              )
+            )
+          )
+        )
+        .as[List[Int]],
+      (0 :: 1 :: 2 :: 3 :: Nil).asRight
+    )
+    // Without `Decoder.recursive`, this should create 5 instances of a `Decoder[List[Int]]`
+    // (1 for each instance, and 1 that gets created but not called because because the last "cdr" field is missing)
+    assertEquals(counter, 1)
   }
 }
