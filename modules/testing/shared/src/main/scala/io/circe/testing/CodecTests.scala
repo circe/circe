@@ -105,6 +105,9 @@ trait CodecTests[A] extends Laws {
     },
     "consistency with accumulating" -> Prop.forAll { (json: Json) =>
       laws.codecAccumulatingConsistency(json)
+    },
+    "consistency with Codec.from" -> Prop.forAll { (json: Json, a: A) =>
+      laws.codecFromConsistency(json, a)
     }
   )
 }

@@ -19,13 +19,14 @@ package io.circe
 import cats.data.Chain
 import cats.kernel.instances.float._
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.ContravariantTests
+import cats.laws.discipline.{ ContravariantTests, DeferTests, MiniInt }
 import cats.syntax.eq._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Arbitrary
 import org.scalacheck._
 import org.scalacheck.Prop._
+
 import scala.collection.SortedMap
 
 class EncoderSuite extends CirceMunitSuite {
@@ -121,4 +122,39 @@ class EncoderSuite extends CirceMunitSuite {
     // All Float values should be encoded in a way that match the original value.
     Encoder[Float].apply(x).toString.toFloat ?= x
   })
+
+  checkAll("Defer[Encoder]", DeferTests[Encoder].defer[MiniInt])
+
+  test("Encoder.recursive should prevent undesirable grown in the number of instances created") {
+    var counter = 0
+
+    implicit def uglyListEncoder[A: Encoder]: Encoder[List[A]] = {
+      counter += 1
+      Encoder.recursive[List[A]] { implicit recurse =>
+        Encoder.instance {
+          case Nil        => Json.Null
+          case car :: Nil => Json.obj("car" := car.asJson)
+          case car :: cdr => Json.obj("car" := car.asJson, "cdr" := cdr.asJson)
+        }
+      }
+    }
+
+    assertEquals(
+      (0 :: 1 :: 2 :: 3 :: Nil).asJson,
+      Json.obj(
+        "car" := 0,
+        "cdr" := Json.obj(
+          "car" := 1,
+          "cdr" := Json.obj(
+            "car" := 2,
+            "cdr" := Json.obj(
+              "car" := 3
+            )
+          )
+        )
+      )
+    )
+    // Without `Encoder.recursive`, this would create 4 instances of an `Encoder[List[Int]]`
+    assertEquals(counter, 1)
+  }
 }

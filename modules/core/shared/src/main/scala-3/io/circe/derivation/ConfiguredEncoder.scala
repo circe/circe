@@ -71,8 +71,14 @@ object ConfiguredEncoder:
         def isSum = true
         def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
 
+  private[derivation] inline final def encoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Encoder[?]] =
+    summonEncoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
+      case _: Mirror.ProductOf[A] => false
+      case _: Mirror.SumOf[A]     => true
+    })
+
   inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredEncoder[A] =
-    ConfiguredEncoder.of[A](summonEncoders[mirror.MirroredElemTypes], summonLabels[mirror.MirroredElemLabels])
+    ConfiguredEncoder.of[A](encoders[A], summonLabels[mirror.MirroredElemLabels])
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,

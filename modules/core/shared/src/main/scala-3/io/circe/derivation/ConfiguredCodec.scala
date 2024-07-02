@@ -54,8 +54,8 @@ object ConfiguredCodec:
   inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredCodec[A] =
     ConfiguredCodec.of(
       constValue[mirror.MirroredLabel],
-      summonDecoders[mirror.MirroredElemTypes],
-      summonEncoders[mirror.MirroredElemTypes],
+      ConfiguredDecoder.decoders[A],
+      ConfiguredEncoder.encoders[A],
       summonLabels[mirror.MirroredElemLabels]
     )
 
