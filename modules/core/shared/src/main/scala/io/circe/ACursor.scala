@@ -225,15 +225,12 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   private[circe] final def pathToRoot: PathToRoot = {
     import PathToRoot._
 
-    // Move to the last cursor's parent or to the last cursor if the last
-    // cursor doesn't have a parent. This should only be invoked on lastOp
-    // states where the we expect the lastCursor to have a parent, if it
-    // doesn't, then we would skip the current lastCursor anyway.
+    // Move to the last cursor or to the last cursor`s parent
+    // if cursor is intermediate. Empty the last cursor should call
+    // termination of cursors`s traverse
     def lastCursorParentOrLastCursor(cursor: ACursor): ACursor =
       cursor.lastCursor match {
         case lastCursor: ArrayCursor =>
-          lastCursor.parent
-        case lastCursor: ObjectCursor =>
           lastCursor.parent
         case lastCursor =>
           lastCursor

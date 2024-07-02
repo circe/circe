@@ -17,6 +17,7 @@
 package io.circe
 
 import cats.Contravariant
+import cats.Defer
 import cats.Foldable
 import cats.data.Chain
 import cats.data.NonEmptyChain
@@ -161,6 +162,16 @@ object Encoder
   final def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(a)
   }
+
+  /**
+   * Create an `Encoder` which assumes one already exists
+   *
+   * Certain recursive data structures (particularly when generic) greatly benefit from
+   * being able to be written this way. See `cats.Defer`
+   *
+   * @group Utilities
+   */
+  final def recursive[A](fn: Encoder[A] => Encoder[A]): Encoder[A] = Defer[Encoder].fix(fn)
 
   /**
    * Construct an instance for a given type with a [[cats.Foldable]] instance.
@@ -751,6 +762,23 @@ object Encoder
 
   implicit final lazy val currencyEncoder: Encoder[Currency] =
     Encoder[String].contramap(_.getCurrencyCode())
+
+  private case class DeferredEncoder[A](encoder: () => Encoder[A]) extends Encoder[A] {
+    private lazy val resolved: Encoder[A] = resolve(encoder)
+
+    @annotation.tailrec
+    private def resolve(f: () => Encoder[A]): Encoder[A] =
+      f() match {
+        case DeferredEncoder(f) => resolve(f)
+        case next               => next
+      }
+
+    override def apply(a: A): Json = resolved(a)
+  }
+
+  implicit val encoderInstances: Defer[Encoder] = new Defer[Encoder] {
+    override def defer[A](fa: => Encoder[A]): Encoder[A] = DeferredEncoder(() => fa)
+  }
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

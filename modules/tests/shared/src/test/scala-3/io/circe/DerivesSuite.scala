@@ -47,17 +47,17 @@ object DerivesSuite {
       )
   }
 
-  case class Wub(x: Long) derives Codec
+  case class Wub(x: Long) derives Codec.AsObject
 
   object Wub {
     implicit val eqWub: Eq[Wub] = Eq.by(_.x)
     implicit val arbitraryWub: Arbitrary[Wub] = Arbitrary(Arbitrary.arbitrary[Long].map(Wub(_)))
   }
 
-  sealed trait Foo derives Codec
+  sealed trait Foo derives Codec.AsObject
   case class Bar(i: Int, s: String) extends Foo
   case class Baz(xs: List[String]) extends Foo
-  case class Bam(w: Wub, d: Double) extends Foo derives Codec
+  case class Bam(w: Wub, d: Double) extends Foo derives Codec.AsObject
 
   object Bar {
     implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
@@ -108,9 +108,9 @@ object DerivesSuite {
     )
   }
 
-  sealed trait RecursiveAdtExample derives Codec
-  case class BaseAdtExample(a: String) extends RecursiveAdtExample derives Codec
-  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample derives Codec
+  sealed trait RecursiveAdtExample derives Codec.AsObject
+  case class BaseAdtExample(a: String) extends RecursiveAdtExample derives Codec.AsObject
+  case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample derives Codec.AsObject
 
   object RecursiveAdtExample {
     implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
@@ -126,7 +126,7 @@ object DerivesSuite {
       Arbitrary(atDepth(0))
   }
 
-  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample]) derives Codec
+  case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample]) derives Codec.AsObject
 
   object RecursiveWithOptionExample {
     implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
@@ -184,7 +184,7 @@ object DerivesSuite {
 
     given Arbitrary[RecursiveEnumAdt] = Arbitrary(atDepth(0))
 
-  sealed trait ADTWithSubTraitExample derives Codec
+  sealed trait ADTWithSubTraitExample derives Codec.AsObject
   sealed trait SubTrait extends ADTWithSubTraitExample
   case class TheClass(a: Int) extends SubTrait
 
@@ -192,7 +192,7 @@ object DerivesSuite {
     given Arbitrary[ADTWithSubTraitExample] = Arbitrary(Arbitrary.arbitrary[Int].map(TheClass.apply))
     given Eq[ADTWithSubTraitExample] = Eq.fromUniversalEquals
 
-  case class ProductWithTaggedMember(x: ProductWithTaggedMember.TaggedString) derives Codec
+  case class ProductWithTaggedMember(x: ProductWithTaggedMember.TaggedString) derives Codec.AsObject
 
   object ProductWithTaggedMember:
     sealed trait Tag
@@ -218,7 +218,7 @@ object DerivesSuite {
     given Eq[ProductWithTaggedMember] = Eq.fromUniversalEquals
 
   case class Inner[A](field: A) derives Encoder, Decoder
-  case class Outer(a: Option[Inner[String]]) derives Encoder, Decoder
+  case class Outer(a: Option[Inner[String]]) derives Encoder.AsObject, Decoder
   object Outer:
     given Eq[Outer] = Eq.fromUniversalEquals
     given Arbitrary[Outer] =
@@ -230,6 +230,8 @@ class DerivesSuite extends CirceMunitSuite {
   import io.circe.syntax._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)
+  checkAll("Codec[Box[Long]]", CodecTests[Box[Long]].codec)
+  // checkAll("Codec[Qux[Long]]", CodecTests[Qux[Long]].codec) Does not compile because Scala 3 requires a `Codec[Long]` for this when you use `derives Codec`
   checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
   checkAll("Codec[Baz]", CodecTests[Baz].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)

@@ -360,7 +360,7 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: circe-extras_sjs1_3 circe-extras_sjs1_2.12 circe-extras_sjs1_2.13 circe-scalafix-internal-input_3 circe-scalafix-internal-input_2.12 circe-scalafix-internal-input_2.13 circe-extras_native0.4_3 circe-extras_native0.4_2.12 circe-extras_native0.4_2.13 circe-scalafix-internal-tests_3 circe-scalafix-internal-tests_2.12 circe-scalafix-internal-tests_2.13 circe-hygiene_native0.4_3 circe-hygiene_native0.4_2.12 circe-hygiene_native0.4_2.13 rootjs_3 rootjs_2.12 rootjs_2.13 circe-docs_3 circe-docs_2.12 circe-docs_2.13 circe-scalafix-internal-output_3 circe-scalafix-internal-output_2.12 circe-scalafix-internal-output_2.13 circe-hygiene_3 circe-hygiene_2.12 circe-hygiene_2.13 circe-hygiene_sjs1_3 circe-hygiene_sjs1_2.12 circe-hygiene_sjs1_2.13 circe-tests_sjs1_3 circe-tests_sjs1_2.12 circe-tests_sjs1_2.13 rootjvm_3 rootjvm_2.12 rootjvm_2.13 circe-scalafix-internal-rules_3 circe-scalafix-internal-rules_2.12 circe-scalafix-internal-rules_2.13 rootnative_3 rootnative_2.12 rootnative_2.13 circe-scalajs-java-time-test_sjs1_3 circe-scalajs-java-time-test_sjs1_2.12 circe-scalajs-java-time-test_sjs1_2.13 circe-tests_3 circe-tests_2.12 circe-tests_2.13 circe-extras_3 circe-extras_2.12 circe-extras_2.13 circe-benchmark_3 circe-benchmark_2.12 circe-benchmark_2.13 circe-tests_native0.4_3 circe-tests_native0.4_2.12 circe-tests_native0.4_2.13
+          modules-ignore: circe-extras_sjs1_3 circe-extras_sjs1_2.12 circe-extras_sjs1_2.13 circe-scalafix-internal-input_3 circe-scalafix-internal-input_2.12 circe-scalafix-internal-input_2.13 circe-extras_native0.5_3 circe-extras_native0.5_2.12 circe-extras_native0.5_2.13 circe-scalafix-internal-tests_3 circe-scalafix-internal-tests_2.12 circe-scalafix-internal-tests_2.13 circe-hygiene_native0.5_3 circe-hygiene_native0.5_2.12 circe-hygiene_native0.5_2.13 rootjs_3 rootjs_2.12 rootjs_2.13 circe-docs_3 circe-docs_2.12 circe-docs_2.13 circe-scalafix-internal-output_3 circe-scalafix-internal-output_2.12 circe-scalafix-internal-output_2.13 circe-hygiene_3 circe-hygiene_2.12 circe-hygiene_2.13 circe-hygiene_sjs1_3 circe-hygiene_sjs1_2.12 circe-hygiene_sjs1_2.13 circe-tests_sjs1_3 circe-tests_sjs1_2.12 circe-tests_sjs1_2.13 rootjvm_3 rootjvm_2.12 rootjvm_2.13 circe-scalafix-internal-rules_3 circe-scalafix-internal-rules_2.12 circe-scalafix-internal-rules_2.13 rootnative_3 rootnative_2.12 rootnative_2.13 circe-scalajs-java-time-test_sjs1_3 circe-scalajs-java-time-test_sjs1_2.12 circe-scalajs-java-time-test_sjs1_2.13 circe-tests_3 circe-tests_2.12 circe-tests_2.13 circe-extras_3 circe-extras_2.12 circe-extras_2.13 circe-benchmark_3 circe-benchmark_2.12 circe-benchmark_2.13 circe-tests_native0.5_3 circe-tests_native0.5_2.12 circe-tests_native0.5_2.13
           configs-ignore: test scala-tool scala-doc-tool test-internal
 
   validate-steward:
@@ -476,7 +476,7 @@ jobs:
 
       - name: Publish site
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/series/0.14.x'
-        uses: peaceiris/actions-gh-pages@v3.9.3
+        uses: peaceiris/actions-gh-pages@v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site/target/docs/site
