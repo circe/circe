@@ -38,11 +38,27 @@ object Default:
     type Out = O
     lazy val defaults: Out = values
 
-  transparent inline given mkDefault[T](using mirror: Mirror.Of[T]): Default[T] =
-    // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
-    // in some rare edge cases, the latter fails (and both always have the same size)
-    val size = constValue[Tuple.Size[mirror.MirroredElemLabels]]
-    Default.of(getDefaults[T](size).asInstanceOf[Tuple.Map[mirror.MirroredElemTypes, Option]])
+  private def mkDefaultImpl[T: Type](mirror: Expr[Mirror.Of[T]])(using q: Quotes): Expr[Default[T]] = {
+    import q.reflect.*
+
+    mirror match {
+      case '{
+            ${ _ }: Mirror.Of[T] {
+              type MirroredElemLabels = el
+              type MirroredElemTypes = et
+            }
+          } =>
+        // summon the size of mirror.MirroredElemLabels (not mirror.MirroredElemTypes) because
+        // in some rare edge cases, the latter fails (and both always have the same size)
+        '{
+          val size = constValue[Tuple.Size[el & Tuple]]
+          Default.of(getDefaults[T](size).asInstanceOf[Tuple.Map[et & Tuple, Option]])
+        }
+    }
+  }
+
+  transparent inline given mkDefault[T](using inline mirror: Mirror.Of[T]): Default[T] =
+    ${ mkDefaultImpl[T]('mirror) }
 
   inline def getDefaults[T](inline s: Int): Tuple = ${ getDefaultsImpl[T]('s) }
 

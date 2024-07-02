@@ -142,7 +142,8 @@ private[circe] trait EncoderDerivation:
     ConfiguredEncoder.derived[A]
 
 private[circe] trait EncoderDerivationRelaxed:
-  inline final def derived[A: Mirror.Of](using
+  inline final def derived[A](using
+    inline A: Mirror.Of[A],
     configuration: Configuration = Configuration.default
   ): Encoder.AsObject[A] =
     ConfiguredEncoder.derived[A]
@@ -163,7 +164,8 @@ private[circe] trait CodecDerivation:
     ConfiguredCodec.derived[A]
 
 private[circe] trait CodecDerivationRelaxed:
-  inline final def derived[A: Mirror.Of](using
+  inline final def derived[A](using
+    inline A: Mirror.Of[A],
     configuration: Configuration = Configuration.default
   ): Codec.AsObject[A] =
     ConfiguredCodec.derived[A]
