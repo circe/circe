@@ -26,7 +26,10 @@ private[circe] trait EnumerationEncoders {
    * @group Utilities
    */
   final def encodeEnumeration[E <: Enumeration](enumeration: E): Encoder[E#Value] = new Encoder[E#Value] {
-    override def apply(e: E#Value): Json = Encoder.encodeString(e.toString)
+    override def apply(e: E#Value): Json = {
+      void(enumeration)
+      Encoder.encodeString(e.toString)
+    }
   }
 
 }
