@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,18 +26,18 @@ import io.circe.derivation._
 object Derivation {
   inline final def summonLabels[T <: Tuple]: Array[String] = summonLabelsRec[T].toArray
   inline final def summonDecoders[T <: Tuple]: Array[Decoder[_]] =
-    derivation.summonDecoders[T](using Configuration.default).toArray
+    derivation.summonDecoders[T](derivingForSum = false)(using Configuration.default).toArray
   inline final def summonEncoders[T <: Tuple]: Array[Encoder[_]] =
-    derivation.summonEncoders[T](using Configuration.default).toArray
+    derivation.summonEncoders[T](derivingForSum = false)(using Configuration.default).toArray
 
-  inline final def summonEncoder[A]: Encoder[A] = derivation.summonEncoder[A](using Configuration.default)
-  inline final def summonDecoder[A]: Decoder[A] = derivation.summonDecoder[A](using Configuration.default)
+  inline final def summonEncoder[A]: Encoder[A] = derivation.summonEncoder[A](false)(using Configuration.default)
+  inline final def summonDecoder[A]: Decoder[A] = derivation.summonDecoder[A](false)(using Configuration.default)
 
   inline final def summonLabelsRec[T <: Tuple]: List[String] = derivation.summonLabels[T]
   inline final def summonDecodersRec[T <: Tuple]: List[Decoder[_]] =
-    derivation.summonDecoders[T](using Configuration.default)
+    derivation.summonDecoders[T](derivingForSum = false)(using Configuration.default)
   inline final def summonEncodersRec[T <: Tuple]: List[Encoder[_]] =
-    derivation.summonEncoders[T](using Configuration.default)
+    derivation.summonEncoders[T](derivingForSum = false)(using Configuration.default)
 }
 
 @deprecated(since = "0.14.4")
@@ -141,6 +141,12 @@ private[circe] trait EncoderDerivation:
   ): Encoder.AsObject[A] =
     ConfiguredEncoder.derived[A]
 
+private[circe] trait EncoderDerivationRelaxed:
+  inline final def derived[A: Mirror.Of](using
+    configuration: Configuration = Configuration.default
+  ): Encoder.AsObject[A] =
+    ConfiguredEncoder.derived[A]
+
 private[circe] trait DecoderDerivation:
   inline final def derived[A](using inline A: Mirror.Of[A]): Decoder[A] =
     ConfiguredDecoder.derived[A](using Configuration.default)
@@ -153,5 +159,11 @@ private[circe] trait CodecDerivation:
   inline final def derivedConfigured[A](using
     inline A: Mirror.Of[A],
     inline configuration: Configuration
+  ): Codec.AsObject[A] =
+    ConfiguredCodec.derived[A]
+
+private[circe] trait CodecDerivationRelaxed:
+  inline final def derived[A: Mirror.Of](using
+    configuration: Configuration = Configuration.default
   ): Codec.AsObject[A] =
     ConfiguredCodec.derived[A]

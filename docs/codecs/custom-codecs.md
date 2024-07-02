@@ -1,7 +1,5 @@
----
-layout: docs
-title:  "Custom codecs"
----
+Custom Codecs
+=============
 
 ### Custom encoders/decoders
 

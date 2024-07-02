@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,11 @@ package io.circe.generic
 import cats.kernel.Eq
 import cats.kernel.instances.all._
 import io.circe.{ Decoder, Encoder }
-import io.circe.generic.jsoncodecmacrossuiteaux._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceMunitSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
-package object jsoncodecmacrossuiteaux extends AnyRef with ArbitraryInstances with MissingInstances
-
-package jsoncodecmacrossuiteaux {
+object auxInstances extends ArbitraryInstances with MissingInstances {
   // Simple
 
   @JsonCodec final case class Simple(i: Int, l: Long, s: String)
@@ -170,6 +167,8 @@ package jsoncodecmacrossuiteaux {
 }
 
 class JsonCodecMacrosSuite extends CirceMunitSuite {
+  import auxInstances._
+
   checkAll("Codec[Simple]", CodecTests[Simple].codec)
   checkAll("Codec[Single]", CodecTests[Single].codec)
   checkAll("Codec[Typed1[Int]]", CodecTests[Typed1[Int]].codec)

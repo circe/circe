@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,28 +189,38 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
-  inline final def derived[A](using conf: Configuration)(using
-    inline mirror: Mirror.Of[A]
-  ): ConfiguredDecoder[A] =
-    new ConfiguredDecoder[A] with SumOrProduct:
-      val name = constValue[mirror.MirroredLabel]
-      lazy val elemLabels: List[String] = summonLabels[mirror.MirroredElemLabels]
-      lazy val elemDecoders: List[Decoder[?]] = summonDecoders[mirror.MirroredElemTypes]
-      lazy val elemDefaults: Default[A] = Predef.summon[Default[A]]
+  private def of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
+    conf: Configuration,
+    mirror: Mirror.Of[A],
+    defaults: Default[A]
+  ): ConfiguredDecoder[A] = mirror match
+    case mirror: Mirror.ProductOf[A] =>
+      new ConfiguredDecoder[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = false
+        def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
+        override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
+    case _: Mirror.SumOf[A] =>
+      new ConfiguredDecoder[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = true
+        def apply(c: HCursor) = decodeSum(c)
+        override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
 
-      lazy val isSum: Boolean =
-        inline mirror match
-          case _: Mirror.ProductOf[A] => false
-          case _: Mirror.SumOf[A]     => true
+  private[derivation] inline final def decoders[A](using conf: Configuration, mirror: Mirror.Of[A]): List[Decoder[?]] =
+    summonDecoders[mirror.MirroredElemTypes](derivingForSum = inline mirror match {
+      case _: Mirror.ProductOf[A] => false
+      case _: Mirror.SumOf[A]     => true
+    })
 
-      final def apply(c: HCursor): Decoder.Result[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProduct(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSum(c)
-      final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] =
-        inline mirror match
-          case product: Mirror.ProductOf[A] => decodeProductAccumulating(c, product.fromProduct)
-          case _: Mirror.SumOf[A]           => decodeSumAccumulating(c)
+  inline final def derived[A](using conf: Configuration, mirror: Mirror.Of[A]): ConfiguredDecoder[A] =
+    ConfiguredDecoder.of[A](constValue[mirror.MirroredLabel], decoders[A], summonLabels[mirror.MirroredElemLabels])
 
   inline final def derive[A: Mirror.Of](
     transformMemberNames: String => String = Configuration.default.transformMemberNames,

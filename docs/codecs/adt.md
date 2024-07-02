@@ -1,7 +1,5 @@
----
-layout: docs
-title:  "ADT (Algebraic Data Types)"
----
+ADT (Algebraic Data Types)
+=========================
 
 ### ADTs encoding and decoding
 
@@ -60,9 +58,11 @@ decode[Event]("""{ "i": 1000 }""")
 
 This works, and if you need to be able to specify the order that the ADT constructors are tried, it's currently the best solution. Having to enumerate the constructors like this is obviously not ideal, though, even if we get the case class instances for free.
 
+Finally, this approach has limitations for ADTs that are recursively defined. See the [Recursive ADT page](recursive-adt.md) for more details.
+
 ### A more generic solution
 
-As discussed [on Gitter](https://gitter.im/circe/circe?at=589dee5daa800ee52c7aac8a), we can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
+We can avoid the fuss of writing out all the cases by using the `circe-shapes` module:
 
 ```scala mdoc:silent
 // To suppress previously imported implicit codecs.

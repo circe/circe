@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +103,7 @@ object KeyDecoder {
   implicit val decodeKeyShort: KeyDecoder[Short] = numberInstance(java.lang.Short.parseShort)
   implicit val decodeKeyInt: KeyDecoder[Int] = numberInstance(java.lang.Integer.parseInt)
   implicit val decodeKeyLong: KeyDecoder[Long] = numberInstance(java.lang.Long.parseLong)
+  implicit val decodeKeyDouble: KeyDecoder[Double] = numberInstance(java.lang.Double.parseDouble)
 
   implicit val keyDecoderInstances: MonadError[KeyDecoder, Unit] = new MonadError[KeyDecoder, Unit] {
     final def pure[A](a: A): KeyDecoder[A] = new KeyDecoder[A] {

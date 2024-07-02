@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,5 +33,6 @@ class KeyCodecSuite extends CirceMunitSuite {
   checkAll("KeyCodec[Short]", KeyCodecTests[Short].keyCodec)
   checkAll("KeyCodec[Int]", KeyCodecTests[Int].keyCodec)
   checkAll("KeyCodec[Long]", KeyCodecTests[Long].keyCodec)
+  checkAll("KeyCodec[Double]", KeyCodecTests[Double].keyCodec)
 
 }

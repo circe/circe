@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,11 +194,11 @@ class ConfiguredDerivesSuite extends CirceMunitSuite:
   {
     given Configuration = Configuration.default.withDefaults
 
-    case class FooWithDefault(a: Option[Int] = Some(0), b: String = "b") derives ConfiguredCodec
+    case class FooWithDefault(a: Option[Int] = Some(0), b: String = "b") derives Codec
     object FooWithDefault:
       given Eq[FooWithDefault] = Eq.fromUniversalEquals
 
-    case class FooNoDefault(a: Option[Int], b: String = "b") derives ConfiguredCodec
+    case class FooNoDefault(a: Option[Int], b: String = "b") derives Codec
     object FooNoDefault:
       given Eq[FooNoDefault] = Eq.fromUniversalEquals
 

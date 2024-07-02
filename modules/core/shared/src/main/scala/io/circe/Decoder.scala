@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package io.circe
 
 import cats.ApplicativeError
+import cats.Defer
 import cats.Eval
 import cats.MonadError
 import cats.SemigroupK
@@ -25,6 +26,7 @@ import cats.data.Kleisli
 import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
+import cats.data.NonEmptySeq
 import cats.data.NonEmptySet
 import cats.data.NonEmptyVector
 import cats.data.StateT
@@ -596,6 +598,19 @@ object Decoder
   }
 
   /**
+   * Create a `Decoder` which assumes one already exists
+   *
+   * Certain recursive data structures (particularly when generic) greatly benefit from
+   * being able to be written this way. See `cats.Defer`
+   *
+   * Note: while a `Decoder` written using `Decoder.recursive` can prevent unneeded creation of
+   * `Decoder` instances when recursing, the resulting `Decoder` cannot be guaranteed to be stack-safe.
+   *
+   * @group Utilities
+   */
+  final def recursive[A](fn: Decoder[A] => Decoder[A]): Decoder[A] = Defer[Decoder].fix(fn)
+
+  /**
    * @group Decoding
    */
   implicit final val decodeHCursor: Decoder[HCursor] = new Decoder[HCursor] {
@@ -1125,6 +1140,15 @@ object Decoder
   /**
    * @group Collection
    */
+  implicit final def decodeNonEmptySeq[A](implicit decodeA: Decoder[A]): Decoder[NonEmptySeq[A]] =
+    new NonEmptySeqDecoder[A, List, NonEmptySeq[A]](decodeA) {
+      final protected def createBuilder(): Builder[A, List[A]] = List.newBuilder[A]
+      final protected val create: (A, List[A]) => NonEmptySeq[A] = (h, t) => NonEmptySeq(h, t)
+    }
+
+  /**
+   * @group Collection
+   */
   implicit final def decodeNonEmptyVector[A](implicit decodeA: Decoder[A]): Decoder[NonEmptyVector[A]] =
     new NonEmptySeqDecoder[A, Vector, NonEmptyVector[A]](decodeA) {
       final protected def createBuilder(): Builder[A, Vector[A]] = Vector.newBuilder[A]
@@ -1455,6 +1479,24 @@ object Decoder
     new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
       protected[this] final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
     }
+
+  private final case class DeferredDecoder[A](decoder: () => Decoder[A]) extends Decoder[A] {
+    private lazy val resolved: Decoder[A] = resolve(decoder)
+
+    @annotation.tailrec
+    private def resolve(f: () => Decoder[A]): Decoder[A] =
+      f() match {
+        case DeferredDecoder(f) => resolve(f)
+        case next               => next
+      }
+
+    override def apply(c: HCursor): Result[A] = resolved(c)
+
+    override def decodeAccumulating(c: HCursor): AccumulatingResult[A] = resolved.decodeAccumulating(c)
+  }
+  implicit val decoderDefer: Defer[Decoder] = new Defer[Decoder] {
+    override def defer[A](fa: => Decoder[A]): Decoder[A] = DeferredDecoder(() => fa)
+  }
 
   /**
    * @group Instances

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package io.circe
 
 import cats.Contravariant
+import cats.Defer
 import cats.Foldable
 import cats.data.Chain
 import cats.data.NonEmptyChain
 import cats.data.NonEmptyList
 import cats.data.NonEmptyMap
 import cats.data.NonEmptySet
+import cats.data.NonEmptySeq
 import cats.data.NonEmptyVector
 import cats.data.OneAnd
 import cats.data.Validated
@@ -135,9 +137,11 @@ trait Encoder[A] extends Serializable { self =>
 object Encoder
     extends TupleEncoders
     with ProductEncoders
+    with ProductTypedEncoders
     with LiteralEncoders
     with EnumerationEncoders
-    with MidPriorityEncoders {
+    with MidPriorityEncoders
+    with EncoderDerivationRelaxed {
 
   /**
    * Return an instance for a given type `A`.
@@ -154,6 +158,16 @@ object Encoder
   final def instance[A](f: A => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(a)
   }
+
+  /**
+   * Create an `Encoder` which assumes one already exists
+   *
+   * Certain recursive data structures (particularly when generic) greatly benefit from
+   * being able to be written this way. See `cats.Defer`
+   *
+   * @group Utilities
+   */
+  final def recursive[A](fn: Encoder[A] => Encoder[A]): Encoder[A] = Defer[Encoder].fix(fn)
 
   /**
    * Construct an instance for a given type with a [[cats.Foldable]] instance.
@@ -408,6 +422,14 @@ object Encoder
   implicit final def encodeNonEmptyList[A](implicit encodeA: Encoder[A]): AsArray[NonEmptyList[A]] =
     new AsArray[NonEmptyList[A]] {
       final def encodeArray(a: NonEmptyList[A]): Vector[Json] = a.toList.toVector.map(encodeA(_))
+    }
+
+  /**
+   * @group Collection
+   */
+  implicit final def encodeNonEmptySeq[A](implicit encodeA: Encoder[A]): AsArray[NonEmptySeq[A]] =
+    new AsArray[NonEmptySeq[A]] {
+      final def encodeArray(a: NonEmptySeq[A]): Vector[Json] = a.toSeq.toVector.map(encodeA(_))
     }
 
   /**
@@ -736,6 +758,23 @@ object Encoder
 
   implicit final lazy val currencyEncoder: Encoder[Currency] =
     Encoder[String].contramap(_.getCurrencyCode())
+
+  private case class DeferredEncoder[A](encoder: () => Encoder[A]) extends Encoder[A] {
+    private lazy val resolved: Encoder[A] = resolve(encoder)
+
+    @annotation.tailrec
+    private def resolve(f: () => Encoder[A]): Encoder[A] =
+      f() match {
+        case DeferredEncoder(f) => resolve(f)
+        case next               => next
+      }
+
+    override def apply(a: A): Json = resolved(a)
+  }
+
+  implicit val encoderInstances: Defer[Encoder] = new Defer[Encoder] {
+    override def defer[A](fa: => Encoder[A]): Encoder[A] = DeferredEncoder(() => fa)
+  }
 
   /**
    * A subtype of `Encoder` that statically verifies that the instance encodes

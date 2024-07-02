@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,6 +83,10 @@ object KeyEncoder {
 
   implicit val encodeKeyLong: KeyEncoder[Long] = new KeyEncoder[Long] {
     final def apply(key: Long): String = java.lang.Long.toString(key)
+  }
+
+  implicit val encodeKeyDouble: KeyEncoder[Double] = new KeyEncoder[Double] {
+    final def apply(key: Double): String = java.lang.Double.toString(key)
   }
 
   implicit val keyEncoderContravariant: Contravariant[KeyEncoder] = new Contravariant[KeyEncoder] {

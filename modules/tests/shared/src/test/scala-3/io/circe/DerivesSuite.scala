@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 circe
+ * Copyright 2024 circe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
 
 object DerivesSuite {
-  case class Box[A](a: A) derives Decoder, Encoder.AsObject
+  case class Box[A](a: A) derives Decoder, Encoder
 
   object Box {
     implicit def eqBox[A: Eq]: Eq[Box[A]] = Eq.by(_.a)
     implicit def arbitraryBox[A](implicit A: Arbitrary[A]): Arbitrary[Box[A]] = Arbitrary(A.arbitrary.map(Box(_)))
   }
 
-  case class Qux[A](i: Int, a: A, j: Int) derives Codec.AsObject
+  case class Qux[A](i: Int, a: A, j: Int) derives Codec
 
   object Qux {
     implicit def eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(q => (q.i, q.a, q.j))
@@ -143,7 +143,7 @@ object DerivesSuite {
       Arbitrary(atDepth(0))
   }
 
-  enum Vegetable derives Codec.AsObject:
+  enum Vegetable derives Codec:
     case Potato(species: String)
     case Carrot(length: Double)
     case Onion(layers: Int)
@@ -169,7 +169,7 @@ object DerivesSuite {
       )
     )
 
-  enum RecursiveEnumAdt derives Codec.AsObject:
+  enum RecursiveEnumAdt derives Codec:
     case BaseAdtExample(a: String)
     case NestedAdtExample(r: RecursiveEnumAdt)
   object RecursiveEnumAdt:
@@ -217,12 +217,21 @@ object DerivesSuite {
       }
     given Eq[ProductWithTaggedMember] = Eq.fromUniversalEquals
 
+  case class Inner[A](field: A) derives Encoder, Decoder
+  case class Outer(a: Option[Inner[String]]) derives Encoder.AsObject, Decoder
+  object Outer:
+    given Eq[Outer] = Eq.fromUniversalEquals
+    given Arbitrary[Outer] =
+      Arbitrary(Gen.option(Arbitrary.arbitrary[String].map(Inner.apply)).map(Outer.apply))
 }
 
 class DerivesSuite extends CirceMunitSuite {
   import DerivesSuite._
+  import io.circe.syntax._
 
   checkAll("Codec[Box[Wub]]", CodecTests[Box[Wub]].codec)
+  checkAll("Codec[Box[Long]]", CodecTests[Box[Long]].codec)
+  // checkAll("Codec[Qux[Long]]", CodecTests[Qux[Long]].codec) Does not compile because Scala 3 requires a `Codec[Long]` for this when you use `derives Codec`
   checkAll("Codec[Seq[Foo]]", CodecTests[Seq[Foo]].codec)
   checkAll("Codec[Baz]", CodecTests[Baz].codec)
   checkAll("Codec[Foo]", CodecTests[Foo].codec)
@@ -232,15 +241,20 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[RecursiveEnumAdt]", CodecTests[RecursiveEnumAdt].codec)
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
   checkAll("Codec[ProductWithTaggedMember] (#2135)", CodecTests[ProductWithTaggedMember].codec)
+  checkAll("Codec[Outer]", CodecTests[Outer].codec)
 
   test("Nested sums should not be encoded redundantly") {
-    import io.circe.syntax._
     val foo: ADTWithSubTraitExample = TheClass(0)
-    val expected = Json.obj(
-      "TheClass" -> Json.obj(
-        "a" -> 0.asJson
-      )
-    )
-    assert(Encoder[ADTWithSubTraitExample].apply(foo) === expected)
+    val expected = Json.obj("TheClass" -> Json.obj("a" -> 0.asJson))
+    assertEquals(foo.asJson, expected)
+  }
+
+  test("Derived Encoder respects existing instances") {
+    val some = Outer(Some(Inner("c")))
+    val none = Outer(None)
+    val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
+    val expectedNone = Json.obj("a" -> Json.Null)
+    assertEquals(some.asJson, expectedSome)
+    assertEquals(none.asJson, expectedNone)
   }
 }
