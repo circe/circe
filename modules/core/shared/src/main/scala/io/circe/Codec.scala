@@ -58,7 +58,7 @@ object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodec
   /**
    * Summons a `Codec` where a `Decoder` and an `Encoder` are in implicit scope.
    */
-  def instance[A](implicit decoder: Decoder[A], encoder: Encoder[A]): Codec[A] =
+  def unsafeSummon[A](implicit decoder: Decoder[A], encoder: Encoder[A]): Codec[A] =
     Codec.from(decoder, encoder)
 
   implicit val codecInvariant: Invariant[Codec] = new Invariant[Codec] {
