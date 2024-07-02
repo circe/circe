@@ -1034,7 +1034,9 @@ object Decoder
         if (!c.incorrectFocus) keyMissingNoneAccumulating
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
       case _ =>
-        Validated.invalidNel(DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history))
+        Validated.invalidNel(
+          DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history)
+        )
     }
   }
 
@@ -1075,7 +1077,9 @@ object Decoder
         if (!c.incorrectFocus) keyMissingNoneAccumulating
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
       case _ =>
-        Validated.invalidNel(DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history))
+        Validated.invalidNel(
+          DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history)
+        )
     }
   }
 
@@ -1275,7 +1279,7 @@ object Decoder
   }
 
   private[this] abstract class StandardJavaTimeDecoder[A](name: String) extends JavaTimeDecoder[A](name) {
-    protected[this] final def formatMessage(input: String, message: String): String = 
+    protected[this] final def formatMessage(input: String, message: String): String =
       s"Text '$input' cannot be parsed to a $name. Message is: $message"
   }
 

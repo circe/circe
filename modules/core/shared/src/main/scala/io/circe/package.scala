@@ -56,8 +56,8 @@ package io
  */
 // scalastyle:on
 package object circe {
-    private[circe] def void[A](a: => A): Unit = {
-        val _ = a
-        ()
-    }
+  private[circe] def void[A](a: => A): Unit = {
+    val _ = a
+    ()
+  }
 }
