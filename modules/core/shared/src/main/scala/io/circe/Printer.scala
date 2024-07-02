@@ -24,7 +24,7 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
-import scala.annotation.unused
+import org.typelevel.scalaccompat.annotation._
 
 /**
  * A pretty-printer for JSON values.
