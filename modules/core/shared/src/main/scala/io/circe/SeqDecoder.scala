@@ -21,24 +21,30 @@ import cats.data.Validated
 import io.circe.DecodingFailure.Reason.WrongTypeExpectation
 
 import scala.collection.mutable.Builder
+import io.circe.CursorOp.MoveRight
+import io.circe.CursorOp.DownArray
 
 private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends Decoder[C[A]] {
   protected def createBuilder(): Builder[A, C[A]]
 
   def apply(c: HCursor): Decoder.Result[C[A]] = {
-    var current = c.downArray
-
-    if (current.succeeded) {
+    val values = c.value.asArray
+    if (values.nonEmpty) {
+      val jsonValues = values.get
       val builder = createBuilder()
+      builder.sizeHint(jsonValues.size)
       var failed: DecodingFailure = null
+      var index = 0
 
-      while (failed.eq(null) && current.succeeded) {
-        decodeA(current.asInstanceOf[HCursor]) match {
-          case Left(e) => failed = e
+      while (failed.eq(null) && index < jsonValues.size) {
+        jsonValues(index).as(decodeA) match {
+          case Left(e) =>
+            val arrayHistory: List[CursorOp] = List.fill(index)(MoveRight) ++ List(DownArray) ++ c.history
+            failed = e.copy(history = e.history ++ arrayHistory).withReason(e.reason)
           case Right(a) =>
             builder += a
-            current = current.right
         }
+        index += 1
       }
 
       if (failed.eq(null)) Right(builder.result()) else Left(failed)
@@ -51,23 +57,31 @@ private[circe] abstract class SeqDecoder[A, C[_]](decodeA: Decoder[A]) extends D
   }
 
   override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[C[A]] = {
-    var current = c.downArray
-
-    if (current.succeeded) {
+    val values = c.value.asArray
+    if (values.nonEmpty) {
+      val jsonValues = values.get
       val builder = createBuilder()
+      builder.sizeHint(jsonValues.size)
       var failed = false
       val failures = List.newBuilder[DecodingFailure]
+      var index = 0
 
-      while (current.succeeded) {
-        decodeA.decodeAccumulating(current.asInstanceOf[HCursor]) match {
+      while (index < jsonValues.size) {
+        decodeA.decodeAccumulating(jsonValues(index).hcursor) match {
           case Validated.Invalid(es) =>
             failed = true
-            failures += es.head
-            failures ++= es.tail
+            val arrayHistory: List[CursorOp] = List.fill(index)(MoveRight) ++ List(DownArray) ++ c.history
+            val fixedErrors = es.map { e =>
+              e.copy(history = e.history ++ arrayHistory).withReason(e.reason)
+            }
+            failures += fixedErrors.head
+            failures ++= fixedErrors.tail
           case Validated.Valid(a) =>
-            if (!failed) builder += a
+            if (!failed) {
+              builder += a
+            }
         }
-        current = current.right
+        index += 1
       }
 
       if (!failed) Validated.valid(builder.result())
