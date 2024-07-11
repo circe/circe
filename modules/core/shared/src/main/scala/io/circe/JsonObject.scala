@@ -373,7 +373,7 @@ object JsonObject {
         }
       }
 
-      folder.writer.append(p.rBraces)
+      folder.writer.append(p.rBraces): Unit
     }
 
     private[this] def toMapAndVectorJsonObject: MapAndVectorJsonObject = {
@@ -480,7 +480,7 @@ object JsonObject {
         }
       }
 
-      folder.writer.append(p.rBraces)
+      folder.writer.append(p.rBraces): Unit
     }
   }
 }

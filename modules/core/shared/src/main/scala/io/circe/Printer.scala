@@ -85,23 +85,11 @@ final case class Printer(
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
 
-  private[this] final class StringBuilderFolder(
-    writer: StringBuilder
-  ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
-    final def onBoolean(value: Boolean): Unit = writer.append(value)
-    final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
-  }
-
-  @deprecated("Use AppendableFolder", since = "0.14.2")
-  private[this] final class AppendableByteBufferFolder(
-    writer: Printer.AppendableByteBuffer
-  ) extends AppendableFolder(writer)
-
   private[this] sealed class AppendableFolder(
     writer: Appendable
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
-    final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
-    final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
+    final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value)): Unit
+    final def onNumber(value: JsonNumber): Unit = writer.append(value.toString): Unit
   }
 
   private[this] final def concat(left: String, text: String, right: String): String = {
@@ -313,7 +301,7 @@ object Printer {
       .append(toHex((c >> 12) & 15))
       .append(toHex((c >> 8) & 15))
       .append(toHex((c >> 4) & 15))
-      .append(toHex(c & 15))
+      .append(toHex(c & 15)): Unit
 
   private[this] final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
 
@@ -326,7 +314,7 @@ object Printer {
   ) extends Json.Folder[Unit] {
     private[circe] var depth: Int = 0
 
-    final def onNull: Unit = writer.append("null")
+    final def onNull: Unit = writer.append("null"): Unit
 
     final def onString(value: String): Unit = {
       writer.append('"')
@@ -357,14 +345,14 @@ object Printer {
       }
 
       if (offset < i) writer.append(value, offset, i)
-      writer.append('"')
+      writer.append('"'): Unit
     }
 
     final def onArray(value: Vector[Json]): Unit = {
       val orig = depth
       val p = pieces(depth)
 
-      if (value.isEmpty) writer.append(p.lrEmptyBrackets)
+      if (value.isEmpty) writer.append(p.lrEmptyBrackets): Unit
       else {
         val iterator = value.iterator
 
@@ -380,7 +368,7 @@ object Printer {
           depth = orig
         }
 
-        writer.append(p.rBrackets)
+        writer.append(p.rBrackets): Unit
       }
     }
 
@@ -418,7 +406,7 @@ object Printer {
     protected[this] final def addIndentation(builder: StringBuilder, s: String, depth: Int): Unit = {
       val lastNewLineIndex = s.lastIndexOf('\n')
 
-      if (lastNewLineIndex == -1) builder.append(s)
+      if (lastNewLineIndex == -1) builder.append(s): Unit
       else {
         builder.append(s, 0, lastNewLineIndex + 1)
 
@@ -429,7 +417,7 @@ object Printer {
           i += 1
         }
 
-        builder.append(s, lastNewLineIndex + 1, s.length)
+        builder.append(s, lastNewLineIndex + 1, s.length): Unit
       }
     }
 

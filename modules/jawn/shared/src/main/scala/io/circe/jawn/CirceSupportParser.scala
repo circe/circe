@@ -142,7 +142,7 @@ class CirceSupportParser(maxValueSize: Option[Int], allowDuplicateKeys: Boolean)
 
   private[this] trait DuplicatesFacade extends BaseFacade {
     protected[this] final def mapPut(map: LinkedHashMap[String, Json], key: String, value: Json): Unit =
-      map.put(key, value)
+      map.put(key, value): Unit
   }
 
   private[this] trait NoDuplicatesFacade extends BaseFacade {

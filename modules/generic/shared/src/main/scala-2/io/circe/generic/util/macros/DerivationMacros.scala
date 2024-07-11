@@ -56,10 +56,10 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
   protected[this] def encodeField(name: String, encode: TermName, value: TermName): Tree
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree
 
-  private[this] def fullDecodeMethodArgs(tpe: Type): List[List[Tree]] =
+  private[this] def fullDecodeMethodArgs(): List[List[Tree]] =
     List(q"c: _root_.io.circe.HCursor") :: (if (decodeMethodArgs.isEmpty) Nil else List(decodeMethodArgs))
 
-  private[this] def fullDecodeAccumulatingMethodArgs(tpe: Type): List[List[Tree]] =
+  private[this] def fullDecodeAccumulatingMethodArgs(): List[List[Tree]] =
     List(q"c: _root_.io.circe.HCursor") :: (
       if (decodeAccumulatingMethodArgs.isEmpty) Nil else List(decodeAccumulatingMethodArgs)
     )
@@ -142,7 +142,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
         case RefinedType(List(fieldType, TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType))), _)
             if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
           tagType.dealias match {
-            case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+            case RefinedType(List(st, TypeRef(tt, _, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                 if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
               Some((fieldKey, tagType, fieldType))
             case _ => None
@@ -157,7 +157,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
             case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
                 if lt =:= ShapelessLabelledType && internal.refinedType(refs.reverse, scope) =:= taggedFieldType =>
               tagType.dealias match {
-                case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+                case RefinedType(List(st, TypeRef(tt, _, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                     if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
                   Some((fieldKey, tagType, taggedFieldType))
                 case _ => None
@@ -244,7 +244,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
     members.fold("circeGenericDecoderFor")(
       resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
     )((cnilResult, cnilResultAccumulating)) {
-      case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) =>
+      case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) =>
         (
           q"""
         ${decodeSubtype(label, instanceName)} match {
@@ -289,11 +289,11 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
             ..$instanceDefs
 
             final def $decodeMethodName(
-              ...${fullDecodeMethodArgs(R.tpe)}
+              ...${fullDecodeMethodArgs()}
             ): _root_.io.circe.Decoder.Result[$R] = $result
 
             final override def $decodeAccumulatingMethodName(
-              ...${fullDecodeAccumulatingMethodArgs(R.tpe)}
+              ...${fullDecodeAccumulatingMethodArgs()}
             ): _root_.io.circe.Decoder.AccumulatingResult[$R] = $resultAccumulating
           }: $instanceType
         """
@@ -306,7 +306,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
       members.fold("circeGenericEncoderFor")(resolveInstance(List((typeOf[Encoder[_]], false))))(
         (pq"_root_.shapeless.HNil": Tree, List.empty[Tree])
       ) {
-        case (Member(label, _, tpe, _, _), instanceName, (patternAcc, fieldsAcc)) =>
+        case (Member(label, _, _, _, _), instanceName, (patternAcc, fieldsAcc)) =>
           val currentName = TermName(s"circeGenericHListBindingFor$label").encodedName.toTermName
 
           (
@@ -332,7 +332,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
     )(
       cq"""_root_.shapeless.Inr(_) => _root_.scala.sys.error("Cannot encode CNil")"""
     ) {
-      case (Member(label, _, tpe, _, _), instanceName, acc) =>
+      case (Member(label, _, _, _, _), instanceName, acc) =>
         val inrName = TermName(s"circeGenericInrBindingFor$label").encodedName.toTermName
         val inlName = TermName(s"circeGenericInlBindingFor$label").encodedName.toTermName
 
@@ -398,11 +398,11 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
               $encoderInstanceImpl
 
             final def $decodeMethodName(
-              ...${fullDecodeMethodArgs(R.tpe)}
+              ...${fullDecodeMethodArgs()}
             ): _root_.io.circe.Decoder.Result[$R] = $result
 
             final override def $decodeAccumulatingMethodName(
-              ...${fullDecodeAccumulatingMethodArgs(R.tpe)}
+              ...${fullDecodeAccumulatingMethodArgs()}
             ): _root_.io.circe.Decoder.AccumulatingResult[$R] = $resultAccumulating
           }: $instanceType
         """

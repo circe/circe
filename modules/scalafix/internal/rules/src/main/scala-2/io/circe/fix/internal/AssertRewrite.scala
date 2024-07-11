@@ -136,10 +136,10 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
                 )
               } else {
                 update(state.copy(inTest = true)) match {
-                  case configs =>
+                  case c =>
                     if (state.inForAll) {
                       loop(
-                        configs,
+                        c,
                         acc + Patch.lint(
                           Diagnostic(
                             "assertRewrite",
@@ -151,25 +151,25 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
                         )
                       )
                     } else {
-                      loop(configs, acc + testToProperty(loc))
+                      loop(c, acc + testToProperty(loc))
                     }
                 }
               }
             case Config(state, loc) if isForAll(loc) =>
               update(state.copy(inForAll = true)) match {
-                case configs => loop(configs, acc)
+                case c => loop(c, acc)
               }
             case Config(state, loc) =>
               update(state) match {
-                case configs =>
+                case c =>
                   if (state.inTest && state.inForAll) {
-                    loop(configs, acc)
+                    loop(c, acc)
                   } else if (state.inTest) {
-                    loop(configs, acc + assertToAssertEquals(loc))
+                    loop(c, acc + assertToAssertEquals(loc))
                   } else if (state.inForAll) {
-                    loop(configs, acc + assertToPropEquals(loc))
+                    loop(c, acc + assertToPropEquals(loc))
                   } else {
-                    loop(configs, acc)
+                    loop(c, acc)
                   }
               }
           }

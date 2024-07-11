@@ -149,11 +149,11 @@ private[numbers] final class SigAndExp(
   }
 
   private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = {
-    builder.append(unscaled)
+    builder.append(unscaled): Unit
 
     if (scale != BigInteger.ZERO) {
       builder.append('e')
-      builder.append(scale.negate)
+      builder.append(scale.negate): Unit
     }
   }
 }
@@ -174,7 +174,7 @@ object BiggerDecimal {
     final val toLong: Option[Long] = Some(0L)
 
     private[circe] def appendToStringBuilder(builder: StringBuilder): Unit =
-      builder.append(toString)
+      builder.append(toString): Unit
   }
 
   private[this] val UnsignedZero: BiggerDecimal = new Zero {

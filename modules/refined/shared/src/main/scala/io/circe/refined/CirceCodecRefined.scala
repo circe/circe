@@ -52,7 +52,7 @@ trait CirceCodecRefined {
         case Right(t0) =>
           refType.refine(t0) match {
             case Left(err)    => Left(DecodingFailure(err, c.history))
-            case r @ Right(t) => r.asInstanceOf[Decoder.Result[F[T, P]]]
+            case r @ Right(_) => r.asInstanceOf[Decoder.Result[F[T, P]]]
           }
         case l @ Left(_) => l.asInstanceOf[Decoder.Result[F[T, P]]]
       }

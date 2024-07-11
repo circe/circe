@@ -105,13 +105,13 @@ private[circe] object PathToRoot {
     ops.reverse
       .foldM[F, Vector[PathElem]](Vector.empty[PathElem]) {
         // MoveLeft
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n <= 0 =>
+        case (_ :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) if n <= 0 =>
           Left("Attempt to move beyond beginning of array in cursor history.")
         case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveLeft) =>
           Right(acc :+ PathElem.ArrayIndex(n - 1))
 
         // MoveRight
-        case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) if n === Int.MaxValue =>
+        case (_ :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) if n === Int.MaxValue =>
           Left("Attempt to move to index > Int.MaxValue in array in cursor history.")
         case (acc :+ PathElem.ArrayIndex(n), CursorOp.MoveRight) =>
           Right(acc :+ PathElem.ArrayIndex(n + 1))
@@ -119,13 +119,13 @@ private[circe] object PathToRoot {
         // MoveUp
         case (acc :+ _, CursorOp.MoveUp) =>
           Right(acc)
-        case (acc, CursorOp.MoveUp) =>
+        case (_, CursorOp.MoveUp) =>
           Left(moveUpErrorString)
 
         // Field
         case (acc :+ PathElem.ObjectKey(_), CursorOp.Field(name)) =>
           Right(acc :+ PathElem.ObjectKey(name))
-        case (_, CursorOp.Field(name)) =>
+        case (_, CursorOp.Field(_)) =>
           Left("Attempt to move to sibling field, but cursor history didn't indicate we were in an object.")
 
         // DownField
@@ -143,11 +143,11 @@ private[circe] object PathToRoot {
         // DeleteGoParent
         case (acc :+ _, CursorOp.DeleteGoParent) =>
           Right(acc)
-        case (acc, CursorOp.DeleteGoParent) =>
+        case (_, CursorOp.DeleteGoParent) =>
           Left(moveUpErrorString)
 
         // Otherwise
-        case (acc, invalid) =>
+        case (_, invalid) =>
           Left(s"Invalid cursor history state: ${invalid}")
       }
       .map(PathToRoot.apply _)
