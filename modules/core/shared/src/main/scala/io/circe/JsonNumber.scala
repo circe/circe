@@ -22,6 +22,7 @@ import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
 import java.lang.StringBuilder
 import java.math.{ BigDecimal => JavaBigDecimal }
+import scala.collection.immutable.ArraySeq
 
 /**
  * A JSON number with optimization by cases.
@@ -237,6 +238,15 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 object JsonNumber {
 
   /**
+  * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
+  */
+  private val jsonLongConstantPool: ArraySeq[JsonLong] =
+    ArraySeq.tabulate(255)(x => JsonLong((x - 128).toLong))
+
+  private[circe] final def fromLong(value: Long): JsonLong =
+    jsonLongConstantPool.applyOrElse[Int, JsonLong]((value - 128).toInt, _ => JsonLong(value))
+
+  /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *
    * @note This value is ''not'' verified to be a valid JSON string. It is assumed that `value` is a
@@ -259,7 +269,7 @@ object JsonNumber {
     else {
       val longValue = java.lang.Long.parseLong(value)
 
-      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(longValue)
+      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else fromLong(longValue)
     }
 
   final def fromString(value: String): Option[JsonNumber] = {
