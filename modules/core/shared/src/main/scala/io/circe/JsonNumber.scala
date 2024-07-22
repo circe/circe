@@ -241,10 +241,13 @@ object JsonNumber {
   * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
   */
   private val jsonLongConstantPool: ArraySeq[JsonLong] =
-    ArraySeq.tabulate(255)(x => JsonLong((x - 128).toLong))
+    ArraySeq.tabulate(256)(x => JsonLong((x - 128).toLong))
 
-  private[circe] final def fromLong(value: Long): JsonLong =
-    jsonLongConstantPool.applyOrElse[Int, JsonLong]((value - 128).toInt, _ => JsonLong(value))
+  private[circe] final def fromLong(value: Long): JsonLong = {
+    val idx = value + 128
+    if (idx >= 0 && idx < jsonLongConstantPool.size) jsonLongConstantPool.apply(idx.toInt)
+    else JsonLong(value)
+  }
 
   /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
