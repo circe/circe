@@ -240,8 +240,8 @@ object JsonNumber {
   /**
   * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
   */
-  private val jsonLongConstantPool: ArraySeq[JsonLong] =
-    ArraySeq.tabulate(256)(x => JsonLong((x - 128).toLong))
+  private[this] val jsonLongConstantPool: Array[JsonLong] =
+    Array.tabulate(256)(x => JsonLong((x - 128).toLong))
 
   private[circe] final def fromLong(value: Long): JsonLong = {
     val idx = value + 128
