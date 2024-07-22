@@ -245,7 +245,7 @@ object JsonNumber {
 
   private[circe] final def fromLong(value: Long): JsonLong = {
     val idx = value + 128
-    if (idx >= 0 && idx < jsonLongConstantPool.size) jsonLongConstantPool.apply(idx.toInt)
+    if (idx >= 0 && idx < jsonLongConstantPool.length) jsonLongConstantPool.apply(idx.toInt)
     else JsonLong(value)
   }
 
