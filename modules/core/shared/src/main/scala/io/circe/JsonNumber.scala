@@ -22,7 +22,6 @@ import io.circe.numbers.BiggerDecimal
 import java.io.Serializable
 import java.lang.StringBuilder
 import java.math.{ BigDecimal => JavaBigDecimal }
-import scala.collection.immutable.ArraySeq
 
 /**
  * A JSON number with optimization by cases.
