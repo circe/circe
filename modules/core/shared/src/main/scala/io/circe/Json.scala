@@ -500,7 +500,7 @@ object Json {
   /**
    * Create a `Json` value representing a JSON array from a collection of values.
    */
-  final def fromValues(values: Iterable[Json]): Json = 
+  final def fromValues(values: Iterable[Json]): Json =
     if (values.isEmpty) EmptyArray
     else JArray(values.toVector)
 

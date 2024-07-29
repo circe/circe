@@ -238,8 +238,8 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 object JsonNumber {
 
   /**
-  * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
-  */
+   * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
+   */
   private[this] val jsonLongConstantPool: Array[JsonLong] =
     Array.tabulate(256)(x => JsonLong((x - 128).toLong))
 
