@@ -168,7 +168,7 @@
     </span><span class="keyword">case</span><span> </span><span class="identifier">_</span><span>: </span><span class="type-name">StackOverflowError</span><span> =&gt; 
       </span><span class="type-name">Decoder</span><span>.</span><span class="identifier">failedWithMessage</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]](</span><span class="string-literal">&quot;Lookup caused StackOverflowError&quot;</span><span>)
   }
-</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$21@51a60e26
+</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$21@2d814ef6
 </span><span>
 </span><span class="type-name">Json</span><span>.</span><span class="identifier">obj</span><span>(</span><span class="string-literal">&quot;v&quot;</span><span> := </span><span class="number-literal">1</span><span>).</span><span class="identifier">as</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]](</span><span class="identifier">decoder</span><span>)
 </span><span class="comment">// res0: Result[Tree[Int]] = Left(
@@ -196,9 +196,7 @@
   ).</span><span class="identifier">reduce</span><span>(</span><span class="identifier">_</span><span> </span><span class="identifier">or</span><span> </span><span class="identifier">_</span><span>)</span></code></pre>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">implicitly</span><span>[</span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]]]
 </span><span class="comment">// error: diverging implicit expansion for type io.circe.Decoder[repl.MdocSession.MdocApp.Tree[Int]]
-// starting with method branchDecoder
-// implicitly[Decoder[Tree[Int]]]
-//           ^</span></code></pre>
+// starting with method branchDecoder</span></code></pre>
         
         <h4 id="third-attempt-undesirable-creation-of-decoder-instances" class="section"><a class="anchor-link left" href="#third-attempt-undesirable-creation-of-decoder-instances"><i class="icofont-laika link">&#xef71;</i></a>Third Attempt: Undesirable creation of <code>Decoder</code> instances</h4>
         <p>Switching to lazily creating the instances needed is a way to get past the diverging implicits issue, however the
@@ -368,7 +366,7 @@
   }
 }</span></code></pre>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">decoder</span><span> = </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]]
-</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$9@6f311d4d
+</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$9@5c9a93e4
 </span><span class="keyword">try</span><span> 
   </span><span class="type-name">List</span><span>
     .</span><span class="identifier">range</span><span>(</span><span class="number-literal">0</span><span>, </span><span class="number-literal">10000</span><span>)
