@@ -543,7 +543,7 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
    */
-  final def fromInt(value: Int): Json = JNumber(JsonNumber.fromLong(value.toLong))
+  final def fromInt(value: Int): Json = JsonNumber.fromLong(value.toLong)
 
   /**
    * Create a `Json` value representing a JSON number or a null from an `Option[Int]`.
@@ -553,7 +553,7 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
-  final def fromLong(value: Long): Json = JNumber(JsonNumber.fromLong(value))
+  final def fromLong(value: Long): Json = JsonNumber.fromLong(value)
 
   /**
    * Create a `Json` value representing a JSON number or null from an optional `Long`.
