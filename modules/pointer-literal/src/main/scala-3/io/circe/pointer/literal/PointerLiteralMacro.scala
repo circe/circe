@@ -36,7 +36,13 @@ private object PointerLiteralMacros {
       val input = args.zip(stringParts.tail).foldLeft(Expr(stringParts.head)) {
         case (acc, (a, p)) =>
           val pExpr = Expr(p)
-          '{ $acc + $a.toString.replaceAll("~", "~0").replaceAll("/", "~1") + $pExpr }
+          '{
+            $acc + $a.toString
+              .replaceAll("~1", "/")
+              .replaceAll("~0", "~")
+              .replaceAll("~", "~0")
+              .replaceAll("/", "~1") + $pExpr
+          }
       }
 
       '{

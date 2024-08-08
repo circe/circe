@@ -60,6 +60,11 @@ final class PointerInterpolatorSuite extends ScalaCheckSuite {
     assertEquals(Pointer.parse("/base/foo~0bar~1baz~1~0/leaf"), Right(pointer"/base/$s/leaf"))
   }
 
+  test("The pointer string interpolater should work with interpolated values that are already escaped") {
+    val s: String = "foo~0bar~1baz~1~0"
+    assertEquals(Pointer.parse("/base/foo~0bar~1baz~1~0/leaf"), Right(pointer"/base/$s/leaf"))
+  }
+
   property("The pointer string interpolater should work with arbitrary interpolated strings") {
     Prop.forAll(ScalaCheckInstances.genPointerReferenceString) { (v: String) =>
       Pointer.parse(s"/foo/$v/bar") ?= Right(pointer"/foo/$v/bar")
