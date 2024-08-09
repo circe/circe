@@ -239,13 +239,13 @@ object JsonNumber {
   /**
    * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
    */
-  private[this] val jsonLongConstantPool: Array[JNumber] =
+  private[this] val jsonLongConstantPool: Array[JsonNumber] =
     Array.tabulate(256)(x => JsonLong((x - 128).toLong))
 
-  private[circe] final def fromLong(value: Long): JNumber = {
+  private[circe] final def fromLong(value: Long): JsonNumber = {
     val idx = value + 128
     if (idx >= 0 && idx < jsonLongConstantPool.length) jsonLongConstantPool.apply(idx.toInt)
-    else JNumber(value)
+    else JsonLong(value)
   }
 
   /**
@@ -271,7 +271,7 @@ object JsonNumber {
     else {
       val longValue = java.lang.Long.parseLong(value)
 
-      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else fromLong(longValue).value
+      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else fromLong(longValue)
     }
 
   final def fromString(value: String): Option[JsonNumber] = {
