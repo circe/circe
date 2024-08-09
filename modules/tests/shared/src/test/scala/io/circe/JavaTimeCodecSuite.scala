@@ -95,10 +95,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
         val decodingResult = Decoder[ZoneId].decodeJson(Json.fromString(s))
 
         assert(decodingResult.isLeft)
-        assert(decodingResult.swap.right.get.reason match {
-          case DecodingFailure.Reason.CustomReason(_) => true
-          case _                                      => false
-        })
+        assert(decodingResult.swap.exists(_.reason.isInstanceOf[DecodingFailure.Reason.CustomReason]))
       }
     )
   }
@@ -281,10 +278,7 @@ class JavaTimeCodecSuite extends CirceMunitSuite {
     val decodingResult = Decoder[ZoneOffset].apply(invalidJson.hcursor)
 
     assert(decodingResult.isLeft)
-    assert(decodingResult.swap.right.get.reason match {
-      case DecodingFailure.Reason.CustomReason(_) => true
-      case _                                      => false
-    })
+    assert(decodingResult.swap.exists(_.reason.isInstanceOf[DecodingFailure.Reason.CustomReason]))
     assert(decodingResult.swap.exists(_.message.contains(invalidText)))
   }
 }
