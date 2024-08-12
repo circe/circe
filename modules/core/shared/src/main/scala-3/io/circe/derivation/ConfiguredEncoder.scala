@@ -55,6 +55,24 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
           JsonObject.singleton(constructorName, json)
 
 object ConfiguredEncoder:
+  @deprecated("Use ofProduct and ofSum", "0.14.10")
+  private[derivation] def inline$of[A](encoders: => List[Encoder[?]], labels: List[String])(using
+    conf: Configuration,
+    mirror: Mirror.Of[A]
+  ): ConfiguredEncoder[A] = mirror match
+    case _: Mirror.ProductOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = false
+        def encodeObject(a: A) = encodeProduct(a)
+    case mirror: Mirror.SumOf[A] =>
+      new ConfiguredEncoder[A] with SumOrProduct:
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        def isSum = true
+        def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
+
   private def ofProduct[A](encoders: => List[Encoder[?]], labels: List[String])(using
     conf: Configuration
   ): ConfiguredEncoder[A] =

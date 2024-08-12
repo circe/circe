@@ -23,6 +23,40 @@ import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:
+  @deprecated("Use ofProduct and ofSum", "0.14.10")
+  private[derivation] def inline$of[A](
+    nme: String,
+    decoders: => List[Decoder[?]],
+    encoders: => List[Encoder[?]],
+    labels: List[String]
+  )(using
+    conf: Configuration,
+    mirror: Mirror.Of[A],
+    defaults: Default[A]
+  ): ConfiguredCodec[A] = mirror match
+    case mirror: Mirror.ProductOf[A] =>
+      new ConfiguredCodec[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = false
+        def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
+        def encodeObject(a: A) = encodeProduct(a)
+        override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
+    case mirror: Mirror.SumOf[A] =>
+      new ConfiguredCodec[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemEncoders = encoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = true
+        def apply(c: HCursor) = decodeSum(c)
+        def encodeObject(a: A) = encodeSum(mirror.ordinal(a), a)
+        override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
+
   private def ofProduct[A](
     nme: String,
     decoders: => List[Decoder[?]],

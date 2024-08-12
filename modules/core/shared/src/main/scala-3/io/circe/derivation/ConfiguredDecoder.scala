@@ -190,6 +190,31 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     }
 
 object ConfiguredDecoder:
+  @deprecated("Use ofProduct and ofSum", "0.14.10")
+  private[derivation] def inline$of[A](nme: String, decoders: => List[Decoder[?]], labels: List[String])(using
+    conf: Configuration,
+    mirror: Mirror.Of[A],
+    defaults: Default[A]
+  ): ConfiguredDecoder[A] = mirror match
+    case mirror: Mirror.ProductOf[A] =>
+      new ConfiguredDecoder[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = false
+        def apply(c: HCursor) = decodeProduct(c, mirror.fromProduct)
+        override def decodeAccumulating(c: HCursor) = decodeProductAccumulating(c, mirror.fromProduct)
+    case _: Mirror.SumOf[A] =>
+      new ConfiguredDecoder[A] with SumOrProduct:
+        val name = nme
+        lazy val elemDecoders = decoders
+        lazy val elemLabels = labels
+        lazy val elemDefaults = defaults
+        def isSum = true
+        def apply(c: HCursor) = decodeSum(c)
+        override def decodeAccumulating(c: HCursor) = decodeSumAccumulating(c)
+
   private def ofProduct[A](
     nme: String,
     decoders: => List[Decoder[?]],
