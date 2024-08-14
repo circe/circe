@@ -479,6 +479,8 @@ object Json {
   final val Null: Json = JNull
   final val True: Json = JBoolean(true)
   final val False: Json = JBoolean(false)
+  private[this] final val EmptyArray: Json = JArray(Vector.empty)
+  private[this] final val EmptyString: Json = JString("")
 
   /**
    * Create a `Json` value representing a JSON object from key-value pairs.
@@ -498,7 +500,9 @@ object Json {
   /**
    * Create a `Json` value representing a JSON array from a collection of values.
    */
-  final def fromValues(values: Iterable[Json]): Json = JArray(values.toVector)
+  final def fromValues(values: Iterable[Json]): Json =
+    if (values.isEmpty) EmptyArray
+    else JArray(values.toVector)
 
   /**
    * Create a `Json` value representing a JSON object from a [[JsonObject]].
@@ -515,7 +519,9 @@ object Json {
    *
    * Note that this does not parse the argument.
    */
-  final def fromString(value: String): Json = JString(value)
+  final def fromString(value: String): Json =
+    if (value.isEmpty) EmptyString
+    else JString(value)
 
   /**
    * Create a `Json` value representing a JSON String or null from an `Option[String]`.
@@ -537,7 +543,7 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from an `Int`.
    */
-  final def fromInt(value: Int): Json = JNumber(JsonLong(value.toLong))
+  final def fromInt(value: Int): Json = JsonNumber.fromLong(value.toLong)
 
   /**
    * Create a `Json` value representing a JSON number or a null from an `Option[Int]`.
@@ -547,7 +553,7 @@ object Json {
   /**
    * Create a `Json` value representing a JSON number from a `Long`.
    */
-  final def fromLong(value: Long): Json = JNumber(JsonLong(value))
+  final def fromLong(value: Long): Json = JsonNumber.fromLong(value)
 
   /**
    * Create a `Json` value representing a JSON number or null from an optional `Long`.
