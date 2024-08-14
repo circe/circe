@@ -36,7 +36,8 @@ private class PointerLiteralMacros(val c: blackbox.Context) {
 
         if (Pointer.parse(stringParts.mkString("X")).isRight) {
           val input = args.zip(stringParts.tail).foldLeft(q"${stringParts.head}") {
-            case (acc, (a, p)) => q"""$acc + $a.toString.replaceAll("~", "~0").replaceAll("/", "~1") + $p"""
+            case (acc, (a, p)) =>
+              q"""$acc + $a.toString.replaceAll("~1", "/").replaceAll("~0", "~").replaceAll("~", "~0").replaceAll("/", "~1") + $p"""
           }
 
           q"""_root_.io.circe.pointer.Pointer.parse($input)

@@ -253,16 +253,20 @@ object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    val map = new LinkedHashMap[String, Json]
-    val iterator = fields.iterator
+    if (fields.isEmpty) {
+      empty
+    } else {
+      val map = new LinkedHashMap[String, Json]
+      val iterator = fields.iterator
 
-    while (iterator.hasNext) {
-      val (key, value) = iterator.next()
+      while (iterator.hasNext) {
+        val (key, value) = iterator.next()
 
-      map.put(key, value)
+        map.put(key, value)
+      }
+
+      fromLinkedHashMap(map)
     }
-
-    new LinkedHashMapJsonObject(map)
   }
 
   /**
@@ -270,7 +274,12 @@ object JsonObject {
    *
    * Note that the order of the fields is arbitrary.
    */
-  final def fromMap(map: Map[String, Json]): JsonObject = fromMapAndVector(map, map.keys.toVector)
+  final def fromMap(map: Map[String, Json]): JsonObject =
+    if (map.isEmpty) {
+      empty
+    } else {
+      fromMapAndVector(map, map.keys.toVector)
+    }
 
   private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
     new MapAndVectorJsonObject(map, keys)

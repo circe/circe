@@ -1,4 +1,5 @@
 import sbtcrossproject.{ CrossProject, CrossType }
+import com.typesafe.tools.mima.core._
 
 val Scala212V: String = "2.12.19"
 val Scala213V: String = "2.13.14"
@@ -259,7 +260,14 @@ lazy val core = circeCrossModule("core")
       val currentScalaVersion = (Compile / scalaBinaryVersion).value
       Boilerplate.gen(managedSource, currentScalaVersion)
     },
-    scalacOptions ~= (_.filterNot(Set("-source:3.0-migration")))
+    scalacOptions ~= (_.filterNot(Set("-source:3.0-migration"))),
+    mimaBinaryIssueFilters ++= Seq(
+      ProblemFilters.exclude[ReversedMissingMethodProblem]("io.circe.Json.traverseBoolean"),
+      ProblemFilters.exclude[ReversedMissingMethodProblem]("io.circe.Json.traverseNumber"),
+      ProblemFilters.exclude[ReversedMissingMethodProblem]("io.circe.Json.traverseString"),
+      ProblemFilters.exclude[ReversedMissingMethodProblem]("io.circe.Json.traverseArray"),
+      ProblemFilters.exclude[ReversedMissingMethodProblem]("io.circe.Json.traverseObject")
+    )
   )
   .dependsOn(numbers)
 

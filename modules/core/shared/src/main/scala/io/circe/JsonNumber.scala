@@ -237,6 +237,18 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
 object JsonNumber {
 
   /**
+   * Constant pool of integer numbers between -128 to 127, similar to the JVM's constant pool for integers.
+   */
+  private[this] val jsonLongConstantPool: Array[Json.JNumber] =
+    Array.tabulate(256)(x => Json.JNumber(JsonLong((x - 128).toLong)))
+
+  private[circe] final def fromLong(value: Long): Json.JNumber = {
+    val idx = value + 128
+    if (idx >= 0 && idx < jsonLongConstantPool.length) jsonLongConstantPool.apply(idx.toInt)
+    else Json.JNumber(JsonLong(value))
+  }
+
+  /**
    * Return a `JsonNumber` whose value is the valid JSON number in `value`.
    *
    * @note This value is ''not'' verified to be a valid JSON string. It is assumed that `value` is a
@@ -259,7 +271,7 @@ object JsonNumber {
     else {
       val longValue = java.lang.Long.parseLong(value)
 
-      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else JsonLong(longValue)
+      if (value.charAt(0) == '-' && longValue == 0L) JsonDecimal(value) else fromLong(longValue).value
     }
 
   final def fromString(value: String): Option[JsonNumber] = {
