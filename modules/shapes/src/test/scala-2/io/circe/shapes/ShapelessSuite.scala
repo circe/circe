@@ -140,10 +140,6 @@ class ShapelessSuite extends CirceMunitSuite {
         (Boolean @@ MyTag) ::
         (Char @@ MyTag) :: HNil
 
-    implicit val taggedEq: Eq[TaggedData] = new Eq[TaggedData] {
-      def eqv(x: TaggedData, y: TaggedData): Boolean = x == y
-    }
-
     assertEquals(td.asJson.as[TaggedData], Right(td))
   }
 }

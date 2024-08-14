@@ -1,16 +1,14 @@
-package io.circe.generic.simple
+package io.circe.generic.simple.jsoncodecmacrossuiteaux
 
 import cats.kernel.Eq
 import cats.instances.AllInstances
 import io.circe.{ Decoder, Encoder }
-import io.circe.generic.simple.jsoncodecmacrossuiteaux._
+import io.circe.generic.simple.instances._
 import io.circe.testing.{ ArbitraryInstances, CodecTests }
 import io.circe.tests.{ CirceMunitSuite, MissingInstances }
 import org.scalacheck.{ Arbitrary, Gen }
 
-package object jsoncodecmacrossuiteaux extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
-
-package jsoncodecmacrossuiteaux {
+object instances extends AnyRef with AllInstances with ArbitraryInstances with MissingInstances
 
   // Simple
 
@@ -222,5 +220,3 @@ class JsonCodecMacrosSuite extends CirceMunitSuite {
        |""".stripMargin
     )
   }
-
-}

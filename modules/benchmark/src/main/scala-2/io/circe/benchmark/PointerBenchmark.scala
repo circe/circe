@@ -42,7 +42,7 @@ class PointerBenchmark {
   )
 
   val path = JsonPath.root.foo(2).bar.baz.qux.json
-  val Right(pointer) = Pointer.parse("/foo/2/bar/baz/qux")
+  val Right(pointer) = Pointer.parse("/foo/2/bar/baz/qux"): @unchecked
 
   @Benchmark
   def goodOptics: Option[Json] = path.getOption(good)
