@@ -57,6 +57,7 @@ object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodec
 
   /**
    * Summons a `Codec` where a `Decoder` and an `Encoder` are in implicit scope.
+   * This can cause a runtime infinite loop if you use it and the encoder and decoder is not in implicit scope, and this causes them to become in implicit scope.
    */
   def unsafeSummon[A](implicit decoder: Decoder[A], encoder: Encoder[A]): Codec[A] =
     Codec.from(decoder, encoder)
