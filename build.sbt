@@ -23,6 +23,8 @@ ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
+ThisBuild / evictionErrorLevel := Level.Info
+
 val catsVersion = "2.12.0"
 val jawnVersion = "1.6.0"
 val shapelessVersion = "2.3.12"
