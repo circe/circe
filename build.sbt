@@ -33,6 +33,7 @@ val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.18.0"
 val munitVersion = "1.0.1"
+val munitScalaCheckVersion = "1.0.0"
 val disciplineVersion = "1.7.0"
 val disciplineScalaTestVersion = "2.3.0"
 val disciplineMunitVersion = "2.0.0"
@@ -322,7 +323,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
-      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+      "org.scalameta" %%% "munit-scalacheck" % munitScalaCheckVersion % Test
     ) ++ (if (tlIsScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
@@ -471,7 +472,7 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
     tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
-      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+      "org.scalameta" %%% "munit-scalacheck" % munitScalaCheckVersion % Test
     )
   )
   .nativeSettings(
