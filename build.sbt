@@ -30,8 +30,6 @@ ThisBuild / libraryDependencySchemes +=
 val catsVersion = "2.12.0"
 val jawnVersion = "1.6.0"
 val shapelessVersion = "2.3.12"
-val refinedVersion = "0.9.29"
-val refinedNativeVersion = "0.11.2"
 
 val paradiseVersion = "2.1.1"
 
@@ -168,7 +166,6 @@ lazy val root = tlCrossRootProject
     parser,
     pointer,
     pointerLiteral,
-    refined,
     scalafixInternalInput,
     scalafixInternalOutput,
     scalafixInternalRules,
@@ -341,31 +338,6 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
     tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.9").toMap
   )
   .dependsOn(core, parser % Test, testing % Test)
-
-lazy val refined = circeCrossModule("refined")
-  .settings(
-    tlVersionIntroduced += "3" -> "0.14.3",
-    libraryDependencies ++= {
-      val refinedV =
-        if (crossProjectPlatform.value == NativePlatform) refinedNativeVersion
-        else refinedVersion
-      Seq(
-        "eu.timepit" %%% "refined" % refinedV,
-        "eu.timepit" %%% "refined-scalacheck" % refinedV % Test
-      )
-    },
-    dependencyOverrides ++= Seq(
-      "org.scala-lang.modules" %% "scala-xml" % "2.1.0"
-    ),
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.AllLibraryJars
-  )
-  .platformsSettings(JSPlatform, NativePlatform)(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
-  )
-  .nativeSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.9").toMap
-  )
-  .dependsOn(core, tests % Test)
 
 lazy val parser =
   circeCrossModule("parser")
