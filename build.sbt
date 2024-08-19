@@ -23,6 +23,10 @@ ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
+//This is really bad, but we need to add the _native0.5 for this: https://github.com/sbt/sbt/issues/7140
+ThisBuild / libraryDependencySchemes +=
+  "org.scala-native" %% "test-interface_native0.5" % VersionScheme.Always
+
 val catsVersion = "2.12.0"
 val jawnVersion = "1.6.0"
 val shapelessVersion = "2.3.12"
@@ -32,7 +36,8 @@ val refinedNativeVersion = "0.11.2"
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.18.0"
-val munitVersion = "1.0.0"
+val munitVersion = "1.0.1"
+val munitScalaCheckVersion = "1.0.0"
 val disciplineVersion = "1.7.0"
 val disciplineScalaTestVersion = "2.3.0"
 val disciplineMunitVersion = "2.0.0"
@@ -322,7 +327,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "org.scalameta" %%% "munit" % munitVersion % Test,
-      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+      "org.scalameta" %%% "munit-scalacheck" % munitScalaCheckVersion % Test
     ) ++ (if (tlIsScala3.value) Seq("org.typelevel" %%% "jawn-parser" % jawnVersion % Provided)
           else Seq("com.chuusai" %%% "shapeless" % shapelessVersion))
   )
@@ -471,7 +476,7 @@ lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
     tlVersionIntroduced += "3" -> "0.14.2",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % munitVersion % Test,
-      "org.scalameta" %%% "munit-scalacheck" % munitVersion % Test
+      "org.scalameta" %%% "munit-scalacheck" % munitScalaCheckVersion % Test
     )
   )
   .nativeSettings(
