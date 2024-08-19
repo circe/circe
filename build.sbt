@@ -23,7 +23,9 @@ ThisBuild / scalafixAll / skip := tlIsScala3.value
 ThisBuild / ScalafixConfig / skip := tlIsScala3.value
 ThisBuild / circeRootOfCodeCoverage := Some("rootJVM")
 
-ThisBuild / evictionErrorLevel := Level.Info
+//This is really bad, but we need to add the _native0.5 for this: https://github.com/sbt/sbt/issues/7140
+ThisBuild / libraryDependencySchemes +=
+  "org.scala-native" %% "test-interface_native0.5" % VersionScheme.Always
 
 val catsVersion = "2.12.0"
 val jawnVersion = "1.6.0"
