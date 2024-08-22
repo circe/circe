@@ -16,4 +16,34 @@
 
 package io.circe
 
-private[circe] trait EnumerationCodecs
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+private[circe] trait EnumerationCodecs {
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayCodec = Codec.codecForEnumeration(WeekDay)
+   * }}}
+   * @group Utilities
+   */
+  final def codecForEnumeration[E <: Enumeration](enumeration: E): Codec[enumeration.Value] =
+    new Codec[enumeration.Value] {
+      final def apply(c: HCursor): Decoder.Result[enumeration.Value] = Decoder.decodeString(c).flatMap { str =>
+        Try(enumeration.withName(str)) match {
+          case Success(a) => Right(a)
+          case Failure(t) =>
+            Left(
+              DecodingFailure(
+                s"Couldn't decode value '$str'. " +
+                  s"Allowed values: '${enumeration.values.mkString(",")}'",
+                c.history
+              )
+            )
+        }
+      }
+      final def apply(e: enumeration.Value): Json = Encoder.encodeString(e.toString)
+    }
+}

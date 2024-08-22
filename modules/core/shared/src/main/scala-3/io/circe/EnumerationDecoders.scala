@@ -16,4 +16,35 @@
 
 package io.circe
 
-private[circe] trait EnumerationDecoders
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+private[circe] trait EnumerationDecoders {
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayDecoder = Decoder.decodeEnumeration(WeekDay)
+   * }}}
+   *
+   * @group Utilities
+   */
+  final def decodeEnumeration[E <: Enumeration](enumeration: E): Decoder[enumeration.Value] =
+    new Decoder[enumeration.Value] {
+      final def apply(c: HCursor): Decoder.Result[enumeration.Value] = Decoder.decodeString(c).flatMap { str =>
+        Try(enumeration.withName(str)) match {
+          case Success(a) => Right(a)
+          case Failure(_) =>
+            Left(
+              DecodingFailure(
+                s"Couldn't decode value '$str'. " +
+                  s"Allowed values: '${enumeration.values.mkString(",")}'",
+                c.history
+              )
+            )
+        }
+      }
+    }
+
+}
