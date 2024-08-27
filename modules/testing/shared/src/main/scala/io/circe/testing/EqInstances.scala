@@ -16,9 +16,6 @@
 
 package io.circe.testing
 
-import cats.instances.either._
-import cats.instances.option._
-import cats.instances.string._
 import cats.kernel.Eq
 import io.circe.Decoder
 import io.circe.Encoder

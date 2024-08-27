@@ -27,7 +27,6 @@ import cats.data.{
   NonEmptyVector,
   Validated
 }
-import cats.instances.all._
 import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import cats.syntax.contravariant._
