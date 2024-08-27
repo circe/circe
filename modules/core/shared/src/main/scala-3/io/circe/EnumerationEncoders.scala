@@ -16,4 +16,18 @@
 
 package io.circe
 
-private[circe] trait EnumerationEncoders
+private[circe] trait EnumerationEncoders {
+
+  /**
+   * {{{
+   *   object WeekDay extends Enumeration { ... }
+   *   implicit val weekDayEncoder = Encoder.encodeEnumeration(WeekDay)
+   * }}}
+   * @group Utilities
+   */
+  final def encodeEnumeration[E <: Enumeration](enumeration: E): Encoder[enumeration.Value] =
+    new Encoder[enumeration.Value] {
+      override def apply(e: enumeration.Value): Json = Encoder.encodeString(e.toString)
+    }
+
+}
