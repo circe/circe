@@ -16,7 +16,6 @@
 
 package io.circe.testing
 
-import cats.instances.option._
 import cats.kernel.Eq
 import cats.kernel.laws.IsEq
 import cats.kernel.laws.SerializableLaws

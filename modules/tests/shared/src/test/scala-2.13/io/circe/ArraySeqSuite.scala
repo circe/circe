@@ -18,8 +18,6 @@ package io.circe
 
 import io.circe.tests.CirceMunitSuite
 import io.circe.syntax.EncoderOps
-import cats.instances.int.catsKernelStdOrderForInt
-import cats.instances.string.catsKernelStdOrderForString
 import io.circe.testing.CodecTests
 import org.scalacheck.Prop._
 import scala.collection.immutable.ArraySeq

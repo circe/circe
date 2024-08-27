@@ -18,7 +18,6 @@ package io.circe.testing
 
 import cats.data.Validated
 import cats.data.ValidatedNel
-import cats.instances.either._
 import cats.kernel.laws.SerializableLaws
 import cats.laws._
 import cats.laws.discipline._

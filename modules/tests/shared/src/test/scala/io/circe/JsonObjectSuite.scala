@@ -17,7 +17,6 @@
 package io.circe
 
 import cats.data.Const
-import cats.instances.all._
 import cats.syntax.functor._
 import cats.kernel.Eq
 import io.circe.tests.CirceMunitSuite

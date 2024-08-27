@@ -16,7 +16,6 @@
 
 package io.circe.benchmark
 
-import cats.instances.list._
 import io.circe.{ Json, JsonObject }
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
