@@ -145,6 +145,9 @@ The following open source projects are either built on circe or provide circe su
 * [kadai-log][kadai-log]: A logging library with circe support.
 * [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
 * [ohNoMyCirce][ohNoMyCirce]: Friendly compile error messages for [shapeless][shapeless]'s Generic, [circe][circe-org]'s Encoder & Decoder and [slick][slick]'s case class mapping.
+* [pekko-http-json][pekko-http-json]: A library that supports using circe for JSON marshalling and
+  unmarshalling in [Pekko HTTP][pekko-http].
+* [pekko-streams-circe][pekko-streams-circe]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
 * [play-circe][play-circe]: circe support for [Play!][play].
 * [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
 * [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
@@ -261,6 +264,9 @@ limitations under the License.
 [msgpack]: https://github.com/msgpack/msgpack/blob/master/spec.md
 [msgpack4z-circe]: https://github.com/msgpack4z/msgpack4z-circe
 [ohNoMyCirce]: https://github.com/djx314/ohNoMyCirce
+[pekko-http]: https://pekko.apache.org/docs/pekko-http/current/
+[pekko-http-json]: https://github.com/pjfanning/pekko-http-json
+[pekko-streams-circe]: https://github.com/mdedetrich/pekko-streams-circe
 [play]: https://www.playframework.com/
 [play-circe]: https://github.com/jilen/play-circe
 [pulsar]: https://pulsar.apache.org/
