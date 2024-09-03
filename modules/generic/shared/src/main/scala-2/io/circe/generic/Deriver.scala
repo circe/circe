@@ -75,7 +75,13 @@ class Deriver(val c: whitebox.Context)
   """
 
   protected[this] def encodeField(name: String, encode: TermName, value: TermName): Tree =
-    q"($name, $encode($value))"
+    q"""if ($value == _root_.scala.None) { // TODO: conf.dropNoneValues
+          _root_.scala.None
+        } else if ($value == _root_.io.circe.NullOr.Null) {
+          _root_.scala.Some(_root_.scala.Tuple2($name, _root_.io.circe.Json.Null))
+        } else {
+          _root_.scala.Some(_root_.scala.Tuple2($name, $encode($value)))
+        }"""
 
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree =
     q"_root_.io.circe.JsonObject.singleton($name, $encode($value))"

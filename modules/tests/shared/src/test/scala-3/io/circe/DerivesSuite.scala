@@ -19,7 +19,6 @@ package io.circe
 import cats.kernel.Eq
 import cats.kernel.instances.all._
 import cats.syntax.eq._
-import io.circe.{ Codec, Decoder, Encoder, Json }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
@@ -32,12 +31,62 @@ object DerivesSuite {
     implicit def arbitraryBox[A](implicit A: Arbitrary[A]): Arbitrary[Box[A]] = Arbitrary(A.arbitrary.map(Box(_)))
   }
 
+  case class InnerBox[A](inner: A) derives Decoder, Encoder
+
+  object InnerBox {
+    given eqInnerBox[A: Eq]: Eq[InnerBox[A]] = Eq.by(_.inner)
+    given arbitraryInnerBox[A](using A: Arbitrary[A]): Arbitrary[InnerBox[A]] = Arbitrary(
+      A.arbitrary.map(InnerBox(_))
+    )
+  }
+
+  case class WithNullables(
+    a: String,
+    b: NullOr[String],
+    c: Option[NullOr[Int]],
+    d: NullOr[Boolean],
+    e: NullOr[Box[String]],
+    f: NullOr[List[String]],
+    g: Option[Box[String]]
+  ) derives Decoder,
+        Encoder.AsObject
+
+  object WithNullables {
+    given Eq[WithNullables] = Eq.fromUniversalEquals
+    given Arbitrary[WithNullables] = {
+      given aNullable[A](using A: Arbitrary[A]): Arbitrary[NullOr[A]] =
+        Arbitrary[NullOr[A]](
+          A.arbitrary.flatMap { a =>
+            summon[Arbitrary[Int]].arbitrary.map {
+              case byte if byte % 3 == 0 =>
+                NullOr.Null: NullOr[A]
+              case _ =>
+                NullOr.Value(a): NullOr[A]
+            }
+          }
+        )
+
+      val gen = for {
+        a <- summon[Arbitrary[String]].arbitrary
+        b <- summon[Arbitrary[NullOr[String]]].arbitrary
+        c <- summon[Arbitrary[Option[NullOr[Int]]]].arbitrary
+        d <- summon[Arbitrary[NullOr[Boolean]]].arbitrary
+        e <- summon[Arbitrary[NullOr[Box[String]]]].arbitrary
+        f <- summon[Arbitrary[NullOr[List[String]]]].arbitrary
+        g <- summon[Arbitrary[Option[Box[String]]]].arbitrary
+      } yield WithNullables(a, b, c, d, e, f, g)
+      Arbitrary(gen)
+    }
+
+  }
+
   case class Qux[A](i: Int, a: A, j: Int) derives Codec
 
   object Qux {
-    implicit def eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(q => (q.i, q.a, q.j))
+    given codec[A: Encoder: Decoder]: Codec[Qux[A]] = Codec.AsObject.derived
+    given eqQux[A: Eq]: Eq[Qux[A]] = Eq.by(q => (q.i, q.a, q.j))
 
-    implicit def arbitraryQux[A](implicit A: Arbitrary[A]): Arbitrary[Qux[A]] =
+    given arbitraryQux[A](using A: Arbitrary[A]): Arbitrary[Qux[A]] =
       Arbitrary(
         for {
           i <- Arbitrary.arbitrary[Int]
@@ -50,8 +99,8 @@ object DerivesSuite {
   case class Wub(x: Long) derives Codec.AsObject
 
   object Wub {
-    implicit val eqWub: Eq[Wub] = Eq.by(_.x)
-    implicit val arbitraryWub: Arbitrary[Wub] = Arbitrary(Arbitrary.arbitrary[Long].map(Wub(_)))
+    given Eq[Wub] = Eq.by(_.x)
+    given Arbitrary[Wub] = Arbitrary(Arbitrary.arbitrary[Long].map(Wub(_)))
   }
 
   sealed trait Foo derives Codec.AsObject
@@ -60,35 +109,35 @@ object DerivesSuite {
   case class Bam(w: Wub, d: Double) extends Foo derives Codec.AsObject
 
   object Bar {
-    implicit val eqBar: Eq[Bar] = Eq.fromUniversalEquals
-    implicit val arbitraryBar: Arbitrary[Bar] = Arbitrary(
+    given Eq[Bar] = Eq.fromUniversalEquals
+    given Arbitrary[Bar] = Arbitrary(
       for {
         i <- Arbitrary.arbitrary[Int]
         s <- Arbitrary.arbitrary[String]
       } yield Bar(i, s)
     )
 
-    implicit val decodeBar: Decoder[Bar] = Decoder.forProduct2("i", "s")(Bar.apply)
-    implicit val encodeBar: Encoder[Bar] = Encoder.forProduct2("i", "s") {
+    given Decoder[Bar] = Decoder.forProduct2("i", "s")(Bar.apply)
+    given Encoder[Bar] = Encoder.forProduct2("i", "s") {
       case Bar(i, s) => (i, s)
     }
   }
 
   object Baz {
-    implicit val eqBaz: Eq[Baz] = Eq.fromUniversalEquals
-    implicit val arbitraryBaz: Arbitrary[Baz] = Arbitrary(
+    given Eq[Baz] = Eq.fromUniversalEquals
+    given Arbitrary[Baz] = Arbitrary(
       Arbitrary.arbitrary[List[String]].map(Baz.apply)
     )
 
-    implicit val decodeBaz: Decoder[Baz] = Decoder[List[String]].map(Baz(_))
-    implicit val encodeBaz: Encoder[Baz] = Encoder.instance {
+    given Decoder[Baz] = Decoder[List[String]].map(Baz(_))
+    given Encoder[Baz] = Encoder.instance {
       case Baz(xs) => Json.fromValues(xs.map(Json.fromString))
     }
   }
 
   object Bam {
-    implicit val eqBam: Eq[Bam] = Eq.fromUniversalEquals
-    implicit val arbitraryBam: Arbitrary[Bam] = Arbitrary(
+    given Eq[Bam] = Eq.fromUniversalEquals
+    given Arbitrary[Bam] = Arbitrary(
       for {
         w <- Arbitrary.arbitrary[Wub]
         d <- Arbitrary.arbitrary[Double]
@@ -97,9 +146,9 @@ object DerivesSuite {
   }
 
   object Foo {
-    implicit val eqFoo: Eq[Foo] = Eq.fromUniversalEquals
+    given Eq[Foo] = Eq.fromUniversalEquals
 
-    implicit val arbitraryFoo: Arbitrary[Foo] = Arbitrary(
+    given Arbitrary[Foo] = Arbitrary(
       Gen.oneOf(
         Arbitrary.arbitrary[Bar],
         Arbitrary.arbitrary[Baz],
@@ -113,7 +162,7 @@ object DerivesSuite {
   case class NestedAdtExample(r: RecursiveAdtExample) extends RecursiveAdtExample derives Codec.AsObject
 
   object RecursiveAdtExample {
-    implicit val eqRecursiveAdtExample: Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
+    given Eq[RecursiveAdtExample] = Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveAdtExample] = if (depth < 3)
       Gen.oneOf(
@@ -122,14 +171,14 @@ object DerivesSuite {
       )
     else Arbitrary.arbitrary[String].map(BaseAdtExample(_))
 
-    implicit val arbitraryRecursiveAdtExample: Arbitrary[RecursiveAdtExample] =
+    given Arbitrary[RecursiveAdtExample] =
       Arbitrary(atDepth(0))
   }
 
   case class RecursiveWithOptionExample(o: Option[RecursiveWithOptionExample]) derives Codec.AsObject
 
   object RecursiveWithOptionExample {
-    implicit val eqRecursiveWithOptionExample: Eq[RecursiveWithOptionExample] =
+    given Eq[RecursiveWithOptionExample] =
       Eq.fromUniversalEquals
 
     private def atDepth(depth: Int): Gen[RecursiveWithOptionExample] = if (depth < 3)
@@ -139,7 +188,7 @@ object DerivesSuite {
       )
     else Gen.const(RecursiveWithOptionExample(None))
 
-    implicit val arbitraryRecursiveWithOptionExample: Arbitrary[RecursiveWithOptionExample] =
+    given Arbitrary[RecursiveWithOptionExample] =
       Arbitrary(atDepth(0))
   }
 
@@ -242,6 +291,7 @@ class DerivesSuite extends CirceMunitSuite {
   checkAll("Codec[ADTWithSubTraitExample]", CodecTests[ADTWithSubTraitExample].codec)
   checkAll("Codec[ProductWithTaggedMember] (#2135)", CodecTests[ProductWithTaggedMember].codec)
   checkAll("Codec[Outer]", CodecTests[Outer].codec)
+  checkAll("Codec[WithNullables]", CodecTests[WithNullables].codec)
 
   test("Nested sums should not be encoded redundantly") {
     val foo: ADTWithSubTraitExample = TheClass(0)
@@ -253,8 +303,71 @@ class DerivesSuite extends CirceMunitSuite {
     val some = Outer(Some(Inner("c")))
     val none = Outer(None)
     val expectedSome = Json.obj("a" -> Json.obj("field" -> "c".asJson))
-    val expectedNone = Json.obj("a" -> Json.Null)
+    val expectedNone = Json.obj( /* "a" -> Json.Null */ ) // TODO: revisit after dropNoneValue is made configurable
     assertEquals(some.asJson, expectedSome)
     assertEquals(none.asJson, expectedNone)
   }
+
+  test("Derivation uses pre-existing given codecs") {
+    import io.circe.syntax._
+
+    {
+      val foo = Box("inner value")
+      val expected = Json.obj(
+        "a" -> "inner value".asJson
+      )
+      assert(foo.asJson === expected)
+    }
+
+    {
+      val foo = Box(Option("inner value"))
+      val expected = Json.obj(
+        "a" -> "inner value".asJson
+      )
+      assert(foo.asJson === expected)
+    }
+  }
+
+  test("Recursive derivation works inside Option") {
+    import io.circe.syntax._
+    val foo = Box(Option(InnerBox("inner value")))
+    val expected = Json.obj(
+      "a" -> Json.obj(
+        "inner" -> "inner value".asJson
+      )
+    )
+
+    assert(foo.asJson === expected)
+  }
+
+  test("NullOr codecs work as expected") {
+    import io.circe.syntax._
+
+    val foo =
+      WithNullables(
+        a = "a value",
+        b = NullOr.Value("b value"),
+        c = None,
+        d = NullOr.Null,
+        e = NullOr.Value(Box("boxed value")),
+        f = NullOr.Value(List("a", "b", "c")),
+        g = Some(Box("boxed in option"))
+      )
+
+    val expected = Json.obj(
+      "a" -> "a value".asJson,
+      "b" -> "b value".asJson,
+      "d" -> Json.Null,
+      "e" -> Json.obj(
+        "a" -> "boxed value".asJson
+      ),
+      "f" -> List("a", "b", "c").asJson,
+      "g" -> Json.obj(
+        "a" -> "boxed in option".asJson
+      )
+    )
+
+    assert(foo.asJson === expected)
+  }
+
 }

@@ -18,7 +18,7 @@ package io.circe.generic
 
 import cats.kernel.Eq
 import cats.syntax.contravariant._
-import io.circe.{ Decoder, Encoder, Json }
+import io.circe.{ Decoder, Encoder, Json, NullOr }
 import io.circe.generic.auto._
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
@@ -130,6 +130,17 @@ object AutoDerivedSuite {
       } yield WithSeqOfTagged(s.map(tag[Tag](_)))
     )
   }
+
+  case class WithNullables(
+    a: String,
+    b: NullOr[String],
+    c: Option[NullOr[Int]],
+    d: NullOr[Boolean],
+    e: NullOr[Box[String]],
+    f: NullOr[List[String]],
+    g: Option[Box[String]]
+  )
+
 }
 
 class AutoDerivedSuite extends CirceMunitSuite {
@@ -214,4 +225,36 @@ class AutoDerivedSuite extends CirceMunitSuite {
 
   checkAll("Codec[WithTaggedMembers]", CodecTests[WithTaggedMembers].codec)
   checkAll("Codec[Seq[WithSeqOfTagged]]", CodecTests[Seq[WithSeqOfTagged]].codec)
+
+  test("NullOr codecs work as expected") {
+    import io.circe.syntax._
+
+    val foo =
+      WithNullables(
+        a = "a value",
+        b = NullOr.Value("b value"),
+        c = None,
+        d = NullOr.Null,
+        e = NullOr.Value(Box("boxed value")),
+        f = NullOr.Value(List("a", "b", "c")),
+        g = Some(Box("boxed in option"))
+      )
+
+    val expected = Json.obj(
+      "a" -> "a value".asJson,
+      "b" -> "b value".asJson,
+      "d" -> Json.Null,
+      "e" -> Json.obj(
+        "a" -> "boxed value".asJson
+      ),
+      "f" -> List("a", "b", "c").asJson,
+      "g" -> Json.obj(
+        "a" -> "boxed in option".asJson
+      )
+    )
+
+    assertEquals(foo.asJson, expected)
+    assertEquals(Decoder[WithNullables].decodeJson(expected), Right(foo))
+  }
+
 }

@@ -18,7 +18,7 @@ package io.circe.derivation
 
 import scala.deriving.Mirror
 import scala.compiletime.constValue
-import io.circe.{ Encoder, Json, JsonObject }
+import io.circe.{ Encoder, Json, JsonObject, NullOr }
 
 trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A]:
   lazy val elemLabels: List[String]
@@ -28,12 +28,21 @@ trait ConfiguredEncoder[A](using conf: Configuration) extends Encoder.AsObject[A
     (transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem))
   }
 
+  final def optionallyEncodeElemAt(index: Int, elem: Any, transformName: String => String): Option[(String, Json)] =
+    if (elem == None && conf.dropNoneValues) {
+      None
+    } else if (elem == NullOr.Null) {
+      Some((transformName(elemLabels(index)), Json.Null))
+    } else {
+      Some((transformName(elemLabels(index)), elemEncoders(index).asInstanceOf[Encoder[Any]].apply(elem)))
+    }
+
   final def encodeProduct(a: A): JsonObject =
     val product = a.asInstanceOf[Product]
     val iterable = Iterable.tabulate(product.productArity) { index =>
-      encodeElemAt(index, product.productElement(index), conf.transformMemberNames)
+      optionallyEncodeElemAt(index, product.productElement(index), conf.transformMemberNames)
     }
-    JsonObject.fromIterable(iterable)
+    JsonObject.fromIterable(iterable.flatten)
 
   final def encodeSum(index: Int, a: A): JsonObject =
     val (constructorName, json) = encodeElemAt(index, a, conf.transformConstructorNames)

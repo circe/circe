@@ -377,6 +377,31 @@ object Encoder
   }
 
   /**
+   * @group Encoding
+   */
+  implicit final def encodeNullOr[A](implicit e: Encoder[A]): Encoder[NullOr[A]] = new Encoder[NullOr[A]] {
+    final def apply(a: NullOr[A]): Json = {
+      a match {
+        case NullOr.Value(v) => e(v)
+        case NullOr.Null     => Json.Null
+      }
+    }
+  }
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeNullOrValue[A](implicit e: Encoder[A]): Encoder[NullOr.Value[A]] = e.contramap(_.value)
+
+  /**
+   * @group Encoding
+   */
+  implicit final def encodeNullOrNull: Encoder[NullOr.Null.type] =
+    new Encoder[NullOr.Null.type] {
+      final def apply(a: NullOr.Null.type): Json = Json.Null
+    }
+
+  /**
    * @group Collection
    */
   implicit final def encodeSeq[A](implicit encodeA: Encoder[A]): AsArray[Seq[A]] =
