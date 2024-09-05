@@ -109,6 +109,7 @@ Please get in touch on [Gitter][gitter] if you have a circe-related project that
 * [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
 * [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
   into circe's `Json`.
+* [circe-refined][circe-refined]: A library that provides encoders and decoders using [Refined][refined].
 
 ### Related projects
 
@@ -225,6 +226,7 @@ limitations under the License.
 [circe-org]: https://github.com/circe
 [circe-spray]: https://github.com/circe/circe-spray
 [circe-yaml]: https://github.com/circe/circe-yaml
+[circe-refined]: https://github.com/circe/circe-refined
 [crjdt]: https://github.com/fthomas/crjdt
 [code-of-conduct]: https://www.scala-lang.org/conduct/
 [cornichon]: https://github.com/agourlay/cornichon
@@ -273,6 +275,7 @@ limitations under the License.
 [pulsar4s]: https://github.com/sksamuel/pulsar4s
 [graphql]: http://graphql.org/docs/getting-started/
 [rapture]: http://rapture.io/
+[refined]: https://github.com/fthomas/refined
 [roc]: https://github.com/finagle/roc
 [sangria]: http://sangria-graphql.org/
 [sangria-circe]: https://github.com/sangria-graphql/sangria-circe
