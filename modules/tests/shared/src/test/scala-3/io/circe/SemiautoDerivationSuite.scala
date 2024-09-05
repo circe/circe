@@ -18,7 +18,6 @@ package io.circe
 
 import cats.kernel.Eq
 import cats.syntax.eq.*
-import io.circe.{ Decoder, Encoder }
 import io.circe.testing.CodecTests
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.{ Arbitrary, Gen }
@@ -157,4 +156,145 @@ class SemiautoDerivationSuite extends CirceMunitSuite {
     assert(compileErrors("Decoder.derived[Adt5]").nonEmpty)
     assert(compileErrors("Encoder.AsObject.derived[Adt5]").nonEmpty)
   }
+
+  // Local classes use `implicit val` instead of `given` to ensure derivation is strictly evaluated
+  // `given`s are desugared to `lazy val`s and part of the point of these tests is to ensure that
+  // deriving with strict `val`s doesn't cause `StackOverflowError`s
+  // See https://github.com/circe/circe/pull/2278
+  def testLocalCaseClasses(): Unit = {
+    // Standard derivation of `Decoder` and `Encoder` separately
+    case class LocalCaseClass1(int: Int)
+    object LocalCaseClass1 {
+      implicit val decoder: Decoder[LocalCaseClass1] = Decoder.derived
+      implicit val encoder: Encoder.AsObject[LocalCaseClass1] = Encoder.AsObject.derived
+
+      given eq: Eq[LocalCaseClass1] = Eq.by(_.int)
+      given arbitrary: Arbitrary[LocalCaseClass1] = Arbitrary(Arbitrary.arbitrary[Int].map(LocalCaseClass1(_)))
+    }
+
+    // Derivation of `Decoder` and `Encoder` separately using relaxed derivation for `Encoder`
+    case class LocalCaseClass2(int: Int)
+    object LocalCaseClass2 {
+      implicit val decoder: Decoder[LocalCaseClass2] = Decoder.derived
+      implicit val encoder: Encoder.AsObject[LocalCaseClass2] = Encoder.derived
+
+      given eq: Eq[LocalCaseClass2] = Eq.by(_.int)
+      given arbitrary: Arbitrary[LocalCaseClass2] = Arbitrary(Arbitrary.arbitrary[Int].map(LocalCaseClass2(_)))
+    }
+
+    // Standard derivation of `Codec` separately
+    case class LocalCaseClass3(int: Int)
+    object LocalCaseClass3 {
+      implicit val codec: Codec.AsObject[LocalCaseClass3] = Codec.AsObject.derived
+
+      given eq: Eq[LocalCaseClass3] = Eq.by(_.int)
+      given arbitrary: Arbitrary[LocalCaseClass3] = Arbitrary(Arbitrary.arbitrary[Int].map(LocalCaseClass3(_)))
+    }
+
+    // Relaxed derivation of `Codec`
+    case class LocalCaseClass4(int: Int)
+    object LocalCaseClass4 {
+      implicit val codec: Codec.AsObject[LocalCaseClass4] = Codec.derived
+
+      given eq: Eq[LocalCaseClass4] = Eq.by(_.int)
+      given arbitrary: Arbitrary[LocalCaseClass4] = Arbitrary(Arbitrary.arbitrary[Int].map(LocalCaseClass4(_)))
+    }
+
+    checkAll("Codec[LocalCaseClass1]", CodecTests[LocalCaseClass1].unserializableCodec)
+    checkAll("Codec[LocalCaseClass2]", CodecTests[LocalCaseClass2].unserializableCodec)
+    checkAll("Codec[LocalCaseClass3]", CodecTests[LocalCaseClass3].unserializableCodec)
+    checkAll("Codec[LocalCaseClass4]", CodecTests[LocalCaseClass4].unserializableCodec)
+  }
+
+  def testLocalAdts(): Unit = {
+    // Standard derivation of `Decoder` and `Encoder` separately
+    sealed trait LocalAdt1
+    object LocalAdt1 {
+      case class Class(int: Int) extends LocalAdt1
+      object Class {
+        given eq: Eq[Class] = Eq.by(_.int)
+        given arbitrary: Arbitrary[Class] = Arbitrary(Arbitrary.arbitrary[Int].map(Class(_)))
+      }
+      case object Object extends LocalAdt1
+
+      implicit val decoder: Decoder[LocalAdt1] = Decoder.derived
+      implicit val encoder: Encoder.AsObject[LocalAdt1] = Encoder.AsObject.derived
+
+      given eq: Eq[LocalAdt1] = Eq.instance {
+        case (x: Class, y: Class) => x === y
+        case (Object, Object)     => true
+        case _                    => false
+      }
+      given arbitrary: Arbitrary[LocalAdt1] = Arbitrary(Gen.oneOf(Arbitrary.arbitrary[Class], Gen.const(Object)))
+    }
+
+    // Derivation of `Decoder` and `Encoder` separately using relaxed derivation for `Encoder`
+    sealed trait LocalAdt2
+    object LocalAdt2 {
+      case class Class(int: Int) extends LocalAdt2
+      object Class {
+        given eq: Eq[Class] = Eq.by(_.int)
+        given arbitrary: Arbitrary[Class] = Arbitrary(Arbitrary.arbitrary[Int].map(Class(_)))
+      }
+      case object Object extends LocalAdt2
+
+      implicit val decoder: Decoder[LocalAdt2] = Decoder.derived
+      implicit val encoder: Encoder.AsObject[LocalAdt2] = Encoder.derived
+
+      given eq: Eq[LocalAdt2] = Eq.instance {
+        case (x: Class, y: Class) => x === y
+        case (Object, Object)     => true
+        case _                    => false
+      }
+      given arbitrary: Arbitrary[LocalAdt2] = Arbitrary(Gen.oneOf(Arbitrary.arbitrary[Class], Gen.const(Object)))
+    }
+
+    // Standard derivation of `Codec` separately
+    sealed trait LocalAdt3
+    object LocalAdt3 {
+      case class Class(int: Int) extends LocalAdt3
+      object Class {
+        given eq: Eq[Class] = Eq.by(_.int)
+        given arbitrary: Arbitrary[Class] = Arbitrary(Arbitrary.arbitrary[Int].map(Class(_)))
+      }
+      case object Object extends LocalAdt3
+
+      implicit val codec: Codec.AsObject[LocalAdt3] = Codec.AsObject.derived
+
+      given eq: Eq[LocalAdt3] = Eq.instance {
+        case (x: Class, y: Class) => x === y
+        case (Object, Object)     => true
+        case _                    => false
+      }
+      given arbitrary: Arbitrary[LocalAdt3] = Arbitrary(Gen.oneOf(Arbitrary.arbitrary[Class], Gen.const(Object)))
+    }
+
+    // Relaxed derivation of `Codec`
+    sealed trait LocalAdt4
+    object LocalAdt4 {
+      case class Class(int: Int) extends LocalAdt4
+      object Class {
+        given eq: Eq[Class] = Eq.by(_.int)
+        given arbitrary: Arbitrary[Class] = Arbitrary(Arbitrary.arbitrary[Int].map(Class(_)))
+      }
+      case object Object extends LocalAdt4
+
+      implicit val codec: Codec.AsObject[LocalAdt4] = Codec.derived
+
+      given eq: Eq[LocalAdt4] = Eq.instance {
+        case (x: Class, y: Class) => x === y
+        case (Object, Object)     => true
+        case _                    => false
+      }
+      given arbitrary: Arbitrary[LocalAdt4] = Arbitrary(Gen.oneOf(Arbitrary.arbitrary[Class], Gen.const(Object)))
+    }
+
+    checkAll("Codec[LocalAdt1]", CodecTests[LocalAdt1].unserializableCodec)
+    checkAll("Codec[LocalAdt2]", CodecTests[LocalAdt2].unserializableCodec)
+    checkAll("Codec[LocalAdt3]", CodecTests[LocalAdt3].unserializableCodec)
+    checkAll("Codec[LocalAdt4]", CodecTests[LocalAdt4].unserializableCodec)
+  }
+
+  testLocalCaseClasses()
+  testLocalAdts()
 }
