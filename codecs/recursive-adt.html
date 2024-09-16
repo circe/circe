@@ -168,7 +168,7 @@
     </span><span class="keyword">case</span><span> </span><span class="identifier">_</span><span>: </span><span class="type-name">StackOverflowError</span><span> =&gt; 
       </span><span class="type-name">Decoder</span><span>.</span><span class="identifier">failedWithMessage</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]](</span><span class="string-literal">&quot;Lookup caused StackOverflowError&quot;</span><span>)
   }
-</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$21@63bc810c
+</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$21@71cf9b3f
 </span><span>
 </span><span class="type-name">Json</span><span>.</span><span class="identifier">obj</span><span>(</span><span class="string-literal">&quot;v&quot;</span><span> := </span><span class="number-literal">1</span><span>).</span><span class="identifier">as</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]](</span><span class="identifier">decoder</span><span>)
 </span><span class="comment">// res0: Result[Tree[Int]] = Left(
@@ -366,7 +366,7 @@
   }
 }</span></code></pre>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">decoder</span><span> = </span><span class="type-name">Decoder</span><span>[</span><span class="type-name">Tree</span><span>[</span><span class="type-name">Int</span><span>]]
-</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$9@3286885b
+</span><span class="comment">// decoder: Decoder[Tree[Int]] = io.circe.Decoder$$anon$9@d858ba8
 </span><span class="keyword">try</span><span> 
   </span><span class="type-name">List</span><span>
     .</span><span class="identifier">range</span><span>(</span><span class="number-literal">0</span><span>, </span><span class="number-literal">10000</span><span>)
