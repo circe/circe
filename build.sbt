@@ -337,7 +337,7 @@ lazy val literal = circeCrossModule("literal", CrossType.Pure)
   .nativeSettings(
     tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.9").toMap
   )
-  .dependsOn(core, parser % Test, testing % Test)
+  .dependsOn(core, parser, testing % Test)
 
 lazy val parser =
   circeCrossModule("parser")
