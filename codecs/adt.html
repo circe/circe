@@ -183,7 +183,7 @@
 </span><span class="keyword">import</span><span> </span><span class="type-name">GenericDerivation</span><span>.{ </span><span class="identifier">decodeEvent</span><span> =&gt; </span><span class="identifier">_</span><span>, </span><span class="identifier">encodeEvent</span><span> =&gt; </span><span class="identifier">_</span><span> }
 
 </span><span class="keyword">object</span><span> </span><span class="type-name">ShapesDerivation</span><span> {
-  </span><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">shapes</span><span>
+  </span><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">circe</span><span>.</span><span class="identifier">shapes</span><span>.</span><span class="identifier">_</span><span>
   </span><span class="keyword">import</span><span> </span><span class="identifier">shapeless</span><span>.{ </span><span class="type-name">Coproduct</span><span>, </span><span class="type-name">Generic</span><span> }
 
   </span><span class="keyword">implicit</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">encodeAdtNoDiscr</span><span>[</span><span class="type-name">A</span><span>, </span><span class="type-name">Repr</span><span> &lt;: </span><span class="type-name">Coproduct</span><span>](</span><span class="keyword">implicit</span><span>
