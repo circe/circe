@@ -69,7 +69,7 @@ We can avoid the fuss of writing out all the cases by using the `circe-shapes` m
 import GenericDerivation.{ decodeEvent => _, encodeEvent => _ }
 
 object ShapesDerivation {
-  import io.circe.shapes
+  import io.circe.shapes._
   import shapeless.{ Coproduct, Generic }
 
   implicit def encodeAdtNoDiscr[A, Repr <: Coproduct](implicit
