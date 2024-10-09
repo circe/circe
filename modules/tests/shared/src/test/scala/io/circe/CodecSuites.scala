@@ -208,9 +208,9 @@ class CirceCodecSuite extends CirceMunitSuite {
 }
 
 class InvariantCodecSuite extends CirceMunitSuite {
-  val wubCodec = Codec.from(Decoder[Long], Encoder[Long]).imap(Wub(_))(_.x)
-  val wubCodecE = Codec.from(Decoder[Long], Encoder[Long]).iemap(l => Right(Wub(l)))(_.x)
-  val wubCodecT = Codec.from(Decoder[Long], Encoder[Long]).iemapTry(l => Success(Wub(l)))(_.x)
+  val wubCodec = Codec.unsafeSummon[Long].imap(Wub(_))(_.x)
+  val wubCodecE = Codec.unsafeSummon[Long].iemap(l => Right(Wub(l)))(_.x)
+  val wubCodecT = Codec.unsafeSummon[Long].iemapTry(l => Success(Wub(l)))(_.x)
 
   checkAll("Codec[Wub] via imap", CodecTests[Wub](wubCodec, wubCodec).codec)
   checkAll("Codec[Wub] via iemap", CodecTests[Wub](wubCodecE, wubCodecE).codec)
