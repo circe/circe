@@ -55,4 +55,9 @@ package io
  *  detailed introduction to the library.
  */
 // scalastyle:on
-package object circe
+package object circe {
+  private[circe] def void[A](a: => A): Unit = {
+    val _ = a
+    ()
+  }
+}

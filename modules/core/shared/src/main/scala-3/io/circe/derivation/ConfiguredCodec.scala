@@ -19,7 +19,7 @@ package io.circe.derivation
 import scala.deriving.Mirror
 import scala.compiletime.{ constValue, summonInline }
 import scala.quoted.*
-import io.circe.{ Codec, Decoder, Encoder, HCursor, JsonObject }
+import io.circe.{ Codec, Decoder, Encoder, HCursor }
 
 trait ConfiguredCodec[A] extends Codec.AsObject[A], ConfiguredDecoder[A], ConfiguredEncoder[A]
 object ConfiguredCodec:

@@ -24,6 +24,7 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import scala.annotation.switch
+import org.typelevel.scalaccompat.annotation._
 
 /**
  * A pretty-printer for JSON values.
@@ -85,14 +86,16 @@ final case class Printer(
   private[this] final val commaText = ","
   private[this] final val colonText = ":"
 
+  @unused
   private[this] final class StringBuilderFolder(
     writer: StringBuilder
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
-    final def onBoolean(value: Boolean): Unit = writer.append(value)
-    final def onNumber(value: JsonNumber): Unit = value.appendToStringBuilder(writer)
+    final def onBoolean(value: Boolean): Unit = void(writer.append(value))
+    final def onNumber(value: JsonNumber): Unit = void(value.appendToStringBuilder(writer))
   }
 
   @deprecated("Use AppendableFolder", since = "0.14.2")
+  @unused
   private[this] final class AppendableByteBufferFolder(
     writer: Printer.AppendableByteBuffer
   ) extends AppendableFolder(writer)
@@ -100,8 +103,8 @@ final case class Printer(
   private[this] sealed class AppendableFolder(
     writer: Appendable
   ) extends Printer.PrintingFolder(writer, pieces, dropNullValues, escapeNonAscii, sortKeys) {
-    final def onBoolean(value: Boolean): Unit = writer.append(java.lang.Boolean.toString(value))
-    final def onNumber(value: JsonNumber): Unit = writer.append(value.toString)
+    final def onBoolean(value: Boolean): Unit = void(writer.append(java.lang.Boolean.toString(value)))
+    final def onNumber(value: JsonNumber): Unit = void(writer.append(value.toString))
   }
 
   private[this] final def concat(left: String, text: String, right: String): String = {
@@ -307,13 +310,14 @@ object Printer {
    */
   final val spaces4SortKeys: Printer = indented("    ", true)
 
-  private[this] final def writeEscapedChar(writer: Appendable, c: Char): Unit =
+  private[this] final def writeEscapedChar(writer: Appendable, c: Char): Unit = void {
     writer
       .append('u')
       .append(toHex((c >> 12) & 15))
       .append(toHex((c >> 8) & 15))
       .append(toHex((c >> 4) & 15))
       .append(toHex(c & 15))
+  }
 
   private[this] final def toHex(nibble: Int): Char = (nibble + (if (nibble >= 10) 87 else 48)).toChar
 
@@ -326,9 +330,9 @@ object Printer {
   ) extends Json.Folder[Unit] {
     private[circe] var depth: Int = 0
 
-    final def onNull: Unit = writer.append("null")
+    final def onNull: Unit = void(writer.append("null"))
 
-    final def onString(value: String): Unit = {
+    final def onString(value: String): Unit = void {
       writer.append('"')
 
       var i = 0
@@ -356,11 +360,11 @@ object Printer {
         i += 1
       }
 
-      if (offset < i) writer.append(value, offset, i)
+      if (offset < i) void(writer.append(value, offset, i))
       writer.append('"')
     }
 
-    final def onArray(value: Vector[Json]): Unit = {
+    final def onArray(value: Vector[Json]): Unit = void {
       val orig = depth
       val p = pieces(depth)
 
@@ -415,7 +419,7 @@ object Printer {
       new Array[Pieces](maxMemoizationDepth)
     )
 
-    protected[this] final def addIndentation(builder: StringBuilder, s: String, depth: Int): Unit = {
+    protected[this] final def addIndentation(builder: StringBuilder, s: String, depth: Int): Unit = void {
       val lastNewLineIndex = s.lastIndexOf('\n')
 
       if (lastNewLineIndex == -1) builder.append(s)

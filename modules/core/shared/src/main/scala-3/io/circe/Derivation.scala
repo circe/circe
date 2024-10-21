@@ -18,8 +18,6 @@ package io.circe
 
 import scala.compiletime.constValue
 import scala.deriving.Mirror
-import Predef.genericArrayOps
-import cats.data.{ NonEmptyList, Validated }
 import io.circe.derivation._
 
 @deprecated(since = "0.14.4")

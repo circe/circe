@@ -20,6 +20,7 @@ private[circe] trait LiteralDecoders {
   private[this] abstract class LiteralDecoder[A, L <: A](decodeA: Decoder[A], L: ValueOf[L]) extends Decoder[L] {
     protected[this] def check(a: A): Boolean
     protected[this] def message: String
+    void(L)
 
     final def apply(c: HCursor): Decoder.Result[L] = decodeA(c) match {
       case r @ Right(value) if check(value) => r.asInstanceOf[Decoder.Result[L]]

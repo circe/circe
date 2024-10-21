@@ -56,13 +56,17 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
   protected[this] def encodeField(name: String, encode: TermName, value: TermName): Tree
   protected[this] def encodeSubtype(name: String, encode: TermName, value: TermName): Tree
 
-  private[this] def fullDecodeMethodArgs(tpe: Type): List[List[Tree]] =
+  private[this] def fullDecodeMethodArgs(tpe: Type): List[List[Tree]] = {
+    val _ = tpe
     List(q"c: _root_.io.circe.HCursor") :: (if (decodeMethodArgs.isEmpty) Nil else List(decodeMethodArgs))
+  }
 
-  private[this] def fullDecodeAccumulatingMethodArgs(tpe: Type): List[List[Tree]] =
+  private[this] def fullDecodeAccumulatingMethodArgs(tpe: Type): List[List[Tree]] = {
+    val _ = tpe
     List(q"c: _root_.io.circe.HCursor") :: (
       if (decodeAccumulatingMethodArgs.isEmpty) Nil else List(decodeAccumulatingMethodArgs)
     )
+  }
 
   private[this] def fullEncodeMethodArgs(tpe: Type): List[List[Tree]] =
     List(q"a: $tpe") :: (if (encodeMethodArgs.isEmpty) Nil else List(encodeMethodArgs))
@@ -142,7 +146,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
         case RefinedType(List(fieldType, TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType))), _)
             if lt =:= ShapelessLabelledType && fieldType =:= taggedFieldType =>
           tagType.dealias match {
-            case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+            case RefinedType(List(st, TypeRef(tt, _, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                 if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
               Some((fieldKey, tagType, fieldType))
             case _ => None
@@ -157,7 +161,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
             case TypeRef(lt, KeyTagSym, List(tagType, taggedFieldType)) :: refs
                 if lt =:= ShapelessLabelledType && internal.refinedType(refs.reverse, scope) =:= taggedFieldType =>
               tagType.dealias match {
-                case RefinedType(List(st, TypeRef(tt, ts, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
+                case RefinedType(List(st, TypeRef(tt, _, ConstantType(Constant(fieldKey: String)) :: Nil)), _)
                     if st =:= ScalaSymbolType && tt =:= ShapelessTagType =>
                   Some((fieldKey, tagType, taggedFieldType))
                 case _ => None
@@ -244,7 +248,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
     members.fold("circeGenericDecoderFor")(
       resolveInstance(List((typeOf[Decoder[_]], false), (DD.tpe, true)))
     )((cnilResult, cnilResultAccumulating)) {
-      case (Member(label, nameTpe, tpe, current, accTail), instanceName, (acc, accAccumulating)) =>
+      case (Member(label, nameTpe, tpe, _, accTail), instanceName, (acc, accAccumulating)) =>
         (
           q"""
         ${decodeSubtype(label, instanceName)} match {

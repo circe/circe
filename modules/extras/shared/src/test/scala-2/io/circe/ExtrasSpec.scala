@@ -97,7 +97,10 @@ class ExtrasSpec extends CirceMunitSuite {
       def onBoolean(b: Boolean): Json = Json.fromBoolean(!b)
       val onNull: Json = Json.fromDoubleOrNull(42)
       def onString(s: String): Json = Json.fromString(s.reverse)
-      def onNumber(s: JsonNumber): Json = Json.Null
+      def onNumber(s: JsonNumber): Json = {
+        val _ = s
+        Json.Null
+      }
 
       val input: Json = Json.fromValues {
         List(

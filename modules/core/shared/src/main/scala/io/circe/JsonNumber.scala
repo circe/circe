@@ -121,7 +121,7 @@ private sealed abstract class BiggerDecimalJsonNumber(input: String) extends Jso
 
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   override final def toString: String = input
-  private[circe] final def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(input)
+  private[circe] final def appendToStringBuilder(builder: StringBuilder): Unit = void(builder.append(input))
 }
 
 /**
@@ -158,7 +158,7 @@ private[circe] final case class JsonBigDecimal(value: JavaBigDecimal) extends Js
   final def toFloat: Float = value.floatValue
   final def toLong: Option[Long] = toBiggerDecimal.toLong
   override final def toString: String = value.toString
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value.toString)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = void(builder.append(value.toString))
 }
 
 /**
@@ -172,7 +172,7 @@ private[circe] final case class JsonLong(value: Long) extends JsonNumber {
   final def toFloat: Float = value.toFloat
   final def toLong: Option[Long] = Some(value)
   override final def toString: String = java.lang.Long.toString(value)
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = void(builder.append(value))
 }
 
 /**
@@ -199,7 +199,7 @@ private[circe] final case class JsonDouble(value: Double) extends JsonNumber {
   }
 
   override final def toString: String = java.lang.Double.toString(value)
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = void(builder.append(value))
 }
 
 /**
@@ -228,7 +228,7 @@ private[circe] final case class JsonFloat(value: Float) extends JsonNumber {
   }
 
   override final def toString: String = java.lang.Float.toString(value)
-  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = builder.append(value)
+  private[circe] def appendToStringBuilder(builder: StringBuilder): Unit = void(builder.append(value))
 }
 
 /**

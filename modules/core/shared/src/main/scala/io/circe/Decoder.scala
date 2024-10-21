@@ -72,6 +72,7 @@ import scala.collection.mutable.Builder
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+import io.circe.DecodingFailure.Reason.CustomReason
 
 /**
  * A type class that provides a way to produce a value of type `A` from a [[Json]] value.
@@ -1015,6 +1016,8 @@ object Decoder
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNone
         else Left(DecodingFailure(MissingField, c.history))
+      case _ =>
+        Left(DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history))
     }
 
     final override def decodeAccumulating(c: HCursor): AccumulatingResult[Option[A]] = tryDecodeAccumulating(c)
@@ -1030,6 +1033,10 @@ object Decoder
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNoneAccumulating
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
+      case _ =>
+        Validated.invalidNel(
+          DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history)
+        )
     }
   }
 
@@ -1058,6 +1065,8 @@ object Decoder
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNone
         else Left(DecodingFailure(MissingField, c.history))
+      case _ =>
+        Left(DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history))
     }
 
     final override def tryDecodeAccumulating(c: ACursor): AccumulatingResult[None.type] = c match {
@@ -1067,6 +1076,10 @@ object Decoder
       case c: FailedCursor =>
         if (!c.incorrectFocus) keyMissingNoneAccumulating
         else Validated.invalidNel(DecodingFailure(MissingField, c.history))
+      case _ =>
+        Validated.invalidNel(
+          DecodingFailure(CustomReason("Unexpected cursor type, expected one of HCursor, FailedCuror"), c.history)
+        )
     }
   }
 
@@ -1209,7 +1222,7 @@ object Decoder
         case lc: HCursor =>
           rf match {
             case _: HCursor => failure(c)
-            case rc =>
+            case _ =>
               decodeA(lc) match {
                 case Right(v)    => Right(Left(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
@@ -1222,7 +1235,7 @@ object Decoder
                 case Right(v)    => Right(Right(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]
               }
-            case rc => failure(c)
+            case _ => failure(c)
           }
       }
     }
@@ -1255,7 +1268,7 @@ object Decoder
           case e: DateTimeException =>
             val message = e.getMessage
 
-            if (message.eq(null)) Left(DecodingFailure("Couldn't decode time", c.history))
+            if (message.eq(null)) Left(DecodingFailure(s"Couldn't decode $name", c.history))
             else {
               val newMessage = formatMessage(string, message)
               Left(DecodingFailure(message = newMessage, ops = c.history))
@@ -1266,7 +1279,8 @@ object Decoder
   }
 
   private[this] abstract class StandardJavaTimeDecoder[A](name: String) extends JavaTimeDecoder[A](name) {
-    protected[this] final def formatMessage(input: String, message: String): String = message
+    protected[this] final def formatMessage(input: String, message: String): String =
+      s"Text '$input' cannot be parsed to a $name. Message is: $message"
   }
 
   /**
@@ -1395,9 +1409,13 @@ object Decoder
   /**
    * @group Time
    */
+  @deprecated("Does not make sense, since the formatter is unused", "0.14.10")
   final def decodeZoneOffsetWithFormatter(formatter: DateTimeFormatter): Decoder[ZoneOffset] =
     new StandardJavaTimeDecoder[ZoneOffset]("ZoneOffset") {
-      protected[this] final def parseUnsafe(input: String): ZoneOffset = ZoneOffset.of(input)
+      protected[this] final def parseUnsafe(input: String): ZoneOffset = {
+        void(formatter)
+        ZoneOffset.of(input)
+      }
     }
 
   /**

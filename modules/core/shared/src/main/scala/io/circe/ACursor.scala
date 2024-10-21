@@ -292,7 +292,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
               loop(cursor.parent, PathElem.ArrayIndex(cursor.indexValue) +: acc)
             case cursor: ObjectCursor =>
               loop(cursor.parent, PathElem.ObjectKey(cursor.keyValue) +: acc)
-            case cursor: TopCursor =>
+            case _: TopCursor =>
               acc
             case _ =>
               // Skip unknown cursor type. Maybe we should seal this?

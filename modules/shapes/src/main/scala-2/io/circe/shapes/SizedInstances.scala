@@ -26,10 +26,8 @@ import shapeless.Nat
 import shapeless.Sized
 import shapeless.ops.nat.ToInt
 
-import scala.collection.GenTraversable
-
 trait SizedInstances {
-  implicit final def decodeSized[L <: Nat, C[X] <: GenTraversable[X], A](implicit
+  implicit final def decodeSized[L <: Nat, C[X] <: Iterable[X], A](implicit
     decodeCA: Decoder[C[A]],
     ev: AdditiveCollection[C[A]],
     toInt: ToInt[L]

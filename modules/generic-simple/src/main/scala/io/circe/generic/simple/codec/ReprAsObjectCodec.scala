@@ -71,7 +71,7 @@ object ReprAsObjectCodec {
       val f = c.downField(key.value.name)
 
       f.focus match {
-        case Some(value) => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
+        case Some(_)     => decodeL.tryDecodeAccumulating(f).map(l => Inl(field(l)))
         case None        => cachedCodecForR.decodeAccumulating(c).map(Inr(_))
       }
     }

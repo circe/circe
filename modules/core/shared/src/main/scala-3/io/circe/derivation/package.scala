@@ -18,7 +18,7 @@ package io.circe.derivation
 
 import scala.compiletime.{ codeOf, constValue, erasedValue, error, summonFrom, summonInline }
 import scala.deriving.Mirror
-import io.circe.{ Codec, Decoder, Encoder }
+import io.circe.{ Decoder, Encoder }
 
 private[circe] inline final def summonLabels[T <: Tuple]: List[String] =
   inline erasedValue[T] match

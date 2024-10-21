@@ -259,7 +259,7 @@ object JsonObject {
       val map = new LinkedHashMap[String, Json]
       val iterator = fields.iterator
 
-      while (iterator.hasNext) {
+      while (iterator.hasNext) void {
         val (key, value) = iterator.next()
 
         map.put(key, value)
@@ -356,7 +356,7 @@ object JsonObject {
       }
     }
 
-    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+    final def appendToFolder(folder: Printer.PrintingFolder): Unit = void {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
@@ -371,7 +371,7 @@ object JsonObject {
         val value = next._2
 
         if (!folder.dropNullValues || !value.isNull) {
-          if (!first) folder.writer.append(p.objectCommas)
+          if (!first) void(folder.writer.append(p.objectCommas))
           folder.onString(key)
           folder.writer.append(p.colons)
 
@@ -466,7 +466,7 @@ object JsonObject {
         orderedKeys
       )
 
-    final def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+    final def appendToFolder(folder: Printer.PrintingFolder): Unit = void {
       val originalDepth = folder.depth
       val p = folder.pieces(folder.depth)
       var first = true
@@ -478,7 +478,7 @@ object JsonObject {
         val key = keyIterator.next()
         val value = fields(key)
         if (!folder.dropNullValues || !value.isNull) {
-          if (!first) folder.writer.append(p.objectCommas)
+          if (!first) void(folder.writer.append(p.objectCommas))
           folder.onString(key)
           folder.writer.append(p.colons)
 
