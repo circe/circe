@@ -350,7 +350,7 @@ trait Decoder[A] extends Serializable { self =>
    * Create a new decoder that attempts to navigate to the specified field
    * before decoding.
    */
-  final def at(field: String): Decoder[A] = new Decoder[A] {
+  def at(field: String): Decoder[A] = new Decoder[A] {
     private[this] val f: String = field
     final def apply(c: HCursor): Decoder.Result[A] = tryDecode(c)
     override def tryDecode(c: ACursor): Decoder.Result[A] = self.tryDecode(c.downField(f))

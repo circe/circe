@@ -90,6 +90,10 @@ trait Encoder[A] extends Serializable { self =>
   final def mapJson(f: Json => Json): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = f(self(a))
   }
+
+  def at(field: String): Encoder[A] = new Encoder[A] {
+    override def apply(a: A): Json = Json.obj(field -> self.apply(a))
+  }
 }
 
 /**

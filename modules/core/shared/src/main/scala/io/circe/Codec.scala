@@ -50,6 +50,7 @@ trait Codec[A] extends Decoder[A] with Encoder[A] {
    */
   def iemapTry[B](f: A => Try[B])(g: B => A): Codec[B] = Codec.from(emapTry(f), contramap(g))
 
+  final override def at(field: String): Codec[A] = Codec.from(super[Decoder].at(field), super[Encoder].at(field))
 }
 
 object Codec extends ProductCodecs with ProductTypedCodecs with EnumerationCodecs with CodecDerivationRelaxed {
