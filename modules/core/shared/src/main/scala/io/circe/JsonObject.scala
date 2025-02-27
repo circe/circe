@@ -253,19 +253,15 @@ object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    if (fields.isEmpty) {
-      empty
-    } else {
-      val map = new LinkedHashMap[String, Json]
-      val iterator = fields.iterator
-
-      while (iterator.hasNext) {
-        val (key, value) = iterator.next()
-
-        map.put(key, value)
+    if (fields.isEmpty) empty
+    else {
+      val fieldsSeq = fields.iterator.toSeq
+      if (fields.sizeIs == 1) new SingletonJsonObject(fieldsSeq.head._1, fieldsSeq.head._2)
+      else {
+        val map = new LinkedHashMap[String, Json]
+        for ((key, value) <- fields) map.put(key, value)
+        new LinkedHashMapJsonObject(map)
       }
-
-      fromLinkedHashMap(map)
     }
   }
 
@@ -275,17 +271,19 @@ object JsonObject {
    * Note that the order of the fields is arbitrary.
    */
   final def fromMap(map: Map[String, Json]): JsonObject =
-    if (map.isEmpty) {
-      empty
-    } else {
-      fromMapAndVector(map, map.keys.toVector)
-    }
+    fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
-    new MapAndVectorJsonObject(map, keys)
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject = {
+    if (map.isEmpty) empty
+    else if (map.size == 1) new SingletonJsonObject(map.keys.iterator.next(), map.values.iterator.next())
+    else new MapAndVectorJsonObject(map, keys)
+  }
 
-  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
-    new LinkedHashMapJsonObject(map)
+  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject = {
+    if (map.isEmpty) empty
+    else if (map.size() == 1) new SingletonJsonObject(map.keySet().iterator.next(), map.values.iterator.next())
+    else new LinkedHashMapJsonObject(map)
+  }
 
   /**
    * Construct an empty [[JsonObject]].
@@ -299,6 +297,75 @@ object JsonObject {
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
+
+  private[this] final class SingletonJsonObject(field: String, value: Json) extends JsonObject {
+    override private[circe] def applyUnsafe(k: String): Json =
+      if (k == field) value else null
+
+    override def apply(key: String): Option[Json] =
+      Option.when(key == field)(value)
+
+    override def contains(key: String): Boolean =
+      key == field
+
+    override val size: Int =
+      1
+
+    override val isEmpty: Boolean =
+      false
+
+    override def keys: Iterable[String] =
+      Iterable.single(field)
+
+    override def values: Iterable[Json] =
+      Iterable.single(value)
+
+    override def toMap: Map[String, Json] =
+      Map(field -> value)
+
+    override def toIterable: Iterable[(String, Json)] =
+      Iterable.single(field -> value)
+
+    override def add(k: String, j: Json): JsonObject = new LinkedHashMapJsonObject(
+      {
+        val map = new LinkedHashMap[String, Json]
+        map.put(field, value)
+        map.put(k, j)
+        map
+      }
+    )
+    override def +:(field: (String, Json)): JsonObject =
+      add(field._1, field._2)
+
+    override def remove(key: String): JsonObject =
+      empty
+
+    override def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] =
+      F.map(f(value))(new SingletonJsonObject(field, _))
+
+    override def mapValues(f: Json => Json): JsonObject = new SingletonJsonObject(field, f(value))
+
+    override private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val originalDepth = folder.depth
+      val p = folder.pieces(folder.depth)
+      var first = true
+
+      folder.writer.append(p.lBraces)
+
+      if (!folder.dropNullValues || !value.isNull) {
+        if (!first) folder.writer.append(p.objectCommas)
+        folder.onString(field)
+        folder.writer.append(p.colons)
+
+        folder.depth += 1
+        value.foldWith(folder)
+        folder.depth = originalDepth
+        first = false
+      }
+
+      folder.writer.append(p.rBraces)
+    }
+  }
 
   /**
    * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
