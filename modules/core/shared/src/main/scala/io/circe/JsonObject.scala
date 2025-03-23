@@ -258,8 +258,8 @@ object JsonObject {
       case 1 =>
         val (key, value) = fieldsSeq.head
         new SingletonJsonObject(key, value)
-      case _ =>
-        val map = new LinkedHashMap[String, Json](fields.size)
+      case size =>
+        val map = new LinkedHashMap[String, Json](size)
         val it = fields.iterator
         while (it.hasNext) {
           val (key, value) = it.next()
