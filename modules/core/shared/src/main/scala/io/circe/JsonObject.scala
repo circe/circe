@@ -344,13 +344,16 @@ object JsonObject {
     override def +:(field: (String, Json)): JsonObject =
       add(field._1, field._2)
 
-    override def remove(key: String): JsonObject =
-      empty
+    override def remove(key: String): JsonObject = {
+      if (key == field) empty
+      else this
+    }
 
     override def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] =
       F.map(f(value))(new SingletonJsonObject(field, _))
 
-    override def mapValues(f: Json => Json): JsonObject = new SingletonJsonObject(field, f(value))
+    override def mapValues(f: Json => Json): JsonObject =
+      new SingletonJsonObject(field, f(value))
 
     override private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit = {
       val originalDepth = folder.depth
