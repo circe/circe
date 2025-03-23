@@ -335,7 +335,7 @@ object JsonObject {
 
     override def add(k: String, j: Json): JsonObject = new LinkedHashMapJsonObject(
       {
-        val map = new LinkedHashMap[String, Json]
+        val map = new LinkedHashMap[String, Json](2)
         map.put(field, value)
         map.put(k, j)
         map
