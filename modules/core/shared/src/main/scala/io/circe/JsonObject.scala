@@ -24,6 +24,7 @@ import cats.data.Kleisli
 
 import java.io.Serializable
 import java.util.LinkedHashMap
+import scala.annotation.switch
 import scala.collection.immutable.Map
 
 /**
@@ -277,17 +278,19 @@ object JsonObject {
   final def fromMap(map: Map[String, Json]): JsonObject =
     fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject = {
-    if (map.isEmpty) empty
-    else if (map.size == 1) new SingletonJsonObject(map.keys.iterator.next(), map.values.iterator.next())
-    else new MapAndVectorJsonObject(map, keys)
-  }
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
+    (map.size: @switch) match {
+      case 0 => empty
+      case 1 => new SingletonJsonObject(map.keys.iterator.next(), map.values.iterator.next())
+      case _ => new MapAndVectorJsonObject(map, keys)
+    }
 
-  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject = {
-    if (map.isEmpty) empty
-    else if (map.size() == 1) new SingletonJsonObject(map.keySet().iterator.next(), map.values.iterator.next())
-    else new LinkedHashMapJsonObject(map)
-  }
+  private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
+    (map.size: @switch) match {
+      case 0 => empty
+      case 1 => new SingletonJsonObject(map.keySet().iterator.next(), map.values.iterator.next())
+      case _ => new LinkedHashMapJsonObject(map)
+    }
 
   /**
    * Construct an empty [[JsonObject]].
