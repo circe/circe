@@ -305,6 +305,10 @@ object JsonObject {
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
 
+  /**
+   * An implementation of [[JsonObject]] for objects containing a single field, with a lighter memory footprint
+   * than map based implementations.
+   */
   private[this] final class SingletonJsonObject(field: String, value: Json) extends JsonObject {
     override private[circe] def applyUnsafe(k: String): Json =
       if (k == field) value else null
