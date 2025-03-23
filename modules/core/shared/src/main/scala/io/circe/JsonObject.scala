@@ -258,7 +258,7 @@ object JsonObject {
       val fieldsSeq = fields.iterator.toSeq
       if (fields.sizeIs == 1) new SingletonJsonObject(fieldsSeq.head._1, fieldsSeq.head._2)
       else {
-        val map = new LinkedHashMap[String, Json]()
+        val map = new LinkedHashMap[String, Json](fields.size)
         val it = fields.iterator
         while (it.hasNext) {
           val (key, value) = it.next()
