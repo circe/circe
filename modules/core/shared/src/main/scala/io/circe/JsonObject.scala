@@ -22,10 +22,8 @@ import cats.Foldable
 import cats.Show
 import cats.data.Kleisli
 
-import java.io.Serializable
 import java.util.LinkedHashMap
 import scala.annotation.switch
-import scala.collection.immutable.Map
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -337,16 +335,22 @@ object JsonObject {
     override def toIterable: Iterable[(String, Json)] =
       Iterable.single(field -> value)
 
-    override def add(k: String, j: Json): JsonObject = new LinkedHashMapJsonObject(
-      {
-        val map = new LinkedHashMap[String, Json](2)
-        map.put(field, value)
-        map.put(k, j)
-        map
+    private def addOrReplace(k: String, j: Json, append: Boolean): JsonObject = {
+      if (k == field) new SingletonJsonObject(k, j)
+      else {
+        val fields = Map.from(Seq((field, value), (k, j)))
+        val orderedKeys = if (append) Vector(field, k) else Vector(k, field)
+        new MapAndVectorJsonObject(fields, orderedKeys)
       }
-    )
-    override def +:(field: (String, Json)): JsonObject =
-      add(field._1, field._2)
+    }
+
+    override def add(k: String, j: Json): JsonObject =
+      addOrReplace(k, j, append = true)
+
+    override def +:(field: (String, Json)): JsonObject = {
+      val (k, j) = field
+      addOrReplace(k, j, append = false)
+    }
 
     override def remove(key: String): JsonObject = {
       if (key == field) empty
