@@ -252,11 +252,13 @@ object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    if (fields.isEmpty) empty
-    else {
-      val fieldsSeq = fields.iterator.toSeq
-      if (fields.sizeIs == 1) new SingletonJsonObject(fieldsSeq.head._1, fieldsSeq.head._2)
-      else {
+    val fieldsSeq = fields.iterator.toSeq
+    (fieldsSeq.size: @switch) match {
+      case 0 => empty
+      case 1 =>
+        val (key, value) = fieldsSeq.head
+        new SingletonJsonObject(key, value)
+      case _ =>
         val map = new LinkedHashMap[String, Json](fields.size)
         val it = fields.iterator
         while (it.hasNext) {
@@ -264,7 +266,6 @@ object JsonObject {
           map.put(key, value)
         }
         new LinkedHashMapJsonObject(map)
-      }
     }
   }
 
