@@ -93,6 +93,15 @@ abstract class HCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(la
     case _ => fail(CursorOp.DownField(k))
   }
 
+  final def downFields(ks: String*): ACursor = {
+    if (ks.isEmpty) {
+      fail(CursorOp.DownField(""))
+    } else {
+      val (head, tail) = ks.toList.splitAt(1)
+      tail.foldLeft(downField(head.head))(_.downField(_))
+    }
+  }
+
   final def downN(n: Int): ACursor = value match {
     case Json.JArray(values) if n >= 0 && values.lengthCompare(n) > 0 =>
       new ArrayCursor(values, n, this, false)(this, CursorOp.DownN(n))

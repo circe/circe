@@ -353,4 +353,32 @@ class ACursorSuite extends CirceMunitSuite {
       ".a[0]"
     )
   }
+
+  test("downFields should take you down the path") {
+    val nested: Json = Json.obj("hello" -> Json.obj("world" -> Json.obj("foo" -> Json.fromString("bar"))))
+    val cursor: ACursor = HCursor.fromJson(nested).downFields("hello", "world", "foo")
+
+    assertEquals(cursor.pathString, ".hello.world.foo")
+    assertEquals(cursor.focus, Some(Json.fromString("bar")))
+  }
+
+  test("downFields should take you down the path with a single element") {
+    val sub: Json = Json.obj("world" -> Json.obj("foo" -> Json.fromString("bar")))
+    val nested: Json = Json.obj("hello" -> sub)
+    val cursor: ACursor = HCursor.fromJson(nested).downFields("hello")
+
+    assertEquals(cursor.pathString, ".hello")
+    assertEquals(cursor.focus, Some(sub))
+  }
+
+  test("downFields edge-cases") {
+    val json = Json.obj(
+      "boo" -> Json.fromInt(42),
+      "baz" -> Json.fromValues(Seq(Json.fromString("foo"), Json.fromString("bar")))
+    )
+
+    assertEquals(HCursor.fromJson(json).downFields("foo").focus, None)
+    assertEquals(HCursor.fromJson(json).downFields("baz", "foo").focus, None)
+    assertEquals(HCursor.fromJson(json).downFields().focus, None)
+  }
 }
