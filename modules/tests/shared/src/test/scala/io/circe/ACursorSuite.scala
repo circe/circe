@@ -379,6 +379,6 @@ class ACursorSuite extends CirceMunitSuite {
 
     assertEquals(HCursor.fromJson(json).downFields("foo").focus, None)
     assertEquals(HCursor.fromJson(json).downFields("baz", "foo").focus, None)
-    assertEquals(HCursor.fromJson(json).downFields().focus, None)
+    assertEquals(HCursor.fromJson(json).downFields("dodo").focus, None)
   }
 }

@@ -53,7 +53,7 @@ final class FailedCursor(lastCursor: HCursor, lastOp: CursorOp) extends ACursor(
 
   def downArray: ACursor = this
   def downField(k: String): ACursor = this
-  def downFields(ks: String*): ACursor = this
+  def downFields(k: String, ks: String*): ACursor = this
   def downN(n: Int): ACursor = this
   def up: ACursor = this
 
