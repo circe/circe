@@ -229,7 +229,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @return A cursor positioned at the final field if all specified fields exist,
    *         or a failed cursor if any field in the sequence cannot be found.
    */
-  def downFields(ks: String*): ACursor
+  def downFields(k: String, ks: String*): ACursor
 
   private[circe] final def pathToRoot: PathToRoot = {
     import PathToRoot._
