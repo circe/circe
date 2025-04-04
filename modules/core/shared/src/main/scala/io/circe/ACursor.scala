@@ -223,11 +223,11 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   def downField(k: String): ACursor
 
   /**
-   * Navigate down through multiple fields in a JSON object sequentially.
+   * Navigates down into the specified fields of a JSON object sequentially.
    *
-   * @param ks The sequence of field names to navigate through.
-   * @return A cursor positioned at the final field if all specified fields exist,
-   *         or a failed cursor if any field in the sequence cannot be found.
+   * @param k  The first field name to navigate into.
+   * @param ks Additional field names to navigate into, in sequence.
+   * @return An updated cursor focused on the final field in the sequence, or a failed cursor if any field is not found.
    */
   def downFields(k: String, ks: String*): ACursor
 
