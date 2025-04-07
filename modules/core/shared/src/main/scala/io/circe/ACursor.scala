@@ -229,7 +229,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
    * @param ks Additional field names to navigate into, in sequence.
    * @return An updated cursor focused on the final field in the sequence, or a failed cursor if any field is not found.
    */
-  def downFields(k: String, ks: String*): ACursor = {
+  final def downFields(k: String, ks: String*): ACursor = {
     ks.foldLeft(this.downField(k))(_.downField(_))
   }
 
