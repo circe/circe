@@ -3,7 +3,7 @@ import com.typesafe.tools.mima.core._
 
 val Scala212V: String = "2.12.20"
 val Scala213V: String = "2.13.16"
-val Scala3V: String = "3.3.5"
+val Scala3V: String = "3.3.6"
 
 ThisBuild / startYear := Some(2024)
 ThisBuild / tlBaseVersion := "0.14"
