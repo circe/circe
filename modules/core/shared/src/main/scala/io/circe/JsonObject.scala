@@ -252,19 +252,20 @@ object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    (fields.sizeIs: @switch) match {
-      case 0 => empty
-      case 1 =>
-        val (key, value) = fields.iterator.next
-        singleton(key, value)
-      case size =>
-        val map = new LinkedHashMap[String, Json](size)
-        val it = fields.iterator
-        while (it.hasNext) {
-          val (key, value) = it.next()
-          map.put(key, value)
-        }
-        new LinkedHashMapJsonObject(map)
+    val size = fields.sizeIs
+    if (size == 0) {
+      empty
+    } else if (size == 1) {
+      val (key, value) = fields.iterator.next
+      singleton(key, value)
+    } else {
+      val map = new LinkedHashMap[String, Json](2)
+      val it = fields.iterator
+      while (it.hasNext) {
+        val (key, value) = it.next()
+        map.put(key, value)
+      }
+      new LinkedHashMapJsonObject(map)
     }
   }
 
@@ -276,12 +277,16 @@ object JsonObject {
   final def fromMap(map: Map[String, Json]): JsonObject =
     fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
-    (map.sizeIs: @switch) match {
-      case 0 => empty
-      case 1 => singleton(map.keys.iterator.next(), map.values.iterator.next())
-      case _ => new MapAndVectorJsonObject(map, keys)
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject = {
+    val size = map.sizeIs
+    if (size == 0) {
+      empty
+    } else if (size == 1) {
+      singleton(map.keys.iterator.next(), map.values.iterator.next())
+    } else {
+      new MapAndVectorJsonObject(map, keys)
     }
+  }
 
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     (map.size: @switch) match {
