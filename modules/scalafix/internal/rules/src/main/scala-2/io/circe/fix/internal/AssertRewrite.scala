@@ -121,7 +121,7 @@ final class AssertRewrite extends SyntacticRule("AssertRewrite") {
     @tailrec
     def loop(configs: List[Config], acc: Set[Patch]): Set[Patch] = {
       configs match {
-        case Nil => acc
+        case Nil     => acc
         case x :: xs =>
           val update: State => List[Config] =
             s => updateConfigs(x.loc, xs, s)

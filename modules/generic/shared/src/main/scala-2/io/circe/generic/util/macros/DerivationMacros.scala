@@ -98,7 +98,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
           val (newInstanceList, instanceName) =
             instanceList.find(_._1 =:= valueType) match {
               case Some(result) => (instanceList, result._2._1)
-              case None =>
+              case None         =>
                 val newName = TermName(s"$namePrefix$label").encodedName.toTermName
                 val newInstance = resolver(valueType)
 
@@ -169,7 +169,7 @@ abstract class DerivationMacros[RD[_], RE[_], RC[_], DD[_], DE[_], DC[_]] {
     }
 
     def fromType(tpe: Type): Members = tpe.dealias match {
-      case TypeRef(ThisType(ShapelessSym), HNilSym | CNilSym, Nil) => new Members(Nil)
+      case TypeRef(ThisType(ShapelessSym), HNilSym | CNilSym, Nil)                               => new Members(Nil)
       case acc @ TypeRef(ThisType(ShapelessSym), HConsSym | CConsSym, List(fieldType, tailType)) =>
         fieldType match {
           case Entry(label, keyType, valueType) =>

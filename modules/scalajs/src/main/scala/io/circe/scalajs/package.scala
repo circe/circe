@@ -32,7 +32,7 @@ package object scalajs {
     case false          => Json.False
     case null           => Json.Null
     case a: js.Array[?] => Json.fromValues(a.map(convertAnyToJsonUnsafe(_: Any)))
-    case o: js.Object =>
+    case o: js.Object   =>
       Json.fromFields(
         o.asInstanceOf[js.Dictionary[?]].mapValues(convertAnyToJsonUnsafe).toSeq
       )

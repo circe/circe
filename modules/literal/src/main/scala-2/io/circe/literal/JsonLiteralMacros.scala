@@ -79,8 +79,8 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     }
 
     protected[this] val invokeWithArgs: (String, Array[Class[?]], Array[Object]) => Object = {
-      case ("finish", _, _) => value
-      case ("isObj", _, _)  => java.lang.Boolean.FALSE
+      case ("finish", _, _)                                                              => value
+      case ("isObj", _, _)                                                               => java.lang.Boolean.FALSE
       case ("add", Array(cls), Array(arg: CharSequence)) if cls == classOf[CharSequence] =>
         value = toJsonString(arg.toString)
         null
@@ -238,7 +238,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
     case Apply(_, Apply(_, parts) :: Nil) =>
       val stringParts = parts.map {
         case Literal(Constant(part: String)) => part
-        case _ =>
+        case _                               =>
           c.abort(
             c.enclosingPosition,
             "A StringContext part for the json interpolator is not a string"
@@ -261,7 +261,7 @@ class JsonLiteralMacros(val c: blackbox.Context) {
         } + stringParts.last
 
         parse(jsonString, replacements) match {
-          case Right(tree) => tree
+          case Right(tree)                     => tree
           case Left(_: ClassNotFoundException) =>
             c.abort(
               c.enclosingPosition,

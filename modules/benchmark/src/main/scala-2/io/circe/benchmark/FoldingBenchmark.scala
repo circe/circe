@@ -72,7 +72,7 @@ class FoldingBenchmark extends ExampleData {
       case Json.JBoolean(value) => if (value) 1 else 0
       case Json.JNumber(value)  => value.toDouble.toInt
       case Json.JString(value)  => value.length
-      case Json.JArray(value) =>
+      case Json.JArray(value)   =>
         value.foldLeft(0) {
           case (acc, json) => acc + foldToInt(json)
         }

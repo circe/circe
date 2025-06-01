@@ -102,7 +102,7 @@ object JsonLiteralMacros {
 
     Parser.parseFromString[Expr[Json]](jsonString) match {
       case Success(jsonExpr) => jsonExpr
-      case Failure(e) =>
+      case Failure(e)        =>
         report.errorAndAbort(e.toString)
     }
   }

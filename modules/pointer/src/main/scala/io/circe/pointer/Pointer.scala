@@ -264,7 +264,7 @@ object Pointer {
 
       navigated.index match {
         case Some(index) => Right(Relative.Result.Index(index))
-        case None =>
+        case None        =>
           navigated.key match {
             case Some(key) => Right(Relative.Result.Key(key))
             case None      => Left(PointerFailure(navigated.history))

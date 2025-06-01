@@ -112,13 +112,13 @@ trait Decoder[A] extends Serializable { self =>
    */
   def tryDecode(c: ACursor): Decoder.Result[A] = c match {
     case hc: HCursor => apply(hc)
-    case _ =>
+    case _           =>
       Left(cursorToDecodingFailure(c))
   }
 
   def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[A] = c match {
     case hc: HCursor => decodeAccumulating(hc)
-    case _ =>
+    case _           =>
       Validated.invalidNel(
         cursorToDecodingFailure(c)
       )
@@ -316,7 +316,7 @@ trait Decoder[A] extends Serializable { self =>
     final def apply(c: HCursor): Decoder.Result[Either[A, B]] = tryDecode(c)
     override def tryDecode(c: ACursor): Decoder.Result[Either[A, B]] = self.tryDecode(c) match {
       case Right(v) => Right(Left(v))
-      case Left(_) =>
+      case Left(_)  =>
         decodeB.tryDecode(c) match {
           case Right(v)    => Right(Right(v))
           case l @ Left(_) => l.asInstanceOf[Decoder.Result[Either[A, B]]]
@@ -325,7 +325,7 @@ trait Decoder[A] extends Serializable { self =>
     override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[Either[A, B]] = tryDecodeAccumulating(c)
     override def tryDecodeAccumulating(c: ACursor): Decoder.AccumulatingResult[Either[A, B]] =
       self.tryDecodeAccumulating(c) match {
-        case Valid(v) => Valid(Left(v))
+        case Valid(v)   => Valid(Left(v))
         case Invalid(_) =>
           decodeB.tryDecodeAccumulating(c) match {
             case Valid(v)       => Valid(Right(v))
@@ -662,7 +662,7 @@ object Decoder
       case Json.JObject(obj) if obj.isEmpty => Right(())
       case Json.JArray(arr) if arr.isEmpty  => Right(())
       case other if other.isNull            => Right(())
-      case json =>
+      case json                             =>
         Left(DecodingFailure(WrongTypeExpectation("'null' or '[]' or '{}'", json), c.history))
     }
   }
@@ -673,7 +673,7 @@ object Decoder
   implicit final val decodeBoolean: Decoder[Boolean] = new Decoder[Boolean] {
     final def apply(c: HCursor): Result[Boolean] = c.value match {
       case Json.JBoolean(b) => Right(b)
-      case json =>
+      case json             =>
         Left(DecodingFailure(WrongTypeExpectation("'true' or 'false'", json), c.history))
     }
   }
@@ -691,7 +691,7 @@ object Decoder
   implicit final val decodeChar: Decoder[Char] = new Decoder[Char] {
     final def apply(c: HCursor): Result[Char] = c.value match {
       case Json.JString(string) if string.length == 1 => Right(string.charAt(0))
-      case json =>
+      case json                                       =>
         Left(DecodingFailure(WrongTypeExpectation("character", json), c.history))
     }
   }
@@ -1209,7 +1209,7 @@ object Decoder
         case lc: HCursor =>
           rf match {
             case _: HCursor => failure(c)
-            case rc =>
+            case rc         =>
               decodeA(lc) match {
                 case Right(v)    => Right(Left(v))
                 case l @ Left(_) => l.asInstanceOf[Result[Either[A, B]]]

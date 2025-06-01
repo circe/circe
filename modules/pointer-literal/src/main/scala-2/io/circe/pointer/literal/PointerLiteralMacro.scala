@@ -27,7 +27,7 @@ private class PointerLiteralMacros(val c: blackbox.Context) {
       case Apply(_, Apply(_, parts) :: Nil) =>
         val stringParts: List[String] = parts.map {
           case Literal(Constant(part: String)) => part
-          case _ =>
+          case _                               =>
             c.abort(
               c.enclosingPosition,
               "A StringContext part for the pointer interpolator is not a string"

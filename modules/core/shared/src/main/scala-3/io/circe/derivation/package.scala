@@ -43,7 +43,7 @@ private[circe] inline final def summonEncoder[A](using Configuration): Encoder[A
 private[circe] inline final def summonEncoder[A](inline derivingForSum: Boolean)(using Configuration): Encoder[A] =
   summonFrom {
     case encodeA: Encoder[A] => encodeA
-    case m: Mirror.Of[A] =>
+    case m: Mirror.Of[A]     =>
       inline if (derivingForSum) ConfiguredEncoder.derived[A]
       else error("Failed to find an instance of Encoder[" + typeName[A] + "]")
   }
@@ -66,7 +66,7 @@ private[circe] inline final def summonDecoder[A](using Configuration): Decoder[A
 private[circe] inline final def summonDecoder[A](inline derivingForSum: Boolean)(using Configuration): Decoder[A] =
   summonFrom {
     case decodeA: Decoder[A] => decodeA
-    case m: Mirror.Of[A] =>
+    case m: Mirror.Of[A]     =>
       inline if (derivingForSum) ConfiguredDecoder.derived[A]
       else error("Failed to find an instance of Decoder[" + typeName[A] + "]")
   }
@@ -83,7 +83,7 @@ private[circe] inline final def summonSingletonCase[T, A](inline typeName: Any):
         )
       )
     case m: Mirror.SumOf[T] => summonSingletonCases[m.MirroredElemTypes, A](typeName)
-    case m: Mirror =>
+    case m: Mirror          =>
       error("Enum " + codeOf(typeName) + " contains non singleton case " + codeOf(constValue[m.MirroredLabel]))
 
 private[circe] inline def summonSingletonCases[T <: Tuple, A](inline typeName: Any): List[SingletonCase[A]] =

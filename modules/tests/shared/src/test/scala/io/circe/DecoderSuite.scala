@@ -173,22 +173,22 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
       json.asObject match {
         // The top-level value isn't an object, so we should fail.
-        case None => assert(result.isLeft)
+        case None     => assert(result.isLeft)
         case Some(o1) =>
           o1("") match {
             // The top-level object doesn't contain a "" key, so we should succeed emptily.
-            case None => assertEquals(result, Right(None))
+            case None     => assertEquals(result, Right(None))
             case Some(j2) =>
               j2.asObject match {
                 // The second-level value isn't an object, so we should fail.
-                case None => assert(result.isLeft)
+                case None     => assert(result.isLeft)
                 case Some(o2) =>
                   o2("") match {
                     // The second-level object doesn't contain a "" key, so we should succeed emptily.
                     case None => assertEquals(result, Right(None))
                     // The third-level value is null, so we succeed emptily.
                     case Some(j3) if j3.isNull => assertEquals(result, Right(None))
-                    case Some(j3) =>
+                    case Some(j3)              =>
                       j3.asString match {
                         // The third-level value isn't a string, so we should fail.
                         case None => assert(result.isLeft)
@@ -212,22 +212,22 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
 
       json.asArray match {
         // The top-level value isn't an array, so we should fail.
-        case None => assert(result.isLeft)
+        case None     => assert(result.isLeft)
         case Some(a1) =>
           a1.lift(0) match {
             // The top-level array is empty, so we should succeed emptily.
-            case None => assertEquals(result, Right(None))
+            case None     => assertEquals(result, Right(None))
             case Some(j2) =>
               j2.asArray match {
                 // The second-level value isn't an array, so we should fail.
-                case None => assert(result.isLeft)
+                case None     => assert(result.isLeft)
                 case Some(a2) =>
                   a2.lift(1) match {
                     // The second-level array doesn't have a second element, so we should succeed emptily.
                     case None => assertEquals(result, Right(None))
                     // The third-level value is null, so we succeed emptily.
                     case Some(j3) if j3.isNull => assertEquals(result, Right(None))
-                    case Some(j3) =>
+                    case Some(j3)              =>
                       j3.asString match {
                         // The third-level value isn't a string, so we should fail.
                         case None => assert(result.isLeft)

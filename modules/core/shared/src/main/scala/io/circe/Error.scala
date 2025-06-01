@@ -172,7 +172,7 @@ object DecodingFailure {
 
   def fromThrowable(t: Throwable, ops: => List[CursorOp]): DecodingFailure = t match {
     case (d: DecodingFailure) => d
-    case other =>
+    case other                =>
       val sw = new java.io.StringWriter
       val pw = new java.io.PrintWriter(sw)
       other.printStackTrace(pw)

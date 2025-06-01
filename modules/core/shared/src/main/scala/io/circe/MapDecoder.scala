@@ -85,7 +85,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
         if (alwaysDecodeK.ne(null)) {
           decodeV.decodeAccumulating(atH) match {
             case Validated.Valid(value) => if (!failed) builder += ((alwaysDecodeK.decodeSafe(key), value))
-            case Validated.Invalid(es) =>
+            case Validated.Invalid(es)  =>
               failed = true
               failures += es.head
               failures ++= es.tail
@@ -95,7 +95,7 @@ private[circe] abstract class MapDecoder[K, V, M[K, V] <: Map[K, V]](
             case Some(k) =>
               decodeV.decodeAccumulating(atH) match {
                 case Validated.Valid(value) => if (!failed) builder += ((k, value))
-                case Validated.Invalid(es) =>
+                case Validated.Invalid(es)  =>
                   failed = true
                   failures += es.head
                   failures ++= es.tail

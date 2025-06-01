@@ -67,7 +67,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
         val cursor = c.downField(discriminator)
         cursor.as[Option[String]] match
           case Left(failure) => fail(failure)
-          case Right(None) =>
+          case Right(None)   =>
             fail(
               DecodingFailure(
                 s"$name: could not find discriminator field '$discriminator' or its null.",
@@ -77,7 +77,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
           case Right(Some(sumTypeName)) => fromName(sumTypeName, c, Iterator.empty)
       case _ =>
         c.keys match
-          case None => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
+          case None       => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
           case Some(keys) =>
             val iter = keys.iterator
             if !iter.hasNext then
@@ -124,7 +124,7 @@ trait ConfiguredDecoder[A](using conf: Configuration) extends Decoder[A]:
     c.value.isObject match
       case false                        => fail(DecodingFailure(WrongTypeExpectation("object", c.value), c.history))
       case true if !conf.strictDecoding => decodeProduct
-      case true =>
+      case true                         =>
         val expectedFields = elemLabels.toIndexedSeq.map(conf.transformMemberNames) ++ conf.discriminator
         val expectedFieldsSet = expectedFields.toSet
         val unexpectedFields = c.keys.map(_.toList.filterNot(expectedFieldsSet)).getOrElse(Nil)

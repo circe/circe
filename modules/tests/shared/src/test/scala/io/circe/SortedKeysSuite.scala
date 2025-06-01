@@ -28,7 +28,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
     )
 
     parser.parse(circePrinter.print(input)).toOption.flatMap(_.asObject) match {
-      case None => fail("Cannot parse result back to an object")
+      case None         => fail("Cannot parse result back to an object")
       case Some(output) =>
         assertEquals(output.keys.toList, List("one", "three", "two"))
     }
@@ -50,7 +50,7 @@ trait SortedKeysSuite { this: PrinterSuite =>
     val printed: String = circePrinter.print(Encoder[Map[String, List[Int]]].apply(testMap))
 
     TestParser.parser.parse(printed) match {
-      case Left(e) => fail(e.getLocalizedMessage, e)
+      case Left(e)      => fail(e.getLocalizedMessage, e)
       case Right(value) =>
         value.asObject.fold(fail(s"Expected object, but got ${value}.")) { value =>
           val keys: Vector[String] = value.keys.toVector
