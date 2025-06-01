@@ -256,7 +256,7 @@ object JsonObject {
       case 0 => empty
       case 1 =>
         val (key, value) = fields.iterator.next
-        new SingletonJsonObject(key, value)
+        singleton(key, value)
       case size =>
         val map = new LinkedHashMap[String, Json](size)
         val it = fields.iterator
@@ -279,14 +279,14 @@ object JsonObject {
   private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
     (map.sizeIs: @switch) match {
       case 0 => empty
-      case 1 => new SingletonJsonObject(map.keys.iterator.next(), map.values.iterator.next())
+      case 1 => singleton(map.keys.iterator.next(), map.values.iterator.next())
       case _ => new MapAndVectorJsonObject(map, keys)
     }
 
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
     (map.size: @switch) match {
       case 0 => empty
-      case 1 => new SingletonJsonObject(map.keySet().iterator.next(), map.values.iterator.next())
+      case 1 => singleton(map.keySet().iterator.next(), map.values.iterator.next())
       case _ => new LinkedHashMapJsonObject(map)
     }
 
@@ -298,7 +298,7 @@ object JsonObject {
   /**
    * Construct a [[JsonObject]] with a single field.
    */
-  final def singleton(key: String, value: Json): JsonObject = new MapAndVectorJsonObject(Map((key, value)), Vector(key))
+  final def singleton(key: String, value: Json): JsonObject = new SingletonJsonObject(key, value)
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
