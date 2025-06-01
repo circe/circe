@@ -298,7 +298,7 @@ object JsonObject {
   /**
    * Construct an empty [[JsonObject]].
    */
-  final val empty: JsonObject = new MapAndVectorJsonObject(Map.empty, Vector.empty)
+  final val empty: JsonObject = EmptyJsonObject
 
   /**
    * Construct a [[JsonObject]] with a single field.
@@ -307,6 +307,32 @@ object JsonObject {
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
+
+  /**
+   * An empty implementation of [[JsonObject]].
+   */
+  private[this] object EmptyJsonObject extends JsonObject {
+    override private[circe] def applyUnsafe(k: String): Json = null
+    override def apply(key: String): Option[Json] = None
+    override def contains(key: String): Boolean = false
+    override val size: Int = 0
+    override val isEmpty: Boolean = true
+    override val keys: Iterable[String] = Iterable.empty
+    override val values: Iterable[Json] = Iterable.empty
+    override val toMap: Map[String, Json] = Map.empty
+    override val toIterable: Iterable[(String, Json)] = Iterable.empty
+    override def add(k: String, j: Json): JsonObject = singleton(k, j)
+    override def +:(field: (String, Json)): JsonObject = singleton(field._1, field._2)
+    override def remove(key: String): JsonObject = this
+    override def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.pure(this)
+    override def mapValues(f: Json => Json): JsonObject = this
+
+    override private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val p = folder.pieces(folder.depth)
+      folder.writer.append(p.lBraces)
+      folder.writer.append(p.rBraces)
+    }
+  }
 
   /**
    * An implementation of [[JsonObject]] for objects containing a single field, with a lighter memory footprint
