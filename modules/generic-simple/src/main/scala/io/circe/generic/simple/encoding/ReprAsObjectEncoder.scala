@@ -22,7 +22,7 @@ object ReprAsObjectEncoder {
     encodeT: ReprAsObjectEncoder[T]
   ): ReprAsObjectEncoder[FieldType[K, H] :: T] = new ReprAsObjectEncoder[FieldType[K, H] :: T] {
     def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, encodeH(h))) +: encodeT.encodeObject(t)
+      case h :: t => (key.value.name, encodeH(h)) +: encodeT.encodeObject(t)
     }
   }
 

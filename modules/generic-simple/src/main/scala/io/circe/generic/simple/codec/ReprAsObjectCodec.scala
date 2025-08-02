@@ -41,7 +41,7 @@ object ReprAsObjectCodec {
       )
 
     def encodeObject(a: FieldType[K, H] :: T): JsonObject = a match {
-      case h :: t => ((key.value.name, encodeH(h))) +: codecForT.encodeObject(t)
+      case h :: t => (key.value.name, encodeH(h)) +: codecForT.encodeObject(t)
     }
   }
 
