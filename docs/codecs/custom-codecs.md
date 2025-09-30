@@ -12,22 +12,36 @@ import io.circe.{ Decoder, Encoder, HCursor, Json }
 
 class Thing(val foo: String, val bar: Int)
 
-implicit val encodeFoo: Encoder[Thing] = new Encoder[Thing] {
-  final def apply(a: Thing): Json = Json.obj(
-    ("foo", Json.fromString(a.foo)),
-    ("bar", Json.fromInt(a.bar))
-  )
-}
+implicit val encodeFoo: Encoder[Thing] = 
+  Encoder.instance[Thing] { a =>
+    Json.obj(
+      ("foo", Json.fromString(a.foo)),
+      ("bar", Json.fromInt(a.bar))
+    )
+  }
 
-implicit val decodeFoo: Decoder[Thing] = new Decoder[Thing] {
-  final def apply(c: HCursor): Decoder.Result[Thing] =
+implicit val decodeFoo: Decoder[Thing] =
+  Decoder.instance[Thing] { c =>
     for {
       foo <- c.downField("foo").as[String]
-      bar <- c.downField("bar").as[Int]
-    } yield {
+      bar <- c.get[Int]("bar")
+    } yield new Thing(foo, bar)
+  }
+```
+
+  If want to have decoders that support accumulating errors,ou can do so using the same `as` and `get` type functions above, but with a slight twist.
+  
+```scala mdoc
+import cats.syntax.all._
+implicit val decodeFoo2: Decoder[Thing] = 
+  Decoder.accumulatingInstance[Thing] { c=>
+    (
+      c.downField("foo").asAcc[String],
+      c.getAcc[Int]("bar")
+    ).mapN { (foo, bar) =>
       new Thing(foo, bar)
     }
-}
+  }
 ```
 
 But in many cases you might find it more convenient to piggyback on top of the decoders that are
@@ -38,11 +52,13 @@ import io.circe.{ Decoder, Encoder }
 import java.time.Instant
 import scala.util.Try
 
-implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](_.toString)
+implicit val encodeInstant: Encoder[Instant] = 
+  Encoder.encodeString.contramap[Instant](_.toString)
 
-implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.emapTry { str =>
-  Try(Instant.parse(str))
-}
+implicit val decodeInstant: Decoder[Instant] = 
+  Decoder.decodeString.emapTry { str =>
+    Try(Instant.parse(str))
+  }
 ```
 
 #### Older scala versions
@@ -64,9 +80,11 @@ import io.circe._, io.circe.syntax._
 
 case class Foo(value: String)
 
-implicit val fooKeyEncoder: KeyEncoder[Foo] = new KeyEncoder[Foo] {
-  override def apply(foo: Foo): String = foo.value
-}
+implicit val fooKeyEncoder: KeyEncoder[Foo] = 
+  KeyEncoder.instance[Foo] { (foo: Foo) =>
+    foo.value
+  }
+  
 val map = Map[Foo, Int](
   Foo("hello") -> 123,
   Foo("world") -> 456
@@ -74,9 +92,10 @@ val map = Map[Foo, Int](
 
 val json = map.asJson
 
-implicit val fooKeyDecoder: KeyDecoder[Foo] = new KeyDecoder[Foo] {
-  override def apply(key: String): Option[Foo] = Some(Foo(key))
-}
+implicit val fooKeyDecoder: KeyDecoder[Foo] = 
+  KeyDecoder.instance[Foo] { (key: String) =>
+    Some(Foo(key))
+  }
 
 json.as[Map[Foo, Int]]
 ```
