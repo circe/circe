@@ -29,12 +29,12 @@ implicit val decodeFoo: Decoder[Thing] =
   }
 ```
 
-  If want to have decoders that support accumulating errors,ou can do so using the same `as` and `get` type functions above, but with a slight twist.
+  If want to have decoders that support accumulating errors, you can do so using the same `as` and `get` type functions above, but with a slight twist.
   
 ```scala mdoc
 import cats.syntax.all._
 implicit val decodeFoo2: Decoder[Thing] = 
-  Decoder.accumulatingInstance[Thing] { c=>
+  Decoder.accumulatingInstance[Thing] { c =>
     (
       c.downField("foo").asAcc[String],
       c.getAcc[Int]("bar")
