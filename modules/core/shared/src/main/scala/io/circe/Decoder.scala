@@ -536,6 +536,16 @@ object Decoder
   }
 
   /**
+   * Construct an accumulating instance from a function.
+   *
+   * @group Utilites
+   */
+  final def accumulatingInstance[A](f: HCursor => AccumulatingResult[A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = decodeAccumulating(c).toEither.left.map(_.head)
+    final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[A] = f(c)
+  }
+
+  /**
    * Construct an instance from a [[cats.data.StateT]] value.
    *
    * @group Utilities

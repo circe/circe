@@ -16,12 +16,15 @@
 
 package io.circe
 
-import cats.data.NonEmptyList
+import cats.syntax.all._
+import cats.data._
 import cats.laws.discipline.arbitrary._
 import io.circe.syntax._
 import io.circe.tests.CirceMunitSuite
 import org.scalacheck.Prop
 import org.scalacheck.Prop._
+import cats.Eval
+import cats.data.Validated.Invalid
 
 class AccumulatingDecoderSpec extends CirceMunitSuite {
   private case class BadSample(a: Int, b: Boolean, c: Int)
@@ -39,6 +42,20 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
     implicit val decodeSample: Decoder[Sample] = Decoder.forProduct3("a", "b", "c")(Sample.apply)
     implicit val encodeSample: Encoder[Sample] = Encoder.forProduct3("a", "b", "c") {
       case Sample(a, b, c) => (a, b, c)
+    }
+  }
+
+  private case class ArtisanalSample(a: String, b: Int, c: List[Float])
+  private object ArtisanalSample {
+    implicit val decodeArtisanalSample: Decoder[ArtisanalSample] = Decoder.accumulatingInstance { (c: HCursor) =>
+      (
+        c.getAcc[String]("a"),
+        c.getAcc[Int]("b"),
+        c.getAcc[List[Float]]("c")
+      ).mapN(ArtisanalSample.apply)
+    }
+    implicit val encodeArtisanalSample: Encoder[ArtisanalSample] = Encoder.forProduct3("a", "b", "c") {
+      case ArtisanalSample(a, b, c) => (a, b, c)
     }
   }
 
@@ -132,6 +149,37 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
           (errors.map(df => cursor.replay(df.history).focus) ?= invalidElems)
         case _ => Prop.undecided
       }
+    }
+  }
+
+  property("ArtisanalSample round trips") {
+    forAll { (a: String, b: Int, c: List[Float]) =>
+      val artisanalSample = ArtisanalSample(a,b,c)
+      val json = artisanalSample.asJson
+      val result = json.asAccumulating[ArtisanalSample]
+      assertEquals(result,  artisanalSample.pure[Decoder.AccumulatingResult])
+    }
+  }
+  property("ArtisanalSample returns as many errors as invalid elements"){
+    forAll { (a: Option[ String ], b: Option[ Int ], c: Option[List[Float]]) =>
+      val json = Json.fromFields(
+        List(
+        a.map(v => "a" ->v.asJson),
+        b.map(v => "b" ->v.asJson),
+        c.map(v => "c" ->v.asJson),
+        ).flatten
+      )
+      val result: Decoder.AccumulatingResult[ArtisanalSample] = json.asAccumulating[ArtisanalSample]
+      val errors: List[DecodingFailure] =
+        List(
+          a.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("a") :: Nil)).toList,
+          b.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("b") :: Nil)).toList,
+          c.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("c") :: Nil)).toList
+        ).flatten
+      val expected:Decoder.AccumulatingResult[ArtisanalSample] =
+        NonEmptyList.fromList(errors).fold(ArtisanalSample(a.get,b.get,c.get).validNel[DecodingFailure])(_.invalid)
+
+      assertEquals(result, expected)
     }
   }
 }

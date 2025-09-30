@@ -22,6 +22,7 @@ import io.circe.cursor._
 
 import java.io.Serializable
 import scala.annotation.tailrec
+import cats.data.Validated
 
 /**
  * A zipper that represents a position in a JSON document and supports navigation and modification.
@@ -329,11 +330,25 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
   final def as[A](implicit d: Decoder[A]): Decoder.Result[A] = d.tryDecode(this)
 
   /**
+   * Attempt to decode the focus as an `A` with accumulating errors.
+   *
+   * @group Decoding
+   */
+  final def asAcc[A](implicit d: Decoder[A]): Decoder.AccumulatingResult[A] = d.tryDecodeAccumulating(this)
+
+  /**
    * Attempt to decode the value at the given key in a JSON object as an `A`.
    *
    * @group Decoding
    */
   final def get[A](k: String)(implicit d: Decoder[A]): Decoder.Result[A] = downField(k).as[A]
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A` with accumulating errors.
+   *
+   * @group Decoding
+   */
+  final def getAcc[A](k: String)(implicit d: Decoder[A]): Decoder.AccumulatingResult[A] = downField(k).asAcc[A]
 
   /**
    * Attempt to decode the value at the given key in a JSON object as an `A`.
@@ -346,6 +361,19 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
       case Right(Some(a)) => Right(a)
       case Right(None)    => Right(fallback)
       case l @ Left(_)    => l.asInstanceOf[Decoder.Result[A]]
+    }
+
+  /**
+   * Attempt to decode the value at the given key in a JSON object as an `A` with accumulating errors.
+   * If the field `k` is missing, then use the `fallback` instead.
+   *
+   * @group Decoding
+   */
+  final def getOrElseAcc[A](k: String)(fallback: => A)(implicit d: Decoder[A]): Decoder.AccumulatingResult[A] =
+    getAcc[Option[A]](k) match {
+      case Validated.Valid(Some(a)) => Validated.Valid(a)
+      case Validated.Valid(None)    => Validated.Valid(fallback)
+      case l @ Validated.Invalid(_)    => l.asInstanceOf[Decoder.AccumulatingResult[A]]
     }
 
   /**
