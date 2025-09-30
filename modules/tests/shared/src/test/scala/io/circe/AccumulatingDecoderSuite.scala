@@ -154,30 +154,30 @@ class AccumulatingDecoderSpec extends CirceMunitSuite {
 
   property("ArtisanalSample round trips") {
     forAll { (a: String, b: Int, c: List[Float]) =>
-      val artisanalSample = ArtisanalSample(a,b,c)
+      val artisanalSample = ArtisanalSample(a, b, c)
       val json = artisanalSample.asJson
       val result = json.asAccumulating[ArtisanalSample]
-      assertEquals(result,  artisanalSample.pure[Decoder.AccumulatingResult])
+      assertEquals(result, artisanalSample.pure[Decoder.AccumulatingResult])
     }
   }
-  property("ArtisanalSample returns as many errors as invalid elements"){
-    forAll { (a: Option[ String ], b: Option[ Int ], c: Option[List[Float]]) =>
+  property("ArtisanalSample returns as many errors as invalid elements") {
+    forAll { (a: Option[String], b: Option[Int], c: Option[List[Float]]) =>
       val json = Json.fromFields(
         List(
-        a.map(v => "a" ->v.asJson),
-        b.map(v => "b" ->v.asJson),
-        c.map(v => "c" ->v.asJson),
+          a.map(v => "a" -> v.asJson),
+          b.map(v => "b" -> v.asJson),
+          c.map(v => "c" -> v.asJson)
         ).flatten
       )
       val result: Decoder.AccumulatingResult[ArtisanalSample] = json.asAccumulating[ArtisanalSample]
       val errors: List[DecodingFailure] =
         List(
-          a.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("a") :: Nil)).toList,
-          b.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("b") :: Nil)).toList,
-          c.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField,  CursorOp.DownField("c") :: Nil)).toList
+          a.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField, CursorOp.DownField("a") :: Nil)).toList,
+          b.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField, CursorOp.DownField("b") :: Nil)).toList,
+          c.toLeft(DecodingFailure(DecodingFailure.Reason.MissingField, CursorOp.DownField("c") :: Nil)).toList
         ).flatten
-      val expected:Decoder.AccumulatingResult[ArtisanalSample] =
-        NonEmptyList.fromList(errors).fold(ArtisanalSample(a.get,b.get,c.get).validNel[DecodingFailure])(_.invalid)
+      val expected: Decoder.AccumulatingResult[ArtisanalSample] =
+        NonEmptyList.fromList(errors).fold(ArtisanalSample(a.get, b.get, c.get).validNel[DecodingFailure])(_.invalid)
 
       assertEquals(result, expected)
     }

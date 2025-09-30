@@ -373,7 +373,7 @@ abstract class ACursor(private val lastCursor: HCursor, private val lastOp: Curs
     getAcc[Option[A]](k) match {
       case Validated.Valid(Some(a)) => Validated.Valid(a)
       case Validated.Valid(None)    => Validated.Valid(fallback)
-      case l @ Validated.Invalid(_)    => l.asInstanceOf[Decoder.AccumulatingResult[A]]
+      case l @ Validated.Invalid(_) => l.asInstanceOf[Decoder.AccumulatingResult[A]]
     }
 
   /**
