@@ -25,6 +25,7 @@ import cats.data.Kleisli
 import java.io.Serializable
 import java.util.LinkedHashMap
 import scala.collection.immutable.Map
+import scala.util.hashing.MurmurHash3
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -219,18 +220,6 @@ sealed abstract class JsonObject extends Serializable {
     case (k, v) => s"$k -> ${Json.showJson.show(v)}"
   }.mkString("object[", ",", "]")
 
-  /**
-   * @group Other
-   */
-  final override def equals(that: Any): Boolean = that match {
-    case that: JsonObject => this.size == that.size && this.toMap == that.toMap
-    case _                => false
-  }
-
-  /**
-   * @group Other
-   */
-  final override def hashCode: Int = toMap.hashCode
 }
 
 /**
@@ -412,6 +401,28 @@ object JsonObject {
       toMapAndVectorJsonObject.traverse[F](f)(F)
 
     final def mapValues(f: Json => Json): JsonObject = toMapAndVectorJsonObject.mapValues(f)
+
+    final override def equals(that: Any): Boolean = that match {
+      case that: LinkedHashMapJsonObject =>
+        if (this.size != that.size)
+          return false
+
+        val iterator = fields.entrySet.iterator
+        while (iterator.hasNext) {
+          val entry = iterator.next
+          if (that.applyUnsafe(entry.getKey) != entry.getValue) {
+            return false
+          }
+        }
+        true
+      case that: MapAndVectorJsonObject => this.size == that.size &&
+        that.toMap.forall { case (k, v) =>
+          v == this.applyUnsafe(k)
+        }
+      case _ => false
+    }
+
+    final override def hashCode: Int = MurmurHash3.unorderedHash(toIterable, MurmurHash3.mapSeed)
   }
 
   /**
@@ -491,5 +502,17 @@ object JsonObject {
 
       folder.writer.append(p.rBraces)
     }
+
+    final override def equals(that: Any): Boolean = that match {
+      case that: MapAndVectorJsonObject => this.size == that.size &&
+        this.toMap == that.toMap
+      case that: LinkedHashMapJsonObject => this.size == that.size &&
+        this.toMap.forall { case (k, v) =>
+          v == that.applyUnsafe(k)
+        }
+      case _ => false
+    }
+
+    final override def hashCode: Int = fields.hashCode()
   }
 }
