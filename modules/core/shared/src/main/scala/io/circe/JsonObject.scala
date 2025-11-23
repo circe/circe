@@ -22,9 +22,8 @@ import cats.Foldable
 import cats.Show
 import cats.data.Kleisli
 
-import java.io.Serializable
 import java.util.LinkedHashMap
-import scala.collection.immutable.Map
+import scala.annotation.switch
 
 /**
  * A mapping from keys to JSON values that maintains insertion order.
@@ -253,19 +252,20 @@ object JsonObject {
    * Construct a [[JsonObject]] from an [[scala.collection.Iterable]] (provided for optimization).
    */
   final def fromIterable(fields: Iterable[(String, Json)]): JsonObject = {
-    if (fields.isEmpty) {
+    val size = fields.sizeIs
+    if (size == 0) {
       empty
+    } else if (size == 1) {
+      val (key, value) = fields.iterator.next
+      singleton(key, value)
     } else {
-      val map = new LinkedHashMap[String, Json]
-      val iterator = fields.iterator
-
-      while (iterator.hasNext) {
-        val (key, value) = iterator.next()
-
+      val map = new LinkedHashMap[String, Json](2)
+      val it = fields.iterator
+      while (it.hasNext) {
+        val (key, value) = it.next()
         map.put(key, value)
       }
-
-      fromLinkedHashMap(map)
+      new LinkedHashMapJsonObject(map)
     }
   }
 
@@ -275,30 +275,146 @@ object JsonObject {
    * Note that the order of the fields is arbitrary.
    */
   final def fromMap(map: Map[String, Json]): JsonObject =
-    if (map.isEmpty) {
-      empty
-    } else {
-      fromMapAndVector(map, map.keys.toVector)
-    }
+    fromMapAndVector(map, map.keys.toVector)
 
-  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject =
-    new MapAndVectorJsonObject(map, keys)
+  private[circe] final def fromMapAndVector(map: Map[String, Json], keys: Vector[String]): JsonObject = {
+    val size = map.sizeIs
+    if (size == 0) {
+      empty
+    } else if (size == 1) {
+      singleton(map.keys.iterator.next(), map.values.iterator.next())
+    } else {
+      new MapAndVectorJsonObject(map, keys)
+    }
+  }
 
   private[circe] final def fromLinkedHashMap(map: LinkedHashMap[String, Json]): JsonObject =
-    new LinkedHashMapJsonObject(map)
+    (map.size: @switch) match {
+      case 0 => empty
+      case 1 => singleton(map.keySet().iterator.next(), map.values.iterator.next())
+      case _ => new LinkedHashMapJsonObject(map)
+    }
 
   /**
    * Construct an empty [[JsonObject]].
    */
-  final val empty: JsonObject = new MapAndVectorJsonObject(Map.empty, Vector.empty)
+  final val empty: JsonObject = EmptyJsonObject
 
   /**
    * Construct a [[JsonObject]] with a single field.
    */
-  final def singleton(key: String, value: Json): JsonObject = new MapAndVectorJsonObject(Map((key, value)), Vector(key))
+  final def singleton(key: String, value: Json): JsonObject = new SingletonJsonObject(key, value)
 
   implicit final val showJsonObject: Show[JsonObject] = Show.fromToString
   implicit final val eqJsonObject: Eq[JsonObject] = Eq.fromUniversalEquals
+
+  /**
+   * An empty implementation of [[JsonObject]].
+   */
+  private[this] object EmptyJsonObject extends JsonObject {
+    override private[circe] def applyUnsafe(k: String): Json = null
+    override def apply(key: String): Option[Json] = None
+    override def contains(key: String): Boolean = false
+    override val size: Int = 0
+    override val isEmpty: Boolean = true
+    override val keys: Iterable[String] = Iterable.empty
+    override val values: Iterable[Json] = Iterable.empty
+    override val toMap: Map[String, Json] = Map.empty
+    override val toIterable: Iterable[(String, Json)] = Iterable.empty
+    override def add(k: String, j: Json): JsonObject = singleton(k, j)
+    override def +:(field: (String, Json)): JsonObject = singleton(field._1, field._2)
+    override def remove(key: String): JsonObject = this
+    override def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] = F.pure(this)
+    override def mapValues(f: Json => Json): JsonObject = this
+
+    override private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val p = folder.pieces(folder.depth)
+      folder.writer.append(p.lBraces)
+      folder.writer.append(p.rBraces)
+    }
+  }
+
+  /**
+   * An implementation of [[JsonObject]] for objects containing a single field, with a lighter memory footprint
+   * than map based implementations.
+   */
+  private[this] final class SingletonJsonObject(field: String, value: Json) extends JsonObject {
+    override private[circe] def applyUnsafe(k: String): Json =
+      if (k == field) value else null
+
+    override def apply(key: String): Option[Json] =
+      Option.when(key == field)(value)
+
+    override def contains(key: String): Boolean =
+      key == field
+
+    override val size: Int =
+      1
+
+    override val isEmpty: Boolean =
+      false
+
+    override def keys: Iterable[String] =
+      Iterable.single(field)
+
+    override def values: Iterable[Json] =
+      Iterable.single(value)
+
+    override def toMap: Map[String, Json] =
+      Map(field -> value)
+
+    override def toIterable: Iterable[(String, Json)] =
+      Iterable.single(field -> value)
+
+    private def addOrReplace(k: String, j: Json, append: Boolean): JsonObject = {
+      if (k == field) new SingletonJsonObject(k, j)
+      else {
+        val fields = Map.from(Seq((field, value), (k, j)))
+        val orderedKeys = if (append) Vector(field, k) else Vector(k, field)
+        new MapAndVectorJsonObject(fields, orderedKeys)
+      }
+    }
+
+    override def add(k: String, j: Json): JsonObject =
+      addOrReplace(k, j, append = true)
+
+    override def +:(field: (String, Json)): JsonObject = {
+      val (k, j) = field
+      addOrReplace(k, j, append = false)
+    }
+
+    override def remove(key: String): JsonObject = {
+      if (key == field) empty
+      else this
+    }
+
+    override def traverse[F[_]](f: Json => F[Json])(implicit F: Applicative[F]): F[JsonObject] =
+      F.map(f(value))(new SingletonJsonObject(field, _))
+
+    override def mapValues(f: Json => Json): JsonObject =
+      new SingletonJsonObject(field, f(value))
+
+    override private[circe] def appendToFolder(folder: Printer.PrintingFolder): Unit = {
+      val originalDepth = folder.depth
+      val p = folder.pieces(folder.depth)
+      var first = true
+
+      folder.writer.append(p.lBraces)
+
+      if (!folder.dropNullValues || !value.isNull) {
+        if (!first) folder.writer.append(p.objectCommas)
+        folder.onString(field)
+        folder.writer.append(p.colons)
+
+        folder.depth += 1
+        value.foldWith(folder)
+        folder.depth = originalDepth
+        first = false
+      }
+
+      folder.writer.append(p.rBraces)
+    }
+  }
 
   /**
    * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
