@@ -29,16 +29,16 @@ class JsonObjectEqualityBenchmarkSpec extends FunSuite {
     assertEquals(benchmark.equalsMapAndVector, true)
   }
 
-  test("hashCodeMapAndVector should match the JsonObject hash code") {
-    assertEquals(benchmark.hashCodeMapAndVector, -121680001)
+  test("hashCodeMapAndVector should match hash code calculated as in circe 0.14.15") {
+    assertEquals(benchmark.hashCodeMapAndVector, benchmark.mapAndVectorObject1.toMap.hashCode())
   }
 
   test("equalsLinkedHashMap should return true for equivalent JsonObjects") {
     assertEquals(benchmark.equalsLinkedHashMap, true)
   }
 
-  test("hashCodeLinkedHashMap should match the JsonObject hash code") {
-    assertEquals(benchmark.hashCodeLinkedHashMap, -121680001)
+  test("hashCodeLinkedHashMap should match hash code calculated as in circe 0.14.15") {
+    assertEquals(benchmark.hashCodeLinkedHashMap, benchmark.linkedHashMapObject1.toMap.hashCode())
   }
 
   test("equalsMixed should return true for differently constructed JsonObjects with identical data") {
