@@ -16,7 +16,7 @@
 
 package io.circe.benchmark
 
-import io.circe.{Json, JsonObject}
+import io.circe.{ Json, JsonObject }
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
 import java.util
@@ -50,8 +50,7 @@ class JsonObjectEqualityBenchmark {
 
   private def buildLinkedHashMapObject(): JsonObject = {
     val map = new util.LinkedHashMap[String, Json]()
-    Iterator.tabulate(count)(i => (i.toString, Json.fromInt(i)))
-      .foreach { case (key, value) => map.put(key, value) }
+    Iterator.tabulate(count)(i => (i.toString, Json.fromInt(i))).foreach { case (key, value) => map.put(key, value) }
     JsonObject.fromLinkedHashMap(map)
   }
 
@@ -70,4 +69,3 @@ class JsonObjectEqualityBenchmark {
   @Benchmark
   def equalsMixed: Boolean = linkedHashMapObject1 == mapAndVectorObject1
 }
-

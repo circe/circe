@@ -24,7 +24,6 @@ import cats.data.Kleisli
 
 import java.io.Serializable
 import java.util.LinkedHashMap
-import scala.collection.immutable.Map
 import scala.util.hashing.MurmurHash3
 
 /**
@@ -220,6 +219,29 @@ sealed abstract class JsonObject extends Serializable {
     case (k, v) => s"$k -> ${Json.showJson.show(v)}"
   }.mkString("object[", ",", "]")
 
+  /**
+   * @group Other
+   */
+  final override def equals(that: Any): Boolean = that match {
+    case that: JsonObject =>
+      that match {
+        case that: JsonObject.LinkedHashMapJsonObject =>
+          that.equalsJsonObject(this)
+        case that: JsonObject.MapAndVectorJsonObject =>
+          that.equalsJsonObject(this)
+      }
+    case _ => false
+  }
+
+  /**
+   * @group Other
+   */
+  final override def hashCode: Int = {
+    this match {
+      case thiz: JsonObject.LinkedHashMapJsonObject => thiz.internalHashCode
+      case thiz: JsonObject.MapAndVectorJsonObject  => thiz.internalHashCode
+    }
+  }
 }
 
 /**
@@ -292,7 +314,7 @@ object JsonObject {
   /**
    * An implementation of [[JsonObject]] built on `java.util.LinkedHashMap`.
    */
-  private[this] final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
+  private final class LinkedHashMapJsonObject(fields: LinkedHashMap[String, Json]) extends JsonObject {
     private[circe] def applyUnsafe(key: String): Json = fields.get(key)
     final def apply(k: String): Option[Json] = Option(fields.get(k))
     final def size: Int = fields.size
@@ -402,7 +424,7 @@ object JsonObject {
 
     final def mapValues(f: Json => Json): JsonObject = toMapAndVectorJsonObject.mapValues(f)
 
-    final override def equals(that: Any): Boolean = that match {
+    final def equalsJsonObject(that: JsonObject): Boolean = that match {
       case that: LinkedHashMapJsonObject =>
         if (this.size != that.size)
           return false
@@ -415,20 +437,21 @@ object JsonObject {
           }
         }
         true
-      case that: MapAndVectorJsonObject => this.size == that.size &&
-        that.toMap.forall { case (k, v) =>
-          v == this.applyUnsafe(k)
+      case that: MapAndVectorJsonObject =>
+        this.size == that.size &&
+        that.toMap.forall {
+          case (k, v) =>
+            v == this.applyUnsafe(k)
         }
-      case _ => false
     }
 
-    final override def hashCode: Int = MurmurHash3.unorderedHash(toIterable, MurmurHash3.mapSeed)
+    final def internalHashCode: Int = MurmurHash3.unorderedHash(toIterable, MurmurHash3.mapSeed)
   }
 
   /**
    * A straightforward implementation of [[JsonObject]] with immutable collections.
    */
-  private[this] final class MapAndVectorJsonObject(
+  private final class MapAndVectorJsonObject(
     fields: Map[String, Json],
     orderedKeys: Vector[String]
   ) extends JsonObject {
@@ -503,16 +526,18 @@ object JsonObject {
       folder.writer.append(p.rBraces)
     }
 
-    final override def equals(that: Any): Boolean = that match {
-      case that: MapAndVectorJsonObject => this.size == that.size &&
+    final def equalsJsonObject(that: JsonObject): Boolean = that match {
+      case that: MapAndVectorJsonObject =>
+        this.size == that.size &&
         this.toMap == that.toMap
-      case that: LinkedHashMapJsonObject => this.size == that.size &&
-        this.toMap.forall { case (k, v) =>
-          v == that.applyUnsafe(k)
+      case that: LinkedHashMapJsonObject =>
+        this.size == that.size &&
+        this.toMap.forall {
+          case (k, v) =>
+            v == that.applyUnsafe(k)
         }
-      case _ => false
     }
 
-    final override def hashCode: Int = fields.hashCode()
+    final def internalHashCode: Int = fields.hashCode()
   }
 }

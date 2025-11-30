@@ -45,4 +45,3 @@ class JsonObjectEqualityBenchmarkSpec extends FunSuite {
     assertEquals(benchmark.equalsMixed, true)
   }
 }
-
