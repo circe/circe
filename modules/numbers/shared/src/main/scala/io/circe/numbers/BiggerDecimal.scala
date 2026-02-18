@@ -374,7 +374,8 @@ object BiggerDecimal {
             }
 
           val unscaledString = integral + fractional
-          val unscaled = new BigInteger(unscaledString.substring(0, unscaledString.length - zeros))
+          val trimmed = unscaledString.substring(0, unscaledString.length - zeros)
+          val unscaled = if (trimmed.isEmpty || trimmed == "-") BigInteger.ZERO else new BigInteger(trimmed)
 
           if (unscaled == BigInteger.ZERO) {
             if (input.charAt(0) == '-') NegativeZero else UnsignedZero
