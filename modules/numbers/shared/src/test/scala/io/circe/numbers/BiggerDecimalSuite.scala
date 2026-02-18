@@ -286,8 +286,6 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
       position <- Gen.choose(0, rest.length)
     } yield (rest.take(position) ::: nonZero :: rest.drop(position)).mkString
     forAll(genSign, genFractional) { (sign: String, fractional: String) =>
-      println("Sign: " + sign)
-      println("Fractional: " + fractional)
       val input = s"$sign.$fractional"
       assert(BiggerDecimal.parseBiggerDecimal(input).nonEmpty)
     }
