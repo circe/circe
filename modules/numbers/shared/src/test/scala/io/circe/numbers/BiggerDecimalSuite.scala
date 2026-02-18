@@ -277,4 +277,35 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
       )
     }
   }
+
+  property("numbers without a leading digit before decimal point should be parseable") {
+    val genSign = Gen.oneOf("", "-")
+    val genFractional = for {
+      nonZero <- Gen.choose('1', '9')
+      rest <- Gen.listOf(Gen.numChar)
+      position <- Gen.choose(0, rest.length)
+    } yield (rest.take(position) ::: nonZero :: rest.drop(position)).mkString
+    forAll(genSign, genFractional) { (sign: String, fractional: String) =>
+      println("Sign: " + sign)
+      println("Fractional: " + fractional)
+      val input = s"$sign.$fractional"
+      assert(BiggerDecimal.parseBiggerDecimal(input).nonEmpty)
+    }
+  }
+
+  test("parseBiggerDecimal should parse .0 as zero") {
+    assertEquals(BiggerDecimal.parseBiggerDecimal(".0"), BiggerDecimal.parseBiggerDecimal("0"))
+  }
+
+  test("parseBiggerDecimal should parse -.0 as NegativeZero") {
+    assertEquals(BiggerDecimal.parseBiggerDecimal("-.0"), Some(BiggerDecimal.NegativeZero))
+  }
+
+  test("parseBiggerDecimal should parse .00 as zero") {
+    assertEquals(BiggerDecimal.parseBiggerDecimal(".00"), BiggerDecimal.parseBiggerDecimal("0"))
+  }
+
+  test("parseBiggerDecimal should parse -.00 as NegativeZero") {
+    assertEquals(BiggerDecimal.parseBiggerDecimal("-.00"), Some(BiggerDecimal.NegativeZero))
+  }
 }
