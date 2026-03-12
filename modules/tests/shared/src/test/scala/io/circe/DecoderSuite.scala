@@ -934,4 +934,18 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     assert(result.isLeft)
     assert(result.swap.exists(_.message === "Validated[E, A]: expected an object with either a failure or success key"))
   }
+
+  test("NonEmptyList decoder should report wrong type when given a non-array (issue #1978)") {
+    val result = Decoder[NonEmptyList[Int]].decodeJson(parse(""""bad value"""").getOrElse(Json.Null))
+    assert(result.isLeft)
+    assert(result.swap.exists(_.message.contains("wrong type, expecting array")))
+  }
+
+  test("NonEmptyList decoder decodeAccumulating should report wrong type when given a non-array (issue #1978)") {
+    val result = Decoder[NonEmptyList[Int]].decodeAccumulating(parse(""""bad value"""").getOrElse(Json.Null).hcursor)
+    assert(result.isInvalid)
+    result.swap.foreach { errors =>
+      assert(errors.head.message.contains("wrong type, expecting array"))
+    }
+  }
 }
