@@ -1,8 +1,8 @@
 import sbtcrossproject.{ CrossProject, CrossType }
 import com.typesafe.tools.mima.core._
 
-val Scala212V: String = "2.12.20"
-val Scala213V: String = "2.13.16"
+val Scala212V: String = "2.12.21"
+val Scala213V: String = "2.13.18"
 val Scala3V: String = "3.3.7"
 
 ThisBuild / startYear := Some(2024)
@@ -35,7 +35,7 @@ val shapelessVersion = "2.3.13"
 val paradiseVersion = "2.1.1"
 
 val scalaCheckVersion = "1.19.0"
-val munitVersion = "1.2.0"
+val munitVersion = "1.2.4"
 val munitScalaCheckVersion = "1.2.0"
 val disciplineVersion = "1.7.0"
 val disciplineScalaTestVersion = "2.3.0"
