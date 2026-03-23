@@ -17,7 +17,7 @@
 package io.circe
 
 import cats.data.Validated.Invalid
-import cats.data.{ Chain, NonEmptyList, Validated }
+import cats.data.{ Chain, NonEmptyList, NonEmptyMap, Validated }
 import cats.implicits._
 import cats.kernel.Eq
 import cats.laws.discipline.{ DeferTests, MiniInt, MonadErrorTests, SemigroupKTests }
@@ -893,5 +893,18 @@ class DecoderSuite extends CirceMunitSuite with LargeNumberDecoderTestsMunit {
     // Without `Decoder.recursive`, this should create 5 instances of a `Decoder[List[Int]]`
     // (1 for each instance, and 1 that gets created but not called because because the last "cdr" field is missing)
     assertEquals(counter, 1)
+  }
+
+  test("decodeNonEmptyMap should provide a meaningful error message for empty objects") {
+    val result = Decoder[NonEmptyMap[String, Int]].decodeJson(parse("{}").getOrElse(Json.Null))
+    assert(result.isLeft)
+    assert(result.swap.exists(_.message === "NonEmptyMap: expected a non-empty JSON object"))
+  }
+
+  test("decodeValidated should provide a meaningful error message when keys are missing") {
+    val decoder = Decoder.decodeValidated[String, Int]("error", "value")
+    val result = decoder.decodeJson(parse("""{"other": 1}""").getOrElse(Json.Null))
+    assert(result.isLeft)
+    assert(result.swap.exists(_.message === "Validated[E, A]: expected an object with either a failure or success key"))
   }
 }

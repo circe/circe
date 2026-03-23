@@ -1188,7 +1188,7 @@ object Decoder
       final protected def createBuilder(): Builder[(K, V), SortedMap[K, V]] =
         SortedMap.newBuilder[K, V](Order.catsKernelOrderingForOrder(orderK))
     }.emap { map =>
-      NonEmptyMap.fromMap(map).toRight("[K, V]NonEmptyMap[K, V]")
+      NonEmptyMap.fromMap(map).toRight("NonEmptyMap: expected a non-empty JSON object")
     }
 
   /**
@@ -1248,7 +1248,8 @@ object Decoder
     decodeEither[E, A](
       failureKey,
       successKey
-    ).map(Validated.fromEither).withErrorMessage("[E, A]Validated[E, A]")
+    ).map(Validated.fromEither)
+      .withErrorMessage("Validated[E, A]: expected an object with either a failure or success key")
 
   private[this] abstract class JavaTimeDecoder[A](name: String) extends Decoder[A] {
     protected[this] def parseUnsafe(input: String): A
