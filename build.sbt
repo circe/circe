@@ -364,7 +364,7 @@ lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
 
 lazy val scodec = circeCrossModule("scodec")
   .settings(
-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.2.4"
+    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.2.5"
   )
   .platformsSettings(JSPlatform, NativePlatform)(
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
