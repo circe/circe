@@ -16,6 +16,9 @@
 
 package io.circe
 
+import cats.data.Validated
+import io.circe.DecodingFailure.Reason.WrongTypeExpectation
+
 import scala.collection.mutable.Builder
 
 private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](decodeA: Decoder[A]) extends Decoder[S] { self =>
@@ -26,24 +29,32 @@ private[circe] abstract class NonEmptySeqDecoder[A, C[_], S](decodeA: Decoder[A]
   }
 
   final def apply(c: HCursor): Decoder.Result[S] = {
-    val arr = c.downArray
+    if (!c.value.isArray) {
+      Left(DecodingFailure(WrongTypeExpectation("array", c.value), c.history))
+    } else {
+      val arr = c.downArray
 
-    decodeA.tryDecode(arr) match {
-      case Right(head) =>
-        decodeCA.tryDecode(arr.delete) match {
-          case Right(tail) => Right(create(head, tail))
-          case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
-        }
-      case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
+      decodeA.tryDecode(arr) match {
+        case Right(head) =>
+          decodeCA.tryDecode(arr.delete) match {
+            case Right(tail) => Right(create(head, tail))
+            case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
+          }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[S]]
+      }
     }
   }
 
   final override def decodeAccumulating(c: HCursor): Decoder.AccumulatingResult[S] = {
-    val arr = c.downArray
+    if (!c.value.isArray) {
+      Validated.invalidNel(DecodingFailure(WrongTypeExpectation("array", c.value), c.history))
+    } else {
+      val arr = c.downArray
 
-    Decoder.accumulatingResultInstance.map2(
-      decodeA.tryDecodeAccumulating(arr),
-      decodeCA.tryDecodeAccumulating(arr.delete)
-    )(create)
+      Decoder.accumulatingResultInstance.map2(
+        decodeA.tryDecodeAccumulating(arr),
+        decodeCA.tryDecodeAccumulating(arr.delete)
+      )(create)
+    }
   }
 }
