@@ -141,7 +141,7 @@ final case class Printer(
 
           addIndentation(builder, rbraceLeft, i)
           builder.append(closeBraceText)
-          addIndentation(builder, rbraceRight, i + 1)
+          addIndentation(builder, rbraceRight, i)
 
           val rBraces = builder.toString
 
@@ -157,7 +157,7 @@ final case class Printer(
 
           addIndentation(builder, rbracketLeft, i)
           builder.append(closeArrayText)
-          addIndentation(builder, rbracketRight, i + 1)
+          addIndentation(builder, rbracketRight, i)
 
           val rBrackets = builder.toString
 
