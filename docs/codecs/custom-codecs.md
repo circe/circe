@@ -99,12 +99,20 @@ implicit val fooKeyDecoder: KeyDecoder[Foo] =
 
 json.as[Map[Foo, Int]]
 ```
+### Custom configuration
+It's often necessary to customize the way encoding/decoding is made. 
+For example, you may work with JSON objects which don't follow idiomatic case class member
+names in Scala. By default, circe expects both sides to be named exactly the same.
 
-### Custom key mappings via annotations
+You have few options here, usually depending on your scala version:
+1. Scala versions 2.x : the standard generic derivation doesn't support this use case. However, you may use the experimental `generic-extras` external module.
+2. Scala versions 3.x : the standard generic derivation provides a built-in support.
+3. Version-independent alternative: explicit mapping (with a little boilerplate..)
 
-It's often necessary to work with keys in your JSON objects that aren't idiomatic case class member
-names in Scala. While the standard generic derivation doesn't support this use case, the
-experimental `generic-extras` module does provide two ways to transform your case class member
+Each option will be briefly presented in the following sections.
+#### Key mappings via annotations - generic-extras
+
+The experimental `generic-extras` module provides two ways to transform your case class member
 names during encoding and decoding.
 
 In many cases the transformation is as simple as going from camel case to snake case, in which case
@@ -149,29 +157,8 @@ implicit val config: Configuration = Configuration.default
 Bar(13, "Qux").asJson
 ```
 
-It's worth noting that if you don't want to use the experimental `generic-extras` module, the
-completely unmagical `forProductN` version isn't really that much of a burden:
 
-```scala mdoc:reset
-import io.circe.Encoder, io.circe.syntax._
-
-case class User(firstName: String, lastName: String)
-case class Bar(i: Int, s: String)
-
-implicit val encodeUser: Encoder[User] =
-  Encoder.forProduct2("first_name", "last_name")(u => (u.firstName, u.lastName))
-
-implicit val encodeBar: Encoder[Bar] =
-  Encoder.forProduct2("my-int", "s")(b => (b.i, b.s))
-
-User("Foo", "McBar").asJson
-Bar(13, "Qux").asJson
-```
-
-
-While this version does involve a bit of boilerplate, it only requires `circe-core`, and may have slightly better runtime performance in some cases.
-
-### More configuration arguments
+#### More configuration arguments - generic-extras
 
 Above we've seen how you can use `transformMemberNames` if the name of case class member names are different from the JSON keys.
 
@@ -245,3 +232,80 @@ case class User(firstName: String, lastName: String)
 
 decode[User]("""{"firstName": "Foo", "lastName": "Bar", "likesCats": true}""")
 ```
+
+#### Custom configuration - Scala 3.x
+Scala 3 brings in a built-in configuration possibilities without the need of an external `generic-extras` module.
+
+Given the sample JSON:
+```
+{
+  "name" : "Sir Meows",
+  "lives_remaining" : 9,
+  "humans_owned" : 4,
+  "breed_type" : "Sphinx"
+}
+```
+
+The configuration in Scala may look as follows:
+
+```scala mdoc:reset
+import io.circe.*
+import io.circe.derivation.*
+
+given Configuration = Configuration.default
+  .withSnakeCaseMemberNames
+  .withDiscriminator("breed_type")
+  .withoutStrictDecoding //makes sure decoding doesn't fail due to lives_remaining
+
+sealed trait Cat derives ConfiguredCodec
+
+case class Sphinx(
+  name: String,
+  humansOwned: Int
+) extends Cat
+
+case class MaineCoon(
+  name: String,
+  humansOwned: Int,
+  floofFactor: Int
+) extends Cat
+```
+In case your case is simpler and/or you want to provide custom configuration per model, you may choose to put it into the companion object:
+
+```scala mdoc:reset
+import io.circe.*
+import io.circe.derivation.*
+
+case class Cat(name: String, humansOwned: Int)
+
+object Cat {
+  given Configuration = Configuration.default
+    .withSnakeCaseMemberNames
+    .withoutStrictDecoding
+
+  given Codec[Cat] = ConfiguredCodec.derived
+}
+```
+#### Alternative - explicit mapping
+It's worth noting that if you need to handle just the difference between naming conventions, the
+completely unmagical `forProductN` version isn't really that much of a burden:
+
+```scala mdoc:reset
+import io.circe.Encoder, io.circe.syntax._
+
+case class User(firstName: String, lastName: String)
+case class Bar(i: Int, s: String)
+
+implicit val encodeUser: Encoder[User] =
+  Encoder.forProduct2("first_name", "last_name")(u => (u.firstName, u.lastName))
+
+implicit val encodeBar: Encoder[Bar] =
+  Encoder.forProduct2("my-int", "s")(b => (b.i, b.s))
+
+User("Foo", "McBar").asJson
+Bar(13, "Qux").asJson
+```
+
+
+While this version does involve a bit of boilerplate, it only requires `circe-core`, and may have slightly better runtime performance in some cases.
+Also, this alternative will work regardless of your Scala version.
