@@ -2,7 +2,7 @@ import sbtcrossproject.{ CrossProject, CrossType }
 import com.typesafe.tools.mima.core._
 
 val Scala212V: String = "2.12.21"
-val Scala213V: String = "2.13.18"
+val Scala213V: String = "3.9.0"
 val Scala3V: String = "3.3.8"
 
 ThisBuild / startYear := Some(2024)
