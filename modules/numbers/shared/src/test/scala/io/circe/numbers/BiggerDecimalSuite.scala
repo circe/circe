@@ -212,6 +212,30 @@ class BiggerDecimalSuite extends ScalaCheckSuite {
     }
   }
 
+  // #2457: invalid integral strings must return false without throwing
+  test("integralIsValidLong should return false for empty and non-integral inputs") {
+    assertEquals(BiggerDecimal.integralIsValidLong(""), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("-"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("+"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("a"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("+1"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("1a"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("-a"), false)
+  }
+
+  test("integralIsValidLong should accept in-range integral strings") {
+    assertEquals(BiggerDecimal.integralIsValidLong("0"), true)
+    assertEquals(BiggerDecimal.integralIsValidLong("1"), true)
+    assertEquals(BiggerDecimal.integralIsValidLong("-1"), true)
+    assertEquals(BiggerDecimal.integralIsValidLong(Long.MaxValue.toString), true)
+    assertEquals(BiggerDecimal.integralIsValidLong(Long.MinValue.toString), true)
+  }
+
+  test("integralIsValidLong should reject out-of-range integral strings") {
+    assertEquals(BiggerDecimal.integralIsValidLong("9223372036854775808"), false)
+    assertEquals(BiggerDecimal.integralIsValidLong("-9223372036854775809"), false)
+  }
+
   property("parseBiggerDecimal should parse any BigDecimal string") {
     forAll { (value: SBigDecimal) =>
       val d = BiggerDecimal.parseBiggerDecimal(value.toString)
