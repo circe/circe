@@ -245,12 +245,27 @@ object BiggerDecimal {
    * Is a string representing an integral value a valid [[scala.Long]]?
    *
    * Note that this method assumes that the input is a valid integral JSON
-   * number string (e.g. that it does have leading zeros).
+   * number string (e.g. that it does not have leading zeros). Invalid inputs
+   * (empty string, bare sign, non-digit characters) return `false` rather
+   * than throwing.
    */
   def integralIsValidLong(s: String): Boolean = {
-    val bound = if (s.charAt(0) == '-') MinLongString else MaxLongString
+    val len = s.length
+    if (len == 0) return false
 
-    s.length < bound.length || (s.length == bound.length && s.compareTo(bound) <= 0)
+    val negative = s.charAt(0) == '-'
+    val digitStart = if (negative) 1 else 0
+    if (digitStart >= len) return false
+
+    var i = digitStart
+    while (i < len) {
+      val c = s.charAt(i)
+      if (c < '0' || c > '9') return false
+      i += 1
+    }
+
+    val bound = if (negative) MinLongString else MaxLongString
+    len < bound.length || (len == bound.length && s.compareTo(bound) <= 0)
   }
 
   private[this] final val FAILED = 0
