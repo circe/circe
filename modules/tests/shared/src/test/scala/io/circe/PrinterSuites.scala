@@ -29,6 +29,35 @@ class UnicodeEscapePrinterSuite extends PrinterSuite(Printer.noSpaces.copy(escap
   }
 }
 
+/**
+ * Empty-indent printers use [[Printer.ConstantPieces]], which previously swapped
+ * rbraceLeft / rbraceRight. Non-empty indent (MemoizedPieces) was already correct.
+ */
+class EmptyIndentRBracePaddingSuite extends io.circe.tests.CirceMunitSuite {
+  private val emptyIndent = Printer(
+    dropNullValues = false,
+    indent = "",
+    rbraceLeft = "L",
+    rbraceRight = "R"
+  )
+  private val indented = Printer(
+    dropNullValues = false,
+    indent = " ",
+    rbraceLeft = "L",
+    rbraceRight = "R"
+  )
+  private val json = Json.obj("key" -> Json.fromString("value"))
+  private val expected = """{"key":"value"L}R"""
+
+  test("ConstantPieces keeps rbraceLeft before } and rbraceRight after") {
+    assertEquals(emptyIndent.print(json), expected)
+  }
+
+  test("MemoizedPieces keeps the same rbraceLeft / rbraceRight order") {
+    assertEquals(indented.print(json), expected)
+  }
+}
+
 class Spaces2PrinterWithWriterReuseSuite
     extends PrinterSuite(
       Printer.spaces2.copy(reuseWriters = true),
