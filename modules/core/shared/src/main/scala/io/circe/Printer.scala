@@ -117,7 +117,7 @@ final case class Printer(
       new Printer.ConstantPieces(
         Printer.Pieces(
           concat(lbraceLeft, openBraceText, lbraceRight),
-          concat(rbraceRight, closeBraceText, rbraceLeft),
+          concat(rbraceLeft, closeBraceText, rbraceRight),
           concat(lbracketLeft, openArrayText, lbracketRight),
           concat(rbracketLeft, closeArrayText, rbracketRight),
           concat(openArrayText, lrbracketsEmpty, closeArrayText),
