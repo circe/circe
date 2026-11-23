@@ -16,6 +16,7 @@
 
 package io.circe
 
+import io.circe.tests.CirceMunitSuite
 import io.circe.tests.PrinterSuite
 
 class Spaces2PrinterSuite extends PrinterSuite(Printer.spaces2, parser.`package`) with Spaces2PrinterExample
@@ -59,3 +60,61 @@ class NoSpacesSortKeysPrinterSuite extends PrinterSuite(Printer.noSpacesSortKeys
 class CustomIndentWithSortKeysPrinterSuite
     extends PrinterSuite(Printer.indented("   ").withSortedKeys, parser.`package`)
     with SortedKeysSuite
+
+/**
+ * Regression for #2459: content after `}` / `]` must be indented at the brace's depth,
+ * not one level deeper (child depth).
+ */
+class RbraceRightIndentSuite extends CirceMunitSuite {
+  private val bracePrinter = Printer(
+    dropNullValues = false,
+    indent = "  ",
+    lbraceRight = "\n",
+    rbraceLeft = "\n",
+    rbraceRight = "\n",
+    objectCommaRight = "\n"
+  )
+
+  private val bracketPrinter = Printer(
+    dropNullValues = false,
+    indent = "  ",
+    lbracketRight = "\n",
+    rbracketLeft = "\n",
+    rbracketRight = "\n",
+    arrayCommaRight = "\n"
+  )
+
+  test("rbraceRight should indent at the closed object's depth, not child depth") {
+    val json = Json.obj(
+      "outer" -> Json.obj("inner" -> Json.fromString("value"))
+    )
+
+    val expected =
+      "{\n" +
+        "  \"outer\":{\n" +
+        "    \"inner\":\"value\"\n" +
+        "  }\n" +
+        "  \n" +
+        "}\n"
+
+    assertEquals(bracePrinter.print(json), expected)
+  }
+
+  test("rbracketRight should indent at the closed array's depth, not child depth") {
+    val json = Json.arr(
+      Json.arr(Json.fromInt(1)),
+      Json.fromInt(2)
+    )
+
+    val expected =
+      "[\n" +
+        "  [\n" +
+        "    1\n" +
+        "  ]\n" +
+        "  ,\n" +
+        "  2\n" +
+        "]\n"
+
+    assertEquals(bracketPrinter.print(json), expected)
+  }
+}
